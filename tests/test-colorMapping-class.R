@@ -1,6 +1,6 @@
 
 
-cm = colorMapping(name = "test",
+cm = ColorMapping(name = "test",
 	colors = c("blue", "white", "red"),
 	levels = c("a", "b", "c"))
 cm$map("a")

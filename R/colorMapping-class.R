@@ -1,26 +1,35 @@
 
 #####################################
 # class to map values to colors
-# generate legend and return size of the legend
+#
+# 1. map values to colors, both discrete and continuous 
+# 2. generate a legend which corresponds to color mapping
+# 3. return the size of the legend
 
-colorMapping = setRefClass("colorMapping",
+ColorMapping = setRefClass("ColorMapping",
 	fields = list(
 		colors  = "character", # a list of colors
 		levels  = "character", # levels which colors correspond to
 		col_fun = "function", # function to map values to colors
 		type    = "character",  # continuous or discrete
-		name    = "character"
+		name    = "character"  # used to map to the dataset and taken as the title of the legend
 	)
 )
 
-# name is used as the title of the legend
-colorMapping$methods(initialize = function(name, colors = NULL, levels = NULL, 
+# constructor
+ColorMapping$methods(initialize = function(name, colors = NULL, levels = NULL, 
 	col_fun = NULL, breaks = NULL) {
 
 	if(is.null(name)) {
 		stop("You should provide name.")
 	}
-	if(!is.null(colors) && !is.null(labels)) {
+	if(!is.null(colors)) {
+		if(is.null(levels)) {
+			if(is.null(names(colors))) {
+				stop("either provide `levels` or provide `colors` with names.\n")
+			}
+			levels = names(colors)
+		}
 		if(length(colors) != length(levels)) {
 			stop("length of colors and length of levels should be the same.\n")
 		}
@@ -41,30 +50,43 @@ colorMapping$methods(initialize = function(name, colors = NULL, levels = NULL,
 		col_fun <<- col_fun
 		type <<- "continuous"
 	} else {
-		stop("initialization failed. Either specify `colors` + `levels` or `col_fun` + `breaks`\n")
+		stop("initialization failed. Either specify `colors` + `levels` or `col_fun` + `breaks` (optional)\n")
 	}
 
 	name <<- name
+
+	return(invisible(.self))
 })
 
-colorMapping$methods(show = function(x) {
+ColorMapping$methods(show = function(x) {
 	if(.self$type == "discrete") {
 		cat("Discrete color mapping:\n")
-		cat("levels: ", .self$levels, "\n")
-		cat("colors: ", .self$colors, "\n")
+		cat("levels:\n")
+		print(.self$levels)
+		cat("\n")
+		cat("colors:\n")
+		col = .self$colors; names(col) = NULL
+		print(col)
+		cat("\n")
 	} else if(.self$type == "continuous") {
 		cat("Continuous color mapping:\n")
-		cat("breaks:", .self$levels, "\n")
-		cat("colors:", .self$colors, "\n")
+		cat("breaks:\n")
+		print(.self$levels)
+		cat("\n")
+		cat("colors:\n")
+		col = .self$colors; names(col) = NULL
+		print(col)
+		cat("\n")
 	}
 })
 
-# map values to colors and keep the attributes
-colorMapping$methods(map = function(x) {
+# map values to colors and keep the attributes (in case it is a matrix)
+ColorMapping$methods(map = function(x) {
 	original_attr = attributes(x)
 	if(.self$type == "discrete") {
-		if(any(!x %in% .self$levels)) {
-			stop("Cannot map some of the levels.")
+		if(any(! x %in% .self$levels)) {
+			msg = paste0("Cannot map some of the levels:\n", paste(setdiff(x, .self$levels), sep = ", ", collapse = ", "))
+			stop(msg)
 		}
 		x = .self$colors[x]
 	} else {
@@ -77,7 +99,7 @@ colorMapping$methods(map = function(x) {
 })
 
 # add legend to the plot, or just return the size of the legend 
-colorMapping$methods(legend = function(plot = TRUE) {
+ColorMapping$methods(legend = function(plot = TRUE) {
 
 	legend_title_fontsize = 14
 	legend_grid_height = unit(5, "mm")
