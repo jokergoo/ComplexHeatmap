@@ -7,37 +7,95 @@
 #     annotation, rownames, colnames, sub-title
 #
 
-setRefClass("heatmap",
+heatmap = setRefClass("heatmap",
     fields = list(
     	"name" = "character",
     	"matrix" = "matrix",  # original order
-    	"hclust_row" = "hclust",
-    	"hclust_col" = "hclust",
+    	"hclust_row" = "ANY",
+    	"hclust_col" = "ANY",
     	"column_anno" = "ANY", # annotation data frame, order of columns are same as matrix
     	"column_anno_color_mapping" = "list", # a list of colorMapping class objects
-    	"matrix_color_mapping" = "colorMapping")
+    	"matrix_color_mapping" = "ANY"
+    )
+)
 
-heatmap$methods(initialize = function(matrix, order_row_by = "hclust", order_col_by = "hclust",
-	annotation = NULL, annotation_color = NULL, ...) {
+heatmap$methods(initialize = function(matrix, col, name, order_row_by = "hclust", order_col_by = "hclust",
+	annotation = NULL, annotation_color = NULL) {
+
+	
+	matrix <<- matrix
+	if(is.function(col)) {
+		matrix_color_mapping <<- colorMapping(col_fun = col, name = name)
+	} else {
+		matrix_color_mapping <<- colorMapping(colors = col, levels = names(col), name = name)
+	}
+	name <<- name
+
+	if(order_row_by == "hclust") {
+		hclust_row <<- hclust(dist(matrix))
+		row_order = hclust_row$order
+	} else if(length(order_row_by) == nrow(matrix)) {
+		row_order = order_row_by
+	} else {
+		row_order = seq_len(nrow(matrix))
+	}
+
+	if(order_col_by == "hclust") {
+		hclust_col <<- hclust(t(dist(matrix)))
+		col_order = hclust_col$order
+	} else if(length(order_col_by) == ncol(matrix)) {
+		col_order = order_col_by
+	} else {
+		col_order = seq_len(ncol(matrix))
+	}
+
+	matrix <<- matrix[row_order, col_order, drop = FALSE]
+
+	if(is.null(annotation)) {
+		return(invisible(NULL))
+	} else if(is.data.frame(annotation)) {
+		# if there is rownames
+		if(is.null(rownames(annotation))) {
+			annotation <<- annotation[col_order, , drop = FALSE]
+		} else {
+			annotation <<- annotation[rownames(matrix), , drop = FALSE]
+			annotation <<- annotation[col_order, , drop = FALSE]
+		}
+	} else {
+		stop("`annotation` should be a data frame.")
+	}
+
+	if(is.null(colnames(annotation))) {
+		stop("`annotation` should have colnames.")
+	}
+	if(is.null(names(annotation_color))) {
+		stop()
+	}
+
+	if(!setequal(colnames(annotation), names(annotation_color))) {
+		stop()
+	} else {
+		annotation_color = annotation_color[colnames(annotation)]
+		annotation_name = names(annotation_color)
+		for(i in seq_along(annotation_color)) {
+			if(is.atomic(annotation_color[[i]])) {
+				column_anno_color_mapping[[i]] <<- colorMapping(name = annotation_name[i],
+					                                     colors = annotation_color[[i]],
+					                                     levels = names(annotation_color[[i]]))
+			} else if(is.function(annotation_color[[i]])) {
+				column_anno_color_mapping[[i]] <<- colorMapping(name = annotation_name[i],
+					                                          col_fun = annotation_color[[i]],
+					                                          breaks = attr(annotation_color[[i]], "breaks"))
+			}
+		}
+	}
 
 })
 
 heatmap$methods(show = function(...) {
-	print(.self$draw(), ...)
-})
-
-heatmap$methods(subset = function(row_index = NULL, col_index = NULL) {
-
-	ht = .self$copy()
-
-	if(!is.null(row_index) && !is.null(col_index)) {
-		ht$matrix <<- ht$matrix[row_index, col_index, drop = FALSE]
-	} else if(!is.null(row_index)) {
-		ht$matrix <<- ht$matrix[row_index, , drop = FALSE]
-	} else if(!is.null(col_index)) {
-		ht$matrix <<- ht$matrix[, col_index, , drop = FALSE]
-	}
-	return(ht)
+	ht_list = new("heatmapList")
+	ht_list$add_heatmap(.self)
+	ht_list
 })
 
 heatmap$methods(add_heatmap = function(ht) {
@@ -101,7 +159,7 @@ heatmap$methods(draw_hclust = function(which = c("row", "column"),
 	}
 	
 	if( (which == "row" && side == 2) | (which == "column" && side == 1) ) {
-		dist = 1 - dist[, 1]
+		dist[, 1] = 1 - dist[, 1]
 	}
 
 	if(which == "row") {
@@ -119,7 +177,7 @@ heatmap$methods(draw_hclust = function(which = c("row", "column"),
 
 
 heatmap$methods(draw_dimnames = function(which = c("row", "column"),
-	side = ifelse(which == "row", 2, 3), ...) {
+	side = ifelse(which == "row", 4, 3), ...) {
 
 	which = match.arg(which)[1]
 
@@ -135,12 +193,6 @@ heatmap$methods(draw_dimnames = function(which = c("row", "column"),
 	nm = switch(which,
 		"row" = rownames(.self$matrix),
 		"column" = colnames(.self$hclust_col))
-
-	if(which == "row") {
-		pushViewport(viewport(angle = 90, name = paste(.self$name, "rownames", sep = "-") ))
-	} else {
-		pushViewport(viewport(name = paste(.self$name, "colnames", sep = "-") ))
-	}
 	
 	if(side == 1) {
 		just = c("left", "center")
@@ -155,13 +207,13 @@ heatmap$methods(draw_dimnames = function(which = c("row", "column"),
 	n = length(nm)
 	x = unit(0, "npc")
 	if(which == "row") {
-		pushViewport(viewport(angle = 90, name = paste(.self$name, "rownames", sep = "-") ))
+		pushViewport(viewport(name = paste(.self$name, "rownames", sep = "-") ))
 		y = (rev(seq_len(n)) - 0.5) / n
 	} else {
-		pushViewport(viewport(name = paste(.self$name, "colnames", sep = "-") ))
+		pushViewport(viewport(angle = 90, name = paste(.self$name, "colnames", sep = "-") ))
 		y = (seq_len(n) - 0.5) / n
 	}
-	grid.text(nm, x, y, gp = gpar(...))
+	grid.text(nm, x, y)
 
 	upViewport()
 })
