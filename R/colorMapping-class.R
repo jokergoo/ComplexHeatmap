@@ -99,7 +99,7 @@ ColorMapping$methods(map = function(x) {
 })
 
 # add legend to the plot, or just return the size of the legend 
-ColorMapping$methods(legend = function(plot = TRUE) {
+ColorMapping$methods(legend = function(plot = TRUE, ...) {
 
 	legend_title_fontsize = 14
 	legend_grid_height = unit(5, "mm")
@@ -124,7 +124,7 @@ ColorMapping$methods(legend = function(plot = TRUE) {
 	vp_height = legend_title_height*1.5 + nlevel*(legend_grid_height + unit(1, "mm"))
 
 	if(plot) {
-		pushViewport(viewport(width = vp_width, height = vp_height, name = paste0("legend_", .self$name)))
+		pushViewport(viewport(..., width = vp_width, height = vp_height, name = paste0("legend_", .self$name)))
 		grid.text(.self$name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
 			gp = gpar(fontsize = legend_title_fontsize))
 		grid.rect(x, y,	width = legend_grid_width, height = legend_grid_height, just = c("left", "top"),
