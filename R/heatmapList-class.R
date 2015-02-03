@@ -24,31 +24,31 @@ HeatmapList$methods(add_heatmap = function(ht) {
 })
 
 # draw everthing
-HeatmapList$methods(draw = function(
+HeatmapList$methods(make_layout = function(
 	row_title = character(0), row_title_side = c("left", "right"), row_title_gp = gpar(fontsize = 14),
 	column_title = character(0), column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
 	heatmap_legend_side = c("right", "left", "bottom", "top"), show_heatmap_legend = TRUE,
 	annotation_legend_side = c("right", "left", "bottom", "top"), show_annotation_legend = TRUE
 	) {
 
-	layout <<- list(
-		layout_anno_legend_left_width = NULL,
+	.self$layout = list(
+		layout_annotation_legend_left_width = NULL,
 		layout_heatmap_legend_left_width = NULL,
 		layout_row_title_left_width = NULL,
 		layout_row_title_right_width = NULL,
 		layout_heatmap_legend_right_width = NULL,
-		layout_anno_legend_right_width = NULL,
+		layout_annotation_legend_right_width = NULL,
 
-		layout_anno_legend_top_height = NULL,
+		layout_annotation_legend_top_height = NULL,
 		layout_heatmap_legend_top_height = NULL,
-		layout_row_title_top_height = NULL,
-		layout_row_title_bottom_height = NULL,
+		layout_column_title_top_height = NULL,
+		layout_column_title_bottom_height = NULL,
 		layout_heatmap_legend_bottom_height = NULL,
-		layout_anno_legend_bottom_height = NULL
+		layout_annotation_legend_bottom_height = NULL
 	)
 
-	layout$layout_index <<- rbind(c(4, 4))
-	layout$graphic_fun_list <<- list(function() .self$draw_heatmap_list())
+	.self$layout$layout_index = rbind(c(4, 4))
+	.self$layout$graphic_fun_list = list(function() .self$draw_heatmap_list())
 
 	############################################
 	## title on top or bottom
@@ -61,21 +61,20 @@ HeatmapList$methods(draw = function(
 		column_title = character(0)
 	}
     if(length(column_title) > 0) {
-    	column_title <<- column_title
+    	column_title = column_title
     	if(column_title_side == "top") {
-    		layout$layout_column_title_top_height <<- grobHeight(textGrob(column_title, gp = column_title_gp))*2
-    		layout$layout_column_title_bottom_height <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(3, 4))
+    		.self$layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
+    		.self$layout$layout_column_title_bottom_height = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(3, 4))
     	} else {
-    		layout$layout_column_title_bottom_height <<- grobHeight(textGrob(column_title, gp = column_title_gp))*2
-    		layout$layout_column_title_top_height <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(5, 4))
+    		.self$layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
+    		.self$layout$layout_column_title_top_height = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(5, 4))
     	}
-    	layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_title(column_title, which = "column", side = column_title_side))
+    	.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_title(column_title, which = "column", side = column_title_side))
     } else {
-    	column_title <<- character(0)
-    	layout$layout_column_title_top_height <<- unit(0, "null")
-    	layout$layout_column_title_bottom_height <<- unit(0, "null")
+    	.self$layout$layout_column_title_top_height = unit(0, "null")
+    	.self$layout$layout_column_title_bottom_height = unit(0, "null")
     }
 
     ############################################
@@ -89,71 +88,146 @@ HeatmapList$methods(draw = function(
 		row_title = character(0)
 	}
     if(length(row_title) > 0) {
-    	row_title <<- row_title
+    	row_title = row_title
     	if(row_title_side == "left") {
-    		layout$layout_row_title_left_width <<- grobHeight(textGrob(row_title, gp = row_title_gp))*2
-    		layout$layout_row_title_right_width <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(4, 3))
+    		.self$layout$layout_row_title_left_width = grobHeight(textGrob(row_title, gp = row_title_gp))*2
+    		.self$layout$layout_row_title_right_width = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(4, 3))
     	} else {
-    		layout$layout_row_title_right_width <<- grobHeight(textGrob(row_title, gp = row_title_gp))*2
-    		layout$layout_row_title_left_width <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(4, 5))
+    		.self$layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp))*2
+    		.self$layout$layout_row_title_left_width = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(4, 5))
     	}
-    	layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_title(row_title, which = "row", side = row_title_side))
+    	.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_title(row_title, which = "row", side = row_title_side))
     } else {
-    	row_title <<- character(0)
-    	layout$layout_row_title_left_width <<- unit(0, "null")
-    	layout$layout_row_title_right_width <<- unit(0, "null")
+    	.self$layout$layout_row_title_right_width = unit(0, "null")
+    	.self$layout$layout_row_title_left_width = unit(0, "null")
     }
 
     #################################################
     ## heatmap legend to top, bottom, left and right
     # default values
-    layout$layout_heatmap_legend_top_height <<- unit(0, "null")
-    layout$layout_heatmap_legend_bottom_height <<- unit(0, "null")
-    layout$layout_heatmap_legend_left_width <<- unit(0, "null")
-    layout$layout_heatmap_legend_right_width <<- unit(0, "null")
+    .self$layout$layout_heatmap_legend_top_height = unit(0, "null")
+    .self$layout$layout_heatmap_legend_bottom_height = unit(0, "null")
+    .self$layout$layout_heatmap_legend_left_width = unit(0, "null")
+    .self$layout$layout_heatmap_legend_right_width = unit(0, "null")
     if(show_heatmap_legend) {
+    	heatmap_legend_side = match.arg(heatmap_legend_side)[1]
     	if(heatmap_legend_side == "top") {
-    		layout$layout_heatmap_legend_top_height <<- .self$heatmap_legend_size(side = "top")[2]
-    		layout$layout_index <<- rbind(layout$layout_index, c(2, 4))
+    		.self$layout$layout_heatmap_legend_top_height = .self$heatmap_legend_size(side = "top")[2]
+    		.self$layout$layout_index = rbind(layout$layout_index, c(2, 4))
     	} else if(heatmap_legend_side == "bottom") {
-    		layout$layout_heatmap_legend_bottom_height <<- .self$heatmap_legend_size(side = "bottom")[2]
-    		layout$layout_index <<- rbind(layout$layout_index, c(6, 4))
+    		.self$layout$layout_heatmap_legend_bottom_height = .self$heatmap_legend_size(side = "bottom")[2]
+    		.self$layout$layout_index = rbind(layout$layout_index, c(6, 4))
     	} else if(heatmap_legend_side == "left") {
-    		layout$layout_heatmap_legend_left_width <<- .self$heatap_legend_size(side = "left")[1]
-    		layout$layout_index <<- rbind(layout$layout_index, c(4, 2))
+    		.self$layout$layout_heatmap_legend_left_width = .self$heatmap_legend_size(side = "left")[1]
+    		.self$layout$layout_index = rbind(layout$layout_index, c(4, 2))
     	} else if(heatmap_legend_side == "right") {
-    		layout$layout_heatmap_legend_right_width <<- .self$heatmap_legend_size(side = "right")[1]
-    		layout$layout_index <<- rbind(layout$layout_index, c(4, 6))
+    		.self$layout$layout_heatmap_legend_right_width = .self$heatmap_legend_size(side = "right")[1]
+    		.self$layout$layout_index = rbind(layout$layout_index, c(4, 6))
     	}
-    	layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_heatmap_legend(side = heatmap_legend_side))
+    	.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_heatmap_legend(side = heatmap_legend_side))
     }
 
     #################################################
     ## annotation legend to top, bottom, left and right
     # default values
-    layout$layout_annotation_legend_top_height <<- unit(0, "null")
-    layout$layout_annotation_legend_bottom_height <<- unit(0, "null")
-    layout$layout_annotation_legend_left_width <<- unit(0, "null")
-    layout$layout_annotation_legend_right_width <<- unit(0, "null")
+    .self$layout$layout_annotation_legend_top_height = unit(0, "null")
+    .self$layout$layout_annotation_legend_bottom_height = unit(0, "null")
+    .self$layout$layout_annotation_legend_left_width = unit(0, "null")
+    .self$layout$layout_annotation_legend_right_width = unit(0, "null")
     if(show_annotation_legend) {
-    	if(heatmap_annotation_side == "top") {
-    		layout$layout_annotation_legend_top_height <<- .self$annotation_legend_size(side = "top")[2]
-    		layout$layout_index <<- rbind(layout$layout_index, c(1, 4))
+    	annotation_legend_side = match.arg(annotation_legend_side)[1]
+    	if(annotation_legend_side == "top") {
+    		.self$layout$layout_annotation_legend_top_height = .self$annotation_legend_size(side = "top")[2]
+    		.self$layout$layout_index = rbind(layout$layout_index, c(1, 4))
     	} else if(annotation_legend_side == "bottom") {
-    		layout$layout_annotation_legend_bottom_height <<- .self$annotation_legend_size(side = "bottom")[2]
-    		layout$layout_index <<- rbind(layout$layout_index, c(7, 4))
+    		.self$.self$layout$layout_annotation_legend_bottom_height = .self$annotation_legend_size(side = "bottom")[2]
+    		.self$layout$layout_index = rbind(layout$layout_index, c(7, 4))
     	} else if(heatmap_legend_side == "left") {
-    		layout$layout_annotation_legend_left_width <<- .self$annotation_legend_size(side = "left")[1]
-    		layout$layout_index <<- rbind(layout$layout_index, c(4, 1))
+    		.self$layout$layout_annotation_legend_left_width = .self$annotation_legend_size(side = "left")[1]
+    		.self$layout$layout_index = rbind(layout$layout_index, c(4, 1))
     	} else if(annotation_legend_side == "right") {
-    		layout$layout_annotation_legend_right_width <<- .self$annotation_legend_size(side = "right")[1]
-    		layout$layout_index <<- rbind(layout$layout_index, c(4, 7))
+    		.self$layout$layout_annotation_legend_right_width = .self$annotation_legend_size(side = "right")[1]
+    		.self$layout$layout_index = rbind(layout$layout_index, c(4, 7))
     	}
-    	layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_annotation_legend(side = annotation_legend_side))
+    	.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_annotation_legend(side = annotation_legend_side))
     }
 })
+
+HeatmapList$methods(draw = function(..., newpage = TRUE) {
+
+	.self$make_layout(...)
+
+	if(newpage) {
+		grid.newpage()
+	}
+
+	layout = grid.layout(nrow = 7, ncol = 7, widths = .self$component_width(1:7), heights = .self$component_height(1:7))
+	pushViewport(viewport(layout = layout, name = "global"))
+	ht_layout_index = .self$layout$layout_index
+	ht_graphic_fun_list = .self$layout$graphic_fun_list
+	
+	for(j in seq_len(nrow(ht_layout_index))) {
+		pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
+		ht_graphic_fun_list[[j]]()
+		upViewport()
+	}
+
+	upViewport()
+})
+
+
+HeatmapList$methods(component_width = function(k = 1:7) {
+
+	.single_unit = function(k) {
+	    if(k == 1) {
+	    	.self$layout$layout_annotation_legend_left_width
+	    } else if(k == 2) {
+	    	.self$layout$layout_heatmap_legend_left_width
+	    } else if(k == 3) {
+	    	.self$layout$layout_row_title_left_width
+	    } else if(k == 4) {
+	    	unit(1, "null")
+	    } else if(k == 5) {
+	    	.self$layout$layout_row_title_right_width
+	    } else if(k == 6) {
+	    	.self$layout$layout_heatmap_legend_right_width
+	    } else if(k == 7) {
+	    	.self$layout$layout_annotation_legend_right_width
+	    } else {
+			stop("wrong 'k'")
+		}
+	}
+
+	do.call("unit.c", lapply(k, function(i) .single_unit(i)))
+})
+
+HeatmapList$methods(component_height = function(k = 1:7) {
+
+	.single_unit = function(k) {
+		if(k == 1) {
+			.self$layout$layout_annotation_legend_top_height
+		} else if(k == 2) {
+			.self$layout$layout_heatmap_legend_top_height
+		} else if(k == 3) {
+			.self$layout$layout_column_title_top_height
+		} else if(k == 4) {
+			unit(1, "null")
+		} else if(k == 5) {
+			.self$layout$layout_column_title_bottom_height
+		} else if(k == 6) {
+			.self$layout$layout_heatmap_legend_bottom_height
+		} else if(k == 7) {
+			.self$layout$layout_annotation_legend_bottom_height
+		} else {
+			stop("wrong 'k'")
+		}
+	}
+
+	do.call("unit.c", lapply(k, function(i) .single_unit(i)))
+})
+
 
 # initialize the layout
 HeatmapList$methods(draw_heatmap_list = function() {
@@ -189,19 +263,20 @@ HeatmapList$methods(draw_heatmap_list = function() {
 	heatmap_ncol = sapply(.self$ht_list, function(ht) ncol(ht$matrix))
 
 	# width for body for each heatmap
-	heatmap_body_width = (unit(1, "npc") - sum(width_without_heatmap_body)) * 1/sum(heatmap_ncol) * heatmap_ncol
+	heatmap_body_width = (unit(1, "npc") - sum(width_without_heatmap_body)) * (1/sum(heatmap_ncol)) * heatmap_ncol
 
 	# width of heatmap including body, and other components
-	heatmap_width = width_without_heatmap_body[1:2] + heatmap_body_width[1] + width_without_heatmap_body[4:5]
+	heatmap_width = sum(width_without_heatmap_body[1:3]) + heatmap_body_width[1] + sum(width_without_heatmap_body[5:7-1])
 
 	for(i in seq_len(n - 1) + 1) {
-		layout_width = unit.c(layout_width, width_without_heatmap_body[5*(i-1) + 1:2] + heatmap_body_width[i] + width_without_heatmap_body[5*(i-1) + 4:5])
+		heatmap_width = unit.c(heatmap_width, sum(width_without_heatmap_body[6*(i-1) + 1:3]) + heatmap_body_width[i] + sum(width_without_heatmap_body[6*(i-1) + 5:7-1]))
 	}
 
 	pushViewport(viewport(name = "main_heatmap_list"))
+	
 	x = unit(0, "npc")
 	for(i in seq_len(n)) {
-		pushViewport(viewport(x = x, y = unit(0, "npc"), just = c("left", "bottom"), name = paste0("heatmap_", .self$ht_list[[i]]$name)))
+		pushViewport(viewport(x = x, y = unit(0, "npc"), width = heatmap_width[i], just = c("left", "bottom"), name = paste0("heatmap_", .self$ht_list[[i]]$name)))
 		ht = .self$ht_list[[i]]
 		ht$draw()
 		upViewport()
@@ -273,17 +348,19 @@ HeatmapList$methods(heatmap_legend_size = function(side = c("right", "left", "to
 	draw_legend(ColorMappingList, side = side, plot = FALSE)
 })
 
-HeatmapList$methods(annotation_legend_size = function(side = c("right", "left", "top", "bottom")) {
+HeatmapList$methods(annotation_legend_size = function(side = c("right", "left", "top", "bottom"), 
+	vp_width = unit(1, "npc"), vp_height = unit(1, "npc")) {
 
 	side = match.arg(side)[1]
 
 	ColorMappingList = do.call("c", lapply(.self$ht_list, function(ht) ht$column_anno_color_mapping))
 	nm = names(ColorMappingList)
 	ColorMappingList = ColorMappingList[nm]
-	draw_legend(ColorMappingList, side = side, plot = FALSE)
+	draw_legend(ColorMappingList, side = side, plot = FALSE, vp_width = vp_width, vp_height = vp_height)
 })
 
-draw_legend = function(ColorMappingList, side = c("right", "left", "top", "bottom"), plot = TRUE) {
+draw_legend = function(ColorMappingList, side = c("right", "left", "top", "bottom"), plot = TRUE,
+	vp_width = unit(1, "npc"), vp_height = unit(1, "npc")) {
 
 	side = match.arg(side)[1]
 
@@ -292,14 +369,14 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
 	if(side %in% c("left", "right")) {
 		current_x = unit(0, "npc")
 		current_width = unit(0, "null")
-		current_y = unit(1, "npc")
+		current_y = vp_height
 		for(i in seq_len(n)) {
 			cm = ColorMappingList[[i]]
 			size = cm$legend(plot = FALSE)
-			
 			# if this legend is too long that it exceed the bottom of the plotting region
 			# it also works for the first legend if it is too long
-			if(compare_unit(current_y - size[2], unit(0, "npc")) < 0) {
+			#if(compare_unit(current_y - size[2], unit(0, "npc")) < 0) {
+			if(0){
 				# go to next column
 				current_y = unit(1, "npc")
 				current_x = current_width
@@ -318,18 +395,19 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
 			}
 		}
 
-		return(unit.c(current_width, unit(1, "npc")))
+		return(unit.c(current_width, vp_height))
 
 	} else if(side %in% c("top", "bottom")) {
 		current_x = unit(0, "npc")
-		current_height = unit(1, "null")
-		current_y = unit(1, "npc")
+		current_height = vp_height
+		current_y = vp_height
 		for(i in seq_len(n)) {
 			cm = ColorMappingList[[i]]
 			size = cm$legend(plot = FALSE)
 			
 			# if adding the legend exceeding ...
-			if(compare_unit(current_x + size[1], unit(1, "npc")) > 0) {
+			#if(compare_unit(current_x + size[1], vp_width) > 0) {
+			if(0) {
 				# go to next column
 				current_y = unit(1, "npc") - current_height
 				current_x = unit(0, "npc")
@@ -348,13 +426,18 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
 			}
 		}
 
-		return(unit.c(unit(1, "npc"), unit(1, "npc") - current_height))
+		return(unit.c(vp_width, unit(1, "npc") - current_height))
 		
 	}
 }
 
 HeatmapList$methods(show = function() {
-	.self$draw()
+	cat("A HeatmapList class instance contains:\n\n")
+	for(i in seq_along(.self$ht_list)) {
+		cat("[", i, "] ", sep = "")
+		.self$ht_list[[i]]$show()
+		cat("\n")
+	}
 })
 
 "+.HeatmapList" = function(ht1, ht2) {
@@ -372,8 +455,7 @@ HeatmapListConfig = function(...) {
 }
 
 compare_unit = function(u1, u2) {
-	u1 = convertUnits(u1, "cm", valueOnly = TRUE)
-	u2 = convertUnits(u2, "cm", valueOnly = TRUE)
-
+	u1 = convertUnit(u1, "cm", valueOnly = TRUE)
+	u2 = convertUnit(u2, "cm", valueOnly = TRUE)
 	ifelse(u1 > u2, 1, ifelse(u1 < u2, -1, 0))
 }

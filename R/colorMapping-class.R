@@ -17,7 +17,7 @@ ColorMapping = setRefClass("ColorMapping",
 )
 
 # constructor
-ColorMapping$methods(initialize = function(name, colors = NULL, levels = NULL, 
+suppressWarnings(ColorMapping$methods(initialize = function(name, colors = NULL, levels = NULL, 
 	col_fun = NULL, breaks = NULL) {
 
 	if(is.null(name)) {
@@ -33,10 +33,10 @@ ColorMapping$methods(initialize = function(name, colors = NULL, levels = NULL,
 		if(length(colors) != length(levels)) {
 			stop("length of colors and length of levels should be the same.\n")
 		}
-		colors <<- colors
-		levels <<- levels
-		names(colors) <<- levels
-		type <<- "discrete"
+		.self$colors = colors
+		.self$levels = levels
+		names(.self$colors) = levels
+		.self$type = "discrete"
 	} else if(!is.null(col_fun)) {
 		if(is.null(breaks)) {
 			breaks = attr(col_fun, "breaks")
@@ -45,18 +45,18 @@ ColorMapping$methods(initialize = function(name, colors = NULL, levels = NULL,
 			}
 		}
 		le = grid.pretty(range(breaks))
-		colors <<- col_fun(le)
-		levels <<- as.character(le)
-		col_fun <<- col_fun
-		type <<- "continuous"
+		.self$colors = col_fun(le)
+		.self$levels = as.character(le)
+		.self$col_fun = col_fun
+		.self$type = "continuous"
 	} else {
 		stop("initialization failed. Either specify `colors` + `levels` or `col_fun` + `breaks` (optional)\n")
 	}
 
-	name <<- name
+	.self$name = name
 
 	return(invisible(.self))
-})
+}))
 
 ColorMapping$methods(show = function(x) {
 	if(.self$type == "discrete") {
@@ -99,16 +99,13 @@ ColorMapping$methods(map = function(x) {
 })
 
 # add legend to the plot, or just return the size of the legend 
-ColorMapping$methods(legend = function(plot = TRUE, ...) {
-
-	legend_title_fontsize = 14
-	legend_grid_height = unit(5, "mm")
-	legend_grid_width = unit(5, "mm")
-	legend_label_fontsize = 14
+ColorMapping$methods(legend = function(..., plot = TRUE, legend_grid_height = unit(3, "mm"),
+	legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 12),
+	legend_label_gp = gpar(fontsize = 10)) {
 
 	# add title
 	legend_title_grob = textGrob(.self$name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
-		gp = gpar(fontsize = legend_title_fontsize))
+		gp = legend_title_gp)
 	legend_title_height = grobHeight(legend_title_grob)
 	legend_title_width = grobWidth(legend_title_grob)
 
@@ -117,7 +114,7 @@ ColorMapping$methods(legend = function(plot = TRUE, ...) {
 	y = unit(1, "npc") - 1.5*legend_title_height - (0:(nlevel-1))*(legend_grid_height + unit(1, "mm"))
 	
 	legend_label_max_width = max(do.call("unit.c", lapply(.self$levels, function(x) {
-			grobWidth(textGrob(x, gp = gpar(fontsize = legend_label_fontsize)))
+			grobWidth(textGrob(x, gp = legend_label_gp))
 		})))
 	vp_width = max(unit.c(legend_title_width, 
 				   legend_grid_width + unit(2, "mm") + legend_label_max_width ))
@@ -125,11 +122,13 @@ ColorMapping$methods(legend = function(plot = TRUE, ...) {
 
 	if(plot) {
 		pushViewport(viewport(..., width = vp_width, height = vp_height, name = paste0("legend_", .self$name)))
+		
 		grid.text(.self$name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
-			gp = gpar(fontsize = legend_title_fontsize))
+			gp = legend_title_gp)
 		grid.rect(x, y,	width = legend_grid_width, height = legend_grid_height, just = c("left", "top"),
 			gp = gpar(col = NA, fill = .self$colors))
-		grid.text(.self$levels, x + legend_grid_width + unit(2, "mm"), y - legend_grid_height*0.5, just = c("left", "center"))
+		grid.text(.self$levels, x + legend_grid_width + unit(2, "mm"), y - legend_grid_height*0.5, 
+			just = c("left", "center"), gp = legend_label_gp)
 		upViewport()
 	}
 

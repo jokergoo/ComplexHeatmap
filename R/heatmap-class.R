@@ -60,7 +60,7 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
 	annotation_height = if(is.null(annotation)) unit(0, "null") else ncol(annotation)*unit(4, "mm"), annotation_gp = gpar()
 	) {
 
-	gp_list <<- list(rect_gp = rect_gp,
+	.self$gp_list = list(rect_gp = rect_gp,
 		             row_title_gp = row_title_gp,
 		             column_title_gp = column_title_gp,
 		             row_hclust_gp = rownames_gp,
@@ -79,40 +79,40 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
 	}
 
 	if(is.function(col)) {
-		matrix_color_mapping <<- ColorMapping(col_fun = col, name = name)
+		.self$matrix_color_mapping = ColorMapping(col_fun = col, name = name)
 	} else {
-		matrix_color_mapping <<- ColorMapping(colors = col, name = name)
+		.self$matrix_color_mapping = ColorMapping(colors = col, name = name)
 	}
-	name <<- name
+	.self$name = name
 
 	if(cluster_rows) {
-		row_hclust <<- hclust(get_dist(matrix, clustering_distance_rows), method = clustering_method_rows)
+		.self$row_hclust = hclust(get_dist(matrix, clustering_distance_rows), method = clustering_method_rows)
 		row_order = row_hclust$order
 	} else {
 		row_hclust_width = unit(0, "null")
-		row_hclust <<- NULL
+		.self$row_hclust = NULL
 		row_order = seq_len(nrow(matrix))
 	}
 
 	if(cluster_columns) {
-		column_hclust <<- hclust(get_dist(t(matrix), clustering_distance_columns), method = clustering_method_columns)
+		.self$column_hclust = hclust(get_dist(t(matrix), clustering_distance_columns), method = clustering_method_columns)
 		column_order = column_hclust$order
 	} else {
 		column_hclust_height = unit(0, "null")
-		column_hclust <<- NULL
+		.self$column_hclust = NULL
 		column_order = seq_len(ncol(matrix))
 	}
 
-	matrix <<- matrix[row_order, column_order, drop = FALSE]
+	.self$matrix = matrix[row_order, column_order, drop = FALSE]
 
 	if(is.null(annotation)) {
 		# don't need to consider annotation_color
 	} else if(is.data.frame(annotation)) {
 		# if there is rownames
 		if(is.null(rownames(annotation))) {
-			column_anno <<- annotation[col_order, , drop = FALSE]
+			.self$column_anno = annotation[col_order, , drop = FALSE]
 		} else {
-			column_anno <<- annotation[colnames(matrix), , drop = FALSE]
+			.self$column_anno = annotation[colnames(matrix), , drop = FALSE]
 		}
 
 		if(is.null(colnames(annotation))) {
@@ -135,10 +135,10 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
 			column_anno_color_mapping = list()
 			for(i in seq_along(annotation_color)) {
 				if(is.atomic(annotation_color[[i]])) {
-					column_anno_color_mapping[[i]] <<- ColorMapping(name = annotation_name[i],
+					.self$column_anno_color_mapping[[i]] = ColorMapping(name = annotation_name[i],
 						                                     colors = annotation_color[[i]])
 				} else if(is.function(annotation_color[[i]])) {
-					column_anno_color_mapping[[i]] <<- ColorMapping(name = annotation_name[i],
+					.self$column_anno_color_mapping[[i]] = ColorMapping(name = annotation_name[i],
 						                                          col_fun = annotation_color[[i]])
 				}
 			}
@@ -148,7 +148,7 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
 	}
 
 	# settings for positin of each component
-	layout <<- list(
+	.self$layout = list(
 		layout_column_title_top_height = NULL,
     	layout_column_hclust_top_height = NULL,
     	layout_column_anno_top_height = NULL,
@@ -169,8 +169,8 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
     	graphic_fun_list = list()
     )
 
-	layout$layout_index <<- rbind(c(5, 4))
-	layout$graphic_fun_list <<- list(function() .self$draw_heatmap_body())
+	.self$layout$layout_index = rbind(c(5, 4))
+	.self$layout$graphic_fun_list = list(function() .self$draw_heatmap_body())
 
 	############################################
 	## title on top or bottom
@@ -183,21 +183,20 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
 		column_title = character(0)
 	}
     if(length(column_title) > 0) {
-    	column_title <<- column_title
+    	column_title = column_title
     	if(column_title_side == "top") {
-    		layout$layout_column_title_top_height <<- grobHeight(textGrob(column_title, gp = column_title_gp))*2
-    		layout$layout_column_title_bottom_height <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(1, 4))
+    		.self$layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
+    		.self$layout$layout_column_title_bottom_height = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(1, 4))
     	} else {
-    		layout$layout_column_title_bottom_height <<- grobHeight(textGrob(column_title, gp = column_title_gp))*2
-    		layout$layout_column_title_top_height <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(9, 4))
+    		.self$layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
+    		.self$layout$layout_column_title_top_height = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(9, 4))
     	}
-    	layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_title(column_title, which = "column", side = column_title_side))
+    	.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_title(column_title, which = "column", side = column_title_side))
     } else {
-    	column_title <<- character(0)
-    	layout$layout_column_title_top_height <<- unit(0, "null")
-    	layout$layout_column_title_bottom_height <<- unit(0, "null")
+    	.self$layout$layout_column_title_top_height = unit(0, "null")
+    	.self$layout$layout_column_title_bottom_height = unit(0, "null")
     }
 
     ############################################
@@ -211,21 +210,20 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
 		row_title = character(0)
 	}
     if(length(row_title) > 0) {
-    	row_title <<- row_title
+    	row_title = row_title
     	if(row_title_side == "left") {
-    		layout$layout_row_title_left_width <<- grobHeight(textGrob(row_title, gp = row_title_gp))*2
-    		layout$layout_row_title_right_width <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(5, 1))
+    		.self$layout$layout_row_title_left_width = grobHeight(textGrob(row_title, gp = row_title_gp))*2
+    		.self$layout$layout_row_title_right_width = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(5, 1))
     	} else {
-    		layout$layout_row_title_right_width <<- grobHeight(textGrob(row_title, gp = row_title_gp))*2
-    		layout$layout_row_title_left_width <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(5, 7))
+    		.self$layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp))*2
+    		.self$layout$layout_row_title_left_width = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(5, 7))
     	}
-    	layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_title(row_title, which = "row", side = row_title_side))
+    	.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_title(row_title, which = "row", side = row_title_side))
     } else {
-    	row_title <<- character(0)
-    	layout$layout_row_title_left_width <<- unit(0, "null")
-    	layout$layout_row_title_right_width <<- unit(0, "null")
+    	.self$layout$layout_row_title_left_width = unit(0, "null")
+    	.self$layout$layout_row_title_right_width = unit(0, "null")
     }
 
     ##########################################
@@ -233,18 +231,18 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
     row_hclust_side = match.arg(row_hclust_side)[1]
     if(show_row_hclust) {
     	if(row_hclust_side == "left") {
-    		layout$layout_row_hclust_left_width <<- row_hclust_width
-    		layout$layout_row_hclust_right_width <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(5, 2))
+    		.self$layout$layout_row_hclust_left_width = row_hclust_width
+    		.self$layout$layout_row_hclust_right_width = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(5, 2))
     	} else {
-    		layout$layout_row_hclust_right_width <<- row_hclust_width
-    		layout$layout_row_hclust_left_width <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(5, 6))
+    		.self$layout$layout_row_hclust_right_width = row_hclust_width
+    		.self$layout$layout_row_hclust_left_width = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(5, 6))
     	}
-    	layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_hclust(which = "row", side = row_hclust_side))
+    	.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_hclust(which = "row", side = row_hclust_side))
     } else {
-    	layout$layout_row_hclust_right_width <<- unit(0, "null")
-    	layout$layout_row_hclust_left_width <<- unit(0, "null")	
+    	.self$layout$layout_row_hclust_right_width = unit(0, "null")
+    	.self$layout$layout_row_hclust_left_width = unit(0, "null")	
     }
 
     ##########################################
@@ -252,18 +250,18 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
     column_hclust_side = match.arg(column_hclust_side)[1]
     if(show_column_hclust) {
     	if(column_hclust_side == "top") {
-			layout$layout_column_hclust_top_height <<- column_hclust_height
-    		layout$layout_column_hclust_bottom_height <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(2, 4))
+			.self$layout$layout_column_hclust_top_height = column_hclust_height
+    		.self$layout$layout_column_hclust_bottom_height = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(2, 4))
     	} else {
-    		layout$layout_column_hclust_bottom_height <<- column_hclust_height
-    		layout$layout_column_hclust_top_height <<- unit(0, "null")
-    		layout$layout_index <<- rbind(layout$layout_index, c(8, 4))
+    		.self$layout$layout_column_hclust_bottom_height = column_hclust_height
+    		.self$layout$layout_column_hclust_top_height = unit(0, "null")
+    		.self$layout$layout_index = rbind(layout$layout_index, c(8, 4))
     	}
-    	layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_hclust(which = "column", side = column_hclust_side))
+    	.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_hclust(which = "column", side = column_hclust_side))
     } else {
-    	layout$layout_column_hclust_top_height <<- unit(0, "null")
-    	layout$layout_column_hclust_bottom_height <<- unit(0, "null")	
+    	.self$layout$layout_column_hclust_top_height = unit(0, "null")
+    	.self$layout$layout_column_hclust_bottom_height = unit(0, "null")	
     }
     
     #######################################
@@ -277,18 +275,18 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
 			grobWidth(textGrob(x, gp = rownames_gp))
 		}))) + unit(2, "mm")
 		if(rownames_side == "left") {
-			layout$layout_rownames_left_width <<- rownames_width
-			layout$layout_rownames_right_width <<- unit(0, "null")
-			layout$layout_index <<- rbind(layout$layout_index, c(5, 3))
+			.self$layout$layout_rownames_left_width = rownames_width
+			.self$layout$layout_rownames_right_width = unit(0, "null")
+			.self$layout$layout_index = rbind(layout$layout_index, c(5, 3))
 		} else {
-			layout$layout_rownames_right_width <<- rownames_width
-			layout$layout_rownames_left_width <<- unit(0, "null")
-			layout$layout_index <<- rbind(layout$layout_index, c(5, 5))
+			.self$layout$layout_rownames_right_width = rownames_width
+			.self$layout$layout_rownames_left_width = unit(0, "null")
+			.self$layout$layout_index = rbind(layout$layout_index, c(5, 5))
 		}
-		layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_dimnames(which = "row", side = rownames_side))
+		.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_dimnames(which = "row", side = rownames_side))
     } else {
-    	layout$layout_rownames_left_width <<- unit(0, "null")
-    	layout$layout_rownames_right_width <<- unit(0, "null")
+    	.self$layout$layout_rownames_left_width = unit(0, "null")
+    	.self$layout$layout_rownames_right_width = unit(0, "null")
     }
 
     #########################################
@@ -302,47 +300,47 @@ Heatmap$methods(initialize = function(matrix, col, name, rect_gp = gpar(col = NA
 			grobWidth(textGrob(x, gp = colnames_gp))
 		}))) + unit(2, "mm")
 		if(colnames_side == "top") {
-			layout$layout_colnames_top_height <<- colnames_height
-			layout$layout_colnames_bottom_height <<- unit(0, "null")
-			layout$layout_index <<- rbind(layout$layout_index, c(4, 4))
+			.self$layout$layout_colnames_top_height = colnames_height
+			.self$layout$layout_colnames_bottom_height = unit(0, "null")
+			.self$layout$layout_index = rbind(layout$layout_index, c(4, 4))
 		} else {
-			layout$layout_colnames_bottom_height <<- colnames_height
-			layout$layout_colnames_top_height <<- unit(0, "null")
-			layout$layout_index <<- rbind(layout$layout_index, c(6, 4))
+			.self$layout$layout_colnames_bottom_height = colnames_height
+			.self$layout$layout_colnames_top_height = unit(0, "null")
+			.self$layout$layout_index = rbind(layout$layout_index, c(6, 4))
 		}
-		layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_dimnames(which = "column", side = colnames_side))
+		.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_dimnames(which = "column", side = colnames_side))
     } else {
-    	layout$layout_colnames_top_height <<- unit(0, "null")
-    	layout$layout_colnames_bottom_height <<- unit(0, "null")
+    	.self$layout$layout_colnames_top_height = unit(0, "null")
+    	.self$layout$layout_colnames_bottom_height = unit(0, "null")
     }
     
     ##########################################
     ## annotation on top or bottom
 	column_anno_side = match.arg(annotation_side)[1]
 	if(is.null(annotation)) {
-		layout$layout_column_anno_top_height <<- unit(0, "null")
-		layout$layout_column_anno_bottom_height <<- unit(0, "null")
+		.self$layout$layout_column_anno_top_height = unit(0, "null")
+		.self$layout$layout_column_anno_bottom_height = unit(0, "null")
 	} else {
 		if(column_anno_side == "top") {
-			layout$layout_column_anno_top_height <<- annotation_height
-			layout$layout_column_anno_bottom_height <<- unit(0, "null")
-			layout$layout_index <<- rbind(layout$layout_index, c(3, 4))
+			.self$layout$layout_column_anno_top_height = annotation_height
+			.self$layout$layout_column_anno_bottom_height = unit(0, "null")
+			.self$layout$layout_index = rbind(layout$layout_index, c(3, 4))
 		} else {
-			layout$layout_column_anno_bottom_height <<- annotation_height
-			layout$layout_column_anno_top_height <<- unit(0, "null")
-			layout$layout_index <<- rbind(layout$layout_index, c(7, 4))
+			.self$layout$layout_column_anno_bottom_height = annotation_height
+			.self$layout$layout_column_anno_top_height = unit(0, "null")
+			.self$layout$layout_index = rbind(layout$layout_index, c(7, 4))
 		}
-		layout$graphic_fun_list <<- c(layout$graphic_fun_list, function() .self$draw_annotation())
+		.self$layout$graphic_fun_list = c(layout$graphic_fun_list, function() .self$draw_annotation())
 	}
 
 	return(invisible(.self))
 })
 
 # show method is in fact a plot method
-Heatmap$methods(show = function(...) {
-	ht_list = new("HeatmapList")
-	ht_list$add_heatmap(.self)
-	ht_list
+Heatmap$methods(show = function() {
+	cat("A Heatmap class instance:\n")
+	cat("name:", .self$name, "\n")
+	cat("dim:", nrow(.self$matrix), "x", ncol(.self$matrix), "\n")
 })
 
 Heatmap$methods(add_heatmap = function(ht) {
@@ -620,21 +618,21 @@ Heatmap$methods(component_height = function(k = 1:9) {
 Heatmap$methods(set_component_height = function(k, v) {
 
 	if(k == 1) {
-		layout$layout_title_top_height <<- v
+		.self$layout$layout_title_top_height = v
 	} else if(k == 2) {
-		layout$layout_column_hclust_top_height <<- v
+		.self$layout$layout_column_hclust_top_height = v
 	} else if(k == 3) {
-		layout$layout_column_anno_top_height <<- v
+		.self$layout$layout_column_anno_top_height = v
 	} else if(k == 4) {
-		layout$layout_colnames_top_height <<- v
+		.self$layout$layout_colnames_top_height = v
 	} else if(k == 6) {
-		layout$layout_colnames_bottom_height <<- v
+		.self$layout$layout_colnames_bottom_height = v
 	} else if(k == 7) {
-		layout$layout_column_anno_bottom_height <<- v
+		.self$layout$layout_column_anno_bottom_height = v
 	} else if(k == 8) {
-		layout$layout_column_hclust_bottom_height <<- v
+		.self$layout$layout_column_hclust_bottom_height = v
 	} else if(k == 9) {
-		layout$layout_title_bottom_height <<- v
+		.self$layout$layout_title_bottom_height = v
 	} else {
 		stop("wrong 'k'")
 	}
@@ -647,10 +645,11 @@ Heatmap$methods(draw = function(newpage = FALSE) {
 		grid.newpage()
 	}
 
-	layout = grid.layout(nrow = 9, ncol = 7, widths = ht$component_width(1:7), heights = ht$component_height(1:9))
+	layout = grid.layout(nrow = 9, ncol = 7, widths = .self$component_width(1:7), heights = .self$component_height(1:9))
 	pushViewport(viewport(layout = layout, name = "main_heatmap_list"))
-	ht_layout_index = ht$layout$layout_index
-	ht_graphic_fun_list = ht$layout$graphic_fun_list
+	
+	ht_layout_index = .self$layout$layout_index
+	ht_graphic_fun_list = .self$layout$graphic_fun_list
 	
 	for(j in seq_len(nrow(ht_layout_index))) {
 		pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
