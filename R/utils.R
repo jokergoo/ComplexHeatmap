@@ -1,10 +1,10 @@
 
-N_HEATMAP = 0
+I_HEATMAP = 0
 
-get_n_heatmap = function() {
-	N_HEATMAP
+get_heatmap_index = function() {
+	I_HEATMAP
 }
 
-increase_n_heatmap = function() {
-	N_HEATMAP <<- N_HEATMAP + 1
+increase_heatmap_index = function() {
+	I_HEATMAP <<- I_HEATMAP + 1
 }

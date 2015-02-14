@@ -1,13 +1,34 @@
 
 #####################################
+# class and methods to map values to colors
+#
+
+# == title
 # class to map values to colors
 #
-# 1. map values to colors, both discrete and continuous 
-# 2. generate a legend which corresponds to color mapping
-# 3. return the size of the legend
-
-ColorMapping = setRefClass("ColorMapping",
-	fields = list(
+# == details
+# The `ColorMapping` class can handle color mapping with both discrete values and continuous values.
+#
+# == constructor
+# 
+#     ColorMapping(name, colors = NULL, levels = NULL, 
+#         col_fun = NULL, breaks = NULL)
+#
+# -name name for this color mapping
+# -colors discrete colors
+# -levels levels that correspond to ``colors``
+# -col_fun color mapping function that maps continuous values to colors
+# -breaks breaks for the continuous color mapping
+#
+# ``colors`` and ``levels`` are for discrete color mapping, ``col_fun`` and 
+# ``breaks`` are for continuous color mapping. If ``col_fun`` is generated from
+# `circlize::colorRamp2`, ``breaks`` does not need to be specified.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+ColorMapping = setClass("ColorMapping",
+	slots = list(
 		colors  = "character", # a list of colors
 		levels  = "character", # levels which colors correspond to
 		col_fun = "function", # function to map values to colors
@@ -16,8 +37,19 @@ ColorMapping = setRefClass("ColorMapping",
 	)
 )
 
-# constructor
-suppressWarnings(ColorMapping$methods(initialize = function(name, colors = NULL, levels = NULL, 
+# == title
+# initialize
+#
+# == param
+# -name name
+# -colors colors
+# -levels levels
+# -col_fun color function
+# -breaks breaks
+#
+setMethod(f = "initialize",
+	signature = "ColorMapping",
+	definition = function(.Object, name, colors = NULL, levels = NULL, 
 	col_fun = NULL, breaks = NULL) {
 
 	if(is.null(name)) {
@@ -33,10 +65,15 @@ suppressWarnings(ColorMapping$methods(initialize = function(name, colors = NULL,
 		if(length(colors) != length(levels)) {
 			stop("length of colors and length of levels should be the same.\n")
 		}
-		.self$colors = colors
-		.self$levels = levels
-		names(.self$colors) = levels
-		.self$type = "discrete"
+		.Object@colors = colors
+		if(is.numeric(levels)) {
+			.Object@levels = as.character(levels)
+			attr(.Object@levels, "numeric") = TRUE
+		} else {
+			.Object@levels = levels
+		}
+		names(.Object@colors) = levels
+		.Object@type = "discrete"
 	} else if(!is.null(col_fun)) {
 		if(is.null(breaks)) {
 			breaks = attr(col_fun, "breaks")
@@ -45,52 +82,72 @@ suppressWarnings(ColorMapping$methods(initialize = function(name, colors = NULL,
 			}
 		}
 		le = grid.pretty(range(breaks))
-		.self$colors = col_fun(le)
-		.self$levels = as.character(le)
-		.self$col_fun = col_fun
-		.self$type = "continuous"
+		.Object@colors = col_fun(le)
+		.Object@levels = as.character(le)
+		.Object@col_fun = col_fun
+		.Object@type = "continuous"
 	} else {
 		stop("initialization failed. Either specify `colors` + `levels` or `col_fun` + `breaks` (optional)\n")
 	}
 
-	.self$name = name
+	.Object@name = name
 
-	return(invisible(.self))
-}))
+	return(.Object)
+})
 
-ColorMapping$methods(show = function(x) {
-	if(.self$type == "discrete") {
+setMethod(f = "show",
+	signature = "ColorMapping",
+	definition = function(object) {
+	if(object@type == "discrete") {
 		cat("Discrete color mapping:\n")
 		cat("levels:\n")
-		print(.self$levels)
+		print(object@levels)
 		cat("\n")
 		cat("colors:\n")
-		col = .self$colors; names(col) = NULL
+		col = object@colors; names(col) = NULL
 		print(col)
 		cat("\n")
-	} else if(.self$type == "continuous") {
+	} else if(object@type == "continuous") {
 		cat("Continuous color mapping:\n")
 		cat("breaks:\n")
-		print(.self$levels)
+		print(object@levels)
 		cat("\n")
 		cat("colors:\n")
-		col = .self$colors; names(col) = NULL
+		col = object@colors; names(col) = NULL
 		print(col)
 		cat("\n")
 	}
 })
 
-# map values to colors and keep the attributes (in case it is a matrix)
-ColorMapping$methods(map = function(x) {
+# == title
+# map values to colors
+#
+# == param
+# -object a `ColorMapping` object
+# -x input values
+#
+# == details
+# It maps a vector of values to a vector of colors
+#
+# == value
+# a vector of colors
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+setMethod(f = "map",
+	signature = "ColorMapping",
+	definition = function(object, x) {
 	original_attr = attributes(x)
-	if(.self$type == "discrete") {
-		if(any(! x %in% .self$levels)) {
-			msg = paste0("Cannot map some of the levels:\n", paste(setdiff(x, .self$levels), sep = ", ", collapse = ", "))
+	if(object@type == "discrete") {
+		if(is.numeric(x)) x = as.character(x)
+		if(any(! x %in% object@levels)) {
+			msg = paste0("Cannot map some of the levels:\n", paste(setdiff(x, object@levels), sep = ", ", collapse = ", "))
 			stop(msg)
 		}
-		x = .self$colors[x]
+		x = object@colors[x]
 	} else {
-		x = .self$col_fun(x)
+		x = object@col_fun(x)
 	}
 
 	# keep original attributes, such as dimension
@@ -98,36 +155,59 @@ ColorMapping$methods(map = function(x) {
 	return(x)
 })
 
-# add legend to the plot, or just return the size of the legend 
-ColorMapping$methods(legend = function(..., plot = TRUE, legend_grid_height = unit(3, "mm"),
-	legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 12),
+
+# == title
+# generate legend based on color mapping
+#
+# == param
+# -object a `ColorMapping` object
+# -... pass to `grid::viewport`
+# -plot whether to plot or just return the size of the legend grob
+# -legend_grid_height height of each legend grid
+# -legend_grid_width width of each legend grid
+# -legend_title_gp graphic parameter for legend title
+# -legend_label_gp graphic parameter for legend label
+#
+# == details
+# This function adds legend to the plot, or just returns the size of the legend.
+#
+# == value
+# A `grid::unit` object with length two.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+setMethod(f = "legend",
+	signature = "ColorMapping",
+	definition = function(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
+	legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 10),
 	legend_label_gp = gpar(fontsize = 10)) {
 
 	# add title
-	legend_title_grob = textGrob(.self$name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
+	legend_title_grob = textGrob(object@name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
 		gp = legend_title_gp)
 	legend_title_height = grobHeight(legend_title_grob)
 	legend_title_width = grobWidth(legend_title_grob)
 
-	nlevel = length(.self$levels)
+	nlevel = length(object@levels)
 	x = unit(rep(0, nlevel), "npc")
-	y = unit(1, "npc") - 1.5*legend_title_height - (0:(nlevel-1))*(legend_grid_height + unit(1, "mm"))
+	y = 1.5*legend_title_height + (0:(nlevel-1))*(legend_grid_height + unit(1, "mm"))
 	
-	legend_label_max_width = max(do.call("unit.c", lapply(.self$levels, function(x) {
+	legend_label_max_width = max(do.call("unit.c", lapply(object@levels, function(x) {
 			grobWidth(textGrob(x, gp = legend_label_gp))
 		})))
 	vp_width = max(unit.c(legend_title_width, 
-				   legend_grid_width + unit(2, "mm") + legend_label_max_width ))
+				   legend_grid_width + unit(1, "mm") + legend_label_max_width ))
 	vp_height = legend_title_height*1.5 + nlevel*(legend_grid_height + unit(1, "mm"))
 
 	if(plot) {
-		pushViewport(viewport(..., width = vp_width, height = vp_height, name = paste0("legend_", .self$name)))
+		pushViewport(viewport(..., width = vp_width, height = vp_height, name = paste0("legend_", object@name)))
 		
-		grid.text(.self$name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
+		grid.text(object@name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
 			gp = legend_title_gp)
 		grid.rect(x, y,	width = legend_grid_width, height = legend_grid_height, just = c("left", "top"),
-			gp = gpar(col = NA, fill = .self$colors))
-		grid.text(.self$levels, x + legend_grid_width + unit(2, "mm"), y - legend_grid_height*0.5, 
+			gp = gpar(col = NA, fill = object@colors))
+		grid.text(object@levels, x + legend_grid_width + unit(1, "mm"), y - legend_grid_height*0.5, 
 			just = c("left", "center"), gp = legend_label_gp)
 		upViewport()
 	}
