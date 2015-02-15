@@ -1,12 +1,12 @@
 \name{map-ColorMapping-method}
 \alias{map,ColorMapping-method}
 \title{
-map values to colors  
+Map values to colors  
 
 
 }
 \description{
-map values to colors  
+Map values to colors  
 
 
 }
@@ -25,7 +25,7 @@ It maps a vector of values to a vector of colors
 
 }
 \value{
-a vector of colors  
+A vector of colors  
 
 
 }

@@ -7,10 +7,10 @@
 # the layout of the heatmap is 7 x 9
 
 # == title
-# class for single heatmap
+# Class for a single heatmap
 #
 # == details
-# The components for a heamtap is
+# The components for a single heamtap are placed into a 9 x 7 layout:
 #
 #          +------+
 #          +------+
@@ -23,6 +23,42 @@
 #          +------+
 #          +------+
 #          +------+
+#
+# From top to bottom in column 4, the regions are:
+#
+# - title put on column, graphics are drawn by `draw_title,Heatmap-method`
+# - column cluster, graphics are drawn by `draw_hclust,Heatmap-method`
+# - column annotation, graphics are drawn by `draw_annotation,Heatmap-method`
+# - column names, graphics are drawn by `draw_dimnames,Heatmap-method`
+# - heatmap body, graphics are drawn by `draw_heatmap_body,Heatmap-method`
+# - column names, graphics are drawn by `draw_dimnames,Heatmap-method`
+# - column annotation, graphics are drawn by `draw_annotation,Heatmap-method`
+# - column cluster, graphics are drawn by `draw_hclust,Heatmap-method`
+# - title put on column, graphics are drawn by `draw_title,Heatmap-method`
+# 
+# From left to right in row 5, the regions are:
+#
+# - title put on row, graphics are drawn by `draw_title,Heatmap-method`
+# - row cluster, graphics are drawn by `draw_hclust,Heatmap-method`
+# - row names, graphics are drawn by `draw_dimnames,Heatmap-method`
+# - heatmap body
+# - row names, graphics are drawn by `draw_dimnames,Heatmap-method`
+# - row cluster, graphics are drawn by `draw_hclust,Heatmap-method`
+# - title put on row, graphics are drawn by `draw_title,Heatmap-method`
+#
+# The `Heatmap` class is not resposible for heatmap legend. The `draw,Heatmap-method` method
+# will construct a `HeatmapList` class which only contains one single heatmap
+# and call `draw,HeatmapList-method` to make a complete heatmap.
+#
+# == methods
+# The `Heatmap` class provides following methods:
+#
+# - `initialize,Heatmap-method`: contructor method
+# - `draw,Heatmap-method`: draw a single heatmap
+# - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 Heatmap = setClass("Heatmap",
     slots = list(
@@ -70,48 +106,65 @@ default_col = function(x, main_matrix = FALSE) {
 }
 
 # == title
-# constructor of `Heatmap` class
+# Constructor method of Heatmap class
 #
 # == param
-# -.Object object
-# -matrix matrix
-# -col color
-# -name name
-# -rect_gp graphic parameters for drawing rectangles
-# -row_title title on rows
-# -row_title_side side
-# -row_title_gp gp
-# -column_title foo
-# -column_title_side foo
-# -column_title_gp foo
-# -cluster_rows foo
-# -clustering_distance_rows foo
-# -clustering_method_rows foo
-# -row_hclust_side foo
-# -row_hclust_width foo
-# -show_row_hclust foo
-# -row_hclust_gp foo
-# -cluster_columns foo
-# -clustering_distance_columns foo
-# -clustering_method_columns foo
-# -column_hclust_side foo
-# -column_hclust_height foo
-# -show_column_hclust foo
-# -column_hclust_gp foo
-# -rownames_side foo
-# -show_rownames foo
-# -rownames_gp foo
-# -colnames_side foo
-# -show_colnames foo
-# -colnames_gp foo
-# -annotation foo
-# -annotation_color foo
-# -annotation_side foo
-# -annotation_height foo
-# -annotation_gp foo
+# -.Object private object
+# -matrix matrix. Either numeric or character. If it is a simple vector, it will be
+#         converted to a one-column matrix
+# -col a vector of colors if the matrix is character or a color mapping 
+#      function if the matrix is numeric. Pass to `initialize,ColorMapping-method`
+# -name name of the heatmap
+# -rect_gp graphic parameters for drawing rectangles (for heatmap body)
+# -row_title title on row
+# -row_title_side will the title be put on the left or right of the heatmap
+# -row_title_gp graphic parameters for drawing text
+# -column_title title on column
+# -column_title_side will the title be put on the top or bottom of the heatmap
+# -column_title_gp graphic parameters for drawing text
+# -cluster_rows whether make cluster on rows
+# -clustering_distance_rows it can be a pre-defined character which is in 
+#                ("euclidean", "maximum", "manhattan", "canberra", "binary", 
+#                "minkowski", "pearson", "spearman", "kendall"). It can also be a function.
+#                If the function has one argument, the input argument should be a matrix and 
+#                the returned value should be a `stats::dist` object. If the function has two arguments,
+#                the input arguments are two vectors and the function calcualtes distance between these
+#                two vectors.
+# -clustering_method_rows method to make cluster, pass to `stats::hclust`
+# -row_hclust_side should the row cluster be put on the left or right of the heatmap
+# -row_hclust_width width of the row cluster, should be a `grid::unit` object
+# -show_row_hclust whether show row clusters
+# -row_hclust_gp graphics parameters for drawing lines
+# -cluster_columns whether make cluster on columns
+# -clustering_distance_columns same setting as ``clustering_distance_rows``
+# -clustering_method_columns method to make cluster, pass to `stats::hclust`
+# -column_hclust_side should the column cluster be put on the top or bottom of the heatmap
+# -column_hclust_height height of the column cluster, should be a `grid::unit` object
+# -show_column_hclust whether show column clusters
+# -column_hclust_gp graphic parameters for drawling lines
+# -rownames_side should the row names be put on the left or right of the heatmap
+# -show_rownames whether show row names
+# -rownames_gp graphic parameters for drawing text
+# -colnames_side should the column names be put on the top or bottom of the heatmap
+# -show_colnames whether show column names
+# -colnames_gp graphic parameters for drawing text
+# -annotation column annotation. The value should be a data frame for which rownames correspond to
+#             column names of the matrix and columns correspond to different annotations
+# -annotation_color colors for the annotations. The value is a list in which each element corresponds
+#             to each annotation and the value for each element is a vector or a color mapping function
+#             which depends on the annotation is discrete or continuous.
+# -annotation_side should the annotaitons be put on the top or bottom of the heatmap
+# -annotation_height height of the annotations, should be a `grid::unit` object
+# -annotation_gp graphic parameters for drawing rectangles
+#
+# == details
+# Following methods can be applied on the `Heatmap` object:
+#
+# - `draw,Heatmap-method`: draw a single heatmap
+# - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps
 #
 # == value
-# a `Heatmap` object
+# A `Heatmap` object
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -119,16 +172,22 @@ default_col = function(x, main_matrix = FALSE) {
 setMethod(f = "initialize",
     signature = "Heatmap",
     definition = function(.Object, matrix, col, name, rect_gp = gpar(col = NA),
-    row_title = character(0), row_title_side = c("left", "right"), row_title_gp = gpar(fontsize = 14),
-    column_title = character(0), column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
-    cluster_rows = TRUE, clustering_distance_rows = "euclidean", clustering_method_rows = "complete",
-    row_hclust_side = c("left", "right"), row_hclust_width = unit(10, "mm"), show_row_hclust = TRUE, row_hclust_gp = gpar(),
-    cluster_columns = TRUE, clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
-    column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"), show_column_hclust = TRUE, column_hclust_gp = gpar(),
-    rownames_side = c("right", "left"), show_rownames = TRUE, rownames_gp = gpar(fontsize = 12), 
-    colnames_side = c("bottom", "top"), show_colnames = TRUE, colnames_gp = gpar(fontsize = 12),
+    row_title = character(0), row_title_side = c("left", "right"), 
+    row_title_gp = gpar(fontsize = 14), column_title = character(0), 
+    column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
+    cluster_rows = TRUE, clustering_distance_rows = "euclidean", 
+    clustering_method_rows = "complete", row_hclust_side = c("left", "right"), 
+    row_hclust_width = unit(10, "mm"), show_row_hclust = TRUE, 
+    row_hclust_gp = gpar(), cluster_columns = TRUE, 
+    clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
+    column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"), 
+    show_column_hclust = TRUE, column_hclust_gp = gpar(), 
+    rownames_side = c("right", "left"), show_rownames = TRUE, 
+    rownames_gp = gpar(fontsize = 12), colnames_side = c("bottom", "top"), 
+    show_colnames = TRUE, colnames_gp = gpar(fontsize = 12),
     annotation = NULL, annotation_color = NULL, annotation_side = c("top", "bottom"),
-    annotation_height = if(is.null(annotation)) unit(0, "null") else ncol(annotation)*unit(4, "mm"), annotation_gp = gpar(col = NA)
+    annotation_height = if(is.null(annotation)) unit(0, "null") else ncol(annotation)*unit(4, "mm"), 
+    annotation_gp = gpar(col = NA)
     ) {
 
     .Object@gp_list = list(rect_gp = rect_gp,

@@ -1,12 +1,12 @@
 \name{color_mapping_legend-ColorMapping-method}
 \alias{color_mapping_legend,ColorMapping-method}
 \title{
-generate legend based on color mapping  
+Draw legend based on color mapping  
 
 
 }
 \description{
-generate legend based on color mapping  
+Draw legend based on color mapping  
 
 
 }
@@ -19,7 +19,7 @@ generate legend based on color mapping
 
   \item{object}{a \code{\link{ColorMapping}} object}
   \item{...}{pass to \code{\link[grid]{viewport}}}
-  \item{plot}{whether to plot or just return the size of the legend grob}
+  \item{plot}{whether to plot or just return the size of the legend viewport}
   \item{legend_grid_height}{height of each legend grid}
   \item{legend_grid_width}{width of each legend grid}
   \item{legend_title_gp}{graphic parameter for legend title}
@@ -27,7 +27,7 @@ generate legend based on color mapping
 
 }
 \details{
-This function adds legend to the plot, or just returns the size of the legend.  
+A viewport is created which contains a legend title, legend grids and corresponding labels.  
 
 
 }
