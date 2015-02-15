@@ -22,7 +22,7 @@ if(!isGeneric('@{f}')) {
 
 set_generic_functions(c(
 	"map", 
-	"legend",
+	"color_mapping_legend",
 
 	"add_heatmap",
 	"draw_heatmap_body",

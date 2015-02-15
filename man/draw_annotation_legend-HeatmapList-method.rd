@@ -19,3 +19,4 @@ draw annotation legend
   \item{side}{side}
 
 }
+\alias{draw_annotation_legend}

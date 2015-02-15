@@ -19,3 +19,4 @@ plot list of heatmaps
   \item{hgap}{gap}
 
 }
+\alias{draw_heatmap_list}

@@ -46,3 +46,4 @@ a \code{\link{HeatmapList}} object
 
 
 }
+\alias{make_layout}

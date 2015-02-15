@@ -543,7 +543,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
         current_y = vp_height
         for(i in seq_len(n)) {
             cm = ColorMappingList[[i]]
-            size = legend(cm, plot = FALSE)
+            size = color_mapping_legend(cm, plot = FALSE)
             # if this legend is too long that it exceed the bottom of the plotting region
             # it also works for the first legend if it is too long
             #if(compare_unit(current_y - size[2], unit(0, "npc")) < 0) {
@@ -553,7 +553,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
                 current_x = current_width
                 current_width = current_x + size[1]
 
-                if(plot) legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
+                if(plot) color_mapping_legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
                 current_y = current_y - size[2] # move to the bottom
             } else {
                 # if this legend is wider
@@ -561,7 +561,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
                     current_width = current_x + size[1]
                 }
 
-                if(plot) legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
+                if(plot) color_mapping_legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
                 current_y = current_y - size[2] - gap # move to the bottom
             }
         }
@@ -582,7 +582,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
         current_y = vp_height
         for(i in seq_len(n)) {
             cm = ColorMappingList[[i]]
-            size = legend(cm, plot = FALSE)
+            size = color_mapping_legend(cm, plot = FALSE)
             
             # if adding the legend exceeding ...
             #if(compare_unit(current_x + size[1], vp_width) > 0) {
@@ -592,7 +592,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
                 current_x = unit(0, "npc")
                 current_height = current_y - size[2]
 
-                if(plot) legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
+                if(plot) color_mapping_legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
                 current_x = current_x + size[1]
             } else {
                 # if height of this legend is larger
@@ -600,7 +600,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
                     current_height = current_y - size[2]
                 }
 
-                if(plot) legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
+                if(plot) color_mapping_legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
                 current_x = current_x + size[1] + gap
             }
         }

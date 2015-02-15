@@ -73,6 +73,7 @@ default_col = function(x, main_matrix = FALSE) {
 # constructor of `Heatmap` class
 #
 # == param
+# -.Object object
 # -matrix matrix
 # -col color
 # -name name
@@ -91,8 +92,8 @@ default_col = function(x, main_matrix = FALSE) {
 # -show_row_hclust foo
 # -row_hclust_gp foo
 # -cluster_columns foo
-# -column_hclust_height foo
-# -show_column_hclust foo
+# -clustering_distance_columns foo
+# -clustering_method_columns foo
 # -column_hclust_side foo
 # -column_hclust_height foo
 # -show_column_hclust foo

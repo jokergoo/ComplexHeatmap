@@ -16,6 +16,7 @@ initialize
 }
 \arguments{
 
+  \item{.Object}{object}
   \item{name}{name}
   \item{colors}{colors}
   \item{levels}{levels}

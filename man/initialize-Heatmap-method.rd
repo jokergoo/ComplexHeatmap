@@ -25,6 +25,7 @@ constructor of \code{\link{Heatmap}} class
 }
 \arguments{
 
+  \item{.Object}{object}
   \item{matrix}{matrix}
   \item{col}{color}
   \item{name}{name}
@@ -43,8 +44,8 @@ constructor of \code{\link{Heatmap}} class
   \item{show_row_hclust}{foo}
   \item{row_hclust_gp}{foo}
   \item{cluster_columns}{foo}
-  \item{column_hclust_height}{foo}
-  \item{show_column_hclust}{foo}
+  \item{clustering_distance_columns}{foo}
+  \item{clustering_method_columns}{foo}
   \item{column_hclust_side}{foo}
   \item{column_hclust_height}{foo}
   \item{show_column_hclust}{foo}

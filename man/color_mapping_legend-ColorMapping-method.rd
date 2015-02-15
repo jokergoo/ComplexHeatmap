@@ -1,5 +1,5 @@
-\name{legend-ColorMapping-method}
-\alias{legend,ColorMapping-method}
+\name{color_mapping_legend-ColorMapping-method}
+\alias{color_mapping_legend,ColorMapping-method}
 \title{
 generate legend based on color mapping  
 
@@ -11,7 +11,7 @@ generate legend based on color mapping
 
 }
 \usage{
-\S4method{legend}{ColorMapping}(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
+\S4method{color_mapping_legend}{ColorMapping}(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
     legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 10),
     legend_label_gp = gpar(fontsize = 10))
 }
@@ -41,3 +41,4 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\alias{color_mapping_legend}

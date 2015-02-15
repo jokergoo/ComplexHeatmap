@@ -19,3 +19,4 @@ get heatmap legend size
   \item{side}{side}
 
 }
+\alias{heatmap_legend_size}

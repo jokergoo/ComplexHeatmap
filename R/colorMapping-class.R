@@ -41,6 +41,7 @@ ColorMapping = setClass("ColorMapping",
 # initialize
 #
 # == param
+# -.Object object
 # -name name
 # -colors colors
 # -levels levels
@@ -177,7 +178,7 @@ setMethod(f = "map",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-setMethod(f = "legend",
+setMethod(f = "color_mapping_legend",
 	signature = "ColorMapping",
 	definition = function(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
 	legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 10),

@@ -34,3 +34,4 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\alias{map}

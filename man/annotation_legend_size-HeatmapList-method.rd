@@ -22,3 +22,4 @@ get anntation legend size
   \item{vp_height}{vp_height}
 
 }
+\alias{annotation_legend_size}

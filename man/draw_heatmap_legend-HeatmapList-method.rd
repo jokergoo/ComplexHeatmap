@@ -19,3 +19,4 @@ draw heatmap legend
   \item{side}{side}
 
 }
+\alias{draw_heatmap_legend}
