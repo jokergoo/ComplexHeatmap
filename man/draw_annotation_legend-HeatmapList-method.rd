@@ -1,5 +1,6 @@
 \name{draw_annotation_legend-HeatmapList-method}
 \alias{draw_annotation_legend,HeatmapList-method}
+\alias{draw_annotation_legend}
 \title{
 draw annotation legend  
 
@@ -19,4 +20,3 @@ draw annotation legend
   \item{side}{side}
 
 }
-\alias{draw_annotation_legend}

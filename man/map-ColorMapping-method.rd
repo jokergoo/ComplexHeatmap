@@ -1,5 +1,6 @@
 \name{map-ColorMapping-method}
 \alias{map,ColorMapping-method}
+\alias{map}
 \title{
 Map values to colors  
 
@@ -15,17 +16,17 @@ Map values to colors
 }
 \arguments{
 
-  \item{object}{a \code{\link{ColorMapping}} object}
-  \item{x}{input values}
+  \item{object}{a \code{\link{ColorMapping}} object.}
+  \item{x}{input values.}
 
 }
 \details{
-It maps a vector of values to a vector of colors  
+It maps a vector of values to a vector of colors.  
 
 
 }
 \value{
-A vector of colors  
+A vector of colors.  
 
 
 }
@@ -34,4 +35,3 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
-\alias{map}

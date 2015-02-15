@@ -1,5 +1,6 @@
 \name{draw_heatmap_legend-HeatmapList-method}
 \alias{draw_heatmap_legend,HeatmapList-method}
+\alias{draw_heatmap_legend}
 \title{
 draw heatmap legend  
 
@@ -19,4 +20,3 @@ draw heatmap legend
   \item{side}{side}
 
 }
-\alias{draw_heatmap_legend}

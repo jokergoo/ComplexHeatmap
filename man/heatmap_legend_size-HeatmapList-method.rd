@@ -1,5 +1,6 @@
 \name{heatmap_legend_size-HeatmapList-method}
 \alias{heatmap_legend_size,HeatmapList-method}
+\alias{heatmap_legend_size}
 \title{
 get heatmap legend size  
 
@@ -19,4 +20,3 @@ get heatmap legend size
   \item{side}{side}
 
 }
-\alias{heatmap_legend_size}

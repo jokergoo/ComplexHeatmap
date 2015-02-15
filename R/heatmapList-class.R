@@ -29,14 +29,20 @@ HeatmapList = setClass("HeatmapList",
 )
 
 # == title
-# add heatmaps to the heatmap list
+# Add heatmaps to the heatmap list
 #
 # == param
-# -object a `HeatmapList` object
-# -ht a `Heatmap` object or a `HeatmapList` object
+# -object a `HeatmapList` object.
+# -ht a `Heatmap` object or a `HeatmapList` object.
+#
+# == details
+# There is a shortcut function ``+.HeatmapList``.
 #
 # == value
-# a `HeatmapList` object
+# A `HeatmapList` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "add_heatmap",
     signature = "HeatmapList",
@@ -81,13 +87,15 @@ setMethod(f = "add_heatmap",
 #
 setMethod(f = "make_layout",
     signature = "HeatmapList",
-    definition = function(object,
-    row_title = character(0), row_title_side = c("left", "right"), row_title_gp = gpar(fontsize = 14),
-    column_title = character(0), column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
-    heatmap_legend_side = c("right", "left", "bottom", "top"), show_heatmap_legend = TRUE,
-    annotation_legend_side = c("right", "left", "bottom", "top"), show_annotation_legend = TRUE,
-    hgap = unit(5, "mm"), vgap = unit(3, "mm"), auto_adjust = TRUE
-    ) {
+    definition = function(object, row_title = character(0), 
+    row_title_side = c("left", "right"), row_title_gp = gpar(fontsize = 14),
+    column_title = character(0), column_title_side = c("top", "bottom"), 
+    column_title_gp = gpar(fontsize = 14), 
+    heatmap_legend_side = c("right", "left", "bottom", "top"), 
+    show_heatmap_legend = TRUE,
+    annotation_legend_side = c("right", "left", "bottom", "top"), 
+    show_annotation_legend = TRUE,
+    hgap = unit(5, "mm"), vgap = unit(3, "mm"), auto_adjust = TRUE) {
 
     if(auto_adjust) {
     	n = length(object@ht_list)
@@ -228,12 +236,18 @@ setMethod(f = "make_layout",
 })
 
 # == title
-# draw a list of heatmaps
+# Draw a list of heatmaps
 #
 # == param
 # -object a `HeatmapList` object
 # -... pass to `make_layout,HeatmapList-method`
 # -newpage whether to create a new page
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "draw",
     signature = "HeatmapList",
@@ -626,14 +640,17 @@ setMethod(f = "show",
 })
 
 # == title
-# add heatmaps to the list
+# Add heatmaps to the list
 #
 # == param
-# -ht1 a `HeatmapList` object
-# -ht2 a `Heatmap` object or a `HeatmapList` object
+# -ht1 a `HeatmapList` object.
+# -ht2 a `Heatmap` object or a `HeatmapList` object.
 #
 # == value
-# a `HeatmapList` object
+# A `HeatmapList` object
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 "+.HeatmapList" = function(ht1, ht2) {
     if(inherits(ht2, "Heatmap") || inherits(ht2, "HeatmapList")) {

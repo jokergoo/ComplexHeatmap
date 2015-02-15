@@ -1,12 +1,12 @@
 \name{add_heatmap-Heatmap-method}
 \alias{add_heatmap,Heatmap-method}
 \title{
-add two heatmaps as a heatmap list  
+Add two heatmaps as a heatmap list  
 
 
 }
 \description{
-add two heatmaps as a heatmap list  
+Add two heatmaps as a heatmap list  
 
 
 }
@@ -15,12 +15,17 @@ add two heatmaps as a heatmap list
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object}
-  \item{ht}{a \code{\link{Heatmap}} object}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{ht}{a \code{\link{Heatmap}} object.}
+
+}
+\details{
+There is a shortcut function \code{\link{+.Heatmap}}.  
+
 
 }
 \value{
-a \code{\link{HeatmapList}} object  
+A \code{\link{HeatmapList}} object.  
 
 
 }

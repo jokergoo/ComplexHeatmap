@@ -1,12 +1,13 @@
 \name{draw_heatmap_body-Heatmap-method}
 \alias{draw_heatmap_body,Heatmap-method}
+\alias{draw_heatmap_body}
 \title{
-plot the heatmap body  
+Draw the heatmap body  
 
 
 }
 \description{
-plot the heatmap body  
+Draw the heatmap body  
 
 
 }
@@ -15,17 +16,17 @@ plot the heatmap body
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object}
-  \item{gp}{graphic parameters for drawing rectangles}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{gp}{graphic parameters for drawing rectangles.}
 
 }
 \details{
-the heatmap body 100% covers the viewport  
+A viewport is created which contains grids.  
 
 
 }
 \value{
-this function returns no value  
+This function returns no value.  
 
 
 }
@@ -34,4 +35,3 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
-\alias{draw_heatmap_body}

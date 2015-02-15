@@ -1,5 +1,6 @@
 \name{make_layout-HeatmapList-method}
 \alias{make_layout,HeatmapList-method}
+\alias{make_layout}
 \title{
 make layout  
 
@@ -46,4 +47,3 @@ a \code{\link{HeatmapList}} object
 
 
 }
-\alias{make_layout}

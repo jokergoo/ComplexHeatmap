@@ -1,12 +1,13 @@
 \name{draw_dimnames-Heatmap-method}
 \alias{draw_dimnames,Heatmap-method}
+\alias{draw_dimnames}
 \title{
-plot row names or column names  
+Draw row names or column names  
 
 
 }
 \description{
-plot row names or column names  
+Draw row names or column names  
 
 
 }
@@ -16,14 +17,19 @@ plot row names or column names
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object}
-  \item{which}{draw row names or column names}
-  \item{side}{side of dimension names}
-  \item{gp}{graphc parameters for drawing text}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{which}{draw row names or column names.}
+  \item{side}{side of dimension names.}
+  \item{gp}{graphc parameters for drawing text.}
+
+}
+\details{
+A viewport is created which contains row names or column names.  
+
 
 }
 \value{
-this function returns no value  
+This function returns no value.  
 
 
 }
@@ -32,4 +38,3 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
-\alias{draw_dimnames}

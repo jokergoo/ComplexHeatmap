@@ -1,12 +1,13 @@
 \name{draw_hclust-Heatmap-method}
 \alias{draw_hclust,Heatmap-method}
+\alias{draw_hclust}
 \title{
-plot the dendrogram on rows or columns  
+Draw dendrogram on row or column  
 
 
 }
 \description{
-plot the dendrogram on rows or columns  
+Draw dendrogram on row or column  
 
 
 }
@@ -16,19 +17,19 @@ plot the dendrogram on rows or columns
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object}
-  \item{which}{the dendrogram should be plotted on rows or columns}
-  \item{side}{side of the dendrogram}
-  \item{gp}{graphic parameters for drawing lines}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{which}{should the dendrogram be drawn on row or column.}
+  \item{side}{side of the dendrogram.}
+  \item{gp}{graphic parameters for drawing lines.}
 
 }
 \details{
-the dendrogram 100% covers the viewport  
+A viewport is created which contains dendrogram.  
 
 
 }
 \value{
-this function returns no value  
+This function returns no value.  
 
 
 }
@@ -37,4 +38,3 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
-\alias{draw_hclust}

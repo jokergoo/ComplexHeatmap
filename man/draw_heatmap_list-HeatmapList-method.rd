@@ -1,5 +1,6 @@
 \name{draw_heatmap_list-HeatmapList-method}
 \alias{draw_heatmap_list,HeatmapList-method}
+\alias{draw_heatmap_list}
 \title{
 plot list of heatmaps  
 
@@ -19,4 +20,3 @@ plot list of heatmaps
   \item{hgap}{gap}
 
 }
-\alias{draw_heatmap_list}

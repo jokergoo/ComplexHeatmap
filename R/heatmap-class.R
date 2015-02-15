@@ -26,25 +26,25 @@
 #
 # From top to bottom in column 4, the regions are:
 #
-# - title put on column, graphics are drawn by `draw_title,Heatmap-method`
-# - column cluster, graphics are drawn by `draw_hclust,Heatmap-method`
-# - column annotation, graphics are drawn by `draw_annotation,Heatmap-method`
-# - column names, graphics are drawn by `draw_dimnames,Heatmap-method`
-# - heatmap body, graphics are drawn by `draw_heatmap_body,Heatmap-method`
-# - column names, graphics are drawn by `draw_dimnames,Heatmap-method`
-# - column annotation, graphics are drawn by `draw_annotation,Heatmap-method`
-# - column cluster, graphics are drawn by `draw_hclust,Heatmap-method`
-# - title put on column, graphics are drawn by `draw_title,Heatmap-method`
+# - title put on column, graphics are drawn by `draw_title,Heatmap-method`.
+# - column cluster, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - column annotation, graphics are drawn by `draw_annotation,Heatmap-method`.
+# - column names, graphics are drawn by `draw_dimnames,Heatmap-method`.
+# - heatmap body, graphics are drawn by `draw_heatmap_body,Heatmap-method`.
+# - column names, graphics are drawn by `draw_dimnames,Heatmap-method`.
+# - column annotation, graphics are drawn by `draw_annotation,Heatmap-method`.
+# - column cluster, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - title put on column, graphics are drawn by `draw_title,Heatmap-method`.
 # 
 # From left to right in row 5, the regions are:
 #
-# - title put on row, graphics are drawn by `draw_title,Heatmap-method`
-# - row cluster, graphics are drawn by `draw_hclust,Heatmap-method`
-# - row names, graphics are drawn by `draw_dimnames,Heatmap-method`
+# - title put on row, graphics are drawn by `draw_title,Heatmap-method`.
+# - row cluster, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - row names, graphics are drawn by `draw_dimnames,Heatmap-method`.
 # - heatmap body
-# - row names, graphics are drawn by `draw_dimnames,Heatmap-method`
-# - row cluster, graphics are drawn by `draw_hclust,Heatmap-method`
-# - title put on row, graphics are drawn by `draw_title,Heatmap-method`
+# - row names, graphics are drawn by `draw_dimnames,Heatmap-method`.
+# - row cluster, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - title put on row, graphics are drawn by `draw_title,Heatmap-method`.
 #
 # The `Heatmap` class is not resposible for heatmap legend. The `draw,Heatmap-method` method
 # will construct a `HeatmapList` class which only contains one single heatmap
@@ -53,9 +53,9 @@
 # == methods
 # The `Heatmap` class provides following methods:
 #
-# - `initialize,Heatmap-method`: contructor method
-# - `draw,Heatmap-method`: draw a single heatmap
-# - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps
+# - `initialize,Heatmap-method`: contructor method.
+# - `draw,Heatmap-method`: draw a single heatmap.
+# - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -109,20 +109,20 @@ default_col = function(x, main_matrix = FALSE) {
 # Constructor method of Heatmap class
 #
 # == param
-# -.Object private object
+# -.Object private object.
 # -matrix matrix. Either numeric or character. If it is a simple vector, it will be
-#         converted to a one-column matrix
+#         converted to a one-column matrix.
 # -col a vector of colors if the matrix is character or a color mapping 
-#      function if the matrix is numeric. Pass to `initialize,ColorMapping-method`
-# -name name of the heatmap
-# -rect_gp graphic parameters for drawing rectangles (for heatmap body)
-# -row_title title on row
-# -row_title_side will the title be put on the left or right of the heatmap
-# -row_title_gp graphic parameters for drawing text
-# -column_title title on column
-# -column_title_side will the title be put on the top or bottom of the heatmap
-# -column_title_gp graphic parameters for drawing text
-# -cluster_rows whether make cluster on rows
+#      function if the matrix is numeric. Pass to `initialize,ColorMapping-method`.
+# -name name of the heatmap.
+# -rect_gp graphic parameters for drawing rectangles (for heatmap body).
+# -row_title title on row.
+# -row_title_side will the title be put on the left or right of the heatmap.
+# -row_title_gp graphic parameters for drawing text.
+# -column_title title on column.
+# -column_title_side will the title be put on the top or bottom of the heatmap.
+# -column_title_gp graphic parameters for drawing text.
+# -cluster_rows whether make cluster on rows.
 # -clustering_distance_rows it can be a pre-defined character which is in 
 #                ("euclidean", "maximum", "manhattan", "canberra", "binary", 
 #                "minkowski", "pearson", "spearman", "kendall"). It can also be a function.
@@ -130,38 +130,38 @@ default_col = function(x, main_matrix = FALSE) {
 #                the returned value should be a `stats::dist` object. If the function has two arguments,
 #                the input arguments are two vectors and the function calcualtes distance between these
 #                two vectors.
-# -clustering_method_rows method to make cluster, pass to `stats::hclust`
-# -row_hclust_side should the row cluster be put on the left or right of the heatmap
-# -row_hclust_width width of the row cluster, should be a `grid::unit` object
-# -show_row_hclust whether show row clusters
-# -row_hclust_gp graphics parameters for drawing lines
-# -cluster_columns whether make cluster on columns
-# -clustering_distance_columns same setting as ``clustering_distance_rows``
-# -clustering_method_columns method to make cluster, pass to `stats::hclust`
-# -column_hclust_side should the column cluster be put on the top or bottom of the heatmap
-# -column_hclust_height height of the column cluster, should be a `grid::unit` object
-# -show_column_hclust whether show column clusters
-# -column_hclust_gp graphic parameters for drawling lines
-# -rownames_side should the row names be put on the left or right of the heatmap
-# -show_rownames whether show row names
-# -rownames_gp graphic parameters for drawing text
-# -colnames_side should the column names be put on the top or bottom of the heatmap
-# -show_colnames whether show column names
-# -colnames_gp graphic parameters for drawing text
+# -clustering_method_rows method to make cluster, pass to `stats::hclust`.
+# -row_hclust_side should the row cluster be put on the left or right of the heatmap.
+# -row_hclust_width width of the row cluster, should be a `grid::unit` object.
+# -show_row_hclust whether show row clusters.
+# -row_hclust_gp graphics parameters for drawing lines.
+# -cluster_columns whether make cluster on columns.
+# -clustering_distance_columns same setting as ``clustering_distance_rows``.
+# -clustering_method_columns method to make cluster, pass to `stats::hclust`.
+# -column_hclust_side should the column cluster be put on the top or bottom of the heatmap.
+# -column_hclust_height height of the column cluster, should be a `grid::unit` object.
+# -show_column_hclust whether show column clusters.
+# -column_hclust_gp graphic parameters for drawling lines.
+# -rownames_side should the row names be put on the left or right of the heatmap.
+# -show_rownames whether show row names.
+# -rownames_gp graphic parameters for drawing text.
+# -colnames_side should the column names be put on the top or bottom of the heatmap.
+# -show_colnames whether show column names.
+# -colnames_gp graphic parameters for drawing text.
 # -annotation column annotation. The value should be a data frame for which rownames correspond to
-#             column names of the matrix and columns correspond to different annotations
+#             column names of the matrix and columns correspond to different annotations.
 # -annotation_color colors for the annotations. The value is a list in which each element corresponds
 #             to each annotation and the value for each element is a vector or a color mapping function
 #             which depends on the annotation is discrete or continuous.
-# -annotation_side should the annotaitons be put on the top or bottom of the heatmap
-# -annotation_height height of the annotations, should be a `grid::unit` object
-# -annotation_gp graphic parameters for drawing rectangles
+# -annotation_side should the annotaitons be put on the top or bottom of the heatmap.
+# -annotation_height height of the annotations, should be a `grid::unit` object.
+# -annotation_gp graphic parameters for drawing rectangles.
 #
 # == details
 # Following methods can be applied on the `Heatmap` object:
 #
-# - `draw,Heatmap-method`: draw a single heatmap
-# - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps
+# - `draw,Heatmap-method`: draw a single heatmap.
+# - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps.
 #
 # == value
 # A `Heatmap` object
@@ -490,14 +490,17 @@ setMethod(f = "show",
 })
 
 # == title
-# add two heatmaps as a heatmap list
+# Add two heatmaps as a heatmap list
 #
 # == param
-# -object a `Heatmap` object
-# -ht a `Heatmap` object
+# -object a `Heatmap` object.
+# -ht a `Heatmap` object or a `HeatmapList` object.
+#
+# == details
+# There is a shortcut function ``+.Heatmap``.
 #
 # == value
-# a `HeatmapList` object
+# A `HeatmapList` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -514,17 +517,17 @@ setMethod(f = "add_heatmap",
 })
 
 # == title
-# plot the heatmap body
+# Draw the heatmap body
 #
 # == param
-# -object a `Heatmap` object
-# -gp graphic parameters for drawing rectangles
+# -object a `Heatmap` object.
+# -gp graphic parameters for drawing rectangles.
 #
 # == details
-# the heatmap body 100% covers the viewport
+# A viewport is created which contains grids.
 #
 # == value
-# this function returns no value
+# This function returns no value.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -547,19 +550,19 @@ setMethod(f = "draw_heatmap_body",
 })
 
 # == title
-# plot the dendrogram on rows or columns
+# Draw dendrogram on row or column
 #
 # == param
-# -object a `Heatmap` object
-# -which the dendrogram should be plotted on rows or columns
-# -side side of the dendrogram
-# -gp graphic parameters for drawing lines
+# -object a `Heatmap` object.
+# -which should the dendrogram be drawn on row or column.
+# -side side of the dendrogram.
+# -gp graphic parameters for drawing lines.
 #
 # == details
-# the dendrogram 100% covers the viewport
+# A viewport is created which contains dendrogram.
 #
 # == value
-# this function returns no value
+# This function returns no value.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -650,16 +653,19 @@ setMethod(f = "draw_hclust",
 })
 
 # == title
-# plot row names or column names
+# Draw row names or column names
 #
 # == param
-# -object a `Heatmap` object
-# -which draw row names or column names
-# -side side of dimension names
-# -gp graphc parameters for drawing text
+# -object a `Heatmap` object.
+# -which draw row names or column names.
+# -side side of dimension names.
+# -gp graphc parameters for drawing text.
+#
+# == details
+# A viewport is created which contains row names or column names.
 #
 # == value
-# this function returns no value
+# This function returns no value.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -724,17 +730,20 @@ setMethod(f = "draw_dimnames",
 })
 
 # == title
-# plot heatmap title
+# Draw heatmap title
 #
 # == param
-# -object a `Heatmap` object
-# -title title
-# -which the title should be plotted on rows or columns
-# -side side of heatmap title
-# -gp graphic paramter for drawing text
+# -object a `Heatmap` object.
+# -title title.
+# -which the title should be plotted on rows or columns.
+# -side side of heatmap title.
+# -gp graphic paramter for drawing text.
+#
+# == details
+# A viewport is created which contains heatmap title.
 #
 # == value
-# this function returns no value
+# This function returns no value.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -777,14 +786,17 @@ setMethod(f = "draw_title",
 })
 
 # == title
-# draw column annotations
+# Draw column annotations
 #
 # == param
-# -object a `Heatmap` object
-# -gp graphic parameters for drawing rectangles
+# -object a `Heatmap` object.
+# -gp graphic parameters for drawing rectangles.
+#
+# == details
+# A viewport is created which contains column annotations.
 #
 # == value
-# this function returns no value
+# This function returns no value.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -813,14 +825,14 @@ setMethod(f = "draw_annotation",
 })
 
 # == title
-# width of each heatmap component
+# Width of each heatmap component
 #
 # == param
-# -object a `Heatmap` object
-# -k which components
+# -object a `Heatmap` object.
+# -k which components, see `Heatmap-class`.
 #
 # == value
-# a `grid::unit` object
+# A `grid::unit` object
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -853,14 +865,14 @@ setMethod(f = "component_width",
 })
 
 # == title
-# height of each heatmap component
+# Height of each heatmap component
 #
 # == param
-# -object a `Heatmap` object
-# -k which components
+# -object a `Heatmap` object.
+# -k which components, see `Heatmap-class`.
 #
 # == value
-# a `grid::unit` object
+# A `grid::unit` object
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -896,6 +908,20 @@ setMethod(f = "component_height",
     do.call("unit.c", lapply(k, function(i) .single_unit(i)))
 })
 
+# == title
+# Set height of each heatmap component
+#
+# == param
+# -object a `Heatmap` object.
+# -k which components, see `Heatmap-class`.
+# -v height of the component, a `grid::unit` object.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "set_component_height",
     signature = "Heatmap",
     definition = function(object, k, v) {
@@ -922,12 +948,22 @@ setMethod(f = "set_component_height",
 })
 
 # == title
-# draw heatmap
+# Draw a single heatmap
 #
 # == param
-# -object a `Heatmap` object
-# -internal internal use
-# -... pass to `HeatmapList`
+# -object a `Heatmap` object.
+# -internal only for internal use.
+# -... pass to `HeatmapList`.
+#
+# == detail
+# The function creates a `HeatmapList` object, add a single heatmap
+# and call `draw,HeatmapList-method` to make the final heatmap.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "draw",
     signature = "Heatmap",
@@ -956,14 +992,14 @@ setMethod(f = "draw",
 })
 
 # == title
-# combine two heatmaps as a heatmap list
+# Add two heatmaps as a heatmap list
 #
 # == param
-# -ht1 a `Heatmap` object
-# -ht2 a `Heatmap` object
+# -ht1 a `Heatmap` object.
+# -ht2 a `Heatmap` object or a `HeatmapList` object.
 #
 # == value
-# a `HeatmapList` object
+# a `HeatmapList` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -974,18 +1010,15 @@ setMethod(f = "draw",
 
 
 # == title
-# calculate distance from a matrix
+# Calculate distance from a matrix
 #
 # == param
-# -mat a matrix
-# -pairwise_fun a function which calculates distance between two vectors
-# -... pass to `stats::dist`
-#
-# == detail
-# self-define distance metric
+# -mat a matrix. The distance is calculated by rows.
+# -pairwise_fun a function which calculates distance between two vectors.
+# -... pass to `stats::dist`.
 #
 # == value
-# a `stats::dist` object
+# A `stats::dist` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
