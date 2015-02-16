@@ -286,13 +286,13 @@ setMethod(f = "make_layout",
 #
 setMethod(f = "draw",
     signature = "HeatmapList",
-    definition = function(object, ..., newpage = TRUE) {
-
-    object = make_layout(object, ...)
-
+    definition = function(object, ..., newpage= TRUE) {
+    
     if(newpage) {
         grid.newpage()
     }
+    
+    object = make_layout(object, ...)
 
     layout = grid.layout(nrow = 7, ncol = 7, widths = component_width(object, 1:7), heights = component_height(object, 1:7))
     pushViewport(viewport(layout = layout, name = "global"))
