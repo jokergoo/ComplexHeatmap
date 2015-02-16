@@ -67,6 +67,8 @@ Heatmap = setClass("Heatmap",
         row_hclust = "ANY",
         column_hclust = "ANY",
         column_anno = "ANY", # annotation data frame, order of columns are same as matrix
+        column_anno_type = "character",
+        column_anno_height = "numeric",
         column_anno_color_mapping = "list", # a list of ColorMapping objects
         matrix_color_mapping = "ANY",
 
@@ -288,6 +290,9 @@ setMethod(f = "initialize",
     } else {
         stop("`annotation` should be a data frame.")
     }
+
+    .Object@column_anno_type = rep("heatmap", ncols(annotation))
+    .Object@column_hclust_height = rep(1, ncols(annotation))
 
     # settings for positin of each component
     .Object@layout = as.environment(list(
@@ -803,7 +808,7 @@ setMethod(f = "draw_title",
 #
 setMethod(f = "draw_annotation",
     signature = "Heatmap",
-    definition = function(object, gp = object@gp_list$colnames_annotation_gp) {
+    definition = function(object, type, height, gp = object@gp_list$colnames_annotation_gp) {
     
     # if there is no annotation, draw nothing
     if(is.null(object@column_anno)) {
@@ -814,12 +819,72 @@ setMethod(f = "draw_annotation",
     nc = nrow(object@column_anno)  # number of columns which correspond to the matrix
     pushViewport(viewport(name = paste(object@name, "annotation", sep = "-")))
     
+    if(missing(type)) {
+        type = rep("heatmap", n)
+    }
+    if(missing(height)) {
+        height = rep(1, n)
+    }
+    height = height / sum(height)
+
     for(i in seq_len(n)) {
+        x = unit(0, "npc")
+        y = unit(1, "npc")*sum(height(seq_len(i))
+        pushViewport(viewport(x = x, y = y, just = c("left", "top"))) 
+
         x = (seq_len(nc) - 0.5) / nc
-        y = (n - i + 0.5) / n
-        cm = object@column_anno_color_mapping[[i]]
-        fill = map(cm, object@column_anno[[i]])
-        grid.rect(x, y, width = 1/nc, height = 1/n, gp = do.call("gpar", c(list(fill = fill), gp)))
+        if(type[i] %in% "heatmap") {
+            cm = object@column_anno_color_mapping[[i]]
+            fill = map(cm, object@column_anno[[i]])
+            grid.rect(x, y = 0.5, width = 1/nc, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+        }
+        if(type[i] %in% c("p", "point")) {
+            y = object@column_anno[[i]]
+            if(length(unique(y)) == 1) {
+                grid.points(x, 0.5, default.units = "npc", gp = gp)
+            } else {
+                # normalize to [0, 1]
+                y = (y - mean(y))*0.9  # zoom
+                y = (y - min(y)) / (max(y) - min(y))
+                grid.points(x, y, default.units = "npc", gp = gp)
+            }
+        }
+        if(type[i] %in% c("l", "line")) {
+            y = object@column_anno[[i]]
+            if(length(unique(y)) == 1) {
+                grid.lines(x, 0.5, default.units = "npc", gp = gp)
+            } else {
+                # normalize to [0, 1]
+                y = (y - mean(y))*0.9  # zoom
+                y = (y - min(y)) / (max(y) - min(y))
+                grid.lines(x, y, default.units = "npc", gp = gp)
+            }   
+        }
+        if(type[i] %in% c("bar", "histogram")) {
+            y = object@column_anno[[i]]
+            if(length(unique(y)) == 1) {
+                grid.rect(x, 0.5, width = 1/nc, default.units = "npc", gp = gp)
+            } else {
+                # normalize to [0, 1]
+                y = (y - mean(y))*0.9  # zoom
+                y = (y - min(y)) / (max(y) - min(y))
+                grid.rect(x, y = 0, width = 1/nc, height = y, default.units = "npc", just = c("center", "bottom"), gp = gp)
+            }   
+        }
+        if(type[i] %in% c("boxplot")) {
+            boxplot_stats = apply(object@matrix, 2, function(x) boxplot.stats(x)$stats)
+            boxplot_stats = (boxplot_stats - min(boxplot_stats)) / (max(boxplot_stats) - min(boxplot_stats))
+            grid.rect(x, boxplot_stats[2, ], width = 1/nc*0.8, height = boxplot_stats[4, ] - boxplot_stats[2, ], default.unit = "npc", just = c("center", "bottom"), gp = gp)
+            grid.points(x, boxplot_stats[3, ], pch = 16, gp = gp)
+            grid.segments(x - 1/nc*0.4, boxplot_stats[1, ],
+                          x + 1/nc*0.4, boxplot_stats[5, ])
+            grid.segments(x, boxplot_stats[1, ],
+                          x, boxplot_stats[2, ])
+            grid.segments(x, boxplot_stats[4, ],
+                          x, boxplot_stats[5, ])
+            
+        }
+        upViewport()
     }
     upViewport()
 })
