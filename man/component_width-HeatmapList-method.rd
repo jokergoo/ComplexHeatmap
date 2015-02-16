@@ -1,12 +1,12 @@
 \name{component_width-HeatmapList-method}
 \alias{component_width,HeatmapList-method}
 \title{
-width of each components  
+Width of each heatmap list component  
 
 
 }
 \description{
-width of each components  
+Width of each heatmap list component  
 
 
 }
@@ -15,7 +15,17 @@ width of each components
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
-  \item{k}{components}
+  \item{object}{a \code{\link{HeatmapList}} object.}
+  \item{k}{which components, see \code{\link{HeatmapList-class}}.}
+
+}
+\value{
+A \code{\link[grid]{unit}} object  
+
+
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>  
+
 
 }

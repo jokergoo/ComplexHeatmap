@@ -3,6 +3,7 @@
 # class for a list of heatmaps
 #
 # == details
+# The components for the heamtap list are placed into a 7 x 7 layout:
 #
 #          +------+
 #          +------+
@@ -14,6 +15,37 @@
 #          +------+
 #          +------+
 # 
+# From top to bottom in column 4, the regions are:
+#
+# - annotation legend on the top, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
+# - heatmap legend on the top, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
+# - title for the heatmap list which are put on the top, graphics are drawn by `draw_title,HeatmapList-method`.
+# - the heatmap list
+# - title for the heatmap list which are put on the bottom, graphics are drawn by `draw_title,HeatmapList-method`.
+# - heatmap legend on the bottom, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
+# - annotation legend on the bottom, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
+# 
+# From left to right in row 4, the regions are:
+#
+# - annotation legend on the left, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
+# - heatmap legend on the left, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
+# - title for the heatmap list which are put on the left, graphics are drawn by `draw_title,HeatmapList-method`.
+# - the heatmap list
+# - title for the heatmap list which are put on the right, graphics are drawn by `draw_title,HeatmapList-method`.
+# - heatmap legend on the right, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
+# - annotation legend on the right, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
+#
+# For the list of heatmaps which is placed at [5, 5] in the layout, the heatmaps are tiled one after the other.
+#
+# == methods
+# The `HeatmapList` class provides following methods:
+#
+# - `draw,HeatmapList-method`: draw a single heatmap.
+# - `add_heatmap,HeatmapList-method` add heatmaps to the list of heatmaps.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 HeatmapList = setClass("HeatmapList",
     slots = list(
         "ht_list" = "list",
@@ -61,29 +93,32 @@ setMethod(f = "add_heatmap",
 })
 
 # == title
-# make layout
+# Make layout for the complete plot
 #
 # == param
-# -object a `HeatmapList` object
-# -row_title title on the row
-# -row_title_side side of the row title
-# -row_title_gp graphic parameters for drawing text
-# -column_title title on the column
-# -column_title_side side of the column title
-# -column_title_gp graphic parameters for drawing text
-# -heatmap_legend_side side of the heatmap legend
-# -show_heatmap_legend whether show heatmap legend
-# -annotation_legend_side side of annotation legend
-# -show_annotation_legend whether show annotation legend
-# -hgap gap between heatmaps
-# -vgap gap between heatmaps
+# -object a `HeatmapList` object.
+# -row_title title on the row.
+# -row_title_side will the title be put on the left or right of the heatmap.
+# -row_title_gp graphic parameters for drawing text.
+# -column_title title on the column.
+# -column_title_side will the title be put on the top or bottom of the heatmap.
+# -column_title_gp graphic parameters for drawing text.
+# -heatmap_legend_side side of the heatmap legend.
+# -show_heatmap_legend whether show heatmap legend.
+# -annotation_legend_side side of annotation legend.
+# -show_annotation_legend whether show annotation legend.
+# -hgap gap between heatmaps, should be a `grid::unit` object.
+# -vgap gap between heatmaps, should be a `grid::unit` object.
 # -auto_adjust auto adjust if the number of heatmap is larger than one.
 #
 # == detail
-# it makes layout
+# It arranges components of the heatmap list and adjust graphic parameters if necessary.
 #
 # == value
-# a `HeatmapList` object
+# A `HeatmapList` object in which settings for each heatmap are adjusted.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "make_layout",
     signature = "HeatmapList",
@@ -274,11 +309,17 @@ setMethod(f = "draw",
 })
 
 # == title
-# width of each components
+# Width of each heatmap list component
 #
 # == param
-# -object a `HeatmapList` object
-# -k components
+# -object a `HeatmapList` object.
+# -k which components, see `HeatmapList-class`.
+#
+# == value
+# A `grid::unit` object
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "component_width",
     signature = "HeatmapList",
@@ -308,11 +349,17 @@ setMethod(f = "component_width",
 })
 
 # == title
-# height of components
+# Height of each heatmap list component
 #
 # == param
-# -object a `HeatmapList` object
-# -k components
+# -object a `HeatmapList` object.
+# -k which components, see `HeatmapList-class`.
+#
+# == value
+# A `grid::unit` object
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "component_height",
     signature = "HeatmapList",
@@ -343,11 +390,20 @@ setMethod(f = "component_height",
 
 
 # == title
-# plot list of heatmaps
+# Draw the list of heatmaps
 #
 # == param
 # -object a `HeatmapList` object
 # -hgap gap
+#
+# == details
+# A viewport is created which contains heatmaps.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "draw_heatmap_list",
     signature = "HeatmapList",
@@ -418,14 +474,23 @@ setMethod(f = "draw_heatmap_list",
 })
 
 # == title
-# draw title
+# Draw heatmap list title
 #
 # == param
 # -object a `HeatmapList` object
 # -title title
-# -which which
-# -side side
-# -gp graphic parameters for drawing text
+# -which the title should be plotted on rows or columns.
+# -side side of heatmap title.
+# -gp graphic paramter for drawing text.
+#
+# == details
+# A viewport is created which contains heatmap list title.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "draw_title",
     signature = "HeatmapList",
@@ -465,11 +530,20 @@ setMethod(f = "draw_title",
 })
 
 # == title
-# draw heatmap legend
+# Draw legends for all heatmaps
 #
 # == param
 # -object a `HeatmapList` object
 # -side side
+#
+# == details
+# A viewport is created which contains heatmap legends.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "draw_heatmap_legend",
     signature = "HeatmapList",
@@ -482,11 +556,20 @@ setMethod(f = "draw_heatmap_legend",
 })
 
 # == title
-# draw annotation legend
+# Draw legends for all column annotations
 #
 # == param
 # -object a `HeatmapList` object
 # -side side
+#
+# == details
+# A viewport is created which contains annotation legends.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "draw_annotation_legend",
     signature = "HeatmapList",
@@ -501,11 +584,17 @@ setMethod(f = "draw_annotation_legend",
 })
 
 # == title
-# get heatmap legend size
+# Size of the heatmap legend viewprot
 #
 # == param
 # -object a `HeatmapList` object
 # -side side
+#
+# == value
+# A `grid::unit` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "heatmap_legend_size",
     signature = "HeatmapList",
@@ -518,13 +607,19 @@ setMethod(f = "heatmap_legend_size",
 })
 
 # == title
-# get anntation legend size
+# Size of the annotation legend viewport
 #
 # == param
 # -object a `HeatmapList` object
 # -side side
 # -vp_width vp_width
 # -vp_height vp_height
+#
+# == value
+# A `grid::unit` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "annotation_legend_size",
     signature = "HeatmapList",

@@ -1,13 +1,12 @@
 \name{draw_heatmap_list-HeatmapList-method}
 \alias{draw_heatmap_list,HeatmapList-method}
-\alias{draw_heatmap_list}
 \title{
-plot list of heatmaps  
+Draw the list of heatmaps  
 
 
 }
 \description{
-plot list of heatmaps  
+Draw the list of heatmaps  
 
 
 }
@@ -16,7 +15,23 @@ plot list of heatmaps
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
-  \item{hgap}{gap}
+  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{hgap}{gap}
 
 }
+\details{
+A viewport is created which contains heatmaps.  
+
+
+}
+\value{
+This function returns no value.  
+
+
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>  
+
+
+}
+\alias{draw_heatmap_list}

@@ -1,12 +1,12 @@
 \name{draw_title-Heatmap-method}
 \alias{draw_title,Heatmap-method}
 \title{
-Draw heatmap title  
+Draw heatmap title  
 
 
 }
 \description{
-Draw heatmap title  
+Draw heatmap title  
 
 
 }
@@ -16,25 +16,25 @@ Draw heatmap title
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{title}{title.}
-  \item{which}{the title should be plotted on rows or columns.}
-  \item{side}{side of heatmap title.}
-  \item{gp}{graphic paramter for drawing text.}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{title}{title.}
+  \item{which}{the title should be plotted on rows or columns.}
+  \item{side}{side of heatmap title.}
+  \item{gp}{graphic paramter for drawing text.}
 
 }
 \details{
-A viewport is created which contains heatmap title.  
+A viewport is created which contains heatmap title.  
 
 
 }
 \value{
-This function returns no value.  
+This function returns no value.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

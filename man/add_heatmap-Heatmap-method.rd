@@ -1,12 +1,12 @@
 \name{add_heatmap-Heatmap-method}
 \alias{add_heatmap,Heatmap-method}
 \title{
-Add two heatmaps as a heatmap list  
+Add two heatmaps as a heatmap list  
 
 
 }
 \description{
-Add two heatmaps as a heatmap list  
+Add two heatmaps as a heatmap list  
 
 
 }
@@ -15,22 +15,22 @@ Add two heatmaps as a heatmap list
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{ht}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{ht}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \details{
-There is a shortcut function \code{\link{+.Heatmap}}.  
+There is a shortcut function \code{+.Heatmap}.  
 
 
 }
 \value{
-A \code{\link{HeatmapList}} object.  
+A \code{\link{HeatmapList}} object.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

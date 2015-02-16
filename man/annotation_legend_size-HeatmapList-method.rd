@@ -1,13 +1,12 @@
 \name{annotation_legend_size-HeatmapList-method}
 \alias{annotation_legend_size,HeatmapList-method}
-\alias{annotation_legend_size}
 \title{
-get anntation legend size  
+Size of the annotation legend viewport  
 
 
 }
 \description{
-get anntation legend size  
+Size of the annotation legend viewport  
 
 
 }
@@ -17,9 +16,20 @@ get anntation legend size
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
-  \item{side}{side}
-  \item{vp_width}{vp_width}
-  \item{vp_height}{vp_height}
+  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{side}{side}
+  \item{vp_width}{vp_width}
+  \item{vp_height}{vp_height}
 
 }
+\value{
+A \code{\link[grid]{unit}} object.  
+
+
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>  
+
+
+}
+\alias{annotation_legend_size}
