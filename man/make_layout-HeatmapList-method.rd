@@ -1,12 +1,13 @@
 \name{make_layout-HeatmapList-method}
 \alias{make_layout,HeatmapList-method}
+\alias{make_layout}
 \title{
-Make layout for the complete plot  
+Make layout for the complete plot  
 
 
 }
 \description{
-Make layout for the complete plot  
+Make layout for the complete plot  
 
 
 }
@@ -23,35 +24,34 @@ Make layout for the complete plot
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object.}
-  \item{row_title}{title on the row.}
-  \item{row_title_side}{will the title be put on the left or right of the heatmap.}
-  \item{row_title_gp}{graphic parameters for drawing text.}
-  \item{column_title}{title on the column.}
-  \item{column_title_side}{will the title be put on the top or bottom of the heatmap.}
-  \item{column_title_gp}{graphic parameters for drawing text.}
-  \item{heatmap_legend_side}{side of the heatmap legend.}
-  \item{show_heatmap_legend}{whether show heatmap legend.}
-  \item{annotation_legend_side}{side of annotation legend.}
-  \item{show_annotation_legend}{whether show annotation legend.}
-  \item{hgap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
-  \item{vgap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
-  \item{auto_adjust}{auto adjust if the number of heatmap is larger than one.}
+  \item{object}{a \code{\link{HeatmapList}} object.}
+  \item{row_title}{title on the row.}
+  \item{row_title_side}{will the title be put on the left or right of the heatmap.}
+  \item{row_title_gp}{graphic parameters for drawing text.}
+  \item{column_title}{title on the column.}
+  \item{column_title_side}{will the title be put on the top or bottom of the heatmap.}
+  \item{column_title_gp}{graphic parameters for drawing text.}
+  \item{heatmap_legend_side}{side of the heatmap legend.}
+  \item{show_heatmap_legend}{whether show heatmap legend.}
+  \item{annotation_legend_side}{side of annotation legend.}
+  \item{show_annotation_legend}{whether show annotation legend.}
+  \item{hgap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
+  \item{vgap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
+  \item{auto_adjust}{auto adjust if the number of heatmap is larger than one.}
 
 }
 \details{
-It arranges components of the heatmap list and adjust graphic parameters if necessary.  
+It arranges components of the heatmap list and adjust graphic parameters if necessary.  
 
 
 }
 \value{
-A \code{\link{HeatmapList}} object in which settings for each heatmap are adjusted.  
+A \code{\link{HeatmapList}} object in which settings for each heatmap are adjusted.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }
-\alias{make_layout}

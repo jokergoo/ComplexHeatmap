@@ -479,7 +479,6 @@ setMethod(f = "draw_heatmap_list",
 # == param
 # -object a `HeatmapList` object
 # -title title
-# -which the title should be plotted on rows or columns.
 # -side side of heatmap title.
 # -gp graphic paramter for drawing text.
 #
@@ -494,19 +493,12 @@ setMethod(f = "draw_heatmap_list",
 #
 setMethod(f = "draw_title",
     signature = "HeatmapList",
-    definition = function(object, title, which = c("row", "column"),
-    side = ifelse(which == "row", "right", "bottom"), gp = NULL) {
+    definition = function(object, title,
+    side = c("top", "bottom", "left", "right"), gp = NULL) {
 
-    which = match.arg(which)[1]
+    side = match.arg(side)[1]
+    which = ifelse(side %in% c("top", "bottom"), "column", "row")
 
-    side = side[1]
-    if(which == "row" && side %in% c("bottom", "top")) {
-        stop("`side` can only be set to 'left' or 'right' if `which` is 'row'.")
-    }
-
-    if(which == "column" && side %in% c("left", "right")) {
-        stop("`side` can only be set to 'top' or 'bottom' if `which` is 'column'.")
-    }
 
     if(is.null(gp)) {
         gp = switch(which,

@@ -1,12 +1,12 @@
 \name{+.Heatmap}
 \alias{+.Heatmap}
 \title{
-Add two heatmaps as a heatmap list  
+Add two heatmaps as a heatmap list  
 
 
 }
 \description{
-Add two heatmaps as a heatmap list  
+Add two heatmaps as a heatmap list  
 
 
 }
@@ -15,17 +15,17 @@ Add two heatmaps as a heatmap list
 }
 \arguments{
 
-  \item{ht1}{a \code{\link{Heatmap}} object.}
-  \item{ht2}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
+  \item{ht1}{a \code{\link{Heatmap}} object.}
+  \item{ht2}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \value{
-a \code{\link{HeatmapList}} object.  
+a \code{\link{HeatmapList}} object.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }
