@@ -143,6 +143,7 @@ setMethod(f = "show",
 setMethod(f = "map",
 	signature = "ColorMapping",
 	definition = function(object, x) {
+		
 	original_attr = attributes(x)
 	if(object@type == "discrete") {
 		if(is.numeric(x)) x = as.character(x)

@@ -29,7 +29,70 @@ The \code{\link{ColorMapping}} class provides following methods:
 
 }
 \section{Methods}{
-The \code{\link{ColorMapping}} class provides following methods:  
+The \code{\link{ColorMapping}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{initialize,ColorMapping-method}}: contructor methods
+  \item \code{\link{map,ColorMapping-method}}: mapping values to colors
+  \item \code{\link{color_mapping_legend,ColorMapping-method}}: draw legend
+}
+}
+\section{Methods}{
+The \code{\link{ColorMapping}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{initialize,ColorMapping-method}}: contructor methods
+  \item \code{\link{map,ColorMapping-method}}: mapping values to colors
+  \item \code{\link{color_mapping_legend,ColorMapping-method}}: draw legend
+}
+}
+\section{Methods}{
+The \code{\link{ColorMapping}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{initialize,ColorMapping-method}}: contructor methods
+  \item \code{\link{map,ColorMapping-method}}: mapping values to colors
+  \item \code{\link{color_mapping_legend,ColorMapping-method}}: draw legend
+}
+}
+\section{Methods}{
+The \code{\link{ColorMapping}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{initialize,ColorMapping-method}}: contructor methods
+  \item \code{\link{map,ColorMapping-method}}: mapping values to colors
+  \item \code{\link{color_mapping_legend,ColorMapping-method}}: draw legend
+}
+}
+\section{Methods}{
+The \code{\link{ColorMapping}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{initialize,ColorMapping-method}}: contructor methods
+  \item \code{\link{map,ColorMapping-method}}: mapping values to colors
+  \item \code{\link{color_mapping_legend,ColorMapping-method}}: draw legend
+}
+}
+\section{Methods}{
+The \code{\link{ColorMapping}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{initialize,ColorMapping-method}}: contructor methods
+  \item \code{\link{map,ColorMapping-method}}: mapping values to colors
+  \item \code{\link{color_mapping_legend,ColorMapping-method}}: draw legend
+}
+}
+\section{Methods}{
+The \code{\link{ColorMapping}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{initialize,ColorMapping-method}}: contructor methods
+  \item \code{\link{map,ColorMapping-method}}: mapping values to colors
+  \item \code{\link{color_mapping_legend,ColorMapping-method}}: draw legend
+}
+}
+\section{Methods}{
+The \code{\link{ColorMapping}} class provides following methods:  
 
 \itemize{
   \item \code{\link{initialize,ColorMapping-method}}: contructor methods

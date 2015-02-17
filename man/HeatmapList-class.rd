@@ -66,7 +66,63 @@ The \code{\link{HeatmapList}} class provides following methods:
 
 }
 \section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
+The \code{\link{HeatmapList}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
+  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
+}
+}
+\section{Methods}{
+The \code{\link{HeatmapList}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
+  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
+}
+}
+\section{Methods}{
+The \code{\link{HeatmapList}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
+  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
+}
+}
+\section{Methods}{
+The \code{\link{HeatmapList}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
+  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
+}
+}
+\section{Methods}{
+The \code{\link{HeatmapList}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
+  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
+}
+}
+\section{Methods}{
+The \code{\link{HeatmapList}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
+  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
+}
+}
+\section{Methods}{
+The \code{\link{HeatmapList}} class provides following methods:  
+
+\itemize{
+  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
+  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
+}
+}
+\section{Methods}{
+The \code{\link{HeatmapList}} class provides following methods:  
 
 \itemize{
   \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.

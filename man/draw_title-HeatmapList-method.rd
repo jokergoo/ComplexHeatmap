@@ -11,14 +11,13 @@ Draw heatmap list title
 
 }
 \usage{
-\S4method{draw_title}{HeatmapList}(object, title, which = c("row", "column"),
-    side = ifelse(which == "row", "right", "bottom"), gp = NULL)
+\S4method{draw_title}{HeatmapList}(object, title,
+    side = c("top", "bottom", "left", "right"), gp = NULL)
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList}} object}
   \item{title}{title}
-  \item{which}{the title should be plotted on rows or columns.}
   \item{side}{side of heatmap title.}
   \item{gp}{graphic paramter for drawing text.}
 

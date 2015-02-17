@@ -12,7 +12,7 @@ Draw the heatmap body
 
 }
 \usage{
-\S4method{draw_heatmap_body}{Heatmap}(object, k = 1, gp = object@gp_list$rect_gp, ...)
+\S4method{draw_heatmap_body}{Heatmap}(object, k = 1, ...)
 }
 \arguments{
 

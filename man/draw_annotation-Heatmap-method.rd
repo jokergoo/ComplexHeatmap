@@ -12,7 +12,7 @@ Draw column annotations
 
 }
 \usage{
-\S4method{draw_annotation}{Heatmap}(object, type, height, gp = object@gp_list$colnames_annotation_gp)
+\S4method{draw_annotation}{Heatmap}(object)
 }
 \arguments{
 
