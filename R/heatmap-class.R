@@ -450,6 +450,7 @@ setMethod(f = "make_row_cluster",
     if(is.null(split)) {
         row_order_list[[1]] = row_order
     } else {
+        if(is.null(ncol(split))) split = data.frame(split)
         for(i in seq_len(ncol(split))) split[[i]] = as.character(split[[i]])
         # convert the data frame into a vector
         if(ncol(split) == 1) {
@@ -478,6 +479,7 @@ setMethod(f = "make_row_cluster",
         object@row_hclust_list = row_hclust_list
     }
     object@row_order_list = row_order_list
+    object@matrix_param$split = split
 
     return(object)
 
@@ -1192,9 +1194,7 @@ setMethod(f = "draw",
     definition = function(object, internal = FALSE, test = FALSE, ...) {
 
     if(test) {
-        if(object@row_hclust_param$cluster) object = make_row_cluster(object)
-        if(object@column_hclust_param$cluster) object = make_column_cluster(object)
-        object = make_layout(object)
+        object = prepare(object)
         grid.newpage()
         draw(object, internal = TRUE)
     } else {
@@ -1219,6 +1219,16 @@ setMethod(f = "draw",
             draw(ht_list, ...)
         }
     }
+})
+
+setMethod(f = "prepare",
+    signature = "Heatmap",
+    definition = function(object, row_order = "hclust", split = object@matrix_param$split) {
+    if(object@row_hclust_param$cluster) object = make_row_cluster(object, order = row_order, split = split)
+    if(object@column_hclust_param$cluster) object = make_column_cluster(object)
+
+    object = make_layout(object)
+    return(object)
 })
 
 # == title

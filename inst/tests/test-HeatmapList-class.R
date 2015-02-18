@@ -17,3 +17,9 @@ ht_list = ht1 + ht2
 draw(ht_list)
 draw(ht_list, heatmap_legend_side = "bottom")
 
+ht1 = Heatmap(mat, km = 2)
+ht2 = Heatmap(mat)
+
+ht_list = ht1 + ht2
+
+draw(ht_list)
