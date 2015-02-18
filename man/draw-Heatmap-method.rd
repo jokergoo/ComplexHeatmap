@@ -11,13 +11,14 @@ Draw a single heatmap
 
 }
 \usage{
-\S4method{draw}{Heatmap}(object, internal = FALSE, ...)
+\S4method{draw}{Heatmap}(object, internal = FALSE, test = FALSE, ...)
 }
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
   \item{internal}{only for internal use.}
-  \item{...}{pass to \code{\link{HeatmapList}}.}
+  \item{test}{only for testing}
+  \item{...}{pass to \code{\link{draw,HeatmapList-method}}.}
 
 }
 \details{

@@ -19,6 +19,11 @@ Add two heatmaps as a heatmap list
   \item{ht2}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
 
 }
+\details{
+It is only a shortcut function. It actually calls \code{\link{add_heatmap,Heatmap-method}}.  
+
+
+}
 \value{
 a \code{\link{HeatmapList}} object.  
 

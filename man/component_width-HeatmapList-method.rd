@@ -19,6 +19,11 @@ Width of each heatmap list component
   \item{k}{which components, see \code{\link{HeatmapList-class}}.}
 
 }
+\details{
+This function is only for internal use.  
+
+
+}
 \value{
 A \code{\link[grid]{unit}} object  
 

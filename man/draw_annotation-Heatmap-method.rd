@@ -17,11 +17,12 @@ Draw column annotations
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{gp}{graphic parameters for drawing rectangles.}
 
 }
 \details{
 A viewport is created which contains column annotations.  
+
+This function is only for internal use.  
 
 
 }

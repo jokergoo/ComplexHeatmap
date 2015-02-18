@@ -20,6 +20,11 @@ Draw a list of heatmaps
   \item{newpage}{whether to create a new page}
 
 }
+\details{
+This function is only for internal use.  
+
+
+}
 \value{
 This function returns no value.  
 

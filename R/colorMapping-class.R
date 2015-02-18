@@ -100,6 +100,18 @@ setMethod(f = "initialize",
 	return(.Object)
 })
 
+# == title
+# print ColorMapping object
+#
+# == param
+# -object a `ColorMapping` object.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "show",
 	signature = "ColorMapping",
 	definition = function(object) {
@@ -186,7 +198,7 @@ setMethod(f = "map",
 setMethod(f = "color_mapping_legend",
 	signature = "ColorMapping",
 	definition = function(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
-	legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 10),
+	legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
 	legend_label_gp = gpar(fontsize = 10)) {
 
 	# add title

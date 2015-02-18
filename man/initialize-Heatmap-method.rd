@@ -67,12 +67,21 @@ Constructor method of Heatmap class
   \item{annotation_side}{should the annotaitons be put on the top or bottom of the heatmap.}
   \item{annotation_height}{height of the annotations, should be a \code{\link[grid]{unit}} object.}
   \item{annotation_gp}{graphic parameters for drawing rectangles.}
+  \item{km}{whether do k-means clustering on rows. }
+  \item{gap}{gap between row-slice, should be \code{\link[grid]{unit}} object}
+  \item{split}{a vector or a data frame by which the rows are splitted }
+  \item{width}{the width of the single heatmap.}
 
 }
 \details{
+The initialization function only applies parameter checking. Clustering on rows can be applied by \code{\link{make_row_cluster,Heatmap-method}}; clustering on columns can be applied by \code{\link{make_column_cluster,Heatmap-method}} and layout can be constructed by \code{\link{make_layout,Heatmap-method}}. Basically, these three methods will be called when calling \code{\link{draw,Heatmap-method}} or \code{\link{draw,HeatmapList-method}}.  
+
+If \code{km} or/and \code{split} are set, the clustering inside each row slice uses \code{clustering_method_rows} and \code{clustering_method_rows} as input parameters.  
+
 Following methods can be applied on the \code{\link{Heatmap}} object:  
 
 \itemize{
+  \item \code{\link{show,Heatmap-method}}: drwa a single heatmap with default parameters
   \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
   \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
 }

@@ -4,7 +4,7 @@
 Method dispatch page for draw_title
 }
 \description{
-Method dispatch page for draw_title
+Method dispatch page for \code{draw_title}.
 }
 \section{Dispatch}{
 \code{draw_title} can be dispatched on following classes:

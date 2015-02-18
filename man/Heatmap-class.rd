@@ -70,78 +70,6 @@ The \code{\link{Heatmap}} class provides following methods:
 
 
 }
-\section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
-  \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
-  \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
-  \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
-  \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
-  \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
-  \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
-  \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
-  \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
-}
-}
 \author{
 Zuguang Gu <z.gu@dkfz.de>  
 

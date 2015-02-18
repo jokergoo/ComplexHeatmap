@@ -3,12 +3,12 @@
 \alias{HeatmapList-class}
 \alias{HeatmapList}
 \title{
-class for a list of heatmaps  
+Class for a list of heatmaps  
 
 
 }
 \description{
-class for a list of heatmaps  
+Class for a list of heatmaps  
 
 
 }
@@ -51,7 +51,7 @@ From left to right in row 4, the regions are:
   \item annotation legend on the right, graphics are drawn by \code{\link{draw_annotation_legend,HeatmapList-method}}.
 }
 
-For the list of heatmaps which is placed at [5, 5] in the layout, the heatmaps are tiled one after the other.  
+For the list of heatmaps which is placed at [5, 5] in the layout, the heatmaps are placed one after the other.  
 
 
 }
@@ -64,70 +64,6 @@ The \code{\link{HeatmapList}} class provides following methods:
 }
 
 
-}
-\section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
-}
-\section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
-
-\itemize{
-  \item \code{\link{draw,HeatmapList-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>  

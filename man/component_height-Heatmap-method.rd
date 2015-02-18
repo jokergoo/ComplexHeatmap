@@ -19,6 +19,11 @@ Height of each heatmap component
   \item{k}{which components, see \code{\link{Heatmap-class}}.}
 
 }
+\details{
+This function is only for internal use.  
+
+
+}
 \value{
 A \code{\link[grid]{unit}} object  
 

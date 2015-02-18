@@ -21,6 +21,8 @@ setGeneric('heatmap_legend_size', function(object, ...) standardGeneric('heatmap
 
 setGeneric('annotation_legend_size', function(object, ...) standardGeneric('annotation_legend_size'))
 
+setGeneric('prepare', function(object, ...) standardGeneric('prepare'))
+
 setGeneric('draw_annotation', function(object, ...) standardGeneric('draw_annotation'))
 
 setGeneric('draw_dimnames', function(object, ...) standardGeneric('draw_dimnames'))
@@ -38,4 +40,3 @@ setGeneric('make_column_cluster', function(object, ...) standardGeneric('make_co
 setGeneric('component_width', function(object, ...) standardGeneric('component_width'))
 
 setGeneric('draw_heatmap_list', function(object, ...) standardGeneric('draw_heatmap_list'))
-setGeneric('prepare', function(object, ...) standardGeneric('prepare'))

@@ -18,14 +18,15 @@ Draw row names or column names
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{side}{side of dimension names.}
-  \item{k}{which matrix in the matrix list}
-  \item{gp}{graphc parameters for drawing text.}
-  \item{...}{pass to \code{\link[grid]{viewport}}.}
+  \item{which}{names on the row or on the column of the heatmap}
+  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
+  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 
 }
 \details{
 A viewport is created which contains row names or column names.  
+
+This function is only for internal use.  
 
 
 }

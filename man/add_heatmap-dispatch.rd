@@ -4,7 +4,7 @@
 Method dispatch page for add_heatmap
 }
 \description{
-Method dispatch page for add_heatmap
+Method dispatch page for \code{add_heatmap}.
 }
 \section{Dispatch}{
 \code{add_heatmap} can be dispatched on following classes:

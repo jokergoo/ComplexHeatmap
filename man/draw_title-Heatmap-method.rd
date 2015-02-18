@@ -11,20 +11,21 @@ Draw heatmap title
 
 }
 \usage{
-\S4method{draw_title}{Heatmap}(object, title,
-    which = c("row", "column"), gp = NULL, ...)
+\S4method{draw_title}{Heatmap}(object,
+    which = c("row", "column"), k = 1, ...)
 }
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{title}{title.}
-  \item{side}{side of heatmap title.}
-  \item{gp}{graphic paramter for drawing text.}
-  \item{...}{pass to \code{\link[grid]{viewport}}.}
+  \item{which}{title on the row or on the column of the heatmap}
+  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
+  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 
 }
 \details{
 A viewport is created which contains heatmap title.  
+
+This function is only for internal use.  
 
 
 }

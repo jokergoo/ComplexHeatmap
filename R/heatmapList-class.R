@@ -1,6 +1,6 @@
 
 # == title
-# class for a list of heatmaps
+# Class for a list of heatmaps
 #
 # == details
 # The components for the heamtap list are placed into a 7 x 7 layout:
@@ -35,7 +35,7 @@
 # - heatmap legend on the right, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
 # - annotation legend on the right, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
 #
-# For the list of heatmaps which is placed at [5, 5] in the layout, the heatmaps are tiled one after the other.
+# For the list of heatmaps which is placed at [5, 5] in the layout, the heatmaps are placed one after the other.
 #
 # == methods
 # The `HeatmapList` class provides following methods:
@@ -130,12 +130,15 @@ setMethod(f = "add_heatmap",
 # -show_heatmap_legend whether show heatmap legend.
 # -annotation_legend_side side of annotation legend.
 # -show_annotation_legend whether show annotation legend.
-# -hgap gap between heatmaps, should be a `grid::unit` object.
-# -vgap gap between heatmaps, should be a `grid::unit` object.
+# -gap gap between heatmaps, should be a `grid::unit` object.
 # -auto_adjust auto adjust if the number of heatmap is larger than one.
 #
 # == detail
-# It arranges components of the heatmap list and adjust graphic parameters if necessary.
+# It sets the size of each component of the heatmap list and adjust graphic parameters for each heatmap if necessary.
+#
+# The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.
+#
+# This function is only for internal use.
 #
 # == value
 # A `HeatmapList` object in which settings for each heatmap are adjusted.
@@ -167,8 +170,7 @@ setMethod(f = "make_layout",
                 object@ht_list[[i]]@matrix_param$km = 1
                 object@ht_list[[i]]@row_hclust_param$show = FALSE
                 object@ht_list[[i]]@row_hclust_param$cluster = TRUE
-                object@ht_list[[i]] = prepare(object@ht_list[[i]], row_order = row_order, split = split)
-                object@ht_list[[i]]@row_title = character(0)
+                object@ht_list[[i]] = prepare(object@ht_list[[i]], row_order = row_order, split = split, show_row_title = FALSE)
     		}
     	}
     }
@@ -205,7 +207,7 @@ setMethod(f = "make_layout",
             object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 4))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) object@draw_title(object, column_title, which = "column"))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) object@draw_title(object, which = "column"))
     }
 
     ############################################
@@ -229,7 +231,7 @@ setMethod(f = "make_layout",
             object@layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp))*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 5))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, row_title, which = "row"))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "row"))
     }
 
     #################################################
@@ -289,6 +291,12 @@ setMethod(f = "make_layout",
 # -... pass to `make_layout,HeatmapList-method`
 # -newpage whether to create a new page
 #
+# == detail
+# The function first calls `make_layout,HeatmapList-method` to calculate
+# the layout of the heatmap list and the layout of every singl heatmap,
+# then makes the plot by re-calling the graphic functions which are recorded
+# in the layout.
+#
 # == value
 # This function returns no value.
 #
@@ -325,6 +333,9 @@ setMethod(f = "draw",
 # == param
 # -object a `HeatmapList` object.
 # -k which components, see `HeatmapList-class`.
+#
+# == detail
+# This function is only for internal use.
 #
 # == value
 # A `grid::unit` object
@@ -405,10 +416,11 @@ setMethod(f = "component_height",
 #
 # == param
 # -object a `HeatmapList` object
-# -hgap gap
 #
 # == details
 # A viewport is created which contains heatmaps.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -484,12 +496,12 @@ setMethod(f = "draw_heatmap_list",
 #
 # == param
 # -object a `HeatmapList` object
-# -title title
-# -side side of heatmap title.
-# -gp graphic paramter for drawing text.
+# -which dendrogram on the row or on the column of the heatmap
 #
 # == details
 # A viewport is created which contains heatmap list title.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -499,8 +511,8 @@ setMethod(f = "draw_heatmap_list",
 #
 setMethod(f = "draw_title",
     signature = "HeatmapList",
-    definition = function(object, title,
-    which = c("column", "row"), ...) {
+    definition = function(object,
+    which = c("column", "row")) {
 
     which = match.arg(which)[1]
 
@@ -511,6 +523,10 @@ setMethod(f = "draw_title",
     gp = switch(which,
         "row" = object@row_title_param$gp,
         "column" = object@column_title_param$gp)
+
+    title = switch(which,
+        "row" = object@row_title,
+        "column" = object@column_title)
 
     if(which == "row") {
         rot = switch(side,
@@ -532,10 +548,11 @@ setMethod(f = "draw_title",
 #
 # == param
 # -object a `HeatmapList` object
-# -side side
 #
 # == details
 # A viewport is created which contains heatmap legends.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -545,12 +562,12 @@ setMethod(f = "draw_title",
 #
 setMethod(f = "draw_heatmap_legend",
     signature = "HeatmapList",
-    definition = function(object, ...) {
+    definition = function(object) {
 
     side = object@heatmap_legend_param$side
 
     ColorMappingList = lapply(object@ht_list, function(ht) ht@matrix_color_mapping)
-    draw_legend(ColorMappingList, side = side, ...)
+    draw_legend(ColorMappingList, side = side)
 })
 
 # == title
@@ -558,10 +575,11 @@ setMethod(f = "draw_heatmap_legend",
 #
 # == param
 # -object a `HeatmapList` object
-# -side side
 #
 # == details
 # A viewport is created which contains annotation legends.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -571,14 +589,14 @@ setMethod(f = "draw_heatmap_legend",
 #
 setMethod(f = "draw_annotation_legend",
     signature = "HeatmapList",
-    definition = function(object, ...) {
+    definition = function(object) {
 
     side = object@heatmap_legend_param$side
 
     ColorMappingList = do.call("c", lapply(object@ht_list, function(ht) ht@column_anno_color_mapping))
     nm = names(ColorMappingList)
     ColorMappingList = ColorMappingList[nm]
-    draw_legend(ColorMappingList, side = side, ...)
+    draw_legend(ColorMappingList, side = side)
 })
 
 # == title
@@ -586,7 +604,9 @@ setMethod(f = "draw_annotation_legend",
 #
 # == param
 # -object a `HeatmapList` object
-# -side side
+#
+# == detail
+# This function is only for internal use.
 #
 # == value
 # A `grid::unit` object.
@@ -609,9 +629,11 @@ setMethod(f = "heatmap_legend_size",
 #
 # == param
 # -object a `HeatmapList` object
-# -side side
 # -vp_width vp_width
 # -vp_height vp_height
+#
+# == detail
+# This function is only for internal use.
 #
 # == value
 # A `grid::unit` object.
@@ -720,16 +742,33 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
     }
 }
 
+# == title
+# Draw a list of heatmaps with default parameters
+#
+# == param
+# -object a `HeatmapList` object.
+#
+# == details
+# Actually it calls `draw,HeatmapList-method`, but only with default parameters. If users want to customize the heatmap,
+# they can pass parameters directly to `draw,HeatmapList-method`.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "show",
     signature = "HeatmapList",
     definition = function(object) {
 
-    cat("A HeatmapList object containing", length(object@ht_list), "heatmaps:\n\n")
-    for(i in seq_along(object@ht_list)) {
-        cat("[", i, "] ", sep = "")
-        show(object@ht_list[[i]])
-        cat("\n")
-    }
+    # cat("A HeatmapList object containing", length(object@ht_list), "heatmaps:\n\n")
+    # for(i in seq_along(object@ht_list)) {
+    #     cat("[", i, "] ", sep = "")
+    #     show(object@ht_list[[i]])
+    #     cat("\n")
+    # }
+    draw(object)
 })
 
 # == title
@@ -738,6 +777,9 @@ setMethod(f = "show",
 # == param
 # -ht1 a `HeatmapList` object.
 # -ht2 a `Heatmap` object or a `HeatmapList` object.
+#
+# == detail
+# It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`.
 #
 # == value
 # A `HeatmapList` object

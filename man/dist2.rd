@@ -20,6 +20,11 @@ dist2(mat, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...)
   \item{...}{pass to \code{\link[stats]{dist}}.}
 
 }
+\details{
+You can construct any type of distance measurements by defining a pair-wise distance function.  
+
+
+}
 \value{
 A \code{\link[stats]{dist}} object.  
 

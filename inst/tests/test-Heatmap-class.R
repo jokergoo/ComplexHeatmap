@@ -54,12 +54,13 @@ draw(ht, test = TRUE)
 
 annotation = data.frame(type = c(rep("A", 5), rep("B", 5)))
 rownames(annotation) = colnames(mat)
-ht = Heatmap(mat, annotation)
+ht = Heatmap(mat, annotation = annotation)
+draw(ht, test = TRUE)
 
 
 annotation = data.frame(type1 = rep(c("A", "B"), 5), type2 = rep(c("C", "D"), each = 5))
 rownames(annotation) = colnames(mat)
-ht = Heatmap(mat, annotation)
+ht = Heatmap(mat, annotation = annotation)
 
 
 # character matrix

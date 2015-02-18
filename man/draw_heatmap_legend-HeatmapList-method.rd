@@ -12,16 +12,17 @@ Draw legends for all heatmaps
 
 }
 \usage{
-\S4method{draw_heatmap_legend}{HeatmapList}(object, side = c("right", "left", "top", "bottom"))
+\S4method{draw_heatmap_legend}{HeatmapList}(object)
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList}} object}
-  \item{side}{side}
 
 }
 \details{
 A viewport is created which contains heatmap legends.  
+
+This function is only for internal use.  
 
 
 }

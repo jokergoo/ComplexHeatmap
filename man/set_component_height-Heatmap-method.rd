@@ -21,6 +21,11 @@ Set height of each heatmap component
   \item{v}{height of the component, a \code{\link[grid]{unit}} object.}
 
 }
+\details{
+This function is only for internal use.  
+
+
+}
 \value{
 This function returns no value.  
 

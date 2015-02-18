@@ -4,7 +4,7 @@
 Method dispatch page for component_height
 }
 \description{
-Method dispatch page for component_height
+Method dispatch page for \code{component_height}.
 }
 \section{Dispatch}{
 \code{component_height} can be dispatched on following classes:

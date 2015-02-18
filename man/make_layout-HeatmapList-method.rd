@@ -1,6 +1,5 @@
 \name{make_layout-HeatmapList-method}
 \alias{make_layout,HeatmapList-method}
-\alias{make_layout}
 \title{
 Make layout for the complete plot  
 
@@ -20,7 +19,7 @@ Make layout for the complete plot
     show_heatmap_legend = TRUE,
     annotation_legend_side = c("right", "left", "bottom", "top"),
     show_annotation_legend = TRUE,
-    hgap = unit(5, "mm"), vgap = unit(3, "mm"), auto_adjust = TRUE)
+    gap = unit(3, "mm"), auto_adjust = TRUE)
 }
 \arguments{
 
@@ -35,13 +34,16 @@ Make layout for the complete plot
   \item{show_heatmap_legend}{whether show heatmap legend.}
   \item{annotation_legend_side}{side of annotation legend.}
   \item{show_annotation_legend}{whether show annotation legend.}
-  \item{hgap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
-  \item{vgap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
+  \item{gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
   \item{auto_adjust}{auto adjust if the number of heatmap is larger than one.}
 
 }
 \details{
-It arranges components of the heatmap list and adjust graphic parameters if necessary.  
+It sets the size of each component of the heatmap list and adjust graphic parameters for each heatmap if necessary.  
+
+The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.  
+
+This function is only for internal use.  
 
 
 }

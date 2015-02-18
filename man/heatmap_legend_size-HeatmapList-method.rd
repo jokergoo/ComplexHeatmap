@@ -12,12 +12,16 @@ Size of the heatmap legend viewprot
 
 }
 \usage{
-\S4method{heatmap_legend_size}{HeatmapList}(object, side = c("right", "left", "top", "bottom"))
+\S4method{heatmap_legend_size}{HeatmapList}(object)
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList}} object}
-  \item{side}{side}
+
+}
+\details{
+This function is only for internal use.  
+
 
 }
 \value{

@@ -174,10 +174,24 @@ default_col = function(x, main_matrix = FALSE) {
 # -annotation_side should the annotaitons be put on the top or bottom of the heatmap.
 # -annotation_height height of the annotations, should be a `grid::unit` object.
 # -annotation_gp graphic parameters for drawing rectangles.
+# -km whether do k-means clustering on rows. 
+# -gap gap between row-slice, should be `grid::unit` object
+# -split a vector or a data frame by which the rows are splitted 
+# -width the width of the single heatmap.
 #
 # == details
+# The initialization function only applies parameter checking. Clustering
+# on rows can be applied by `make_row_cluster,Heatmap-method`;
+# clustering on columns can be applied by `make_column_cluster,Heatmap-method`
+# and layout can be constructed by `make_layout,Heatmap-method`. Basically,
+# these three methods will be called when calling `draw,Heatmap-method` or `draw,HeatmapList-method`.
+#
+# If ``km`` or/and ``split`` are set, the clustering inside each row slice uses ``clustering_method_rows``
+# and ``clustering_method_rows`` as input parameters.
+# 
 # Following methods can be applied on the `Heatmap` object:
 #
+# - `show,Heatmap-method`: drwa a single heatmap with default parameters
 # - `draw,Heatmap-method`: draw a single heatmap.
 # - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps.
 #
@@ -312,7 +326,7 @@ setMethod(f = "initialize",
         }
 
         # if there is row_names
-        if(!is.null(row_names(annotation))) {
+        if(!is.null(rownames(annotation))) {
             .Object@column_anno = annotation[colnames(matrix), , drop = FALSE]
         }
 
@@ -350,8 +364,9 @@ setMethod(f = "initialize",
     }
 
     .Object@column_anno_param$type = "heatmap"
-    .Object@column_anno_param$height = 1
-    .Object@column_anno_param$height = .Object@column_anno_param$height / sum(.Object@column_anno_param$height)
+    .Object@column_anno_param$height = annotation_height
+    .Object@column_anno_param$row_height = 1
+    .Object@column_anno_param$row_height = .Object@column_anno_param$row_height / sum(.Object@column_anno_param$row_height)
     .Object@column_anno_param$side = match.arg(annotation_side)[1]
 
     .Object@layout = as.environment(list(
@@ -382,14 +397,31 @@ setMethod(f = "initialize",
 })
 
 # == title
-# make column cluster
+# Make cluster on columns
+#
+# == param
+# -object a `Heatmap` object.
+# -order a single string ``hclust`` means the cluster is performed by `stats::hclust`. The value
+#        can also be a pre-defined order.
+#
+# == details
+# The function will fill or adjust ``column_hclust`` and ``column_order`` slots.
+#
+# This function is only for internal use.
+#
+# == value
+# A `Heatmap` object
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "make_column_cluster",
     signature = "Heatmap",
-    definition = function(object, order = "hclust", distance = object@column_hclust_param$distance,
-    method = object@column_hclust_param$method) {
+    definition = function(object, order = "hclust") {
     
     mat = object@matrix
+    distance = object@column_hclust_param$distance
+    method = object@column_hclust_param$method
 
     if(length(order) > 1) {
         column_order = order
@@ -404,25 +436,34 @@ setMethod(f = "make_column_cluster",
 
 
 # == title
-# Make cluster and adjust order in each component
+# Make cluster on rows
 #
 # == param
-#
+# -object a `Heatmap` object.
+# -order a single string ``hclust`` means the cluster is performed by `stats::hclust`. The value
+#        can also be a pre-defined order.
+# -km if apply k-means clustering on rows, number of clusters.
+# -split a vector or a data frame by which the rows are be splitted.
 #
 # == details
-# Following components may be adjusted:
-# - row title
-# - row cluster
-# - order of column annotation
-# - column cluster
+# The function will fill or adjust ``row_hclust_list``, ``row_order_list``, ``row_title`` and ``matrix_param`` slots.
+#
+# This function is only for internal use.
+#
+# == value
+# A `Heatmap` object
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "make_row_cluster",
     signature = "Heatmap",
-    definition = function(object, order = "hclust", km = object@matrix_param$km, split = object@matrix_param$split, 
-    distance = object@row_hclust_param$distance,
-    method = object@row_hclust_param$method) {
+    definition = function(object, order = "hclust", km = object@matrix_param$km, 
+        split = object@matrix_param$split) {
 
     mat = object@matrix
+    distance = object@row_hclust_param$distance
+    method = object@row_hclust_param$method
 
     if(length(order) > 1) {
         row_order = order
@@ -485,7 +526,27 @@ setMethod(f = "make_row_cluster",
 
 })
 
-
+# == title
+# Make the layout of a single heatmap
+#
+# == param
+# -object a `Heatmap` object.
+# 
+# == detail
+# The layout of the single heatmap will be established by setting the size of each heatmap components.
+# Also functions that make graphics for heatmap components will be recorded.
+#
+# Whether apply row clustering or column clustering affects the layout, so clustering should be applied 
+# first before making the layout.
+#
+# This function is only for internal use.
+#
+# == value
+# A `Heatmap` object
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "make_layout",
     signature = "Heatmap",
     definition = function(object) {
@@ -647,15 +708,30 @@ setMethod(f = "make_layout",
     return(object)
 })
 
-# show method is in fact a plot method
+# == title
+# Draw the single heatmap with default parameters
+#
+# == param
+# -object a `Heatmap` object.
+#
+# == details
+# Actually it calls `draw,Heatmap-method`, but only with default parameters. If users want to customize the heatmap,
+# they can pass parameters directly to `draw,Heatmap-method`.
+#
+# == value
+# This function returns no value.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "show",
     signature = "Heatmap",
     definition = function(object) {
 
-    cat("A Heatmap object:\n")
-    cat("name:", object@name, "\n")
-    cat("dim:", nrow(object@matrix), "x", ncol(object@matrix), "\n")
-
+    # cat("A Heatmap object:\n")
+    # cat("name:", object@name, "\n")
+    # cat("dim:", nrow(object@matrix), "x", ncol(object@matrix), "\n")
+    draw(object)
 })
 
 # == title
@@ -690,12 +766,17 @@ setMethod(f = "add_heatmap",
 #
 # == param
 # -object a `Heatmap` object.
-# -k which matrix in the matrix list
-# -gp graphic parameters for drawing rectangles.
-# -... pass to `grid::viewport`.
+# -k a matrix may be splitted by rows, the value identifies which row-slice.
+# -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
+# The matrix can be splitted into several parts by rows if ``km`` or ``split`` is 
+# specified when initializing the `Heatmap` object. If the matrix is splitted, 
+# there will be gaps between rows to identify differnet row-slice.
+#
 # A viewport is created which contains grids.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -732,14 +813,18 @@ setMethod(f = "draw_heatmap_body",
 #
 # == param
 # -object a `Heatmap` object.
-# -side side of the dendrogram.
-# -k which matrix in the matrix list
-# -gp graphic parameters for drawing lines.
-# -max_height maximum height of the dendrogram.
-# -... pass to `grid::viewport`.
+# -which dendrogram on the row or on the column of the heatmap
+# -k a matrix may be splitted by rows, the value identifies which row-slice.
+# -max_height maximum height of the dendrograms.
+# -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
-# A viewport is created which contains dendrogram.
+# If the matrix is splitted into several row slices, a list of dendrograms wil be drawn by 
+# the heatmap that each dendrogram corresponds to its row slices.
+#
+# A viewport is created which contains dendrograms.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -834,13 +919,14 @@ setMethod(f = "draw_hclust",
 #
 # == param
 # -object a `Heatmap` object.
-# -side side of dimension names.
-# -k which matrix in the matrix list
-# -gp graphc parameters for drawing text.
-# -... pass to `grid::viewport`.
+# -which names on the row or on the column of the heatmap
+# -k a matrix may be splitted by rows, the value identifies which row-slice.
+# -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
 # A viewport is created which contains row names or column names.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -905,13 +991,14 @@ setMethod(f = "draw_dimnames",
 #
 # == param
 # -object a `Heatmap` object.
-# -title title.
-# -side side of heatmap title.
-# -gp graphic paramter for drawing text.
-# -... pass to `grid::viewport`.
+# -which title on the row or on the column of the heatmap
+# -k a matrix may be splitted by rows, the value identifies which row-slice.
+# -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
 # A viewport is created which contains heatmap title.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -921,8 +1008,8 @@ setMethod(f = "draw_dimnames",
 #
 setMethod(f = "draw_title",
     signature = "Heatmap",
-    definition = function(object, title, 
-    which = c("row", "column"), k = 1, gp = NULL, ...) {
+    definition = function(object,
+    which = c("row", "column"), k = 1, ...) {
 
     which = match.arg(which)[1]
 
@@ -958,10 +1045,11 @@ setMethod(f = "draw_title",
 #
 # == param
 # -object a `Heatmap` object.
-# -gp graphic parameters for drawing rectangles.
 #
 # == details
 # A viewport is created which contains column annotations.
+#
+# This function is only for internal use.
 #
 # == value
 # This function returns no value.
@@ -974,7 +1062,7 @@ setMethod(f = "draw_annotation",
     definition = function(object) {
     
     type = object@column_anno_param$type
-    height = object@column_anno_param$height
+    height = object@column_anno_param$row_height
     gp = object@column_anno_param$gp
 
     # if there is no annotation, draw nothing
@@ -988,7 +1076,7 @@ setMethod(f = "draw_annotation",
 
     for(i in seq_len(n)) {
         x = unit(0, "npc")
-        y = unit(1, "npc")*sum(height(seq_len(i)))
+        y = unit(1, "npc")*sum(height[seq_len(i)])
         pushViewport(viewport(x = x, y = y, just = c("left", "top"))) 
 
         x = (seq_len(nc) - 0.5) / nc
@@ -1055,6 +1143,10 @@ setMethod(f = "draw_annotation",
 # -object a `Heatmap` object.
 # -k which components, see `Heatmap-class`.
 #
+# == detials
+#
+# This function is only for internal use.
+#
 # == value
 # A `grid::unit` object
 #
@@ -1094,6 +1186,10 @@ setMethod(f = "component_width",
 # == param
 # -object a `Heatmap` object.
 # -k which components, see `Heatmap-class`.
+#
+# == detail
+#
+# This function is only for internal use.
 #
 # == value
 # A `grid::unit` object
@@ -1140,6 +1236,10 @@ setMethod(f = "component_height",
 # -k which components, see `Heatmap-class`.
 # -v height of the component, a `grid::unit` object.
 #
+# == detail
+#
+# This function is only for internal use.
+#
 # == value
 # This function returns no value.
 #
@@ -1177,7 +1277,8 @@ setMethod(f = "set_component_height",
 # == param
 # -object a `Heatmap` object.
 # -internal only for internal use.
-# -... pass to `HeatmapList`.
+# -test only for testing
+# -... pass to `draw,HeatmapList-method`.
 #
 # == detail
 # The function creates a `HeatmapList` object, add a single heatmap
@@ -1221,12 +1322,37 @@ setMethod(f = "draw",
     }
 })
 
+# == title
+# Prepare the heatmap
+#
+# == param
+# -object a `Heatmap` object.
+# -row_order orders of rows, pass to `make_row_cluster,Heatmap-method`.
+# -split how to split rows in the matrix, passing to `make_row_cluster,Heatmap-method`.
+# -show_row_title whether show row titles
+#
+# == detail
+# The preparation of the heatmap includes following steps:
+#
+# - making clustering on rows if specified
+# - making clustering on columns if specified
+# - set row title to a empty string if specified
+# - makeing the layout of the heatmap
+#
+# This function is only for internal use.
+#
+# == value
+# A `Heatmap` object
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "prepare",
     signature = "Heatmap",
-    definition = function(object, row_order = "hclust", split = object@matrix_param$split) {
+    definition = function(object, row_order = "hclust", split = object@matrix_param$split, show_row_title = TRUE) {
     if(object@row_hclust_param$cluster) object = make_row_cluster(object, order = row_order, split = split)
     if(object@column_hclust_param$cluster) object = make_column_cluster(object)
-
+    if(!show_row_title) object@row_title = character(0)
     object = make_layout(object)
     return(object)
 })
@@ -1237,6 +1363,9 @@ setMethod(f = "prepare",
 # == param
 # -ht1 a `Heatmap` object.
 # -ht2 a `Heatmap` object or a `HeatmapList` object.
+#
+# == detail
+# It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`.
 #
 # == value
 # a `HeatmapList` object.
@@ -1256,6 +1385,9 @@ setMethod(f = "prepare",
 # -mat a matrix. The distance is calculated by rows.
 # -pairwise_fun a function which calculates distance between two vectors.
 # -... pass to `stats::dist`.
+#
+# == detail
+# You can construct any type of distance measurements by defining a pair-wise distance function.
 #
 # == value
 # A `stats::dist` object.
