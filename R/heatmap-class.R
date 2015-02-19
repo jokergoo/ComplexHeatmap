@@ -83,8 +83,11 @@ Heatmap = setClass("Heatmap",
         row_names_param = "list",
         column_names_param = "list",
 
-        column_anno = "ANY", # annotation data frame, order of columns are same as matrix
-        column_anno_param = "list",
+        top_annotation = "ANY",
+        bottom_annotation = "ANY",
+
+        column_anno_top = "ANY", # annotation data frame, order of columns are same as matrix
+        column_anno_top_param = "list",
         column_anno_color_mapping = "list", # a list of ColorMapping objects
 
         heatmap_param = "list",
@@ -219,6 +222,8 @@ setMethod(f = "initialize",
     show_column_names = TRUE, column_names_gp = gpar(fontsize = 12),
     annotation = NULL, annotation_color = NULL, annotation_side = c("top", "bottom"),
     annotation_height = if(is.null(annotation)) unit(0, "null") else ncol(annotation)*unit(4, "mm"), 
+    annotation_graphic_type = if(is.null(annotation)) NULL else rep("heatmap", ncol(annotation)),
+    annotation_each_height = if(is.null(annotation)) NULL else rep(1, ncol(annotation)),
     annotation_gp = gpar(col = NA), km = 1, gap = unit(1, "mm"), split = NULL, width = NULL
     ) {
 
@@ -363,9 +368,9 @@ setMethod(f = "initialize",
         stop("`annotation` should be a data frame.")
     }
 
-    .Object@column_anno_param$type = "heatmap"
+    .Object@column_anno_param$type = annotation_graphic_type
     .Object@column_anno_param$height = annotation_height
-    .Object@column_anno_param$row_height = 1
+    .Object@column_anno_param$row_height = annotation_each_height
     .Object@column_anno_param$row_height = .Object@column_anno_param$row_height / sum(.Object@column_anno_param$row_height)
     .Object@column_anno_param$side = match.arg(annotation_side)[1]
 
@@ -1124,6 +1129,8 @@ setMethod(f = "draw_annotation",
             grid.rect(x, boxplot_stats[2, ], width = 1/nc*0.8, height = boxplot_stats[4, ] - boxplot_stats[2, ], default.unit = "npc", just = c("center", "bottom"), gp = gp)
             grid.points(x, boxplot_stats[3, ], pch = 16, gp = gp)
             grid.segments(x - 1/nc*0.4, boxplot_stats[1, ],
+                          x + 1/nc*0.4, boxplot_stats[1, ])
+            grid.segments(x - 1/nc*0.4, boxplot_stats[5, ],
                           x + 1/nc*0.4, boxplot_stats[5, ])
             grid.segments(x, boxplot_stats[1, ],
                           x, boxplot_stats[2, ])

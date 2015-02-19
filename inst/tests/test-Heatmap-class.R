@@ -63,6 +63,13 @@ rownames(annotation) = colnames(mat)
 ht = Heatmap(mat, annotation = annotation)
 
 
+annotation = data.frame(value = rnorm(10))
+rownames(annotation) = colnames(mat)
+ht = Heatmap(mat, annotation = annotation)
+draw(ht, test = TRUE, annotation_graphic_type = "p")
+ht = Heatmap(mat, annotation = annotation, annotation_graphic_type = "p")
+draw(ht, test = TRUE)
+
 # character matrix
 mat = matrix(sample(letters[1:6], 100, replace = TRUE), 10, 10)
 ht = Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
