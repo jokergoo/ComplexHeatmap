@@ -1,60 +1,195 @@
-# common class for both row annotation and column annotation
 
+
+
+# == title
+# Class for heatmap annotations
+#
+# == details
+# A complex heatmap contains a list of annotation which represented as different graphics
+# placed on rows and columns. The `HeatmapAnnotation` class stores information by a list
+# of `SingleAnnotation` objects.
+#
+# == methods
+# The `HeatmapAnnotation` class provides following methods:
+#
+# - `initialize,HeatmapAnnotation-method`: constructor method
+# - `get_color_mapping_list,HeatmapAnnotation-method`
+# - `draw,HeatmapAnnotation-method`
+#
 HeatmapAnnotation = setClass("HeatmapAnnotation",
 	slots = list(
-		list = "list"
+		anno_list = "list",  # a list of `SingleAnnotation` objects
+		size = "ANY",
+		which = "character"
+	),
+	prototype = list(
+		anno_list = list(),
+		size = unit(0, "null"),
+		which = "row"
 	)
 )
 
-HeatmapAnnotation(df, col, type, height)
-HeatmapAnnotation(fun1, df)
-HeatmapAnnotation(fun1, df, fun2, )
-
+# == title
+# Constructor method for HeatmapAnnotation class
+#
+# == param
+# -.Object a private object.
+# -df a data frame which should have column names
+# -col a list which contains color mapping to columns in `df`
+# -... named functions
+# -which 
+# -height height of each annotation
+# -width
+#
+# == value
+# A `HeatmapAnnotation` object.
+#
 setMethod(f = "initialize",
 	signature = "HeatmapAnnotation",
-	definition = function(.Object, df, col, type, height,gp_list, ...) {
+	definition = function(.Object, df, col, show_legend, ..., which = c("row", "column"), height = 1, width = 1) {
 
-		if(!missing(df)) {
-			for(i in seq_len(ncol(df))) {
-				.Object@list[[i]]$name
-				.Object@list[[i]]$value
-				.Object@list[[i]]$color_mapping
-				.Object@list[[i]]$height
-				.Object@list[[i]]$fun
-				.Object@list[[i]]$show_legend = 
+	anno_list = list()
+	which = match.arg(which)[1]
 
-				if(type[i] %in% "heatmap") {
-					.Object@list[[i]]$fun = function(index) {
-						n = length(index)
-						x = (seq_len(n) - 0.5) / n
-						fill = map(cm[index], object@column_anno[[i]])
-						grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = gpar(fill = fill))
-					}
-				}
-			}
+	if(!missing(df)) {
+		if(is.null(colnames(df))) {
+	        stop("`df` should have column names.")
+	    }
+
+	    anno_name = colnames(df)
+	    n_anno = ncol(df)
+
+	    if(missing(show_legend)) {
+	    	show_legend = rep(TRUE, n_anno)
+	    }
+	    if(length(show_legend) == 1) {
+	    	show_legend = rep(show_legend, n_anno)
+	    }
+
+	    if(missing(col)) {
+	        for(i in seq_len(n_anno)) {
+	        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i])))
+	        }
+	    } else {
+	        for(i in seq_len(n_anno)) {
+	        	if(is.null(col[[ anno_name[i] ]])) { # if the color is not provided
+	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i])))
+	        	} else {
+	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], col = col[[ anno_name[i] ]], which = which, show_legend = show_legend[i])))
+	        	}
+	        }
+	    }
+	}
+
+	# self-defined anntatoin graph are passed by a list of named functions
+	fun_list = list(...)
+	if(length(fun_list)) {
+		if(! all(sapply(fun_list, is.function))) {
+			stop("`...` should only contains functions.")
 		}
-		fun_list = as.list(...)
-		if(length(fun_list)) {
-			fun_name = names(fun_list)
-			.Ojbect@list[[i]]$name
-			.Object@list[[i]]$height
 
+		fun_name = names(fun_list)
+		if(is.null(fun_name)) {
+			stop("functions should be specified as named arguments.")
 		}
+		if(any(fun_name %in% c("df", "col", "show_legend", "which", "height", "width"))) {
+			stop("function names should be same as other argument names.")
+		}
+			
+		for(i in seq_along(fun_name)) {
+			anno_list = c(anno_list, list(SingleAnnotation(name = fun_name[i], fun = fun_list[[i]], which = which)))
+		}
+	}
+
+	n_anno = length(anno_list)
+
+	size = switch(which,
+		row = height,
+		column = width)
+
+	if(length(size) == 1) {
+		if(is.numeric(size)) {
+			size = rep(size, n_anno)
+		}
+	}
+
+	if(is.numeric(size)) {
+		size = unit(size/sum(size), "npc")
+	}
+
+
+    .Object@anno_list = anno_list
+    .Object@size = size
+    .Object@which = which
+
+    return(.Object)
 })
 
+# == title
+# Get a list of color mapping objects
+#
+# == param
+# -object a `HeatmapAnnotation` object.
+#
 setMethod(f = "get_color_mapping_list",
 	signature = "HeatmapAnnotation",
 	definition = function(object) {
 
-		})
+	color_mapping_list = list()
+	for(i in seq_along(object@anno_list)) {
+		if(object@anno_list[[i]]@show_legend) {
+			color_mapping_list = c(color_mapping_list, list(object@anno_list[[i]]@color_mapping))
+		}
+	}
+	return(color_mapping_list)
+})
 
+# == title
+# Draw the heatmap annotations
+#
+# == param
+# -object a `HeatmapAnnotation` object
+# -index the index
+# -... pass to `grid::viewport` which contains all annotations.
+#
+# == details
+# A viewport is created.
+#
 setMethod(f = "draw",
 	signature = "HeatmapAnnotation",
-	definition = function(object, index) {
+	definition = function(object, index, ...) {
 
-	pushViewport(viewport())
-	for(i in seq_len(object@list)) {
-		object@list[[i]]$fun(index)
+	which = object@which
+	n_anno = length(object@anno_list)
+	size = object@size
+
+	pushViewport(viewport(...))
+	for(i in seq_len(n_anno)) {
+		if(which == "row") {
+			pushViewport(viewport(y = sum(size[seq_len(i)]), height = size[i], just = c("center", "top")))
+		} else {
+			pushViewport(viewport(x = sum(size[seq_len(i)]), width = size[i], just = c("right", "center")))
+		}
+		draw(object@anno_list[[i]], index)
+		upViewport()
 	}
+	upViewport()
+})
 
+# == title
+# Print the Heatmap Annotation object
+#
+# == param
+# -object a `HeatmapAnnotation` object.
+#
+setMethod(f = "show",
+	signature = "HeatmapAnnotation",
+	definition = function(object) {
+
+	cat("A HeatmapAnnotation object with", length(object@anno_list), "annotations.\n")
+	cat("\n")
+	for(i in seq_along(object@anno_list)) {
+		show(object@anno_list[[i]])
+		cat("\n")
+	}
 })

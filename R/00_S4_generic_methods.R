@@ -40,3 +40,5 @@ setGeneric('make_column_cluster', function(object, ...) standardGeneric('make_co
 setGeneric('component_width', function(object, ...) standardGeneric('component_width'))
 
 setGeneric('draw_heatmap_list', function(object, ...) standardGeneric('draw_heatmap_list'))
+
+setGeneric('get_color_mapping_list', function(object, ...) standardGeneric('get_color_mapping_list'))

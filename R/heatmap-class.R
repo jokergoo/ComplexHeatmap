@@ -84,11 +84,10 @@ Heatmap = setClass("Heatmap",
         column_names_param = "list",
 
         top_annotation = "ANY",
-        bottom_annotation = "ANY",
+        top_annotation_param = "list",
 
-        column_anno_top = "ANY", # annotation data frame, order of columns are same as matrix
-        column_anno_top_param = "list",
-        column_anno_color_mapping = "list", # a list of ColorMapping objects
+        bottom_annotation = "ANY",
+        bottom_annotation_param = "list",
 
         heatmap_param = "list",
 
@@ -96,35 +95,7 @@ Heatmap = setClass("Heatmap",
     )
 )
 
-# default colors for matrix or annotations
-# this function should be improved later
-default_col = function(x, main_matrix = FALSE) {
 
-    if(is.factor(x)) {
-        x = as.character(x)
-    }
-
-    if(length(unique(x)) == 1) {
-        x = as.character(x)
-    }
-
-    attributes(x) = NULL
-
-    if(is.character(x)) {  # discrete
-        levels = unique(x)
-        colors = rand_color(length(levels))
-        names(colors) = levels
-        return(colors)
-    } else if(is.numeric(x)) {
-        if(main_matrix) {
-            col_fun = colorRamp2(seq(min(x), max(x), length.out = 11), 
-                rev(brewer.pal(11, "RdYlBu")))
-        } else {
-            col_fun = colorRamp2(range(min(x), max(x)), c("white", rand_color(1)))
-        }
-        return(col_fun)
-    }
-}
 
 # == title
 # Constructor method of Heatmap class
@@ -169,14 +140,10 @@ default_col = function(x, main_matrix = FALSE) {
 # -column_names_side should the column names be put on the top or bottom of the heatmap.
 # -show_column_names whether show column names.
 # -column_names_gp graphic parameters for drawing text.
-# -annotation column annotation. The value should be a data frame for which row_names correspond to
-#             column names of the matrix and columns correspond to different annotations.
-# -annotation_color colors for the annotations. The value is a list in which each element corresponds
-#             to each annotation and the value for each element is a vector or a color mapping function
-#             which depends on the annotation is discrete or continuous.
-# -annotation_side should the annotaitons be put on the top or bottom of the heatmap.
-# -annotation_height height of the annotations, should be a `grid::unit` object.
-# -annotation_gp graphic parameters for drawing rectangles.
+# -top_annotation
+# -top_annotation_height
+# -bottom_annotation
+# -bottom_annotation_height
 # -km whether do k-means clustering on rows. 
 # -gap gap between row-slice, should be `grid::unit` object
 # -split a vector or a data frame by which the rows are splitted 
@@ -220,12 +187,9 @@ setMethod(f = "initialize",
     row_names_side = c("right", "left"), show_row_names = TRUE, 
     row_names_gp = gpar(fontsize = 12), column_names_side = c("bottom", "top"), 
     show_column_names = TRUE, column_names_gp = gpar(fontsize = 12),
-    annotation = NULL, annotation_color = NULL, annotation_side = c("top", "bottom"),
-    annotation_height = if(is.null(annotation)) unit(0, "null") else ncol(annotation)*unit(4, "mm"), 
-    annotation_graphic_type = if(is.null(annotation)) NULL else rep("heatmap", ncol(annotation)),
-    annotation_each_height = if(is.null(annotation)) NULL else rep(1, ncol(annotation)),
-    annotation_gp = gpar(col = NA), km = 1, gap = unit(1, "mm"), split = NULL, width = NULL
-    ) {
+    top_annotation = NULL, top_annotation_height = unit(1, "cm"),
+    bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
+    km = 1, gap = unit(1, "mm"), split = NULL, width = NULL) {
 
     if(!is.matrix(matrix)) {
     	matrix = matrix(matrix, ncol = 1)
@@ -319,60 +283,11 @@ setMethod(f = "initialize",
     .Object@column_hclust_param$gp = column_hclust_gp
     .Object@column_order = seq_len(ncol(matrix))
 
-    # parse the column annotation
-    if(is.null(annotation)) {
-        # don't need to consider annotation_color
-    } else if(is.data.frame(annotation)) {
-        
-        for(i in seq_len(ncol(annotation))) {
-            if(is.factor(annotation[[i]])) {
-                annotation[[i]] = as.character(annotation[[i]])
-            }
-        }
-
-        # if there is row_names
-        if(!is.null(rownames(annotation))) {
-            .Object@column_anno = annotation[colnames(matrix), , drop = FALSE]
-        }
-
-        if(is.null(colnames(annotation))) {
-            stop("`annotation` should have column_names.")
-        }
-
-        if(is.null(annotation_color)) {
-            annotation_color = lapply(annotation, default_col)
-        }
-
-        if(is.null(names(annotation_color))) {
-            stop("`annotation_color` should have names to map to `annotation`.")
-        }
-
-        if(!setequal(colnames(annotation), names(annotation_color))) {
-            stop("You should provide colors for all annotations.")
-        } else {
-            annotation_color = annotation_color[colnames(annotation)]
-            annotation_name = names(annotation_color)
-            .Object@column_anno_color_mapping = list()
-
-            for(i in seq_along(annotation_color)) {
-                if(is.atomic(annotation_color[[i]])) {
-                    .Object@column_anno_color_mapping[[i]] = ColorMapping(name = annotation_name[i],
-                                                             colors = annotation_color[[i]])
-                } else if(is.function(annotation_color[[i]])) {
-                    .Object@column_anno_color_mapping[[i]] = ColorMapping(name = annotation_name[i],
-                                                                  col_fun = annotation_color[[i]])
-                }
-            }
-        }
-    } else {
-        stop("`annotation` should be a data frame.")
-    }
-
-    .Object@column_anno_param$type = annotation_graphic_type
-    .Object@column_anno_param$height = annotation_height
-    .Object@column_anno_param$row_height = annotation_each_height
-    .Object@column_anno_param$row_height = .Object@column_anno_param$row_height / sum(.Object@column_anno_param$row_height)
-    .Object@column_anno_param$side = match.arg(annotation_side)[1]
+    .Object@top_annotation = top_annotation
+    .Object@top_annotation_param$height = top_annotation_height
+    
+    .Object@bottom_annotation = bottom_annotation
+    .Object@bottom_annotation_param$height = bottom_annotation_height
 
     .Object@layout = as.environment(list(
         layout_column_title_top_height = unit(0, "null"),
@@ -695,19 +610,24 @@ setMethod(f = "make_layout",
     }
     
     ##########################################
-    ## annotation on top or bottom
-    annotation = object@column_anno
-    column_anno_side = object@column_anno_param$side
-    annotation_height = object@column_anno_param$height
+    ## annotation on top
+    annotation = object@top_annotation
+    annotation_height = object@top_annotation_param$height
     if(!is.null(annotation)) {
-        if(column_anno_side == "top") {
-            object@layout$layout_column_anno_top_height = annotation_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(3, 4))
-        } else {
-            object@layout$layout_column_anno_bottom_height = annotation_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
-        }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object))
+        object@layout$layout_column_anno_top_height = annotation_height
+        object@layout$layout_index = rbind(object@layout$layout_index, c(3, 4))
+        
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object, which = "top"))
+    }
+
+    ##########################################
+    ## annotation on bottom
+    annotation = object@bottom_annotation
+    annotation_height = object@bottom_annotation_param$height
+    if(!is.null(annotation)) {
+        object@layout$layout_column_anno_bottom_height = annotation_height
+        object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object, which = "bottom"))
     }
 
     return(object)
@@ -757,11 +677,11 @@ setMethod(f = "show",
 #
 setMethod(f = "add_heatmap",
     signature = "Heatmap",
-    definition = function(object, ht) {
+    definition = function(object, x) {
 
     ht_list = new("HeatmapList")
     ht_list = add_heatmap(ht_list, object)
-    ht_list = add_heatmap(ht_list, ht)
+    ht_list = add_heatmap(ht_list, x)
     return(ht_list)
 
 })
@@ -1064,83 +984,20 @@ setMethod(f = "draw_title",
 #
 setMethod(f = "draw_annotation",
     signature = "Heatmap",
-    definition = function(object) {
+    definition = function(object, which = c("top", "bottom")) {
     
-    type = object@column_anno_param$type
-    height = object@column_anno_param$row_height
-    gp = object@column_anno_param$gp
+    which = match.arg(which)[1]
+
+    annotation = switch(which,
+        top = object@top_annotation,
+        bottom = object@bottom_annotation)
 
     # if there is no annotation, draw nothing
-    if(is.null(object@column_anno)) {
+    if(is.null(annotation)) {
         return(invisible(NULL))
     }
 
-    n = ncol(object@column_anno)
-    nc = nrow(object@column_anno)  # number of columns which correspond to the matrix
-    pushViewport(viewport(name = paste(object@name, "annotation", sep = "-")))
-
-    for(i in seq_len(n)) {
-        x = unit(0, "npc")
-        y = unit(1, "npc")*sum(height[seq_len(i)])
-        pushViewport(viewport(x = x, y = y, just = c("left", "top"))) 
-
-        x = (seq_len(nc) - 0.5) / nc
-        if(type[i] %in% "heatmap") {
-            cm = object@column_anno_color_mapping[[i]]
-            fill = map(cm, object@column_anno[[i]])
-            grid.rect(x, y = 0.5, width = 1/nc, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
-        }
-        if(type[i] %in% c("p", "point", "points")) {
-            y = object@column_anno[[i]]
-            if(length(unique(y)) == 1) {
-                grid.points(x, 0.5, default.units = "npc", gp = gp)
-            } else {
-                # normalize to [0, 1]
-                y = (y - mean(y))*0.9  # zoom
-                y = (y - min(y)) / (max(y) - min(y))
-                grid.points(x, y, default.units = "npc", gp = gp)
-            }
-        }
-        if(type[i] %in% c("l", "line", "lines")) {
-            y = object@column_anno[[i]]
-            if(length(unique(y)) == 1) {
-                grid.lines(x, 0.5, default.units = "npc", gp = gp)
-            } else {
-                # normalize to [0, 1]
-                y = (y - mean(y))*0.9  # zoom
-                y = (y - min(y)) / (max(y) - min(y))
-                grid.lines(x, y, default.units = "npc", gp = gp)
-            }   
-        }
-        if(type[i] %in% c("bar", "barplot", "barchart", "histogram")) {
-            y = object@column_anno[[i]]
-            if(length(unique(y)) == 1) {
-                grid.rect(x, 0.5, width = 1/nc, default.units = "npc", gp = gp)
-            } else {
-                # normalize to [0, 1]
-                y = (y - mean(y))*0.9  # zoom
-                y = (y - min(y)) / (max(y) - min(y))
-                grid.rect(x, y = 0, width = 1/nc, height = y, default.units = "npc", just = c("center", "bottom"), gp = gp)
-            }   
-        }
-        if(type[i] %in% c("boxplot")) {
-            boxplot_stats = apply(object@matrix, 2, function(x) boxplot.stats(x)$stats)
-            boxplot_stats = (boxplot_stats - min(boxplot_stats)) / (max(boxplot_stats) - min(boxplot_stats))
-            grid.rect(x, boxplot_stats[2, ], width = 1/nc*0.8, height = boxplot_stats[4, ] - boxplot_stats[2, ], default.unit = "npc", just = c("center", "bottom"), gp = gp)
-            grid.points(x, boxplot_stats[3, ], pch = 16, gp = gp)
-            grid.segments(x - 1/nc*0.4, boxplot_stats[1, ],
-                          x + 1/nc*0.4, boxplot_stats[1, ])
-            grid.segments(x - 1/nc*0.4, boxplot_stats[5, ],
-                          x + 1/nc*0.4, boxplot_stats[5, ])
-            grid.segments(x, boxplot_stats[1, ],
-                          x, boxplot_stats[2, ])
-            grid.segments(x, boxplot_stats[4, ],
-                          x, boxplot_stats[5, ])
-            
-        }
-        upViewport()
-    }
-    upViewport()
+    draw(annotation, index = object@column_order)
 })
 
 # == title
@@ -1368,8 +1225,8 @@ setMethod(f = "prepare",
 # Add two heatmaps as a heatmap list
 #
 # == param
-# -ht1 a `Heatmap` object.
-# -ht2 a `Heatmap` object or a `HeatmapList` object.
+# -x a `Heatmap` object.
+# -y a `Heatmap` object or a `HeatmapList` object.
 #
 # == detail
 # It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`.
@@ -1380,8 +1237,8 @@ setMethod(f = "prepare",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-"+.Heatmap" = function(ht1, ht2) {
-    add_heatmap(ht1, ht2)
+"+.Heatmap" = function(x, y) {
+    add_heatmap(x, y)
 }
 
 

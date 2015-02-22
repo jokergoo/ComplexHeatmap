@@ -101,17 +101,25 @@ HeatmapList = setClass("HeatmapList",
 #
 setMethod(f = "add_heatmap",
     signature = "HeatmapList",
-    definition = function(object, ht) {
+    definition = function(object, x) {
     
     # check settings of this new heatmap
-    if(inherits(ht, "Heatmap")) {
-        ht_name = ht@name
-        ht = list(ht)
-        names(ht) = ht_name
+    if(inherits(x, "Heatmap")) {
+        ht_name = x@name
+        x = list(x)
+        names(x) = ht_name
+    } else if(inherits(x, "HeatmapAnnotation")) {
+        if(x@which == "column") {
+            ht_name = x@name
+            x = list(x)
+            names(x) = ht_name
+        } else {
+            stop("You should specify `which` to `column` in you add a HeatmapAnnotation by columns.")    
+        }
     }
 
     # if ht is a HeatmapList, all settings are already checked
-    object@ht_list = c(object@ht_list, ht)
+    object@ht_list = c(object@ht_list, x)
     return(object)
 })
 
@@ -593,9 +601,17 @@ setMethod(f = "draw_annotation_legend",
 
     side = object@heatmap_legend_param$side
 
-    ColorMappingList = do.call("c", lapply(object@ht_list, function(ht) ht@column_anno_color_mapping))
-    nm = names(ColorMappingList)
-    ColorMappingList = ColorMappingList[nm]
+    ColorMappingList = list()
+    for(i in seq_along(object@ht_list)) {
+        ht = object@ht_list[[i]]
+        if(!is.null(ht@top_annotation)) {
+            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+        }
+        if(!is.null(ht@bottom_annotation)) {
+            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+        }
+    }
+    
     draw_legend(ColorMappingList, side = side)
 })
 
@@ -621,7 +637,8 @@ setMethod(f = "heatmap_legend_size",
     side = object@heatmap_legend_param$side
 
     ColorMappingList = lapply(object@ht_list, function(ht) ht@matrix_color_mapping)
-    draw_legend(ColorMappingList, side = side, plot = FALSE)
+    size = draw_legend(ColorMappingList, side = side, plot = FALSE)
+    return(size)
 })
 
 # == title
@@ -648,10 +665,19 @@ setMethod(f = "annotation_legend_size",
 
     side = object@annotation_legend_param$side
 
-    ColorMappingList = do.call("c", lapply(object@ht_list, function(ht) ht@column_anno_color_mapping))
-    nm = names(ColorMappingList)
-    ColorMappingList = ColorMappingList[nm]
-    draw_legend(ColorMappingList, side = side, plot = FALSE, vp_width = vp_width, vp_height = vp_height)
+    ColorMappingList = list()
+    for(i in seq_along(object@ht_list)) {
+        ht = object@ht_list[[i]]
+        if(!is.null(ht@top_annotation)) {
+            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+        }
+        if(!is.null(ht@bottom_annotation)) {
+            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+        }
+    }
+
+    size = draw_legend(ColorMappingList, side = side, plot = FALSE, vp_width = vp_width, vp_height = vp_height)
+    return(size)
 })
 
 draw_legend = function(ColorMappingList, side = c("right", "left", "top", "bottom"), plot = TRUE,
@@ -775,8 +801,8 @@ setMethod(f = "show",
 # Add heatmaps to the list
 #
 # == param
-# -ht1 a `HeatmapList` object.
-# -ht2 a `Heatmap` object or a `HeatmapList` object.
+# -x a `HeatmapList` object.
+# -y a `Heatmap` object or a `HeatmapList` object.
 #
 # == detail
 # It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`.
@@ -787,9 +813,15 @@ setMethod(f = "show",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-"+.HeatmapList" = function(ht1, ht2) {
-    if(inherits(ht2, "Heatmap") || inherits(ht2, "HeatmapList")) {
-        add_heatmap(ht1, ht2)
+"+.HeatmapList" = function(x, y) {
+    if(inherits(y, "Heatmap") || inherits(y, "HeatmapList")) {
+        add_heatmap(x, y)
+    } else if(inherits(y, "HeatmapAnnotation")) {
+        if(y@which == "column") {
+            add_heatmap(x, y)
+        } else {
+            stop("You should specify `which` to `column` in you add a HeatmapAnnotation by columns.")
+        }
     } else {
         stop("`ht2` should be a `Heatmap` or `HeatmapList` object.")
 

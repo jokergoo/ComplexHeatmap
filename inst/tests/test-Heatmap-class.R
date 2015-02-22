@@ -52,16 +52,14 @@ ht = Heatmap(mat, split = data.frame(rep(c("A", "B"), 4), rep(c("C", "D"), each 
 draw(ht, test = TRUE)
 
 
-annotation = data.frame(type = c(rep("A", 5), rep("B", 5)))
-rownames(annotation) = colnames(mat)
-ht = Heatmap(mat, annotation = annotation)
+annotation = HeatmapAnnotation(df = data.frame(type = c(rep("A", 5), rep("B", 5))))
+ht = Heatmap(mat, top_annotation = annotation)
 draw(ht, test = TRUE)
 
 
-annotation = data.frame(type1 = rep(c("A", "B"), 5), type2 = rep(c("C", "D"), each = 5))
-rownames(annotation) = colnames(mat)
-ht = Heatmap(mat, annotation = annotation)
-
+annotation = HeatmapAnnotation(df = data.frame(type1 = rep(c("A", "B"), 5), type2 = rep(c("C", "D"), each = 5)))
+ht = Heatmap(mat, bottom_annotation = annotation)
+draw(ht, test = TRUE)
 
 annotation = data.frame(value = rnorm(10))
 rownames(annotation) = colnames(mat)

@@ -8,13 +8,15 @@
 #
 # == details
 # The `ColorMapping` class handles color mapping with both discrete values and continuous values.
+# Discrete values are mapped by setting a vector of colors and continuous values are mapped by setting
+# a color mapping function.
 #
 # == methods
 # The `ColorMapping` class provides following methods:
 #
 # - `initialize,ColorMapping-method`: contructor methods
 # - `map,ColorMapping-method`: mapping values to colors
-# - `color_mapping_legend,ColorMapping-method`: draw legend
+# - `color_mapping_legend,ColorMapping-method`: draw legend or get the size of the legend
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -34,7 +36,7 @@ ColorMapping = setClass("ColorMapping",
 #
 # == param
 # -.Object private object
-# -name name for this color mapping.
+# -name name for this color mapping. It is used for drawing the title of the legend.
 # -colors discrete colors.
 # -levels levels that correspond to ``colors``. If ``colors`` is name indexed, 
 #         ``levels`` can be ignored.
@@ -73,7 +75,7 @@ setMethod(f = "initialize",
 		.Object@colors = colors
 		if(is.numeric(levels)) {
 			.Object@levels = as.character(levels)
-			attr(.Object@levels, "numeric") = TRUE
+			#attr(.Object@levels, "numeric") = TRUE
 		} else {
 			.Object@levels = levels
 		}
@@ -117,6 +119,7 @@ setMethod(f = "show",
 	definition = function(object) {
 	if(object@type == "discrete") {
 		cat("Discrete color mapping:\n")
+		cat("name:", object@name, "\n")
 		cat("levels:\n")
 		print(object@levels)
 		cat("\n")
@@ -126,6 +129,7 @@ setMethod(f = "show",
 		cat("\n")
 	} else if(object@type == "continuous") {
 		cat("Continuous color mapping:\n")
+		cat("name:", object@name, "\n")
 		cat("breaks:\n")
 		print(object@levels)
 		cat("\n")
@@ -155,7 +159,8 @@ setMethod(f = "show",
 setMethod(f = "map",
 	signature = "ColorMapping",
 	definition = function(object, x) {
-		
+	
+	if(is.factor(x)) x = as.vector(x)
 	original_attr = attributes(x)
 	if(object@type == "discrete") {
 		if(is.numeric(x)) x = as.character(x)
@@ -190,7 +195,7 @@ setMethod(f = "map",
 # A viewport is created which contains a legend title, legend grids and corresponding labels.
 #
 # == value
-# A `grid::unit` object with length two.
+# A `grid::unit` object which corresponds to the width and height of the legend viewport.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -230,5 +235,6 @@ setMethod(f = "color_mapping_legend",
 		upViewport()
 	}
 
-	return(unit.c(vp_width, vp_height))
+	size = unit.c(vp_width, vp_height)
+	return(invisible(size))
 })
