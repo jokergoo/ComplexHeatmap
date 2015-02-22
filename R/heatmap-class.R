@@ -771,6 +771,7 @@ setMethod(f = "draw_hclust",
     hc = switch(which,
         "row" = object@row_hclust_list[[k]],
         "column" = object@column_hclust)
+    hc = as.dendrogram(hc)
 
     gp = switch(which,
         "row" = object@row_hclust_param$gp,
@@ -780,61 +781,17 @@ setMethod(f = "draw_hclust",
         return(invisible(NULL))
     }
 
-    if(!is.null(max_height)) {
-        h = hc$height / max_height
-    } else {
-        h = hc$height / max(hc$height)
-    }
-    m = hc$merge
-    o = hc$order
-    n = length(o)
+    n = length(labels(dend))
 
-    m[m > 0] = n + m[m > 0] 
-    m[m < 0] = abs(m[m < 0])
-
-    dist = matrix(0, nrow = 2 * n - 1, ncol = 2, dimnames = list(NULL, c("x", "y"))) 
-    dist[1:n, 1] = 1 / n / 2 + (1 / n) * (match(1:n, o) - 1)
-
-    for(i in 1:nrow(m)){
-        dist[n + i, 1] = (dist[m[i, 1], 1] + dist[m[i, 2], 1]) / 2
-        dist[n + i, 2] = h[i]
-    }
-    
-    draw_connection = function(x1, x2, y1, y2, y, horizontal = FALSE, gp = gpar()){
-        
-        if(horizontal) {
-            grid.lines(y = c(x1, x1), x = c(y1, y), gp = gp)
-            grid.lines(y = c(x2, x2), x = c(y2, y), gp = gp)
-            grid.lines(y = c(x1, x2), x = c(y, y), gp = gp)
-        } else {
-            grid.lines(x = c(x1, x1), y = c(y1, y), gp = gp)
-            grid.lines(x = c(x2, x2), y = c(y2, y), gp = gp)
-            grid.lines(x = c(x1, x2), y = c(y, y), gp = gp)
-        }
-    }
-    
-    if(which == "row" && side == "right") {
-        #dist[, 1] = 1 - dist[, 1]
-    } else if(which == "row" && side == "left") {
-        #dist[, 1] = 1 - dist[, 1]
-        dist[, 2] = 1 - dist[, 2]
-        h = 1 - h
-    } else if(which == "column" && side == "bottom") {
-        dist[, 2] = 1 - dist[, 2]
-        h = 1 - h
-    }
-
-    if(which == "row") {
-        pushViewport(viewport(name = paste(object@name, "hclust_row", k, sep = "-"), ...))
-        for(i in 1:nrow(m)){
-            draw_connection(dist[m[i, 1], 1], dist[m[i, 2], 1], dist[m[i, 1], 2], dist[m[i, 2], 2], h[i], horizontal = TRUE, gp = gp)
-        }
-    } else {
-        pushViewport(viewport(name = paste(object@name, "hclust_col", sep = "-"), ...))
-        for(i in 1:nrow(m)){
-            draw_connection(dist[m[i, 1], 1], dist[m[i, 2], 1], dist[m[i, 1], 2], dist[m[i, 2], 2], h[i], horizontal = FALSE, gp = gp)
-        }
-    }
+    if(side == "left") {
+        grid.dendrogram(hc, name = paste(object@name, "hclust_row", k, sep = "-"), angle = 90, xorder = "reverse")
+    } else if(side == "right") {
+        grid.dendrogram(hc, name = paste(object@name, "hclust_row", k, sep = "-"), angle = -90)
+    } else if(side == "top") {
+        grid.dendrogram(hc, name = paste(object@name, "hclust_column", k, sep = "-"))
+    } else if(side == "bottom") {
+        grid.dendrogram(hc, name = paste(object@name, "hclust_column", k, sep = "-"), angle = 180, xorder = "reverse")
+    } 
 
     upViewport()
 })
