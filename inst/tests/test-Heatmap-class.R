@@ -4,9 +4,9 @@ library(grid)
 library(RColorBrewer)
 
 
-mat = matrix(rnorm(40, 2), 4, 10)
+mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
-rownames(mat) = letters[1:8]
+rownames(mat) = letters[1:12]
 colnames(mat) = letters[1:10]
 
 ht = Heatmap(mat)
@@ -63,12 +63,23 @@ draw(ht, test = TRUE)
 
 annotation = data.frame(value = rnorm(10))
 rownames(annotation) = colnames(mat)
-ht = Heatmap(mat, annotation = annotation)
-draw(ht, test = TRUE, annotation_graphic_type = "p")
-ht = Heatmap(mat, annotation = annotation, annotation_graphic_type = "p")
+annotation = HeatmapAnnotation(df = annotation)
+ht = Heatmap(mat, top_annotation = annotation)
+draw(ht, test = TRUE)
+
+annotation = data.frame(value = rnorm(10))
+value = 1:10
+anno_points = function(index) {
+	n = length(index)
+	pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = range(value)))
+	grid.points(seq_along(index), value[index])
+	upViewport()
+}
+ha = HeatmapAnnotation(df = annotation, points = anno_points)
+ht = Heatmap(mat, top_annotation = ha, bottom_annotation = ha)
 draw(ht, test = TRUE)
 
 # character matrix
 mat = matrix(sample(letters[1:6], 100, replace = TRUE), 10, 10)
-ht = Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
-draw(ht)
+ht = Heatmap(mat)
+draw(ht, test = TRUE)

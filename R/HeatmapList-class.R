@@ -59,10 +59,10 @@ HeatmapList = setClass("HeatmapList",
         annotation_legend_param = "list",
         heatmap_legend_param = "list",
 
-        layout = "environment"
+        layout = "list"
     ),
     prototype = list(
-        layout = as.environment(list(
+        layout = list(
             layout_annotation_legend_left_width = unit(0, "null"),
             layout_heatmap_legend_left_width = unit(0, "null"),
             layout_row_title_left_width = unit(0, "null"),
@@ -79,7 +79,7 @@ HeatmapList = setClass("HeatmapList",
             
             layout_index = matrix(nrow = 0, ncol = 2),
             graphic_fun_list = list()
-        ))
+        )
     )
 )
 
@@ -187,7 +187,7 @@ setMethod(f = "make_layout",
     if(n > 1) {
         if(length(gap) == 1) {
             if(inherits(gap, "unit")) {
-                gap = do.call("c", rep(list(gap), n))
+                gap = do.call("unit.c", rep(list(gap), n))
             }
         }
     } else {
@@ -286,6 +286,19 @@ setMethod(f = "make_layout",
     #################################################
     ## annotation legend to top, bottom, left and right
     # default values
+    ColorMappingList = list()
+    for(i in seq_along(object@ht_list)) {
+        ht = object@ht_list[[i]]
+        if(!is.null(ht@top_annotation)) {
+            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+        }
+        if(!is.null(ht@bottom_annotation)) {
+            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+        }
+    }
+    if(length(ColorMappingList) == 0) {
+        show_annotation_legend = FALSE
+    }
     object@annotation_legend_param$show = show_annotation_legend
     if(show_annotation_legend) {
         annotation_legend_side = match.arg(annotation_legend_side)[1]
@@ -302,7 +315,7 @@ setMethod(f = "make_layout",
             object@annotation_legend_param$size = size
             object@object@layout$layout_annotation_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
-        } else if(heatmap_legend_side == "left") {
+        } else if(annotation_legend_side == "left") {
             object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
             size = annotation_legend_size(object)
             object@annotation_legend_param$size = size
@@ -471,53 +484,96 @@ setMethod(f = "draw_heatmap_list",
     definition = function(object) {
 
     gap = object@ht_list_param$gap
-
+    ht_index = which(sapply(object@ht_list, inherits, "Heatmap"))
+    n = length(object@ht_list)
     # since each heatmap actually has nine rows, calculate the maximum height of corresponding rows in all heatmap 
     max_component_height = unit.c(
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 1)))),
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 2)))),
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 3)))),
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 4)))),
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 5)))),
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 6)))),
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 7)))),
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 8)))),
-        max(do.call("unit.c", lapply(object@ht_list, function(ht) component_height(ht, k = 9))))
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 1)))),
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 2)))),
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 3)))),
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 4)))),
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 5)))),
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 6)))),
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 7)))),
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 8)))),
+        max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 9))))
     )
 
     # set back to each heatmap
-    n = length(object@ht_list)
-    for(i in seq_len(n)) {
-        set_component_height(object@ht_list[[i]], k = 1, max_component_height[1])
-        set_component_height(object@ht_list[[i]], k = 2, max_component_height[2])
-        set_component_height(object@ht_list[[i]], k = 3, max_component_height[3])
-        set_component_height(object@ht_list[[i]], k = 4, max_component_height[4])
-        set_component_height(object@ht_list[[i]], k = 6, max_component_height[6])
-        set_component_height(object@ht_list[[i]], k = 7, max_component_height[7])
-        set_component_height(object@ht_list[[i]], k = 8, max_component_height[8])
-        set_component_height(object@ht_list[[i]], k = 9, max_component_height[9])
+    for(i in ht_index) {
+        object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 1, max_component_height[1])
+        object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 2, max_component_height[2])
+        object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 3, max_component_height[3])
+        object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 4, max_component_height[4])
+        object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 6, max_component_height[6])
+        object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 7, max_component_height[7])
+        object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 8, max_component_height[8])
+        object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 9, max_component_height[9])
     }
 
     width_without_heatmap_body = do.call("unit.c", lapply(object@ht_list, function(ht) component_width(ht, c(1:3, 5:7))))
-    heatmap_ncol = sapply(object@ht_list, function(ht) ncol(ht@matrix))
+    
+    # number of columns in heatmap whic are not fixed width
+    heatmap_ncol = sapply(object@ht_list, function(ht) {
+        if(inherits(ht, "Heatmap")) {
+            if(is.null(ht@heatmap_param$width)) {
+                return(ncol(ht@matrix))
+            }
+        }
+        return(0)
+    })
 
+    heatmap_fixed_width = lapply(object@ht_list, function(ht) {
+        if(inherits(ht, "Heatmap")) {
+            if(!is.null(ht@heatmap_param$width)) {
+                return(ht@heatmap_param$width)
+            } else {
+                return(unit(0, "null"))
+            }
+        } else if(inherits(ht, "HeatmapAnnotation")) {
+            return(ht@size)
+        }
+    })
+    heatmap_fixed_width = do.call("unit.c", heatmap_fixed_width)
     # width for body for each heatmap
-    heatmap_body_width = (unit(1, "npc") - sum(width_without_heatmap_body) - sum(gap)) * (1/sum(heatmap_ncol)) * heatmap_ncol
+    heatmap_body_width = (unit(1, "npc") - sum(width_without_heatmap_body) - sum(heatmap_fixed_width) - sum(gap)) * (1/sum(heatmap_ncol)) * heatmap_ncol
 
     # width of heatmap including body, and other components
+    # width without fixed width
     heatmap_width = sum(width_without_heatmap_body[1:3]) + heatmap_body_width[1] + sum(width_without_heatmap_body[5:7-1])
-
     for(i in seq_len(n - 1) + 1) {
         heatmap_width = unit.c(heatmap_width, sum(width_without_heatmap_body[6*(i-1) + 1:3]) + heatmap_body_width[i] + sum(width_without_heatmap_body[6*(i-1) + 5:7-1]))
     }
+    # width with fixed width
+    heatmap_width = heatmap_width + heatmap_fixed_width
 
     pushViewport(viewport(name = "main_heatmap_list"))
     
     x = unit(0, "npc")
+    kk = which(sapply(object@ht_list, inherits, "Heatmap"))[1]
+    htkk = object@ht_list[[kk]]
+    gap = htkk@matrix_param$gap
+    n_slice = length(htkk@row_order_list)
+    snr = sapply(htkk@row_order_list, length)
+    slice_height = (unit(1, "npc") - gap*(n_slice-1))*(snr/sum(snr))
+    for(i in seq_len(n_slice)) {
+        if(i == 1) {
+            slice_y = unit(1, "npc")
+        } else {
+            slice_y = unit.c(slice_y, unit(1, "npc") - sum(slice_height[seq_len(i-1)]) - gap*(i-1))
+        }
+    }
+
     for(i in seq_len(n)) {
         pushViewport(viewport(x = x, y = unit(0, "npc"), width = heatmap_width[i], just = c("left", "bottom"), name = paste0("heatmap_", object@ht_list[[i]]@name)))
         ht = object@ht_list[[i]]
-        draw(ht, internal = TRUE)
+        if(inherits(ht, "Heatmap")) {
+            draw(ht, internal = TRUE)
+        } else if(inherits(ht, "HeatmapAnnotation")) {
+            for(i in seq_len(n_slice)) {
+                draw(ht, k = i, y = slice_y[i] )
+            }
+        }
         upViewport()
 
         if(i < n) {
@@ -607,7 +663,7 @@ setMethod(f = "draw_heatmap_legend",
     padding = object@heatmap_legend_param$padding
 
     ColorMappingList = lapply(object@ht_list, function(ht) ht@matrix_color_mapping)
-    pushViewport(viewport(name = "heatmap_legend", x = padding[2], y = padding[3], width = size[1], height = size[2], just = c("left", "top")))
+    pushViewport(viewport(name = "heatmap_legend", x = padding[2], y = unit(1, "npc") - padding[3], width = size[1], height = size[2], just = c("left", "top")))
     draw_legend(ColorMappingList, side = side)
     upViewport()
 })
@@ -648,7 +704,7 @@ setMethod(f = "draw_annotation_legend",
         }
     }
 
-    pushViewport(viewport(name = "annotation_legend", x = padding[2], y = padding[3], width = size[1], height = size[2], just = c("left", "top")))
+    pushViewport(viewport(name = "annotation_legend", x = padding[2], y = unit(1, "npc"), padding[3], width = size[1], height = size[2], just = c("left", "top")))
     draw_legend(ColorMappingList, side = side)
     upViewport()
 })
@@ -678,8 +734,7 @@ setMethod(f = "heatmap_legend_size",
     ColorMappingList = lapply(object@ht_list, function(ht) ht@matrix_color_mapping)
     size = draw_legend(ColorMappingList, side = side, plot = FALSE)
 
-    size[1] = size[1] + padding[2] + padding[4]
-    size[2] = size[2] + padding[1] + padding[3]
+    size = unit.c(size[1] + padding[2] + padding[4], size[2] + padding[1] + padding[3])
     return(size)
 })
 
@@ -745,7 +800,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
             cm_height = unit.c(unit(0, "null"), cm_height)
         	for(i in seq_len(n)) {
                 cm = ColorMappingList[[i]]
-                color_mapping_legend(cm, y = sum(cm_height[seq_len(i)]) + gap*(i-1), just = c("left", "top"), plot = TRUE)
+                color_mapping_legend(cm, x = unit(0, "npc"), y = unit(1, "npc") - (sum(cm_height[seq_len(i)]) + gap*(i-1)), just = c("left", "top"), plot = TRUE)
             }
         }
 
@@ -754,14 +809,14 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
     } else if(side %in% c("top", "bottom")) {
 
         width = sum(cm_width) + gap*(n-1)
-        height = max(height)
+        height = max(cm_height)
 
         if(plot) {
             cm_width = unit.c(unit(0, "null"), cm_width)
 
             for(i in seq_len(n)) {
                 cm = ColorMappingList[[i]]
-                color_mapping_legend(cm, x = sum(cm_width[seq_len(i)] + gap*(i-1), just = c("left", "top"), plot = TRUE)
+                color_mapping_legend(cm, x = sum(cm_width[seq_len(i)] + gap*(i-1)), y = unit(1, "npc"), just = c("left", "top"), plot = TRUE)
             }
         }
         

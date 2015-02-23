@@ -20,8 +20,9 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 	slots = list(
 		name = "character",
 		anno_list = "list",  # a list of `SingleAnnotation` objects
-		size = "ANY",
-		which = "character"
+		anno_size = "ANY",
+		which = "character",
+		size = "ANY"
 	),
 	prototype = list(
 		anno_list = list(),
@@ -47,13 +48,14 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 setMethod(f = "initialize",
 	signature = "HeatmapAnnotation",
-	definition = function(.Object, df, name, col, show_legend, ..., which = c("column", "row"), height = 1, width = 1) {
+	definition = function(.Object, df, name, col, show_legend, ..., which = c("column", "row"), 
+	annotation_height = 1, annotation_width = 1, height = unit(1, "npc"), width = unit(1, "npc")) {
 
 	anno_list = list()
 	which = match.arg(which)[1]
 
 	if(missing(name)) {
-		name = get_row_annotation_index()
+		name = paste0("heatmap_annotation_", get_row_annotation_index())
 		increase_row_annotation_index()
 	}
 
@@ -111,24 +113,30 @@ setMethod(f = "initialize",
 
 	n_anno = length(anno_list)
 
-	size = switch(which,
-		column = height,
-		row = width)
+	anno_size = switch(which,
+		column = annotation_height,
+		row = annotation_width)
 
-	if(length(size) == 1) {
-		if(is.numeric(size)) {
-			size = rep(size, n_anno)
+	if(length(anno_size) == 1) {
+		if(is.numeric(anno_size)) {
+			anno_size = rep(anno_size, n_anno)
 		}
 	}
 
-	if(is.numeric(size)) {
-		size = unit(size/sum(size), "npc")
+	if(is.numeric(anno_size)) {
+		anno_size = unit(anno_size/sum(anno_size), "npc")
 	}
 
 
     .Object@anno_list = anno_list
-    .Object@size = size
+    .Object@anno_size = anno_size
     .Object@which = which
+
+    size = switch(which,
+		column = height,
+		row = width)
+
+    .Object@size = size
 
     return(.Object)
 })
@@ -169,14 +177,14 @@ setMethod(f = "draw",
 
 	which = object@which
 	n_anno = length(object@anno_list)
-	size = object@size
+	anno_size = object@anno_size
 
 	pushViewport(viewport(...))
 	for(i in seq_len(n_anno)) {
 		if(which == "column") {
-			pushViewport(viewport(y = sum(size[seq_len(i)]), height = size[i], just = c("center", "top")))
+			pushViewport(viewport(y = sum(anno_size[seq_len(i)]), height = anno_size[i], just = c("center", "top")))
 		} else {
-			pushViewport(viewport(x = sum(size[seq_len(i)]), width = size[i], just = c("right", "center")))
+			pushViewport(viewport(x = sum(anno_size[seq_len(i)]), width = anno_size[i], just = c("right", "center")))
 		}
 		draw(object@anno_list[[i]], index)
 		upViewport()

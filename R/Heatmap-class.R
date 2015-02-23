@@ -92,7 +92,7 @@ Heatmap = setClass("Heatmap",
 
         heatmap_param = "list",
 
-        layout = "environment"
+        layout = "list"
     )
 )
 
@@ -202,6 +202,13 @@ setMethod(f = "initialize",
             stop("If data is not a matrix, it should be a simpel vector.")
         }
     }
+
+    if(is.character(matrix)) {
+        cluster_rows = FALSE
+        cluster_columns = FALSE
+        show_row_hclust = FALSE
+        show_column_hclust = FALSE
+    }
     .Object@matrix = matrix
     .Object@matrix_param$km = km
     .Object@matrix_param$gap = gap
@@ -215,7 +222,7 @@ setMethod(f = "initialize",
     .Object@matrix_param$gp = rect_gp
     
     if(missing(name)) {
-        name = paste0("matrix", get_heatmap_index() + 1)
+        name = paste0("matrix_", get_heatmap_index() + 1)
         increase_heatmap_index()
     }
     .Object@name = name
@@ -271,7 +278,7 @@ setMethod(f = "initialize",
         show_row_hclust = FALSE
     }
     if(!show_row_hclust) {
-        row_hclust_width = unit(0, "unit")
+        row_hclust_width = unit(0, "null")
     }
     .Object@row_hclust_list = list()
     .Object@row_hclust_param$cluster = cluster_rows
@@ -288,7 +295,7 @@ setMethod(f = "initialize",
         show_column_hclust = FALSE
     }
     if(!show_column_hclust) {
-        column_hclust_height = unit(0, "unit")
+        column_hclust_height = unit(0, "null")
     }
     .Object@column_hclust = NULL
     .Object@column_hclust_param$cluster = cluster_columns
@@ -302,17 +309,21 @@ setMethod(f = "initialize",
 
     .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
     .Object@top_annotation_param$height = top_annotation_height
-    if(.Object@top_annotation@which == "column") {
-        stop("`which` in `top_annotation` should only be `column`.")
+    if(!is.null(top_annotation)) {
+        if(!.Object@top_annotation@which == "column") {
+            stop("`which` in `top_annotation` should only be `column`.")
+        }
     }
     
     .Object@bottom_annotation = bottom_annotation # a `HeatmapAnnotation` object
     .Object@bottom_annotation_param$height = bottom_annotation_height
-    if(.Object@bottom_annotation@which == "column") {
-        stop("`which` in `bottom_annotation` should only be `column`.")
+    if(!is.null(bottom_annotation)) {
+        if(!.Object@bottom_annotation@which == "column") {
+            stop("`which` in `bottom_annotation` should only be `column`.")
+        }
     }
 
-    .Object@layout = as.environment(list(
+    .Object@layout = list(
         layout_column_title_top_height = unit(0, "null"),
         layout_column_hclust_top_height = unit(0, "null"),
         layout_column_anno_top_height = unit(0, "null"),
@@ -333,7 +344,7 @@ setMethod(f = "initialize",
 
         layout_index = matrix(nrow = 0, ncol = 2),
         graphic_fun_list = list()
-    ))
+    )
 
     set_row_order(seq_len(nrow(matrix)))
     set_column_order(seq_len(ncol(matrix)))
@@ -804,8 +815,7 @@ setMethod(f = "draw_hclust",
     hc = switch(which,
         "row" = object@row_hclust_list[[k]],
         "column" = object@column_hclust)
-    hc = as.dendrogram(hc)
-
+    
     gp = switch(which,
         "row" = object@row_hclust_param$gp,
         "column" = object@column_hclust_param$gp)
@@ -814,16 +824,17 @@ setMethod(f = "draw_hclust",
         return(invisible(NULL))
     }
 
+    dend = as.dendrogram(hc)
     n = length(labels(dend))
 
     if(side == "left") {
-        grid.dendrogram(hc, name = paste(object@name, "hclust_row", k, sep = "-"), angle = 90, xorder = "reverse", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), facing = "right", order = "reverse", ...)
     } else if(side == "right") {
-        grid.dendrogram(hc, name = paste(object@name, "hclust_row", k, sep = "-"), angle = -90, ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), facing = "left", ...)
     } else if(side == "top") {
-        grid.dendrogram(hc, name = paste(object@name, "hclust_column", sep = "-"), ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), facing = "bottom", ...)
     } else if(side == "bottom") {
-        grid.dendrogram(hc, name = paste(object@name, "hclust_column", sep = "-"), angle = 180, xorder = "reverse", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), facing = "top", order = "reverse", ...)
     } 
 
 })
@@ -1122,6 +1133,8 @@ setMethod(f = "set_component_height",
     } else {
         stop("wrong 'k'")
     }
+
+    return(object)
 })
 
 # == title
@@ -1202,7 +1215,7 @@ setMethod(f = "draw",
 #
 setMethod(f = "prepare",
     signature = "Heatmap",
-    definition = function(object, row_order = "hclust", split = object@matrix_param$split) {
+    definition = function(object, row_order = NULL, split = object@matrix_param$split) {
 
     if(object@row_hclust_param$cluster) object = make_row_cluster(object, order = row_order, split = split)
     if(object@column_hclust_param$cluster) object = make_column_cluster(object)

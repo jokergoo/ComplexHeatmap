@@ -79,7 +79,7 @@ default_col = function(x, main_matrix = FALSE) {
     }
 }
 
-grid.dendrogram = function(dend, maxy = attr(dend, "height"), xorder = c("normal", "reverse"), ...) {
+grid.dendrogram = function(dend, facing = "bottom", max_height = attr(dend, "height"), order = c("normal", "reverse"), ...) {
     
     is.leaf = function(object) {
         leaf = attr(object, "leaf")
@@ -90,7 +90,7 @@ grid.dendrogram = function(dend, maxy = attr(dend, "height"), xorder = c("normal
         }
     }
     
-    draw.d = function(dend, maxy, xorder = "normal", maxx = 0) {
+    draw.d = function(dend, max_height, facing = "bottom", order = "normal", max_width = 0) {
         leaf = attr(dend, "leaf")
         d1 = dend[[1]]  # child tree 1
         d2 = dend[[2]]  # child tree 2
@@ -112,21 +112,49 @@ grid.dendrogram = function(dend, maxy = attr(dend, "height"), xorder = c("normal
         y2 = attr(d2, "height")
         
         # plot the connection line
-        if(xorder == "normal") {
-            grid.lines(c(x1, x1), c(y1, height), default.units = "native")
-            grid.lines(c(x1, x2), c(height, height), default.units = "native")
-            grid.lines(c(x2, x2), c(y2, height), default.units = "native")
+        if(order == "normal") {
+            if(facing == "bottom") {
+                grid.lines(c(x1, x1), c(y1, height), default.units = "native")
+                grid.lines(c(x1, x2), c(height, height), default.units = "native")
+                grid.lines(c(x2, x2), c(y2, height), default.units = "native")
+            } else if(facing == "top") {
+                grid.lines(c(x1, x1), max_height - c(y1, height), default.units = "native")
+                grid.lines(c(x1, x2), max_height - c(height, height), default.units = "native")
+                grid.lines(c(x2, x2), max_height - c(y2, height), default.units = "native")
+            } else if(facing == "right") {
+                grid.lines(max_height - c(y1, height), c(x1, x1), default.units = "native")
+                grid.lines(max_height - c(height, height), c(x1, x2), default.units = "native")
+                grid.lines(max_height - c(y2, height), c(x2, x2), default.units = "native")
+            } else if(facing == "left") {
+                grid.lines(c(y1, height), c(x1, x1), default.units = "native")
+                grid.lines(c(height, height), c(x1, x2), default.units = "native")
+                grid.lines(c(y2, height), c(x2, x2), default.units = "native")
+            }
         } else {
-            grid.lines(maxx - c(x1, x1), c(y1, height), default.units = "native")
-            grid.lines(maxx - c(x1, x2), c(height, height), default.units = "native")
-            grid.lines(maxx - c(x2, x2), c(y2, height), default.units = "native")
+            if(facing == "bottom") {
+                grid.lines(max_width - c(x1, x1), c(y1, height), default.units = "native")
+                grid.lines(max_width - c(x1, x2), c(height, height), default.units = "native")
+                grid.lines(max_width - c(x2, x2), c(y2, height), default.units = "native")
+            } else if(facing == "top") {
+                grid.lines(max_width - c(x1, x1), max_height - c(y1, height), default.units = "native")
+                grid.lines(max_width - c(x1, x2), max_height - c(height, height), default.units = "native")
+                grid.lines(max_width - c(x2, x2), max_height - c(y2, height), default.units = "native")
+            } else if(facing == "right") {
+                grid.lines(max_height - c(y1, height), max_width - c(x1, x1), default.units = "native")
+                grid.lines(max_height - c(height, height), max_width - c(x1, x2), default.units = "native")
+                grid.lines(max_height - c(y2, height), max_width - c(x2, x2), default.units = "native")
+            } else if(facing == "left") {
+                grid.lines(c(y1, height), max_width - c(x1, x1), default.units = "native")
+                grid.lines(c(height, height), max_width - c(x1, x2), default.units = "native")
+                grid.lines(c(y2, height), max_width - c(x2, x2), default.units = "native")
+            }
         }
         # do it recursively
         if(!is.leaf(d1)) {
-            draw.d(d1, maxy, xorder, maxx)
+            draw.d(d1, max_height, facing, order, max_width)
         }
         if(!is.leaf(d2)) {
-            draw.d(d2, maxy, xorder, maxx)
+            draw.d(d2, max_height, facing, order, max_width)
         }
     }
     
@@ -136,11 +164,17 @@ grid.dendrogram = function(dend, maxy = attr(dend, "height"), xorder = c("normal
     names(x) = labels
     n = length(labels)
 
-    xorder = match.arg(xorder)[1]
+    order = match.arg(order)[1]
     
-    pushViewport(viewport(xscale = c(0, n), yscale = c(0, maxy), ...))
-    draw.d(dend, maxy, xorder, maxx= n)
-    upViewport()
+    if(facing %in% c("top", "bottom")) {
+        pushViewport(viewport(xscale = c(0, n), yscale = c(0, max_height), ...))
+        draw.d(dend, max_height, facing, order, max_width = n)
+        upViewport()
+    } else if(facing %in% c("right", "left")) {
+        pushViewport(viewport(yscale = c(0, n), xscale = c(0, max_height), ...))
+        draw.d(dend, max_height, facing, order, max_width = n)
+        upViewport()
+    }
 }
 
 # == title
