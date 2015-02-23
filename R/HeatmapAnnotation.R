@@ -18,6 +18,7 @@
 #
 HeatmapAnnotation = setClass("HeatmapAnnotation",
 	slots = list(
+		name = "character",
 		anno_list = "list",  # a list of `SingleAnnotation` objects
 		size = "ANY",
 		which = "character"
@@ -46,10 +47,17 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 setMethod(f = "initialize",
 	signature = "HeatmapAnnotation",
-	definition = function(.Object, df, col, show_legend, ..., which = c("row", "column"), height = 1, width = 1) {
+	definition = function(.Object, df, name, col, show_legend, ..., which = c("column", "row"), height = 1, width = 1) {
 
 	anno_list = list()
 	which = match.arg(which)[1]
+
+	if(missing(name)) {
+		name = get_row_annotation_index()
+		increase_row_annotation_index()
+	}
+
+	.Object@name = name
 
 	if(!missing(df)) {
 		if(is.null(colnames(df))) {
@@ -104,8 +112,8 @@ setMethod(f = "initialize",
 	n_anno = length(anno_list)
 
 	size = switch(which,
-		row = height,
-		column = width)
+		column = height,
+		row = width)
 
 	if(length(size) == 1) {
 		if(is.numeric(size)) {
@@ -165,7 +173,7 @@ setMethod(f = "draw",
 
 	pushViewport(viewport(...))
 	for(i in seq_len(n_anno)) {
-		if(which == "row") {
+		if(which == "column") {
 			pushViewport(viewport(y = sum(size[seq_len(i)]), height = size[i], just = c("center", "top")))
 		} else {
 			pushViewport(viewport(x = sum(size[seq_len(i)]), width = size[i], just = c("right", "center")))

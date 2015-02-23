@@ -192,14 +192,24 @@ setMethod(f = "initialize",
     bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
     km = 1, gap = unit(1, "mm"), split = NULL, width = NULL) {
 
+    if(is.data.frame(matrix)) {
+        matrix = as.matrix(matrix)
+    }
     if(!is.matrix(matrix)) {
-    	matrix = matrix(matrix, ncol = 1)
+        if(is.atomic(matrix)) {
+           matrix = matrix(matrix, ncol = 1)
+        } else {
+            stop("If data is not a matrix, it should be a simpel vector.")
+        }
     }
     .Object@matrix = matrix
     .Object@matrix_param$km = km
     .Object@matrix_param$gap = gap
     if(!is.null(split)) {
         if(!is.data.frame(split)) split = data.frame(split)
+        if(nrow(split) != nrow(matrix)) {
+            stop("Length or number of rows of `split` should be same as rows in `matrix`.")
+        }
     }
     .Object@matrix_param$split = split
     .Object@matrix_param$gp = rect_gp
@@ -260,6 +270,9 @@ setMethod(f = "initialize",
         row_hclust_width = unit(0, "null")
         show_row_hclust = FALSE
     }
+    if(!show_row_hclust) {
+        row_hclust_width = unit(0, "unit")
+    }
     .Object@row_hclust_list = list()
     .Object@row_hclust_param$cluster = cluster_rows
     .Object@row_hclust_param$distance = clustering_distance_rows
@@ -268,11 +281,14 @@ setMethod(f = "initialize",
     .Object@row_hclust_param$width = row_hclust_width
     .Object@row_hclust_param$show = show_row_hclust
     .Object@row_hclust_param$gp = row_hclust_gp
-    .Object@row_order_list = list(seq_len(nrow(matrix)))
+    .Object@row_order_list = list(seq_len(nrow(matrix))) # default order
 
     if(!cluster_columns) {
         column_hclust_height = unit(0, "null")
         show_column_hclust = FALSE
+    }
+    if(!show_column_hclust) {
+        column_hclust_height = unit(0, "unit")
     }
     .Object@column_hclust = NULL
     .Object@column_hclust_param$cluster = cluster_columns
@@ -284,11 +300,17 @@ setMethod(f = "initialize",
     .Object@column_hclust_param$gp = column_hclust_gp
     .Object@column_order = seq_len(ncol(matrix))
 
-    .Object@top_annotation = top_annotation
+    .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
     .Object@top_annotation_param$height = top_annotation_height
+    if(.Object@top_annotation@which == "column") {
+        stop("`which` in `top_annotation` should only be `column`.")
+    }
     
-    .Object@bottom_annotation = bottom_annotation
+    .Object@bottom_annotation = bottom_annotation # a `HeatmapAnnotation` object
     .Object@bottom_annotation_param$height = bottom_annotation_height
+    if(.Object@bottom_annotation@which == "column") {
+        stop("`which` in `bottom_annotation` should only be `column`.")
+    }
 
     .Object@layout = as.environment(list(
         layout_column_title_top_height = unit(0, "null"),
@@ -307,7 +329,7 @@ setMethod(f = "initialize",
         layout_row_names_right_width = unit(0, "null"),
         layout_row_title_right_width = unit(0, "null"),
 
-        layout_heatmap_width = width,
+        layout_heatmap_width = width, # for the layout of heatmap list
 
         layout_index = matrix(nrow = 0, ncol = 2),
         graphic_fun_list = list()
@@ -325,8 +347,7 @@ setMethod(f = "initialize",
 #
 # == param
 # -object a `Heatmap` object.
-# -order a single string ``hclust`` means the cluster is performed by `stats::hclust`. The value
-#        can also be a pre-defined order.
+# -order a pre-defined order.
 #
 # == details
 # The function will fill or adjust ``column_hclust`` and ``column_order`` slots.
@@ -341,17 +362,17 @@ setMethod(f = "initialize",
 #
 setMethod(f = "make_column_cluster",
     signature = "Heatmap",
-    definition = function(object, order = "hclust") {
+    definition = function(object, order = NULL) {
     
     mat = object@matrix
     distance = object@column_hclust_param$distance
     method = object@column_hclust_param$method
 
-    if(length(order) > 1) {
-        column_order = order
-    } else if(order == "hclust") {
+    if(is.null(order)) {
         object@column_hclust = hclust(get_dist(t(mat), distance), method = method)
         column_order = object@column_hclust$order
+    } else {
+        column_order = order
     }
 
     object@column_order = column_order
@@ -366,8 +387,7 @@ setMethod(f = "make_column_cluster",
 #
 # == param
 # -object a `Heatmap` object.
-# -order a single string ``hclust`` means the cluster is performed by `stats::hclust`. The value
-#        can also be a pre-defined order.
+# -order a pre-defined order.
 # -km if apply k-means clustering on rows, number of clusters.
 # -split a vector or a data frame by which the rows are be splitted.
 #
@@ -384,19 +404,20 @@ setMethod(f = "make_column_cluster",
 #
 setMethod(f = "make_row_cluster",
     signature = "Heatmap",
-    definition = function(object, order = "hclust", km = object@matrix_param$km, 
-        split = object@matrix_param$split) {
+    definition = function(object, order = NULL, km = object@matrix_param$km, 
+    split = object@matrix_param$split) {
 
     mat = object@matrix
     distance = object@row_hclust_param$distance
     method = object@row_hclust_param$method
 
-    if(length(order) > 1) {
-        row_order = order
-    } else {
+    if(is.null(order)) {
         row_order = seq_len(nrow(mat))  # default row order
+    } else {
+        row_order = order
     }
 
+    # make k-means clustering to add a split column
     if(km > 1) {
         km.fit = kmeans(mat, centers = km, iter.max = 50, nstart = round(nrow(mat)*0.1))
         cluster = km.fit$cluster
@@ -413,6 +434,7 @@ setMethod(f = "make_row_cluster",
         split = cbind(split, cluster2)
     }
 
+    # split the original order into a list according to split
     row_order_list = list()
     if(is.null(split)) {
         row_order_list[[1]] = row_order
@@ -434,7 +456,8 @@ setMethod(f = "make_row_cluster",
         object@row_title = row_levels
     }
 
-    if(length(order) == 1) {
+    # make hclust in each slice
+    if(is.null(order)) {
         row_hclust_list = rep(list(NULL), length(row_order_list))
         for(i in seq_along(row_order_list)) {
             submat = mat[ row_order_list[[i]], , drop = FALSE]
@@ -477,6 +500,9 @@ setMethod(f = "make_row_cluster",
 setMethod(f = "make_layout",
     signature = "Heatmap",
     definition = function(object) {
+
+    # for components which are placed by rows, they will be splitted into parts
+    # and slice_y controls the y-coordinates of each part
 
     # position of each row-slice
     gap = object@matrix_param$gap
@@ -791,16 +817,15 @@ setMethod(f = "draw_hclust",
     n = length(labels(dend))
 
     if(side == "left") {
-        grid.dendrogram(hc, name = paste(object@name, "hclust_row", k, sep = "-"), angle = 90, xorder = "reverse")
+        grid.dendrogram(hc, name = paste(object@name, "hclust_row", k, sep = "-"), angle = 90, xorder = "reverse", ...)
     } else if(side == "right") {
-        grid.dendrogram(hc, name = paste(object@name, "hclust_row", k, sep = "-"), angle = -90)
+        grid.dendrogram(hc, name = paste(object@name, "hclust_row", k, sep = "-"), angle = -90, ...)
     } else if(side == "top") {
-        grid.dendrogram(hc, name = paste(object@name, "hclust_column", k, sep = "-"))
+        grid.dendrogram(hc, name = paste(object@name, "hclust_column", sep = "-"), ...)
     } else if(side == "bottom") {
-        grid.dendrogram(hc, name = paste(object@name, "hclust_column", k, sep = "-"), angle = 180, xorder = "reverse")
+        grid.dendrogram(hc, name = paste(object@name, "hclust_column", sep = "-"), angle = 180, xorder = "reverse", ...)
     } 
 
-    upViewport()
 })
 
 # == title
@@ -1130,7 +1155,7 @@ setMethod(f = "draw",
         if(internal) {  # a heatmap without legend
             layout = grid.layout(nrow = 9, ncol = 7, widths = component_width(object, 1:7), 
                 heights = component_height(object, 1:9))
-            pushViewport(viewport(layout = layout, name = "main_heatmap_list"))
+            pushViewport(viewport(layout = layout))
             
             ht_layout_index = object@layout$layout_index
             ht_graphic_fun_list = object@layout$graphic_fun_list
@@ -1177,12 +1202,14 @@ setMethod(f = "draw",
 #
 setMethod(f = "prepare",
     signature = "Heatmap",
-    definition = function(object, row_order = "hclust", split = object@matrix_param$split, show_row_title = TRUE) {
+    definition = function(object, row_order = "hclust", split = object@matrix_param$split) {
+
     if(object@row_hclust_param$cluster) object = make_row_cluster(object, order = row_order, split = split)
     if(object@column_hclust_param$cluster) object = make_column_cluster(object)
-    if(!show_row_title) object@row_title = character(0)
+
     object = make_layout(object)
     return(object)
+
 })
 
 # == title

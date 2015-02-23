@@ -109,12 +109,12 @@ setMethod(f = "add_heatmap",
         x = list(x)
         names(x) = ht_name
     } else if(inherits(x, "HeatmapAnnotation")) {
-        if(x@which == "column") {
+        if(x@which == "row") {
             ht_name = x@name
             x = list(x)
             names(x) = ht_name
         } else {
-            stop("You should specify `which` to `column` in you add a HeatmapAnnotation by columns.")    
+            stop("You should specify `which` to `row` in you add a HeatmapAnnotation which shows row annotations.")    
         }
     }
 
@@ -167,27 +167,33 @@ setMethod(f = "make_layout",
     gap = unit(3, "mm"), auto_adjust = TRUE) {
 
     n = length(object@ht_list)
-    object@ht_list[[1]] = prepare(object@ht_list[[1]])
+    i_main = 1
+    object@ht_list[[i_main]] = prepare(object@ht_list[[i_main]])
 
     if(auto_adjust) {
         row_order = unlist(object@ht_list[[1]]@row_order_list)
         split = object@ht_list[[1]]@matrix_param$split
-    	if(n > 1) {
-    		for(i in seq_len(n-1)+1) {
-                # some settings should be same as the first one
-                object@ht_list[[i]]@matrix_param$km = 1
-                object@ht_list[[i]]@row_hclust_param$show = FALSE
-                object@ht_list[[i]]@row_hclust_param$cluster = TRUE
-                object@ht_list[[i]] = prepare(object@ht_list[[i]], row_order = row_order, split = split, show_row_title = FALSE)
-    		}
+    	for(i in seq_len(n)) {
+            if(i == i_main) next
+            # some settings should be same as the first one
+            object@ht_list[[i]]@matrix_param$km = 1
+            object@ht_list[[i]]@row_hclust_param$show = FALSE
+            object@ht_list[[i]]@row_hclust_param$cluster = TRUE
+            object@ht_list[[i]]@row_title = character(0)
+            object@ht_list[[i]] = prepare(object@ht_list[[i]], row_order = row_order, split = split)
     	}
     }
 
     if(n > 1) {
-        if(length(gap) == 1) gap = rep(gap, n-1)
-        gap = rep(gap, ceiling((n-1)/length(gap)))[seq_len(n-1)]
+        if(length(gap) == 1) {
+            if(inherits(gap, "unit")) {
+                gap = do.call("c", rep(list(gap), n))
+            }
+        }
     } else {
-        gap = unit(0, "mm")
+        if(!is.unit(gap)) {
+            gap = unit(0, "mm")    
+        }
     }
     object@ht_list_param$gap = gap
 
@@ -250,16 +256,28 @@ setMethod(f = "make_layout",
         heatmap_legend_side = match.arg(heatmap_legend_side)[1]
         object@heatmap_legend_param$side = heatmap_legend_side
         if(heatmap_legend_side == "top") {
-            object@layout$layout_heatmap_legend_top_height = heatmap_legend_size(object)[2]
+            object@heatmap_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
+            size = heatmap_legend_size(object)
+            object@heatmap_legend_param$size = size
+            object@layout$layout_heatmap_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(2, 4))
         } else if(heatmap_legend_side == "bottom") {
-            object@layout$layout_heatmap_legend_bottom_height = heatmap_legend_size(object)[2]
+            object@heatmap_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
+            size = heatmap_legend_size(object)
+            object@heatmap_legend_param$size = size
+            object@layout$layout_heatmap_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
         } else if(heatmap_legend_side == "left") {
-            object@layout$layout_heatmap_legend_left_width = heatmap_legend_size(object)[1]
+            object@heatmap_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
+            size = heatmap_legend_size(object)
+            object@heatmap_legend_param$size = size
+            object@layout$layout_heatmap_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 2))
         } else if(heatmap_legend_side == "right") {
-            object@layout$layout_heatmap_legend_right_width = heatmap_legend_size(object)[1]
+            object@heatmap_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
+            size = heatmap_legend_size(object)
+            object@heatmap_legend_param$size = size
+            object@layout$layout_heatmap_legend_right_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 6))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object))
@@ -273,16 +291,28 @@ setMethod(f = "make_layout",
         annotation_legend_side = match.arg(annotation_legend_side)[1]
         object@annotation_legend_param$side = annotation_legend_side
         if(annotation_legend_side == "top") {
-            object@layout$layout_annotation_legend_top_height = annotation_legend_size(object)[2]
+            object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
+            size = annotation_legend_size(object)
+            object@annotation_legend_param$size = size
+            object@layout$layout_annotation_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(1, 4))
         } else if(annotation_legend_side == "bottom") {
-            object@object@layout$layout_annotation_legend_bottom_height = annotation_legend_size(object)[2]
+            object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
+            size = annotation_legend_size(object)
+            object@annotation_legend_param$size = size
+            object@object@layout$layout_annotation_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
         } else if(heatmap_legend_side == "left") {
-            object@layout$layout_annotation_legend_left_width = annotation_legend_size(object)[1]
+            object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
+            size = annotation_legend_size(object)
+            object@annotation_legend_param$size = size
+            object@layout$layout_annotation_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 1))
         } else if(annotation_legend_side == "right") {
-            object@layout$layout_annotation_legend_right_width = annotation_legend_size(object)[1]
+            object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
+            size = annotation_legend_size(object)
+            object@annotation_legend_param$size = size
+            object@layout$layout_annotation_legend_right_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 7))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object))
@@ -573,9 +603,13 @@ setMethod(f = "draw_heatmap_legend",
     definition = function(object) {
 
     side = object@heatmap_legend_param$side
+    size = object@heatmap_legend_param$size
+    padding = object@heatmap_legend_param$padding
 
     ColorMappingList = lapply(object@ht_list, function(ht) ht@matrix_color_mapping)
+    pushViewport(viewport(name = "heatmap_legend", x = padding[2], y = padding[3], width = size[1], height = size[2], just = c("left", "top")))
     draw_legend(ColorMappingList, side = side)
+    upViewport()
 })
 
 # == title
@@ -600,6 +634,8 @@ setMethod(f = "draw_annotation_legend",
     definition = function(object) {
 
     side = object@heatmap_legend_param$side
+    size = object@heatmap_legend_param$size
+    padding = object@heatmap_legend_param$padding
 
     ColorMappingList = list()
     for(i in seq_along(object@ht_list)) {
@@ -611,8 +647,10 @@ setMethod(f = "draw_annotation_legend",
             ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
         }
     }
-    
+
+    pushViewport(viewport(name = "annotation_legend", x = padding[2], y = padding[3], width = size[1], height = size[2], just = c("left", "top")))
     draw_legend(ColorMappingList, side = side)
+    upViewport()
 })
 
 # == title
@@ -635,9 +673,13 @@ setMethod(f = "heatmap_legend_size",
     definition = function(object) {
 
     side = object@heatmap_legend_param$side
+    padding = object@heatmap_legend_param$padding
 
     ColorMappingList = lapply(object@ht_list, function(ht) ht@matrix_color_mapping)
     size = draw_legend(ColorMappingList, side = side, plot = FALSE)
+
+    size[1] = size[1] + padding[2] + padding[4]
+    size[2] = size[2] + padding[1] + padding[3]
     return(size)
 })
 
@@ -660,10 +702,10 @@ setMethod(f = "heatmap_legend_size",
 #
 setMethod(f = "annotation_legend_size",
     signature = "HeatmapList",
-    definition = function(object, 
-    vp_width = unit(1, "npc"), vp_height = unit(1, "npc")) {
+    definition = function(object) {
 
     side = object@annotation_legend_param$side
+    padding = object@annotation_legend_param$padding
 
     ColorMappingList = list()
     for(i in seq_along(object@ht_list)) {
@@ -676,95 +718,54 @@ setMethod(f = "annotation_legend_size",
         }
     }
 
-    size = draw_legend(ColorMappingList, side = side, plot = FALSE, vp_width = vp_width, vp_height = vp_height)
+    size = draw_legend(ColorMappingList, side = side, plot = FALSE)
+
+    size[1] = size[1] + padding[2] + padding[4]
+    size[2] = size[2] + padding[1] + padding[3]
     return(size)
 })
 
-draw_legend = function(ColorMappingList, side = c("right", "left", "top", "bottom"), plot = TRUE,
-    vp_width = unit(1, "npc"), vp_height = unit(1, "npc"), gap = unit(2, "mm"), 
-    padding = unit(4, "mm")) {
+# create a viewport which contains legend
+# currently, one-row or one-column legend is supported
+draw_legend = function(ColorMappingList, side = c("right", "left", "top", "bottom"), plot = TRUE, gap = unit(2, "mm")) {
 
     side = match.arg(side)[1]
 
     n = length(ColorMappingList)
+    cm_size = lapply(ColorMappingList, function(cm) color_mapping_legend(cm, plot = FALSE))
+    cm_width = do.call("unit.c", lapply(cm_size, function(x) x[1]))
+    cm_height = do.call("unit.c", lapply(cm_size, function(x) x[2]))
 
     if(side %in% c("left", "right")) {
-    	if(side == "left") {
-        	current_x = unit(0, "npc")
-        } else {
-        	current_x = unit(0, "npc") + padding
-        }
-        current_width = unit(0, "null")
-        current_y = vp_height
-        for(i in seq_len(n)) {
-            cm = ColorMappingList[[i]]
-            size = color_mapping_legend(cm, plot = FALSE)
-            # if this legend is too long that it exceed the bottom of the plotting region
-            # it also works for the first legend if it is too long
-            #if(compare_unit(current_y - size[2], unit(0, "npc")) < 0) {
-            if(0){
-                # go to next column
-                current_y = unit(1, "npc")
-                current_x = current_width
-                current_width = current_x + size[1]
 
-                if(plot) color_mapping_legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
-                current_y = current_y - size[2] # move to the bottom
-            } else {
-                # if this legend is wider
-                if(compare_unit(current_width, current_x + size[1]) < 0) {
-                    current_width = current_x + size[1]
-                }
+        width = max(cm_width)
+        height = sum(cm_height) + gap*(n-1)
 
-                if(plot) color_mapping_legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
-                current_y = current_y - size[2] - gap # move to the bottom
+        if(plot) {
+            cm_height = unit.c(unit(0, "null"), cm_height)
+        	for(i in seq_len(n)) {
+                cm = ColorMappingList[[i]]
+                color_mapping_legend(cm, y = sum(cm_height[seq_len(i)]) + gap*(i-1), just = c("left", "top"), plot = TRUE)
             }
         }
 
-        if(side == "left") {
-        	current_width = current_width + padding
-        }
-
-        return(unit.c(current_width, vp_height))
+        return(unit.c(width, height))
 
     } else if(side %in% c("top", "bottom")) {
-        current_x = unit(0, "npc")
-        if(side == "top") {
-        	current_height = vp_height
-        } else {
-        	current_height = vp_height - padding
-        }
-        current_y = vp_height
-        for(i in seq_len(n)) {
-            cm = ColorMappingList[[i]]
-            size = color_mapping_legend(cm, plot = FALSE)
-            
-            # if adding the legend exceeding ...
-            #if(compare_unit(current_x + size[1], vp_width) > 0) {
-            if(0) {
-                # go to next column
-                current_y = unit(1, "npc") - current_height
-                current_x = unit(0, "npc")
-                current_height = current_y - size[2]
 
-                if(plot) color_mapping_legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
-                current_x = current_x + size[1]
-            } else {
-                # if height of this legend is larger
-                if(compare_unit(current_height, current_y - size[2]) > 0) {
-                    current_height = current_y - size[2]
-                }
+        width = sum(cm_width) + gap*(n-1)
+        height = max(height)
 
-                if(plot) color_mapping_legend(cm, x = current_x, y = current_y, just = c("left", "top"), plot = TRUE)
-                current_x = current_x + size[1] + gap
+        if(plot) {
+            cm_width = unit.c(unit(0, "null"), cm_width)
+
+            for(i in seq_len(n)) {
+                cm = ColorMappingList[[i]]
+                color_mapping_legend(cm, x = sum(cm_width[seq_len(i)] + gap*(i-1), just = c("left", "top"), plot = TRUE)
             }
         }
-        if(side == "top") {
-        	current_height = current_height - padding
-        }
-
-        return(unit.c(vp_width, unit(1, "npc") - current_height))
         
+        return(unit.c(width, height))
     }
 }
 
@@ -817,10 +818,10 @@ setMethod(f = "show",
     if(inherits(y, "Heatmap") || inherits(y, "HeatmapList")) {
         add_heatmap(x, y)
     } else if(inherits(y, "HeatmapAnnotation")) {
-        if(y@which == "column") {
+        if(y@which == "row") {
             add_heatmap(x, y)
         } else {
-            stop("You should specify `which` to `column` in you add a HeatmapAnnotation by columns.")
+            stop("You should specify `which` to `row` in you add a HeatmapAnnotation which shows row annotations.")
         }
     } else {
         stop("`ht2` should be a `Heatmap` or `HeatmapList` object.")

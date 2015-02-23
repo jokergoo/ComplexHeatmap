@@ -78,7 +78,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 #
 setMethod(f = "initialize",
 	signature = "SingleAnnotation",
-	definition = function(.Object, name, value, col, fun, which = c("row", "column"), 
+	definition = function(.Object, name, value, col, fun, which = c("column", "row"), 
 	show_legend = TRUE) {
 
 	which = match.arg(which)[1]
@@ -103,7 +103,7 @@ setMethod(f = "initialize",
 
         .Object@color_mapping = color_mapping
 
-        if(which == "row") {
+        if(which == "column") {
 	        .Object@fun = function(index) {
 				n = length(index)
 				x = (seq_len(n) - 0.5) / n

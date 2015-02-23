@@ -1,7 +1,7 @@
 
 I_HEATMAP = 0
 I_ANNOTATION = 0
-I_COLUMN_ANNOTATION = 0
+I_ROW_ANNOTATION = 0
 
 get_heatmap_index = function() {
 	I_HEATMAP
@@ -19,12 +19,12 @@ increase_annotation_index = function() {
 	I_ANNOTATION <<- I_ANNOTATION + 1
 }
 
-get_column_annotation_index = function() {
-	I_COLUMN_ANNOTATION
+get_row_annotation_index = function() {
+	I_ROW_ANNOTATION
 }
 
-increase_column_annotation_index = function() {
-	I_COLUMN_ANNOTATION <<- I_COLUMN_ANNOTATION + 1
+increase_row_annotation_index = function() {
+	I_ROW_ANNOTATION <<- I_ROW_ANNOTATION + 1
 }
 
 
