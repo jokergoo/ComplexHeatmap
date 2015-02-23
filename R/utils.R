@@ -28,6 +28,27 @@ increase_column_annotation_index = function() {
 }
 
 
+CURRENT_ROW_ORDER = NULL
+CURRENT_COLUMN_ORDER = NULL
+
+row_order = function(k = NULL) {
+    CURRENT_ROW_ORDER
+}
+
+set_row_order = function(value) {
+    CURRENT_ROW_ORDER <<- value
+}
+
+column_order = function() {
+    CURRENT_COLUMN_ORDER
+}
+
+set_column_order = function(value) {
+    CURRENT_COLUMN_ORDER <<- value
+}
+
+
+
 # default colors for matrix or annotations
 # this function should be improved later
 default_col = function(x, main_matrix = FALSE) {
@@ -120,4 +141,66 @@ grid.dendrogram = function(dend, maxy = attr(dend, "height"), xorder = c("normal
     pushViewport(viewport(xscale = c(0, n), yscale = c(0, maxy), ...))
     draw.d(dend, maxy, xorder, maxx= n)
     upViewport()
+}
+
+# == title
+# Calculate distance from a matrix
+#
+# == param
+# -mat a matrix. The distance is calculated by rows.
+# -pairwise_fun a function which calculates distance between two vectors.
+# -... pass to `stats::dist`.
+#
+# == detail
+# You can construct any type of distance measurements by defining a pair-wise distance function.
+#
+# == value
+# A `stats::dist` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+dist2 = function(mat, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...) {
+
+    if(!is.matrix(mat)) {
+        stop("`mat` should be a matrix.")
+    }
+
+    if(nrow(mat) < 2) {
+        stop("`mat` should have at least two rows.")
+    }
+
+    nr = nrow(mat)
+    mat2 = matrix(NA, nrow = nr, ncol = nr)
+    rownames(mat2) = colnames(mat2) = rownames(mat)
+
+    for(i in 2:nr) {
+        for(j in 1:(nr-1)) {
+            mat2[i, j] = pairwise_fun(mat[i, ], mat[j, ])
+        }
+    }
+
+    as.dist(mat2, ...)
+}
+
+
+get_dist = function(matrix, method) {
+    if(is.function(method)) {
+        nargs = length(as.list(args(method)))
+        if(nargs == 2) { # a distance function
+            dst = method(matrix)
+        } else if(nargs == 3) {
+            dst = dist2(matrix, method)
+        } else {
+            stop("Since your distance method is a funciton, it can only accept one or two arguments.")
+        }
+    } else if(method %in% c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")) {
+        dst = dist(matrix, method = method)
+    } else if(method %in% c("pearson", "spearman", "kendall")) {
+        dst = switch(method,
+                     pearson = as.dist(1 - cor(t(matrix), method = "pearson")),
+                     spearman = as.dist(1 - cor(t(matrix), method = "spearman")),
+                     kendall = as.dist(1 - cor(t(matrix), method = "kendall")))
+    }
+    return(dst)
 }

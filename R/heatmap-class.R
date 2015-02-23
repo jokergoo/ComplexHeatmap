@@ -63,6 +63,7 @@
 Heatmap = setClass("Heatmap",
     slots = list(
         name = "character",
+
         matrix = "matrix",  # one or more matrix which are spliced by rows
         matrix_param = "list",
         matrix_color_mapping = "ANY",
@@ -83,7 +84,7 @@ Heatmap = setClass("Heatmap",
         row_names_param = "list",
         column_names_param = "list",
 
-        top_annotation = "ANY",
+        top_annotation = "ANY", # NULL or a `HeatmapAnnotation` object
         top_annotation_param = "list",
 
         bottom_annotation = "ANY",
@@ -312,6 +313,9 @@ setMethod(f = "initialize",
         graphic_fun_list = list()
     ))
 
+    set_row_order(seq_len(nrow(matrix)))
+    set_column_order(seq_len(ncol(matrix)))
+
     return(.Object)
 
 })
@@ -351,6 +355,8 @@ setMethod(f = "make_column_cluster",
     }
 
     object@column_order = column_order
+
+    set_column_order(column_order)
     return(object)
 })
 
@@ -442,6 +448,7 @@ setMethod(f = "make_row_cluster",
     object@row_order_list = row_order_list
     object@matrix_param$split = split
 
+    set_row_order(unlist(row_order_list))
     return(object)
 
 })
@@ -1199,64 +1206,3 @@ setMethod(f = "prepare",
 }
 
 
-# == title
-# Calculate distance from a matrix
-#
-# == param
-# -mat a matrix. The distance is calculated by rows.
-# -pairwise_fun a function which calculates distance between two vectors.
-# -... pass to `stats::dist`.
-#
-# == detail
-# You can construct any type of distance measurements by defining a pair-wise distance function.
-#
-# == value
-# A `stats::dist` object.
-#
-# == author
-# Zuguang Gu <z.gu@dkfz.de>
-#
-dist2 = function(mat, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...) {
-
-    if(!is.matrix(mat)) {
-        stop("`mat` should be a matrix.")
-    }
-
-    if(nrow(mat) < 2) {
-        stop("`mat` should have at least two rows.")
-    }
-
-    nr = nrow(mat)
-    mat2 = matrix(NA, nrow = nr, ncol = nr)
-    rownames(mat2) = colnames(mat2) = rownames(mat)
-
-    for(i in 2:nr) {
-        for(j in 1:(nr-1)) {
-            mat2[i, j] = pairwise_fun(mat[i, ], mat[j, ])
-        }
-    }
-
-    as.dist(mat2, ...)
-}
-
-
-get_dist = function(matrix, method) {
-    if(is.function(method)) {
-        nargs = length(as.list(args(method)))
-        if(nargs == 2) { # a distance function
-            dst = method(matrix)
-        } else if(nargs == 3) {
-            dst = dist2(matrix, method)
-        } else {
-            stop("Since your distance method is a funciton, it can only accept one or two arguments.")
-        }
-    } else if(method %in% c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")) {
-        dst = dist(matrix, method = method)
-    } else if(method %in% c("pearson", "spearman", "kendall")) {
-        dst = switch(method,
-                     pearson = as.dist(1 - cor(t(matrix), method = "pearson")),
-                     spearman = as.dist(1 - cor(t(matrix), method = "spearman")),
-                     kendall = as.dist(1 - cor(t(matrix), method = "kendall")))
-    }
-    return(dst)
-}
