@@ -174,7 +174,7 @@ Heatmap = setClass("Heatmap",
 #
 setMethod(f = "initialize",
     signature = "Heatmap",
-    definition = function(.Object, matrix, col, name, rect_gp = gpar(col = NA),
+    definition = function(.Object, matrix, col, name, rect_gp = gpar(col = NA), cell_fun = function(i, j, x, y, width, height) NULL,
     row_title = character(0), row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), column_title = character(0), 
     column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
@@ -185,12 +185,13 @@ setMethod(f = "initialize",
     clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"), 
     show_column_hclust = TRUE, column_hclust_gp = gpar(), 
-    row_names_side = c("right", "left"), show_row_names = TRUE, 
+    row_names_side = c("right", "left"), show_row_names = TRUE, row_names_max_width = unit(2, "cm"),
     row_names_gp = gpar(fontsize = 12), column_names_side = c("bottom", "top"), 
-    show_column_names = TRUE, column_names_gp = gpar(fontsize = 12),
+    show_column_names = TRUE, column_names_max_height = unit(2, "cm"), column_names_gp = gpar(fontsize = 12),
     top_annotation = NULL, top_annotation_height = unit(1, "cm"),
     bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
-    km = 1, gap = unit(1, "mm"), split = NULL, width = NULL) {
+    km = 1, gap = unit(1, "mm"), split = NULL, combined_name_fun = function(x) paste(x, collapse = "/"),
+    width = NULL) {
 
     if(is.data.frame(matrix)) {
         matrix = as.matrix(matrix)
@@ -220,6 +221,7 @@ setMethod(f = "initialize",
     }
     .Object@matrix_param$split = split
     .Object@matrix_param$gp = rect_gp
+    .Object@matrix_param$cell_fun = cell_fun
     
     if(missing(name)) {
         name = paste0("matrix_", get_heatmap_index() + 1)
@@ -247,6 +249,7 @@ setMethod(f = "initialize",
     .Object@row_title = row_title
     .Object@row_title_param$side = match.arg(row_title_side)[1]
     .Object@row_title_param$gp = row_title_gp
+    .Object@row_title_param$combined_name_fun = combined_name_fun
 
     if(length(column_title) == 0) {
         column_title = character(0)
@@ -265,6 +268,7 @@ setMethod(f = "initialize",
     .Object@row_names_param$side = match.arg(row_names_side)[1]
     .Object@row_names_param$show = show_row_names
     .Object@row_names_param$gp = row_names_gp
+    .Object@row_names_param$max_width = row_names_max_width
 
     if(is.null(colnames(matrix))) {
         show_column_names = FALSE
@@ -272,6 +276,7 @@ setMethod(f = "initialize",
     .Object@column_names_param$side = match.arg(column_names_side)[1]
     .Object@column_names_param$show = show_column_names
     .Object@column_names_param$gp = column_names_gp
+    .Object@column_names_param$max_height = column_names_max_height
 
     if(!cluster_rows) {
         row_hclust_width = unit(0, "null")
@@ -456,7 +461,8 @@ setMethod(f = "make_row_cluster",
         if(ncol(split) == 1) {
             split = split[, 1]
         } else {
-            split = do.call("paste", c(split, sep = "/"))
+            combined_name_fun = object@row_title_param$combined_name_fun
+            split = apply(as.matrix(split), 1, combined_name_fun)
         }
         
         row_levels = unique(split)
@@ -586,6 +592,7 @@ setMethod(f = "make_layout",
             object@layout$layout_row_hclust_right_width = row_hclust_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 6))
         }
+        #max_hclust_height = max(sapply(object@row_hclust_list, function(hc) attr(as.dendrogram(hc), "height")))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             for(i in seq_len(n_slice)) {
                 draw_hclust(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = c("center", "top"))
@@ -604,7 +611,7 @@ setMethod(f = "make_layout",
             object@layout$layout_index = rbind(object@layout$layout_index, c(2, 4))
         } else {
             object@layout$layout_column_hclust_bottom_height = column_hclust_height
-            object@layout$layout_index = rbind(.object@layout$layout_index, c(8, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, c(8, 4))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_hclust(object, which = "column"))
     }
@@ -619,6 +626,7 @@ setMethod(f = "make_layout",
         row_names_width = max(do.call("unit.c", lapply(row_names, function(x) {
             grobWidth(textGrob(x, gp = row_names_gp))
         }))) + unit(2, "mm")
+        row_names_width = min(row_names_width, object@row_names_param$max_width)
         if(row_names_side == "left") {
             object@layout$layout_row_names_left_width = row_names_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 3))
@@ -626,11 +634,19 @@ setMethod(f = "make_layout",
             object@layout$layout_row_names_right_width = row_names_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 5))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
-            for(i in seq_len(n_slice)) {
-                draw_dimnames(object, k = i, which = "row", x = unit(2, "mm"), y = slice_y[i], height = slice_height[i], just = c("left", "top"))
-            }
-        })
+        if(row_names_side == "right") {
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+                for(i in seq_len(n_slice)) {
+                    draw_dimnames(object, k = i, which = "row", x = unit(2, "mm"), y = slice_y[i], height = slice_height[i], just = c("left", "top"))
+                }
+            })
+        } else {
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+                for(i in seq_len(n_slice)) {
+                    draw_dimnames(object, k = i, which = "row", x = unit(0, "npc"), y = slice_y[i], height = slice_height[i], width = unit(1, "npc") - unit(2, "mm"), just = c("left", "top"))
+                }
+            })
+        }
     }
 
     #########################################
@@ -643,6 +659,7 @@ setMethod(f = "make_layout",
         column_names_height = max(do.call("unit.c", lapply(column_names, function(x) {
             grobWidth(textGrob(x, gp = column_names_gp))
         }))) + unit(2, "mm")
+        column_names_height = min(column_names_height, object@column_names_param$max_height)
         if(column_names_side == "top") {
             object@layout$layout_column_names_top_height = column_names_height
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 4))
@@ -650,7 +667,11 @@ setMethod(f = "make_layout",
             object@layout$layout_column_names_bottom_height = column_names_height
             object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc") - unit(2, "mm"), just = c("center", "top")))
+        if(column_names_side == "top") {
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc"), height = unit(1, "npc") - unit(2, "mm"), just = c("center", "top")))
+        } else {
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc") - unit(2, "mm"), just = c("center", "top")))
+        }
     }
     
     ##########################################
@@ -773,6 +794,14 @@ setMethod(f = "draw_heatmap_body",
     y = (rev(seq_len(nr)) - 0.5) / nr
     expand_index = expand.grid(seq_len(nr), seq_len(nc))
     grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = 1/nc, height = 1/nr, gp = do.call("gpar", c(list(fill = col_matrix), gp)))
+
+    cell_fun = object@matrix_param$cell_fun
+    for(i in seq_along(row_order)) {
+        for(j in seq_along(column_order)) {
+            cell_fun(column_order[j], row_order[i], x[i], y[j], 1/nc, 1/nr)
+        }
+    }
+
     upViewport()
 
 })
@@ -828,13 +857,13 @@ setMethod(f = "draw_hclust",
     n = length(labels(dend))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), facing = "right", order = "reverse", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "right", order = "reverse", ...)
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), facing = "left", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "left", ...)
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), facing = "bottom", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "bottom", ...)
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), facing = "top", order = "reverse", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "top", order = "reverse", ...)
     } 
 
 })

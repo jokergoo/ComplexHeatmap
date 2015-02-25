@@ -23,3 +23,9 @@ ht2 = Heatmap(mat)
 ht_list = ht1 + ht2
 
 draw(ht_list)
+
+ht1 = Heatmap(mat)
+df = data.frame(type = c("a", "a", "a", "a", "b", "b", "b", "b"))
+ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "cm"))
+
+ht1 + ha

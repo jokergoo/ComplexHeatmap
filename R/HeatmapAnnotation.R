@@ -22,7 +22,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 		anno_list = "list",  # a list of `SingleAnnotation` objects
 		anno_size = "ANY",
 		which = "character",
-		size = "ANY"
+		size = "ANY"  # only for  consistent of Heatmap
 	),
 	prototype = list(
 		anno_list = list(),
@@ -49,7 +49,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 setMethod(f = "initialize",
 	signature = "HeatmapAnnotation",
 	definition = function(.Object, df, name, col, show_legend, ..., which = c("column", "row"), 
-	annotation_height = 1, annotation_width = 1, height = unit(1, "npc"), width = unit(1, "npc")) {
+	annotation_height = 1, annotation_width = 1, height = NULL, width = NULL) {
 
 	anno_list = list()
 	which = match.arg(which)[1]

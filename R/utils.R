@@ -79,8 +79,12 @@ default_col = function(x, main_matrix = FALSE) {
     }
 }
 
-grid.dendrogram = function(dend, facing = "bottom", max_height = attr(dend, "height"), order = c("normal", "reverse"), ...) {
+grid.dendrogram = function(dend, facing = "bottom", max_height = NULL, order = c("normal", "reverse"), ...) {
     
+    if(is.null(max_height)) {
+        max_height = attr(dend, "height")
+    }
+
     is.leaf = function(object) {
         leaf = attr(object, "leaf")
         if(is.null(leaf)) {
