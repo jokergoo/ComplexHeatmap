@@ -88,7 +88,7 @@ HeatmapList = setClass("HeatmapList",
 #
 # == param
 # -object a `HeatmapList` object.
-# -ht a `Heatmap` object or a `HeatmapList` object.
+# -x a `Heatmap` object or a `HeatmapAnnotation` object or a `HeatmapList` object.
 #
 # == details
 # There is a shortcut function ``+.HeatmapList``.
@@ -721,11 +721,13 @@ setMethod(f = "draw_annotation_legend",
     ColorMappingList = list()
     for(i in seq_along(object@ht_list)) {
         ht = object@ht_list[[i]]
-        if(!is.null(ht@top_annotation)) {
-            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
-        }
-        if(!is.null(ht@bottom_annotation)) {
-            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+        if(inherits(ht, "Heatmap")) {
+            if(!is.null(ht@top_annotation)) {
+                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+            }
+            if(!is.null(ht@bottom_annotation)) {
+                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+            }
         }
     }
 
@@ -776,8 +778,6 @@ setMethod(f = "heatmap_legend_size",
 #
 # == param
 # -object a `HeatmapList` object
-# -vp_width vp_width
-# -vp_height vp_height
 #
 # == detail
 # This function is only for internal use.
@@ -798,18 +798,19 @@ setMethod(f = "annotation_legend_size",
     ColorMappingList = list()
     for(i in seq_along(object@ht_list)) {
         ht = object@ht_list[[i]]
-        if(!is.null(ht@top_annotation)) {
-            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
-        }
-        if(!is.null(ht@bottom_annotation)) {
-            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+        if(inherits(ht, "Heatmap")) {
+            if(!is.null(ht@top_annotation)) {
+                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+            }
+            if(!is.null(ht@bottom_annotation)) {
+                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+            }
         }
     }
 
     size = draw_legend(ColorMappingList, side = side, plot = FALSE)
 
-    size[1] = size[1] + padding[2] + padding[4]
-    size[2] = size[2] + padding[1] + padding[3]
+    size = unit.c(size[1] + padding[2] + padding[4], size[2] + padding[1] + padding[3])
     return(size)
 })
 
@@ -891,7 +892,7 @@ setMethod(f = "show",
 #
 # == param
 # -x a `HeatmapList` object.
-# -y a `Heatmap` object or a `HeatmapList` object.
+# -y a `Heatmap` object or a `HeatmapAnnotation` object or a `HeatmapList` object.
 #
 # == detail
 # It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`.

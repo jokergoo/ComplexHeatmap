@@ -13,7 +13,7 @@ Draw legend based on color mapping
 }
 \usage{
 \S4method{color_mapping_legend}{ColorMapping}(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
-    legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
+    legend_grid_width = unit(3, "mm"), legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
     legend_label_gp = gpar(fontsize = 10))
 }
 \arguments{
@@ -33,7 +33,7 @@ A viewport is created which contains a legend title, legend grids and correspond
 
 }
 \value{
-A \code{\link[grid]{unit}} object with length two.  
+A \code{\link[grid]{unit}} object which corresponds to the width and height of the legend viewport.  
 
 
 }

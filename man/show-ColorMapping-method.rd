@@ -1,12 +1,12 @@
 \name{show-ColorMapping-method}
 \alias{show,ColorMapping-method}
 \title{
-print ColorMapping object  
+Print ColorMapping object  
 
 
 }
 \description{
-print ColorMapping object  
+Print ColorMapping object  
 
 
 }

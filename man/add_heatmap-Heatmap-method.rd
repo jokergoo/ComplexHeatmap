@@ -11,12 +11,12 @@ Add two heatmaps as a heatmap list
 
 }
 \usage{
-\S4method{add_heatmap}{Heatmap}(object, ht)
+\S4method{add_heatmap}{Heatmap}(object, x)
 }
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{ht}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
+  \item{x}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \details{

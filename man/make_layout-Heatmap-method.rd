@@ -28,7 +28,7 @@ This function is only for internal use.
 
 }
 \value{
-A \code{\link{Heatmap}} object  
+A \code{\link{Heatmap}} object.  
 
 
 }

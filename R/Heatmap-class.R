@@ -55,7 +55,7 @@
 #
 # - `initialize,Heatmap-method`: contructor method.
 # - `draw,Heatmap-method`: draw a single heatmap.
-# - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps.
+# - `add_heatmap,Heatmap-method` add heatmaps and row annotations to a list of heatmaps.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -109,6 +109,7 @@ Heatmap = setClass("Heatmap",
 #      function if the matrix is numeric. Pass to `initialize,ColorMapping-method`.
 # -name name of the heatmap.
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
+# -cell_fun function to add graphics on each cell
 # -row_title title on row.
 # -row_title_side will the title be put on the left or right of the heatmap.
 # -row_title_gp graphic parameters for drawing text.
@@ -137,17 +138,20 @@ Heatmap = setClass("Heatmap",
 # -column_hclust_gp graphic parameters for drawling lines.
 # -row_names_side should the row names be put on the left or right of the heatmap.
 # -show_row_names whether show row names.
+# -row_names_max_width maximum width of row names viewport.
 # -row_names_gp graphic parameters for drawing text.
 # -column_names_side should the column names be put on the top or bottom of the heatmap.
+# -column_names_max_height maximum height of column names viewport.
 # -show_column_names whether show column names.
 # -column_names_gp graphic parameters for drawing text.
-# -top_annotation
-# -top_annotation_height
-# -bottom_annotation
-# -bottom_annotation_height
+# -top_annotation a `HeatmapAnnotation` object.
+# -top_annotation_height height.
+# -bottom_annotation a `HeatmapAnnotation` object.
+# -bottom_annotation_height height.
 # -km whether do k-means clustering on rows. 
 # -gap gap between row-slice, should be `grid::unit` object
 # -split a vector or a data frame by which the rows are splitted 
+# -combined_name_fun if heatmap is splitted by rows, how to make a combined row title?
 # -width the width of the single heatmap.
 #
 # == details
@@ -162,7 +166,7 @@ Heatmap = setClass("Heatmap",
 # 
 # Following methods can be applied on the `Heatmap` object:
 #
-# - `show,Heatmap-method`: drwa a single heatmap with default parameters
+# - `show,Heatmap-method`: draw a single heatmap with default parameters
 # - `draw,Heatmap-method`: draw a single heatmap.
 # - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps.
 #
@@ -371,7 +375,7 @@ setMethod(f = "initialize",
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap` object
+# A `Heatmap` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -413,7 +417,7 @@ setMethod(f = "make_column_cluster",
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap` object
+# A `Heatmap` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -509,7 +513,7 @@ setMethod(f = "make_row_cluster",
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap` object
+# A `Heatmap` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -729,7 +733,7 @@ setMethod(f = "show",
 #
 # == param
 # -object a `Heatmap` object.
-# -ht a `Heatmap` object or a `HeatmapList` object.
+# -x a `Heatmap` object or a `HeatmapAnnotation` object or a `HeatmapList` object.
 #
 # == details
 # There is a shortcut function ``+.Heatmap``.
@@ -999,6 +1003,7 @@ setMethod(f = "draw_title",
 #
 # == param
 # -object a `Heatmap` object.
+# -which on top or bottom
 #
 # == details
 # A viewport is created which contains column annotations.
@@ -1224,7 +1229,6 @@ setMethod(f = "draw",
 # -object a `Heatmap` object.
 # -row_order orders of rows, pass to `make_row_cluster,Heatmap-method`.
 # -split how to split rows in the matrix, passing to `make_row_cluster,Heatmap-method`.
-# -show_row_title whether show row titles
 #
 # == detail
 # The preparation of the heatmap includes following steps:

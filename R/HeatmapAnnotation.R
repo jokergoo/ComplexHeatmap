@@ -16,6 +16,9 @@
 # - `get_color_mapping_list,HeatmapAnnotation-method`
 # - `draw,HeatmapAnnotation-method`
 #
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 HeatmapAnnotation = setClass("HeatmapAnnotation",
 	slots = list(
 		name = "character",
@@ -36,15 +39,26 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 # == param
 # -.Object a private object.
-# -df a data frame which should have column names
-# -col a list which contains color mapping to columns in `df`
-# -... named functions
-# -which 
-# -height height of each annotation
-# -width
+# -df a data frame which should have column names.
+# -name name of the heatmap annotation
+# -col a list which contains color mapping to columns in ``df``.
+# -show_legend whether show legend.
+# -... functions which define complex annotations.
+# -which are the annotations row annotations or column annotations.
+# -annotation_height height of each annotation if annotations are column annotations.
+# -annotation_width width of each annotation if annotations are row annotations.
+# -height not using currently.
+# -width width of the whole heatmap annotations, only used for column annotation when appending to the list of heatmaps.
+# 
+# == details
+# The simple annotations are defined by ``df`` and ``col`` arguments, complex annotations are
+# defined by the function list. 
 #
 # == value
 # A `HeatmapAnnotation` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "initialize",
 	signature = "HeatmapAnnotation",
@@ -147,6 +161,15 @@ setMethod(f = "initialize",
 # == param
 # -object a `HeatmapAnnotation` object.
 #
+# == details
+# Color mapping for simple annotations are returned.
+#
+# == values
+# A list of `ColorMapping` list.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "get_color_mapping_list",
 	signature = "HeatmapAnnotation",
 	definition = function(object) {
@@ -165,11 +188,17 @@ setMethod(f = "get_color_mapping_list",
 #
 # == param
 # -object a `HeatmapAnnotation` object
-# -index the index
+# -index the index of rows or columns
 # -... pass to `grid::viewport` which contains all annotations.
 #
 # == details
 # A viewport is created.
+#
+# == value
+# No value is returned.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "draw",
 	signature = "HeatmapAnnotation",
@@ -197,6 +226,12 @@ setMethod(f = "draw",
 #
 # == param
 # -object a `HeatmapAnnotation` object.
+#
+# == value
+# No value is returned.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 setMethod(f = "show",
 	signature = "HeatmapAnnotation",

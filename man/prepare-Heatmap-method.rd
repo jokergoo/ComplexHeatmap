@@ -12,14 +12,13 @@ Prepare the heatmap
 
 }
 \usage{
-\S4method{prepare}{Heatmap}(object, row_order = "hclust", split = object@matrix_param$split, show_row_title = TRUE)
+\S4method{prepare}{Heatmap}(object, row_order = NULL, split = object@matrix_param$split)
 }
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
   \item{row_order}{orders of rows, pass to \code{\link{make_row_cluster,Heatmap-method}}.}
   \item{split}{how to split rows in the matrix, passing to \code{\link{make_row_cluster,Heatmap-method}}.}
-  \item{show_row_title}{whether show row titles}
 
 }
 \details{

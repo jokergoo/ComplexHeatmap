@@ -24,8 +24,21 @@ ht_list = ht1 + ht2
 
 draw(ht_list)
 
-ht1 = Heatmap(mat)
+
 df = data.frame(type = c("a", "a", "a", "a", "b", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "cm"))
+df2 = data.frame(type = c("a", "a", "a", "a", "a", "b", "b", "b", "b", "b"))
+ha2 = HeatmapAnnotation(df = df2)
+ht1 = Heatmap(mat, top_annotation = ha2)
+ht1 + ha
 
+value = 1:8
+anno_points = function(index) {
+	n = length(index)
+	pushViewport(viewport(yscale = c(0.5, n+0.5), xscale = range(value)))
+	grid.rect()
+	grid.points(seq_along(index), value[index])
+	upViewport()
+}
+ha = HeatmapAnnotation(points = anno_points, which = "row", width = unit(1, "cm"))
 ht1 + ha

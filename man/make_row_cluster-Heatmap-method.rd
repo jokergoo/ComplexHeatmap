@@ -12,13 +12,13 @@ Make cluster on rows
 
 }
 \usage{
-\S4method{make_row_cluster}{Heatmap}(object, order = "hclust", km = object@matrix_param$km,
+\S4method{make_row_cluster}{Heatmap}(object, order = NULL, km = object@matrix_param$km,
     split = object@matrix_param$split)
 }
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{order}{a single string \code{hclust} means the cluster is performed by \code{\link[stats]{hclust}}. The value can also be a pre-defined order.}
+  \item{order}{a pre-defined order.}
   \item{km}{if apply k-means clustering on rows, number of clusters.}
   \item{split}{a vector or a data frame by which the rows are be splitted.}
 
@@ -31,7 +31,7 @@ This function is only for internal use.
 
 }
 \value{
-A \code{\link{Heatmap}} object  
+A \code{\link{Heatmap}} object.  
 
 
 }

@@ -11,7 +11,7 @@ Constructor method of Heatmap class
 
 }
 \usage{
-\S4method{initialize}{Heatmap}(.Object, matrix, col, name, rect_gp = gpar(col = NA),
+\S4method{initialize}{Heatmap}(.Object, matrix, col, name, rect_gp = gpar(col = NA), cell_fun = function(i, j, x, y, width, height) NULL,
     row_title = character(0), row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14), column_title = character(0),
     column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
@@ -22,12 +22,13 @@ Constructor method of Heatmap class
     clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"),
     show_column_hclust = TRUE, column_hclust_gp = gpar(),
-    row_names_side = c("right", "left"), show_row_names = TRUE,
+    row_names_side = c("right", "left"), show_row_names = TRUE, row_names_max_width = unit(2, "cm"),
     row_names_gp = gpar(fontsize = 12), column_names_side = c("bottom", "top"),
-    show_column_names = TRUE, column_names_gp = gpar(fontsize = 12),
-    annotation = NULL, annotation_color = NULL, annotation_side = c("top", "bottom"),
-    annotation_height = if(is.null(annotation)) unit(0, "null") else ncol(annotation)*unit(4, "mm"),
-    annotation_gp = gpar(col = NA), km = 1, gap = unit(1, "mm"), split = NULL, width = NULL)
+    show_column_names = TRUE, column_names_max_height = unit(2, "cm"), column_names_gp = gpar(fontsize = 12),
+    top_annotation = NULL, top_annotation_height = unit(1, "cm"),
+    bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
+    km = 1, gap = unit(1, "mm"), split = NULL, combined_name_fun = function(x) paste(x, collapse = "/"),
+    width = NULL)
 }
 \arguments{
 
@@ -36,6 +37,7 @@ Constructor method of Heatmap class
   \item{col}{a vector of colors if the matrix is character or a color mapping  function if the matrix is numeric. Pass to \code{\link{initialize,ColorMapping-method}}.}
   \item{name}{name of the heatmap.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
+  \item{cell_fun}{function to add graphics on each cell}
   \item{row_title}{title on row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap.}
   \item{row_title_gp}{graphic parameters for drawing text.}
@@ -58,18 +60,20 @@ Constructor method of Heatmap class
   \item{column_hclust_gp}{graphic parameters for drawling lines.}
   \item{row_names_side}{should the row names be put on the left or right of the heatmap.}
   \item{show_row_names}{whether show row names.}
+  \item{row_names_max_width}{maximum width of row names viewport.}
   \item{row_names_gp}{graphic parameters for drawing text.}
   \item{column_names_side}{should the column names be put on the top or bottom of the heatmap.}
+  \item{column_names_max_height}{maximum height of column names viewport.}
   \item{show_column_names}{whether show column names.}
   \item{column_names_gp}{graphic parameters for drawing text.}
-  \item{annotation}{column annotation. The value should be a data frame for which row_names correspond to column names of the matrix and columns correspond to different annotations.}
-  \item{annotation_color}{colors for the annotations. The value is a list in which each element corresponds to each annotation and the value for each element is a vector or a color mapping function which depends on the annotation is discrete or continuous.}
-  \item{annotation_side}{should the annotaitons be put on the top or bottom of the heatmap.}
-  \item{annotation_height}{height of the annotations, should be a \code{\link[grid]{unit}} object.}
-  \item{annotation_gp}{graphic parameters for drawing rectangles.}
+  \item{top_annotation}{a \code{\link{HeatmapAnnotation}} object.}
+  \item{top_annotation_height}{height.}
+  \item{bottom_annotation}{a \code{\link{HeatmapAnnotation}} object.}
+  \item{bottom_annotation_height}{height.}
   \item{km}{whether do k-means clustering on rows. }
   \item{gap}{gap between row-slice, should be \code{\link[grid]{unit}} object}
   \item{split}{a vector or a data frame by which the rows are splitted }
+  \item{combined_name_fun}{if heatmap is splitted by rows, how to make a combined row title?}
   \item{width}{the width of the single heatmap.}
 
 }
@@ -81,7 +85,7 @@ If \code{km} or/and \code{split} are set, the clustering inside each row slice u
 Following methods can be applied on the \code{\link{Heatmap}} object:  
 
 \itemize{
-  \item \code{\link{show,Heatmap-method}}: drwa a single heatmap with default parameters
+  \item \code{\link{show,Heatmap-method}}: draw a single heatmap with default parameters
   \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
   \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
 }

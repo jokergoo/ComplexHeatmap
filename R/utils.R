@@ -79,8 +79,30 @@ default_col = function(x, main_matrix = FALSE) {
     }
 }
 
-grid.dendrogram = function(dend, facing = "bottom", max_height = NULL, order = c("normal", "reverse"), ...) {
+# == title
+# Draw dendrogram under grid system
+#
+# == param
+# -dend a `stats::dendrogram` object.
+# -facing facing of the dendrogram.
+# -max_height maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.
+# -order should leaves of dendrogram be put in the normal order or reverse order.
+# -... pass to `grid::viewport`.
+#
+# == dedails
+# A viewport is created which contains the dendrogram.
+#
+# == value
+# No value is returned
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"), 
+    max_height = NULL, order = c("normal", "reverse"), ...) {
     
+    facing = match.arg(facing)[1]
+
     if(is.null(max_height)) {
         max_height = attr(dend, "height")
     }

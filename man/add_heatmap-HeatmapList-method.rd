@@ -11,12 +11,12 @@ Add heatmaps to the heatmap list
 
 }
 \usage{
-\S4method{add_heatmap}{HeatmapList}(object, ht)
+\S4method{add_heatmap}{HeatmapList}(object, x)
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList}} object.}
-  \item{ht}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
+  \item{x}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \details{

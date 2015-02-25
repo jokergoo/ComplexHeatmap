@@ -65,7 +65,7 @@ The \code{\link{Heatmap}} class provides following methods:
 \itemize{
   \item \code{\link{initialize,Heatmap-method}}: contructor method.
   \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
+  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps and row annotations to a list of heatmaps.
 }
 
 

@@ -6,11 +6,11 @@
 # == details
 # A complex heatmap always has more than one annotations on rows and columns.
 # The most simple annotation is one row or one column grids in which different colors
-# represent different classes of the data. It can also be more complex
-# graphics, such as a boxplot shows data distribution of corresponding rows or columns.
+# represent different classes of the data. The annotation can also be more complex
+# graphics, such as a boxplot that shows data distribution in corresponding row or column.
 #
-# The `SingleAnnotation` class is used to store data for a single annotation and provides
-# methods to draw annotation.
+# The `SingleAnnotation` class is used for storing data for a single annotation and provides
+# methods for drawing annotation.
 #
 # == methods
 # The `SingleAnnotation` class provides following methods:
@@ -19,7 +19,7 @@
 # - `draw,SingleAnnotation-method`: draw the single annotation.
 #
 # == seealso
-# A `HeatmapAnnotation` object contains a list of `SingleAnnotation` objects.
+# The `HeatmapAnnotation` object contains a list of `SingleAnnotation` objects.
 # 
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -50,7 +50,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 #      should be a vector; If the mapping is continuous mapping, the value of ``col`` should be 
 #      a color mapping function. 
 # -fun a self-defined function. The argument of this function should be a vector of index.
-# -which is the annotation placed on rows or columns
+# -which is the annotation a row annotation or a column annotation?
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
 #
 # == details
@@ -60,15 +60,8 @@ SingleAnnotation = setClass("SingleAnnotation",
 # `ColorMapping` object.
 #
 # ``fun`` is used to construct a more complex annotation. The only input argument of ``fun`` is a index
-# of rows or columns so that graphics can be corresponded to the rows or columns.
-#
-#    value = 1:10
-#    anno = SingleAnnotation(fun = function(index) {
-#        n = length(index)
-#        x = (seq_len(n) - 0.5) / n
-#        y  = (value - min(value))/(max(value) - min(value))
-#        grid.points(x, y, default.units = "npc")
-#    })
+# of rows or columns which is already adjusted by the clustering, so that graphics can be 
+# corresponded to the correct rows or columns.
 #
 # == value
 # A `SingleAnnotation` object.
@@ -105,7 +98,7 @@ setMethod(f = "initialize",
 
         if(which == "column") {
 	        .Object@fun = function(index) {
-				n = length(index)
+	        	n = length(index)
 				x = (seq_len(n) - 0.5) / n
 				fill = map(color_mapping, value[index])
 				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = gpar(fill = fill, col = NA))

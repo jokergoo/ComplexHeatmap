@@ -11,12 +11,12 @@ Add heatmaps to the list
 
 }
 \usage{
-\method{+}{HeatmapList}(ht1, ht2)
+\method{+}{HeatmapList}(x, y)
 }
 \arguments{
 
-  \item{ht1}{a \code{\link{HeatmapList}} object.}
-  \item{ht2}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
+  \item{x}{a \code{\link{HeatmapList}} object.}
+  \item{y}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \details{

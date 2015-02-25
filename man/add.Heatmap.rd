@@ -11,12 +11,12 @@ Add two heatmaps as a heatmap list
 
 }
 \usage{
-\method{+}{Heatmap}(ht1, ht2)
+\method{+}{Heatmap}(x, y)
 }
 \arguments{
 
-  \item{ht1}{a \code{\link{Heatmap}} object.}
-  \item{ht2}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
+  \item{x}{a \code{\link{Heatmap}} object.}
+  \item{y}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \details{

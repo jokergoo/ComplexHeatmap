@@ -49,7 +49,7 @@ ColorMapping = setClass("ColorMapping",
 # ``breaks`` are used for continuous color mapping.
 #
 # == value
-# A `ColorMapping` object
+# A `ColorMapping` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -65,7 +65,7 @@ setMethod(f = "initialize",
 	if(!is.null(colors)) {
 		if(is.null(levels)) {
 			if(is.null(names(colors))) {
-				stop("either provide `levels` or provide `colors` with names.\n")
+				stop("either provide `levels` or provide named `colors`.\n")
 			}
 			levels = names(colors)
 		}
@@ -94,7 +94,7 @@ setMethod(f = "initialize",
 		.Object@col_fun = col_fun
 		.Object@type = "continuous"
 	} else {
-		stop("initialization failed. Either specify `colors` + `levels` or `col_fun` + `breaks` (optional)\n")
+		stop("initialization failed. Either specify `colors` + `levels` or `col_fun` + `breaks`\n")
 	}
 
 	.Object@name = name
@@ -103,7 +103,7 @@ setMethod(f = "initialize",
 })
 
 # == title
-# print ColorMapping object
+# Print ColorMapping object
 #
 # == param
 # -object a `ColorMapping` object.
@@ -203,7 +203,7 @@ setMethod(f = "map",
 setMethod(f = "color_mapping_legend",
 	signature = "ColorMapping",
 	definition = function(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
-	legend_grid_width = unit(5, "mm"), legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
+	legend_grid_width = unit(3, "mm"), legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
 	legend_label_gp = gpar(fontsize = 10)) {
 
 	# add title

@@ -17,7 +17,7 @@ Constructor methods for ColorMapping class
 \arguments{
 
   \item{.Object}{private object}
-  \item{name}{name for this color mapping.}
+  \item{name}{name for this color mapping. It is used for drawing the title of the legend.}
   \item{colors}{discrete colors.}
   \item{levels}{levels that correspond to \code{colors}. If \code{colors} is name indexed,  \code{levels} can be ignored.}
   \item{col_fun}{color mapping function that maps continuous values to colors.}
@@ -30,7 +30,7 @@ Constructor methods for ColorMapping class
 
 }
 \value{
-A \code{\link{ColorMapping}} object  
+A \code{\link{ColorMapping}} object.  
 
 
 }

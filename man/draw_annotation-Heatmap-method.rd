@@ -12,11 +12,12 @@ Draw column annotations
 
 }
 \usage{
-\S4method{draw_annotation}{Heatmap}(object)
+\S4method{draw_annotation}{Heatmap}(object, which = c("top", "bottom"))
 }
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
+  \item{which}{on top or bottom}
 
 }
 \details{
