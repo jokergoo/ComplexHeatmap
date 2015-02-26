@@ -19,10 +19,12 @@ for(i in seq_along(offset)) {
 	text(0.5, 0.05 + offset[i], text[i])
 }
 
-rect(0.31, 0.31, 0.495, 0.69)
-text((0.31+0.495)/2, (0.31+0.69)/2, "heatmap 1")
-rect(0.505, 0.31, 0.69, 0.69)
-text((0.505+0.69)/2, (0.31+0.69)/2, "heatmap 2")
+rect(0.31, 0.31, 0.31+0.4/3, 0.69)
+text(0.3+0.2/3, (0.31+0.69)/2, "heatmap 1", srt = 90)
+rect(0.31+0.4/3, 0.31, 0.31+0.8/3, 0.69)
+text(0.5, (0.31+0.69)/2, "heatmap 2", srt = 90)
+rect(0.31+0.8/3, 0.31, 0.69, 0.69)
+text(0.31+1/3, (0.31+0.69)/2, "column annotation", srt = 90)
 
 mtext("heatmap list", side = 3, font = 2)
 
@@ -60,6 +62,6 @@ mtext("single heatmap", side = 3, font = 2)
 
 par(xpd = NA)
 
-arrows(-0.75, 0.65, -0.05, 0.65, angle = 15)
-arrows(-0.55, 0.35, -0.05, 0.35, angle = 15)
+# arrows(-0.75, 0.65, -0.05, 0.65, angle = 15)
+# arrows(-0.55, 0.35, -0.05, 0.35, angle = 15)
 
