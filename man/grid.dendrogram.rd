@@ -1,12 +1,12 @@
 \name{grid.dendrogram}
 \alias{grid.dendrogram}
 \title{
-Draw dendrogram under grid system  
+Draw dendrogram under grid system  
 
 
 }
 \description{
-Draw dendrogram under grid system  
+Draw dendrogram under grid system  
 
 
 }
@@ -16,30 +16,30 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
 }
 \arguments{
 
-  \item{dend}{a \code{\link[stats]{dendrogram}} object.}
-  \item{facing}{facing of the dendrogram.}
-  \item{max_height}{maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.}
-  \item{order}{should leaves of dendrogram be put in the normal order or reverse order.}
-  \item{...}{pass to \code{\link[grid]{viewport}}.}
+  \item{dend}{a \code{\link[stats]{dendrogram}} object.}
+  \item{facing}{facing of the dendrogram.}
+  \item{max_height}{maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.}
+  \item{order}{should leaves of dendrogram be put in the normal order or reverse order.}
+  \item{...}{pass to \code{\link[grid]{viewport}}.}
 
 }
 \section{Dedails}{
-A viewport is created which contains the dendrogram.  
+A viewport is created which contains the dendrogram.  
 
 
 }
 \value{
-No value is returned  
+No value is returned  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }
 \examples{
-hc <- hclust(dist(USArrests[1:5, ])
+hc <- hclust(dist(USArrests[1:5, ]))
 dend = as.dendrogram(hc)
 
 layout = grid.layout(nrow = 2, ncol = 2)

@@ -2,12 +2,12 @@
 \alias{draw_dimnames,Heatmap-method}
 \alias{draw_dimnames}
 \title{
-Draw row names or column names  
+Draw row names or column names  
 
 
 }
 \description{
-Draw row names or column names  
+Draw row names or column names  
 
 
 }
@@ -17,26 +17,26 @@ Draw row names or column names
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{which}{names on the row or on the column of the heatmap}
-  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
-  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{which}{names on the row or on the column of the heatmap}
+  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
+  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 
 }
 \details{
-A viewport is created which contains row names or column names.  
+A viewport is created which contains row names or column names.  
 
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-This function returns no value.  
+This function returns no value.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

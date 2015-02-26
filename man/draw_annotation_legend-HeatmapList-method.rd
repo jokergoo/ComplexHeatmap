@@ -2,12 +2,12 @@
 \alias{draw_annotation_legend,HeatmapList-method}
 \alias{draw_annotation_legend}
 \title{
-Draw legends for all column annotations  
+Draw legends for all column annotations  
 
 
 }
 \description{
-Draw legends for all column annotations  
+Draw legends for all column annotations  
 
 
 }
@@ -16,23 +16,23 @@ Draw legends for all column annotations
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{object}{a \code{\link{HeatmapList}} object}
 
 }
 \details{
-A viewport is created which contains annotation legends.  
+A viewport is created which contains annotation legends.  
 
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-This function returns no value.  
+This function returns no value.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

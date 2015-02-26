@@ -3,17 +3,17 @@
 \alias{Heatmap-class}
 \alias{Heatmap}
 \title{
-Class for a single heatmap  
+Class for a single heatmap  
 
 
 }
 \description{
-Class for a single heatmap  
+Class for a single heatmap  
 
 
 }
 \details{
-The components for a single heamtap are placed into a 9 x 7 layout:  
+The components for a single heamtap are placed into a 9 x 7 layout:  
 
   \preformatted{
          +------+
@@ -29,7 +29,7 @@ The components for a single heamtap are placed into a 9 x 7 layout:
          +------+
   }
 
-From top to bottom in column 4, the regions are:  
+From top to bottom in column 4, the regions are:  
 
 \itemize{
   \item title put on column, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
@@ -43,7 +43,7 @@ From top to bottom in column 4, the regions are:
   \item title put on column, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
 }
 
-From left to right in row 5, the regions are:  
+From left to right in row 5, the regions are:  
 
 \itemize{
   \item title put on row, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
@@ -55,12 +55,12 @@ From left to right in row 5, the regions are:
   \item title put on row, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
 }
 
-The \code{\link{Heatmap}} class is not resposible for heatmap legend. The \code{\link{draw,Heatmap-method}} method will construct a \code{\link{HeatmapList}} class which only contains one single heatmap and call \code{\link{draw,HeatmapList-method}} to make a complete heatmap.  
+The \code{\link{Heatmap}} class is not resposible for heatmap legend. The \code{\link{draw,Heatmap-method}} method will construct a \code{\link{HeatmapList}} class which only contains one single heatmap and call \code{\link{draw,HeatmapList-method}} to make a complete heatmap.  
 
 
 }
 \section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
+The \code{\link{Heatmap}} class provides following methods:  
 
 \itemize{
   \item \code{\link{initialize,Heatmap-method}}: contructor method.
@@ -71,7 +71,7 @@ The \code{\link{Heatmap}} class provides following methods:
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

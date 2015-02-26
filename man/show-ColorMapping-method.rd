@@ -1,12 +1,12 @@
 \name{show-ColorMapping-method}
 \alias{show,ColorMapping-method}
 \title{
-Print ColorMapping object  
+Print ColorMapping object  
 
 
 }
 \description{
-Print ColorMapping object  
+Print ColorMapping object  
 
 
 }
@@ -15,16 +15,16 @@ Print ColorMapping object
 }
 \arguments{
 
-  \item{object}{a \code{\link{ColorMapping}} object.}
+  \item{object}{a \code{\link{ColorMapping}} object.}
 
 }
 \value{
-This function returns no value.  
+This function returns no value.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

@@ -3,22 +3,22 @@
 \alias{ColorMapping-class}
 \alias{ColorMapping}
 \title{
-Class to map values to colors  
+Class to map values to colors  
 
 
 }
 \description{
-Class to map values to colors  
+Class to map values to colors  
 
 
 }
 \details{
-The \code{\link{ColorMapping}} class handles color mapping with both discrete values and continuous values. Discrete values are mapped by setting a vector of colors and continuous values are mapped by setting a color mapping function.  
+The \code{\link{ColorMapping}} class handles color mapping with both discrete values and continuous values. Discrete values are mapped by setting a vector of colors and continuous values are mapped by setting a color mapping function.  
 
 
 }
 \section{Methods}{
-The \code{\link{ColorMapping}} class provides following methods:  
+The \code{\link{ColorMapping}} class provides following methods:  
 
 \itemize{
   \item \code{\link{initialize,ColorMapping-method}}: contructor methods
@@ -29,7 +29,7 @@ The \code{\link{ColorMapping}} class provides following methods:
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

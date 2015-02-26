@@ -1,12 +1,12 @@
 \name{make_layout-Heatmap-method}
 \alias{make_layout,Heatmap-method}
 \title{
-Make the layout of a single heatmap  
+Make the layout of a single heatmap  
 
 
 }
 \description{
-Make the layout of a single heatmap  
+Make the layout of a single heatmap  
 
 
 }
@@ -15,25 +15,25 @@ Make the layout of a single heatmap
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap}} object.}
 
 }
 \details{
-The layout of the single heatmap will be established by setting the size of each heatmap components. Also functions that make graphics for heatmap components will be recorded.  
+The layout of the single heatmap will be established by setting the size of each heatmap components. Also functions that make graphics for heatmap components will be recorded.  
 
-Whether apply row clustering or column clustering affects the layout, so clustering should be applied  first before making the layout.  
+Whether apply row clustering or column clustering affects the layout, so clustering should be applied  first before making the layout.  
 
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-A \code{\link{Heatmap}} object.  
+A \code{\link{Heatmap}} object.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

@@ -1,12 +1,12 @@
 \name{show-HeatmapAnnotation-method}
 \alias{show,HeatmapAnnotation-method}
 \title{
-Print the Heatmap Annotation object  
+Print the Heatmap Annotation object  
 
 
 }
 \description{
-Print the Heatmap Annotation object  
+Print the Heatmap Annotation object  
 
 
 }
@@ -15,16 +15,16 @@ Print the Heatmap Annotation object
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapAnnotation}} object.}
+  \item{object}{a \code{\link{HeatmapAnnotation}} object.}
 
 }
 \value{
-No value is returned.  
+No value is returned.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

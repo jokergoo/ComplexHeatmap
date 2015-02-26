@@ -2,12 +2,12 @@
 \alias{make_row_cluster,Heatmap-method}
 \alias{make_row_cluster}
 \title{
-Make cluster on rows  
+Make cluster on rows  
 
 
 }
 \description{
-Make cluster on rows  
+Make cluster on rows  
 
 
 }
@@ -17,26 +17,26 @@ Make cluster on rows
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{order}{a pre-defined order.}
-  \item{km}{if apply k-means clustering on rows, number of clusters.}
-  \item{split}{a vector or a data frame by which the rows are be splitted.}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{order}{a pre-defined order.}
+  \item{km}{if apply k-means clustering on rows, number of clusters.}
+  \item{split}{a vector or a data frame by which the rows are be splitted.}
 
 }
 \details{
-The function will fill or adjust \code{row_hclust_list}, \code{row_order_list}, \code{row_title} and \code{matrix_param} slots.  
+The function will fill or adjust \code{row_hclust_list}, \code{row_order_list}, \code{row_title} and \code{matrix_param} slots.  
 
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-A \code{\link{Heatmap}} object.  
+A \code{\link{Heatmap}} object.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

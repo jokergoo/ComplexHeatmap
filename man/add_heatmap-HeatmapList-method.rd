@@ -1,12 +1,12 @@
 \name{add_heatmap-HeatmapList-method}
 \alias{add_heatmap,HeatmapList-method}
 \title{
-Add heatmaps to the heatmap list  
+Add heatmaps to the heatmap list  
 
 
 }
 \description{
-Add heatmaps to the heatmap list  
+Add heatmaps to the heatmap list  
 
 
 }
@@ -15,22 +15,22 @@ Add heatmaps to the heatmap list
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object.}
-  \item{x}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
+  \item{object}{a \code{\link{HeatmapList}} object.}
+  \item{x}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \details{
-There is a shortcut function \code{+.HeatmapList}.  
+There is a shortcut function \code{+.HeatmapList}.  
 
 
 }
 \value{
-A \code{\link{HeatmapList}} object.  
+A \code{\link{HeatmapList}} object.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

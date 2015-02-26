@@ -1,12 +1,12 @@
 \name{show-SingleAnnotation-method}
 \alias{show,SingleAnnotation-method}
 \title{
-Print the SingleAnnotation object  
+Print the SingleAnnotation object  
 
 
 }
 \description{
-Print the SingleAnnotation object  
+Print the SingleAnnotation object  
 
 
 }
@@ -15,16 +15,16 @@ Print the SingleAnnotation object
 }
 \arguments{
 
-  \item{object}{a \code{\link{SingleAnnotation}} object.}
+  \item{object}{a \code{\link{SingleAnnotation}} object.}
 
 }
 \value{
-No value is returned.  
+No value is returned.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

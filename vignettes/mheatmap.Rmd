@@ -1,0 +1,131 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Parallel heatmaps}
+-->
+
+Make Parallel Heatmaps
+========================================
+
+**Author**: Zuguang Gu ( z.gu@dkfz.de )
+
+**Date**: `r Sys.Date()`
+
+-------------------------------------------------------------
+
+```{r, echo = FALSE, message = FALSE}
+library(markdown)
+options(markdown.HTML.options = c(options('markdown.HTML.options')[[1]], "toc"))
+
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    fig.align = "center")
+options(markdown.HTML.stylesheet = "custom.css")
+
+options(width = 100)
+```
+
+## Plot a single heatmap
+
+```{r}
+library(mheatmap)
+library(circlize)
+
+mat = matrix(rnorm(80, 2), 8, 10)
+mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
+rownames(mat) = letters[1:12]
+colnames(mat) = letters[1:10]
+```
+
+
+```{r}
+Heatmap(mat)
+Heatmap(mat, col = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
+Heatmap(mat, name = "test")
+Heatmap(mat, column_title = "blablabla")
+Heatmap(mat, row_title = "blablabla")
+Heatmap(mat, column_title = "blablabla", column_title_side = "bottom")
+Heatmap(mat, column_title = "blablabla", column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+Heatmap(mat, cluster_rows = FALSE)
+Heatmap(mat, clustering_distance_rows = "pearson")
+Heatmap(mat, clustering_distance_rows = function(x) dist(x))
+Heatmap(mat, clustering_distance_rows = function(x, y) 1 - cor(x, y))
+Heatmap(mat, clustering_method_rows = "single")
+Heatmap(mat, row_hclust_side = "right")
+Heatmap(mat, row_hclust_width = unit(1, "cm"))
+Heatmap(mat, row_names_side = "left", row_hclust_side = "right", 
+    column_names_side = "top", column_hclust_side = "bottom")
+Heatmap(mat, show_row_names = FALSE)
+Heatmap(mat, row_names_gp = gpar(fontsize = 20))
+Heatmap(mat, km = 2)
+Heatmap(mat, split = rep(c("A", "B"), 6))
+Heatmap(mat, split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D"), each = 6)))
+Heatmap(mat, split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D"), each = 6)), 
+    combined_name_fun = function(x) paste(x, collapse = "\n"))
+```
+
+## the `HeatmapAnnotation` class
+
+```{r}
+df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
+ha = HeatmapAnnotation(df = df)
+ha
+
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
+ha
+
+value = 1:6
+anno_points = function(index) {
+  n = length(index)
+  pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = range(value)))
+  grid.points(seq_along(index), value[index])
+  upViewport()
+}
+ha = HeatmapAnnotation(points = anno_points)
+ha
+
+ha = HeatmapAnnotation(df = df, points = anno_points)
+ha
+```
+
+## A list of heatmaps and row annotations
+
+```{r}
+mat = matrix(rnorm(40, 2), 4, 10)
+mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
+rownames(mat) = letters[1:8]
+colnames(mat) = letters[1:10]
+
+ht1 = Heatmap(mat)
+ht2 = Heatmap(mat)
+
+ht_list = ht1 + ht2
+
+ht_list
+
+draw(ht_list, heatmap_legend_side = "bottom")
+
+ht1 = Heatmap(mat, km = 2)
+ht2 = Heatmap(mat)
+
+ht1 + ht2
+
+df = data.frame(type = c("a", "a", "a", "a", "b", "b", "b", "b"))
+ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "cm"))
+df2 = data.frame(type = c("a", "a", "a", "a", "a", "b", "b", "b", "b", "b"))
+ha2 = HeatmapAnnotation(df = df2)
+ht1 = Heatmap(mat, top_annotation = ha2)
+ht1 + ha
+
+value = 1:8
+anno_points = function(index) {
+  n = length(index)
+  pushViewport(viewport(xscale = range(value), yscale = c(0.5, n+0.5)))
+  grid.points(value[index], seq_along(index))
+  upViewport()
+}
+ha = HeatmapAnnotation(points = anno_points, which = "row", width = unit(1, "cm"))
+ht1 + ha
+```

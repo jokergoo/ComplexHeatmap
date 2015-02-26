@@ -2,12 +2,12 @@
 \alias{annotation_legend_size,HeatmapList-method}
 \alias{annotation_legend_size}
 \title{
-Size of the annotation legend viewport  
+Size of the annotation legend viewport  
 
 
 }
 \description{
-Size of the annotation legend viewport  
+Size of the annotation legend viewport  
 
 
 }
@@ -16,21 +16,21 @@ Size of the annotation legend viewport
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{object}{a \code{\link{HeatmapList}} object}
 
 }
 \details{
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-A \code{\link[grid]{unit}} object.  
+A \code{\link[grid]{unit}} object.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

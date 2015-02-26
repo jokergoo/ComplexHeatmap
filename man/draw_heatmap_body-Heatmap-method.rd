@@ -2,12 +2,12 @@
 \alias{draw_heatmap_body,Heatmap-method}
 \alias{draw_heatmap_body}
 \title{
-Draw the heatmap body  
+Draw the heatmap body  
 
 
 }
 \description{
-Draw the heatmap body  
+Draw the heatmap body  
 
 
 }
@@ -16,27 +16,27 @@ Draw the heatmap body
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
-  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
+  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 
 }
 \details{
-The matrix can be splitted into several parts by rows if \code{km} or \code{split} is  specified when initializing the \code{\link{Heatmap}} object. If the matrix is splitted,  there will be gaps between rows to identify differnet row-slice.  
+The matrix can be splitted into several parts by rows if \code{km} or \code{split} is  specified when initializing the \code{\link{Heatmap}} object. If the matrix is splitted,  there will be gaps between rows to identify differnet row-slice.  
 
-A viewport is created which contains grids.  
+A viewport is created which contains grids.  
 
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-This function returns no value.  
+This function returns no value.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

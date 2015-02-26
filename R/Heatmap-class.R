@@ -861,13 +861,13 @@ setMethod(f = "draw_hclust",
     n = length(labels(dend))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "right", order = "reverse", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "left", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "left", x = unit(0, "null"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "bottom", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "bottom", y = unit(0, "null"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "top", order = "reverse", ...)
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "top", order = "reverse", y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     } 
 
 })

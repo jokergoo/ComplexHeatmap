@@ -1,12 +1,12 @@
 \name{draw-SingleAnnotation-method}
 \alias{draw,SingleAnnotation-method}
 \title{
-Draw the single annotation  
+Draw the single annotation  
 
 
 }
 \description{
-Draw the single annotation  
+Draw the single annotation  
 
 
 }
@@ -15,22 +15,22 @@ Draw the single annotation
 }
 \arguments{
 
-  \item{object}{a \code{\link{SingleAnnotation}} object.}
-  \item{index}{the index}
+  \item{object}{a \code{\link{SingleAnnotation}} object.}
+  \item{index}{the index}
 
 }
 \details{
-A viewport is created.  
+A viewport is created.  
 
 
 }
 \value{
-No value is returned.  
+No value is returned.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

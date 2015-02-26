@@ -2,12 +2,12 @@
 \alias{prepare,Heatmap-method}
 \alias{prepare}
 \title{
-Prepare the heatmap  
+Prepare the heatmap  
 
 
 }
 \description{
-Prepare the heatmap  
+Prepare the heatmap  
 
 
 }
@@ -16,13 +16,13 @@ Prepare the heatmap
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{row_order}{orders of rows, pass to \code{\link{make_row_cluster,Heatmap-method}}.}
-  \item{split}{how to split rows in the matrix, passing to \code{\link{make_row_cluster,Heatmap-method}}.}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{row_order}{orders of rows, pass to \code{\link{make_row_cluster,Heatmap-method}}.}
+  \item{split}{how to split rows in the matrix, passing to \code{\link{make_row_cluster,Heatmap-method}}.}
 
 }
 \details{
-The preparation of the heatmap includes following steps:  
+The preparation of the heatmap includes following steps:  
 
 \itemize{
   \item making clustering on rows if specified
@@ -31,17 +31,17 @@ The preparation of the heatmap includes following steps:
   \item makeing the layout of the heatmap
 }
 
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-A \code{\link{Heatmap}} object  
+A \code{\link{Heatmap}} object  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

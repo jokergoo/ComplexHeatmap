@@ -1,13 +1,13 @@
 Package: mheatmap
 Type: Package
 Title: plot multiple heatmaps
-Version: 0.99.0
+Version: 0.0.1
 Date: 2014-10-6
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.0), methods, grid
 Imports: circlize (>= 0.2.3), GetoptLong, RColorBrewer
-Suggests: testthat (>= 0.3), knitr
+Suggests: testthat (>= 0.3), knitr, markdown
 VignetteBuilder: knitr
 Description: plot multiple heatmaps
 biocViews: Software, Visualization, Sequencing

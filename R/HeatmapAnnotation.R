@@ -237,7 +237,13 @@ setMethod(f = "show",
 	signature = "HeatmapAnnotation",
 	definition = function(object) {
 
-	cat("A HeatmapAnnotation object with", length(object@anno_list), "annotations.\n")
+	n = length(object@anno_list)
+
+	if(n == 1) {
+		cat("A HeatmapAnnotation object with 1 annotation.\n")
+	} else {
+		cat("A HeatmapAnnotation object with", length(object@anno_list), "annotations.\n")
+	}
 	cat("\n")
 	for(i in seq_along(object@anno_list)) {
 		show(object@anno_list[[i]])

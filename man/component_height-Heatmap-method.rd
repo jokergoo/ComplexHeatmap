@@ -1,12 +1,12 @@
 \name{component_height-Heatmap-method}
 \alias{component_height,Heatmap-method}
 \title{
-Height of each heatmap component  
+Height of each heatmap component  
 
 
 }
 \description{
-Height of each heatmap component  
+Height of each heatmap component  
 
 
 }
@@ -15,22 +15,22 @@ Height of each heatmap component
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{k}{which components, see \code{\link{Heatmap-class}}.}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{k}{which components, see \code{\link{Heatmap-class}}.}
 
 }
 \details{
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-A \code{\link[grid]{unit}} object  
+A \code{\link[grid]{unit}} object  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

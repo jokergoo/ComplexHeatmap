@@ -1,50 +1,52 @@
 
-I_HEATMAP = 0
-I_ANNOTATION = 0
-I_ROW_ANNOTATION = 0
+INDEX_ENV = new.env()
+
+INDEX_ENV$I_HEATMAP = 0
+INDEX_ENV$I_ANNOTATION = 0
+INDEX_ENV$I_ROW_ANNOTATION = 0
 
 get_heatmap_index = function() {
-	I_HEATMAP
+	INDEX_ENV$I_HEATMAP
 }
 
 increase_heatmap_index = function() {
-	I_HEATMAP <<- I_HEATMAP + 1
+	INDEX_ENV$I_HEATMAP = INDEX_ENV$I_HEATMAP + 1
 }
 
 get_annotation_index = function() {
-	I_ANNOTATION
+	INDEX_ENV$I_ANNOTATION
 }
 
 increase_annotation_index = function() {
-	I_ANNOTATION <<- I_ANNOTATION + 1
+	INDEX_ENV$I_ANNOTATION = INDEX_ENV$I_ANNOTATION + 1
 }
 
 get_row_annotation_index = function() {
-	I_ROW_ANNOTATION
+	INDEX_ENV$I_ROW_ANNOTATION
 }
 
 increase_row_annotation_index = function() {
-	I_ROW_ANNOTATION <<- I_ROW_ANNOTATION + 1
+	INDEX_ENV$I_ROW_ANNOTATION = INDEX_ENV$I_ROW_ANNOTATION + 1
 }
 
 
-CURRENT_ROW_ORDER = NULL
-CURRENT_COLUMN_ORDER = NULL
+INDEX_ENV$CURRENT_ROW_ORDER = NULL
+INDEX_ENV$CURRENT_COLUMN_ORDER = NULL
 
-row_order = function(k = NULL) {
-    CURRENT_ROW_ORDER
+row_order = function() {
+    INDEX_ENV$CURRENT_ROW_ORDER
 }
 
 set_row_order = function(value) {
-    CURRENT_ROW_ORDER <<- value
+    INDEX_ENV$CURRENT_ROW_ORDER = value
 }
 
 column_order = function() {
-    CURRENT_COLUMN_ORDER
+    INDEX_ENV$CURRENT_COLUMN_ORDER
 }
 
 set_column_order = function(value) {
-    CURRENT_COLUMN_ORDER <<- value
+    INDEX_ENV$CURRENT_COLUMN_ORDER = value
 }
 
 
@@ -136,43 +138,37 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
             x2 = attr(d2, "midpoint") + x[as.character(labels(d2))[1]]
         }
         y2 = attr(d2, "height")
+
+        # graphic parameters for current branch
         
         # plot the connection line
         if(order == "normal") {
             if(facing == "bottom") {
-                grid.lines(c(x1, x1), c(y1, height), default.units = "native")
-                grid.lines(c(x1, x2), c(height, height), default.units = "native")
-                grid.lines(c(x2, x2), c(y2, height), default.units = "native")
+                grid.lines(c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native")
+                grid.lines(c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native")
             } else if(facing == "top") {
-                grid.lines(c(x1, x1), max_height - c(y1, height), default.units = "native")
-                grid.lines(c(x1, x2), max_height - c(height, height), default.units = "native")
-                grid.lines(c(x2, x2), max_height - c(y2, height), default.units = "native")
+                grid.lines(c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native")
+                grid.lines(c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native")
             } else if(facing == "right") {
-                grid.lines(max_height - c(y1, height), c(x1, x1), default.units = "native")
-                grid.lines(max_height - c(height, height), c(x1, x2), default.units = "native")
-                grid.lines(max_height - c(y2, height), c(x2, x2), default.units = "native")
+                grid.lines(max_height - c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native")
+                grid.lines(max_height - c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native")
             } else if(facing == "left") {
-                grid.lines(c(y1, height), c(x1, x1), default.units = "native")
-                grid.lines(c(height, height), c(x1, x2), default.units = "native")
-                grid.lines(c(y2, height), c(x2, x2), default.units = "native")
+                grid.lines(c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native")
+                grid.lines(c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native")
             }
         } else {
             if(facing == "bottom") {
-                grid.lines(max_width - c(x1, x1), c(y1, height), default.units = "native")
-                grid.lines(max_width - c(x1, x2), c(height, height), default.units = "native")
-                grid.lines(max_width - c(x2, x2), c(y2, height), default.units = "native")
+                grid.lines(max_width - c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native")
+                grid.lines(max_width - c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native")
             } else if(facing == "top") {
-                grid.lines(max_width - c(x1, x1), max_height - c(y1, height), default.units = "native")
-                grid.lines(max_width - c(x1, x2), max_height - c(height, height), default.units = "native")
-                grid.lines(max_width - c(x2, x2), max_height - c(y2, height), default.units = "native")
+                grid.lines(max_width - c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native")
+                grid.lines(max_width - c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native")
             } else if(facing == "right") {
-                grid.lines(max_height - c(y1, height), max_width - c(x1, x1), default.units = "native")
-                grid.lines(max_height - c(height, height), max_width - c(x1, x2), default.units = "native")
-                grid.lines(max_height - c(y2, height), max_width - c(x2, x2), default.units = "native")
+                grid.lines(max_height - c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native")
+                grid.lines(max_height - c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native")
             } else if(facing == "left") {
-                grid.lines(c(y1, height), max_width - c(x1, x1), default.units = "native")
-                grid.lines(c(height, height), max_width - c(x1, x2), default.units = "native")
-                grid.lines(c(y2, height), max_width - c(x2, x2), default.units = "native")
+                grid.lines(c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native")
+                grid.lines(c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native")
             }
         }
         # do it recursively

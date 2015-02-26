@@ -1,12 +1,12 @@
 \name{draw_title-HeatmapList-method}
 \alias{draw_title,HeatmapList-method}
 \title{
-Draw heatmap list title  
+Draw heatmap list title  
 
 
 }
 \description{
-Draw heatmap list title  
+Draw heatmap list title  
 
 
 }
@@ -16,24 +16,24 @@ Draw heatmap list title
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
-  \item{which}{dendrogram on the row or on the column of the heatmap}
+  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{which}{dendrogram on the row or on the column of the heatmap}
 
 }
 \details{
-A viewport is created which contains heatmap list title.  
+A viewport is created which contains heatmap list title.  
 
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-This function returns no value.  
+This function returns no value.  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

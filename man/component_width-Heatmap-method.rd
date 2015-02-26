@@ -1,12 +1,12 @@
 \name{component_width-Heatmap-method}
 \alias{component_width,Heatmap-method}
 \title{
-Width of each heatmap component  
+Width of each heatmap component  
 
 
 }
 \description{
-Width of each heatmap component  
+Width of each heatmap component  
 
 
 }
@@ -15,22 +15,22 @@ Width of each heatmap component
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{k}{which components, see \code{\link{Heatmap-class}}.}
+  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{k}{which components, see \code{\link{Heatmap-class}}.}
 
 }
 \section{Detials}{
-This function is only for internal use.  
+This function is only for internal use.  
 
 
 }
 \value{
-A \code{\link[grid]{unit}} object  
+A \code{\link[grid]{unit}} object  
 
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
+Zuguang Gu <z.gu@dkfz.de>  
 
 
 }

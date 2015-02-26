@@ -26,8 +26,17 @@ draw(ha, 1:6)
 ha = HeatmapAnnotation(df = df, points = anno_points)
 draw(ha, 1:6)
 
-
 ha = HeatmapAnnotation(df = df, points = anno_points, which = "row")
+draw(ha, 1:6)
+
+ha = HeatmapAnnotation(points = anno_simple(1:6, type = "p"))
+draw(ha, 1:6)
+
+ha = HeatmapAnnotation(histogram = anno_simple(1:6, type = "histogram"))
+draw(ha, 1:6)
+
+mat = matrix(rnorm(36), 6)
+ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
 draw(ha, 1:6)
 
 dev.off()
