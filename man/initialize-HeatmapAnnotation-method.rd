@@ -17,12 +17,12 @@ Constructor method for HeatmapAnnotation class
 \arguments{
 
   \item{.Object}{a private object.}
-  \item{df}{a data frame which should have column names.}
+  \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
   \item{name}{name of the heatmap annotation}
-  \item{col}{a list which contains color mapping to columns in \code{df}.}
-  \item{show_legend}{whether show legend.}
-  \item{...}{functions which define complex annotations.}
-  \item{which}{are the annotations row annotations or column annotations.}
+  \item{col}{a list of colors which contains color mapping to columns in \code{df}. See \code{\link{initialize,SingleAnnotation-method}} for how to set colors.}
+  \item{show_legend}{whether show legend for each column in \code{df}.}
+  \item{...}{functions which define complex annotations. Values should be named arguments.}
+  \item{which}{are the annotations row annotations or column annotations?}
   \item{annotation_height}{height of each annotation if annotations are column annotations.}
   \item{annotation_width}{width of each annotation if annotations are row annotations.}
   \item{height}{not using currently.}
@@ -30,7 +30,7 @@ Constructor method for HeatmapAnnotation class
 
 }
 \details{
-The simple annotations are defined by \code{df} and \code{col} arguments, complex annotations are defined by the function list.   
+The simple annotations are defined by \code{df} and \code{col} arguments. Complex annotations are defined by the function list.   
 
 
 }
@@ -58,5 +58,4 @@ ha = HeatmapAnnotation(histogram = anno_simple(1:6, type = "histogram"))
 
 mat = matrix(rnorm(36), 6)
 ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
-
 }

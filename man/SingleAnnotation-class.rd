@@ -15,7 +15,7 @@ Class for a single annotation
 \details{
 A complex heatmap always has more than one annotations on rows and columns. The most simple annotation is one row or one column grids in which different colors represent different classes of the data. The annotation can also be more complex graphics, such as a boxplot that shows data distribution in corresponding row or column.  
 
-The \code{\link{SingleAnnotation}} class is used for storing data for a single annotation and provides methods for drawing annotation.  
+The \code{\link{SingleAnnotation}} class is used for storing data for a single annotation and provides methods for drawing annotation grahics.  
 
 
 }
@@ -30,7 +30,7 @@ The \code{\link{SingleAnnotation}} class provides following methods:
 
 }
 \seealso{
-The \code{\link{HeatmapAnnotation}} object contains a list of \code{\link{SingleAnnotation}} objects.  
+The \code{\link{SingleAnnotation}} class is always used internally. The public \code{\link{HeatmapAnnotation}} class contains a list of \code{\link{SingleAnnotation}} objects and is used to add annotation graphics on heatmaps.  
 
 
 }

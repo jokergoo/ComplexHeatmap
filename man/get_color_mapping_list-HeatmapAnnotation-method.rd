@@ -20,12 +20,14 @@ Get a list of color mapping objects
 
 }
 \details{
-Color mapping for simple annotations are returned.  
+Color mapping for visible simple annotations are only returned.  
+
+This function is only for internal use.  
 
 
 }
 \value{
-A list of \code{\link{ColorMapping}} list.  
+A list of \code{\link{ColorMapping}} list or an empty list.  
 
 
 }

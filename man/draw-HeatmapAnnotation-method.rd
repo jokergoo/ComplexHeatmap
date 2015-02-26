@@ -15,8 +15,8 @@ Draw the heatmap annotations
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapAnnotation}} object}
-  \item{index}{the index of rows or columns}
+  \item{object}{a \code{\link{HeatmapAnnotation}} object.}
+  \item{index}{a vector of order.}
   \item{...}{pass to \code{\link[grid]{viewport}} which contains all annotations.}
 
 }
@@ -56,5 +56,4 @@ draw(ha, 1:6)
 mat = matrix(rnorm(36), 6)
 ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
 draw(ha, 1:6)
-
 }

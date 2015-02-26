@@ -59,5 +59,4 @@ color_mapping_legend(map)
 cm = ColorMapping(name = "test",
 	col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
 color_mapping_legend(map, legend_title_gp = gpar(fontsize = 16))
-	
 }

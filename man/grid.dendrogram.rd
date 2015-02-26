@@ -19,8 +19,8 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
   \item{dend}{a \code{\link[stats]{dendrogram}} object.}
   \item{facing}{facing of the dendrogram.}
   \item{max_height}{maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.}
-  \item{order}{should leaves of dendrogram be put in the normal order or reverse order.}
-  \item{...}{pass to \code{\link[grid]{viewport}}.}
+  \item{order}{should leaves of dendrogram be put in the normal order or reverse order?}
+  \item{...}{pass to \code{\link[grid]{viewport}} that contains the dendrogram.}
 
 }
 \section{Dedails}{
@@ -29,7 +29,7 @@ A viewport is created which contains the dendrogram.
 
 }
 \value{
-No value is returned  
+No value is returned.  
 
 
 }

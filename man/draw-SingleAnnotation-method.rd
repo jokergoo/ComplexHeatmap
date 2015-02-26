@@ -16,11 +16,13 @@ Draw the single annotation
 \arguments{
 
   \item{object}{a \code{\link{SingleAnnotation}} object.}
-  \item{index}{the index}
+  \item{index}{a vector of orders}
 
 }
 \details{
 A viewport is created.  
+
+The graphics would be different depending the annotation is a row annotation or a column annotation.  
 
 
 }

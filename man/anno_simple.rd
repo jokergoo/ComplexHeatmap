@@ -16,21 +16,21 @@ anno_simple(x, type = c("p", "histogram"), which = c("column", "row"),
 }
 \arguments{
 
-  \item{x}{a vector}
-  \item{type}{\code{p} for points.}
-  \item{which}{column annotation or row annotation}
-  \item{gp}{graphic parameters}
-  \item{pch}{point type}
-  \item{size}{point size}
+  \item{x}{a vector of values.}
+  \item{type}{\code{p} for points, \code{histogram} for histogram.}
+  \item{which}{is the annotation a column annotation or a row annotation?}
+  \item{gp}{graphic parameters.}
+  \item{pch}{point type.}
+  \item{size}{point size.}
 
 }
 \details{
-Short cut function.  
+It is a shortcut function for \code{\link{anno_points}} and \code{\link{anno_histogram}}. It is designed to support more graphics in future versions.  
 
 
 }
 \value{
-A function  
+A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.  
 
 
 }
@@ -53,5 +53,4 @@ f(1:10)
 
 f = anno_simple(rnorm(10), type = "histogram", which = "row")
 f(1:10)
-
 }

@@ -15,13 +15,13 @@ anno_histogram(x, which = c("column", "row"), gp = gpar())
 }
 \arguments{
 
-  \item{x}{a vector}
-  \item{which}{column annotation or row annotation}
-  \item{gp}{graphic parameters}
+  \item{x}{a vector of values.}
+  \item{which}{is the annotation a column annotation or a row annotation?}
+  \item{gp}{graphic parameters.}
 
 }
 \value{
-A function  
+A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.  
 
 
 }
