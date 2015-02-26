@@ -5,15 +5,14 @@
 # Class for heatmap annotations
 #
 # == details
-# A complex heatmap contains a list of annotation which represented as different graphics
-# placed on rows and columns. The `HeatmapAnnotation` class stores information by a list
-# of `SingleAnnotation` objects.
+# A complex heatmap contains a list of annotations which represente as different graphics
+# placed on rows and columns. The `HeatmapAnnotation` class is a category of single annotations
+# by a list of `SingleAnnotation` objects with same number of rows or columns.
 #
 # == methods
 # The `HeatmapAnnotation` class provides following methods:
 #
 # - `initialize,HeatmapAnnotation-method`: constructor method
-# - `get_color_mapping_list,HeatmapAnnotation-method`
 # - `draw,HeatmapAnnotation-method`
 #
 # == author
@@ -39,19 +38,19 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 # == param
 # -.Object a private object.
-# -df a data frame which should have column names.
+# -df a data frame. Each column will be treated as a simple annotation. The data frame must have column names.
 # -name name of the heatmap annotation
-# -col a list which contains color mapping to columns in ``df``.
-# -show_legend whether show legend.
-# -... functions which define complex annotations.
-# -which are the annotations row annotations or column annotations.
+# -col a list of colors which contains color mapping to columns in ``df``. See `initialize,SingleAnnotation-method` for how to set colors.
+# -show_legend whether show legend for each column in ``df``.
+# -... functions which define complex annotations. Values should be named arguments.
+# -which are the annotations row annotations or column annotations?
 # -annotation_height height of each annotation if annotations are column annotations.
 # -annotation_width width of each annotation if annotations are row annotations.
 # -height not using currently.
 # -width width of the whole heatmap annotations, only used for column annotation when appending to the list of heatmaps.
 # 
 # == details
-# The simple annotations are defined by ``df`` and ``col`` arguments, complex annotations are
+# The simple annotations are defined by ``df`` and ``col`` arguments. Complex annotations are
 # defined by the function list. 
 #
 # == value
@@ -162,10 +161,12 @@ setMethod(f = "initialize",
 # -object a `HeatmapAnnotation` object.
 #
 # == details
-# Color mapping for simple annotations are returned.
+# Color mapping for visible simple annotations are only returned.
+#
+# This function is only for internal use.
 #
 # == values
-# A list of `ColorMapping` list.
+# A list of `ColorMapping` list or an empty list.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -187,8 +188,8 @@ setMethod(f = "get_color_mapping_list",
 # Draw the heatmap annotations
 #
 # == param
-# -object a `HeatmapAnnotation` object
-# -index the index of rows or columns
+# -object a `HeatmapAnnotation` object.
+# -index a vector of order.
 # -... pass to `grid::viewport` which contains all annotations.
 #
 # == details

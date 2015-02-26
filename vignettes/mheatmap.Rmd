@@ -39,58 +39,148 @@ rownames(mat) = letters[1:12]
 colnames(mat) = letters[1:10]
 ```
 
+Plot the heatmap with default settings:
 
 ```{r}
 Heatmap(mat)
+```
+
+Define the colors. In most cases, the heatmap visualizes a matrix which maps continuous values
+to colors. In this case, user should provide a color mapping function. The `colorRamp2()` from
+the **circlize** package is helpful for generate such functions. The two arguments for `colorRamp2()`
+is a vector of breaks values and corresponding colors.
+
+```{r}
 Heatmap(mat, col = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
+```
+
+If the matrix contains discrete values (either numeric or character), colors should be specified as
+a named vector so that it is possible to map discrete values to colors.
+
+```{r}
+mat2 = matrix(sample(1:4, 1000, replace = TRUE), 10, 10)
+colors = structure(rand_color(4), names = c("1", "2", "3", "4"))
+Heatmap(mat2, col = colors)
+```
+
+Or a character matrix:
+
+```{r}
+mat2 = matrix(sample(letters[1:4], 1000, replace = TRUE), 10, 10)
+colors = structure(rand_color(4), names = letters[1:4])
+Heatmap(mat2, col = colors)
+```
+
+The name of the heatmap is used for the title of the heatmap legend.
+The name is also useful if you plot more than one heatmap (introduced laster).
+
+```{r}
 Heatmap(mat, name = "test")
-Heatmap(mat, column_title = "blablabla")
-Heatmap(mat, row_title = "blablabla")
-Heatmap(mat, column_title = "blablabla", column_title_side = "bottom")
-Heatmap(mat, column_title = "blablabla", column_title_gp = gpar(fontsize = 20, fontface = "bold"))
-Heatmap(mat, cluster_rows = FALSE)
-Heatmap(mat, clustering_distance_rows = "pearson")
-Heatmap(mat, clustering_distance_rows = function(x) dist(x))
-Heatmap(mat, clustering_distance_rows = function(x, y) 1 - cor(x, y))
-Heatmap(mat, clustering_method_rows = "single")
-Heatmap(mat, row_hclust_side = "right")
-Heatmap(mat, row_hclust_width = unit(1, "cm"))
-Heatmap(mat, row_names_side = "left", row_hclust_side = "right", 
+```
+
+You can set heatmap titles at the rows or at columns. Note at a same time
+you can only put e.g. column title either on the top or at the bottom.
+The grahic paramters can be set by `row_title_gp` and `column_title_gp` respectively.
+
+```{r}
+Heatmap(mat, name = "test", column_title = "I am a column title")
+Heatmap(mat, name = "test", row_title = "I am a row title")
+Heatmap(mat, name = "test", column_title = "I am a column title at the bottom", 
+  column_title_side = "bottom")
+Heatmap(mat, name = "test", column_title = "I am a big column title", 
+  column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+```
+
+Cluster settings. There are three ways to specify distance metric for clustering:
+
+- specify distance as a pre-defined option. The valid values are the supported methods
+  in `dist()` function and `pearson`, `spearman` and `kendall`.
+- a self-defined function which calculate distance from a matrix. The function should
+  only contains one argument
+- a self-defined function which calculates distance from two vectors. The function should
+  only contains two arguments.
+
+```{r}
+Heatmap(mat, name = "test", cluster_rows = FALSE)
+Heatmap(mat, name = "test", show_row_hclust = FALSE)
+Heatmap(mat, name = "test", clustering_distance_rows = "pearson")
+Heatmap(mat, name = "test", clustering_distance_rows = function(x) dist(x))
+Heatmap(mat, name = "test", clustering_distance_rows = function(x, y) 1 - cor(x, y))
+Heatmap(mat, name = "test", clustering_method_rows = "single")
+Heatmap(mat, name = "test", row_hclust_side = "right")
+Heatmap(mat, name = "test", row_hclust_width = unit(1, "cm"))
+```
+
+Set row names or column names.
+
+```{r}
+Heatmap(mat, name = "test", row_names_side = "left", row_hclust_side = "right", 
     column_names_side = "top", column_hclust_side = "bottom")
-Heatmap(mat, show_row_names = FALSE)
-Heatmap(mat, row_names_gp = gpar(fontsize = 20))
-Heatmap(mat, km = 2)
-Heatmap(mat, split = rep(c("A", "B"), 6))
-Heatmap(mat, split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D"), each = 6)))
-Heatmap(mat, split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D"), each = 6)), 
+Heatmap(mat, name = "test", show_row_names = FALSE)
+Heatmap(mat, name = "test", row_names_gp = gpar(fontsize = 20))
+```
+
+For a heatmat, you can split by rows.
+
+```{r}
+Heatmap(mat, name = "test", km = 2)
+Heatmap(mat, name = "test", split = rep(c("A", "B"), 6))
+Heatmap(mat, name = "test", split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D"), each = 6)))
+Heatmap(mat, name = "test", split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D"), each = 6)), 
     combined_name_fun = function(x) paste(x, collapse = "\n"))
 ```
 
-## the `HeatmapAnnotation` class
+There is also an API what allows to add graphics on each cell in the heatmap
 
 ```{r}
-df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
+mat = matrix(1:9, 3, 3)
+
+ht = Heatmap(mat, rect_gp = gpar(col = "white"), 
+  cell_fun = function(i, j, x, y, width, height) grid.text(mat[i, j], x = x, y = y),
+  cluster_rows = FALSE, cluster_columns = FALSE)
+ht
+```
+
+## the HeatmapAnnotation class
+
+The `HeatmapAnnotation` class is used to add annotations on columns.
+
+A simple annotation is defined as ...
+
+```{r}
+df = data.frame(type = c(rep("a", 5), rep("b", 5)))
 ha = HeatmapAnnotation(df = df)
 ha
 
 ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
 ha
+```
 
-value = 1:6
-anno_points = function(index) {
-  n = length(index)
-  pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = range(value)))
-  grid.points(seq_along(index), value[index])
-  upViewport()
-}
-ha = HeatmapAnnotation(points = anno_points)
-ha
+A complex annotation is defined as...
 
-ha = HeatmapAnnotation(df = df, points = anno_points)
+```{r}
+value = 1:10
+ha = HeatmapAnnotation(points = anno_points(value))
 ha
 ```
 
+You can combine more than one annotation into the object.
+
+```{r}
+ha = HeatmapAnnotation(df = df, points = anno_points(value))
+ha
+```
+
+With the annotation, you can set it either by `top_annotation` or `bottom_annotation`.
+
+```{r}
+Heatmap(mat, name = "test", top_annotation = ha)
+```
+
 ## A list of heatmaps and row annotations
+
+You can plot more than one heatmaps by columns. Also you can add row annotations. Actually, one
+heatmap is a special case of the heatmap list of length one.
 
 ```{r}
 mat = matrix(rnorm(40, 2), 4, 10)
@@ -106,26 +196,51 @@ ht_list = ht1 + ht2
 ht_list
 
 draw(ht_list, heatmap_legend_side = "bottom")
+```
 
+Since a single heatmap is also a heatmap list, you can also call `draw()` to make ...
+
+```{r}
+draw(ht1, heatmap_legend_side = "bottom")
+```
+
+If one heatmap is splitted by rows, all heatmap will be splitted by rows according to
+the first heatmap
+
+```{r}
 ht1 = Heatmap(mat, km = 2)
 ht2 = Heatmap(mat)
 
 ht1 + ht2
+```
 
+Row annotation is also defined by the `HeatmapAnnotation` class, but with specifying
+`which` to `row`.
+
+```{r}
 df = data.frame(type = c("a", "a", "a", "a", "b", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "cm"))
 df2 = data.frame(type = c("a", "a", "a", "a", "a", "b", "b", "b", "b", "b"))
 ha2 = HeatmapAnnotation(df = df2)
 ht1 = Heatmap(mat, top_annotation = ha2)
 ht1 + ha
-
-value = 1:8
-anno_points = function(index) {
-  n = length(index)
-  pushViewport(viewport(xscale = range(value), yscale = c(0.5, n+0.5)))
-  grid.points(value[index], seq_along(index))
-  upViewport()
-}
-ha = HeatmapAnnotation(points = anno_points, which = "row", width = unit(1, "cm"))
-ht1 + ha
 ```
+
+```{r}
+value = 1:8
+ha = HeatmapAnnotation(points = function(index) {
+      n = length(index)
+      pushViewport(viewport(xscale = range(value), yscale = c(0.5, n+0.5)))
+      grid.points(value[index], seq_along(index), default.units = "native", pch = 16, size = unit(2, "mm"))
+      grid.rect(y = seq_along(index), height = 1, default.units = "native", gp = gpar(fill = "transparent"))
+      upViewport()
+    }, which = "row", 
+  width = unit(1, "cm"))
+ht1 + ha
+
+ha = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), which = "row",
+  width = unit(2, "cm"))
+ht1 + ha
+
+```
+

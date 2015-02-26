@@ -44,3 +44,14 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\examples{
+f = anno_simple(rnorm(10), type = "p")
+f(1:10)
+
+f = anno_simple(rnorm(10), type = "histogram")
+f(1:10)
+
+f = anno_simple(rnorm(10), type = "histogram", which = "row")
+f(1:10)
+
+}

@@ -11,7 +11,7 @@ Using boxplot as annotation
 
 }
 \usage{
-anno_boxplot(x, which = c("column", "row"), gp = gpar(),
+anno_boxplot(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
     pch = 16, size = unit(2, "mm"))
 }
 \arguments{
@@ -32,4 +32,16 @@ A function
 Zuguang Gu <z.gu@dkfz.de>  
 
 
+}
+\examples{
+mat = matrix(rnorm(32), nrow = 4)
+f = anno_boxplot(mat)
+f(1:8)
+
+f = anno_boxplot(mat, which = "row")
+f(1:4)
+
+lt = lapply(1:4, function(i) rnorm(8))
+f = anno_boxplot(lt)
+f(1:8)	
 }

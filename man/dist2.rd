@@ -35,3 +35,16 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\examples{
+mat = matrix(rnorm(40), nr = 4, ncol = 10)
+rownames(mat) = letters[1:4]
+colnames(mat) = letters[1:10]
+
+d2 = dist2(mat)
+d2 = dist2(mat, pairwise_fun = function(x, y) 1 - cor(x, y))
+d2 = dist2(mat, pairwise_fun = function(x, y) {
+	l = is.na(x) & is.na(y)
+	sqrt(sum((x[l] - y[l])^2))
+})
+
+}

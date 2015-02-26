@@ -44,3 +44,19 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\examples{
+df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
+ha = HeatmapAnnotation(df = df)
+
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
+
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), which = "row")
+
+ha = HeatmapAnnotation(points = anno_simple(1:6, type = "p"))
+
+ha = HeatmapAnnotation(histogram = anno_simple(1:6, type = "histogram"))
+
+mat = matrix(rnorm(36), 6)
+ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
+
+}

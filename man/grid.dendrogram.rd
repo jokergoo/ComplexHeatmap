@@ -39,7 +39,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-hc <- hclust(dist(USArrests[1:5, ]))
+hc = hclust(dist(USArrests[1:5, ]))
 dend = as.dendrogram(hc)
 
 layout = grid.layout(nrow = 2, ncol = 2)

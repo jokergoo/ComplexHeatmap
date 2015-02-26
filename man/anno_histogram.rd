@@ -30,3 +30,10 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\examples{
+f = anno_histogram(rnorm(10))
+f(1:10)
+
+f = anno_histogram(rnorm(10), which = "row")
+f(1:10)
+}

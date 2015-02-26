@@ -88,14 +88,14 @@ default_col = function(x, main_matrix = FALSE) {
 # -dend a `stats::dendrogram` object.
 # -facing facing of the dendrogram.
 # -max_height maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.
-# -order should leaves of dendrogram be put in the normal order or reverse order.
-# -... pass to `grid::viewport`.
+# -order should leaves of dendrogram be put in the normal order or reverse order?
+# -... pass to `grid::viewport` that contains the dendrogram.
 #
 # == dedails
 # A viewport is created which contains the dendrogram.
 #
 # == value
-# No value is returned
+# No value is returned.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -140,35 +140,37 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
         y2 = attr(d2, "height")
 
         # graphic parameters for current branch
-        
+        edge_gp1 = do.call("gpar", as.list(attr(d1, "edgePar")))
+        edge_gp2 = do.call("gpar", as.list(attr(d2, "edgePar")))
+
         # plot the connection line
         if(order == "normal") {
             if(facing == "bottom") {
-                grid.lines(c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native")
-                grid.lines(c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native")
+                grid.lines(c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native", gp = edge_gp1)
+                grid.lines(c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native", gp = edge_gp2)
             } else if(facing == "top") {
-                grid.lines(c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native")
-                grid.lines(c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native")
+                grid.lines(c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native", gp = edge_gp1)
+                grid.lines(c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native", gp = edge_gp2)
             } else if(facing == "right") {
-                grid.lines(max_height - c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native")
-                grid.lines(max_height - c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native")
+                grid.lines(max_height - c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                grid.lines(max_height - c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
             } else if(facing == "left") {
-                grid.lines(c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native")
-                grid.lines(c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native")
+                grid.lines(c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                grid.lines(c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
             }
         } else {
             if(facing == "bottom") {
-                grid.lines(max_width - c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native")
-                grid.lines(max_width - c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native")
+                grid.lines(max_width - c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native", gp = edge_gp1)
+                grid.lines(max_width - c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native", gp = edge_gp2)
             } else if(facing == "top") {
-                grid.lines(max_width - c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native")
-                grid.lines(max_width - c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native")
+                grid.lines(max_width - c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native", gp = edge_gp1)
+                grid.lines(max_width - c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native", gp = edge_gp2)
             } else if(facing == "right") {
-                grid.lines(max_height - c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native")
-                grid.lines(max_height - c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native")
+                grid.lines(max_height - c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                grid.lines(max_height - c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
             } else if(facing == "left") {
-                grid.lines(c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native")
-                grid.lines(c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native")
+                grid.lines(c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                grid.lines(c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
             }
         }
         # do it recursively
@@ -209,6 +211,7 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
 #
 # == detail
 # You can construct any type of distance measurements by defining a pair-wise distance function.
+# The function is implemented by two nested for loops, thus the efficiency may not be so good.
 #
 # == value
 # A `stats::dist` object.

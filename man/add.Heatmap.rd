@@ -16,7 +16,7 @@ Add two heatmaps as a heatmap list
 \arguments{
 
   \item{x}{a \code{\link{Heatmap}} object.}
-  \item{y}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapList}} object.}
+  \item{y}{a \code{\link{Heatmap}} object, a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \details{

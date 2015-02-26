@@ -860,6 +860,8 @@ setMethod(f = "draw_hclust",
     dend = as.dendrogram(hc)
     n = length(labels(dend))
 
+    pushViewport(viewport(name = paste(object@name, which, "cluster", sep = "-"), ...))
+
     if(side == "left") {
         grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
     } else if(side == "right") {
@@ -869,6 +871,8 @@ setMethod(f = "draw_hclust",
     } else if(side == "bottom") {
         grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "top", order = "reverse", y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     } 
+
+    upViewport()
 
 })
 
@@ -1263,7 +1267,7 @@ setMethod(f = "prepare",
 #
 # == param
 # -x a `Heatmap` object.
-# -y a `Heatmap` object or a `HeatmapList` object.
+# -y a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
 #
 # == detail
 # It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`.

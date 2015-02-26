@@ -10,7 +10,7 @@
 # graphics, such as a boxplot that shows data distribution in corresponding row or column.
 #
 # The `SingleAnnotation` class is used for storing data for a single annotation and provides
-# methods for drawing annotation.
+# methods for drawing annotation grahics.
 #
 # == methods
 # The `SingleAnnotation` class provides following methods:
@@ -19,7 +19,8 @@
 # - `draw,SingleAnnotation-method`: draw the single annotation.
 #
 # == seealso
-# The `HeatmapAnnotation` object contains a list of `SingleAnnotation` objects.
+# The `SingleAnnotation` class is always used internally. The public `HeatmapAnnotation` class
+# contains a list of `SingleAnnotation` objects and is used to add annotation graphics on heatmaps.
 # 
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -44,24 +45,29 @@ SingleAnnotation = setClass("SingleAnnotation",
 #
 # == param
 # -.Object private object.
-# -name name for this annotation
-# -value A vector of annotation
+# -name name for this annotation.
+# -value A vector of annotation.
 # -col colors corresponding to ``value``. If the mapping is discrete mapping, the value of ``col``
 #      should be a vector; If the mapping is continuous mapping, the value of ``col`` should be 
 #      a color mapping function. 
-# -fun a self-defined function. The argument of this function should be a vector of index.
+# -fun a self-defined function to add annotation graphics. The argument of this function should only 
+#      be a vector of index that corresponds to rows or columns.
 # -which is the annotation a row annotation or a column annotation?
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
 #
 # == details
 # The most simple annotation is one row or one column grids in which different colors
 # represent different classes of the data. Here the function use `ColorMapping` class
-# to process such information. ``value`` and ``col`` arguments are used to construct a 
-# `ColorMapping` object.
+# to process such simple annotation. ``value`` and ``col`` arguments controls values and colors
+# of the simple annotation and a `ColorMapping` object will be constructed based on ``value`` and ``col``.
 #
-# ``fun`` is used to construct a more complex annotation. The only input argument of ``fun`` is a index
-# of rows or columns which is already adjusted by the clustering, so that graphics can be 
-# corresponded to the correct rows or columns.
+# ``fun`` is used to construct a more complex annotation. Users can add any type of annotation graphics
+# by implementing a function. The only input argument of ``fun`` is a index
+# of rows or columns which is already adjusted by the clustering. In the packcage, there are already
+# several annotation graphic function generators: `anno_points`, `anno_histogram` and `anno_boxplot`.
+#
+# One thing that users should be careful is the difference of coordinates when the annotation is a row
+# annotation or a column annotation. 
 #
 # == value
 # A `SingleAnnotation` object.
@@ -126,10 +132,12 @@ setMethod(f = "initialize",
 #
 # == param
 # -object a `SingleAnnotation` object.
-# -index the index
+# -index a vector of orders
 #
 # == details
 # A viewport is created.
+#
+# The graphics would be different depending the annotation is a row annotation or a column annotation.
 #
 # == value
 # No value is returned.
