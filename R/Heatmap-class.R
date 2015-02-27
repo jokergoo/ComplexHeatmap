@@ -12,42 +12,42 @@
 # == details
 # The components for a single heamtap are placed into a 9 x 7 layout:
 #
-#          +------+
-#          +------+
-#          +------+
-#          +------+
+#          +------+ (1)
+#          +------+ (2)
+#          +------+ (3)
+#          +------+ (4)
 #    +-+-+-+------+-+-+-+
-#    | | | |      | | | |
+#    |1|2|3| 4(5) |5|6|7|
 #    +-+-+-+------+-+-+-+
-#          +------+
-#          +------+
-#          +------+
-#          +------+
+#          +------+ (6)
+#          +------+ (7)
+#          +------+ (8)
+#          +------+ (9)
 #
 # From top to bottom in column 4, the regions are:
 #
-# - title put on column, graphics are drawn by `draw_title,Heatmap-method`.
-# - column cluster, graphics are drawn by `draw_hclust,Heatmap-method`.
-# - column annotation, graphics are drawn by `draw_annotation,Heatmap-method`.
-# - column names, graphics are drawn by `draw_dimnames,Heatmap-method`.
+# - title which is put on the top of the heatmap, graphics are drawn by `draw_title,Heatmap-method`.
+# - column cluster on the top, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - column annotation on the top, graphics are drawn by `draw_annotation,Heatmap-method`.
+# - column names on the top, graphics are drawn by `draw_dimnames,Heatmap-method`.
 # - heatmap body, graphics are drawn by `draw_heatmap_body,Heatmap-method`.
-# - column names, graphics are drawn by `draw_dimnames,Heatmap-method`.
-# - column annotation, graphics are drawn by `draw_annotation,Heatmap-method`.
-# - column cluster, graphics are drawn by `draw_hclust,Heatmap-method`.
-# - title put on column, graphics are drawn by `draw_title,Heatmap-method`.
+# - column names on the bottom, graphics are drawn by `draw_dimnames,Heatmap-method`.
+# - column annotation on the bottom, graphics are drawn by `draw_annotation,Heatmap-method`.
+# - column cluster on the bottom, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - title on the bottom, graphics are drawn by `draw_title,Heatmap-method`.
 # 
 # From left to right in row 5, the regions are:
 #
-# - title put on row, graphics are drawn by `draw_title,Heatmap-method`.
-# - row cluster, graphics are drawn by `draw_hclust,Heatmap-method`.
-# - row names, graphics are drawn by `draw_dimnames,Heatmap-method`.
+# - title which is put in the left of the heatmap, graphics are drawn by `draw_title,Heatmap-method`.
+# - row cluster on the left, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - row names on the left, graphics are drawn by `draw_dimnames,Heatmap-method`.
 # - heatmap body
-# - row names, graphics are drawn by `draw_dimnames,Heatmap-method`.
-# - row cluster, graphics are drawn by `draw_hclust,Heatmap-method`.
-# - title put on row, graphics are drawn by `draw_title,Heatmap-method`.
+# - row names on the right, graphics are drawn by `draw_dimnames,Heatmap-method`.
+# - row cluster on the right, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - title on the right, graphics are drawn by `draw_title,Heatmap-method`.
 #
-# The `Heatmap` class is not resposible for heatmap legend. The `draw,Heatmap-method` method
-# will construct a `HeatmapList` class which only contains one single heatmap
+# The `Heatmap` class is not responsible for heatmap legend and annotatino legends. The `draw,Heatmap-method` method
+# will construct a `HeatmapList` object which only contains one single heatmap
 # and call `draw,HeatmapList-method` to make a complete heatmap.
 #
 # == methods
@@ -55,7 +55,7 @@
 #
 # - `initialize,Heatmap-method`: contructor method.
 # - `draw,Heatmap-method`: draw a single heatmap.
-# - `add_heatmap,Heatmap-method` add heatmaps and row annotations to a list of heatmaps.
+# - `add_heatmap,Heatmap-method` append heatmaps and row annotations to a list of heatmaps.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -103,20 +103,26 @@ Heatmap = setClass("Heatmap",
 #
 # == param
 # -.Object private object.
-# -matrix matrix. Either numeric or character. If it is a simple vector, it will be
+# -matrix a matrix. Either numeric or character. If it is a simple vector, it will be
 #         converted to a one-column matrix.
-# -col a vector of colors if the matrix is character or a color mapping 
-#      function if the matrix is numeric. Pass to `initialize,ColorMapping-method`.
-# -name name of the heatmap.
+# -col a vector of colors if the color mapping is discrete or a color mapping 
+#      function if the matrix is continuous numbers. Pass to `initialize,ColorMapping-method`.
+# -name name of the heatmap. The name is used as the title of the heatmap legend.
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
-# -cell_fun function to add graphics on each cell
+# -cell_fun self-defined function to add graphics on each cell. Six parameters will be passed into 
+#           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height`` which are row index,
+#           column index in ``matrix``, coordinate of the middle points in the heatmap body viewport,
+#           and the width and height of the cell. 
 # -row_title title on row.
-# -row_title_side will the title be put on the left or right of the heatmap.
+# -row_title_side will the title be put on the left or right of the heatmap?
 # -row_title_gp graphic parameters for drawing text.
 # -column_title title on column.
-# -column_title_side will the title be put on the top or bottom of the heatmap.
+# -column_title_side will the title be put on the top or bottom of the heatmap?
 # -column_title_gp graphic parameters for drawing text.
-# -cluster_rows whether make cluster on rows.
+# -cluster_rows If the value is a logical, it means whether make cluster on rows. The value can also
+#               be a `stats::hcust` or a `stats::dendrogram` that already contains clustering information.
+#               This means you can use any type of clustering methods and render the `stats::dendrogram`
+#               object with self-defined graphic settings.
 # -clustering_distance_rows it can be a pre-defined character which is in 
 #                ("euclidean", "maximum", "manhattan", "canberra", "binary", 
 #                "minkowski", "pearson", "spearman", "kendall"). It can also be a function.
@@ -125,34 +131,39 @@ Heatmap = setClass("Heatmap",
 #                the input arguments are two vectors and the function calcualtes distance between these
 #                two vectors.
 # -clustering_method_rows method to make cluster, pass to `stats::hclust`.
-# -row_hclust_side should the row cluster be put on the left or right of the heatmap.
+# -row_hclust_side should the row cluster be put on the left or right of the heatmap?
 # -row_hclust_width width of the row cluster, should be a `grid::unit` object.
-# -show_row_hclust whether show row clusters.
-# -row_hclust_gp graphics parameters for drawing lines.
-# -cluster_columns whether make cluster on columns.
+# -show_row_hclust whether show row clusters. 
+# -row_hclust_gp graphics parameters for drawing lines. If users already provide a `stats::dendrogram`
+#                object with edges renderred, this argument will be ingored.
+# -cluster_columns whether make cluster on columns. Same settings as ``cluster_rows``.
 # -clustering_distance_columns same setting as ``clustering_distance_rows``.
 # -clustering_method_columns method to make cluster, pass to `stats::hclust`.
-# -column_hclust_side should the column cluster be put on the top or bottom of the heatmap.
+# -column_hclust_side should the column cluster be put on the top or bottom of the heatmap?
 # -column_hclust_height height of the column cluster, should be a `grid::unit` object.
 # -show_column_hclust whether show column clusters.
-# -column_hclust_gp graphic parameters for drawling lines.
-# -row_names_side should the row names be put on the left or right of the heatmap.
+# -column_hclust_gp graphic parameters for drawling lines. Same settings as ``row_hclust_gp``.
+# -row_names_side should the row names be put on the left or right of the heatmap?
 # -show_row_names whether show row names.
-# -row_names_max_width maximum width of row names viewport.
+# -row_names_max_width maximum width of row names viewport. Because some times row names can be very long, it is not reasonable
+#                      to show them all.
 # -row_names_gp graphic parameters for drawing text.
-# -column_names_side should the column names be put on the top or bottom of the heatmap.
+# -column_names_side should the column names be put on the top or bottom of the heatmap?
 # -column_names_max_height maximum height of column names viewport.
 # -show_column_names whether show column names.
 # -column_names_gp graphic parameters for drawing text.
-# -top_annotation a `HeatmapAnnotation` object.
-# -top_annotation_height height.
+# -top_annotation a `HeatmapAnnotation` object which contains a list of annotations.
+# -top_annotation_height total height of the column annotations on the top.
 # -bottom_annotation a `HeatmapAnnotation` object.
-# -bottom_annotation_height height.
-# -km whether do k-means clustering on rows. 
-# -gap gap between row-slice, should be `grid::unit` object
-# -split a vector or a data frame by which the rows are splitted 
-# -combined_name_fun if heatmap is splitted by rows, how to make a combined row title?
-# -width the width of the single heatmap.
+# -bottom_annotation_height total height of the column annotations on the bottom.
+# -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be splitted by rows according to the k-means clustering.
+#     For each row-clusters, hierarchical clustering is still applied with parameters above.
+# -split a vector or a data frame by which the rows are splitted.
+# -gap gap between row-slices if the heatmap is splitted by rows, should be `grid::unit` object.
+# -combined_name_fun if the heatmap is splitted by rows, how to make a combined row title for each slice?
+#                 The input parameter for this function is a vector which contains level names under each column in ``split``.
+# -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
+#        is appended to a list of heatmaps.
 #
 # == details
 # The initialization function only applies parameter checking. Clustering
@@ -178,7 +189,8 @@ Heatmap = setClass("Heatmap",
 #
 setMethod(f = "initialize",
     signature = "Heatmap",
-    definition = function(.Object, matrix, col, name, rect_gp = gpar(col = NA), cell_fun = function(i, j, x, y, width, height) NULL,
+    definition = function(.Object, matrix, col, name, rect_gp = gpar(col = NA), 
+    cell_fun = function(i, j, x, y, width, height) NULL,
     row_title = character(0), row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), column_title = character(0), 
     column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
@@ -194,7 +206,7 @@ setMethod(f = "initialize",
     show_column_names = TRUE, column_names_max_height = unit(2, "cm"), column_names_gp = gpar(fontsize = 12),
     top_annotation = NULL, top_annotation_height = unit(1, "cm"),
     bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
-    km = 1, gap = unit(1, "mm"), split = NULL, combined_name_fun = function(x) paste(x, collapse = "/"),
+    km = 1, split = NULL, gap = unit(1, "mm"), combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL) {
 
     if(is.data.frame(matrix)) {
