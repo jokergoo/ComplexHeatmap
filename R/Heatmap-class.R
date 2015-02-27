@@ -166,23 +166,20 @@ Heatmap = setClass("Heatmap",
 #        is appended to a list of heatmaps.
 #
 # == details
-# The initialization function only applies parameter checking. Clustering
-# on rows can be applied by `make_row_cluster,Heatmap-method`;
-# clustering on columns can be applied by `make_column_cluster,Heatmap-method`
-# and layout can be constructed by `make_layout,Heatmap-method`. Basically,
-# these three methods will be called when calling `draw,Heatmap-method` or `draw,HeatmapList-method`.
-#
-# If ``km`` or/and ``split`` are set, the clustering inside each row slice uses ``clustering_method_rows``
-# and ``clustering_method_rows`` as input parameters.
+# The initialization function only applies parameter checking and fill values to each slot with proper ones.
+# Then it will be ready for clustering and layout.
 # 
 # Following methods can be applied on the `Heatmap` object:
 #
 # - `show,Heatmap-method`: draw a single heatmap with default parameters
 # - `draw,Heatmap-method`: draw a single heatmap.
-# - `add_heatmap,Heatmap-method` add heatmaps to a list of heatmaps.
+# - `add_heatmap,Heatmap-method` append heatmaps and row annotations to a list of heatmaps.
+#
+# The constructor function pretends to be a high-level graphic function because the ``show`` method
+# of the `Heatmap` object actually plots the graphics.
 #
 # == value
-# A `Heatmap` object
+# A `Heatmap` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -741,11 +738,11 @@ setMethod(f = "show",
 })
 
 # == title
-# Add two heatmaps as a heatmap list
+# Add two heatmaps or add row annotations as a heatmap list
 #
 # == param
 # -object a `Heatmap` object.
-# -x a `Heatmap` object or a `HeatmapAnnotation` object or a `HeatmapList` object.
+# -x a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
 #
 # == details
 # There is a shortcut function ``+.Heatmap``.
@@ -780,7 +777,7 @@ setMethod(f = "add_heatmap",
 # specified when initializing the `Heatmap` object. If the matrix is splitted, 
 # there will be gaps between rows to identify differnet row-slice.
 #
-# A viewport is created which contains grids.
+# A viewport is created which contains subset rows of the heatmap.
 #
 # This function is only for internal use.
 #
@@ -825,9 +822,9 @@ setMethod(f = "draw_heatmap_body",
 # == title
 # Draw dendrogram on row or column
 #
-# == param
+# == params
 # -object a `Heatmap` object.
-# -which dendrogram on the row or on the column of the heatmap
+# -which is dendrogram put on the row or on the column of the heatmap?
 # -k a matrix may be splitted by rows, the value identifies which row-slice.
 # -max_height maximum height of the dendrograms.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
@@ -842,6 +839,9 @@ setMethod(f = "draw_heatmap_body",
 #
 # == value
 # This function returns no value.
+#
+# == seealso
+# `grid.dendrogram`
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -893,7 +893,7 @@ setMethod(f = "draw_hclust",
 #
 # == param
 # -object a `Heatmap` object.
-# -which names on the row or on the column of the heatmap
+# -which are names put on the row or on the column of the heatmap?
 # -k a matrix may be splitted by rows, the value identifies which row-slice.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
@@ -965,7 +965,7 @@ setMethod(f = "draw_dimnames",
 #
 # == param
 # -object a `Heatmap` object.
-# -which title on the row or on the column of the heatmap
+# -which is title put on the row or on the column of the heatmap?
 # -k a matrix may be splitted by rows, the value identifies which row-slice.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
@@ -1019,10 +1019,13 @@ setMethod(f = "draw_title",
 #
 # == param
 # -object a `Heatmap` object.
-# -which on top or bottom
+# -which are the annotations put on the top or bottom of the heatmap.
 #
 # == details
 # A viewport is created which contains column annotations.
+#
+# Since the column annotations is a `HeatmapAnnotation` object, the function
+# calls `draw,HeatmapAnnotation-method` to draw the annotations.
 #
 # This function is only for internal use.
 #
@@ -1062,7 +1065,7 @@ setMethod(f = "draw_annotation",
 # This function is only for internal use.
 #
 # == value
-# A `grid::unit` object
+# A `grid::unit` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -1106,7 +1109,7 @@ setMethod(f = "component_width",
 # This function is only for internal use.
 #
 # == value
-# A `grid::unit` object
+# A `grid::unit` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -1197,7 +1200,7 @@ setMethod(f = "set_component_height",
 # -... pass to `draw,HeatmapList-method`.
 #
 # == detail
-# The function creates a `HeatmapList` object, add a single heatmap
+# The function creates a `HeatmapList` object which only contains a single heatmap
 # and call `draw,HeatmapList-method` to make the final heatmap.
 #
 # == value
@@ -1243,21 +1246,22 @@ setMethod(f = "draw",
 #
 # == param
 # -object a `Heatmap` object.
-# -row_order orders of rows, pass to `make_row_cluster,Heatmap-method`.
+# -row_order orders of rows, pass to `make_row_cluster,Heatmap-method`. Because if more than one heatmaps
+#            are drawn by columns, the order of some heatmap will be adjusted by one certain heatmap, this
+#            argument is used to pass a pre-defined row order.
 # -split how to split rows in the matrix, passing to `make_row_cluster,Heatmap-method`.
 #
 # == detail
 # The preparation of the heatmap includes following steps:
 #
-# - making clustering on rows if specified
-# - making clustering on columns if specified
-# - set row title to a empty string if specified
-# - makeing the layout of the heatmap
+# - making clustering on rows if specified (by calling `make_row_cluster,Heatmap-method`)
+# - making clustering on columns if specified (by calling `make_column_cluster,Heatmap-method`)
+# - makeing the layout of the heatmap (by calling `make_layout,Heatmap-method`)
 #
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap` object
+# A `Heatmap` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -1275,7 +1279,7 @@ setMethod(f = "prepare",
 })
 
 # == title
-# Add two heatmaps as a heatmap list
+# Add two heatmaps or add row annotations as a heatmap list
 #
 # == param
 # -x a `Heatmap` object.
@@ -1293,5 +1297,3 @@ setMethod(f = "prepare",
 "+.Heatmap" = function(x, y) {
     add_heatmap(x, y)
 }
-
-

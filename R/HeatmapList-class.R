@@ -3,25 +3,27 @@
 # Class for a list of heatmaps
 #
 # == details
+# A heatmap list is defined as a list of heatmaps and row annotations.
+#
 # The components for the heamtap list are placed into a 7 x 7 layout:
 #
-#          +------+
-#          +------+
-#          +------+
+#          +------+(1)
+#          +------+(2)
+#          +------+(3)
 #    +-+-+-+------+-+-+-+
-#    | | | |      | | | |
+#    |1|2|3| 4(4) |5|6|7|
 #    +-+-+-+------+-+-+-+
-#          +------+
-#          +------+
-#          +------+
+#          +------+(5)
+#          +------+(6)
+#          +------+(7)
 # 
 # From top to bottom in column 4, the regions are:
 #
 # - annotation legend on the top, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
 # - heatmap legend on the top, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
-# - title for the heatmap list which are put on the top, graphics are drawn by `draw_title,HeatmapList-method`.
-# - the heatmap list
-# - title for the heatmap list which are put on the bottom, graphics are drawn by `draw_title,HeatmapList-method`.
+# - title for the heatmap list which is put on the top, graphics are drawn by `draw_title,HeatmapList-method`.
+# - the list of heatmaps and row annotations
+# - title for the heatmap list which is put on the bottom, graphics are drawn by `draw_title,HeatmapList-method`.
 # - heatmap legend on the bottom, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
 # - annotation legend on the bottom, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
 # 
@@ -29,18 +31,19 @@
 #
 # - annotation legend on the left, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
 # - heatmap legend on the left, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
-# - title for the heatmap list which are put on the left, graphics are drawn by `draw_title,HeatmapList-method`.
-# - the heatmap list
-# - title for the heatmap list which are put on the right, graphics are drawn by `draw_title,HeatmapList-method`.
+# - title for the heatmap list which is put on the left, graphics are drawn by `draw_title,HeatmapList-method`.
+# - the list of heatmaps and row annotations
+# - title for the heatmap list which is put on the right, graphics are drawn by `draw_title,HeatmapList-method`.
 # - heatmap legend on the right, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
 # - annotation legend on the right, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
 #
-# For the list of heatmaps which is placed at [5, 5] in the layout, the heatmaps are placed one after the other.
+# For the list of heatmaps which are placed at (5, 5) in the layout, the heatmaps and row annotations
+# are placed one after the other.
 #
 # == methods
 # The `HeatmapList` class provides following methods:
 #
-# - `draw,HeatmapList-method`: draw a single heatmap.
+# - `draw,HeatmapList-method`: draw the list of heatmaps and row annotations.
 # - `add_heatmap,HeatmapList-method` add heatmaps to the list of heatmaps.
 #
 # == author
@@ -84,7 +87,7 @@ HeatmapList = setClass("HeatmapList",
 )
 
 # == title
-# Add heatmaps to the heatmap list
+# Add heatmaps and row annotations to the heatmap list
 #
 # == param
 # -object a `HeatmapList` object.
@@ -888,17 +891,17 @@ setMethod(f = "show",
 })
 
 # == title
-# Add heatmaps to the list
+# Add heatmaps or row annotations to the list
 #
 # == param
 # -x a `HeatmapList` object.
-# -y a `Heatmap` object or a `HeatmapAnnotation` object or a `HeatmapList` object.
+# -y a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
 #
 # == detail
-# It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`.
+# It is only a shortcut function. It actually calls `add_heatmap,HeatmapList-method`.
 #
 # == value
-# A `HeatmapList` object
+# A `HeatmapList` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
