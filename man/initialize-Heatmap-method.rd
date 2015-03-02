@@ -79,22 +79,22 @@ Constructor method of Heatmap class
 
 }
 \details{
-The initialization function only applies parameter checking. Clustering on rows can be applied by \code{\link{make_row_cluster,Heatmap-method}}; clustering on columns can be applied by \code{\link{make_column_cluster,Heatmap-method}} and layout can be constructed by \code{\link{make_layout,Heatmap-method}}. Basically, these three methods will be called when calling \code{\link{draw,Heatmap-method}} or \code{\link{draw,HeatmapList-method}}.  
-
-If \code{km} or/and \code{split} are set, the clustering inside each row slice uses \code{clustering_method_rows} and \code{clustering_method_rows} as input parameters.  
+The initialization function only applies parameter checking and fill values to each slot with proper ones. Then it will be ready for clustering and layout.  
 
 Following methods can be applied on the \code{\link{Heatmap}} object:  
 
 \itemize{
   \item \code{\link{show,Heatmap-method}}: draw a single heatmap with default parameters
   \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} add heatmaps to a list of heatmaps.
+  \item \code{\link{add_heatmap,Heatmap-method}} append heatmaps and row annotations to a list of heatmaps.
 }
+
+The constructor function pretends to be a high-level graphic function because the \code{show} method of the \code{\link{Heatmap}} object actually plots the graphics.  
 
 
 }
 \value{
-A \code{\link{Heatmap}} object  
+A \code{\link{Heatmap}} object.  
 
 
 }
@@ -108,6 +108,8 @@ mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]
 colnames(mat) = letters[1:10]
+
+require(circlize)
 
 Heatmap(mat)
 Heatmap(mat, col = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
@@ -162,6 +164,6 @@ mat = matrix(1:9, 3, 3)
 rownames(mat) = letters[1:3]
 colnames(mat) = letters[1:3]
 
-Heatmap(mat, rect_gp = gpar(col = "white"), cell_fun = function(i, j, x, y, width, height) grid.text(mat[i, j], x = x, y = y),
+Heatmap(mat, rect_gp = gpar(col = "white"), cell_fun = function(i, j, x, y, width, height, fill) grid.text(mat[i, j], x = x, y = y),
   cluster_rows = FALSE, cluster_columns = FALSE, row_names_side = "left", column_names_side = "top")
 }

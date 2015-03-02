@@ -17,7 +17,7 @@ Prepare the heatmap
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{row_order}{orders of rows, pass to \code{\link{make_row_cluster,Heatmap-method}}.}
+  \item{row_order}{orders of rows, pass to \code{\link{make_row_cluster,Heatmap-method}}. Because if more than one heatmaps are drawn by columns, the order of some heatmap will be adjusted by one certain heatmap, this argument is used to pass a pre-defined row order.}
   \item{split}{how to split rows in the matrix, passing to \code{\link{make_row_cluster,Heatmap-method}}.}
 
 }
@@ -25,10 +25,9 @@ Prepare the heatmap
 The preparation of the heatmap includes following steps:  
 
 \itemize{
-  \item making clustering on rows if specified
-  \item making clustering on columns if specified
-  \item set row title to a empty string if specified
-  \item makeing the layout of the heatmap
+  \item making clustering on rows if specified (by calling \code{\link{make_row_cluster,Heatmap-method}})
+  \item making clustering on columns if specified (by calling \code{\link{make_column_cluster,Heatmap-method}})
+  \item makeing the layout of the heatmap (by calling \code{\link{make_layout,Heatmap-method}})
 }
 
 This function is only for internal use.  
@@ -36,7 +35,7 @@ This function is only for internal use.
 
 }
 \value{
-A \code{\link{Heatmap}} object  
+A \code{\link{Heatmap}} object.  
 
 
 }

@@ -68,6 +68,11 @@ library(circlize)
 
 set.seed(1234)
 
+mat = matrix(rnorm(80, 2), 8, 10)
+mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
+rownames(mat) = paste0("R", 1:12)
+colnames(mat) = paste0("C", 1:10)
+
 ```
 
 Plot the heatmap with default settings:
@@ -77,10 +82,6 @@ Heatmap(mat)
 ```
 
 ### Colors
-mat = matrix(rnorm(80, 2), 8, 10)
-mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
-rownames(mat) = paste0("R", 1:12)
-colnames(mat) = paste0("C", 1:10)
 
 In most cases, the heatmap visualizes a matrix with continuous values mapped
 to colors. In this case, user should provide a color mapping function. The `colorRamp2()` from

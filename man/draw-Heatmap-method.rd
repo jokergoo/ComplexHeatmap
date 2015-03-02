@@ -22,7 +22,7 @@ Draw a single heatmap
 
 }
 \details{
-The function creates a \code{\link{HeatmapList}} object, add a single heatmap and call \code{\link{draw,HeatmapList-method}} to make the final heatmap.  
+The function creates a \code{\link{HeatmapList}} object which only contains a single heatmap and call \code{\link{draw,HeatmapList-method}} to make the final heatmap.  
 
 
 }

@@ -1,12 +1,12 @@
 \name{add_heatmap-HeatmapList-method}
 \alias{add_heatmap,HeatmapList-method}
 \title{
-Add heatmaps to the heatmap list  
+Add heatmaps and row annotations to the heatmap list  
 
 
 }
 \description{
-Add heatmaps to the heatmap list  
+Add heatmaps and row annotations to the heatmap list  
 
 
 }

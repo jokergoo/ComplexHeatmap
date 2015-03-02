@@ -25,7 +25,7 @@ This function is only for internal use.
 
 }
 \value{
-A \code{\link[grid]{unit}} object  
+A \code{\link[grid]{unit}} object.  
 
 
 }

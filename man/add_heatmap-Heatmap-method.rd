@@ -1,12 +1,12 @@
 \name{add_heatmap-Heatmap-method}
 \alias{add_heatmap,Heatmap-method}
 \title{
-Add two heatmaps as a heatmap list  
+Add two heatmaps or add row annotations as a heatmap list  
 
 
 }
 \description{
-Add two heatmaps as a heatmap list  
+Add two heatmaps or add row annotations as a heatmap list  
 
 
 }
@@ -16,7 +16,7 @@ Add two heatmaps as a heatmap list
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{x}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
+  \item{x}{a \code{\link{Heatmap}} object, a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
 
 }
 \details{
@@ -41,8 +41,8 @@ rownames(mat) = letters[1:12]
 colnames(mat) = letters[1:10]
 
 ht = Heatmap(mat)
-add(ht, ht)
+add_heatmap(ht, ht)
 
-ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p"))
-add(ht, ha)
+ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"), which = "row")
+add_heatmap(ht, ha)
 }

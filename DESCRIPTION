@@ -7,7 +7,8 @@ Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.0), methods, grid
 Imports: circlize (>= 0.2.3), GetoptLong, RColorBrewer
-Suggests: testthat (>= 0.3), knitr, markdown
+Suggests: testthat (>= 0.3), knitr, markdown, cluster, 
+    dendextend, colorspace
 VignetteBuilder: knitr
 Description: plot multiple heatmaps
 biocViews: Software, Visualization, Sequencing

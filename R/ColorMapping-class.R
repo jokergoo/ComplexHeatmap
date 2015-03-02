@@ -88,7 +88,7 @@ setMethod(f = "initialize",
 				stop("You should provide breaks.\n")
 			}
 		}
-		le = grid.pretty(range(breaks))
+		le = pretty(range(breaks), n = 3)
 		.Object@colors = col_fun(le)
 		.Object@levels = as.character(le)
 		.Object@col_fun = col_fun

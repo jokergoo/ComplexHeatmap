@@ -18,7 +18,7 @@ Draw row names or column names
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{which}{names on the row or on the column of the heatmap}
+  \item{which}{are names put on the row or on the column of the heatmap?}
   \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
   \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 

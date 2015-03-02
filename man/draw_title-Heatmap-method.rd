@@ -17,7 +17,7 @@ Draw heatmap title
 \arguments{
 
   \item{object}{a \code{\link{Heatmap}} object.}
-  \item{which}{title on the row or on the column of the heatmap}
+  \item{which}{is title put on the row or on the column of the heatmap?}
   \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
   \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 
