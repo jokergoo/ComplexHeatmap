@@ -263,3 +263,9 @@ get_dist = function(matrix, method) {
     }
     return(dst)
 }
+
+get_hclust_order = function(x) {
+    switch(class(x),
+        hclust = x$order,
+        dendrogram = order.dendrogram(x))
+}

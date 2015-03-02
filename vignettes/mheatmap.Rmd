@@ -1,9 +1,9 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Parallel heatmaps}
+%\VignetteIndexEntry{Make Multiple Heatmaps}
 -->
 
-Make Parallel Heatmaps
+Make Multiple Heatmaps
 ========================================
 
 **Author**: Zuguang Gu ( z.gu@dkfz.de )
@@ -21,22 +21,53 @@ knitr::opts_chunk$set(
     error = FALSE,
     tidy  = FALSE,
     message = FALSE,
-    fig.align = "center")
+    fig.align = "center",
+    fig.width = 5,
+    fig.height = 5)
 options(markdown.HTML.stylesheet = "custom.css")
 
 options(width = 100)
 ```
 
-## Plot a single heatmap
+Heatmaps are efficient to reveal patterns of massive data. 
+
+## General design
+
+Generally, a heatmap list contains several heatmaps and row annotations.
+
+```{r, echo = FALSE, fig.width = 10, fig.height = 5}
+source("design.R")
+```
+
+There are several classes that are abstracted from the heatmap. Surounding the heatmap list,
+there are legends for heatmaps themselves and annotations, also there are titles which are placed
+on the four sides of the heatmap list. For each heatmap,  
+
+In **mheatmap** package, components of heatmap lists are abstracted into several classes.
+
+- `Heatmap` class
+- `HeatmapList` class
+- `HeatmapAnnotation` class
+
+There are also several internal classes:
+
+- `Single Annotation` class
+- `ColorMapping` class
+
+## A single heatmap
+
+A single heatmap is mosted used for a quick view of the data. It is just a special case of 
+a heatmap list which only contains one heatmap. In following exampels, we will demostrate
+how to set parameters for visualization a single heatmap.
+
+First let's load necessary packages and generate a random matrix:
 
 ```{r}
 library(mheatmap)
 library(circlize)
 
-mat = matrix(rnorm(80, 2), 8, 10)
-mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
-rownames(mat) = letters[1:12]
-colnames(mat) = letters[1:10]
+set.seed(1234)
+
 ```
 
 Plot the heatmap with default settings:
@@ -45,7 +76,13 @@ Plot the heatmap with default settings:
 Heatmap(mat)
 ```
 
-Define the colors. In most cases, the heatmap visualizes a matrix which maps continuous values
+### Colors
+mat = matrix(rnorm(80, 2), 8, 10)
+mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
+rownames(mat) = paste0("R", 1:12)
+colnames(mat) = paste0("C", 1:10)
+
+In most cases, the heatmap visualizes a matrix with continuous values mapped
 to colors. In this case, user should provide a color mapping function. The `colorRamp2()` from
 the **circlize** package is helpful for generate such functions. The two arguments for `colorRamp2()`
 is a vector of breaks values and corresponding colors.
@@ -55,24 +92,29 @@ Heatmap(mat, col = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
 ```
 
 If the matrix contains discrete values (either numeric or character), colors should be specified as
-a named vector so that it is possible to map discrete values to colors.
+a named vector to make it possible for the mapping from discrete values to colors.
 
 ```{r}
-mat2 = matrix(sample(1:4, 1000, replace = TRUE), 10, 10)
+discrete_mat = matrix(sample(1:4, 1000, replace = TRUE), 10, 10)
 colors = structure(rand_color(4), names = c("1", "2", "3", "4"))
-Heatmap(mat2, col = colors)
+Heatmap(discrete_mat, col = colors)
 ```
 
 Or a character matrix:
 
 ```{r}
-mat2 = matrix(sample(letters[1:4], 1000, replace = TRUE), 10, 10)
+discrete_mat = matrix(sample(letters[1:4], 1000, replace = TRUE), 10, 10)
 colors = structure(rand_color(4), names = letters[1:4])
-Heatmap(mat2, col = colors)
+Heatmap(discrete_mat, col = colors)
 ```
 
-The name of the heatmap is used for the title of the heatmap legend.
-The name is also useful if you plot more than one heatmap (introduced laster).
+As you are seeing, the numeric matrix, by default clustering is applied on both dimension while
+for character matrix, clustering is suppressed.
+
+### Titles
+
+The name of the heatmap is used as the title of the heatmap legend.
+The name also plays as a unique id if you plot more than one heatmap together (introduced laster).
 
 ```{r}
 Heatmap(mat, name = "test")
@@ -91,12 +133,14 @@ Heatmap(mat, name = "test", column_title = "I am a big column title",
   column_title_gp = gpar(fontsize = 20, fontface = "bold"))
 ```
 
-Cluster settings. There are three ways to specify distance metric for clustering:
+### Clustering
+
+There are three ways to specify distance metric for clustering:
 
 - specify distance as a pre-defined option. The valid values are the supported methods
-  in `dist()` function and `pearson`, `spearman` and `kendall`.
-- a self-defined function which calculate distance from a matrix. The function should
-  only contains one argument
+  in `dist()` function and within `pearson`, `spearman` and `kendall`.
+- a self-defined function which calculates distance from a matrix. The function should
+  only contains one argument.
 - a self-defined function which calculates distance from two vectors. The function should
   only contains two arguments.
 
@@ -108,8 +152,39 @@ Heatmap(mat, name = "test", clustering_distance_rows = function(x) dist(x))
 Heatmap(mat, name = "test", clustering_distance_rows = function(x, y) 1 - cor(x, y))
 Heatmap(mat, name = "test", clustering_method_rows = "single")
 Heatmap(mat, name = "test", row_hclust_side = "right")
-Heatmap(mat, name = "test", row_hclust_width = unit(1, "cm"))
+Heatmap(mat, name = "test", row_hclust_width = unit(2, "cm"))
 ```
+
+By default, clustering are performed by `hclust()`. But you can also utilize clustering results
+which are generated by other methods by specifying `cluster_rows` or `clustering_columns` to a 
+`hclust` or `dendrogram` object.
+
+```{r}
+library(cluster)
+Heatmap(mat, name = "test", cluster_rows = as.dendrogram(diana(mat)),
+    cluster_columns = as.dendrogram(agnes(t(mat))))
+```
+
+You can render your `dendrogram` object by the **dendextend** package and make a more customized
+visualization of the dendrogram. 
+
+```{r}
+library(dendextend)
+dend = hclust(dist(mat))
+dend = color_branches(dend, k = 2)
+Heatmap(mat, name = "test", cluster_rows = dend)
+```
+
+More generally, `cluster_rows` and `cluster_columns` can be function which calculates the clusterings.
+The input argument should be a matrix and returned value of the function is a `hclust` or `dendrogram`
+object.
+
+```{r}
+Heatmap(mat, name = "test", cluster_rows = function(m) hclust(dist(m)),
+  cluster_columns = function(m) hclust(dist(m)))
+```
+
+### Dimension names
 
 Set row names or column names.
 
@@ -119,6 +194,8 @@ Heatmap(mat, name = "test", row_names_side = "left", row_hclust_side = "right",
 Heatmap(mat, name = "test", show_row_names = FALSE)
 Heatmap(mat, name = "test", row_names_gp = gpar(fontsize = 20))
 ```
+
+### Split heatmap by rows
 
 For a heatmat, you can split by rows.
 
@@ -130,15 +207,26 @@ Heatmap(mat, name = "test", split = data.frame(rep(c("A", "B"), 6), rep(c("C", "
     combined_name_fun = function(x) paste(x, collapse = "\n"))
 ```
 
+### Self define the heatmap body
+
 There is also an API what allows to add graphics on each cell in the heatmap
 
 ```{r}
 mat = matrix(1:9, 3, 3)
 
-ht = Heatmap(mat, rect_gp = gpar(col = "white"), 
-  cell_fun = function(i, j, x, y, width, height) grid.text(mat[i, j], x = x, y = y),
+ht = Heatmap(mat, rect_gp = gpar(col = "white", lwd = 2, type = "none"), 
+  cell_fun = function(i, j, x, y, width, height, fill) {
+    grid.roundrect(x, y, width*0.8, height*0.8, gp = gpar(fill = fill))
+    if(mat[i, j] <= 4) {
+      grid.text("cold", x = x, y = y)
+    } else if(mat[i, j] >= 6) {
+      grid.text("hot", x = x, y = y)
+    } else {
+      grid.text("normal", x = x, y = y)
+    }
+  },
   cluster_rows = FALSE, cluster_columns = FALSE)
-ht
+draw(ht, show_heatmap_legend = FALSE)
 ```
 
 ## the HeatmapAnnotation class

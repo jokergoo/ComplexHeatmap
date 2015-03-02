@@ -52,6 +52,7 @@ draw(anno, 1:5)
 anno = SingleAnnotation(value = 1:10)
 draw(anno, 1:10)
 
+require(circlize)
 anno = SingleAnnotation(value = 1:10, col = colorRamp2(c(1, 10), c("blue", "red")))
 draw(anno, 1:10)
 

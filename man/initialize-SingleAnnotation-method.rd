@@ -53,6 +53,7 @@ SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"), which =
 SingleAnnotation(value = c("a", "a", "a", "b", "b", "b"), col = c("a" = "red", "b" = "blue"))
 
 # continuous numbers
+require(circlize)
 SingleAnnotation(value = 1:10)
 SingleAnnotation(value = 1:10, col = colorRamp2(c(1, 10), c("blue", "red")))
 

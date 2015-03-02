@@ -52,6 +52,7 @@ map(cm, "1")
 map(cm, c(1, 1, 2, 2))
 
 # continuous color mapping
+require(circlize)
 cm = ColorMapping(name = "test",
 	col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
 map(cm, 0.2)

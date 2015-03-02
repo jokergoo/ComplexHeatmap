@@ -43,5 +43,5 @@ f(1:4)
 
 lt = lapply(1:4, function(i) rnorm(8))
 f = anno_boxplot(lt)
-f(1:8)
+f(1:4)
 }

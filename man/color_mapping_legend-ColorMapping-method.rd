@@ -47,16 +47,17 @@ Zuguang Gu <z.gu@dkfz.de>
 cm = ColorMapping(name = "test",
 	colors = c("blue", "white", "red"),
 	levels = c("a", "b", "c"))
-color_mapping_legend(map)
+color_mapping_legend(cm)
 
 # discrete color mapping for numeric values
 cm = ColorMapping(name = "test",
 	colors = c("blue", "white", "red"),
 	levels = c(1, 2, 3))
-color_mapping_legend(map)
+color_mapping_legend(cm)
 
 # continuous color mapping
+require(circlize)
 cm = ColorMapping(name = "test",
 	col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
-color_mapping_legend(map, legend_title_gp = gpar(fontsize = 16))
+color_mapping_legend(cm, legend_title_gp = gpar(fontsize = 16))
 }

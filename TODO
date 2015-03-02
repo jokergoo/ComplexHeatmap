@@ -1,0 +1,3 @@
+support a Heatmap with zero column
+clustering_rows and clustering_columns can also be a `hclust` or `dendrogram` object.s
+km by other methods (pam and fuzzy)

@@ -170,7 +170,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				x = x[, sort(index), drop = FALSE]
 				boxplot_stats = boxplot(x, plot = FALSE)$stats
 			} else {
-				x = x[sort(x)]
+				x = x[sort(index)]
 				boxplot_stats = boxplot(x, plot = FALSE)$stats
 			}
 
