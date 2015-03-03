@@ -143,6 +143,7 @@ setMethod(f = "add_heatmap",
 # -show_annotation_legend whether show annotation legend.
 # -gap gap between heatmaps, should be a `grid::unit` object.
 # -auto_adjust auto adjust if the number of heatmap is larger than one.
+# -main_heatmap name or index for the main heatmap
 #
 # == detail
 # It sets the size of each component of the heatmap list and adjust graphic parameters for each heatmap if necessary.
@@ -167,10 +168,10 @@ setMethod(f = "make_layout",
     show_heatmap_legend = TRUE,
     annotation_legend_side = c("right", "left", "bottom", "top"), 
     show_annotation_legend = TRUE,
-    gap = unit(3, "mm"), auto_adjust = TRUE) {
+    gap = unit(3, "mm"), auto_adjust = TRUE, main_heatmap = 1) {
 
     n = length(object@ht_list)
-    i_main = 1
+    i_main = main_heatmap
     object@ht_list[[i_main]] = prepare(object@ht_list[[i_main]])
 
     if(auto_adjust) {
@@ -647,11 +648,11 @@ setMethod(f = "draw_title",
             "left" = 90,
             "right" = 270)
 
-        pushViewport(viewport(name = "global_row_title", clip = FALSE, ...))
+        pushViewport(viewport(name = "global_row_title", clip = FALSE))
         grid.text(title, rot = rot, gp = gp)
         upViewport()
     } else {
-        pushViewport(viewport(name = "global_column_title", clip = FALSE, ...))
+        pushViewport(viewport(name = "global_column_title", clip = FALSE))
         grid.text(title, gp = gp)
         upViewport()
     }

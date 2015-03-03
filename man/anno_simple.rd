@@ -12,7 +12,7 @@ Function to add simple graphics as annotations
 }
 \usage{
 anno_simple(x, type = c("p", "histogram"), which = c("column", "row"),
-    gp = gpar(), pch = 16, size = unit(2, "mm"))
+    gp = gpar(fill = "#CCCCCC"), pch = 16, size = unit(2, "mm"))
 }
 \arguments{
 

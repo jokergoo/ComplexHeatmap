@@ -131,12 +131,12 @@ setMethod(f = "initialize",
 		row = annotation_width)
 
 	if(length(anno_size) == 1) {
-		if(is.numeric(anno_size)) {
+		if(!is.unit(anno_size)) {
 			anno_size = rep(anno_size, n_anno)
 		}
 	}
 
-	if(is.numeric(anno_size)) {
+	if(!is.unit(anno_size)) {
 		anno_size = unit(anno_size/sum(anno_size), "npc")
 	}
 
@@ -250,4 +250,51 @@ setMethod(f = "show",
 		show(object@anno_list[[i]])
 		cat("\n")
 	}
+})
+
+# == title
+# Add two row annotations or add heatmaps as a heatmap list
+#
+# == param
+# -x a `HeatmapAnnotation` object which contains row annotations.
+# -y a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
+#
+# == detail
+# It is only a shortcut function. It actually calls `add_heatmap,HeatmapAnnotation-method`.
+#
+# == value
+# a `HeatmapList` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+"+.HeatmapAnnotation" = function(x, y) {
+    add_heatmap(x, y)
+}
+
+# == title
+# Add two row annotations or add heatmaps as a heatmap list
+#
+# == param
+# -object a `HeatmapAnnotation` object.
+# -x a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
+#
+# == details
+# There is a shortcut function ``+.HeatmapAnnotation``.
+#
+# == value
+# A `HeatmapList` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+setMethod(f = "add_heatmap",
+    signature = "HeatmapAnnotation",
+    definition = function(object, x) {
+
+    ht_list = new("HeatmapList")
+    ht_list = add_heatmap(ht_list, object)
+    ht_list = add_heatmap(ht_list, x)
+    return(ht_list)
+
 })

@@ -380,9 +380,6 @@ setMethod(f = "initialize",
         graphic_fun_list = list()
     )
 
-    set_row_order(seq_len(nrow(matrix)))
-    set_column_order(seq_len(ncol(matrix)))
-
     return(.Object)
 
 })
@@ -428,7 +425,6 @@ setMethod(f = "make_column_cluster",
 
     object@column_order = column_order
 
-    set_column_order(column_order)
     return(object)
 })
 
@@ -541,7 +537,6 @@ setMethod(f = "make_row_cluster",
     object@row_order_list = row_order_list
     object@matrix_param$split = split
 
-    set_row_order(unlist(row_order_list))
     return(object)
 
 })
@@ -973,6 +968,18 @@ setMethod(f = "draw_dimnames",
     gp = switch(which,
         "row" = object@row_names_param$gp,
         "column" = object@column_names_param$gp)
+
+    for(i in seq_along(gp)) {
+        if(length(gp[[i]]) == 1) {
+            gp[[i]] = rep(gp[[i]], length(nm))
+        }
+
+        if(which == "row") {
+            gp[[i]] = gp[[i]][ object@row_order_list[[k]] ]
+        } else {
+            gp[[i]] = gp[[i]][ object@column_order ]
+        }
+    }
 
     if(is.null(nm)) {
         return(invisible(NULL))

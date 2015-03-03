@@ -30,27 +30,6 @@ increase_row_annotation_index = function() {
 }
 
 
-INDEX_ENV$CURRENT_ROW_ORDER = NULL
-INDEX_ENV$CURRENT_COLUMN_ORDER = NULL
-
-row_order = function() {
-    INDEX_ENV$CURRENT_ROW_ORDER
-}
-
-set_row_order = function(value) {
-    INDEX_ENV$CURRENT_ROW_ORDER = value
-}
-
-column_order = function() {
-    INDEX_ENV$CURRENT_COLUMN_ORDER
-}
-
-set_column_order = function(value) {
-    INDEX_ENV$CURRENT_COLUMN_ORDER = value
-}
-
-
-
 # default colors for matrix or annotations
 # this function should be improved later
 default_col = function(x, main_matrix = FALSE) {

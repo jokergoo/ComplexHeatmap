@@ -19,7 +19,7 @@ Make layout for the complete plot
     show_heatmap_legend = TRUE,
     annotation_legend_side = c("right", "left", "bottom", "top"),
     show_annotation_legend = TRUE,
-    gap = unit(3, "mm"), auto_adjust = TRUE)
+    gap = unit(3, "mm"), auto_adjust = TRUE, main_heatmap = 1)
 }
 \arguments{
 
@@ -36,6 +36,7 @@ Make layout for the complete plot
   \item{show_annotation_legend}{whether show annotation legend.}
   \item{gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
   \item{auto_adjust}{auto adjust if the number of heatmap is larger than one.}
+  \item{main_heatmap}{name or index for the main heatmap}
 
 }
 \details{

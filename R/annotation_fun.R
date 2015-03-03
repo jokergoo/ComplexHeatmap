@@ -24,7 +24,7 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_simple = function(x, type = c("p", "histogram"), which = c("column", "row"), 
-	gp = gpar(), pch = 16, size = unit(2, "mm")) {
+	gp = gpar(fill = "#CCCCCC"), pch = 16, size = unit(2, "mm")) {
 	x = x
 	which = match.arg(which)[1]
 	switch(type,
@@ -87,7 +87,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_histogram = function(x, which = c("column", "row"), gp = gpar()) {
+anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC")) {
 	x = x
 	which = match.arg(which)[1]
 
@@ -100,14 +100,14 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar()) {
 			n = length(index)
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.rect(x = min(x), y = seq_along(index), width = x[index], height = 1*factor, just = "left", default.units = "native", gp = gp)
+			grid.rect(x = data_scale[1], y = seq_along(index), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = gp)
 			upViewport()
 		},
 		column = function(index) {
 			n = length(index)
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
-			grid.rect(x = seq_along(index), y = min(x), height = x[index], width = 1*factor, just = "bottom", default.units = "native", gp = gp)
+			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = gp)
 			upViewport()
 		})
 }

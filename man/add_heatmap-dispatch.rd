@@ -10,8 +10,8 @@ Method dispatch page for \code{add_heatmap}.
 \code{add_heatmap} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{add_heatmap,HeatmapList-method}}, \code{\link{HeatmapList}} class method
 \item \code{\link{add_heatmap,Heatmap-method}}, \code{\link{Heatmap}} class method
+\item \code{\link{add_heatmap,HeatmapList-method}}, \code{\link{HeatmapList}} class method
 }
 
 }
