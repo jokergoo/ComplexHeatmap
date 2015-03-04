@@ -72,3 +72,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\examples{
+# see initialize,HeatmapList-method page
+}

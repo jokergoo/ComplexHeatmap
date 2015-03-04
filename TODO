@@ -1,4 +1,2 @@
-support a Heatmap with zero column
 add API to add legend
-first heatmap is HeatmapAnnotation
-auto adjust for row annotations
+legends can be put at the center of corresponding viewport

@@ -3,12 +3,12 @@
 \alias{AdditiveUnit-class}
 \alias{AdditiveUnit}
 \title{
-A conceptual class  
+An internal class  
 
 
 }
 \description{
-A conceptual class  
+An internal class  
 
 
 }

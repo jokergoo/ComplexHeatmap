@@ -120,3 +120,9 @@ colnames(mat) = letters[1:3]
 ht = Heatmap(mat, rect_gp = gpar(col = "white"), cell_fun = function(i, j, x, y, width, height) grid.text(mat[i, j], x = x, y = y),
 	cluster_rows = FALSE, cluster_columns = FALSE, row_names_side = "left", column_names_side = "top")
 draw(ht, test = TRUE)
+
+##############
+## matrix with zero column_hclust_side
+mat0 = matrix(nrow = 12, ncol = 0)
+rownames(mat0) = letters[1:12]
+Heatmap(mat) + Heatmap(mat0)

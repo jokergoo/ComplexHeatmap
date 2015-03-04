@@ -1,12 +1,12 @@
 \name{+.AdditiveUnit}
 \alias{+.AdditiveUnit}
 \title{
-Add two heatmaps or add row annotations as a heatmap list  
+Add heatmaps or row annotations to a heatmap list  
 
 
 }
 \description{
-Add two heatmaps or add row annotations as a heatmap list  
+Add heatmaps or row annotations to a heatmap list  
 
 
 }
@@ -33,4 +33,21 @@ a \code{\link{HeatmapList}} object.
 Zuguang Gu <z.gu@dkfz.de>  
 
 
+}
+\examples{
+mat = matrix(rnorm(80, 2), 8, 10)
+mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
+rownames(mat) = letters[1:12]
+colnames(mat) = letters[1:10]
+
+ht = Heatmap(mat)
+ht + ht
+ht + ht + ht
+
+ht_list = ht + ht
+ht + ht_list
+
+ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"), which = "row")
+ht + ha
+ht_list + ha
 }

@@ -100,7 +100,7 @@ Heatmap = setClass("Heatmap",
 
 
 # == title
-# Constructor method of Heatmap class
+# Constructor method for Heatmap class
 #
 # == param
 # -.Object private object.
@@ -165,6 +165,7 @@ Heatmap = setClass("Heatmap",
 #                 The input parameter for this function is a vector which contains level names under each column in ``split``.
 # -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
 #        is appended to a list of heatmaps.
+# -show_heatmap_legend whether show heatmap legend?
 #
 # == details
 # The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -205,7 +206,10 @@ setMethod(f = "initialize",
     top_annotation = NULL, top_annotation_height = unit(1, "cm"),
     bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
     km = 1, split = NULL, gap = unit(1, "mm"), combined_name_fun = function(x) paste(x, collapse = "/"),
-    width = NULL) {
+    width = NULL, show_heatmap_legend = TRUE) {
+
+    .Object@heatmap_param$width = width
+    .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
 
     if(is.data.frame(matrix)) {
         matrix = as.matrix(matrix)
@@ -214,11 +218,15 @@ setMethod(f = "initialize",
         if(is.atomic(matrix)) {
            matrix = matrix(matrix, ncol = 1)
         } else {
-            stop("If data is not a matrix, it should be a simpel vector.")
+            stop("If data is not a matrix, it should be a simple vector.")
         }
     }
 
-    if(is.character(matrix)) {
+    if(ncol(matrix) == 0) {
+        .Object@heatmap_param$show_heatmap_legend = FALSE
+    }
+
+    if(is.character(matrix) || ncol(matrix) == 0) {
         cluster_rows = FALSE
         cluster_columns = FALSE
         show_row_hclust = FALSE
@@ -244,13 +252,15 @@ setMethod(f = "initialize",
     .Object@name = name
 
     # color for main matrix
-    if(missing(col)) {
-        col = default_col(matrix, main_matrix = TRUE)
-    }
-    if(is.function(col)) {
-        .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name)
-    } else {
-        .Object@matrix_color_mapping = ColorMapping(colors = col, name = name)
+    if(ncol(matrix) > 0) {
+        if(missing(col)) {
+            col = default_col(matrix, main_matrix = TRUE)
+        }
+        if(is.function(col)) {
+            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name)
+        } else {
+            .Object@matrix_color_mapping = ColorMapping(colors = col, name = name)
+        }
     }
     
     if(length(row_title) == 0) {
@@ -505,9 +515,13 @@ setMethod(f = "make_row_cluster",
         # convert the data frame into a vector
         if(ncol(split) == 1) {
             split = split[, 1]
+            split_name = split
         } else {
             combined_name_fun = object@row_title_param$combined_name_fun
-            split = apply(as.matrix(split), 1, combined_name_fun)
+            if(!is.null(combined_name_fun)) {
+                split_name = apply(as.matrix(split), 1, combined_name_fun)
+            }
+            split = apply(as.matrix(split), 1, paste, collapse = "/")
         }
         
         row_levels = unique(split)
@@ -515,7 +529,10 @@ setMethod(f = "make_row_cluster",
             l = split == row_levels[i]
             row_order_list[[i]] = row_order[l]
         }
-        object@row_title = row_levels
+
+        if(!is.null(object@row_title_param$combined_name_fun)) {
+            object@row_title = unique(split_name)
+        }
     }
 
     # make hclust in each slice
@@ -826,6 +843,10 @@ setMethod(f = "add_heatmap",
 setMethod(f = "draw_heatmap_body",
     signature = "Heatmap",
     definition = function(object, k = 1, ...) {
+
+    if(ncol(object@matrix) == 0) {
+        return(invisible(NULL))
+    }
 
     row_order = object@row_order_list[[k]]
     column_order = object@column_order
@@ -1139,7 +1160,11 @@ setMethod(f = "component_width",
         } else if(k == 3) {
             object@layout$layout_row_names_left_width
         } else if(k == 4) {
-            unit(1, "null")
+            if(ncol(object@matrix) == 0) {
+                unit(0, "null")
+            } else {
+                unit(1, "null")
+            }
         } else if(k == 5) {
             object@layout$layout_row_names_right_width
         } else if(k == 6) {

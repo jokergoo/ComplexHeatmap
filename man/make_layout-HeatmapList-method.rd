@@ -19,7 +19,10 @@ Make layout for the complete plot
     show_heatmap_legend = TRUE,
     annotation_legend_side = c("right", "left", "bottom", "top"),
     show_annotation_legend = TRUE,
-    gap = unit(3, "mm"), auto_adjust = TRUE, main_heatmap = 1)
+    gap = unit(3, "mm"), auto_adjust = TRUE,
+    main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
+    row_hclust_side = c("original", "left", "right"),
+    row_sub_title_side = c("original", "left", "right"))
 }
 \arguments{
 
@@ -37,6 +40,8 @@ Make layout for the complete plot
   \item{gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
   \item{auto_adjust}{auto adjust if the number of heatmap is larger than one.}
   \item{main_heatmap}{name or index for the main heatmap}
+  \item{row_hclust_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
+  \item{row_sub_title_side}{if auto adjust, where to put sub row titles for the main heatmap}
 
 }
 \details{

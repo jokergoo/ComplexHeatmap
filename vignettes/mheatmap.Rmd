@@ -68,7 +68,7 @@ First let's load packages and generate a random matrix:
 library(mheatmap)
 library(circlize)
 
-set.seed(1234)
+set.seed(666666)
 
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
@@ -242,6 +242,7 @@ Heatmap(mat, name = "foo", split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D
     combined_name_fun = function(x) paste(x, collapse = "\n"))
 Heatmap(mat, name = "foo", km = 2, split = rep(c("A", "B"), 6), 
     combined_name_fun = function(x) paste(x, collapse = "\n"))
+Heatmap(mat, name = "foo", km = 2, split = rep(c("A", "B"), 6), combined_name_fun = NULL)
 ```
 
 If you are not happy with the default k-means partitioning method, it is easy to use other partitioning methods
@@ -482,13 +483,21 @@ and legends for annotations are put in independent viewports.
 df = data.frame(type = c(rep("a", 5), rep("b", 5)))
 ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
 
-ht1 = Heatmap(mat, name = "ht1", top_annotation = ha)
-ht2 = Heatmap(mat, name = "ht2")
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", top_annotation = ha)
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
 ht_list = ht1 + ht2
 
 draw(ht_list)
 draw(ht_list, heatmap_legend_side = "left", annotation_legend_side = "bottom")
 draw(ht_list, show_heatmap_legend = FALSE, show_annotation_legend = FALSE)
+```
+
+You can choose to only add some of the heatmap legends by setting `show_heatmap_legend` to a logical value.
+
+```{r, fig.width = 10}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", top_annotation = ha)
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", show_heatmap_legend = FALSE)
+ht1 + ht2
 ```
 
 ### Gaps between heatmaps
@@ -498,6 +507,16 @@ The gaps between heatmaps can be set by `gap` argument either by a `unit` object
 ```{r, fig.width = 10, fig.keep = "all"}
 draw(ht_list, gap = unit(1, "cm"))
 #draw(ht_list + ht_list, gap = unit(c(3, 6, 9, 0), "mm"))
+```
+
+### Size of heatmaps
+
+The width for some (not all) heatmaps can be set to a fixed width.
+
+```{r, fig.width = 10, fig.keep = "all"}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1")
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", width = unit(5, "cm"))
+ht1 + ht2
 ```
 
 ### Auto adjustment
@@ -514,8 +533,8 @@ The main heatmap can be specified by `main_heatmap` argument. The value can be a
 (of course, you need to set the heatmap name when you create the `Heatmap` object).
 
 ```{r, fig.width = 10, fig.keep = "all"}
-ht1 = Heatmap(mat, name = "ht1", km = 2)
-ht2 = Heatmap(mat, name = "ht2")
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", km = 2)
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
 ht1 + ht2
 
 draw(ht2 + ht1)
@@ -542,16 +561,17 @@ there is some difference. In **mheatmap** package, row annotations have the same
 while column annotations are just like accessary components of heatmaps. For row annotations, similar
 as heatmaps, you can append the row annotations to heatmap or heatmap list or even row annotation object itself.
 
-```{r}
+```{r, fig.width = 9}
 ht1 = Heatmap(mat, name = "ht1")
-ht1 + ha
+ht1 + ha + ht1
 ```
 
 Also complex row annotations can be added.
 
 ```{r}
+ht1 = Heatmap(mat, name = "ht1", km = 2)
 ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), which = "row", width = unit(2, "cm"))
-ht1 + ha_boxplot
+draw(ha_boxplot + ht1, row_hclust_side = "left", row_sub_title_side = "left")
 ```
 
 ## Access components

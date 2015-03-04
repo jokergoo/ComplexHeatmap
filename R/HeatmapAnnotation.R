@@ -63,7 +63,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 setMethod(f = "initialize",
 	signature = "HeatmapAnnotation",
 	definition = function(.Object, df, name, col, show_legend, ..., which = c("column", "row"), 
-	annotation_height = 1, annotation_width = 1, height = NULL, width = NULL) {
+	annotation_height = 1, annotation_width = 1, height = unit(1, "cm"), width = unit(1, "cm")) {
 
 	anno_list = list()
 	which = match.arg(which)[1]

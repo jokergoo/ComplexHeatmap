@@ -90,7 +90,7 @@ setMethod(f = "initialize",
 		}
 		le1 = grid.pretty(range(breaks))
 		le2 = pretty(breaks, n = 3)
-		if(length(le1) < length(le2)) {
+		if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
 			le = le1
 		} else {
 			le = le2
@@ -234,9 +234,9 @@ setMethod(f = "color_mapping_legend",
 		
 		grid.text(object@name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
 			gp = legend_title_gp)
-		grid.rect(x, y,	width = legend_grid_width, height = legend_grid_height, just = c("left", "top"),
-			gp = gpar(col = NA, fill = object@colors))
-		grid.text(object@levels, x + legend_grid_width + unit(1, "mm"), y - legend_grid_height*0.5, 
+		grid.rect(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
+			gp = gpar(col = NA, fill = rev(object@colors)))
+		grid.text(object@levels, x + legend_grid_width + unit(1, "mm"), rev(y - legend_grid_height*0.5), 
 			just = c("left", "center"), gp = legend_label_gp)
 		upViewport()
 	}

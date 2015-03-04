@@ -1,12 +1,12 @@
 \name{initialize-Heatmap-method}
 \alias{initialize,Heatmap-method}
 \title{
-Constructor method of Heatmap class  
+Constructor method for Heatmap class  
 
 
 }
 \description{
-Constructor method of Heatmap class  
+Constructor method for Heatmap class  
 
 
 }
@@ -29,7 +29,7 @@ Constructor method of Heatmap class
     top_annotation = NULL, top_annotation_height = unit(1, "cm"),
     bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
     km = 1, split = NULL, gap = unit(1, "mm"), combined_name_fun = function(x) paste(x, collapse = "/"),
-    width = NULL)
+    width = NULL, show_heatmap_legend = TRUE)
 }
 \arguments{
 
@@ -76,6 +76,7 @@ Constructor method of Heatmap class
   \item{gap}{gap between row-slices if the heatmap is splitted by rows, should be \code{\link[grid]{unit}} object.}
   \item{combined_name_fun}{if the heatmap is splitted by rows, how to make a combined row title for each slice? The input parameter for this function is a vector which contains level names under each column in \code{split}.}
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmap is appended to a list of heatmaps.}
+  \item{show_heatmap_legend}{whether show heatmap legend?}
 
 }
 \details{

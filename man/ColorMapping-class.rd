@@ -33,3 +33,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\examples{
+# see initialize,ColorMapping-method page
+}

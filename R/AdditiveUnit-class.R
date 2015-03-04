@@ -1,6 +1,6 @@
 
 # == title
-# A conceptual class
+# An internal class
 #
 # == detail
 # This class is a super class for `Heatmap`, `HeatmapList` and `HeatmapAnnotation` classes.
@@ -9,7 +9,7 @@ AdditiveUnit = setClass("AdditiveUnit")
 
 
 # == title
-# Add two heatmaps or add row annotations as a heatmap list
+# Add heatmaps or row annotations to a heatmap list
 #
 # == param
 # -x a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
@@ -27,19 +27,14 @@ AdditiveUnit = setClass("AdditiveUnit")
 #
 "+.AdditiveUnit" = function(x, y) {
     if(inherits(x, "HeatmapAnnotation")) {
-        if(y@which == "row") {
-            add_heatmap(x, y)
-        } else {
-            stop("You should specify `which` to `row` in you add a HeatmapAnnotation which shows row annotations.")
-        }
+    	if(x@which != "row") {
+    		stop("You should specify `which` to `row` if you add a HeatmapAnnotation which shows row annotations.")
+    	}
     }
     if(inherits(y, "HeatmapAnnotation")) {
-        if(y@which == "row") {
-            add_heatmap(x, y)
-        } else {
-            stop("You should specify `which` to `row` in you add a HeatmapAnnotation which shows row annotations.")
-        }
+    	if(y@which != "row") {
+    		stop("You should specify `which` to `row` if you add a HeatmapAnnotation which shows row annotations.")
+    	}
     }
-
     add_heatmap(x, y)
 }
