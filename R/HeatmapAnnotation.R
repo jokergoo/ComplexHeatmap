@@ -30,7 +30,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 		anno_list = list(),
 		size = unit(0, "null"),
 		which = "row"
-	)
+	),
+    contains = "AdditiveUnit"
 )
 
 # == title
@@ -252,25 +253,6 @@ setMethod(f = "show",
 	}
 })
 
-# == title
-# Add two row annotations or add heatmaps as a heatmap list
-#
-# == param
-# -x a `HeatmapAnnotation` object which contains row annotations.
-# -y a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
-#
-# == detail
-# It is only a shortcut function. It actually calls `add_heatmap,HeatmapAnnotation-method`.
-#
-# == value
-# a `HeatmapList` object.
-#
-# == author
-# Zuguang Gu <z.gu@dkfz.de>
-#
-"+.HeatmapAnnotation" = function(x, y) {
-    add_heatmap(x, y)
-}
 
 # == title
 # Add two row annotations or add heatmaps as a heatmap list

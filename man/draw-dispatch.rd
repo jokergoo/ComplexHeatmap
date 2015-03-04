@@ -11,9 +11,9 @@ Method dispatch page for \code{draw}.
 
 \itemize{
 \item \code{\link{draw,HeatmapAnnotation-method}}, \code{\link{HeatmapAnnotation}} class method
-\item \code{\link{draw,SingleAnnotation-method}}, \code{\link{SingleAnnotation}} class method
-\item \code{\link{draw,HeatmapList-method}}, \code{\link{HeatmapList}} class method
 \item \code{\link{draw,Heatmap-method}}, \code{\link{Heatmap}} class method
+\item \code{\link{draw,HeatmapList-method}}, \code{\link{HeatmapList}} class method
+\item \code{\link{draw,SingleAnnotation-method}}, \code{\link{SingleAnnotation}} class method
 }
 
 }

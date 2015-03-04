@@ -93,7 +93,8 @@ Heatmap = setClass("Heatmap",
         heatmap_param = "list",
 
         layout = "list"
-    )
+    ),
+    contains = "AdditiveUnit"
 )
 
 
@@ -970,13 +971,15 @@ setMethod(f = "draw_dimnames",
         "column" = object@column_names_param$gp)
 
     for(i in seq_along(gp)) {
-        if(length(gp[[i]]) == 1) {
-            gp[[i]] = rep(gp[[i]], length(nm))
-        }
-
         if(which == "row") {
+            if(length(gp[[i]]) == 1) {
+                gp[[i]] = rep(gp[[i]], nrow(object@matrix))
+            }
             gp[[i]] = gp[[i]][ object@row_order_list[[k]] ]
         } else {
+            if(length(gp[[i]]) == 1) {
+                gp[[i]] = rep(gp[[i]], ncol(object@matrix))
+            }
             gp[[i]] = gp[[i]][ object@column_order ]
         }
     }
@@ -1331,23 +1334,3 @@ setMethod(f = "prepare",
     return(object)
 
 })
-
-# == title
-# Add two heatmaps or add row annotations as a heatmap list
-#
-# == param
-# -x a `Heatmap` object.
-# -y a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
-#
-# == detail
-# It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`.
-#
-# == value
-# a `HeatmapList` object.
-#
-# == author
-# Zuguang Gu <z.gu@dkfz.de>
-#
-"+.Heatmap" = function(x, y) {
-    add_heatmap(x, y)
-}

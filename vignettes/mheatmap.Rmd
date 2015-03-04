@@ -414,95 +414,139 @@ The `HeatmapAnnotation` is also used for construction of row annotations which w
 
 ## A list of heatmaps
 
-You can arrange more than one heatmaps which are placed columns by columns. Actually, one
-heatmap is a special case of the heatmap list of length one.
+You can arrange more than one heatmaps which are placed columns by columns. Actually, one single
+heatmap is just a special case of the heatmap list of length one.
 
-`Heatmap()` is actually a class contructor function for a single heatmap. If more than one heatmaps
-are to be combined, users can add one heatmap to the other by `+` operator.
+`Heatmap()` is actually a class constructor function for a single heatmap. If more than one heatmaps
+are to be combined, users can append one heatmap to the other by `+` operator.
 
-```{r}
-mat = matrix(rnorm(40, 2), 4, 10)
+```{r, fig.width = 10}
+mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
-rownames(mat) = letters[1:8]
-colnames(mat) = letters[1:10]
+rownames(mat) = paste0("R", 1:12)
+colnames(mat) = paste0("C", 1:10)
 
-ht1 = Heatmap(mat)
-ht2 = Heatmap(mat)
+ht1 = Heatmap(mat, name = "ht1")
+ht2 = Heatmap(mat, name = "ht2")
+class(ht1)
+class(ht2)
 
 ht1 + ht2
 ```
 
-### titles
-
-### legends
-
-### Auto adjustment
+Under default mode, dendrograms from the second heatmap will be removed and row orders will be same as the first one.
 
 The returned value of addition of two heatmaps is a `HeatmapList` object. Directly call `ht_list` object
 will call `draw()` method with default settings. With explictly calling `draw()` method, you can have more control
 on the legend and titles.
 
-also adjustment for column annotations
-
 ```{r}
 ht_list = ht1 + ht2
-draw(ht_list, heatmap_legend_side = "bottom")
-draw(ht_list, row_title = "Two heatmaps")
+class(ht_list)
 ```
 
-Since a single heatmap is also a heatmap list, you can also call `draw()` to make ...
+You can also append any number of heatmaps to the heatmap list. Also you can append a heatmap list to a heatmap list.
 
-```{r}
-draw(ht1, heatmap_legend_side = "left")
+```{r, eval = FALSE}
+ht1 + ht1 + ht1
+ht1 + ht_list
+ht_list + ht1
+ht_list + ht_list
 ```
 
-If heatmaps have different settings which may affect the visualizaiton, users can select a main heatmap
-for which all other heatmaps will change their settings to this one. By default the main heatmap is the first
-one. E.g. if the first heatmap is splitted by rows, all remaining heatmaps will also be splitted by rows
-with the settings in the first heatmap.
+### Titles
 
-```{r}
-ht1 = Heatmap(mat, km = 2)
-ht2 = Heatmap(mat)
+A heatmap list also has titles which are independent to the heatmap titles.
 
+```{r, fig.width = 10}
+ht1 = Heatmap(mat, name = "ht1", row_title = "Heatmap 1", column_title = "Heatmap 1")
+ht2 = Heatmap(mat, name = "ht2", row_title = "Heatmap 2", column_title = "Heatmap 2")
+ht_list = ht1 + ht2
+
+draw(ht_list, row_title = "Two heatmaps, row title", row_title_gp = gpar(col = "red"),
+  column_title = "Two heatmaps, column title", column_title_side = "bottom")
+```
+
+### Legends
+
+Legends for all heatmaps and all annotations will be drawn together. The legends for heatmaps
+and legends for annotations are put in independent viewports.
+
+```{r, fig.width = 10, fig.keep = "all"}
+df = data.frame(type = c(rep("a", 5), rep("b", 5)))
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
+
+ht1 = Heatmap(mat, name = "ht1", top_annotation = ha)
+ht2 = Heatmap(mat, name = "ht2")
+ht_list = ht1 + ht2
+
+draw(ht_list)
+draw(ht_list, heatmap_legend_side = "left", annotation_legend_side = "bottom")
+draw(ht_list, show_heatmap_legend = FALSE, show_annotation_legend = FALSE)
+```
+
+### Gaps between heatmaps
+
+The gaps between heatmaps can be set by `gap` argument either by a `unit` object.
+
+```{r, fig.width = 10, fig.keep = "all"}
+draw(ht_list, gap = unit(1, "cm"))
+#draw(ht_list + ht_list, gap = unit(c(3, 6, 9, 0), "mm"))
+```
+
+### Auto adjustment
+
+There are some automatic adjustment if more than one heatmaps are plotted. There should be a main heatmap
+which by default is the first one. Some settings from the second heatmap will be modified to the settings
+in the first heatmap. The adjustment are:
+
+- row clusters from the second heatmap are removed.
+- row titles from the second heatmap are removed.
+- if the main heatmap is splitted by rows, all remaining heatmaps will also be splitted by same levels as the first one.
+
+The main heatmap can be specified by `main_heatmap` argument. The value can be a numeric index or the name of the heatmap
+(of course, you need to set the heatmap name when you create the `Heatmap` object).
+
+```{r, fig.width = 10, fig.keep = "all"}
+ht1 = Heatmap(mat, name = "ht1", km = 2)
+ht2 = Heatmap(mat, name = "ht2")
 ht1 + ht2
+
+draw(ht2 + ht1)
+draw(ht2 + ht1, main_heatmap = "ht1")
 ```
 
-** Heatmap list with row annotations
+## Heatmap list with row annotations
+
+### Row annotations
 
 Row annotation is also defined by the `HeatmapAnnotation` class, but with specifying
 `which` to `row`.
 
-### Row annotations
-
-```{r}
-df = data.frame(type = c("a", "a", "a", "a", "b", "b", "b", "b"))
+```{r, fig.width = 1, fig.height = 7}
+df = data.frame(type = c(rep("a", 6), rep("b", 6)))
 ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "cm"))
-df2 = data.frame(type = c("a", "a", "a", "a", "a", "b", "b", "b", "b", "b"))
-ha2 = HeatmapAnnotation(df = df2)
-ht1 = Heatmap(mat, top_annotation = ha2)
-ht1 + ha
+draw(ha, 1:12)
 ```
+
+### Mix heatmaps and row annotations
+
+Essentially, row annotations and column annotations are identical graphics, but in applications,
+there is some difference. In **mheatmap** package, row annotations have the same place as the heatmap
+while column annotations are just like accessary components of heatmaps. For row annotations, similar
+as heatmaps, you can append the row annotations to heatmap or heatmap list or even row annotation object itself.
 
 ```{r}
-value = 1:8
-ha = HeatmapAnnotation(points = function(index) {
-      n = length(index)
-      pushViewport(viewport(xscale = range(value), yscale = c(0.5, n+0.5)))
-      grid.points(value[index], seq_along(index), default.units = "native", pch = 16, size = unit(2, "mm"))
-      grid.rect(y = seq_along(index), height = 1, default.units = "native", gp = gpar(fill = "transparent"))
-      upViewport()
-    }, which = "row", 
-  width = unit(1, "cm"))
+ht1 = Heatmap(mat, name = "ht1")
 ht1 + ha
-
-ha = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), which = "row",
-  width = unit(2, "cm"))
-ht1 + ha
-
 ```
 
-### Mix row annotations and heatmaps
+Also complex row annotations can be added.
+
+```{r}
+ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), which = "row", width = unit(2, "cm"))
+ht1 + ha_boxplot
+```
 
 ## Access components
 

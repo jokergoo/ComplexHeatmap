@@ -83,7 +83,8 @@ HeatmapList = setClass("HeatmapList",
             layout_index = matrix(nrow = 0, ncol = 2),
             graphic_fun_list = list()
         )
-    )
+    ),
+    contains = "AdditiveUnit"
 )
 
 # == title
@@ -171,12 +172,12 @@ setMethod(f = "make_layout",
     gap = unit(3, "mm"), auto_adjust = TRUE, main_heatmap = 1) {
 
     n = length(object@ht_list)
-    i_main = main_heatmap
+    i_main = which(names(object@ht_list) == main_heatmap[1])[1]
     object@ht_list[[i_main]] = prepare(object@ht_list[[i_main]])
 
     if(auto_adjust) {
-        row_order = unlist(object@ht_list[[1]]@row_order_list)
-        split = object@ht_list[[1]]@matrix_param$split
+        row_order = unlist(object@ht_list[[i_main]]@row_order_list)
+        split = object@ht_list[[i_main]]@matrix_param$split
     	for(i in seq_len(n)) {
             if(i == i_main) next
             if(inherits(object@ht_list[[i]], "Heatmap")) {
@@ -227,7 +228,7 @@ setMethod(f = "make_layout",
             object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 4))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) object@draw_title(object, which = "column"))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "column"))
     }
 
     ############################################
@@ -321,7 +322,7 @@ setMethod(f = "make_layout",
             object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
             size = annotation_legend_size(object)
             object@annotation_legend_param$size = size
-            object@object@layout$layout_annotation_legend_bottom_height = size[2]
+            object@layout$layout_annotation_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
         } else if(annotation_legend_side == "left") {
             object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
@@ -570,20 +571,24 @@ setMethod(f = "draw_heatmap_list",
     x = unit(0, "npc")
     kk = which(sapply(object@ht_list, inherits, "Heatmap"))[1]
     htkk = object@ht_list[[kk]]
-    gap = htkk@matrix_param$gap
+    slice_gap = htkk@matrix_param$gap
     n_slice = length(htkk@row_order_list)
     snr = sapply(htkk@row_order_list, length)
-    slice_height = (unit(1, "npc") - sum(max_component_height[c(1:4,6:9)]) - gap*(n_slice-1))*(snr/sum(snr))
+    slice_height = (unit(1, "npc") - sum(max_component_height[c(1:4,6:9)]) - slice_gap*(n_slice-1))*(snr/sum(snr))
     for(i in seq_len(n_slice)) {
         if(i == 1) {
             slice_y = unit(1, "npc") - sum(max_component_height[c(1:4)])
         } else {
-            slice_y = unit.c(slice_y, unit(1, "npc") - sum(max_component_height[c(1:4)]) - sum(slice_height[seq_len(i-1)]) - gap*(i-1))
+            slice_y = unit.c(slice_y, unit(1, "npc") - sum(max_component_height[c(1:4)]) - sum(slice_height[seq_len(i-1)]) - slice_gap*(i-1))
         }
     }
 
     for(i in seq_len(n)) {
         ht = object@ht_list[[i]]
+
+        if(i > 1) {
+            x = sum(heatmap_width[seq_len(i-1)]) + sum(gap[seq_len(i-1)])
+        }
         
         pushViewport(viewport(x = x, y = unit(0, "npc"), width = heatmap_width[i], just = c("left", "bottom"), name = paste0("heatmap_", object@ht_list[[i]]@name)))
             
@@ -596,10 +601,6 @@ setMethod(f = "draw_heatmap_list",
             }
         }
         upViewport()
-
-        if(i < n) {
-        	x = x + sum(heatmap_width[seq_len(i)]) + sum(gap[seq_len(i)])
-        }
     }
 
     upViewport()
@@ -890,38 +891,6 @@ setMethod(f = "show",
     # }
     draw(object)
 })
-
-# == title
-# Add heatmaps or row annotations to the list
-#
-# == param
-# -x a `HeatmapList` object.
-# -y a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
-#
-# == detail
-# It is only a shortcut function. It actually calls `add_heatmap,HeatmapList-method`.
-#
-# == value
-# A `HeatmapList` object.
-#
-# == author
-# Zuguang Gu <z.gu@dkfz.de>
-#
-"+.HeatmapList" = function(x, y) {
-    if(inherits(y, "Heatmap") || inherits(y, "HeatmapList")) {
-        add_heatmap(x, y)
-    } else if(inherits(y, "HeatmapAnnotation")) {
-        if(y@which == "row") {
-            add_heatmap(x, y)
-        } else {
-            stop("You should specify `which` to `row` in you add a HeatmapAnnotation which shows row annotations.")
-        }
-    } else {
-        stop("`ht2` should be a `Heatmap` or `HeatmapList` object.")
-
-    }
-}
-
 
 compare_unit = function(u1, u2) {
     u1 = convertUnit(u1, "cm", valueOnly = TRUE)
