@@ -252,6 +252,12 @@ pa = pam(mat, k = 3)
 Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering))
 ```
 
+Height of gaps between every row slices can be controlled by `gap`.
+
+```{r}
+Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering), gap = unit(5, "mm"))
+```
+
 ### Self define the heatmap body
 
 The heatmap body can also be self-defined. By default the heatmap body is composed by an array of rectangles
@@ -551,6 +557,41 @@ ht1 + ha_boxplot
 ## Access components
 
 Each components of the heatmap/heatmap list has a name. You can go to any viewport by `seekViewport()`.
+Following figure almost contains all types of components.
+
+```{r, fig.width = 10, fig.height = 7}
+ha_column1 = HeatmapAnnotation(points = anno_points(rnorm(10)))
+ht1 = Heatmap(mat, name = "ht1", km = 2, row_title = "Heatmap 1", column_title = "Heatmap 1", 
+  top_annotation = ha_column1)
+
+ha_column2 = HeatmapAnnotation(df = data.frame(type = c(rep("a", 5), rep("b", 5))))
+ht2 = Heatmap(mat, name = "ht2", row_title = "Heatmap 2", column_title = "Heatmap 2",
+  bottom_annotation = ha_column2)
+
+ht_list = ht1 + ht2
+draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
+  heatmap_legend_side = "right", annotation_legend_side = "left")
+```
+
+The components that have names are:
+
+- `global`: the viewport which contains the whole figure.
+- `global_column_title`: the viewport which contains column title for the heatmap list.
+- `global_row_title`: the viewport which contains row title for the heatmap list.
+- `main_heatmap_list`: the viewport which contains a list of heatmaps and row annotations.
+- `heatmap_@{heatmap_name}`: the viewport which contains a single heatmap
+- `annotation_@{annotation_name}`: the viewport which contains an annotation either on columns or rows.
+- `@{heatmap_name}-heatmap_body-@{i}`: the heatmap body.
+- `@{heatmap_name}-column_title`: column title for a single heatmap.
+- `@{heatmap_name}-row_title-@{i}`: since a heatmap body may be splitted into several parts. `@{i}` is the index of the row slice.
+- `@{heatmap_name}-hclust_row-@{i}`: dendrogram for ith row slice.
+- `@{heatmap_name}-hclust_column`: dendrogram on columns
+- `@{heatmap_name}-row_names-@{i}`: the viewport which contains row names.
+- `@{heatmap_name}-column_names`: the viewport which contains column names.
+- `heatmap_legend`: the viewport which contains all heatmap legends.
+- `legend_@{heatmap_name}`: the viewport which contains a single heatmap legend.
+- `annotation_legend`: the viewport which contains all annotation legends.
+- `legend_@{annotation_name}`: the viewport which contains a single annotation legend.
 
 ## real application
 

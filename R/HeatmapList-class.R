@@ -172,14 +172,27 @@ setMethod(f = "make_layout",
     gap = unit(3, "mm"), auto_adjust = TRUE, main_heatmap = 1) {
 
     n = length(object@ht_list)
-    i_main = which(names(object@ht_list) == main_heatmap[1])[1]
+    i_main = main_heatmap[1]
     object@ht_list[[i_main]] = prepare(object@ht_list[[i_main]])
 
     if(auto_adjust) {
         row_order = unlist(object@ht_list[[i_main]]@row_order_list)
         split = object@ht_list[[i_main]]@matrix_param$split
+
+        # row_hclust_param = object@ht_list[[i_main]]@row_hclust_param
+        # row_title = object@ht_list[[i_main]]@row_title
+        # row_title_gp = object@ht_list[[i_main]]@row_title_gp
+        # matrix_param = object@ht_list[[i_main]]@matrix_param
+        
     	for(i in seq_len(n)) {
-            if(i == i_main) next
+            if(is.numeric(i_main)) {
+                if(i == i_main) next    
+            } else {
+                if(names(object@ht_list)[i] == i_main) {
+                    next
+                }
+            }
+            
             if(inherits(object@ht_list[[i]], "Heatmap")) {
                 # some settings should be same as the first one
                 object@ht_list[[i]]@matrix_param$km = 1
