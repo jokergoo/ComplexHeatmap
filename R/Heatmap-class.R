@@ -853,7 +853,7 @@ setMethod(f = "draw_heatmap_body",
 
     gp = object@matrix_param$gp
 
-    pushViewport(viewport(name = paste(object@name, "heatmap_body", k, sep = "-"), ...))
+    pushViewport(viewport(name = paste(object@name, "heatmap_body", k, sep = "_"), ...))
 
     mat = object@matrix[row_order, column_order, drop = FALSE]
     col_matrix = map(object@matrix_color_mapping, mat)
@@ -936,16 +936,16 @@ setMethod(f = "draw_hclust",
     dend = as.dendrogram(hc)
     n = length(labels(dend))
 
-    pushViewport(viewport(name = paste(object@name, which, "cluster", sep = "-"), ...))
+    pushViewport(viewport(name = paste(object@name, which, "cluster", sep = "_"), ...))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "-"), max_height = max_height, facing = "left", x = unit(0, "null"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", x = unit(0, "null"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "bottom", y = unit(0, "null"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = unit(0, "null"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "-"), max_height = max_height, facing = "top", order = "reverse", y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", order = "reverse", y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     } 
 
     upViewport()
@@ -1012,7 +1012,7 @@ setMethod(f = "draw_dimnames",
     n = length(nm)
     
     if(which == "row") {
-        pushViewport(viewport(name = paste(object@name, "row_names", k, sep = "-"), ...))
+        pushViewport(viewport(name = paste(object@name, "row_names", k, sep = "_"), ...))
         if(side == "left") {
             x = unit(1, "npc")
             just = c("right", "center")
@@ -1023,7 +1023,7 @@ setMethod(f = "draw_dimnames",
         y = (rev(seq_len(n)) - 0.5) / n
         grid.text(nm, x, y, just = just, gp = gp)
     } else {
-        pushViewport(viewport(name = paste(object@name, "column_names", sep = "-"), ...))
+        pushViewport(viewport(name = paste(object@name, "column_names", sep = "_"), ...))
         x = (seq_len(n) - 0.5) / n
         if(side == "top") {
             y = unit(0, "npc")
@@ -1082,11 +1082,11 @@ setMethod(f = "draw_title",
             "left" = 90,
             "right" = 270)
 
-        pushViewport(viewport(name = paste(object@name, "row_title", k, sep = "-"), clip = FALSE, ...))
+        pushViewport(viewport(name = paste(object@name, "row_title", k, sep = "_"), clip = FALSE, ...))
         grid.text(title, rot = rot, gp = gp)
         upViewport()
     } else {
-        pushViewport(viewport(name = paste(object@name, "column_title", sep = "-"), clip = FALSE, ...))
+        pushViewport(viewport(name = paste(object@name, "column_title", sep = "_"), clip = FALSE, ...))
         grid.text(title, gp = gp)
         upViewport()
     }
@@ -1316,6 +1316,9 @@ setMethod(f = "draw",
 
             upViewport()
         } else {
+            if(ncol(object@matrix) == 0) {
+                stop("Single heatmap should contains a matrix with at least one column.\nZero-column matrix can only be appended to the heatmap list.")
+            }
             ht_list = new("HeatmapList")
             ht_list = add_heatmap(ht_list, object)
             draw(ht_list, ...)

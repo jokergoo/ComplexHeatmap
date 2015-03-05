@@ -67,8 +67,9 @@ First let's load packages and generate a random matrix:
 ```{r}
 library(mheatmap)
 library(circlize)
+library(colorspace)
 
-set.seed(666666)
+set.seed(123)
 
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
@@ -100,7 +101,7 @@ a named vector to make it possible for the mapping from discrete values to color
 
 ```{r}
 discrete_mat = matrix(sample(1:4, 1000, replace = TRUE), 10, 10)
-colors = structure(rand_color(4), names = c("1", "2", "3", "4"))
+colors = structure(rainbow_hcl(4), names = c("1", "2", "3", "4"))
 Heatmap(discrete_mat, col = colors)
 ```
 
@@ -108,7 +109,7 @@ Or a character matrix:
 
 ```{r}
 discrete_mat = matrix(sample(letters[1:4], 1000, replace = TRUE), 10, 10)
-colors = structure(rand_color(4), names = letters[1:4])
+colors = structure(rainbow_hcl(4), names = letters[1:4])
 Heatmap(discrete_mat, col = colors)
 ```
 
@@ -500,13 +501,23 @@ ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", show_heatmap_legend
 ht1 + ht2
 ```
 
+**mheatmap** only generate legends for heatmaps and simple annotations. Self-defined legends
+can be passed by `annotation_legend_list` as a list of `grob` objects.
+
+```{r, fig.width = 10}
+ha = HeatmapAnnotation(points = anno_simple(rnorm(10), type = "p"))
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", top_annotation = ha, show_heatmap_legend = FALSE)
+lgd = legendGrob(c("dots"), pch = 16)
+draw(ht1 + ht2, annotation_legend_list = list(lgd))
+```
+
 ### Gaps between heatmaps
 
 The gaps between heatmaps can be set by `gap` argument either by a `unit` object.
 
 ```{r, fig.width = 10, fig.keep = "all"}
 draw(ht_list, gap = unit(1, "cm"))
-#draw(ht_list + ht_list, gap = unit(c(3, 6, 9, 0), "mm"))
+draw(ht_list + ht_list, gap = unit(c(3, 6, 9, 0), "mm"))
 ```
 
 ### Size of heatmaps
@@ -571,7 +582,7 @@ Also complex row annotations can be added.
 ```{r}
 ht1 = Heatmap(mat, name = "ht1", km = 2)
 ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), which = "row", width = unit(2, "cm"))
-draw(ha_boxplot + ht1, row_hclust_side = "left", row_sub_title_side = "left")
+draw(ha_boxplot + ht1, row_hclust_side = "left", row_sub_title_side = "right")
 ```
 
 ## Access components
@@ -601,22 +612,33 @@ The components that have names are:
 - `main_heatmap_list`: the viewport which contains a list of heatmaps and row annotations.
 - `heatmap_@{heatmap_name}`: the viewport which contains a single heatmap
 - `annotation_@{annotation_name}`: the viewport which contains an annotation either on columns or rows.
-- `@{heatmap_name}-heatmap_body-@{i}`: the heatmap body.
-- `@{heatmap_name}-column_title`: column title for a single heatmap.
-- `@{heatmap_name}-row_title-@{i}`: since a heatmap body may be splitted into several parts. `@{i}` is the index of the row slice.
-- `@{heatmap_name}-hclust_row-@{i}`: dendrogram for ith row slice.
-- `@{heatmap_name}-hclust_column`: dendrogram on columns
-- `@{heatmap_name}-row_names-@{i}`: the viewport which contains row names.
-- `@{heatmap_name}-column_names`: the viewport which contains column names.
+- `@{heatmap_name}_heatmap_body_@{i}`: the heatmap body.
+- `@{heatmap_name}_column_title`: column title for a single heatmap.
+- `@{heatmap_name}_row_title_@{i}`: since a heatmap body may be splitted into several parts. `@{i}` is the index of the row slice.
+- `@{heatmap_name}_hclust_row_@{i}`: dendrogram for ith row slice.
+- `@{heatmap_name}_hclust_column`: dendrogram on columns
+- `@{heatmap_name}_row_names_@{i}`: the viewport which contains row names.
+- `@{heatmap_name}_column_names`: the viewport which contains column names.
 - `heatmap_legend`: the viewport which contains all heatmap legends.
 - `legend_@{heatmap_name}`: the viewport which contains a single heatmap legend.
 - `annotation_legend`: the viewport which contains all annotation legends.
 - `legend_@{annotation_name}`: the viewport which contains a single annotation legend.
 
-## real application
+```{r, fig.width = 10, fig.height = 7}
+ht_list
 
-### visualiza expression
+seekViewport("annotation_points")
+grid.text("points", unit(0, "npc") - unit(2, "mm"), 0.5, default.units = "npc", just = "right")
 
-### visialize genomic regions
+seekViewport("ht1_heatmap_body_2")
+grid.text("outlier", 1.5/10, 2.5/4, default.units = "npc")
+
+seekViewport("annotation_type")
+grid.text("type", unit(1, "npc") + unit(2, "mm"), 0.5, default.units = "npc", just = "left")
+```
+
+## Real application
+
+### Visialize genomic data
 
 

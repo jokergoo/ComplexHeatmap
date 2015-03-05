@@ -145,6 +145,7 @@ setMethod(f = "add_heatmap",
 # -show_heatmap_legend whether show heatmap legend.
 # -annotation_legend_side side of annotation legend.
 # -show_annotation_legend whether show annotation legend.
+# -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 # -gap gap between heatmaps, should be a `grid::unit` object.
 # -auto_adjust auto adjust if the number of heatmap is larger than one.
 # -main_heatmap name or index for the main heatmap
@@ -173,7 +174,7 @@ setMethod(f = "make_layout",
     heatmap_legend_side = c("right", "left", "bottom", "top"), 
     show_heatmap_legend = TRUE,
     annotation_legend_side = c("right", "left", "bottom", "top"), 
-    show_annotation_legend = TRUE,
+    show_annotation_legend = TRUE, annotation_legend_list = list(),
     gap = unit(3, "mm"), auto_adjust = TRUE, 
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_hclust_side = c("original", "left", "right"),
@@ -199,10 +200,14 @@ setMethod(f = "make_layout",
             if(inherits(gap, "unit")) {
                 gap = do.call("unit.c", rep(list(gap), n))
             }
+        } else if(length(gap) == n - 1) {
+            gap = unit.c(gap, unit(1, "null"))
+        } else if(length(gap) != n) {
+            stop(paste0("length of `gap` can only be 1 or ", n-1, " or ", n, "."))
         }
     } else {
         if(!is.unit(gap)) {
-            gap = unit(0, "mm")    
+            gap = unit(rep(0, n), "null")    
         }
     }
     object@ht_list_param$gap = gap
@@ -384,9 +389,9 @@ setMethod(f = "make_layout",
     ## heatmap legend to top, bottom, left and right
     # default values
     object@heatmap_legend_param$show = show_heatmap_legend
+    heatmap_legend_side = match.arg(heatmap_legend_side)[1]
+    object@heatmap_legend_param$side = heatmap_legend_side   
     if(show_heatmap_legend) {
-        heatmap_legend_side = match.arg(heatmap_legend_side)[1]
-        object@heatmap_legend_param$side = heatmap_legend_side
         if(heatmap_legend_side == "top") {
             object@heatmap_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
             size = heatmap_legend_size(object)
@@ -413,6 +418,8 @@ setMethod(f = "make_layout",
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 6))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object))
+    } else {
+        object@heatmap_legend_param$size = unit(c(0, 0), "null")
     }
 
     #################################################
@@ -434,35 +441,37 @@ setMethod(f = "make_layout",
         show_annotation_legend = FALSE
     }
     object@annotation_legend_param$show = show_annotation_legend
+    annotation_legend_side = match.arg(annotation_legend_side)[1]
+    object@annotation_legend_param$side = annotation_legend_side
     if(show_annotation_legend) {
-        annotation_legend_side = match.arg(annotation_legend_side)[1]
-        object@annotation_legend_param$side = annotation_legend_side
         if(annotation_legend_side == "top") {
             object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
-            size = annotation_legend_size(object)
+            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(1, 4))
         } else if(annotation_legend_side == "bottom") {
             object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
-            size = annotation_legend_size(object)
+            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
         } else if(annotation_legend_side == "left") {
             object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
-            size = annotation_legend_size(object)
+            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 1))
         } else if(annotation_legend_side == "right") {
             object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
-            size = annotation_legend_size(object)
+            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_right_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 7))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object, annotation_legend_list = annotation_legend_list))
+    } else {
+        object@annotation_legend_param$size = unit(c(0, 0), "null")
     }
 
     return(object)
@@ -680,7 +689,7 @@ setMethod(f = "draw_heatmap_list",
     })
     heatmap_fixed_width = do.call("unit.c", heatmap_fixed_width)
     # width for body for each heatmap
-    heatmap_body_width = (unit(1, "npc") - sum(width_without_heatmap_body) - sum(heatmap_fixed_width) - sum(gap)) * (1/sum(heatmap_ncol)) * heatmap_ncol
+    heatmap_body_width = (unit(1, "npc") - sum(width_without_heatmap_body) - sum(heatmap_fixed_width) - sum(gap) + gap[length(gap)]) * (1/sum(heatmap_ncol)) * heatmap_ncol
 
     # width of heatmap including body, and other components
     # width without fixed width
@@ -819,8 +828,24 @@ setMethod(f = "draw_heatmap_legend",
         }
     }
 
-    pushViewport(viewport(name = "heatmap_legend", x = padding[2], y = unit(1, "npc") - padding[3], width = size[1], height = size[2], just = c("left", "top")))
-    draw_legend(ColorMappingList, side = side)
+    annotation_legend_side = object@annotation_legend_param$side
+    annotation_legend_size = object@annotation_legend_param$size
+    if(side != annotation_legend_side) {
+        pushViewport(viewport(name = "heatmap_legend", x = unit(0.5, "npc"), y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("center", "center")))
+    } else {
+        if(side %in% c("left", "right")) {
+            y1 = unit(0.5, "npc") + size[2]*0.5  # top of heatmap legend
+            y2 = unit(0.5, "npc") + annotation_legend_size[2]*0.5
+            y = max(y1, y2)
+            pushViewport(viewport(name = "heatmap_legend", x = unit(0.5, "npc"), y = y, width = size[1], height = size[2], just = c("center", "top")))           
+        } else {
+            x1 = unit(0.5, "npc") - size[1]*0.5  # top of heatmap legend
+            x2 = unit(0.5, "npc") - annotation_legend_size[1]*0.5
+            x = min(x1, x2)
+            pushViewport(viewport(name = "heatmap_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
+        }
+    }
+    draw_legend(ColorMappingList, side = side, padding = padding)
     upViewport()
 })
 
@@ -829,6 +854,7 @@ setMethod(f = "draw_heatmap_legend",
 #
 # == param
 # -object a `HeatmapList` object
+# -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 #
 # == details
 # A viewport is created which contains annotation legends.
@@ -843,11 +869,11 @@ setMethod(f = "draw_heatmap_legend",
 #
 setMethod(f = "draw_annotation_legend",
     signature = "HeatmapList",
-    definition = function(object) {
+    definition = function(object, annotation_legend_list = list()) {
 
-    side = object@heatmap_legend_param$side
-    size = object@heatmap_legend_param$size
-    padding = object@heatmap_legend_param$padding
+    side = object@annotation_legend_param$side
+    size = object@annotation_legend_param$size
+    padding = object@annotation_legend_param$padding
 
     ColorMappingList = list()
     for(i in seq_along(object@ht_list)) {
@@ -862,8 +888,24 @@ setMethod(f = "draw_annotation_legend",
         }
     }
 
-    pushViewport(viewport(name = "annotation_legend", x = padding[2], y = unit(1, "npc"), padding[3], width = size[1], height = size[2], just = c("left", "top")))
-    draw_legend(ColorMappingList, side = side)
+    heatmap_legend_side = object@heatmap_legend_param$side
+    heatmap_legend_size = object@heatmap_legend_param$size
+    if(side != heatmap_legend_side) {
+        pushViewport(viewport(name = "annotation_legend", x = unit(0.5, "npc"), y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("center", "center")))
+    } else {
+        if(side %in% c("left", "right")) {
+            y1 = unit(0.5, "npc") + size[2]*0.5  # top of heatmap legend
+            y2 = unit(0.5, "npc") + heatmap_legend_size[2]*0.5
+            y = max(y1, y2)
+            pushViewport(viewport(name = "annotation_legend", x = unit(0.5, "npc"), y = y, width = size[1], height = size[2], just = c("center", "top")))           
+        } else {
+            x1 = unit(0.5, "npc") - size[1]*0.5  # top of heatmap legend
+            x2 = unit(0.5, "npc") - heatmap_legend_size[1]*0.5
+            x = min(x1, x2)
+            pushViewport(viewport(name = "annotation_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
+        }
+    }
+    draw_legend(ColorMappingList, side = side, annotation_legend_list = annotation_legend_list, padding = padding)
     upViewport()
 })
 
@@ -900,9 +942,8 @@ setMethod(f = "heatmap_legend_size",
         }
     }
 
-    size = draw_legend(ColorMappingList, side = side, plot = FALSE)
+    size = draw_legend(ColorMappingList, side = side, plot = FALSE, padding = padding)
 
-    size = unit.c(size[1] + padding[2] + padding[4], size[2] + padding[1] + padding[3])
     return(size)
 })
 
@@ -911,6 +952,7 @@ setMethod(f = "heatmap_legend_size",
 #
 # == param
 # -object a `HeatmapList` object
+# -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 #
 # == detail
 # This function is only for internal use.
@@ -923,7 +965,7 @@ setMethod(f = "heatmap_legend_size",
 #
 setMethod(f = "annotation_legend_size",
     signature = "HeatmapList",
-    definition = function(object) {
+    definition = function(object, annotation_legend_list = list()) {
 
     side = object@annotation_legend_param$side
     padding = object@annotation_legend_param$padding
@@ -941,15 +983,15 @@ setMethod(f = "annotation_legend_size",
         }
     }
 
-    size = draw_legend(ColorMappingList, side = side, plot = FALSE)
-
-    size = unit.c(size[1] + padding[2] + padding[4], size[2] + padding[1] + padding[3])
+    size = draw_legend(ColorMappingList, side = side, plot = FALSE, annotation_legend_list = annotation_legend_list, padding = padding)
+    
     return(size)
 })
 
 # create a viewport which contains legend
 # currently, one-row or one-column legend is supported
-draw_legend = function(ColorMappingList, side = c("right", "left", "top", "bottom"), plot = TRUE, gap = unit(2, "mm")) {
+draw_legend = function(ColorMappingList, side = c("right", "left", "top", "bottom"), plot = TRUE, 
+    gap = unit(2, "mm"), annotation_legend_list = list(), padding = unit(c(0, 0, 0, 0), "null")) {
 
     side = match.arg(side)[1]
 
@@ -963,37 +1005,80 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
     cm_width = do.call("unit.c", lapply(cm_size, function(x) x[1]))
     cm_height = do.call("unit.c", lapply(cm_size, function(x) x[2]))
 
+    if(length(annotation_legend_list)) {
+        for(i in seq_along(annotation_legend_list)) {
+            cm_width = unit.c(cm_width, grobWidth(annotation_legend_list[[i]]))
+            cm_height = unit.c(cm_height, grobHeight(annotation_legend_list[[i]]))
+        }
+    }
+
     if(side %in% c("left", "right")) {
 
         width = max(cm_width)
-        height = sum(cm_height) + gap*(n-1)
+        height = sum(cm_height) + gap*(n + length(annotation_legend_list) -1)
 
         if(plot) {
             cm_height = unit.c(unit(0, "null"), cm_height)
         	for(i in seq_len(n)) {
                 cm = ColorMappingList[[i]]
-                color_mapping_legend(cm, x = unit(0, "npc"), y = unit(1, "npc") - (sum(cm_height[seq_len(i)]) + gap*(i-1)), just = c("left", "top"), plot = TRUE)
+                if(side == "left") {
+                    color_mapping_legend(cm, x = unit(0, "npc"), y = unit(1, "npc") - (sum(cm_height[seq_len(i)]) + gap*(i-1)), just = c("left", "top"), plot = TRUE)                   
+                } else {
+                    color_mapping_legend(cm, x = unit(0, "npc") + padding[2], y = unit(1, "npc") - (sum(cm_height[seq_len(i)]) + gap*(i-1)), just = c("left", "top"), plot = TRUE)
+                }
+            }
+            
+            if(length(annotation_legend_list)) {
+                for(i in seq_along(annotation_legend_list)) {
+                    if(side == "left") {
+                        pushViewport(viewport(x = unit(0, "npc"), y = unit(1, "npc") - (sum(cm_height[seq_len(i+n)]) + gap*(n+i-1)), width = grobWidth(annotation_legend_list[[i]]), height = grobHeight(annotation_legend_list[[i]]), just = c("left", "top")))
+                        grid.draw(annotation_legend_list[[i]])
+                        upViewport()
+                    } else {
+                        pushViewport(viewport(x = unit(0, "npc") + padding[2], y = unit(1, "npc") - (sum(cm_height[seq_len(i+n)]) + gap*(n+i-1)), width = grobWidth(annotation_legend_list[[i]]), height = grobHeight(annotation_legend_list[[i]]), just = c("left", "top")))
+                        grid.draw(annotation_legend_list[[i]])
+                        upViewport()
+                    }
+                }
             }
         }
 
-        return(unit.c(width, height))
+        size = unit.c(width, height)
 
     } else if(side %in% c("top", "bottom")) {
 
-        width = sum(cm_width) + gap*(n-1)
+        width = sum(cm_width) + gap*(n + length(annotation_legend_list) - 1)
         height = max(cm_height)
 
         if(plot) {
             cm_width = unit.c(unit(0, "null"), cm_width)
-
             for(i in seq_len(n)) {
                 cm = ColorMappingList[[i]]
-                color_mapping_legend(cm, x = sum(cm_width[seq_len(i)] + gap*(i-1)), y = unit(1, "npc"), just = c("left", "top"), plot = TRUE)
+                if(side == "top") {
+                    color_mapping_legend(cm, x = sum(cm_width[seq_len(i)] + gap*(i-1)), y = unit(1, "npc"), just = c("left", "top"), plot = TRUE)
+                } else {
+                    color_mapping_legend(cm, x = sum(cm_width[seq_len(i)] + gap*(i-1)), y = unit(1, "npc") - padding[3], just = c("left", "top"), plot = TRUE)
+                }
+            }
+
+            if(length(annotation_legend_list)) {
+                for(i in seq_along(annotation_legend_list)) {
+                    if(side == "top") {
+                        pushViewport(viewport(x = sum(cm_width[seq_len(n+i)] + gap*(n+i-1)), y = unit(1, "npc"), width = grobWidth(annotation_legend_list[[i]]), height = grobHeight(annotation_legend_list[[i]]), just = c("left", "top")))
+                        grid.draw(annotation_legend_list[[i]])
+                    } else {
+                        pushViewport(viewport(x = sum(cm_width[seq_len(n+i)] + gap*(n+i-1)), y = unit(1, "npc") - padding[3], width = grobWidth(annotation_legend_list[[i]]), height = grobHeight(annotation_legend_list[[i]]), just = c("left", "top")))
+                        grid.draw(annotation_legend_list[[i]])
+                    }
+                }
             }
         }
         
-        return(unit.c(width, height))
+        size = unit.c(width, height)
     }
+
+    size = unit.c(size[1] + padding[2] + padding[4], size[2] + padding[1] + padding[3])
+    return(size)
 }
 
 # == title

@@ -18,7 +18,7 @@ Make layout for the complete plot
     heatmap_legend_side = c("right", "left", "bottom", "top"),
     show_heatmap_legend = TRUE,
     annotation_legend_side = c("right", "left", "bottom", "top"),
-    show_annotation_legend = TRUE,
+    show_annotation_legend = TRUE, annotation_legend_list = list(),
     gap = unit(3, "mm"), auto_adjust = TRUE,
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_hclust_side = c("original", "left", "right"),
@@ -37,6 +37,7 @@ Make layout for the complete plot
   \item{show_heatmap_legend}{whether show heatmap legend.}
   \item{annotation_legend_side}{side of annotation legend.}
   \item{show_annotation_legend}{whether show annotation legend.}
+  \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
   \item{gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
   \item{auto_adjust}{auto adjust if the number of heatmap is larger than one.}
   \item{main_heatmap}{name or index for the main heatmap}

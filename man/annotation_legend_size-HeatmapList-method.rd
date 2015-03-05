@@ -12,11 +12,12 @@ Size of the annotation legend viewport
 
 }
 \usage{
-\S4method{annotation_legend_size}{HeatmapList}(object)
+\S4method{annotation_legend_size}{HeatmapList}(object, annotation_legend_list = list())
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList}} object}
+  \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
 
 }
 \details{

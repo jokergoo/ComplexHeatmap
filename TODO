@@ -1,2 +1,3 @@
-add API to add legend
-legends can be put at the center of corresponding viewport
+dendrogram can be assigned with differnet graphic parameter if rows are splitted
+add more general annotation graphics (also more parameters)
+add function to extract row-slices

@@ -12,11 +12,12 @@ Draw legends for all column annotations
 
 }
 \usage{
-\S4method{draw_annotation_legend}{HeatmapList}(object)
+\S4method{draw_annotation_legend}{HeatmapList}(object, annotation_legend_list = list())
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList}} object}
+  \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
 
 }
 \details{

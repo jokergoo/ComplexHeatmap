@@ -231,12 +231,11 @@ setMethod(f = "color_mapping_legend",
 
 	if(plot) {
 		pushViewport(viewport(..., width = vp_width, height = vp_height, name = paste0("legend_", object@name)))
-		
 		grid.text(object@name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
 			gp = legend_title_gp)
 		grid.rect(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
 			gp = gpar(col = NA, fill = rev(object@colors)))
-		grid.text(object@levels, x + legend_grid_width + unit(1, "mm"), rev(y - legend_grid_height*0.5), 
+		grid.text(rev(object@levels), x + legend_grid_width + unit(1, "mm"), rev(y - legend_grid_height*0.5), 
 			just = c("left", "center"), gp = legend_label_gp)
 		upViewport()
 	}

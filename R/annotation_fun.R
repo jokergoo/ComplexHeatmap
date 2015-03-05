@@ -59,6 +59,9 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 	switch(which,
 		row = function(index) {
 			n = length(index)
+			if(n != length(x)) {
+				stop(paste0("Length of index should be ", length(x)))
+			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
 			grid.points(x[index], seq_along(index), gp = gp, default.units = "native", pch = pch, size = size)
@@ -66,6 +69,9 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 		},
 		column = function(index) {
 			n = length(index)
+			if(n != length(x)) {
+				stop(paste0("Length of index should be ", length(x)))
+			}
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
 			grid.points(seq_along(index), x[index], gp = gp, default.units = "native", pch = pch, size = size)
@@ -98,6 +104,9 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 	switch(which,
 		row = function(index) {
 			n = length(index)
+			if(n != length(x)) {
+				stop(paste0("Length of index should be ", length(x)))
+			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
 			grid.rect(x = data_scale[1], y = seq_along(index), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = gp)
@@ -105,6 +114,9 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 		},
 		column = function(index) {
 			n = length(index)
+			if(n != length(x)) {
+				stop(paste0("Length of index should be ", length(x)))
+			}
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
 			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = gp)
@@ -149,6 +161,9 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 
 			n = length(index)
+			if(n != ncol(boxplot_stats)) {
+				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
+			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
 			grid.segments(boxplot_stats[5, ], seq_along(index) - 0.5*factor, 
@@ -175,6 +190,9 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 
 			n = length(index)
+			if(n != ncol(boxplot_stats)) {
+				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
+			}
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
 			grid.segments(seq_along(index) - 0.5*factor, boxplot_stats[5, ],

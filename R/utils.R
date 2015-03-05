@@ -46,15 +46,18 @@ default_col = function(x, main_matrix = FALSE) {
 
     if(is.character(x)) {  # discrete
         levels = unique(x)
-        colors = rand_color(length(levels))
+        colors = rainbow_hcl(length(levels), c = 60, l = 75)
         names(colors) = levels
         return(colors)
     } else if(is.numeric(x)) {
         if(main_matrix) {
-            col_fun = colorRamp2(seq(min(x), max(x), length.out = 11), 
-                rev(brewer.pal(11, "RdYlBu")))
+            if(length(unique(x) > 100)) {
+                col_fun = colorRamp2(seq(quantile(x, 0.05), quantile(x, 0.95), length.out = 100), diverge_hcl(100, c = 100, l = c(50, 90), power = 1))
+            } else {
+                col_fun = colorRamp2(seq(min(x), max(x), length.out = 100), diverge_hcl(100, c = 100, l = c(50, 90), power = 1))
+            }
         } else {
-            col_fun = colorRamp2(range(min(x), max(x)), c("white", rand_color(1)))
+            col_fun = colorRamp2(range(min(x), max(x)), c("white", rainbow_hcl(1, c = 60, l = 75)))
         }
         return(col_fun)
     }
