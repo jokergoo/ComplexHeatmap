@@ -12,7 +12,7 @@ Using points as annotation
 }
 \usage{
 anno_points(x, which = c("column", "row"), gp = gpar(), pch = 16,
-    size = unit(2, "mm"))
+    size = unit(2, "mm"), ...)
 }
 \arguments{
 
@@ -21,6 +21,7 @@ anno_points(x, which = c("column", "row"), gp = gpar(), pch = 16,
   \item{gp}{graphic parameters.}
   \item{pch}{point type.}
   \item{size}{point size.}
+  \item{...}{for future use.}
 
 }
 \value{

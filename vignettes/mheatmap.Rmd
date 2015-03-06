@@ -29,7 +29,7 @@ options(markdown.HTML.stylesheet = "custom.css")
 options(width = 100)
 ```
 
-Heatmaps are efficient to reveal patterns of massive data. 
+Heatmaps are efficient to reveal patterns of massive data...... (to be added)
 
 ## General design
 
@@ -41,20 +41,22 @@ source("design.R")
 
 There are several classes that are abstracted from the heatmap. Surounding the heatmap list,
 there are legends for heatmaps themselves and annotations, also there are titles which are placed
-on the four sides of the heatmap list. For each heatmap,  
+on the four sides of the heatmap list. For each heatmap, there are also different components stand
+surrounding the heatmap body.
 
 In **mheatmap** package, components of heatmap lists are abstracted into several classes.
 
-- `Heatmap` class
-- `HeatmapList` class
-- `HeatmapAnnotation` class
+- `Heatmap` class: A single heatmap containing heatmap body, row/column names, titles and dendrograms.
+- `HeatmapList` class: A list of heatmaps and row annotations which also contains titles.
+- `HeatmapAnnotation` class: be respossible to row annotations and column annotations.
 
 There are also several internal classes:
 
-- `Single Annotation` class
-- `ColorMapping` class
+- `Single Annotation` class: a single row annotation or column annotation.
+- `ColorMapping` class: mapping from values to colors.
 
-**mheatmap** is implemeted under **grid** system, thus users should use grid-family function to manupulate...
+**mheatmap** is implemeted under **grid** system, so users should know basic **grid** functionality
+to get full use of **mheatmap** package.
 
 ## A single heatmap
 
@@ -639,6 +641,16 @@ grid.text("type", unit(1, "npc") + unit(2, "mm"), 0.5, default.units = "npc", ju
 
 ## Real application
 
-### Visialize genomic data
+### Gene expression
+
+In gene expression matrix, rows correspond to genes. More information about genes can be attached after the expression
+heatmap such as gene length and type of genes.
+
+### Visialize genomic regions
+
+Genomic regions can have more corresponded information. E.g. for a list of differentially methylated regions (DMRs), 
+we can add an expression matrix in which genes are the closest to corresponding DMR, also overlapping to different genomic features
+can be added.
+
 
 

@@ -11,8 +11,8 @@ Function to add simple graphics as annotations
 
 }
 \usage{
-anno_simple(x, type = c("p", "histogram"), which = c("column", "row"),
-    gp = gpar(fill = "#CCCCCC"), pch = 16, size = unit(2, "mm"))
+anno_simple(x, type = c("p", "histogram", "boxplot"), which = c("column", "row"),
+    gp = gpar(fill = "#CCCCCC"), ...)
 }
 \arguments{
 
@@ -20,8 +20,7 @@ anno_simple(x, type = c("p", "histogram"), which = c("column", "row"),
   \item{type}{\code{p} for points, \code{histogram} for histogram.}
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{gp}{graphic parameters.}
-  \item{pch}{point type.}
-  \item{size}{point size.}
+  \item{...}{pass to corresponding annotation graphic functions.}
 
 }
 \details{

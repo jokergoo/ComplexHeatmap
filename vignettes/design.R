@@ -24,7 +24,7 @@ text(0.3+0.2/3, (0.31+0.69)/2, "heatmap 1", srt = 90)
 rect(0.31+0.4/3, 0.31, 0.31+0.8/3, 0.69)
 text(0.5, (0.31+0.69)/2, "heatmap 2", srt = 90)
 rect(0.31+0.8/3, 0.31, 0.69, 0.69)
-text(0.31+1/3, (0.31+0.69)/2, "column annotation", srt = 90)
+text(0.31+1/3, (0.31+0.69)/2, "row annotation", srt = 90)
 
 mtext("heatmap list", side = 3, font = 2)
 

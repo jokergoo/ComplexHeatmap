@@ -11,13 +11,14 @@ Using histogram as annotation
 
 }
 \usage{
-anno_histogram(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"))
+anno_histogram(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...)
 }
 \arguments{
 
   \item{x}{a vector of values.}
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{gp}{graphic parameters.}
+  \item{...}{for future use.}
 
 }
 \value{

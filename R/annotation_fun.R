@@ -7,8 +7,7 @@
 # -type ``p`` for points, ``histogram`` for histogram.
 # -which is the annotation a column annotation or a row annotation?
 # -gp graphic parameters.
-# -pch point type.
-# -size point size.
+# -... pass to corresponding annotation graphic functions.
 #
 # == details
 # It is a shortcut function for `anno_points` and `anno_histogram`.
@@ -23,13 +22,14 @@
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_simple = function(x, type = c("p", "histogram"), which = c("column", "row"), 
-	gp = gpar(fill = "#CCCCCC"), pch = 16, size = unit(2, "mm")) {
+anno_simple = function(x, type = c("p", "histogram", "boxplot"), which = c("column", "row"), 
+	gp = gpar(fill = "#CCCCCC"), ...) {
 	x = x
 	which = match.arg(which)[1]
 	switch(type,
-		p = anno_points(x, which = which, gp = gp, pch = pch, size = size),
-		histogram = anno_histogram(x, which = which, gp = gp))
+		p = anno_points(x, which = which, gp = gp, ...),
+		histogram = anno_histogram(x, which = which, gp = gp, ...),
+		boxplot = anno_boxplot(x, which = which, gp = gp, ...))
 }
 
 # == title
@@ -41,6 +41,7 @@ anno_simple = function(x, type = c("p", "histogram"), which = c("column", "row")
 # -gp graphic parameters.
 # -pch point type.
 # -size point size.
+# -... for future use.
 #
 # == value
 # A graphic function which can be set in `HeatmapAnnotation` constructor method.
@@ -49,7 +50,7 @@ anno_simple = function(x, type = c("p", "histogram"), which = c("column", "row")
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16, 
-	size = unit(2, "mm")) {
+	size = unit(2, "mm"), ...) {
 
 	x = x
 	which = match.arg(which)[1]
@@ -86,6 +87,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # -x a vector of values.
 # -which is the annotation a column annotation or a row annotation?
 # -gp graphic parameters.
+# -... for future use.
 #
 # == value
 # A graphic function which can be set in `HeatmapAnnotation` constructor method.
@@ -93,7 +95,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC")) {
+anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...) {
 	x = x
 	which = match.arg(which)[1]
 
@@ -153,10 +155,10 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	switch(which,
 		row = function(index) {
 			if(is.matrix(x)) {
-				x = x[sort(index), , drop = FALSE]
+				x = x[index, , drop = FALSE]
 				boxplot_stats = boxplot(t(x), plot = FALSE)$stats
 			} else {
-				x = x[sort(index)]
+				x = x[index]
 				boxplot_stats = boxplot(x, plot = FALSE)$stats
 			}
 
@@ -182,10 +184,10 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 		},
 		column = function(index) {
 			if(is.matrix(x)) {
-				x = x[, sort(index), drop = FALSE]
+				x = x[, index, drop = FALSE]
 				boxplot_stats = boxplot(x, plot = FALSE)$stats
 			} else {
-				x = x[sort(index)]
+				x = x[index]
 				boxplot_stats = boxplot(x, plot = FALSE)$stats
 			}
 
