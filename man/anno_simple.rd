@@ -11,8 +11,8 @@ Function to add simple graphics as annotations
 
 }
 \usage{
-anno_simple(x, type = c("p", "histogram", "boxplot"), which = c("column", "row"),
-    gp = gpar(fill = "#CCCCCC"), ...)
+anno_simple(x, type = c("p", "histogram", "boxplot"),
+    which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...)
 }
 \arguments{
 

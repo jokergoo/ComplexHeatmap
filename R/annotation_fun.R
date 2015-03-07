@@ -22,8 +22,8 @@
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_simple = function(x, type = c("p", "histogram", "boxplot"), which = c("column", "row"), 
-	gp = gpar(fill = "#CCCCCC"), ...) {
+anno_simple = function(x, type = c("p", "histogram", "boxplot"), 
+	which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...) {
 	x = x
 	which = match.arg(which)[1]
 	switch(type,
@@ -95,7 +95,8 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...) {
+anno_histogram = function(x, which = c("column", "row"), 
+	gp = gpar(fill = "#CCCCCC"), ...) {
 	x = x
 	which = match.arg(which)[1]
 

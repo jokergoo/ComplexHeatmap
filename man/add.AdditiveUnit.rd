@@ -47,7 +47,8 @@ ht + ht + ht
 ht_list = ht + ht
 ht + ht_list
 
-ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"), which = "row")
+ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"), 
+    which = "row")
 ht + ha
 ht_list + ha
 }

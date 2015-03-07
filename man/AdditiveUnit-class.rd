@@ -13,7 +13,7 @@ An internal class
 
 }
 \details{
-This class is a super class for \code{\link{Heatmap}}, \code{\link{HeatmapList}} and \code{\link{HeatmapAnnotation}} classes.  
+This class is a super class for \code{\link{Heatmap}}, \code{\link{HeatmapList}} and \code{\link{HeatmapAnnotation}} classes. And it is only for \code{+} generic method.  
 
 
 }

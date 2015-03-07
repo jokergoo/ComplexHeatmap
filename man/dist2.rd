@@ -43,7 +43,7 @@ colnames(mat) = letters[1:10]
 d2 = dist2(mat)
 d2 = dist2(mat, pairwise_fun = function(x, y) 1 - cor(x, y))
 d2 = dist2(mat, pairwise_fun = function(x, y) {
-	l = is.na(x) & is.na(y)
-	sqrt(sum((x[l] - y[l])^2))
+    l = is.na(x) & is.na(y)
+    sqrt(sum((x[l] - y[l])^2))
 })
 }

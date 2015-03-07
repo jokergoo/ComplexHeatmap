@@ -42,19 +42,19 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # discrete color mapping for characters
 cm = ColorMapping(name = "test",
-	colors = c("blue", "white", "red"),
-	levels = c("a", "b", "c"))
+    colors = c("blue", "white", "red"),
+    levels = c("a", "b", "c"))
 cm
 
 # discrete color mapping for numeric values
 cm = ColorMapping(name = "test",
-	colors = c("blue", "white", "red"),
-	levels = c(1, 2, 3))
+    colors = c("blue", "white", "red"),
+    levels = c(1, 2, 3))
 cm
 
 # continuous color mapping
 require(circlize)
 cm = ColorMapping(name = "test",
-	col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
+    col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
 cm
 }

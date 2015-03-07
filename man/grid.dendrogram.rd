@@ -42,11 +42,13 @@ Zuguang Gu <z.gu@dkfz.de>
 hc = hclust(dist(USArrests[1:5, ]))
 dend = as.dendrogram(hc)
 
+grid.newpage()
 layout = grid.layout(nrow = 2, ncol = 2)
 pushViewport(viewport(layout = layout))
 grid.dendrogram(dend, layout.pos.row = 1, layout.pos.col = 1)
 grid.dendrogram(dend, facing = "top", layout.pos.row = 1, layout.pos.col = 2)
-grid.dendrogram(dend, facing = "top", order = "reverse", layout.pos.row = 2, layout.pos.col = 1)
+grid.dendrogram(dend, facing = "top", order = "reverse", layout.pos.row = 2, 
+    layout.pos.col = 1)
 grid.dendrogram(dend, facing = "left", layout.pos.row = 2, layout.pos.col = 2)
 upViewport()
 }

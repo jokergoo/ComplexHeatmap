@@ -4,6 +4,7 @@
 #
 # == detail
 # This class is a super class for `Heatmap`, `HeatmapList` and `HeatmapAnnotation` classes.
+# And it is only for ``+`` generic method.
 #
 AdditiveUnit = setClass("AdditiveUnit")
 

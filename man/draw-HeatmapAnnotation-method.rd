@@ -44,7 +44,8 @@ draw(ha, 6:1)
 ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
 draw(ha, 1:6)
 
-ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), which = "row")
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), 
+    which = "row")
 draw(ha, 1:6)
 
 ha = HeatmapAnnotation(points = anno_simple(1:6, type = "p"))

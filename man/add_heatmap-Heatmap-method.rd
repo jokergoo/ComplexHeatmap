@@ -43,6 +43,7 @@ colnames(mat) = letters[1:10]
 ht = Heatmap(mat)
 add_heatmap(ht, ht)
 
-ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"), which = "row")
+ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"), 
+    which = "row")
 add_heatmap(ht, ha)
 }

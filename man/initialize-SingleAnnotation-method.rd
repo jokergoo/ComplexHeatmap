@@ -47,10 +47,12 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # discrete character
 SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"))
-SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"), which = "row")
+SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"), 
+    which = "row")
 
 # with defined colors
-SingleAnnotation(value = c("a", "a", "a", "b", "b", "b"), col = c("a" = "red", "b" = "blue"))
+SingleAnnotation(value = c("a", "a", "a", "b", "b", "b"), 
+    col = c("a" = "red", "b" = "blue"))
 
 # continuous numbers
 require(circlize)

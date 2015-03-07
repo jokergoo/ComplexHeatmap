@@ -133,11 +133,12 @@ The graphic paramters can be set by `row_title_gp` and `column_title_gp` respect
 Please remember you should use `gpar()` to specify graphic parameters.
 
 ```{r}
-Heatmap(mat, name = "foo", column_title = "I am a column title", row_title = "I am a row title")
+Heatmap(mat, name = "foo", column_title = "I am a column title", 
+    row_title = "I am a row title")
 Heatmap(mat, name = "foo", column_title = "I am a column title at the bottom", 
-  column_title_side = "bottom")
+    column_title_side = "bottom")
 Heatmap(mat, name = "foo", column_title = "I am a big column title", 
-  column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+    column_title_gp = gpar(fontsize = 20, fontface = "bold"))
 ```
 
 ### Clustering
@@ -190,7 +191,7 @@ which are from the **cluster** package to perform clusterings.
 ```{r}
 library(cluster)
 Heatmap(mat, name = "foo", cluster_rows = as.dendrogram(diana(mat)),
-    cluster_columns = as.dendrogram(agnes(t(mat))))
+   cluster_columns = as.dendrogram(agnes(t(mat))))
 ```
 
 You can render your `dendrogram` object by the **dendextend** package and make a more customized
@@ -210,7 +211,7 @@ while `m` is the transpose of `mat` when executing `cluster_columns`.
 
 ```{r}
 Heatmap(mat, name = "foo", cluster_rows = function(m) hclust(dist(m)),
-  cluster_columns = function(m) hclust(dist(m)))
+    cluster_columns = function(m) hclust(dist(m)))
 ```
 
 ### Dimension names
@@ -222,7 +223,6 @@ Heatmap(mat, name = "foo", row_names_side = "left", row_hclust_side = "right",
     column_names_side = "top", column_hclust_side = "bottom")
 Heatmap(mat, name = "foo", show_row_names = FALSE)
 Heatmap(mat, name = "foo", row_names_gp = gpar(fontsize = 20))
-Heatmap(mat, name = "foo", row_names_gp = gpar(col = c(rep("red", 8), rep("blue", 4))))
 ```
 
 ### Split heatmap by rows
@@ -285,17 +285,17 @@ This functionality will be introduced in later sections.
 mat2 = matrix(1:9, 3, 3)
 
 ht = Heatmap(mat2, rect_gp = gpar(col = "white", lwd = 2, type = "none"), 
-  cell_fun = function(i, j, x, y, width, height, fill) {
-    grid.roundrect(x, y, width*0.8, height*0.8, gp = gpar(fill = fill))
-    if(mat[i, j] <= 4) {
-      grid.text("cold", x = x, y = y)
-    } else if(mat[i, j] >= 6) {
-      grid.text("hot", x = x, y = y)
-    } else {
-      grid.text("normal", x = x, y = y)
-    }
-  },
-  cluster_rows = FALSE, cluster_columns = FALSE)
+    cell_fun = function(i, j, x, y, width, height, fill) {
+        grid.roundrect(x, y, width*0.8, height*0.8, gp = gpar(fill = fill))
+        if(mat[i, j] <= 4) {
+            grid.text("cold", x = x, y = y)
+        } else if(mat[i, j] >= 6) {
+            grid.text("hot", x = x, y = y)
+        } else {
+            grid.text("normal", x = x, y = y)
+        }
+    },
+    cluster_rows = FALSE, cluster_columns = FALSE)
 draw(ht, show_heatmap_legend = FALSE)
 ```
 
@@ -335,7 +335,7 @@ draw(ha, 1:10)
 
 ```{r, fig.width = 7, fig.height = 1}
 ha = HeatmapAnnotation(df = data.frame(age = sample(1:20, 10)),
-  col = list(age = colorRamp2(c(1, 20), c("white", "red"))))
+    col = list(age = colorRamp2(c(1, 20), c("white", "red"))))
 ha
 draw(ha, 1:10)
 ```
@@ -353,10 +353,10 @@ of points correspond to middle points of the columns.
 ```{r, fig.width = 7, fig.height = 1}
 value = rnorm(10)
 column_anno = function(index) {
-  n = length(index)
-  pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = range(value)))
-  grid.points(index, value, pch = 16)
-  upViewport() # this is very important in order not to mess up the layout
+    n = length(index)
+    pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = range(value)))
+    grid.points(index, value, pch = 16)
+    upViewport() # this is very important in order not to mess up the layout
 }
 ha = HeatmapAnnotation(points = column_anno)
 ha
@@ -400,13 +400,13 @@ annotations shown in the heatmap.
 
 ```{r, fig.width = 7, fig.height = 3}
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(t(mat)),
-  annotation_height = c(1, 2, 3))
+    annotation_height = c(1, 2, 3))
 draw(ha, 1:10)
 ```
 
 ```{r, fig.width = 7, fig.height = 3}
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(t(mat)),
-  annotation_height = unit.c(unit(1, "npc") - unit(4, "cm"), unit(2, "cm"), unit(2, "cm")))
+    annotation_height = unit.c(unit(1, "npc") - unit(4, "cm"), unit(2, "cm"), unit(2, "cm")))
 draw(ha, 1:10)
 ```
 
@@ -417,7 +417,7 @@ Also you can control the size of total column annotations by `top_annotation_hei
 ha = HeatmapAnnotation(df = df, points = anno_points(value))
 ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(t(mat)))
 Heatmap(mat, name = "foo", top_annotation = ha, bottom_annotation = ha_boxplot, 
-  bottom_annotation_height = unit(2, "cm"))
+    bottom_annotation_height = unit(2, "cm"))
 ```
 
 The `HeatmapAnnotation` is also used for construction of row annotations which we will introduce in later sections.
@@ -474,7 +474,7 @@ ht2 = Heatmap(mat, name = "ht2", row_title = "Heatmap 2", column_title = "Heatma
 ht_list = ht1 + ht2
 
 draw(ht_list, row_title = "Two heatmaps, row title", row_title_gp = gpar(col = "red"),
-  column_title = "Two heatmaps, column title", column_title_side = "bottom")
+    column_title = "Two heatmaps, column title", column_title_side = "bottom")
 ```
 
 ### Legends
@@ -583,7 +583,8 @@ Also complex row annotations can be added.
 
 ```{r}
 ht1 = Heatmap(mat, name = "ht1", km = 2)
-ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), which = "row", width = unit(2, "cm"))
+ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), 
+    which = "row", width = unit(2, "cm"))
 draw(ha_boxplot + ht1, row_hclust_side = "left", row_sub_title_side = "right")
 ```
 
@@ -595,15 +596,15 @@ Following figure almost contains all types of components.
 ```{r, fig.width = 10, fig.height = 7}
 ha_column1 = HeatmapAnnotation(points = anno_points(rnorm(10)))
 ht1 = Heatmap(mat, name = "ht1", km = 2, row_title = "Heatmap 1", column_title = "Heatmap 1", 
-  top_annotation = ha_column1)
+    top_annotation = ha_column1)
 
 ha_column2 = HeatmapAnnotation(df = data.frame(type = c(rep("a", 5), rep("b", 5))))
 ht2 = Heatmap(mat, name = "ht2", row_title = "Heatmap 2", column_title = "Heatmap 2",
-  bottom_annotation = ha_column2)
+    bottom_annotation = ha_column2)
 
 ht_list = ht1 + ht2
 draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
-  heatmap_legend_side = "right", annotation_legend_side = "left")
+    heatmap_legend_side = "right", annotation_legend_side = "left")
 ```
 
 The components that have names are:
@@ -640,6 +641,11 @@ grid.text("type", unit(1, "npc") + unit(2, "mm"), 0.5, default.units = "npc", ju
 ```
 
 ## Real application
+
+Data frame is an ideal data structure to store different subjects of information 
+in which each row in the data frame focuses on the same element.
+Then, each subject can be visualized as a single heatmap and putting all subjects 
+together can give you a full view of your data.
 
 ### Gene expression
 

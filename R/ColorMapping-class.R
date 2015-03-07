@@ -209,7 +209,8 @@ setMethod(f = "map",
 setMethod(f = "color_mapping_legend",
 	signature = "ColorMapping",
 	definition = function(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
-	legend_grid_width = unit(3, "mm"), legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
+	legend_grid_width = unit(3, "mm"), 
+	legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
 	legend_label_gp = gpar(fontsize = 10)) {
 
 	# add title

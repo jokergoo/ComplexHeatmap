@@ -11,7 +11,8 @@ Using histogram as annotation
 
 }
 \usage{
-anno_histogram(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...)
+anno_histogram(x, which = c("column", "row"),
+    gp = gpar(fill = "#CCCCCC"), ...)
 }
 \arguments{
 

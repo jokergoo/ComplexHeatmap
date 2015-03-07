@@ -11,8 +11,9 @@ Constructor method for HeatmapAnnotation class
 
 }
 \usage{
-\S4method{initialize}{HeatmapAnnotation}(.Object, df, name, col, show_legend, ..., which = c("column", "row"),
-    annotation_height = 1, annotation_width = 1, height = unit(1, "cm"), width = unit(1, "cm"))
+\S4method{initialize}{HeatmapAnnotation}(.Object, df, name, col, show_legend, ...,
+    which = c("column", "row"), annotation_height = 1, annotation_width = 1,
+    height = unit(1, "cm"), width = unit(1, "cm"))
 }
 \arguments{
 
@@ -50,7 +51,8 @@ ha = HeatmapAnnotation(df = df)
 
 ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
 
-ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), which = "row")
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), 
+    which = "row")
 
 ha = HeatmapAnnotation(points = anno_simple(1:6, type = "p"))
 
