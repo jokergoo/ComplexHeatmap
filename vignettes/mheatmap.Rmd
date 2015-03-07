@@ -652,6 +652,22 @@ together can give you a full view of your data.
 In gene expression matrix, rows correspond to genes. More information about genes can be attached after the expression
 heatmap such as gene length and type of genes.
 
+```{r, fig.width = 10, fig.height = 8}
+expr = readRDS(paste0(system.file(package = "mheatmap"), "/extdata/gene_expression.rds"))
+mat = as.matrix(expr[, grep("cell", colnames(expr))])
+
+type = gsub("s\\d+_", "", colnames(mat))
+ha = HeatmapAnnotation(df = data.frame(type = type))
+
+Heatmap(mat, name = "expression", km = 4, top_annotation = ha, 
+    top_annotation_height = unit(4, "mm"), show_row_names = FALSE, 
+    show_column_names = FALSE) +
+Heatmap(df$length, name = "length", col = colorRamp2(c(0, 100000), c("white", "orange")),
+    width = unit(5, "mm")) +
+Heatmap(df$type, name = "type", width = unit(5, "mm")) +
+Heatmap(df$chr, name = "chr", width = unit(5, "mm"))
+```
+
 ### Visialize genomic regions
 
 Genomic regions can have more corresponded information. E.g. for a list of differentially methylated regions (DMRs), 

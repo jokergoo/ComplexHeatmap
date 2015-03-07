@@ -229,7 +229,7 @@ setMethod(f = "initialize",
         .Object@heatmap_param$show_heatmap_legend = FALSE
     }
 
-    if(is.character(matrix) || ncol(matrix) == 0) {
+    if(is.character(matrix) || ncol(matrix) <= 1) {
         cluster_rows = FALSE
         cluster_columns = FALSE
         show_row_hclust = FALSE
@@ -493,7 +493,7 @@ setMethod(f = "make_row_cluster",
 
     # make k-means clustering to add a split column
     if(km > 1) {
-        km.fit = kmeans(mat, centers = km, iter.max = 50, nstart = round(nrow(mat)*0.1))
+        km.fit = kmeans(mat, centers = km)
         cluster = km.fit$cluster
         meanmat = lapply(unique(cluster), function(i) {
             colMeans(mat[cluster == i, , drop = FALSE])

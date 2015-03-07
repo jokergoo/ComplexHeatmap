@@ -292,8 +292,10 @@ setMethod(f = "make_layout",
                 } else {
                     if(inherits(object@ht_list[[i]], "Heatmap")) {
                         object@ht_list[[i]]@row_hclust_param$show = FALSE
-                        object@ht_list[[i]]@row_hclust_param$cluster = TRUE
                     }
+                }
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    object@ht_list[[i]]@row_hclust_param$cluster = FALSE
                 }
             }
         } else if(row_hclust_side == "right") {
@@ -306,8 +308,10 @@ setMethod(f = "make_layout",
                 } else {
                     if(inherits(object@ht_list[[i]], "Heatmap")) {
                         object@ht_list[[i]]@row_hclust_param$show = FALSE
-                        object@ht_list[[i]]@row_hclust_param$cluster = TRUE
                     }
+                }
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    object@ht_list[[i]]@row_hclust_param$cluster = FALSE
                 }
             }
         } else {
@@ -319,8 +323,10 @@ setMethod(f = "make_layout",
                 } else {
                     if(inherits(object@ht_list[[i]], "Heatmap")) {
                         object@ht_list[[i]]@row_hclust_param$show = FALSE
-                        object@ht_list[[i]]@row_hclust_param$cluster = TRUE
                     }
+                }
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    object@ht_list[[i]]@row_hclust_param$cluster = FALSE
                 }
             }
         }
