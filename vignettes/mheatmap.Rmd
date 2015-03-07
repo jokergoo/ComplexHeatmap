@@ -659,7 +659,7 @@ mat = as.matrix(expr[, grep("cell", colnames(expr))])
 type = gsub("s\\d+_", "", colnames(mat))
 ha = HeatmapAnnotation(df = data.frame(type = type))
 
-Heatmap(mat, name = "expression", km = 4, top_annotation = ha, 
+Heatmap(mat, name = "expression", km = 5, top_annotation = ha, 
     top_annotation_height = unit(4, "mm"), show_row_names = FALSE, 
     show_column_names = FALSE) +
 Heatmap(df$length, name = "length", col = colorRamp2(c(0, 100000), c("white", "orange")),
