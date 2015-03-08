@@ -201,9 +201,9 @@ setMethod(f = "initialize",
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"), 
     show_column_hclust = TRUE, column_hclust_gp = gpar(), 
     row_names_side = c("right", "left"), show_row_names = TRUE, 
-    row_names_max_width = unit(2, "cm"), row_names_gp = gpar(fontsize = 12), 
+    row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12), 
     column_names_side = c("bottom", "top"), 
-    show_column_names = TRUE, column_names_max_height = unit(2, "cm"), 
+    show_column_names = TRUE, column_names_max_height = unit(4, "cm"), 
     column_names_gp = gpar(fontsize = 12),
     top_annotation = NULL, top_annotation_height = unit(1, "cm"),
     bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
@@ -234,6 +234,7 @@ setMethod(f = "initialize",
         cluster_columns = FALSE
         show_row_hclust = FALSE
         show_column_hclust = FALSE
+        km = 1
     }
     .Object@matrix = matrix
     .Object@matrix_param$km = km
@@ -254,6 +255,11 @@ setMethod(f = "initialize",
     }
     .Object@name = name
 
+    if(ncol(matrix) == 1 && is.null(colnames(matrix))) {
+        colnames(matrix) = name
+        .Object@matrix = matrix
+    }
+
     # color for main matrix
     if(ncol(matrix) > 0) {
         if(missing(col)) {
@@ -262,6 +268,13 @@ setMethod(f = "initialize",
         if(is.function(col)) {
             .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name)
         } else {
+            if(is.null(names(col))) {
+                if(length(col) == length(unique(matrix))) {
+                    names(col) = unique(matrix)
+                } else {
+                    stop("`col` should have names to map to values in `mat`.")
+                }
+            }
             .Object@matrix_color_mapping = ColorMapping(colors = col, name = name)
         }
     }
@@ -492,7 +505,7 @@ setMethod(f = "make_row_cluster",
     }
 
     # make k-means clustering to add a split column
-    if(km > 1) {
+    if(km > 1 && is.numeric(mat)) {
         km.fit = kmeans(mat, centers = km)
         cluster = km.fit$cluster
         meanmat = lapply(unique(cluster), function(i) {
@@ -548,8 +561,10 @@ setMethod(f = "make_row_cluster",
                     row_hclust_list[[i]] = object@row_hclust_param$fun(mat)
                     row_order_list[[i]] = row_order_list[[i]][ get_hclust_order(row_hclust_list[[i]]) ]
                 } else {
-                    row_hclust_list[[i]] = hclust(get_dist(submat, distance), method = method)
-                    row_order_list[[i]] = row_order_list[[i]][ get_hclust_order(row_hclust_list[[i]]) ]
+                    if(is.numeric(mat)) {
+                        row_hclust_list[[i]] = hclust(get_dist(submat, distance), method = method)
+                        row_order_list[[i]] = row_order_list[[i]][ get_hclust_order(row_hclust_list[[i]]) ]
+                    }
                 }
             }
         }
@@ -1253,7 +1268,7 @@ setMethod(f = "set_component_height",
     definition = function(object, k, v) {
 
     if(k == 1) {
-        object@layout$layout_title_top_height = v
+        object@layout$layout_column_title_top_height = v
     } else if(k == 2) {
         object@layout$layout_column_hclust_top_height = v
     } else if(k == 3) {
@@ -1267,7 +1282,7 @@ setMethod(f = "set_component_height",
     } else if(k == 8) {
         object@layout$layout_column_hclust_bottom_height = v
     } else if(k == 9) {
-        object@layout$layout_title_bottom_height = v
+        object@layout$layout_column_title_bottom_height = v
     } else {
         stop("wrong 'k'")
     }
@@ -1307,7 +1322,7 @@ setMethod(f = "draw",
             layout = grid.layout(nrow = 9, ncol = 7, widths = component_width(object, 1:7), 
                 heights = component_height(object, 1:9))
             pushViewport(viewport(layout = layout))
-            
+
             ht_layout_index = object@layout$layout_index
             ht_graphic_fun_list = object@layout$graphic_fun_list
             
@@ -1316,7 +1331,6 @@ setMethod(f = "draw",
                 ht_graphic_fun_list[[j]](object)
                 upViewport()
             }
-
             upViewport()
         } else {
             if(ncol(object@matrix) == 0) {
@@ -1358,7 +1372,7 @@ setMethod(f = "prepare",
     signature = "Heatmap",
     definition = function(object, row_order = NULL, split = object@matrix_param$split) {
 
-    if(object@row_hclust_param$cluster) object = make_row_cluster(object, order = row_order, split = split)
+    if(object@row_hclust_param$cluster || !is.null(split)) object = make_row_cluster(object, order = row_order, split = split)
     if(object@column_hclust_param$cluster) object = make_column_cluster(object)
 
     object = make_layout(object)

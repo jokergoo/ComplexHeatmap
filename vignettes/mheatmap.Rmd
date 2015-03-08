@@ -70,6 +70,7 @@ First let's load packages and generate a random matrix:
 library(mheatmap)
 library(circlize)
 library(colorspace)
+library(GetoptLong)
 
 set.seed(123)
 
@@ -102,7 +103,7 @@ If the matrix contains discrete values (either numeric or character), colors sho
 a named vector to make it possible for the mapping from discrete values to colors.
 
 ```{r}
-discrete_mat = matrix(sample(1:4, 1000, replace = TRUE), 10, 10)
+discrete_mat = matrix(sample(1:4, 100, replace = TRUE), 10, 10)
 colors = structure(rainbow_hcl(4), names = c("1", "2", "3", "4"))
 Heatmap(discrete_mat, col = colors)
 ```
@@ -110,7 +111,7 @@ Heatmap(discrete_mat, col = colors)
 Or a character matrix:
 
 ```{r}
-discrete_mat = matrix(sample(letters[1:4], 1000, replace = TRUE), 10, 10)
+discrete_mat = matrix(sample(letters[1:4], 100, replace = TRUE), 10, 10)
 colors = structure(rainbow_hcl(4), names = letters[1:4])
 Heatmap(discrete_mat, col = colors)
 ```
@@ -260,6 +261,12 @@ Height of gaps between every row slices can be controlled by `gap`.
 
 ```{r}
 Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering), gap = unit(5, "mm"))
+```
+
+Character matrix can only be splitted by `split` argument.
+
+```{r}
+Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], 5))
 ```
 
 ### Self define the heatmap body
@@ -662,10 +669,11 @@ ha = HeatmapAnnotation(df = data.frame(type = type))
 Heatmap(mat, name = "expression", km = 5, top_annotation = ha, 
     top_annotation_height = unit(4, "mm"), show_row_names = FALSE, 
     show_column_names = FALSE) +
-Heatmap(df$length, name = "length", col = colorRamp2(c(0, 100000), c("white", "orange")),
+Heatmap(expr$length, name = "length", col = colorRamp2(c(0, 100000), c("white", "orange")),
     width = unit(5, "mm")) +
-Heatmap(df$type, name = "type", width = unit(5, "mm")) +
-Heatmap(df$chr, name = "chr", width = unit(5, "mm"))
+Heatmap(expr$type, name = "type", width = unit(5, "mm")) +
+Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))), 
+    width = unit(5, "mm"))
 ```
 
 ### Visialize genomic regions
@@ -673,6 +681,34 @@ Heatmap(df$chr, name = "chr", width = unit(5, "mm"))
 Genomic regions can have more corresponded information. E.g. for a list of differentially methylated regions (DMRs), 
 we can add an expression matrix in which genes are the closest to corresponding DMR, also overlapping to different genomic features
 can be added.
+
+```{r, fig.width = 10, fig.height = 8}
+gr = readRDS(paste0(system.file(package = "mheatmap"), "/extdata/gr.rds"))
+
+ha1 = HeatmapAnnotation(df = data.frame(type = c(rep("control", 7), rep("experiment", 5))))
+ha2 = HeatmapAnnotation(df = data.frame(type = c(rep("control", 7), rep("experiment", 5))), 
+    show_legend = FALSE)
+
+gr = gr[gr$cor_p > 1, ]
+
+ht_list = Heatmap(gr[, 1:12], name = "methylation", col = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")),
+    top_annotation = ha1, top_annotation_height = unit(4, "mm"), show_row_names = FALSE,
+    show_column_names = FALSE, column_title = "DMR methylation") +
+Heatmap(rowMeans(gr[, 1:7]) - rowMeans(gr[, 8:12]), name = "mean_meth_diff") +
+Heatmap(gr$direction, col = c("hypo" = "blue", "hyper" = "red"), name = "direction") +
+
+Heatmap(gr[, 13:24], name = "expression", col = colorRamp2(c(-2, 0, 2), c("green", "white", "red")),
+    top_annotation = ha2, top_annotation_height = unit(4, "mm"), show_row_names = FALSE,
+    show_column_names = FALSE, cluster_columns = FALSE, cluster_rows = FALSE, column_title = "target expression") + 
+Heatmap(gr$cor_p, name = "pvalue", col = colorRamp2(c(1, 4), c("white", "red")), width = unit(5, "mm")) +
+Heatmap(gr$annotation, name = "annotation", width = unit(5, "mm")) +
+Heatmap(gr[, 28:29], name = "enhancer", col = colorRamp2(c(0, 1), c("white", "orange")), 
+    cluster_columns = FALSE, show_row_names = FALSE, width = unit(1, "cm"), cluster_rows = FALSE,
+    column_names_max_height = grobWidth(textGrob("strong_enhancer", gp = gpar(fontsize = 12))),
+    column_title = "enhancer")
+
+draw(ht_list, column_title = qq("negative correlation between DMR methylation and target expression\n@{nrow(gr)} interactions"))
+```
 
 
 

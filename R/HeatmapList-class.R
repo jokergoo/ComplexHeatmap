@@ -214,9 +214,8 @@ setMethod(f = "make_layout",
 
     if(auto_adjust) {
         ht_main = object@ht_list[[i_main]]
-        if(ht_main@row_hclust_param$cluster) {
-            ht_main = make_row_cluster(ht_main)
-        }
+        ht_main = make_row_cluster(ht_main)
+        
         row_order = unlist(ht_main@row_order_list)
         split = ht_main@matrix_param$split
 
@@ -287,7 +286,6 @@ setMethod(f = "make_layout",
                 if(i == 1) {
                     object@ht_list[[1]]@row_hclust_list = ht_main@row_hclust_list
                     object@ht_list[[1]]@row_hclust_param = ht_main@row_hclust_param
-                    object@ht_list[[1]]@row_order_list = ht_main@row_order_list
                     object@ht_list[[1]]@row_hclust_param$side = "left"
                 } else {
                     if(inherits(object@ht_list[[i]], "Heatmap")) {
@@ -295,6 +293,7 @@ setMethod(f = "make_layout",
                     }
                 }
                 if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    object@ht_list[[i]]@row_order_list = ht_main@row_order_list
                     object@ht_list[[i]]@row_hclust_param$cluster = FALSE
                 }
             }
@@ -303,7 +302,6 @@ setMethod(f = "make_layout",
                 if(i == n) {
                     object@ht_list[[n]]@row_hclust_list = ht_main@row_hclust_list
                     object@ht_list[[n]]@row_hclust_param = ht_main@row_hclust_param
-                    object@ht_list[[n]]@row_order_list = ht_main@row_order_list
                     object@ht_list[[n]]@row_hclust_param$side = "right"
                 } else {
                     if(inherits(object@ht_list[[i]], "Heatmap")) {
@@ -311,6 +309,7 @@ setMethod(f = "make_layout",
                     }
                 }
                 if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    object@ht_list[[i]]@row_order_list = ht_main@row_order_list
                     object@ht_list[[i]]@row_hclust_param$cluster = FALSE
                 }
             }
@@ -319,13 +318,13 @@ setMethod(f = "make_layout",
                 if(i == i_main) {
                     object@ht_list[[i]]@row_hclust_list = ht_main@row_hclust_list
                     object@ht_list[[i]]@row_hclust_param = ht_main@row_hclust_param
-                    object@ht_list[[i]]@row_order_list = ht_main@row_order_list   
                 } else {
                     if(inherits(object@ht_list[[i]], "Heatmap")) {
                         object@ht_list[[i]]@row_hclust_param$show = FALSE
                     }
                 }
                 if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    object@ht_list[[i]]@row_order_list = ht_main@row_order_list
                     object@ht_list[[i]]@row_hclust_param$cluster = FALSE
                 }
             }
@@ -335,7 +334,7 @@ setMethod(f = "make_layout",
             if(inherits(object@ht_list[[i]], "Heatmap")) {
                 object@ht_list[[i]]@matrix_param$km = 1
                 object@ht_list[[i]]@row_title_param$combined_name_fun = NULL
-                object@ht_list[[i]] = prepare(object@ht_list[[i]], row_order = row_order, split = split)
+                object@ht_list[[i]] = prepare(object@ht_list[[i]], row_order = NULL, split = NULL)
             }
         }
     }
@@ -634,6 +633,7 @@ setMethod(f = "draw_heatmap_list",
 
     gap = object@ht_list_param$gap
     ht_index = which(sapply(object@ht_list, inherits, "Heatmap"))
+
     n = length(object@ht_list)
     # since each heatmap actually has nine rows, calculate the maximum height of corresponding rows in all heatmap 
     max_component_height = unit.c(
