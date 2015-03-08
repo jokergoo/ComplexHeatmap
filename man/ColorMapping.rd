@@ -1,5 +1,5 @@
-\name{initialize-ColorMapping-method}
-\alias{initialize,ColorMapping-method}
+\name{ColorMapping}
+\alias{ColorMapping}
 \title{
 Constructor methods for ColorMapping class  
 
@@ -11,12 +11,11 @@ Constructor methods for ColorMapping class
 
 }
 \usage{
-\S4method{initialize}{ColorMapping}(.Object, name, colors = NULL, levels = NULL,
+ColorMapping(name, colors = NULL, levels = NULL,
     col_fun = NULL, breaks = NULL)
 }
 \arguments{
 
-  \item{.Object}{private object}
   \item{name}{name for this color mapping. It is used for drawing the title of the legend.}
   \item{colors}{discrete colors.}
   \item{levels}{levels that correspond to \code{colors}. If \code{colors} is name indexed,  \code{levels} can be ignored.}
@@ -30,7 +29,7 @@ Constructor methods for ColorMapping class
 
 }
 \value{
-A \code{\link{ColorMapping}} object.  
+A \code{\link{ColorMapping-class}} object.  
 
 
 }

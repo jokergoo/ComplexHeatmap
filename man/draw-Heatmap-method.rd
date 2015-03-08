@@ -15,14 +15,14 @@ Draw a single heatmap
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{internal}{only for internal use.}
   \item{test}{only for testing}
   \item{...}{pass to \code{\link{draw,HeatmapList-method}}.}
 
 }
 \details{
-The function creates a \code{\link{HeatmapList}} object which only contains a single heatmap and call \code{\link{draw,HeatmapList-method}} to make the final heatmap.  
+The function creates a \code{\link{HeatmapList-class}} object which only contains a single heatmap and call \code{\link{draw,HeatmapList-method}} to make the final heatmap.  
 
 
 }

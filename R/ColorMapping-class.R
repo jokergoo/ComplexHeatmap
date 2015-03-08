@@ -7,14 +7,14 @@
 # Class to map values to colors
 #
 # == details
-# The `ColorMapping` class handles color mapping with both discrete values and continuous values.
+# The `ColorMapping-class` handles color mapping with both discrete values and continuous values.
 # Discrete values are mapped by setting a vector of colors and continuous values are mapped by setting
 # a color mapping function.
 #
 # == methods
-# The `ColorMapping` class provides following methods:
+# The `ColorMapping-class` provides following methods:
 #
-# - `initialize,ColorMapping-method`: contructor methods
+# - `ColorMapping`: contructor methods
 # - `map,ColorMapping-method`: mapping values to colors
 # - `color_mapping_legend,ColorMapping-method`: draw legend or get the size of the legend
 #
@@ -35,7 +35,6 @@ ColorMapping = setClass("ColorMapping",
 # Constructor methods for ColorMapping class
 #
 # == param
-# -.Object private object
 # -name name for this color mapping. It is used for drawing the title of the legend.
 # -colors discrete colors.
 # -levels levels that correspond to ``colors``. If ``colors`` is name indexed, 
@@ -49,15 +48,15 @@ ColorMapping = setClass("ColorMapping",
 # ``breaks`` are used for continuous color mapping.
 #
 # == value
-# A `ColorMapping` object.
+# A `ColorMapping-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-setMethod(f = "initialize",
-	signature = "ColorMapping",
-	definition = function(.Object, name, colors = NULL, levels = NULL, 
+ColorMapping = function(name, colors = NULL, levels = NULL, 
 	col_fun = NULL, breaks = NULL) {
+
+	.Object = new("ColorMapping")
 
 	if(is.null(name)) {
 		stop("You should provide name.")
@@ -106,13 +105,13 @@ setMethod(f = "initialize",
 	.Object@name = name
 
 	return(.Object)
-})
+}
 
 # == title
 # Print ColorMapping object
 #
 # == param
-# -object a `ColorMapping` object.
+# -object a `ColorMapping-class` object.
 #
 # == value
 # This function returns no value.
@@ -150,7 +149,7 @@ setMethod(f = "show",
 # Map values to colors
 #
 # == param
-# -object a `ColorMapping` object.
+# -object a `ColorMapping-class` object.
 # -x input values.
 #
 # == details
@@ -189,7 +188,7 @@ setMethod(f = "map",
 # Draw legend based on color mapping
 #
 # == param
-# -object a `ColorMapping` object.
+# -object a `ColorMapping-class` object.
 # -... pass to `grid::viewport`.
 # -plot whether to plot or just return the size of the legend viewport.
 # -legend_grid_height height of each legend grid.

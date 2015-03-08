@@ -1,7 +1,6 @@
 \name{HeatmapList-class}
 \docType{class}
 \alias{HeatmapList-class}
-\alias{HeatmapList}
 \title{
 Class for a list of heatmaps  
 
@@ -58,7 +57,7 @@ For the list of heatmaps which are placed at (5, 5) in the layout, the heatmaps 
 
 }
 \section{Methods}{
-The \code{\link{HeatmapList}} class provides following methods:  
+The \code{\link{HeatmapList-class}} provides following methods:  
 
 \itemize{
   \item \code{\link{draw,HeatmapList-method}}: draw the list of heatmaps and row annotations.
@@ -73,5 +72,20 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-# see initialize,HeatmapList-method page
+mat = matrix(rnorm(80, 2), 8, 10)
+mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
+rownames(mat) = letters[1:12]
+colnames(mat) = letters[1:10]
+
+ht = Heatmap(mat)
+ht + ht
+ht + ht + ht
+
+ht_list = ht + ht
+ht + ht_list
+
+ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"), 
+    which = "row")
+ht + ha
+ht_list + ha
 }

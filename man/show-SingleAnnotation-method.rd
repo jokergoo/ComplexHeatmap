@@ -15,7 +15,7 @@ Print the SingleAnnotation object
 }
 \arguments{
 
-  \item{object}{a \code{\link{SingleAnnotation}} object.}
+  \item{object}{a \code{\link{SingleAnnotation-class}} object.}
 
 }
 \value{

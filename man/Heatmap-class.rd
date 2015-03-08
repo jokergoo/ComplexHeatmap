@@ -1,7 +1,6 @@
 \name{Heatmap-class}
 \docType{class}
 \alias{Heatmap-class}
-\alias{Heatmap}
 \title{
 Class for a single heatmap  
 
@@ -55,15 +54,15 @@ From left to right in row 5, the regions are:
   \item title on the right, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
 }
 
-The \code{\link{Heatmap}} class is not responsible for heatmap legend and annotatino legends. The \code{\link{draw,Heatmap-method}} method will construct a \code{\link{HeatmapList}} object which only contains one single heatmap and call \code{\link{draw,HeatmapList-method}} to make a complete heatmap.  
+The \code{\link{Heatmap-class}} is not responsible for heatmap legend and annotatino legends. The \code{\link{draw,Heatmap-method}} method will construct a \code{\link{HeatmapList-class}} object which only contains one single heatmap and call \code{\link{draw,HeatmapList-method}} to make a complete heatmap.  
 
 
 }
 \section{Methods}{
-The \code{\link{Heatmap}} class provides following methods:  
+The \code{\link{Heatmap-class}} provides following methods:  
 
 \itemize{
-  \item \code{\link{initialize,Heatmap-method}}: contructor method.
+  \item \code{\link{Heatmap}}: contructor method.
   \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
   \item \code{\link{add_heatmap,Heatmap-method}} append heatmaps and row annotations to a list of heatmaps.
 }
@@ -74,7 +73,4 @@ The \code{\link{Heatmap}} class provides following methods:
 Zuguang Gu <z.gu@dkfz.de>  
 
 
-}
-\examples{
-# see initialize,Heatmap-method page
 }

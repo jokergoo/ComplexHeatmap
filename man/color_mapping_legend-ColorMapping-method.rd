@@ -19,7 +19,7 @@ Draw legend based on color mapping
 }
 \arguments{
 
-  \item{object}{a \code{\link{ColorMapping}} object.}
+  \item{object}{a \code{\link{ColorMapping-class}} object.}
   \item{...}{pass to \code{\link[grid]{viewport}}.}
   \item{plot}{whether to plot or just return the size of the legend viewport.}
   \item{legend_grid_height}{height of each legend grid.}

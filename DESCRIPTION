@@ -1,6 +1,6 @@
 Package: mheatmap
 Type: Package
-Title: plot multiple heatmaps
+Title: Making Complex Heatmaps
 Version: 0.0.1
 Date: 2014-10-6
 Author: Zuguang Gu
@@ -9,7 +9,10 @@ Depends: R (>= 3.1.0), grid
 Imports: methods, circlize (>= 0.2.3), GetoptLong, colorspace
 Suggests: testthat (>= 0.3), knitr, markdown, cluster, dendextend
 VignetteBuilder: knitr
-Description: plot multiple heatmaps
+Description: Complex heatmaps are efficient to visualize associations 
+    between different sources of data sets and reveal potential features. 
+    Here the mheatmap package provides a highly flexible way to arrange 
+    multiple heatmaps and supports self-defined annotation graphics.
 biocViews: Software, Visualization, Sequencing
 URL: https://github.com/jokergoo/mheatmap
 License: GPL (>= 2)

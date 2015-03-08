@@ -16,7 +16,7 @@ Set height of each heatmap component
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{k}{which components, see \code{\link{Heatmap-class}}.}
   \item{v}{height of the component, a \code{\link[grid]{unit}} object.}
 

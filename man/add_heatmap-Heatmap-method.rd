@@ -15,8 +15,8 @@ Add two heatmaps or add row annotations as a heatmap list
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
-  \item{x}{a \code{\link{Heatmap}} object, a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
+  \item{x}{a \code{\link{Heatmap-class}} object, a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
 
 }
 \details{
@@ -25,7 +25,7 @@ There is a shortcut function \code{+.Heatmap}.
 
 }
 \value{
-A \code{\link{HeatmapList}} object.  
+A \code{\link{HeatmapList-class}} object.  
 
 
 }

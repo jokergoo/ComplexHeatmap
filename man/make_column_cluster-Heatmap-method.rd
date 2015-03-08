@@ -16,7 +16,7 @@ Make cluster on columns
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{order}{a pre-defined order.}
 
 }
@@ -28,7 +28,7 @@ This function is only for internal use.
 
 }
 \value{
-A \code{\link{Heatmap}} object.  
+A \code{\link{Heatmap-class}} object.  
 
 
 }

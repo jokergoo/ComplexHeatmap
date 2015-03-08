@@ -3,25 +3,38 @@
 # An internal class
 #
 # == detail
-# This class is a super class for `Heatmap`, `HeatmapList` and `HeatmapAnnotation` classes.
-# And it is only for ``+`` generic method.
+# This class is a super class for `Heatmap-class`, `HeatmapList-class` and `HeatmapAnnotation-class` classes.
+# It is only for ``+`` generic method.
 #
 AdditiveUnit = setClass("AdditiveUnit")
+
+# == title
+# Constructor method for AdditiveUnit class
+#
+# == param
+# -... arguments.
+#
+# == details
+# This method is not used in the package.
+#
+AdditiveUnit = function(...) {
+    new("AdditiveUnit", ...)
+}
 
 
 # == title
 # Add heatmaps or row annotations to a heatmap list
 #
 # == param
-# -x a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
-# -y a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
+# -x a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
+# -y a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == detail
 # It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
-# or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input values.
+# or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input objects.
 #
 # == value
-# a `HeatmapList` object.
+# A `HeatmapList-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

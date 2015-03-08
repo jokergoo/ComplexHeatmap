@@ -36,5 +36,5 @@ Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
 f = anno_points(rnorm(10))
-f(1:10)
+grid.newpage(); f(1:10)
 }

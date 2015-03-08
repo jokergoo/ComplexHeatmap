@@ -16,7 +16,7 @@ Draw the heatmap body
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
   \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 

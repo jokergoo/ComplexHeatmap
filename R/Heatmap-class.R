@@ -46,14 +46,14 @@
 # - row cluster on the right, graphics are drawn by `draw_hclust,Heatmap-method`.
 # - title on the right, graphics are drawn by `draw_title,Heatmap-method`.
 #
-# The `Heatmap` class is not responsible for heatmap legend and annotatino legends. The `draw,Heatmap-method` method
-# will construct a `HeatmapList` object which only contains one single heatmap
+# The `Heatmap-class` is not responsible for heatmap legend and annotatino legends. The `draw,Heatmap-method` method
+# will construct a `HeatmapList-class` object which only contains one single heatmap
 # and call `draw,HeatmapList-method` to make a complete heatmap.
 #
 # == methods
-# The `Heatmap` class provides following methods:
+# The `Heatmap-class` provides following methods:
 #
-# - `initialize,Heatmap-method`: contructor method.
+# - `Heatmap`: contructor method.
 # - `draw,Heatmap-method`: draw a single heatmap.
 # - `add_heatmap,Heatmap-method` append heatmaps and row annotations to a list of heatmaps.
 #
@@ -103,11 +103,10 @@ Heatmap = setClass("Heatmap",
 # Constructor method for Heatmap class
 #
 # == param
-# -.Object private object.
 # -matrix a matrix. Either numeric or character. If it is a simple vector, it will be
 #         converted to a one-column matrix.
 # -col a vector of colors if the color mapping is discrete or a color mapping 
-#      function if the matrix is continuous numbers. Pass to `initialize,ColorMapping-method`.
+#      function if the matrix is continuous numbers. Pass to `ColorMapping`.
 # -name name of the heatmap. The name is used as the title of the heatmap legend.
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
 # -cell_fun self-defined function to add graphics on each cell. Six parameters will be passed into 
@@ -171,24 +170,22 @@ Heatmap = setClass("Heatmap",
 # The initialization function only applies parameter checking and fill values to each slot with proper ones.
 # Then it will be ready for clustering and layout.
 # 
-# Following methods can be applied on the `Heatmap` object:
+# Following methods can be applied on the `Heatmap-class` object:
 #
 # - `show,Heatmap-method`: draw a single heatmap with default parameters
 # - `draw,Heatmap-method`: draw a single heatmap.
 # - `add_heatmap,Heatmap-method` append heatmaps and row annotations to a list of heatmaps.
 #
 # The constructor function pretends to be a high-level graphic function because the ``show`` method
-# of the `Heatmap` object actually plots the graphics.
+# of the `Heatmap-class` object actually plots the graphics.
 #
 # == value
-# A `Heatmap` object.
+# A `Heatmap-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-setMethod(f = "initialize",
-    signature = "Heatmap",
-    definition = function(.Object, matrix, col, name, rect_gp = gpar(col = NA), 
+Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA), 
     cell_fun = function(i, j, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), column_title = character(0),
@@ -210,6 +207,8 @@ setMethod(f = "initialize",
     km = 1, split = NULL, gap = unit(1, "mm"), 
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE) {
+
+    .Object = new("Heatmap")
 
     .Object@heatmap_param$width = width
     .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
@@ -308,7 +307,7 @@ setMethod(f = "initialize",
     .Object@row_names_param$side = match.arg(row_names_side)[1]
     .Object@row_names_param$show = show_row_names
     .Object@row_names_param$gp = row_names_gp
-    .Object@row_names_param$max_width = row_names_max_width
+    .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
 
     if(is.null(colnames(matrix))) {
         show_column_names = FALSE
@@ -316,7 +315,7 @@ setMethod(f = "initialize",
     .Object@column_names_param$side = match.arg(column_names_side)[1]
     .Object@column_names_param$show = show_column_names
     .Object@column_names_param$gp = column_names_gp
-    .Object@column_names_param$max_height = column_names_max_height
+    .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
 
     if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
         .Object@row_hclust_param$obj = cluster_rows
@@ -409,13 +408,13 @@ setMethod(f = "initialize",
 
     return(.Object)
 
-})
+}
 
 # == title
 # Make cluster on columns
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -order a pre-defined order.
 #
 # == details
@@ -424,7 +423,7 @@ setMethod(f = "initialize",
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap` object.
+# A `Heatmap-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -460,7 +459,7 @@ setMethod(f = "make_column_cluster",
 # Make cluster on rows
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -order a pre-defined order.
 # -km if apply k-means clustering on rows, number of clusters.
 # -split a vector or a data frame by which the rows are be splitted.
@@ -468,10 +467,12 @@ setMethod(f = "make_column_cluster",
 # == details
 # The function will fill or adjust ``row_hclust_list``, ``row_order_list``, ``row_title`` and ``matrix_param`` slots.
 #
+# If ``order`` is defined, no clustering will be applied.
+#
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap` object.
+# A `Heatmap-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -581,7 +582,7 @@ setMethod(f = "make_row_cluster",
 # Make the layout of a single heatmap
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # 
 # == detail
 # The layout of the single heatmap will be established by setting the size of each heatmap components.
@@ -593,7 +594,7 @@ setMethod(f = "make_row_cluster",
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap` object.
+# A `Heatmap-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -786,7 +787,7 @@ setMethod(f = "make_layout",
 # Draw the single heatmap with default parameters
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 #
 # == details
 # Actually it calls `draw,Heatmap-method`, but only with default parameters. If users want to customize the heatmap,
@@ -812,14 +813,14 @@ setMethod(f = "show",
 # Add two heatmaps or add row annotations as a heatmap list
 #
 # == param
-# -object a `Heatmap` object.
-# -x a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
+# -object a `Heatmap-class` object.
+# -x a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == details
 # There is a shortcut function ``+.Heatmap``.
 #
 # == value
-# A `HeatmapList` object.
+# A `HeatmapList-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -839,7 +840,7 @@ setMethod(f = "add_heatmap",
 # Draw the heatmap body
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -k a matrix may be splitted by rows, the value identifies which row-slice.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
@@ -905,7 +906,7 @@ setMethod(f = "draw_heatmap_body",
 # Draw dendrogram on row or column
 #
 # == params
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -which is dendrogram put on the row or on the column of the heatmap?
 # -k a matrix may be splitted by rows, the value identifies which row-slice.
 # -max_height maximum height of the dendrograms.
@@ -974,7 +975,7 @@ setMethod(f = "draw_hclust",
 # Draw row names or column names
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -which are names put on the row or on the column of the heatmap?
 # -k a matrix may be splitted by rows, the value identifies which row-slice.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
@@ -1060,7 +1061,7 @@ setMethod(f = "draw_dimnames",
 # Draw heatmap title
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -which is title put on the row or on the column of the heatmap?
 # -k a matrix may be splitted by rows, the value identifies which row-slice.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
@@ -1114,13 +1115,13 @@ setMethod(f = "draw_title",
 # Draw column annotations
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -which are the annotations put on the top or bottom of the heatmap.
 #
 # == details
 # A viewport is created which contains column annotations.
 #
-# Since the column annotations is a `HeatmapAnnotation` object, the function
+# Since the column annotations is a `HeatmapAnnotation-class` object, the function
 # calls `draw,HeatmapAnnotation-method` to draw the annotations.
 #
 # This function is only for internal use.
@@ -1153,7 +1154,7 @@ setMethod(f = "draw_annotation",
 # Width of each heatmap component
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -k which components, see `Heatmap-class`.
 #
 # == detials
@@ -1201,7 +1202,7 @@ setMethod(f = "component_width",
 # Height of each heatmap component
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -k which components, see `Heatmap-class`.
 #
 # == detail
@@ -1249,7 +1250,7 @@ setMethod(f = "component_height",
 # Set height of each heatmap component
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -k which components, see `Heatmap-class`.
 # -v height of the component, a `grid::unit` object.
 #
@@ -1294,13 +1295,13 @@ setMethod(f = "set_component_height",
 # Draw a single heatmap
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -internal only for internal use.
 # -test only for testing
 # -... pass to `draw,HeatmapList-method`.
 #
 # == detail
-# The function creates a `HeatmapList` object which only contains a single heatmap
+# The function creates a `HeatmapList-class` object which only contains a single heatmap
 # and call `draw,HeatmapList-method` to make the final heatmap.
 #
 # == value
@@ -1347,7 +1348,7 @@ setMethod(f = "draw",
 # Prepare the heatmap
 #
 # == param
-# -object a `Heatmap` object.
+# -object a `Heatmap-class` object.
 # -row_order orders of rows, pass to `make_row_cluster,Heatmap-method`. Because if more than one heatmaps
 #            are drawn by columns, the order of some heatmap will be adjusted by one certain heatmap, this
 #            argument is used to pass a pre-defined row order.
@@ -1363,7 +1364,7 @@ setMethod(f = "draw",
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap` object.
+# A `Heatmap-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

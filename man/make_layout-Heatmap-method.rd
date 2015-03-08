@@ -15,7 +15,7 @@ Make the layout of a single heatmap
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
 
 }
 \details{
@@ -28,7 +28,7 @@ This function is only for internal use.
 
 }
 \value{
-A \code{\link{Heatmap}} object.  
+A \code{\link{Heatmap-class}} object.  
 
 
 }

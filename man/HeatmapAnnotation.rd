@@ -1,5 +1,5 @@
-\name{initialize-HeatmapAnnotation-method}
-\alias{initialize,HeatmapAnnotation-method}
+\name{HeatmapAnnotation}
+\alias{HeatmapAnnotation}
 \title{
 Constructor method for HeatmapAnnotation class  
 
@@ -11,16 +11,15 @@ Constructor method for HeatmapAnnotation class
 
 }
 \usage{
-\S4method{initialize}{HeatmapAnnotation}(.Object, df, name, col, show_legend, ...,
+HeatmapAnnotation(df, name, col, show_legend, ...,
     which = c("column", "row"), annotation_height = 1, annotation_width = 1,
     height = unit(1, "cm"), width = unit(1, "cm"))
 }
 \arguments{
 
-  \item{.Object}{a private object.}
   \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
   \item{name}{name of the heatmap annotation}
-  \item{col}{a list of colors which contains color mapping to columns in \code{df}. See \code{\link{initialize,SingleAnnotation-method}} for how to set colors.}
+  \item{col}{a list of colors which contains color mapping to columns in \code{df}. See \code{\link{SingleAnnotation}} for how to set colors.}
   \item{show_legend}{whether show legend for each column in \code{df}.}
   \item{...}{functions which define complex annotations. Values should be named arguments.}
   \item{which}{are the annotations row annotations or column annotations?}
@@ -36,7 +35,7 @@ The simple annotations are defined by \code{df} and \code{col} arguments. Comple
 
 }
 \value{
-A \code{\link{HeatmapAnnotation}} object.  
+A \code{\link{HeatmapAnnotation-class}} object.  
 
 
 }

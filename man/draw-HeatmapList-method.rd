@@ -15,7 +15,7 @@ Draw a list of heatmaps
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{object}{a \code{\link{HeatmapList-class}} object}
   \item{...}{pass to \code{\link{make_layout,HeatmapList-method}}}
   \item{newpage}{whether to create a new page}
 

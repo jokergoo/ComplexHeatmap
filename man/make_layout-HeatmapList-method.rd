@@ -26,7 +26,7 @@ Make layout for the complete plot
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object.}
+  \item{object}{a \code{\link{HeatmapList-class}} object.}
   \item{row_title}{title on the row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap.}
   \item{row_title_gp}{graphic parameters for drawing text.}
@@ -55,7 +55,7 @@ This function is only for internal use.
 
 }
 \value{
-A \code{\link{HeatmapList}} object in which settings for each heatmap are adjusted.  
+A \code{\link{HeatmapList-class}} object in which settings for each heatmap are adjusted.  
 
 
 }

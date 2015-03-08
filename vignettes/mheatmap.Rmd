@@ -1,9 +1,9 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Make Multiple Heatmaps}
+%\VignetteIndexEntry{Making Complex Heatmaps}
 -->
 
-Make Multiple Heatmaps
+Making Complex Heatmaps
 ========================================
 
 **Author**: Zuguang Gu ( z.gu@dkfz.de )
@@ -29,7 +29,10 @@ options(markdown.HTML.stylesheet = "custom.css")
 options(width = 100)
 ```
 
-Heatmaps are efficient to reveal patterns of massive data...... (to be added)
+Complex heatmaps are efficient to visualize associations 
+between different sources of data sets and reveal potential features. 
+Here the **mheatmap** package provides a highly flexible way to arrange 
+multiple heatmaps and supports self-defined annotation graphics.
 
 ## General design
 
@@ -679,28 +682,28 @@ Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))),
 ### Visialize genomic regions
 
 Genomic regions can have more corresponded information. E.g. for a list of differentially methylated regions (DMRs), 
-we can add an expression matrix in which genes are the closest to corresponding DMR, also overlapping to different genomic features
-can be added.
+we can add an expression matrix in which genes are the closest to corresponding DMR, also how DMRs overlap to 
+different genomic features can be added as heatmaps as well.
 
-```{r, fig.width = 10, fig.height = 8}
+In following example, there are heatmaps for methylation, expression of associated genes, correlation significance (-log10 transformed)
+between methylation and expression for each DMR and the associated gene, how DMRs annotated to gene regions, and how 
+DMRs annotated to enhancers. From the figure below, it is very obvious to see the enhancers are enriched in low-methylated DMRs.
+
+```{r, fig.width = 8, fig.height = 12}
 gr = readRDS(paste0(system.file(package = "mheatmap"), "/extdata/gr.rds"))
 
 ha1 = HeatmapAnnotation(df = data.frame(type = c(rep("control", 7), rep("experiment", 5))))
 ha2 = HeatmapAnnotation(df = data.frame(type = c(rep("control", 7), rep("experiment", 5))), 
     show_legend = FALSE)
 
-gr = gr[gr$cor_p > 1, ]
-
 ht_list = Heatmap(gr[, 1:12], name = "methylation", col = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")),
     top_annotation = ha1, top_annotation_height = unit(4, "mm"), show_row_names = FALSE,
-    show_column_names = FALSE, column_title = "DMR methylation") +
-Heatmap(rowMeans(gr[, 1:7]) - rowMeans(gr[, 8:12]), name = "mean_meth_diff") +
-Heatmap(gr$direction, col = c("hypo" = "blue", "hyper" = "red"), name = "direction") +
-
+    show_column_names = FALSE, split = gr$direction, column_title = "DMR methylation") +
 Heatmap(gr[, 13:24], name = "expression", col = colorRamp2(c(-2, 0, 2), c("green", "white", "red")),
     top_annotation = ha2, top_annotation_height = unit(4, "mm"), show_row_names = FALSE,
-    show_column_names = FALSE, cluster_columns = FALSE, cluster_rows = FALSE, column_title = "target expression") + 
-Heatmap(gr$cor_p, name = "pvalue", col = colorRamp2(c(1, 4), c("white", "red")), width = unit(5, "mm")) +
+    show_column_names = FALSE, cluster_columns = FALSE, cluster_rows = FALSE, 
+    column_title = "target expression") + 
+Heatmap(gr$cor_p, name = "-log10(pvalue)", col = colorRamp2(c(1, 4), c("white", "red")), width = unit(5, "mm")) +
 Heatmap(gr$annotation, name = "annotation", width = unit(5, "mm")) +
 Heatmap(gr[, 28:29], name = "enhancer", col = colorRamp2(c(0, 1), c("white", "orange")), 
     cluster_columns = FALSE, show_row_names = FALSE, width = unit(1, "cm"), cluster_rows = FALSE,

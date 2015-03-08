@@ -24,7 +24,7 @@ Draw dendrogram on row or column
 }
 \section{Params}{
 \describe{
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{which}{is dendrogram put on the row or on the column of the heatmap?}
   \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
   \item{max_height}{maximum height of the dendrograms.}

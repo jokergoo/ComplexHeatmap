@@ -16,7 +16,7 @@ Draw heatmap list title
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{object}{a \code{\link{HeatmapList-class}} object}
   \item{which}{dendrogram on the row or on the column of the heatmap}
 
 }

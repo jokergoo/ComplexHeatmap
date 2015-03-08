@@ -15,7 +15,7 @@ Print ColorMapping object
 }
 \arguments{
 
-  \item{object}{a \code{\link{ColorMapping}} object.}
+  \item{object}{a \code{\link{ColorMapping-class}} object.}
 
 }
 \value{

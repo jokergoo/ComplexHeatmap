@@ -15,7 +15,7 @@ Draw the single annotation
 }
 \arguments{
 
-  \item{object}{a \code{\link{SingleAnnotation}} object.}
+  \item{object}{a \code{\link{SingleAnnotation-class}} object.}
   \item{index}{a vector of orders}
 
 }

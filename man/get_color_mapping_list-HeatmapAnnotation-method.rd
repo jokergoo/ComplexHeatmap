@@ -16,7 +16,7 @@ Get a list of color mapping objects
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapAnnotation}} object.}
+  \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
 
 }
 \details{
@@ -27,7 +27,7 @@ This function is only for internal use.
 
 }
 \value{
-A list of \code{\link{ColorMapping}} list or an empty list.  
+A list of \code{\link{ColorMapping-class}} objects or an empty list.  
 
 
 }

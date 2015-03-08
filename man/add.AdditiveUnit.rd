@@ -15,17 +15,17 @@ Add heatmaps or row annotations to a heatmap list
 }
 \arguments{
 
-  \item{x}{a \code{\link{Heatmap}} object, a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
-  \item{y}{a \code{\link{Heatmap}} object, a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
+  \item{x}{a \code{\link{Heatmap-class}} object, a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
+  \item{y}{a \code{\link{Heatmap-class}} object, a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
 
 }
 \details{
-It is only a shortcut function. It actually calls \code{\link{add_heatmap,Heatmap-method}}, \code{\link{add_heatmap,HeatmapList-method}} or \code{\link{add_heatmap,HeatmapAnnotation-method}} depending on the class of the input values.  
+It is only a shortcut function. It actually calls \code{\link{add_heatmap,Heatmap-method}}, \code{\link{add_heatmap,HeatmapList-method}} or \code{\link{add_heatmap,HeatmapAnnotation-method}} depending on the class of the input objects.  
 
 
 }
 \value{
-a \code{\link{HeatmapList}} object.  
+A \code{\link{HeatmapList-class}} object.  
 
 
 }
@@ -51,4 +51,6 @@ ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"),
     which = "row")
 ht + ha
 ht_list + ha
+
+ha + ha + ht
 }

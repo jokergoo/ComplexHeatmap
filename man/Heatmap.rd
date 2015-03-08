@@ -1,5 +1,5 @@
-\name{initialize-Heatmap-method}
-\alias{initialize,Heatmap-method}
+\name{Heatmap}
+\alias{Heatmap}
 \title{
 Constructor method for Heatmap class  
 
@@ -11,7 +11,7 @@ Constructor method for Heatmap class
 
 }
 \usage{
-\S4method{initialize}{Heatmap}(.Object, matrix, col, name, rect_gp = gpar(col = NA),
+Heatmap(matrix, col, name, rect_gp = gpar(col = NA),
     cell_fun = function(i, j, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14), column_title = character(0),
@@ -24,9 +24,9 @@ Constructor method for Heatmap class
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"),
     show_column_hclust = TRUE, column_hclust_gp = gpar(),
     row_names_side = c("right", "left"), show_row_names = TRUE,
-    row_names_max_width = unit(2, "cm"), row_names_gp = gpar(fontsize = 12),
+    row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12),
     column_names_side = c("bottom", "top"),
-    show_column_names = TRUE, column_names_max_height = unit(2, "cm"),
+    show_column_names = TRUE, column_names_max_height = unit(4, "cm"),
     column_names_gp = gpar(fontsize = 12),
     top_annotation = NULL, top_annotation_height = unit(1, "cm"),
     bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
@@ -36,9 +36,8 @@ Constructor method for Heatmap class
 }
 \arguments{
 
-  \item{.Object}{private object.}
   \item{matrix}{a matrix. Either numeric or character. If it is a simple vector, it will be converted to a one-column matrix.}
-  \item{col}{a vector of colors if the color mapping is discrete or a color mapping  function if the matrix is continuous numbers. Pass to \code{\link{initialize,ColorMapping-method}}.}
+  \item{col}{a vector of colors if the color mapping is discrete or a color mapping  function if the matrix is continuous numbers. Pass to \code{\link{ColorMapping}}.}
   \item{name}{name of the heatmap. The name is used as the title of the heatmap legend.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
   \item{cell_fun}{self-defined function to add graphics on each cell. Six parameters will be passed into  this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height} which are row index, column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport, and the width and height of the cell. }
@@ -85,7 +84,7 @@ Constructor method for Heatmap class
 \details{
 The initialization function only applies parameter checking and fill values to each slot with proper ones. Then it will be ready for clustering and layout.  
 
-Following methods can be applied on the \code{\link{Heatmap}} object:  
+Following methods can be applied on the \code{\link{Heatmap-class}} object:  
 
 \itemize{
   \item \code{\link{show,Heatmap-method}}: draw a single heatmap with default parameters
@@ -93,12 +92,12 @@ Following methods can be applied on the \code{\link{Heatmap}} object:
   \item \code{\link{add_heatmap,Heatmap-method}} append heatmaps and row annotations to a list of heatmaps.
 }
 
-The constructor function pretends to be a high-level graphic function because the \code{show} method of the \code{\link{Heatmap}} object actually plots the graphics.  
+The constructor function pretends to be a high-level graphic function because the \code{show} method of the \code{\link{Heatmap-class}} object actually plots the graphics.  
 
 
 }
 \value{
-A \code{\link{Heatmap}} object.  
+A \code{\link{Heatmap-class}} object.  
 
 
 }

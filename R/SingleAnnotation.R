@@ -9,18 +9,18 @@
 # represent different classes of the data. The annotation can also be more complex
 # graphics, such as a boxplot that shows data distribution in corresponding row or column.
 #
-# The `SingleAnnotation` class is used for storing data for a single annotation and provides
+# The `SingleAnnotation-class` is used for storing data for a single annotation and provides
 # methods for drawing annotation grahics.
 #
 # == methods
-# The `SingleAnnotation` class provides following methods:
+# The `SingleAnnotation-class` provides following methods:
 #
-# - `initialize,SingleAnnotation-method`: constructor method
+# - `SingleAnnotation`: constructor method
 # - `draw,SingleAnnotation-method`: draw the single annotation.
 #
 # == seealso
-# The `SingleAnnotation` class is always used internally. The public `HeatmapAnnotation` class
-# contains a list of `SingleAnnotation` objects and is used to add annotation graphics on heatmaps.
+# The `SingleAnnotation-class` is always used internally. The public `HeatmapAnnotation-class`
+# contains a list of `SingleAnnotation-class` objects and is used to add annotation graphics on heatmaps.
 # 
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -44,7 +44,6 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Constructor method for SingleAnnotation class
 #
 # == param
-# -.Object private object.
 # -name name for this annotation.
 # -value A vector of annotation.
 # -col colors corresponding to ``value``. If the mapping is discrete mapping, the value of ``col``
@@ -57,9 +56,9 @@ SingleAnnotation = setClass("SingleAnnotation",
 #
 # == details
 # The most simple annotation is one row or one column grids in which different colors
-# represent different classes of the data. Here the function use `ColorMapping` class
+# represent different classes of the data. Here the function use `ColorMapping-class`
 # to process such simple annotation. ``value`` and ``col`` arguments controls values and colors
-# of the simple annotation and a `ColorMapping` object will be constructed based on ``value`` and ``col``.
+# of the simple annotation and a `ColorMapping-class` object will be constructed based on ``value`` and ``col``.
 #
 # ``fun`` is used to construct a more complex annotation. Users can add any type of annotation graphics
 # by implementing a function. The only input argument of ``fun`` is a index
@@ -70,15 +69,15 @@ SingleAnnotation = setClass("SingleAnnotation",
 # annotation or a column annotation. 
 #
 # == value
-# A `SingleAnnotation` object.
+# A `SingleAnnotation-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-setMethod(f = "initialize",
-	signature = "SingleAnnotation",
-	definition = function(.Object, name, value, col, fun, which = c("column", "row"), 
+SingleAnnotation = function(name, value, col, fun, which = c("column", "row"), 
 	show_legend = TRUE) {
+
+	.Object = new("SingleAnnotation")
 
 	which = match.arg(which)[1]
 	.Object@which = which
@@ -125,13 +124,13 @@ setMethod(f = "initialize",
     }
 
     return(.Object)
-})
+}
 
 # == title
 # Draw the single annotation
 #
 # == param
-# -object a `SingleAnnotation` object.
+# -object a `SingleAnnotation-class` object.
 # -index a vector of orders
 #
 # == details
@@ -159,7 +158,7 @@ setMethod(f = "draw",
 # Print the SingleAnnotation object
 #
 # == param
-# -object a `SingleAnnotation` object.
+# -object a `SingleAnnotation-class` object.
 #
 # == value
 # No value is returned.

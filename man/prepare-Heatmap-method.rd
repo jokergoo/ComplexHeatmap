@@ -16,7 +16,7 @@ Prepare the heatmap
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{row_order}{orders of rows, pass to \code{\link{make_row_cluster,Heatmap-method}}. Because if more than one heatmaps are drawn by columns, the order of some heatmap will be adjusted by one certain heatmap, this argument is used to pass a pre-defined row order.}
   \item{split}{how to split rows in the matrix, passing to \code{\link{make_row_cluster,Heatmap-method}}.}
 
@@ -35,7 +35,7 @@ This function is only for internal use.
 
 }
 \value{
-A \code{\link{Heatmap}} object.  
+A \code{\link{Heatmap-class}} object.  
 
 
 }

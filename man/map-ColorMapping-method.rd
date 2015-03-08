@@ -16,7 +16,7 @@ Map values to colors
 }
 \arguments{
 
-  \item{object}{a \code{\link{ColorMapping}} object.}
+  \item{object}{a \code{\link{ColorMapping-class}} object.}
   \item{x}{input values.}
 
 }

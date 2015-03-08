@@ -15,7 +15,7 @@ Height of each heatmap component
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{k}{which components, see \code{\link{Heatmap-class}}.}
 
 }

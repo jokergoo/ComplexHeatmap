@@ -41,7 +41,7 @@
 # are placed one after the other.
 #
 # == methods
-# The `HeatmapList` class provides following methods:
+# The `HeatmapList-class` provides following methods:
 #
 # - `draw,HeatmapList-method`: draw the list of heatmaps and row annotations.
 # - `add_heatmap,HeatmapList-method` add heatmaps to the list of heatmaps.
@@ -88,17 +88,30 @@ HeatmapList = setClass("HeatmapList",
 )
 
 # == title
+# Constructor method for HeatmapList class
+#
+# == param
+# -... arguments
+#
+# == detailes
+# There is no public constructor method for the `HeatmapList-class`.
+#
+HeatmapList = function(...) {
+    new("HeatmapList", ...)
+}
+
+# == title
 # Add heatmaps and row annotations to the heatmap list
 #
 # == param
-# -object a `HeatmapList` object.
-# -x a `Heatmap` object or a `HeatmapAnnotation` object or a `HeatmapList` object.
+# -object a `HeatmapList-class` object.
+# -x a `Heatmap-class` object or a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == details
 # There is a shortcut function ``+.HeatmapList``.
 #
 # == value
-# A `HeatmapList` object.
+# A `HeatmapList-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -134,7 +147,7 @@ setMethod(f = "add_heatmap",
 # Make layout for the complete plot
 #
 # == param
-# -object a `HeatmapList` object.
+# -object a `HeatmapList-class` object.
 # -row_title title on the row.
 # -row_title_side will the title be put on the left or right of the heatmap.
 # -row_title_gp graphic parameters for drawing text.
@@ -160,7 +173,7 @@ setMethod(f = "add_heatmap",
 # This function is only for internal use.
 #
 # == value
-# A `HeatmapList` object in which settings for each heatmap are adjusted.
+# A `HeatmapList-class` object in which settings for each heatmap are adjusted.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -486,7 +499,7 @@ setMethod(f = "make_layout",
 # Draw a list of heatmaps
 #
 # == param
-# -object a `HeatmapList` object
+# -object a `HeatmapList-class` object
 # -... pass to `make_layout,HeatmapList-method`
 # -newpage whether to create a new page
 #
@@ -505,6 +518,10 @@ setMethod(f = "make_layout",
 setMethod(f = "draw",
     signature = "HeatmapList",
     definition = function(object, ..., newpage= TRUE) {
+
+    if(! any(sapply(object@ht_list, inherits, "Heatmap"))) {
+        stop("There should be at least one Heatmap in the heatmap list.")
+    }
     
     if(newpage) {
         grid.newpage()
@@ -530,7 +547,7 @@ setMethod(f = "draw",
 # Width of each heatmap list component
 #
 # == param
-# -object a `HeatmapList` object.
+# -object a `HeatmapList-class` object.
 # -k which components, see `HeatmapList-class`.
 #
 # == detail
@@ -573,7 +590,7 @@ setMethod(f = "component_width",
 # Height of each heatmap list component
 #
 # == param
-# -object a `HeatmapList` object.
+# -object a `HeatmapList-class` object.
 # -k which components, see `HeatmapList-class`.
 #
 # == value
@@ -614,7 +631,7 @@ setMethod(f = "component_height",
 # Draw the list of heatmaps
 #
 # == param
-# -object a `HeatmapList` object
+# -object a `HeatmapList-class` object
 #
 # == details
 # A viewport is created which contains heatmaps.
@@ -750,7 +767,7 @@ setMethod(f = "draw_heatmap_list",
 # Draw heatmap list title
 #
 # == param
-# -object a `HeatmapList` object
+# -object a `HeatmapList-class` object
 # -which dendrogram on the row or on the column of the heatmap
 #
 # == details
@@ -802,7 +819,7 @@ setMethod(f = "draw_title",
 # Draw legends for all heatmaps
 #
 # == param
-# -object a `HeatmapList` object
+# -object a `HeatmapList-class` object
 #
 # == details
 # A viewport is created which contains heatmap legends.
@@ -859,7 +876,7 @@ setMethod(f = "draw_heatmap_legend",
 # Draw legends for all column annotations
 #
 # == param
-# -object a `HeatmapList` object
+# -object a `HeatmapList-class` object
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 #
 # == details
@@ -919,7 +936,7 @@ setMethod(f = "draw_annotation_legend",
 # Size of the heatmap legend viewprot
 #
 # == param
-# -object a `HeatmapList` object
+# -object a `HeatmapList-class` object
 #
 # == detail
 # This function is only for internal use.
@@ -957,7 +974,7 @@ setMethod(f = "heatmap_legend_size",
 # Size of the annotation legend viewport
 #
 # == param
-# -object a `HeatmapList` object
+# -object a `HeatmapList-class` object
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 #
 # == detail
@@ -1091,7 +1108,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
 # Draw a list of heatmaps with default parameters
 #
 # == param
-# -object a `HeatmapList` object.
+# -object a `HeatmapList-class` object.
 #
 # == details
 # Actually it calls `draw,HeatmapList-method`, but only with default parameters. If users want to customize the heatmap,

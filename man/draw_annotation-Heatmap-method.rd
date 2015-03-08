@@ -16,14 +16,14 @@ Draw column annotations
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{which}{are the annotations put on the top or bottom of the heatmap.}
 
 }
 \details{
 A viewport is created which contains column annotations.  
 
-Since the column annotations is a \code{\link{HeatmapAnnotation}} object, the function calls \code{\link{draw,HeatmapAnnotation-method}} to draw the annotations.  
+Since the column annotations is a \code{\link{HeatmapAnnotation-class}} object, the function calls \code{\link{draw,HeatmapAnnotation-method}} to draw the annotations.  
 
 This function is only for internal use.  
 

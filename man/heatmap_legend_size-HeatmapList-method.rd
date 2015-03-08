@@ -16,7 +16,7 @@ Size of the heatmap legend viewprot
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{object}{a \code{\link{HeatmapList-class}} object}
 
 }
 \details{

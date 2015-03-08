@@ -6,13 +6,13 @@
 #
 # == details
 # A complex heatmap contains a list of annotations which represente as different graphics
-# placed on rows and columns. The `HeatmapAnnotation` class is a category of single annotations
-# by a list of `SingleAnnotation` objects with same number of rows or columns.
+# placed on rows and columns. The `HeatmapAnnotation-class` is a category of single annotations
+# by a list of `SingleAnnotation-class` objects with same number of rows or columns.
 #
 # == methods
-# The `HeatmapAnnotation` class provides following methods:
+# The `HeatmapAnnotation-class` provides following methods:
 #
-# - `initialize,HeatmapAnnotation-method`: constructor method
+# - `HeatmapAnnotation`: constructor method
 # - `draw,HeatmapAnnotation-method`
 #
 # == author
@@ -38,10 +38,9 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # Constructor method for HeatmapAnnotation class
 #
 # == param
-# -.Object a private object.
 # -df a data frame. Each column will be treated as a simple annotation. The data frame must have column names.
 # -name name of the heatmap annotation
-# -col a list of colors which contains color mapping to columns in ``df``. See `initialize,SingleAnnotation-method` for how to set colors.
+# -col a list of colors which contains color mapping to columns in ``df``. See `SingleAnnotation` for how to set colors.
 # -show_legend whether show legend for each column in ``df``.
 # -... functions which define complex annotations. Values should be named arguments.
 # -which are the annotations row annotations or column annotations?
@@ -55,16 +54,16 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # defined by the function list. 
 #
 # == value
-# A `HeatmapAnnotation` object.
+# A `HeatmapAnnotation-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-setMethod(f = "initialize",
-	signature = "HeatmapAnnotation",
-	definition = function(.Object, df, name, col, show_legend, ..., 
+HeatmapAnnotation = function(df, name, col, show_legend, ..., 
 	which = c("column", "row"), annotation_height = 1, annotation_width = 1, 
 	height = unit(1, "cm"), width = unit(1, "cm")) {
+
+	.Object = new("HeatmapAnnotation")
 
 	anno_list = list()
 	which = match.arg(which)[1]
@@ -154,13 +153,13 @@ setMethod(f = "initialize",
     .Object@size = size
 
     return(.Object)
-})
+}
 
 # == title
 # Get a list of color mapping objects
 #
 # == param
-# -object a `HeatmapAnnotation` object.
+# -object a `HeatmapAnnotation-class` object.
 #
 # == details
 # Color mapping for visible simple annotations are only returned.
@@ -168,7 +167,7 @@ setMethod(f = "initialize",
 # This function is only for internal use.
 #
 # == values
-# A list of `ColorMapping` list or an empty list.
+# A list of `ColorMapping-class` objects or an empty list.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -190,7 +189,7 @@ setMethod(f = "get_color_mapping_list",
 # Draw the heatmap annotations
 #
 # == param
-# -object a `HeatmapAnnotation` object.
+# -object a `HeatmapAnnotation-class` object.
 # -index a vector of order.
 # -... pass to `grid::viewport` which contains all annotations.
 #
@@ -228,7 +227,7 @@ setMethod(f = "draw",
 # Print the Heatmap Annotation object
 #
 # == param
-# -object a `HeatmapAnnotation` object.
+# -object a `HeatmapAnnotation-class` object.
 #
 # == value
 # No value is returned.
@@ -259,14 +258,14 @@ setMethod(f = "show",
 # Add two row annotations or add heatmaps as a heatmap list
 #
 # == param
-# -object a `HeatmapAnnotation` object.
-# -x a `Heatmap` object, a `HeatmapAnnotation` object or a `HeatmapList` object.
+# -object a `HeatmapAnnotation-class` object.
+# -x a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == details
 # There is a shortcut function ``+.HeatmapAnnotation``.
 #
 # == value
-# A `HeatmapList` object.
+# A `HeatmapList-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

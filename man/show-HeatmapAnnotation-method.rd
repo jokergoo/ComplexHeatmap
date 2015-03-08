@@ -15,7 +15,7 @@ Print the Heatmap Annotation object
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapAnnotation}} object.}
+  \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
 
 }
 \value{

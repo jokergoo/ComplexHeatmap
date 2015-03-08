@@ -15,8 +15,8 @@ Add heatmaps and row annotations to the heatmap list
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object.}
-  \item{x}{a \code{\link{Heatmap}} object or a \code{\link{HeatmapAnnotation}} object or a \code{\link{HeatmapList}} object.}
+  \item{object}{a \code{\link{HeatmapList-class}} object.}
+  \item{x}{a \code{\link{Heatmap-class}} object or a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
 
 }
 \details{
@@ -25,7 +25,7 @@ There is a shortcut function \code{+.HeatmapList}.
 
 }
 \value{
-A \code{\link{HeatmapList}} object.  
+A \code{\link{HeatmapList-class}} object.  
 
 
 }

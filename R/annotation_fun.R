@@ -16,7 +16,7 @@
 # == value
 # A graphic function which can be set in `HeatmapAnnotation` constructor method.
 #
-# == see also
+# == seealso
 # `anno_points`, `anno_histogram`
 #
 # == author

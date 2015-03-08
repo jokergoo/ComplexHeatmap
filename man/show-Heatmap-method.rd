@@ -15,7 +15,7 @@ Draw the single heatmap with default parameters
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap}} object.}
+  \item{object}{a \code{\link{Heatmap-class}} object.}
 
 }
 \details{
