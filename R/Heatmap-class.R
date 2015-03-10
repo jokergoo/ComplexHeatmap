@@ -1010,18 +1010,10 @@ setMethod(f = "draw_dimnames",
         "row" = object@row_names_param$gp,
         "column" = object@column_names_param$gp)
 
-    for(i in seq_along(gp)) {
-        if(which == "row") {
-            if(length(gp[[i]]) == 1) {
-                gp[[i]] = rep(gp[[i]], nrow(object@matrix))
-            }
-            gp[[i]] = gp[[i]][ object@row_order_list[[k]] ]
-        } else {
-            if(length(gp[[i]]) == 1) {
-                gp[[i]] = rep(gp[[i]], ncol(object@matrix))
-            }
-            gp[[i]] = gp[[i]][ object@column_order ]
-        }
+    if(which == "row") {
+        gp = recycle_gp(gp, nrow(object@matrix))
+    } else {
+        gp = recycle_gp(gp, ncol(object@matrix))
     }
 
     if(is.null(nm)) {

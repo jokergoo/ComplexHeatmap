@@ -257,6 +257,7 @@ recycle_gp = function(gp, n = 1) {
         x = gp[[i]]
         gp[[i]] = c(rep(x, floor(n/length(x))), x[seq_len(n %% length(x))])
     }
+    return(gp)
 }
 
 

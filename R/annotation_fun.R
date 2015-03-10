@@ -65,7 +65,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.points(x[index], seq_along(index), gp = gp, default.units = "native", pch = pch, size = size)
+			grid.points(x[index], seq_along(index), gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
 			upViewport()
 		},
 		column = function(index) {
@@ -75,7 +75,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			}
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
-			grid.points(seq_along(index), x[index], gp = gp, default.units = "native", pch = pch, size = size)
+			grid.points(seq_along(index), x[index], gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
 			upViewport()
 		})
 }
@@ -112,7 +112,7 @@ anno_histogram = function(x, which = c("column", "row"),
 			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.rect(x = data_scale[1], y = seq_along(index), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = gp)
+			grid.rect(x = data_scale[1], y = seq_along(index), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = recycle_gp(gp, n))
 			upViewport()
 		},
 		column = function(index) {
@@ -122,7 +122,7 @@ anno_histogram = function(x, which = c("column", "row"),
 			}
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
-			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = gp)
+			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = recycle_gp(gp, n))
 			upViewport()
 		})
 }
@@ -164,6 +164,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 
 			n = length(index)
+			gp = recycle_gp(gp, n)
 			if(n != ncol(boxplot_stats)) {
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
@@ -193,6 +194,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 
 			n = length(index)
+			gp = recycle_gp(gp, n)
 			if(n != ncol(boxplot_stats)) {
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
