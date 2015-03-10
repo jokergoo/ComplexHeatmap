@@ -1010,11 +1010,11 @@ setMethod(f = "draw_dimnames",
         "row" = object@row_names_param$gp,
         "column" = object@column_names_param$gp)
 
-    if(which == "row") {
-        gp = recycle_gp(gp, nrow(object@matrix))
-    } else {
-        gp = recycle_gp(gp, ncol(object@matrix))
-    }
+    # if(which == "row") {
+    #     gp = recycle_gp(gp, nrow(object@matrix))
+    # } else {
+    #     gp = recycle_gp(gp, ncol(object@matrix))
+    # }
 
     if(is.null(nm)) {
         return(invisible(NULL))

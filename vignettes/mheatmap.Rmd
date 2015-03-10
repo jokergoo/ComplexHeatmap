@@ -81,6 +81,10 @@ mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = paste0("R", 1:12)
 colnames(mat) = paste0("C", 1:10)
+
+nr = nrow(mat)
+nc = ncol(mat)
+mat = mat[sample(nr, nr), sample(nc, nc)]
 ```
 
 Plot the heatmap with default settings. The default style of the heatmap is quite the same
@@ -596,6 +600,30 @@ ht1 = Heatmap(mat, name = "ht1", km = 2)
 ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), 
     which = "row", width = unit(2, "cm"))
 draw(ha_boxplot + ht1, row_hclust_side = "left", row_sub_title_side = "right")
+```
+
+For row annotations, more complex annotation graphics can help to visualize the data:
+
+```{r, fig.width = 7}
+ht1 = Heatmap(mat, name = "ht1", km = 2)
+random_data = lapply(1:12, function(x) runif(20))
+random_data[1:6] = lapply(random_data[1:6], function(x) x*0.5)
+ha = HeatmapAnnotation(distribution = function(index) {
+        random_data = random_data[index]
+        n = length(index)
+        
+        for(i in seq_len(n)) {
+            y = random_data[[i]]
+            pushViewport(viewport(x= 0, y = (i-0.5)/n, width = unit(1, "npc") - unit(1, "cm"), 
+                height = 1/n*0.8, just = "left", xscale = c(0, 20), yscale = c(0, 1)))
+            if(index[i] %in% 1:6) fill = "blue" else fill = "red"
+            grid.polygon(c(1:20, 20, 1), c(y, 0, 0), default.units = "native", 
+                gp = gpar(fill = fill, col = NA))
+            grid.yaxis(main = FALSE, gp = gpar(fontsize = 8))
+            upViewport()
+        }
+    }, which = "row", width = unit(10, "cm"))
+draw(ht1 + ha, row_hclust_side = "left", row_sub_title_side = "right")
 ```
 
 ## Access components
