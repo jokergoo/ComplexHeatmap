@@ -306,7 +306,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     }
     .Object@row_names_param$side = match.arg(row_names_side)[1]
     .Object@row_names_param$show = show_row_names
-    .Object@row_names_param$gp = row_names_gp
+    .Object@row_names_param$gp = recycle_gp(row_names_gp, nrow(matrix))
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
 
     if(is.null(colnames(matrix))) {
@@ -314,7 +314,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     }
     .Object@column_names_param$side = match.arg(column_names_side)[1]
     .Object@column_names_param$show = show_column_names
-    .Object@column_names_param$gp = column_names_gp
+    .Object@column_names_param$gp = recycle(column_names_gp, ncol(matrix))
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
 
     if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
@@ -708,8 +708,8 @@ setMethod(f = "make_layout",
     row_names = rownames(object@matrix)
     row_names_gp = object@row_names_param$gp
     if(show_row_names) {
-        row_names_width = max(do.call("unit.c", lapply(row_names, function(x) {
-            grobWidth(textGrob(x, gp = row_names_gp))
+        row_names_width = max(do.call("unit.c", lapply(seq_along(row_names), function(x) {
+            grobWidth(textGrob(row_names[x], gp = lapply(row_names_gp, function(y) y[[x]])))
         }))) + unit(2, "mm")
         row_names_width = min(row_names_width, object@row_names_param$max_width)
         if(row_names_side == "left") {
@@ -741,8 +741,8 @@ setMethod(f = "make_layout",
     column_names = colnames(object@matrix)
     column_names_gp = object@column_names_param$gp
     if(show_column_names) {
-        column_names_height = max(do.call("unit.c", lapply(column_names, function(x) {
-            grobWidth(textGrob(x, gp = column_names_gp))
+        column_names_height = max(do.call("unit.c", lapply(seq_along(column_names), function(x) {
+            grobWidth(textGrob(column_names[x], gp = lapply(column_names_gp, function(y) y[[x]])))
         }))) + unit(2, "mm")
         column_names_height = min(column_names_height, object@column_names_param$max_height)
         if(column_names_side == "top") {
@@ -1010,11 +1010,9 @@ setMethod(f = "draw_dimnames",
         "row" = object@row_names_param$gp,
         "column" = object@column_names_param$gp)
 
-    # if(which == "row") {
-    #     gp = recycle_gp(gp, nrow(object@matrix))
-    # } else {
-    #     gp = recycle_gp(gp, ncol(object@matrix))
-    # }
+    if(which == "row") {
+        gp = lapply(gp, function(y) y[[ object@row_order_list[[k]] ]])
+    }
 
     if(is.null(nm)) {
         return(invisible(NULL))
