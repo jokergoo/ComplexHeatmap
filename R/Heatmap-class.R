@@ -245,7 +245,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
         }
     }
     .Object@matrix_param$split = split
-    .Object@matrix_param$gp = rect_gp
+    .Object@matrix_param$gp =check_gp(rect_gp)
     .Object@matrix_param$cell_fun = cell_fun
     
     if(missing(name)) {
@@ -287,7 +287,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     }
     .Object@row_title = row_title
     .Object@row_title_param$side = match.arg(row_title_side)[1]
-    .Object@row_title_param$gp = row_title_gp
+    .Object@row_title_param$gp = check_gp(row_title_gp)
     .Object@row_title_param$combined_name_fun = combined_name_fun
 
     if(length(column_title) == 0) {
@@ -299,14 +299,14 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     }
     .Object@column_title = column_title
     .Object@column_title_param$side = match.arg(column_title_side)[1]
-    .Object@column_title_param$gp = column_title_gp
+    .Object@column_title_param$gp = check_gp(column_title_gp)
 
     if(is.null(rownames(matrix))) {
         show_row_names = FALSE
     }
     .Object@row_names_param$side = match.arg(row_names_side)[1]
     .Object@row_names_param$show = show_row_names
-    .Object@row_names_param$gp = recycle_gp(row_names_gp, nrow(matrix))
+    .Object@row_names_param$gp = recycle_gp(check_gp(row_names_gp), nrow(matrix))
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
 
     if(is.null(colnames(matrix))) {
@@ -314,7 +314,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     }
     .Object@column_names_param$side = match.arg(column_names_side)[1]
     .Object@column_names_param$show = show_column_names
-    .Object@column_names_param$gp = recycle(column_names_gp, ncol(matrix))
+    .Object@column_names_param$gp = recycle_gp(check_gp(column_names_gp), ncol(matrix))
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
 
     if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
@@ -339,7 +339,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     .Object@row_hclust_param$side = match.arg(row_hclust_side)[1]
     .Object@row_hclust_param$width = row_hclust_width
     .Object@row_hclust_param$show = show_row_hclust
-    .Object@row_hclust_param$gp = row_hclust_gp
+    .Object@row_hclust_param$gp = check_gp(row_hclust_gp)
     .Object@row_order_list = list(seq_len(nrow(matrix))) # default order
 
     if(inherits(cluster_columns, "dendrogram") || inherits(cluster_columns, "hclust")) {
@@ -364,7 +364,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     .Object@column_hclust_param$side = match.arg(column_hclust_side)[1]
     .Object@column_hclust_param$height = column_hclust_height
     .Object@column_hclust_param$show = show_column_hclust
-    .Object@column_hclust_param$gp = column_hclust_gp
+    .Object@column_hclust_param$gp = check_gp(column_hclust_gp)
     .Object@column_order = seq_len(ncol(matrix))
 
     .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
@@ -706,10 +706,12 @@ setMethod(f = "make_layout",
     row_names_side = object@row_names_param$side
     show_row_names = object@row_names_param$show
     row_names = rownames(object@matrix)
-    row_names_gp = object@row_names_param$gp
+    row_names_gp = object@row_names_param$gp;
     if(show_row_names) {
         row_names_width = max(do.call("unit.c", lapply(seq_along(row_names), function(x) {
-            grobWidth(textGrob(row_names[x], gp = lapply(row_names_gp, function(y) y[[x]])))
+            cgp = lapply(row_names_gp, function(y) y[[x]])
+            class(cgp) = "gpar"
+            grobWidth(textGrob(row_names[x], gp = cgp))
         }))) + unit(2, "mm")
         row_names_width = min(row_names_width, object@row_names_param$max_width)
         if(row_names_side == "left") {
@@ -742,7 +744,9 @@ setMethod(f = "make_layout",
     column_names_gp = object@column_names_param$gp
     if(show_column_names) {
         column_names_height = max(do.call("unit.c", lapply(seq_along(column_names), function(x) {
-            grobWidth(textGrob(column_names[x], gp = lapply(column_names_gp, function(y) y[[x]])))
+            cgp = lapply(column_names_gp, function(y) y[[x]])
+            class(cgp) = "gpar"
+            grobWidth(textGrob(column_names[x], gp = cgp))
         }))) + unit(2, "mm")
         column_names_height = min(column_names_height, object@column_names_param$max_height)
         if(column_names_side == "top") {
@@ -875,7 +879,7 @@ setMethod(f = "draw_heatmap_body",
     pushViewport(viewport(name = paste(object@name, "heatmap_body", k, sep = "_"), ...))
 
     mat = object@matrix[row_order, column_order, drop = FALSE]
-    col_matrix = map(object@matrix_color_mapping, mat)
+    col_matrix = map_to_colors(object@matrix_color_mapping, mat)
 
     nc = ncol(mat)
     nr = nrow(mat)
@@ -1011,7 +1015,8 @@ setMethod(f = "draw_dimnames",
         "column" = object@column_names_param$gp)
 
     if(which == "row") {
-        gp = lapply(gp, function(y) y[[ object@row_order_list[[k]] ]])
+        gp = lapply(gp, function(y) y[ object@row_order_list[[k]] ])
+        class(gp) = "gpar"
     }
 
     if(is.null(nm)) {

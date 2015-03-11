@@ -12,7 +12,7 @@ Constructor method for SingleAnnotation class
 }
 \usage{
 SingleAnnotation(name, value, col, fun, which = c("column", "row"),
-    show_legend = TRUE)
+    show_legend = TRUE, gp = gpar(col = NA))
 }
 \arguments{
 
@@ -22,6 +22,7 @@ SingleAnnotation(name, value, col, fun, which = c("column", "row"),
   \item{fun}{a self-defined function to add annotation graphics. The argument of this function should only  be a vector of index that corresponds to rows or columns.}
   \item{which}{is the annotation a row annotation or a column annotation?}
   \item{show_legend}{if it is a simple annotation, whether show legend when making the complete heatmap.}
+  \item{gp}{graphic parameters for simple annotations.}
 
 }
 \details{

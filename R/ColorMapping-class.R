@@ -15,7 +15,7 @@
 # The `ColorMapping-class` provides following methods:
 #
 # - `ColorMapping`: contructor methods
-# - `map,ColorMapping-method`: mapping values to colors
+# - `map_to_colors,ColorMapping-method`: mapping values to colors
 # - `color_mapping_legend,ColorMapping-method`: draw legend or get the size of the legend
 #
 # == author
@@ -161,7 +161,7 @@ setMethod(f = "show",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-setMethod(f = "map",
+setMethod(f = "map_to_colors",
 	signature = "ColorMapping",
 	definition = function(object, x) {
 	
@@ -211,6 +211,9 @@ setMethod(f = "color_mapping_legend",
 	legend_grid_width = unit(3, "mm"), 
 	legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
 	legend_label_gp = gpar(fontsize = 10)) {
+
+	legend_title_gp = check_gp(legend_title_gp)
+	legend_label_gp = check_gp(legend_label_gp)
 
 	# add title
 	legend_title_grob = textGrob(object@name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 

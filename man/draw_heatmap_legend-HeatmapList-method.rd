@@ -12,11 +12,12 @@ Draw legends for all heatmaps
 
 }
 \usage{
-\S4method{draw_heatmap_legend}{HeatmapList}(object)
+\S4method{draw_heatmap_legend}{HeatmapList}(object, ...)
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{...}{graphic parameters pass to \code{\link{color_mapping_legend,ColorMapping-method}}.}
 
 }
 \details{

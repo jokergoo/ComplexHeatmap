@@ -260,4 +260,9 @@ recycle_gp = function(gp, n = 1) {
     return(gp)
 }
 
-
+check_gp = function(gp) {
+    if(!inherits(gp, "gpar")) {
+        stop("Graphic parameters should be specified by `gpar()`.")
+    }
+    return(gp)
+}

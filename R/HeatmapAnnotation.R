@@ -48,7 +48,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -annotation_width width of each annotation if annotations are row annotations.
 # -height not using currently.
 # -width width of the whole heatmap annotations, only used for column annotation when appending to the list of heatmaps.
-# 
+# -gp graphic parameters for simple annotations.
+#
 # == details
 # The simple annotations are defined by ``df`` and ``col`` arguments. Complex annotations are
 # defined by the function list. 
@@ -61,7 +62,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 HeatmapAnnotation = function(df, name, col, show_legend, ..., 
 	which = c("column", "row"), annotation_height = 1, annotation_width = 1, 
-	height = unit(1, "cm"), width = unit(1, "cm")) {
+	height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA)) {
 
 	.Object = new("HeatmapAnnotation")
 
@@ -92,14 +93,14 @@ HeatmapAnnotation = function(df, name, col, show_legend, ...,
 
 	    if(missing(col)) {
 	        for(i in seq_len(n_anno)) {
-	        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i])))
+	        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp)))
 	        }
 	    } else {
 	        for(i in seq_len(n_anno)) {
 	        	if(is.null(col[[ anno_name[i] ]])) { # if the color is not provided
-	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i])))
+	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp)))
 	        	} else {
-	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], col = col[[ anno_name[i] ]], which = which, show_legend = show_legend[i])))
+	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], col = col[[ anno_name[i] ]], which = which, show_legend = show_legend[i], gp = gp)))
 	        	}
 	        }
 	    }
@@ -116,7 +117,7 @@ HeatmapAnnotation = function(df, name, col, show_legend, ...,
 		if(is.null(fun_name)) {
 			stop("functions should be specified as named arguments.")
 		}
-		if(any(fun_name %in% c("df", "col", "show_legend", "which", "height", "width"))) {
+		if(any(fun_name %in% c("df", "col", "show_legend", "which", "height", "width", "annotation_height", "annotation_width", "gp"))) {
 			stop("function names should be same as other argument names.")
 		}
 			

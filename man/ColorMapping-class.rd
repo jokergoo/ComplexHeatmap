@@ -21,7 +21,7 @@ The \code{\link{ColorMapping-class}} provides following methods:
 
 \itemize{
   \item \code{\link{ColorMapping}}: contructor methods
-  \item \code{\link{map,ColorMapping-method}}: mapping values to colors
+  \item \code{\link{map_to_colors,ColorMapping-method}}: mapping values to colors
   \item \code{\link{color_mapping_legend,ColorMapping-method}}: draw legend or get the size of the legend
 }
 

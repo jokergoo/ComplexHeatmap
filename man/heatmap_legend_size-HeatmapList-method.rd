@@ -12,11 +12,12 @@ Size of the heatmap legend viewprot
 
 }
 \usage{
-\S4method{heatmap_legend_size}{HeatmapList}(object)
+\S4method{heatmap_legend_size}{HeatmapList}(object, ...)
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{...}{graphic parameters pass to \code{\link{color_mapping_legend,ColorMapping-method}}.}
 
 }
 \details{

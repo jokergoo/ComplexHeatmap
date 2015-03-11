@@ -53,6 +53,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 #      be a vector of index that corresponds to rows or columns.
 # -which is the annotation a row annotation or a column annotation?
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
+# -gp graphic parameters for simple annotations.
 #
 # == details
 # The most simple annotation is one row or one column grids in which different colors
@@ -75,7 +76,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 SingleAnnotation = function(name, value, col, fun, which = c("column", "row"), 
-	show_legend = TRUE) {
+	show_legend = TRUE, gp = gpar(col = NA)) {
 
 	.Object = new("SingleAnnotation")
 
@@ -87,6 +88,11 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
         increase_annotation_index()
     }
     .Object@name = name
+
+    gp = check_gp(gp)
+    if(!is.null(gp$fill)) {
+    	stop("You should not set `fill`.")
+    }
 
     if(missing(fun)) {
     	if(missing(col)) {
@@ -105,15 +111,15 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 	        .Object@fun = function(index) {
 	        	n = length(index)
 				x = (seq_len(n) - 0.5) / n
-				fill = map(color_mapping, value[index])
-				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = gpar(fill = fill, col = NA))
+				fill = map_to_colors(color_mapping, value[index])
+				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
 			}
 		} else {
 			.Object@fun = function(index) {
 				n = length(index)
 				y = (seq_len(n) - 0.5) / n
-				fill = map(color_mapping, value[index])
-				grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = gpar(fill = fill, col = NA))
+				fill = map_to_colors(color_mapping, value[index])
+				grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
 			}
 		}
 

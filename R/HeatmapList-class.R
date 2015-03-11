@@ -140,6 +140,17 @@ setMethod(f = "add_heatmap",
         object@ht_list = c(object@ht_list, x@ht_list)
     }
 
+    l = which(sapply(object@ht_list, inherits, "Heatmap"))
+    nr = sapply(object@ht_list[l], function(ht) nrow(ht@matrix))
+
+    if(length(unique(nr)) > 1) {
+        stop("`nrow` of all heatmaps should be the same.")
+        for(i in l) {
+            cat(object@ht_list[[i]]@name, ":", nrow(object@ht_list[[i]]@matrix), "\n")
+        }
+        cat("\n")
+    }
+
     return(object)
 })
 
@@ -164,6 +175,7 @@ setMethod(f = "add_heatmap",
 # -main_heatmap name or index for the main heatmap
 # -row_hclust_side if auto adjust, where to put the row dendrograms for the main heatmap
 # -row_sub_title_side if auto adjust, where to put sub row titles for the main heatmap
+# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
 #
 # == detail
 # It sets the size of each component of the heatmap list and adjust graphic parameters for each heatmap if necessary.
@@ -191,7 +203,7 @@ setMethod(f = "make_layout",
     gap = unit(3, "mm"), auto_adjust = TRUE, 
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_hclust_side = c("original", "left", "right"),
-    row_sub_title_side = c("original", "left", "right")) {
+    row_sub_title_side = c("original", "left", "right"), ...) {
 
     n = length(object@ht_list)
     i_main = main_heatmap[1]
@@ -366,7 +378,7 @@ setMethod(f = "make_layout",
         column_title = character(0)
     }
     object@column_title = column_title
-    object@column_title_param$gp = column_title_gp
+    object@column_title_param$gp = check_gp(column_title_gp)
     object@column_title_param$side = column_title_side
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
@@ -390,7 +402,7 @@ setMethod(f = "make_layout",
         row_title = character(0)
     }
     object@row_title = row_title
-    object@row_title_param$gp = row_title_gp
+    object@row_title_param$gp = check_gp(row_title_gp)
     object@row_title_param$side = row_title_side
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
@@ -412,30 +424,30 @@ setMethod(f = "make_layout",
     if(show_heatmap_legend) {
         if(heatmap_legend_side == "top") {
             object@heatmap_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
-            size = heatmap_legend_size(object)
+            size = heatmap_legend_size(object, ...)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(2, 4))
         } else if(heatmap_legend_side == "bottom") {
             object@heatmap_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
-            size = heatmap_legend_size(object)
+            size = heatmap_legend_size(object, ...)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
         } else if(heatmap_legend_side == "left") {
             object@heatmap_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
-            size = heatmap_legend_size(object)
+            size = heatmap_legend_size(object, ...)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 2))
         } else if(heatmap_legend_side == "right") {
             object@heatmap_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
-            size = heatmap_legend_size(object)
+            size = heatmap_legend_size(object, ...)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_right_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 6))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object, ...))
     } else {
         object@heatmap_legend_param$size = unit(c(0, 0), "null")
     }
@@ -464,30 +476,30 @@ setMethod(f = "make_layout",
     if(show_annotation_legend) {
         if(annotation_legend_side == "top") {
             object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
-            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list)
+            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list, ...)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(1, 4))
         } else if(annotation_legend_side == "bottom") {
             object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
-            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list)
+            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list, ...)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
         } else if(annotation_legend_side == "left") {
             object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
-            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list)
+            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list, ...)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 1))
         } else if(annotation_legend_side == "right") {
             object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
-            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list)
+            size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list, ...)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_right_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 7))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object, annotation_legend_list = annotation_legend_list))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object, annotation_legend_list = annotation_legend_list, ...))
     } else {
         object@annotation_legend_param$size = unit(c(0, 0), "null")
     }
@@ -820,6 +832,7 @@ setMethod(f = "draw_title",
 #
 # == param
 # -object a `HeatmapList-class` object
+# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
 #
 # == details
 # A viewport is created which contains heatmap legends.
@@ -834,7 +847,7 @@ setMethod(f = "draw_title",
 #
 setMethod(f = "draw_heatmap_legend",
     signature = "HeatmapList",
-    definition = function(object) {
+    definition = function(object, ...) {
 
     side = object@heatmap_legend_param$side
     size = object@heatmap_legend_param$size
@@ -868,7 +881,7 @@ setMethod(f = "draw_heatmap_legend",
             pushViewport(viewport(name = "heatmap_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
         }
     }
-    draw_legend(ColorMappingList, side = side, padding = padding)
+    draw_legend(ColorMappingList, side = side, padding = padding, ...)
     upViewport()
 })
 
@@ -878,6 +891,7 @@ setMethod(f = "draw_heatmap_legend",
 # == param
 # -object a `HeatmapList-class` object
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
+# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
 #
 # == details
 # A viewport is created which contains annotation legends.
@@ -892,7 +906,7 @@ setMethod(f = "draw_heatmap_legend",
 #
 setMethod(f = "draw_annotation_legend",
     signature = "HeatmapList",
-    definition = function(object, annotation_legend_list = list()) {
+    definition = function(object, annotation_legend_list = list(), ...) {
 
     side = object@annotation_legend_param$side
     size = object@annotation_legend_param$size
@@ -928,7 +942,7 @@ setMethod(f = "draw_annotation_legend",
             pushViewport(viewport(name = "annotation_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
         }
     }
-    draw_legend(ColorMappingList, side = side, annotation_legend_list = annotation_legend_list, padding = padding)
+    draw_legend(ColorMappingList, side = side, annotation_legend_list = annotation_legend_list, padding = padding, ...)
     upViewport()
 })
 
@@ -937,6 +951,7 @@ setMethod(f = "draw_annotation_legend",
 #
 # == param
 # -object a `HeatmapList-class` object
+# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
 #
 # == detail
 # This function is only for internal use.
@@ -949,7 +964,7 @@ setMethod(f = "draw_annotation_legend",
 #
 setMethod(f = "heatmap_legend_size",
     signature = "HeatmapList",
-    definition = function(object) {
+    definition = function(object, ...) {
 
     side = object@heatmap_legend_param$side
     padding = object@heatmap_legend_param$padding
@@ -965,7 +980,7 @@ setMethod(f = "heatmap_legend_size",
         }
     }
 
-    size = draw_legend(ColorMappingList, side = side, plot = FALSE, padding = padding)
+    size = draw_legend(ColorMappingList, side = side, plot = FALSE, padding = padding, ...)
 
     return(size)
 })
@@ -976,6 +991,7 @@ setMethod(f = "heatmap_legend_size",
 # == param
 # -object a `HeatmapList-class` object
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
+# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
 #
 # == detail
 # This function is only for internal use.
@@ -988,7 +1004,7 @@ setMethod(f = "heatmap_legend_size",
 #
 setMethod(f = "annotation_legend_size",
     signature = "HeatmapList",
-    definition = function(object, annotation_legend_list = list()) {
+    definition = function(object, annotation_legend_list = list(), ...) {
 
     side = object@annotation_legend_param$side
     padding = object@annotation_legend_param$padding
@@ -1006,7 +1022,7 @@ setMethod(f = "annotation_legend_size",
         }
     }
 
-    size = draw_legend(ColorMappingList, side = side, plot = FALSE, annotation_legend_list = annotation_legend_list, padding = padding)
+    size = draw_legend(ColorMappingList, side = side, plot = FALSE, annotation_legend_list = annotation_legend_list, padding = padding, ...)
     
     return(size)
 })
@@ -1014,7 +1030,7 @@ setMethod(f = "annotation_legend_size",
 # create a viewport which contains legend
 # currently, one-row or one-column legend is supported
 draw_legend = function(ColorMappingList, side = c("right", "left", "top", "bottom"), plot = TRUE, 
-    gap = unit(2, "mm"), annotation_legend_list = list(), padding = unit(c(0, 0, 0, 0), "null")) {
+    gap = unit(2, "mm"), annotation_legend_list = list(), padding = unit(c(0, 0, 0, 0), "null"), ...) {
 
     side = match.arg(side)[1]
 
@@ -1024,7 +1040,7 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
         return(unit(c(0, 0), "null"))
     }
 
-    cm_size = lapply(ColorMappingList, function(cm) color_mapping_legend(cm, plot = FALSE))
+    cm_size = lapply(ColorMappingList, function(cm) color_mapping_legend(cm, plot = FALSE, ...))
     cm_width = do.call("unit.c", lapply(cm_size, function(x) x[1]))
     cm_height = do.call("unit.c", lapply(cm_size, function(x) x[2]))
 

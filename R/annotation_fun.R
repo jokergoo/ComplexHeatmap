@@ -56,6 +56,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 	which = match.arg(which)[1]
 	data_scale = range(x)
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
+	gp = check_gp(gp)
 
 	switch(which,
 		row = function(index) {
@@ -103,6 +104,7 @@ anno_histogram = function(x, which = c("column", "row"),
 	factor = 0.6
 	data_scale = range(x)
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
+	gp = check_gp(gp)
 
 	switch(which,
 		row = function(index) {
@@ -152,6 +154,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	factor = 0.6
 	data_scale = range(x)
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
+	gp = check_gp(gp)
 
 	switch(which,
 		row = function(index) {
