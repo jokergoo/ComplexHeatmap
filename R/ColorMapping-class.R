@@ -216,15 +216,14 @@ setMethod(f = "color_mapping_legend",
 	legend_label_gp = check_gp(legend_label_gp)
 
 	# add title
-	legend_title_grob = textGrob(object@name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
-		gp = legend_title_gp)
+	legend_title_grob = textGrob(object@name, just = c("left", "top"), gp = legend_title_gp)
 	legend_title_height = grobHeight(legend_title_grob)
 	legend_title_width = grobWidth(legend_title_grob)
 
 	nlevel = length(object@levels)
 	x = unit(rep(0, nlevel), "npc")
 	y = 1.5*legend_title_height + (0:(nlevel-1))*(legend_grid_height + unit(1, "mm"))
-	
+	y = unit(1, "npc") - y
 	legend_label_max_width = max(do.call("unit.c", lapply(object@levels, function(x) {
 			grobWidth(textGrob(x, gp = legend_label_gp))
 		})))
@@ -237,8 +236,8 @@ setMethod(f = "color_mapping_legend",
 		grid.text(object@name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
 			gp = legend_title_gp)
 		grid.rect(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
-			gp = gpar(col = NA, fill = rev(object@colors)))
-		grid.text(rev(object@levels), x + legend_grid_width + unit(1, "mm"), rev(y - legend_grid_height*0.5), 
+			gp = gpar(col = NA, fill = object@colors))
+		grid.text(rev(object@levels), x + legend_grid_width + unit(1, "mm"), y - legend_grid_height*0.5, 
 			just = c("left", "center"), gp = legend_label_gp)
 		upViewport()
 	}

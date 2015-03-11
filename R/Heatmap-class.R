@@ -202,8 +202,10 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     column_names_side = c("bottom", "top"), 
     show_column_names = TRUE, column_names_max_height = unit(4, "cm"), 
     column_names_gp = gpar(fontsize = 12),
-    top_annotation = NULL, top_annotation_height = unit(4*length(top_annotation@anno_list), "mm"),
-    bottom_annotation = NULL, bottom_annotation_height = unit(4*length(top_annotation@anno_list), "mm"),
+    top_annotation = new("HeatmapAnnotation"),
+    top_annotation_height = unit(5*length(top_annotation@anno_list), "mm"),
+    bottom_annotation = new("HeatmapAnnotation"),
+    bottom_annotation_height = unit(5*length(bottom_annotation@anno_list), "mm"),
     km = 1, split = NULL, gap = unit(1, "mm"), 
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE) {
@@ -374,8 +376,10 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
         .Object@top_annotation_param$height = top_annotation_height
     }
     if(!is.null(top_annotation)) {
-        if(!.Object@top_annotation@which == "column") {
-            stop("`which` in `top_annotation` should only be `column`.")
+        if(length(top_annotation@anno_list) > 0) {
+            if(!.Object@top_annotation@which == "column") {
+                stop("`which` in `top_annotation` should only be `column`.")
+            }
         }
     }
     
@@ -386,8 +390,10 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
         .Object@bottom_annotation_param$height = bottom_annotation_height
     }
     if(!is.null(bottom_annotation)) {
-        if(!.Object@bottom_annotation@which == "column") {
-            stop("`which` in `bottom_annotation` should only be `column`.")
+        if(length(bottom_annotation@anno_list) > 0) {
+            if(!.Object@bottom_annotation@which == "column") {
+                stop("`which` in `bottom_annotation` should only be `column`.")
+            }
         }
     }
 
@@ -776,10 +782,12 @@ setMethod(f = "make_layout",
     annotation = object@top_annotation
     annotation_height = object@top_annotation_param$height
     if(!is.null(annotation)) {
-        object@layout$layout_column_anno_top_height = annotation_height
-        object@layout$layout_index = rbind(object@layout$layout_index, c(3, 4))
-        
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object, which = "top"))
+        if(length(annotation@anno_list) > 0) {
+            object@layout$layout_column_anno_top_height = annotation_height
+            object@layout$layout_index = rbind(object@layout$layout_index, c(3, 4))
+            
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object, which = "top"))
+        }
     }
 
     ##########################################
@@ -787,9 +795,11 @@ setMethod(f = "make_layout",
     annotation = object@bottom_annotation
     annotation_height = object@bottom_annotation_param$height
     if(!is.null(annotation)) {
-        object@layout$layout_column_anno_bottom_height = annotation_height
-        object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object, which = "bottom"))
+        if(length(annotation@anno_list) > 0) {
+            object@layout$layout_column_anno_bottom_height = annotation_height
+            object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object, which = "bottom"))
+        }
     }
 
     return(object)

@@ -1061,9 +1061,9 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
         	for(i in seq_len(n)) {
                 cm = ColorMappingList[[i]]
                 if(side == "left") {
-                    color_mapping_legend(cm, x = unit(0, "npc"), y = unit(1, "npc") - (sum(cm_height[seq_len(i)]) + gap*(i-1)), just = c("left", "top"), plot = TRUE)                   
+                    color_mapping_legend(cm, x = unit(0, "npc"), y = unit(1, "npc") - (sum(cm_height[seq_len(i)]) + gap*(i-1)), just = c("left", "top"), plot = TRUE, ...)                   
                 } else {
-                    color_mapping_legend(cm, x = unit(0, "npc") + padding[2], y = unit(1, "npc") - (sum(cm_height[seq_len(i)]) + gap*(i-1)), just = c("left", "top"), plot = TRUE)
+                    color_mapping_legend(cm, x = unit(0, "npc") + padding[2], y = unit(1, "npc") - (sum(cm_height[seq_len(i)]) + gap*(i-1)), just = c("left", "top"), plot = TRUE, ...)
                 }
             }
             
