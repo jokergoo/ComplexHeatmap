@@ -12,7 +12,7 @@ Constructor method for Heatmap class
 }
 \usage{
 Heatmap(matrix, col, name, rect_gp = gpar(col = NA),
-    cell_fun = function(i, j, x, y, width, height, fill) NULL,
+    cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14), column_title = character(0),
     column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),

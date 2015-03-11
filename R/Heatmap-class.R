@@ -186,7 +186,7 @@ Heatmap = setClass("Heatmap",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA), 
-    cell_fun = function(i, j, x, y, width, height, fill) NULL,
+    cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), column_title = character(0),
     column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
@@ -894,11 +894,11 @@ setMethod(f = "draw_heatmap_body",
     } else {
         grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = 1/nc, height = 1/nr, gp = do.call("gpar", c(list(fill = col_matrix), gp)))
     }
-
+    
     cell_fun = object@matrix_param$cell_fun
     for(i in seq_along(row_order)) {
         for(j in seq_along(column_order)) {
-            cell_fun(column_order[j], row_order[i], x[i], y[j], 1/nc, 1/nr, col_matrix[j, i])
+            cell_fun(column_order[j], row_order[i], x[j], y[i], 1/nc, 1/nr, col_matrix[i, j])
         }
     }
 

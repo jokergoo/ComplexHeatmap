@@ -296,14 +296,14 @@ and make the plot explictly by calling `draw()`, just in order to suppress the h
 This functionality will be introduced in later sections.
 
 ```{r}
-mat2 = matrix(1:9, 3, 3)
+mat2 = matrix(sample(1:10, 12, replace = TRUE), 4, 3)
 
 ht = Heatmap(mat2, rect_gp = gpar(col = "white", lwd = 2, type = "none"), 
-    cell_fun = function(i, j, x, y, width, height, fill) {
+    cell_fun = function(j, i, x, y, width, height, fill) {
         grid.roundrect(x, y, width*0.8, height*0.8, gp = gpar(fill = fill))
         if(mat2[i, j] <= 4) {
             grid.text("cold", x = x, y = y)
-        } else if(mat2[i, j] >= 6) {
+        } else if(mat2[i, j] >= 7) {
             grid.text("hot", x = x, y = y)
         } else {
             grid.text("normal", x = x, y = y)
