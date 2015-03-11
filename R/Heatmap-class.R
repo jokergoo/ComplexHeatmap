@@ -202,8 +202,8 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     column_names_side = c("bottom", "top"), 
     show_column_names = TRUE, column_names_max_height = unit(4, "cm"), 
     column_names_gp = gpar(fontsize = 12),
-    top_annotation = NULL, top_annotation_height = unit(1, "cm"),
-    bottom_annotation = NULL, bottom_annotation_height = unit(1, "cm"),
+    top_annotation = NULL, top_annotation_height = unit(4*length(top_annotation@anno_list), "mm"),
+    bottom_annotation = NULL, bottom_annotation_height = unit(4*length(top_annotation@anno_list), "mm"),
     km = 1, split = NULL, gap = unit(1, "mm"), 
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE) {
@@ -368,7 +368,11 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     .Object@column_order = seq_len(ncol(matrix))
 
     .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
-    .Object@top_annotation_param$height = top_annotation_height
+    if(is.null(top_annotation)) {
+        .Object@top_annotation_param$height = unit(0, "null")    
+    } else {
+        .Object@top_annotation_param$height = top_annotation_height
+    }
     if(!is.null(top_annotation)) {
         if(!.Object@top_annotation@which == "column") {
             stop("`which` in `top_annotation` should only be `column`.")
@@ -376,7 +380,11 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     }
     
     .Object@bottom_annotation = bottom_annotation # a `HeatmapAnnotation` object
-    .Object@bottom_annotation_param$height = bottom_annotation_height
+    if(is.null(bottom_annotation)) {
+        .Object@bottom_annotation_param$height = unit(0, "null")
+    } else {
+        .Object@bottom_annotation_param$height = bottom_annotation_height
+    }
     if(!is.null(bottom_annotation)) {
         if(!.Object@bottom_annotation@which == "column") {
             stop("`which` in `bottom_annotation` should only be `column`.")
