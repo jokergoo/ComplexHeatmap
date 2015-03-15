@@ -46,14 +46,14 @@
 # - row cluster on the right, graphics are drawn by `draw_hclust,Heatmap-method`.
 # - title on the right, graphics are drawn by `draw_title,Heatmap-method`.
 #
-# The `Heatmap-class` is not responsible for heatmap legend and annotatino legends. The `draw,Heatmap-method` method
+# The `Heatmap-class` is not responsible for heatmap legend and annotation legends. The `draw,Heatmap-method` method
 # will construct a `HeatmapList-class` object which only contains one single heatmap
 # and call `draw,HeatmapList-method` to make a complete heatmap.
 #
 # == methods
 # The `Heatmap-class` provides following methods:
 #
-# - `Heatmap`: contructor method.
+# - `Heatmap`: constructor method.
 # - `draw,Heatmap-method`: draw a single heatmap.
 # - `add_heatmap,Heatmap-method` append heatmaps and row annotations to a list of heatmaps.
 #
@@ -128,14 +128,14 @@ Heatmap = setClass("Heatmap",
 #                "minkowski", "pearson", "spearman", "kendall"). It can also be a function.
 #                If the function has one argument, the input argument should be a matrix and 
 #                the returned value should be a `stats::dist` object. If the function has two arguments,
-#                the input arguments are two vectors and the function calcualtes distance between these
+#                the input arguments are two vectors and the function calculates distance between these
 #                two vectors.
 # -clustering_method_rows method to make cluster, pass to `stats::hclust`.
 # -row_hclust_side should the row cluster be put on the left or right of the heatmap?
 # -row_hclust_width width of the row cluster, should be a `grid::unit` object.
 # -show_row_hclust whether show row clusters. 
 # -row_hclust_gp graphics parameters for drawing lines. If users already provide a `stats::dendrogram`
-#                object with edges renderred, this argument will be ingored.
+#                object with edges rendered, this argument will be ignored.
 # -cluster_columns whether make cluster on columns. Same settings as ``cluster_rows``.
 # -clustering_distance_columns same setting as ``clustering_distance_rows``.
 # -clustering_method_columns method to make cluster, pass to `stats::hclust`.
@@ -156,11 +156,11 @@ Heatmap = setClass("Heatmap",
 # -top_annotation_height total height of the column annotations on the top.
 # -bottom_annotation a `HeatmapAnnotation` object.
 # -bottom_annotation_height total height of the column annotations on the bottom.
-# -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be splitted by rows according to the k-means clustering.
+# -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering.
 #     For each row-clusters, hierarchical clustering is still applied with parameters above.
-# -split a vector or a data frame by which the rows are splitted.
-# -gap gap between row-slices if the heatmap is splitted by rows, should be `grid::unit` object.
-# -combined_name_fun if the heatmap is splitted by rows, how to make a combined row title for each slice?
+# -split a vector or a data frame by which the rows are split.
+# -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object.
+# -combined_name_fun if the heatmap is split by rows, how to make a combined row title for each slice?
 #                 The input parameter for this function is a vector which contains level names under each column in ``split``.
 # -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
 #        is appended to a list of heatmaps.
@@ -476,7 +476,7 @@ setMethod(f = "make_column_cluster",
 # -object a `Heatmap-class` object.
 # -order a pre-defined order.
 # -km if apply k-means clustering on rows, number of clusters.
-# -split a vector or a data frame by which the rows are be splitted.
+# -split a vector or a data frame by which the rows are be split.
 #
 # == details
 # The function will fill or adjust ``row_hclust_list``, ``row_order_list``, ``row_title`` and ``matrix_param`` slots.
@@ -863,13 +863,13 @@ setMethod(f = "add_heatmap",
 #
 # == param
 # -object a `Heatmap-class` object.
-# -k a matrix may be splitted by rows, the value identifies which row-slice.
+# -k a matrix may be split by rows, the value identifies which row-slice.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
-# The matrix can be splitted into several parts by rows if ``km`` or ``split`` is 
-# specified when initializing the `Heatmap` object. If the matrix is splitted, 
-# there will be gaps between rows to identify differnet row-slice.
+# The matrix can be split into several parts by rows if ``km`` or ``split`` is 
+# specified when initializing the `Heatmap` object. If the matrix is split, 
+# there will be gaps between rows to identify different row-slice.
 #
 # A viewport is created which contains subset rows of the heatmap.
 #
@@ -935,7 +935,7 @@ setMethod(f = "draw_heatmap_body",
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
-# If the matrix is splitted into several row slices, a list of dendrograms wil be drawn by 
+# If the matrix is split into several row slices, a list of dendrograms will be drawn by 
 # the heatmap that each dendrogram corresponds to its row slices.
 #
 # A viewport is created which contains dendrograms.
@@ -999,7 +999,7 @@ setMethod(f = "draw_hclust",
 # == param
 # -object a `Heatmap-class` object.
 # -which are names put on the row or on the column of the heatmap?
-# -k a matrix may be splitted by rows, the value identifies which row-slice.
+# -k a matrix may be split by rows, the value identifies which row-slice.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
@@ -1076,7 +1076,7 @@ setMethod(f = "draw_dimnames",
 # == param
 # -object a `Heatmap-class` object.
 # -which is title put on the row or on the column of the heatmap?
-# -k a matrix may be splitted by rows, the value identifies which row-slice.
+# -k a matrix may be split by rows, the value identifies which row-slice.
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
@@ -1170,7 +1170,7 @@ setMethod(f = "draw_annotation",
 # -object a `Heatmap-class` object.
 # -k which components, see `Heatmap-class`.
 #
-# == detials
+# == details
 #
 # This function is only for internal use.
 #
@@ -1372,7 +1372,7 @@ setMethod(f = "draw",
 #
 # - making clustering on rows if specified (by calling `make_row_cluster,Heatmap-method`)
 # - making clustering on columns if specified (by calling `make_column_cluster,Heatmap-method`)
-# - makeing the layout of the heatmap (by calling `make_layout,Heatmap-method`)
+# - making the layout of the heatmap (by calling `make_layout,Heatmap-method`)
 #
 # This function is only for internal use.
 #

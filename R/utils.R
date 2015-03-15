@@ -73,7 +73,9 @@ default_col = function(x, main_matrix = FALSE) {
 # -order should leaves of dendrogram be put in the normal order or reverse order?
 # -... pass to `grid::viewport` that contains the dendrogram.
 #
-# == dedails
+# == details
+# The dendrogram tree can be renderred (e.g. by ``dendextend`` package).
+#
 # A viewport is created which contains the dendrogram.
 #
 # == value
@@ -193,7 +195,7 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
 #
 # == detail
 # You can construct any type of distance measurements by defining a pair-wise distance function.
-# The function is implemented by two nested for loops, thus the efficiency may not be so good.
+# The function is implemented by two nested ``for`` loops, thus the efficiency may not be so good.
 #
 # == value
 # A `stats::dist` object.

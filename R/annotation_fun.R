@@ -4,7 +4,7 @@
 #
 # == param
 # -x a vector of values.
-# -type ``p`` for points, ``histogram`` for histogram.
+# -type ``p`` for points, ``histogram`` for histogram. More graphics to be added in the future.
 # -which is the annotation a column annotation or a row annotation?
 # -gp graphic parameters.
 # -... pass to corresponding annotation graphic functions.
@@ -96,7 +96,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_histogram = function(x, which = c("column", "row"), 
+anno_bar = function(x, which = c("column", "row"), 
 	gp = gpar(fill = "#CCCCCC"), ...) {
 	x = x
 	which = match.arg(which)[1]
@@ -217,4 +217,13 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			grid.points(x = seq_along(index), y = boxplot_stats[3, ], default.units = "native", gp = gp, pch = pch, size = size)
 			upViewport()
 		})
+}
+
+
+anno_histogram = function() {
+
+}
+
+anno_density = function(type = c("line", "violin", "heatmap")) {
+
 }

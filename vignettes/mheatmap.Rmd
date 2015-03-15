@@ -42,7 +42,7 @@ Generally, a heatmap list contains several heatmaps and row annotations.
 source("design.R")
 ```
 
-There are several classes that are abstracted from the heatmap. Surounding the heatmap list,
+There are several classes that are abstracted from the heatmap. Surrounding the heatmap list,
 there are legends for heatmaps themselves and annotations, also there are titles which are placed
 on the four sides of the heatmap list. For each heatmap, there are also different components stand
 surrounding the heatmap body.
@@ -51,19 +51,19 @@ In **mheatmap** package, components of heatmap lists are abstracted into several
 
 - `Heatmap` class: A single heatmap containing heatmap body, row/column names, titles and dendrograms.
 - `HeatmapList` class: A list of heatmaps and row annotations which also contains titles.
-- `HeatmapAnnotation` class: be respossible to row annotations and column annotations.
+- `HeatmapAnnotation` class: be responsible to row annotations and column annotations.
 
 There are also several internal classes:
 
 - `Single Annotation` class: a single row annotation or column annotation.
 - `ColorMapping` class: mapping from values to colors.
 
-**mheatmap** is implemeted under **grid** system, so users should know basic **grid** functionality
+**mheatmap** is implemented under **grid** system, so users should know basic **grid** functionality
 to get full use of **mheatmap** package.
 
 ## A single heatmap
 
-A single heatmap is mosted used for a quick view of the data. It is a special case of 
+A single heatmap is mostly used for a quick view of the data. It is a special case of 
 a heatmap list which only contains one heatmap. In following examples, we will demonstrate
 how to set parameters for visualization a single heatmap.
 
@@ -125,7 +125,7 @@ for character matrix, clustering is suppressed.
 ### Titles
 
 The name of the heatmap is used as the title of the heatmap legend.
-The name also plays as a unique id if you plot more than one heatmaps together (introduced in laster sections).
+The name also plays as a unique id if you plot more than one heatmaps together (introduced in later sections).
 
 ```{r}
 Heatmap(mat, name = "foo")
@@ -133,7 +133,7 @@ Heatmap(mat, name = "foo")
 
 You can set heatmap titles either by the rows or by the columns. Note at a same time
 you can only put e.g. column title either on the top or at the bottom of the heatmap.
-The graphic paramters can be set by `row_title_gp` and `column_title_gp` respectively.
+The graphic parameters can be set by `row_title_gp` and `column_title_gp` respectively.
 Please remember you should use `gpar()` to specify graphic parameters.
 
 ```{r}
@@ -231,7 +231,7 @@ Heatmap(mat, name = "foo", row_names_gp = gpar(fontsize = 20))
 
 ### Split heatmap by rows
 
-A heatmap can be splitted by rows. The `km` argument with a value larger than 1 means applying a k-means clustering
+A heatmap can be split by rows. The `km` argument with a value larger than 1 means applying a k-means clustering
 on rows.
 
 ```{r}
@@ -266,7 +266,7 @@ Height of gaps between every row slices can be controlled by `gap`.
 Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering), gap = unit(5, "mm"))
 ```
 
-Character matrix can only be splitted by `split` argument.
+Character matrix can only be split by `split` argument.
 
 ```{r}
 Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], 5))
@@ -288,7 +288,7 @@ on every cell in the heatmap and provides following information on the 'current'
 - `fill`: color of the cell.
 
 In following example, we draw round rectangles and add text. We assign the heatmap to a variable
-and make the plot explictly by calling `draw()`, just in order to suppress the heatmap legend. 
+and make the plot explicitly by calling `draw()`, just in order to suppress the heatmap legend. 
 This functionality will be introduced in later sections.
 
 ```{r}
@@ -457,7 +457,7 @@ ht1 + ht2
 Under default mode, dendrograms from the second heatmap will be removed and row orders will be same as the first one.
 
 The returned value of addition of two heatmaps is a `HeatmapList` object. Directly call `ht_list` object
-will call `draw()` method with default settings. With explictly calling `draw()` method, you can have more control
+will call `draw()` method with default settings. With explicitly calling `draw()` method, you can have more control
 on the legend and titles.
 
 ```{r}
@@ -558,7 +558,7 @@ in the first heatmap. The adjustment are:
 
 - row clusters from the second heatmap are removed.
 - row titles from the second heatmap are removed.
-- if the main heatmap is splitted by rows, all remaining heatmaps will also be splitted by same levels as the first one.
+- if the main heatmap is split by rows, all remaining heatmaps will also be split by same levels as the first one.
 
 The main heatmap can be specified by `main_heatmap` argument. The value can be a numeric index or the name of the heatmap
 (of course, you need to set the heatmap name when you create the `Heatmap` object).
@@ -589,7 +589,7 @@ draw(ha, 1:12)
 
 Essentially, row annotations and column annotations are identical graphics, but in applications,
 there is some difference. In **mheatmap** package, row annotations have the same place as the heatmap
-while column annotations are just like accessary components of heatmaps. For row annotations, similar
+while column annotations are just like accessory components of heatmaps. For row annotations, similar
 as heatmaps, you can append the row annotations to heatmap or heatmap list or even row annotation object itself.
 
 ```{r, fig.width = 9}
@@ -711,7 +711,7 @@ Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))),
     width = unit(5, "mm"))
 ```
 
-### Visialize genomic regions
+### Visualize genomic regions
 
 Genomic regions can have more corresponded information. E.g. for a list of differentially methylated regions (DMRs), 
 we can add an expression matrix in which genes are the closest to corresponding DMR, also how DMRs overlap to 

@@ -93,7 +93,7 @@ HeatmapList = setClass("HeatmapList",
 # == param
 # -... arguments
 #
-# == detailes
+# == details
 # There is no public constructor method for the `HeatmapList-class`.
 #
 HeatmapList = function(...) {
@@ -517,7 +517,7 @@ setMethod(f = "make_layout",
 #
 # == detail
 # The function first calls `make_layout,HeatmapList-method` to calculate
-# the layout of the heatmap list and the layout of every singl heatmap,
+# the layout of the heatmap list and the layout of every single heatmap,
 # then makes the plot by re-calling the graphic functions which are recorded
 # in the layout.
 #
@@ -947,7 +947,7 @@ setMethod(f = "draw_annotation_legend",
 })
 
 # == title
-# Size of the heatmap legend viewprot
+# Size of the heatmap legend viewport
 #
 # == param
 # -object a `HeatmapList-class` object

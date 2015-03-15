@@ -5,15 +5,15 @@
 # Class for heatmap annotations
 #
 # == details
-# A complex heatmap contains a list of annotations which represente as different graphics
-# placed on rows and columns. The `HeatmapAnnotation-class` is a category of single annotations
+# A complex heatmap contains a list of annotations which represent as different graphics
+# placed on rows and columns. The `HeatmapAnnotation-class` is a category of single annotations which are
 # by a list of `SingleAnnotation-class` objects with same number of rows or columns.
 #
 # == methods
 # The `HeatmapAnnotation-class` provides following methods:
 #
 # - `HeatmapAnnotation`: constructor method
-# - `draw,HeatmapAnnotation-method`
+# - `draw,HeatmapAnnotation-method`: draw the annotations
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

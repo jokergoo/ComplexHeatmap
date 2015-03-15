@@ -4,7 +4,7 @@
 #
 # == detail
 # This class is a super class for `Heatmap-class`, `HeatmapList-class` and `HeatmapAnnotation-class` classes.
-# It is only for ``+`` generic method.
+# It is only designed for ``+`` generic method.
 #
 AdditiveUnit = setClass("AdditiveUnit")
 
@@ -32,6 +32,8 @@ AdditiveUnit = function(...) {
 # == detail
 # It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
 # or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input objects.
+#
+# The `HeatmapAnnotation-class` object to be added can only be a row annotation.
 #
 # == value
 # A `HeatmapList-class` object.

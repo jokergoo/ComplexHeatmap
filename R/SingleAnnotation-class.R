@@ -4,13 +4,14 @@
 # Class for a single annotation
 #
 # == details
-# A complex heatmap always has more than one annotations on rows and columns.
+# A complex heatmap always has more than one annotations on rows and columns. Here
+# the `SingleAnnotation-class` defines the basic unit of annotations.
 # The most simple annotation is one row or one column grids in which different colors
 # represent different classes of the data. The annotation can also be more complex
 # graphics, such as a boxplot that shows data distribution in corresponding row or column.
 #
 # The `SingleAnnotation-class` is used for storing data for a single annotation and provides
-# methods for drawing annotation grahics.
+# methods for drawing annotation graphics.
 #
 # == methods
 # The `SingleAnnotation-class` provides following methods:
@@ -63,7 +64,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 #
 # ``fun`` is used to construct a more complex annotation. Users can add any type of annotation graphics
 # by implementing a function. The only input argument of ``fun`` is a index
-# of rows or columns which is already adjusted by the clustering. In the packcage, there are already
+# of rows or columns which is already adjusted by the clustering. In the package, there are already
 # several annotation graphic function generators: `anno_points`, `anno_histogram` and `anno_boxplot`.
 #
 # One thing that users should be careful is the difference of coordinates when the annotation is a row
@@ -180,7 +181,7 @@ setMethod(f = "show",
 		cat("name:", object@name, "\n")
 		cat("position:", object@which, "\n")
 	} else {
-		cat("An annotaiton with", object@color_mapping@type, "color mapping\n")
+		cat("An annotation with", object@color_mapping@type, "color mapping\n")
 		cat("name:", object@name, "\n")
 		cat("position:", object@which, "\n")
 		cat("show legend:", object@show_legend, "\n")
