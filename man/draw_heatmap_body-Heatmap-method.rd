@@ -17,12 +17,12 @@ Draw the heatmap body
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
+  \item{k}{a matrix may be split by rows, the value identifies which row-slice.}
   \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 
 }
 \details{
-The matrix can be splitted into several parts by rows if \code{km} or \code{split} is  specified when initializing the \code{\link{Heatmap}} object. If the matrix is splitted,  there will be gaps between rows to identify differnet row-slice.  
+The matrix can be split into several parts by rows if \code{km} or \code{split} is  specified when initializing the \code{\link{Heatmap}} object. If the matrix is split,  there will be gaps between rows to identify different row-slice.  
 
 A viewport is created which contains subset rows of the heatmap.  
 

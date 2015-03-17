@@ -50,12 +50,12 @@ Heatmap(matrix, col, name, rect_gp = gpar(col = NA),
   \item{column_title_side}{will the title be put on the top or bottom of the heatmap?}
   \item{column_title_gp}{graphic parameters for drawing text.}
   \item{cluster_rows}{If the value is a logical, it means whether make cluster on rows. The value can also be a \code{\link[stats]{hclust}} or a \code{\link[stats]{dendrogram}} that already contains clustering information. This means you can use any type of clustering methods and render the \code{\link[stats]{dendrogram}} object with self-defined graphic settings.}
-  \item{clustering_distance_rows}{it can be a pre-defined character which is in  ("euclidean", "maximum", "manhattan", "canberra", "binary",  "minkowski", "pearson", "spearman", "kendall"). It can also be a function. If the function has one argument, the input argument should be a matrix and  the returned value should be a \code{\link[stats]{dist}} object. If the function has two arguments, the input arguments are two vectors and the function calcualtes distance between these two vectors.}
+  \item{clustering_distance_rows}{it can be a pre-defined character which is in  ("euclidean", "maximum", "manhattan", "canberra", "binary",  "minkowski", "pearson", "spearman", "kendall"). It can also be a function. If the function has one argument, the input argument should be a matrix and  the returned value should be a \code{\link[stats]{dist}} object. If the function has two arguments, the input arguments are two vectors and the function calculates distance between these two vectors.}
   \item{clustering_method_rows}{method to make cluster, pass to \code{\link[stats]{hclust}}.}
   \item{row_hclust_side}{should the row cluster be put on the left or right of the heatmap?}
   \item{row_hclust_width}{width of the row cluster, should be a \code{\link[grid]{unit}} object.}
   \item{show_row_hclust}{whether show row clusters. }
-  \item{row_hclust_gp}{graphics parameters for drawing lines. If users already provide a \code{\link[stats]{dendrogram}} object with edges renderred, this argument will be ingored.}
+  \item{row_hclust_gp}{graphics parameters for drawing lines. If users already provide a \code{\link[stats]{dendrogram}} object with edges rendered, this argument will be ignored.}
   \item{cluster_columns}{whether make cluster on columns. Same settings as \code{cluster_rows}.}
   \item{clustering_distance_columns}{same setting as \code{clustering_distance_rows}.}
   \item{clustering_method_columns}{method to make cluster, pass to \code{\link[stats]{hclust}}.}
@@ -75,10 +75,10 @@ Heatmap(matrix, col, name, rect_gp = gpar(col = NA),
   \item{top_annotation_height}{total height of the column annotations on the top.}
   \item{bottom_annotation}{a \code{\link{HeatmapAnnotation}} object.}
   \item{bottom_annotation_height}{total height of the column annotations on the bottom.}
-  \item{km}{do k-means clustering on rows. If the value is larger than 1, the heatmap will be splitted by rows according to the k-means clustering. For each row-clusters, hierarchical clustering is still applied with parameters above.}
-  \item{split}{a vector or a data frame by which the rows are splitted.}
-  \item{gap}{gap between row-slices if the heatmap is splitted by rows, should be \code{\link[grid]{unit}} object.}
-  \item{combined_name_fun}{if the heatmap is splitted by rows, how to make a combined row title for each slice? The input parameter for this function is a vector which contains level names under each column in \code{split}.}
+  \item{km}{do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering. For each row-clusters, hierarchical clustering is still applied with parameters above.}
+  \item{split}{a vector or a data frame by which the rows are split.}
+  \item{gap}{gap between row-slices if the heatmap is split by rows, should be \code{\link[grid]{unit}} object.}
+  \item{combined_name_fun}{if the heatmap is split by rows, how to make a combined row title for each slice? The input parameter for this function is a vector which contains level names under each column in \code{split}.}
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmap is appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
 

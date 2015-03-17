@@ -12,9 +12,9 @@ Class for a single annotation
 
 }
 \details{
-A complex heatmap always has more than one annotations on rows and columns. The most simple annotation is one row or one column grids in which different colors represent different classes of the data. The annotation can also be more complex graphics, such as a boxplot that shows data distribution in corresponding row or column.  
+A complex heatmap always has more than one annotations on rows and columns. Here the \code{\link{SingleAnnotation-class}} defines the basic unit of annotations. The most simple annotation is one row or one column grids in which different colors represent different classes of the data. The annotation can also be more complex graphics, such as a boxplot that shows data distribution in corresponding row or column.  
 
-The \code{\link{SingleAnnotation-class}} is used for storing data for a single annotation and provides methods for drawing annotation grahics.  
+The \code{\link{SingleAnnotation-class}} is used for storing data for a single annotation and provides methods for drawing annotation graphics.  
 
 
 }

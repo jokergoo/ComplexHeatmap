@@ -96,7 +96,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_bar = function(x, which = c("column", "row"), 
+anno_barplot = function(x, which = c("column", "row"), 
 	gp = gpar(fill = "#CCCCCC"), ...) {
 	x = x
 	which = match.arg(which)[1]
@@ -219,11 +219,210 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 		})
 }
 
+# == title
+# Using histogram as annotation
+#
+# == param
+# -x a matrix or a list. If ``x`` is a matrix and if ``which`` is ``column``, statistics for histogram
+#    is calculated by columns, if ``which`` is ``row``, the calculation is by rows.
+# -which is the annotation a column annotation or a row annotation?
+# -gp graphic parameters
+# -... pass to `stats::hist`
+#
+# == value
+# A graphic function which can be set in `HeatmapAnnotation` constructor method.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...) {
+	x = x
+	which = match.arg(which)[1]
 
-anno_histogram = function() {
+	gp = check_gp(gp)
 
+	switch(which,
+		row = function(index) {
+			if(is.matrix(x)) {
+				x = x[index, , drop = FALSE]
+				histogram_stats = apply(x, 1, hist, plot = FALSE, ...)
+				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
+				histogram_counts = lapply(histogram_stats, function(x) x$counts)
+			} else {
+				x = x[index]
+				histogram_stats = lapply(x, hist, plot = FALSE, ...)
+				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
+				histogram_counts = lapply(histogram_stats, function(x) x$counts)
+			}
+
+			xscale = range(unlist(histogram_breaks))
+			xscale = xscale + c(-0.05, 0.05)*(xscale[2] - xscale[1])
+			yscale = c(0, max(unlist(histogram_counts)))
+			yscale[2] = yscale[2]*1.05
+			
+			n = length(index)
+			gp = recycle_gp(gp, n)
+			if(n != length(histogram_counts)) {
+				stop(paste0("Length of index should be ", length(histogram_counts)))
+			}
+			for(i in seq_len(n)) {
+				n_breaks = length(histogram_breaks[[i]])
+				pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), height = unit(1/n, "npc"), just = c("left", "bottom"), xscale = xscale, yscale = yscale))
+				grid.rect(x = histogram_breaks[[i]][-1], y = 0, width = histogram_breaks[[i]][-1] - histogram_breaks[[i]][-n_breaks], height = histogram_counts[[i]], just = c("right", "bottom"), default.units = "native", gp = subset_gp(gp, i))	
+				upViewport()
+			}
+		},
+		column = function(index) {
+			if(is.matrix(x)) {
+				x = x[, index, drop = FALSE]
+				histogram_stats = apply(x, 2, hist, plot = FALSE, ...)
+				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
+				histogram_counts = lapply(histogram_stats, function(x) x$counts)
+			} else {
+				x = x[index]
+				histogram_stats = lapply(x, hist, plot = FALSE, ...)
+				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
+				histogram_counts = lapply(histogram_stats, function(x) x$counts)
+			}
+
+			yscale = range(unlist(histogram_breaks))
+			yscale = yscale + c(-0.05, 0.05)*(yscale[2] - yscale[1])
+			xscale = c(0, max(unlist(histogram_counts)))
+			xscale[2] = xscale[2]*1.05
+
+			n = length(index)
+			gp = recycle_gp(gp, n)
+			if(n != length(histogram_counts)) {
+				stop(paste0("Length of index should be ", length(histogram_counts)))
+			}
+			for(i in seq_len(n)) {
+				n_breaks = length(histogram_breaks[[i]])
+				pushViewport(viewport(y = unit(0, "npc"), x = unit(i/n, "npc"), width = unit(1/n, "npc"), just = c("right", "bottom"), xscale = xscale, yscale = yscale))
+				grid.rect(y = histogram_breaks[[i]][-1], x = 0, height = histogram_breaks[[i]][-1] - histogram_breaks[[i]][-n_breaks], width = histogram_counts[[i]], just = c("left", "top"), default.units = "native", gp = subset_gp(gp, i))	
+				upViewport()
+			}
+		})
 }
 
-anno_density = function(type = c("line", "violin", "heatmap")) {
+# == title
+# Using kernel density as annotation
+#
+# == param
+# -x a matrix or a list. If ``x`` is a matrix and if ``which`` is ``column``, statistics for density
+#    is calculated by columns, if ``which`` is ``row``, the calculation is by rows.
+# -which is the annotation a column annotation or a row annotation?
+# -gp graphic parameters
+# -type which type of graphics is used to represent density distribution
+# -... passing to `stats::density`
+#
+# == value
+# A graphic function which can be set in `HeatmapAnnotation` constructor method.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
+	type = c("lines", "violin", "heatmap"), ...) {
+	x = x
+	which = match.arg(which)[1]
+	type = match.arg(type)[1]
 
+	gp = check_gp(gp)
+
+	switch(which,
+		row = function(index) {
+			if(is.matrix(x)) {
+				x = x[index, , drop = FALSE]
+				density_stats = apply(x, 1, density, ...)
+				density_x = lapply(density_stats, function(x) x$x)
+				density_y = lapply(density_stats, function(x) x$y)
+			} else {
+				x = x[index]
+				density_stats = lapply(x, density, ...)
+				density_x = lapply(density_stats, function(x) x$x)
+				density_y = lapply(density_stats, function(x) x$y)
+			}
+
+			xscale = range(unlist(density_x))
+			xscale = xscale + c(-0.05, 0.05)*(xscale[2] - xscale[1])
+			if(type == "lines") {
+				yscale = c(0, max(unlist(density_y)))
+				yscale[2] = yscale[2]*1.05
+			} else if(type == "violin") {
+				yscale = max(unlist(density_y))
+				yscale = c(-yscale*1.05, yscale*1.05)
+			} else if(type == "heatmap") {
+				xscale = range(unlist(density_x))
+				yscale = c(0, 1)
+				min_y = min(unlist(density_y))
+				max_y = max(unlist(density_y))
+				col_fun = colorRamp2(seq(min_y, max_y, length = 11), rev(brewer.pal("RdYlBu", 11)))
+			}
+
+			n = length(index)
+			gp = recycle_gp(gp, n)
+			if(n != length(density_x)) {
+				stop(paste0("Length of index should be ", length(density_x)))
+			}
+			for(i in seq_len(n)) {
+				pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), just = c("left", "bottom"), height = unit(1/n, "npc"), xscale = xscale, yscale = yscale))
+				if(type == "lines") {
+					grid.polygon(x = density_x[[i]], y = density_y[[i]], default.units = "native", gp = subset_gp(gp, i))
+				} else if(type == "violin") {
+					grid.polygon(x = c(density_x[[i]], rev(density_x[[i]])), y = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", gp = subset_gp(gp, i))
+				} else if(type == "heatmap") {
+					n_breaks = length(density_x[[i]])
+					grid.rect(x = density_x[[i]][-1], y = 0, width = density_x[[i]][-1] - density_x[[i]][-n_breaks], height = 1, just = c("right", "bottom"), default.units = "native", gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2)))
+				}
+				upViewport()
+			}
+		},
+		column = function(index) {
+			if(is.matrix(x)) {
+				x = x[index, , drop = FALSE]
+				density_stats = apply(x, 2, density, ...)
+				density_x = lapply(density_stats, function(x) x$x)
+				density_y = lapply(density_stats, function(x) x$y)
+			} else {
+				x = x[index]
+				density_stats = lapply(x, density, ...)
+				density_x = lapply(density_stats, function(x) x$x)
+				density_y = lapply(density_stats, function(x) x$y)
+			}
+
+			yscale = range(unlist(density_x))
+			yscale = yscale + c(-0.05, 0.05)*(yscale[2] - yscale[1])
+			if(type == "lines") {
+				xscale = c(0, max(unlist(density_y)))
+				xscale[2] = xscale[2]*1.05
+			} else if(type == "violin") {
+				xscale = max(unlist(density_y))
+				xscale = c(-xscale*1.05, xscale*1.05)
+			} else if(type == "heatmap") {
+				yscale = range(unlist(density_x))
+				xscale = c(0, 1)
+				min_y = min(unlist(density_y))
+				max_y = max(unlist(density_y))
+				col_fun = colorRamp2(seq(min_y, max_y, length = 11), rev(brewer.pal("RdYlBu", 11)))
+			}
+
+			n = length(index)
+			gp = recycle_gp(gp, n)
+			if(n != length(density_x)) {
+				stop(paste0("Length of index should be ", length(density_x)))
+			}
+			for(i in seq_len(n)) {
+				pushViewport(viewport(y = unit(0, "npc"), x = unit(i/n, "npc"), width = unit(1/n, "npc"), just = c("right", "bottom"), xscale = xscale, yscale = yscale))
+				if(type == "lines") {
+					grid.polygon(y = density_x[[i]], x = density_y[[i]], default.units = "native", gp = subset_gp(gp, i))
+				} else if(type == "violin") {
+					grid.polygon(y = c(density_x[[i]], rev(density_x[[i]])), x = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", gp = subset_gp(gp, i))
+				} else if(type == "heatmap") {
+					n_breaks = length(density_x[[i]])
+					grid.rect(y = density_x[[i]][-1], x = 0, height = density_x[[i]][-1] - density_x[[i]][-n_breaks], width = 1, just = c("left", "top"), default.units = "native", gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2)))
+				}
+				upViewport()
+			}
+		})
 }
+

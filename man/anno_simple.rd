@@ -17,7 +17,7 @@ anno_simple(x, type = c("p", "histogram", "boxplot"),
 \arguments{
 
   \item{x}{a vector of values.}
-  \item{type}{\code{p} for points, \code{histogram} for histogram.}
+  \item{type}{\code{p} for points, \code{histogram} for histogram. More graphics to be added in the future.}
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{gp}{graphic parameters.}
   \item{...}{pass to corresponding annotation graphic functions.}

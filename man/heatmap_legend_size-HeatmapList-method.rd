@@ -2,12 +2,12 @@
 \alias{heatmap_legend_size,HeatmapList-method}
 \alias{heatmap_legend_size}
 \title{
-Size of the heatmap legend viewprot  
+Size of the heatmap legend viewport  
 
 
 }
 \description{
-Size of the heatmap legend viewprot  
+Size of the heatmap legend viewport  
 
 
 }

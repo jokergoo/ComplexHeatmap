@@ -19,7 +19,7 @@ Draw row names or column names
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{which}{are names put on the row or on the column of the heatmap?}
-  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
+  \item{k}{a matrix may be split by rows, the value identifies which row-slice.}
   \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
 
 }

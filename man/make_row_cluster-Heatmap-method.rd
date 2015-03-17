@@ -20,7 +20,7 @@ Make cluster on rows
   \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{order}{a pre-defined order.}
   \item{km}{if apply k-means clustering on rows, number of clusters.}
-  \item{split}{a vector or a data frame by which the rows are be splitted.}
+  \item{split}{a vector or a data frame by which the rows are be split.}
 
 }
 \details{

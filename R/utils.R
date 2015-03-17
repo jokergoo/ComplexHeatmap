@@ -268,3 +268,11 @@ check_gp = function(gp) {
     }
     return(gp)
 }
+
+
+# gp should already be checked by `check_gp`
+subset_gp = function(gp, k) {
+    gp = lapply(gp, function(x) x[k])
+    class(gp) = "gpar"
+    return(gp)
+}

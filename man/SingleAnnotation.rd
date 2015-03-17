@@ -28,7 +28,7 @@ SingleAnnotation(name, value, col, fun, which = c("column", "row"),
 \details{
 The most simple annotation is one row or one column grids in which different colors represent different classes of the data. Here the function use \code{\link{ColorMapping-class}} to process such simple annotation. \code{value} and \code{col} arguments controls values and colors of the simple annotation and a \code{\link{ColorMapping-class}} object will be constructed based on \code{value} and \code{col}.  
 
-\code{fun} is used to construct a more complex annotation. Users can add any type of annotation graphics by implementing a function. The only input argument of \code{fun} is a index of rows or columns which is already adjusted by the clustering. In the packcage, there are already several annotation graphic function generators: \code{\link{anno_points}}, \code{\link{anno_histogram}} and \code{\link{anno_boxplot}}.  
+\code{fun} is used to construct a more complex annotation. Users can add any type of annotation graphics by implementing a function. The only input argument of \code{fun} is a index of rows or columns which is already adjusted by the clustering. In the package, there are already several annotation graphic function generators: \code{\link{anno_points}}, \code{\link{anno_histogram}} and \code{\link{anno_boxplot}}.  
 
 One thing that users should be careful is the difference of coordinates when the annotation is a row annotation or a column annotation.   
 

@@ -23,10 +23,15 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
   \item{...}{pass to \code{\link[grid]{viewport}} that contains the dendrogram.}
 
 }
-\section{Dedails}{
+\details{
+The dendrogram tree can be renderred (e.g. by \code{dendextend} package).  
+
 A viewport is created which contains the dendrogram.  
 
 
+}
+\section{Dedails}{
+A viewport is created which contains the dendrogram.
 }
 \value{
 No value is returned.  

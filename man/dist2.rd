@@ -21,7 +21,7 @@ dist2(mat, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...)
 
 }
 \details{
-You can construct any type of distance measurements by defining a pair-wise distance function. The function is implemented by two nested for loops, thus the efficiency may not be so good.  
+You can construct any type of distance measurements by defining a pair-wise distance function. The function is implemented by two nested \code{for} loops, thus the efficiency may not be so good.  
 
 
 }

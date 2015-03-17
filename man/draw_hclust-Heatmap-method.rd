@@ -34,7 +34,7 @@ Draw dendrogram on row or column
 
 }
 \details{
-If the matrix is splitted into several row slices, a list of dendrograms wil be drawn by  the heatmap that each dendrogram corresponds to its row slices.  
+If the matrix is split into several row slices, a list of dendrograms will be drawn by  the heatmap that each dendrogram corresponds to its row slices.  
 
 A viewport is created which contains dendrograms.  
 

@@ -19,10 +19,13 @@ Width of each heatmap component
   \item{k}{which components, see \code{\link{Heatmap-class}}.}
 
 }
-\section{Detials}{
+\details{
 This function is only for internal use.  
 
 
+}
+\section{Detials}{
+This function is only for internal use.
 }
 \value{
 A \code{\link[grid]{unit}} object.  

@@ -18,8 +18,11 @@ HeatmapList(...)
   \item{...}{arguments}
 
 }
-\section{Detailes}{
+\details{
 There is no public constructor method for the \code{\link{HeatmapList-class}}.  
 
 
+}
+\section{Detailes}{
+There is no public constructor method for the \code{\link{HeatmapList-class}}.
 }
