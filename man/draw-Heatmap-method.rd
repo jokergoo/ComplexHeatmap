@@ -16,7 +16,7 @@ Draw a single heatmap
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{internal}{only for internal use.}
+  \item{internal}{only used inside the calling of \code{\link{draw,HeatmapList-method}}. Only heatmap without legends will be drawn.}
   \item{test}{only for testing}
   \item{...}{pass to \code{\link{draw,HeatmapList-method}}.}
 

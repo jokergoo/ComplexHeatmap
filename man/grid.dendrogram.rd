@@ -30,9 +30,6 @@ A viewport is created which contains the dendrogram.
 
 
 }
-\section{Dedails}{
-A viewport is created which contains the dendrogram.
-}
 \value{
 No value is returned.  
 

@@ -21,7 +21,7 @@ Draw the heatmap annotations
 
 }
 \details{
-A viewport is created.  
+A viewport is created. Mostly, this method is used inside \code{\link{draw,HeatmapList-method}}.  
 
 
 }
@@ -48,10 +48,10 @@ ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue"))
     which = "row")
 grid.newpage(); draw(ha, 1:6)
 
-ha = HeatmapAnnotation(points = anno_simple(1:6, type = "p"))
+ha = HeatmapAnnotation(points = anno_points(1:6))
 grid.newpage(); draw(ha, 1:6)
 
-ha = HeatmapAnnotation(histogram = anno_simple(1:6, type = "histogram"))
+ha = HeatmapAnnotation(histogram = anno_barplot(1:6))
 grid.newpage(); draw(ha, 1:6)
 
 mat = matrix(rnorm(36), 6)

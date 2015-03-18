@@ -17,7 +17,7 @@ Draw column annotations
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{which}{are the annotations put on the top or bottom of the heatmap.}
+  \item{which}{are the annotations put on the top or bottom of the heatmap?}
 
 }
 \details{

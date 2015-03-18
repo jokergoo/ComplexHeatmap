@@ -16,7 +16,7 @@ Width of each heatmap component
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{k}{which components, see \code{\link{Heatmap-class}}.}
+  \item{k}{which component in the heatmap, see \code{\link{Heatmap-class}}.}
 
 }
 \details{

@@ -16,12 +16,14 @@ Size of the annotation legend viewport
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{object}{a \code{\link{HeatmapList-class}} object.}
   \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
-  \item{...}{graphic parameters pass to \code{\link{color_mapping_legend,ColorMapping-method}}.}
+  \item{...}{graphic parameters passed to \code{\link{color_mapping_legend,ColorMapping-method}}.}
 
 }
 \details{
+Legends for all heatmaps or legends for all annotations will be put in one viewport. This function calculates the size of such viewport. Note graphic parameters for legends will affect the size.  
+
 This function is only for internal use.  
 
 

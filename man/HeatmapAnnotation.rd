@@ -54,9 +54,9 @@ ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue"))
 ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), 
     which = "row")
 
-ha = HeatmapAnnotation(points = anno_simple(1:6, type = "p"))
+ha = HeatmapAnnotation(points = anno_points(1:6))
 
-ha = HeatmapAnnotation(histogram = anno_simple(1:6, type = "histogram"))
+ha = HeatmapAnnotation(histogram = anno_points(1:6))
 
 mat = matrix(rnorm(36), 6)
 ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))

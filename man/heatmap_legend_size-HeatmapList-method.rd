@@ -17,7 +17,7 @@ Size of the heatmap legend viewport
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object}
-  \item{...}{graphic parameters pass to \code{\link{color_mapping_legend,ColorMapping-method}}.}
+  \item{...}{graphic parameters passed to \code{\link{color_mapping_legend,ColorMapping-method}}.}
 
 }
 \details{

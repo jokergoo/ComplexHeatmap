@@ -21,7 +21,7 @@ Draw a list of heatmaps
 
 }
 \details{
-The function first calls \code{\link{make_layout,HeatmapList-method}} to calculate the layout of the heatmap list and the layout of every single heatmap, then makes the plot by re-calling the graphic functions which are recorded in the layout.  
+The function first calls \code{\link{make_layout,HeatmapList-method}} to calculate the layout of the heatmap list and the layout of every single heatmap, then makes the plot by re-calling the graphic functions which are already recorded in the layout.  
 
 
 }

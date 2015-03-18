@@ -1,12 +1,12 @@
 \name{anno_barplot}
 \alias{anno_barplot}
 \title{
-Using histogram as annotation  
+Using barplot as annotation  
 
 
 }
 \description{
-Using histogram as annotation  
+Using barplot as annotation  
 
 
 }
@@ -33,9 +33,9 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-f = anno_histogram(rnorm(10))
+f = anno_barplot(rnorm(10))
 grid.newpage(); f(1:10)
 
-f = anno_histogram(rnorm(10), which = "row")
+f = anno_barplot(rnorm(10), which = "row")
 grid.newpage(); f(1:10)
 }

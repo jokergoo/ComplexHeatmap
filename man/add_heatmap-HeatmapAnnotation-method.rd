@@ -1,12 +1,12 @@
 \name{add_heatmap-HeatmapAnnotation-method}
 \alias{add_heatmap,HeatmapAnnotation-method}
 \title{
-Add two row annotations or add heatmaps as a heatmap list  
+Add row annotations or heatmaps as a heatmap list  
 
 
 }
 \description{
-Add two row annotations or add heatmaps as a heatmap list  
+Add row annotations or heatmaps as a heatmap list  
 
 
 }
@@ -42,7 +42,7 @@ colnames(mat) = letters[1:10]
 
 ht = Heatmap(mat)
 
-ha = HeatmapAnnotation(points = anno_simple(1:12, type = "p", which = "row"), 
+ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"), 
     which = "row")
 add_heatmap(ha, ht)
 }
