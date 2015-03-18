@@ -178,7 +178,7 @@ setMethod(f = "add_heatmap",
 # -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
 #
 # == detail
-# It sets the size of each component of the heatmap list and adjust graphic parameters for each heatmap if necessary.
+# It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
 #
 # The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.
 #
@@ -518,7 +518,7 @@ setMethod(f = "make_layout",
 # == detail
 # The function first calls `make_layout,HeatmapList-method` to calculate
 # the layout of the heatmap list and the layout of every single heatmap,
-# then makes the plot by re-calling the graphic functions which are recorded
+# then makes the plot by re-calling the graphic functions which are already recorded
 # in the layout.
 #
 # == value
@@ -560,7 +560,7 @@ setMethod(f = "draw",
 #
 # == param
 # -object a `HeatmapList-class` object.
-# -k which components, see `HeatmapList-class`.
+# -k which component in the heatmap list, see `HeatmapList-class`.
 #
 # == detail
 # This function is only for internal use.
@@ -603,7 +603,7 @@ setMethod(f = "component_width",
 #
 # == param
 # -object a `HeatmapList-class` object.
-# -k which components, see `HeatmapList-class`.
+# -k which component in the heatmap list, see `HeatmapList-class`.
 #
 # == value
 # A `grid::unit` object
@@ -832,7 +832,7 @@ setMethod(f = "draw_title",
 #
 # == param
 # -object a `HeatmapList-class` object
-# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
+# -... graphic parameters passed to `color_mapping_legend,ColorMapping-method`.
 #
 # == details
 # A viewport is created which contains heatmap legends.
@@ -891,7 +891,7 @@ setMethod(f = "draw_heatmap_legend",
 # == param
 # -object a `HeatmapList-class` object
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
-# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
+# -... graphic parameters passed to `color_mapping_legend,ColorMapping-method`.
 #
 # == details
 # A viewport is created which contains annotation legends.
@@ -951,7 +951,7 @@ setMethod(f = "draw_annotation_legend",
 #
 # == param
 # -object a `HeatmapList-class` object
-# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
+# -... graphic parameters passed to `color_mapping_legend,ColorMapping-method`.
 #
 # == detail
 # This function is only for internal use.
@@ -989,11 +989,14 @@ setMethod(f = "heatmap_legend_size",
 # Size of the annotation legend viewport
 #
 # == param
-# -object a `HeatmapList-class` object
+# -object a `HeatmapList-class` object.
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
-# -... graphic parameters pass to `color_mapping_legend,ColorMapping-method`.
+# -... graphic parameters passed to `color_mapping_legend,ColorMapping-method`.
 #
 # == detail
+# Legends for all heatmaps or legends for all annotations will be put in one viewport. This function
+# calculates the size of such viewport. Note graphic parameters for legends will affect the size.
+#
 # This function is only for internal use.
 #
 # == value

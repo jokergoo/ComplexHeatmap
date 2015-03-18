@@ -723,8 +723,7 @@ setMethod(f = "make_layout",
     row_names_gp = object@row_names_param$gp;
     if(show_row_names) {
         row_names_width = max(do.call("unit.c", lapply(seq_along(row_names), function(x) {
-            cgp = lapply(row_names_gp, function(y) y[[x]])
-            class(cgp) = "gpar"
+            cgp = subset_gp(row_names_gp, x)
             grobWidth(textGrob(row_names[x], gp = cgp))
         }))) + unit(2, "mm")
         row_names_width = min(row_names_width, object@row_names_param$max_width)
@@ -758,8 +757,7 @@ setMethod(f = "make_layout",
     column_names_gp = object@column_names_param$gp
     if(show_column_names) {
         column_names_height = max(do.call("unit.c", lapply(seq_along(column_names), function(x) {
-            cgp = lapply(column_names_gp, function(y) y[[x]])
-            class(cgp) = "gpar"
+            cgp = subset_gp(column_names_gp, x)
             grobWidth(textGrob(column_names[x], gp = cgp))
         }))) + unit(2, "mm")
         column_names_height = min(column_names_height, object@column_names_param$max_height)
@@ -832,7 +830,7 @@ setMethod(f = "show",
 })
 
 # == title
-# Add two heatmaps or add row annotations as a heatmap list
+# Add heatmaps or row annotations as a heatmap list
 #
 # == param
 # -object a `Heatmap-class` object.
@@ -927,7 +925,7 @@ setMethod(f = "draw_heatmap_body",
 # == title
 # Draw dendrogram on row or column
 #
-# == params
+# == param
 # -object a `Heatmap-class` object.
 # -which is dendrogram put on the row or on the column of the heatmap?
 # -k a matrix may be splitted by rows, the value identifies which row-slice.
@@ -982,11 +980,11 @@ setMethod(f = "draw_hclust",
     if(side == "left") {
         grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", x = unit(0, "null"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "null"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
     } else if(side == "top") {
         grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = unit(0, "null"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", order = "reverse", y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     } 
 
     upViewport()
@@ -1033,8 +1031,7 @@ setMethod(f = "draw_dimnames",
         "column" = object@column_names_param$gp)
 
     if(which == "row") {
-        gp = lapply(gp, function(y) y[ object@row_order_list[[k]] ])
-        class(gp) = "gpar"
+        gp = subset_gp(gp, object@row_order_list[[k]])
     }
 
     if(is.null(nm)) {
@@ -1129,7 +1126,7 @@ setMethod(f = "draw_title",
 #
 # == param
 # -object a `Heatmap-class` object.
-# -which are the annotations put on the top or bottom of the heatmap.
+# -which are the annotations put on the top or bottom of the heatmap?
 #
 # == details
 # A viewport is created which contains column annotations.
@@ -1168,7 +1165,7 @@ setMethod(f = "draw_annotation",
 #
 # == param
 # -object a `Heatmap-class` object.
-# -k which components, see `Heatmap-class`.
+# -k which component in the heatmap, see `Heatmap-class`.
 #
 # == details
 #
@@ -1216,7 +1213,7 @@ setMethod(f = "component_width",
 #
 # == param
 # -object a `Heatmap-class` object.
-# -k which components, see `Heatmap-class`.
+# -k which component in the heatmap, see `Heatmap-class`.
 #
 # == detail
 #
@@ -1309,7 +1306,7 @@ setMethod(f = "set_component_height",
 #
 # == param
 # -object a `Heatmap-class` object.
-# -internal only for internal use.
+# -internal only used inside the calling of `draw,HeatmapList-method`. Only heatmap without legends will be drawn.
 # -test only for testing
 # -... pass to `draw,HeatmapList-method`.
 #

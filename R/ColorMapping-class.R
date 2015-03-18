@@ -14,9 +14,9 @@
 # == methods
 # The `ColorMapping-class` provides following methods:
 #
-# - `ColorMapping`: contructor methods
-# - `map_to_colors,ColorMapping-method`: mapping values to colors
-# - `color_mapping_legend,ColorMapping-method`: draw legend or get the size of the legend
+# - `ColorMapping`: contructor methods.
+# - `map_to_colors,ColorMapping-method`: mapping values to colors.
+# - `color_mapping_legend,ColorMapping-method`: draw legend or get the size of the legend.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

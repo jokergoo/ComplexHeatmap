@@ -195,7 +195,7 @@ setMethod(f = "get_color_mapping_list",
 # -... pass to `grid::viewport` which contains all annotations.
 #
 # == details
-# A viewport is created.
+# A viewport is created. Mostly, this method is used inside `draw,HeatmapList-method`.
 #
 # == value
 # No value is returned.
@@ -256,7 +256,7 @@ setMethod(f = "show",
 
 
 # == title
-# Add two row annotations or add heatmaps as a heatmap list
+# Add row annotations or heatmaps as a heatmap list
 #
 # == param
 # -object a `HeatmapAnnotation-class` object.

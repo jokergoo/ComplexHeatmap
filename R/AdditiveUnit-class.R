@@ -33,7 +33,7 @@ AdditiveUnit = function(...) {
 # It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
 # or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input objects.
 #
-# The `HeatmapAnnotation-class` object to be added can only be a row annotation.
+# The `HeatmapAnnotation-class` object to be added should only be row annotation.
 #
 # == value
 # A `HeatmapList-class` object.

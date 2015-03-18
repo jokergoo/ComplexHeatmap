@@ -107,6 +107,7 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
         }
 
         .Object@color_mapping = color_mapping
+        value = value
 
         if(which == "column") {
 	        .Object@fun = function(index) {
