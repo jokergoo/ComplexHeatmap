@@ -18,7 +18,7 @@
 # - `ColorMapping-class`: mapping from values to colors.
 #
 # For plotting one single heatmap, please go to the documentation page of `Heatmap`.
-# For plotting multiple heatmaps, please go to `HeatmapList-class` and `+.AdditiveUnit`.
+# For plotting multiple heatmaps, please go to `HeatmapList-class` and ``+.AdditiveUnit``.
 #
 # The vignette provides detailed explanation of how to use this package.
 #

@@ -473,12 +473,17 @@ Heatmap(mat, name = "foo", top_annotation = ha)
 More types of annotations which show data distribution in corresponding rows and columns can be supported
 by `anno_histogram()` and `anno_density()`.
 
-```{r, fig.height = 10}
-ha_mix = HeatmapAnnotation(histogram = anno_histogram(mat, gp = gpar(fill = rep(2:3, each = 5))),
+```{r, fig.height = 10, fig.width = 10}
+ha_mix_top = HeatmapAnnotation(histogram = anno_histogram(mat, gp = gpar(fill = rep(2:3, each = 5))),
     density_line = anno_density(mat, type = "line", gp = gpar(col = rep(2:3, each = 5))),
     violin = anno_density(mat, type = "violin", gp = gpar(fill = rep(2:3, each = 5))),
     heatmap = anno_density(mat, type = "heatmap"))
-Heatmap(mat, name = "foo", top_annotation = ha_mix, top_annotation_height = unit(8, "cm"))
+ha_mix_right = HeatmapAnnotation(histogram = anno_histogram(mat, gp = gpar(fill = rep(2:3, each = 5)), which = "row"),
+    density_line = anno_density(mat, type = "line", gp = gpar(col = rep(2:3, each = 5)), which = "row"),
+    violin = anno_density(mat, type = "violin", gp = gpar(fill = rep(2:3, each = 5)), which = "row"),
+    heatmap = anno_density(mat, type = "heatmap", which = "row"), 
+    which = "row", width = unit(8, "cm"))
+Heatmap(mat, name = "foo", top_annotation = ha_mix_top, top_annotation_height = unit(8, "cm")) + ha_mix_right
 ```
 
 The `HeatmapAnnotation` is also used for construction of row annotations which we will introduce in later sections.

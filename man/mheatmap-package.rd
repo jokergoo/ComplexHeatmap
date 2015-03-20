@@ -29,7 +29,7 @@ There are also several internal classes:
   \item \code{\link{ColorMapping-class}}: mapping from values to colors.
 }
 
-For plotting one single heatmap, please go to the documentation page of \code{\link{Heatmap}}. For plotting multiple heatmaps, please go to \code{\link{HeatmapList-class}} and \code{\link{+.AdditiveUnit}}.  
+For plotting one single heatmap, please go to the documentation page of \code{\link{Heatmap}}. For plotting multiple heatmaps, please go to \code{\link{HeatmapList-class}} and \code{+.AdditiveUnit}.  
 
 The vignette provides detailed explanation of how to use this package.  
 

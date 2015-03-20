@@ -16,3 +16,7 @@ This class is a super class for \code{\link{Heatmap-class}}, \code{\link{Heatmap
 
 
 }
+\examples{
+# no example
+NULL
+}

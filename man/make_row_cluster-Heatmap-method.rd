@@ -42,3 +42,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 }
+\examples{
+# no example for this internal method
+NULL
+}

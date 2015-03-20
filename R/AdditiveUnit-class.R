@@ -17,6 +17,12 @@ AdditiveUnit = setClass("AdditiveUnit")
 # == details
 # This method is not used in the package.
 #
+# == value
+# No value is returned.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 AdditiveUnit = function(...) {
     new("AdditiveUnit", ...)
 }

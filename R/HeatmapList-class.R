@@ -96,6 +96,12 @@ HeatmapList = setClass("HeatmapList",
 # == details
 # There is no public constructor method for the `HeatmapList-class`.
 #
+# == value
+# No value is returned.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 HeatmapList = function(...) {
     new("HeatmapList", ...)
 }

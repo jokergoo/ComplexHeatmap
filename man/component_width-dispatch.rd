@@ -10,8 +10,12 @@ Method dispatch page for \code{component_width}.
 \code{component_width} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{component_width,HeatmapList-method}}, \code{\link{HeatmapList}} class method
-\item \code{\link{component_width,Heatmap-method}}, \code{\link{Heatmap}} class method
+\item \code{\link{component_width,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
+\item \code{\link{component_width,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 
+}
+\examples{
+# no example
+NULL
 }
