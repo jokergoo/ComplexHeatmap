@@ -746,8 +746,6 @@ in which each row in the data frame focuses on the same element.
 Then, each subject can be visualized as a single heatmap and putting all subjects 
 together can give you a full view of your data.
 
-### Gene expression
-
 In gene expression matrix, rows correspond to genes. More information about genes can be attached after the expression
 heatmap such as gene length and type of genes.
 
@@ -768,39 +766,8 @@ Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))),
     width = unit(5, "mm"))
 ```
 
-### Visualize genomic regions
+## Session info
 
-Genomic regions can have more corresponded information. E.g. for a list of differentially methylated regions (DMRs), 
-we can add an expression matrix in which genes are the closest to corresponding DMR, also how DMRs overlap to 
-different genomic features can be added as heatmaps as well.
-
-In following example, there are heatmaps for methylation, expression of associated genes, correlation significance (-log10 transformed)
-between methylation and expression for each DMR and the associated gene, how DMRs annotated to gene regions, and how 
-DMRs annotated to enhancers. From the figure below, it is very obvious to see the enhancers are enriched in low-methylated DMRs.
-
-```{r, fig.width = 8, fig.height = 12}
-gr = readRDS(paste0(system.file(package = "mheatmap"), "/extdata/gr.rds"))
-
-ha1 = HeatmapAnnotation(df = data.frame(type = c(rep("control", 7), rep("experiment", 5))))
-ha2 = HeatmapAnnotation(df = data.frame(type = c(rep("control", 7), rep("experiment", 5))), 
-    show_legend = FALSE)
-
-ht_list = Heatmap(gr[, 1:12], name = "methylation", col = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")),
-    top_annotation = ha1, top_annotation_height = unit(4, "mm"), show_row_names = FALSE,
-    show_column_names = FALSE, split = gr$direction, column_title = "DMR methylation") +
-Heatmap(gr[, 13:24], name = "expression", col = colorRamp2(c(-2, 0, 2), c("green", "white", "red")),
-    top_annotation = ha2, top_annotation_height = unit(4, "mm"), show_row_names = FALSE,
-    show_column_names = FALSE, cluster_columns = FALSE, cluster_rows = FALSE, 
-    column_title = "target expression") + 
-Heatmap(gr$cor_p, name = "-log10(pvalue)", col = colorRamp2(c(1, 4), c("white", "red")), width = unit(5, "mm")) +
-Heatmap(gr$annotation, name = "annotation", width = unit(5, "mm")) +
-Heatmap(gr[, 28:29], name = "enhancer", col = colorRamp2(c(0, 1), c("white", "orange")), 
-    cluster_columns = FALSE, show_row_names = FALSE, width = unit(1, "cm"), cluster_rows = FALSE,
-    column_names_max_height = grobWidth(textGrob("strong_enhancer", gp = gpar(fontsize = 12))),
-    column_title = "enhancer")
-
-draw(ht_list, column_title = qq("negative correlation between DMR methylation and target expression\n@{nrow(gr)} interactions"))
+```{r}
+sessionInfo()
 ```
-
-
-
