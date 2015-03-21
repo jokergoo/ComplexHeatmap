@@ -1,6 +1,6 @@
-\name{mheatmap-package}
+\name{ComplexHeatmap-package}
 \docType{package}
-\alias{mheatmap-package}
+\alias{ComplexHeatmap-package}
 \title{
 Making complex heatmap  
 

@@ -1,4 +1,4 @@
-Package: mheatmap
+Package: ComplexHeatmap
 Type: Package
 Title: Making Complex Heatmaps
 Version: 0.99.0

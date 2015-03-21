@@ -1,4 +1,4 @@
-# == title (package:mheatmap)
+# == title (package:ComplexHeatmap)
 # Making complex heatmap
 #
 # == details

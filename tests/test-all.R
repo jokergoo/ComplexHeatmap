@@ -1,4 +1,4 @@
 library(testthat)
-suppressWarnings(suppressPackageStartupMessages(library(mheatmap)))
+suppressWarnings(suppressPackageStartupMessages(library(ComplexHeatmap)))
 
-test_package("mheatmap")
+test_package("ComplexHeatmap")
