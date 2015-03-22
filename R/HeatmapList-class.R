@@ -114,7 +114,7 @@ HeatmapList = function(...) {
 # -x a `Heatmap-class` object or a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == details
-# There is a shortcut function ``+.HeatmapList``.
+# There is a shortcut function ``+.AdditiveUnit``.
 #
 # == value
 # A `HeatmapList-class` object.

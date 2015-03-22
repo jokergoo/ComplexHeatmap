@@ -837,7 +837,7 @@ setMethod(f = "show",
 # -x a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == details
-# There is a shortcut function ``+.Heatmap``.
+# There is a shortcut function ``+.AdditiveUnit``.
 #
 # == value
 # A `HeatmapList-class` object.
