@@ -31,7 +31,7 @@ options(width = 100)
 
 Complex heatmaps are efficient to visualize associations 
 between different sources of data sets and reveal potential features. 
-Here the **mheatmap** package provides a highly flexible way to arrange 
+Here the **ComplexHeatmap** package provides a highly flexible way to arrange 
 multiple heatmaps and supports self-defined annotation graphics.
 
 ## General design
@@ -47,7 +47,7 @@ there are legends for heatmaps themselves and annotations, also there are titles
 on the four sides of the heatmap list. For each heatmap, there are also different components standing
 surrounding the heatmap body.
 
-In **mheatmap** package, components of heatmap lists are abstracted into several classes.
+In **ComplexHeatmap** package, components of heatmap lists are abstracted into several classes.
 
 - `Heatmap` class: a single heatmap containing heatmap body, row/column names, titles, dendrograms and column annotations.
 - `HeatmapList` class: a list of heatmaps and row annotations.
@@ -58,8 +58,8 @@ There are also several internal classes:
 - `SingleAnnotation` class: defines a single row annotation or column annotation.
 - `ColorMapping` class: mapping from values to colors.
 
-**mheatmap** is implemented under **grid** system, so users should know basic **grid** functionality
-to get full use of **mheatmap** package.
+**ComplexHeatmap** is implemented under **grid** system, so users should know basic **grid** functionality
+to get full use of **ComplexHeatmap** package.
 
 ## A single heatmap
 
@@ -70,7 +70,7 @@ how to set parameters for visualization a single heatmap.
 First let's load packages and generate a random matrix:
 
 ```{r}
-library(mheatmap)
+library(ComplexHeatmap)
 library(circlize)
 library(colorspace)
 library(GetoptLong)
@@ -148,7 +148,7 @@ Heatmap(mat, name = "foo", column_title = "I am a big column title",
 
 ### Clustering
 
-Clustering may be the key feature of the heatmap visualization. In **mheatmap** package,
+Clustering may be the key feature of the heatmap visualization. In **ComplexHeatmap** package,
 clustering is supported with high flexibility. For different levels, you can specify the 
 clustering either by a pre-defined method, or by a distance function, or by a object that already
 contains clustering, or directly by a clustering function. It is also possible to render 
@@ -569,7 +569,7 @@ ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", show_heatmap_legend
 ht1 + ht2
 ```
 
-**mheatmap** only generate legends for heatmaps and simple annotations. Self-defined legends
+**ComplexHeatmap** only generate legends for heatmaps and simple annotations. Self-defined legends
 can be passed by `annotation_legend_list` as a list of `grob` objects.
 
 ```{r, fig.width = 10}
@@ -644,7 +644,7 @@ draw(ha, 1:12)
 ### Mix heatmaps and row annotations
 
 Essentially, row annotations and column annotations are identical graphics, but in applications,
-there is some difference. In **mheatmap** package, row annotations have the same place as the heatmap
+there is some difference. In **ComplexHeatmap** package, row annotations have the same place as the heatmap
 while column annotations are just like accessory components of heatmaps. For row annotations, similar
 as heatmaps, you can append the row annotations to heatmap or heatmap list or even row annotation object itself.
 
@@ -750,7 +750,7 @@ In gene expression matrix, rows correspond to genes. More information about gene
 heatmap such as gene length and type of genes.
 
 ```{r, fig.width = 10, fig.height = 8}
-expr = readRDS(paste0(system.file(package = "mheatmap"), "/extdata/gene_expression.rds"))
+expr = readRDS(paste0(system.file(package = "ComplexHeatmap"), "/extdata/gene_expression.rds"))
 mat = as.matrix(expr[, grep("cell", colnames(expr))])
 
 type = gsub("s\\d+_", "", colnames(mat))
