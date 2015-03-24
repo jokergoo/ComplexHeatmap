@@ -473,7 +473,7 @@ setMethod(f = "make_layout",
             }
         }
     }
-    if(length(ColorMappingList) == 0) {
+    if(length(ColorMappingList) == 0 && length(annotation_legend_list) == 0) {
         show_annotation_legend = FALSE
     }
     object@annotation_legend_param$show = show_annotation_legend
@@ -1045,19 +1045,26 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
 
     n = length(ColorMappingList)
 
-    if(n == 0) {
+    if(n == 0 && length(annotation_legend_list) == 0) {
         return(unit(c(0, 0), "null"))
     }
 
-    cm_size = lapply(ColorMappingList, function(cm) color_mapping_legend(cm, plot = FALSE, ...))
-    cm_width = do.call("unit.c", lapply(cm_size, function(x) x[1]))
-    cm_height = do.call("unit.c", lapply(cm_size, function(x) x[2]))
+    if(n > 0 && length(annotation_legend_list) > 0) {
+        cm_size = lapply(ColorMappingList, function(cm) color_mapping_legend(cm, plot = FALSE, ...))
+        cm_width = do.call("unit.c", lapply(cm_size, function(x) x[1]))
+        cm_height = do.call("unit.c", lapply(cm_size, function(x) x[2]))
 
-    if(length(annotation_legend_list)) {
         for(i in seq_along(annotation_legend_list)) {
             cm_width = unit.c(cm_width, grobWidth(annotation_legend_list[[i]]))
             cm_height = unit.c(cm_height, grobHeight(annotation_legend_list[[i]]))
         }
+    } else if(n > 0) {
+        cm_size = lapply(ColorMappingList, function(cm) color_mapping_legend(cm, plot = FALSE, ...))
+        cm_width = do.call("unit.c", lapply(cm_size, function(x) x[1]))
+        cm_height = do.call("unit.c", lapply(cm_size, function(x) x[2]))
+    } else if(length(annotation_legend_list) > 0) {
+        cm_width = do.call("unit.c", lapply(annotation_legend_list, grobWidth))
+        cm_height = do.call("unit.c", lapply(annotation_legend_list, grobHeight))
     }
 
     if(side %in% c("left", "right")) {
@@ -1103,9 +1110,9 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
             for(i in seq_len(n)) {
                 cm = ColorMappingList[[i]]
                 if(side == "top") {
-                    color_mapping_legend(cm, x = sum(cm_width[seq_len(i)] + gap*(i-1)), y = unit(1, "npc"), just = c("left", "top"), plot = TRUE)
+                    color_mapping_legend(cm, x = sum(cm_width[seq_len(i)]) + gap*(i-1), y = unit(1, "npc"), just = c("left", "top"), plot = TRUE, ...)
                 } else {
-                    color_mapping_legend(cm, x = sum(cm_width[seq_len(i)] + gap*(i-1)), y = unit(1, "npc") - padding[3], just = c("left", "top"), plot = TRUE)
+                    color_mapping_legend(cm, x = sum(cm_width[seq_len(i)]) + gap*(i-1), y = unit(1, "npc") - padding[3], just = c("left", "top"), plot = TRUE, ...)
                 }
             }
 

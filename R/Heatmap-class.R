@@ -905,16 +905,16 @@ setMethod(f = "draw_heatmap_body",
     if(any(names(gp) %in% c("type"))) {
         if(gp$type == "none") {
         } else {
-            grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = 1/nc, height = 1/nr, gp = do.call("gpar", c(list(fill = col_matrix), gp)))
+            grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
         }
     } else {
-        grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = 1/nc, height = 1/nr, gp = do.call("gpar", c(list(fill = col_matrix), gp)))
+        grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
     }
     
     cell_fun = object@matrix_param$cell_fun
     for(i in seq_along(row_order)) {
         for(j in seq_along(column_order)) {
-            cell_fun(column_order[j], row_order[i], x[j], y[i], 1/nc, 1/nr, col_matrix[i, j])
+            cell_fun(column_order[j], row_order[i], x[j], y[i], unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[i, j])
         }
     }
 
