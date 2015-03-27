@@ -1,7 +1,6 @@
 CHANGES IN VERSION 0.99.2
 
 * add chunk labels in the vignette
-* set dependency of R to 3.2.0
 
 =================================================
 
