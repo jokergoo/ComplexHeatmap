@@ -1,0 +1,14 @@
+CHANGES IN VERSION 0.99.2
+
+* add chunk labels in the vignette
+
+=================================================
+
+CHANGES IN VERSION 0.99.1
+
+* x and y in `cell_fun` are now `unit` objects.
+
+=================================================
+CHANGES IN VERSION 0.99.0
+
+* First release

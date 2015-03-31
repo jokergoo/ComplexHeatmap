@@ -1,0 +1,60 @@
+\name{draw-HeatmapAnnotation-method}
+\alias{draw,HeatmapAnnotation-method}
+\title{
+Draw the heatmap annotations  
+
+
+}
+\description{
+Draw the heatmap annotations  
+
+
+}
+\usage{
+\S4method{draw}{HeatmapAnnotation}(object, index, ...)
+}
+\arguments{
+
+  \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
+  \item{index}{a vector of order.}
+  \item{...}{pass to \code{\link[grid]{viewport}} which contains all annotations.}
+
+}
+\details{
+A viewport is created. Mostly, this method is used inside \code{\link{draw,HeatmapList-method}}.  
+
+
+}
+\value{
+No value is returned.  
+
+
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>  
+
+
+}
+\examples{
+df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
+ha = HeatmapAnnotation(df = df)
+grid.newpage(); draw(ha, 1:6)
+grid.newpage(); draw(ha, 6:1)
+
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
+grid.newpage(); draw(ha, 1:6)
+
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), 
+    which = "row")
+grid.newpage(); draw(ha, 1:6)
+
+ha = HeatmapAnnotation(points = anno_points(1:6))
+grid.newpage(); draw(ha, 1:6)
+
+ha = HeatmapAnnotation(histogram = anno_barplot(1:6))
+grid.newpage(); draw(ha, 1:6)
+
+mat = matrix(rnorm(36), 6)
+ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
+grid.newpage(); draw(ha, 1:6)
+}
