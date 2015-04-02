@@ -739,7 +739,7 @@ seekViewport("annotation_type")
 grid.text("type", unit(1, "npc") + unit(2, "mm"), 0.5, default.units = "npc", just = "left")
 ```
 
-## Real application
+## Real applications
 
 Data frame is an ideal data structure to store different subjects of information 
 in which each row in the data frame focuses on the same element.
@@ -764,6 +764,32 @@ Heatmap(expr$length, name = "length", col = colorRamp2(c(0, 100000), c("white", 
 Heatmap(expr$type, name = "type", width = unit(5, "mm")) +
 Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))), 
     width = unit(5, "mm"))
+```
+
+Following examples is <a href="http://www.cbioportal.org/faq.jsp#what-are-oncoprints">OncoPrint</a>.
+The basic idea is to self define the heatmap body. Besides the default style which is 
+provided by <a href="http://www.cbioportal.org/index.do">cBioPortal</a>, there are
+additional barplots at both sides of the heatmap which show numbers of different alterations for
+each sample and for each gene.
+
+```{r, echo = FALSE, fig.width = 10, fig.height = 8}
+source("oncoprint.R")
+```
+
+Following examples visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 
+From left to right, heatmaps are:
+
+1. methylation for each DMRs in samples.
+2. direction of the methylation (one column heatmap), i.e. is methylation hyper in tumor or hypo?
+3. expression for the genes that are associated with corresponding DMRs (e.g. closest gene).
+4. signiciance for the correlation between methylation and expression (-log10(p-value)).
+5. type of genes, i.e. is the gene a protein coding gene or a lincRNA?
+6. annotation to gene models, i.e. is the DMR located in the intragenic region of the corresponding gene or the DMR is intergenic?
+7. distance from the DMR to the TSS of the corresponding gene.
+8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
+
+```{r, echo = FALSE, fig.width = 10, fig.height = 8}
+source("genomic_regions.R")
 ```
 
 ## Session info
