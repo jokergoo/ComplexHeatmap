@@ -770,7 +770,7 @@ Following examples is <a href="http://www.cbioportal.org/faq.jsp#what-are-oncopr
 The basic idea is to self define the heatmap body. Besides the default style which is 
 provided by <a href="http://www.cbioportal.org/index.do">cBioPortal</a>, there are
 additional barplots at both sides of the heatmap which show numbers of different alterations for
-each sample and for each gene.
+each sample and for each gene. Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blob/master/vignettes/oncoprint.R">here</a>.
 
 ```{r, echo = FALSE, fig.width = 10, fig.height = 8}
 source("oncoprint.R")
@@ -779,14 +779,16 @@ source("oncoprint.R")
 Following examples visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 
 From left to right, heatmaps are:
 
-1. methylation for each DMRs in samples.
+1. methylation for each DMR (by rows) in samples.
 2. direction of the methylation (one column heatmap), i.e. is methylation hyper in tumor or hypo?
 3. expression for the genes that are associated with corresponding DMRs (e.g. closest gene).
-4. signiciance for the correlation between methylation and expression (-log10(p-value)).
+4. significance for the correlation between methylation and expression (-log10(p-value)).
 5. type of genes, i.e. is the gene a protein coding gene or a lincRNA?
 6. annotation to gene models, i.e. is the DMR located in the intragenic region of the corresponding gene or the DMR is intergenic?
 7. distance from the DMR to the TSS of the corresponding gene.
 8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
+
+Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blob/master/vignettes/genomic_regions.R">here</a>.
 
 ```{r, echo = FALSE, fig.width = 10, fig.height = 8}
 source("genomic_regions.R")
