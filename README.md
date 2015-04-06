@@ -16,6 +16,15 @@ The package makes heatmaps in an object oriented way by abstracting heatmaps int
 
 and provides methods for arranging and plotting each heatmap components.
 
+## Install
+
+`ComplexHeatmap` is available on Bioconductor, you can intall it by:
+
+```{r}
+source("http://bioconductor.org/biocLite.R")
+biocLite("ComplexHeatmap")
+```
+
 ## Usage
 
 Make a single heatmap:
