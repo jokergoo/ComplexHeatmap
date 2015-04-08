@@ -1,3 +1,8 @@
+CHANGES IN VERSION 0.99.4
+
+* fixed a bug when setting `cluster_rows` to FALSE but still cluster
+  on rows.
+
 CHANGES IN VERSION 0.99.2
 
 * add two examples in vignette
