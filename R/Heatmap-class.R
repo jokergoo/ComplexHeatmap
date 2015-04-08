@@ -450,6 +450,10 @@ setMethod(f = "make_column_cluster",
     distance = object@column_hclust_param$distance
     method = object@column_hclust_param$method
 
+    if(!object@column_hclust_param$cluster && is.null(order)) {
+        order = seq_len(ncol(mat))
+    }
+
     if(is.null(order)) {
         if(!is.null(object@column_hclust_param$obj)) {
             object@column_hclust = object@column_hclust_param$obj
@@ -499,6 +503,10 @@ setMethod(f = "make_row_cluster",
     mat = object@matrix
     distance = object@row_hclust_param$distance
     method = object@row_hclust_param$method
+
+    if(!object@row_hclust_param$cluster && is.null(order)) {
+        order = seq_len(nrow(mat))
+    }
 
     if(is.null(order)) {
 
@@ -1383,7 +1391,9 @@ setMethod(f = "prepare",
     signature = "Heatmap",
     definition = function(object, row_order = NULL, split = object@matrix_param$split) {
 
-    if(object@row_hclust_param$cluster || !is.null(split)) object = make_row_cluster(object, order = row_order, split = split)
+    if(object@row_hclust_param$cluster || !is.null(split)) {
+        object = make_row_cluster(object, order = row_order, split = split)
+    }
     if(object@column_hclust_param$cluster) object = make_column_cluster(object)
 
     object = make_layout(object)

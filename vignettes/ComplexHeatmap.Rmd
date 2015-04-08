@@ -628,6 +628,14 @@ draw(ht2 + ht1)
 draw(ht2 + ht1, main_heatmap = "ht1")
 ```
 
+If there is no row clustering in the main heatmap, all other heatmaps have no row clustering neither.
+
+```{r heatmap_list_auto_adjust_no_row_cluster, fig.width = 10}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", cluster_rows = FALSE)
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
+ht1 + ht2
+```
+
 ## Heatmap list with row annotations
 
 ### Row annotations
