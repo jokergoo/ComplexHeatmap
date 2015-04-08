@@ -292,7 +292,7 @@ Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering), gap = unit(5, "
 Character matrix can only be split by `split` argument.
 
 ```{r split_discrete_matrix}
-Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], 5))
+Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], each = 5))
 ```
 
 ### Self define the heatmap body
