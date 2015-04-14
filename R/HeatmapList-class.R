@@ -730,13 +730,17 @@ setMethod(f = "draw_heatmap_list",
     })
     heatmap_fixed_width = do.call("unit.c", heatmap_fixed_width)
     # width for body for each heatmap
-    heatmap_body_width = (unit(1, "npc") - sum(width_without_heatmap_body) - sum(heatmap_fixed_width) - sum(gap) + gap[length(gap)]) * (1/sum(heatmap_ncol)) * heatmap_ncol
+    if(sum(heatmap_ncol) == 0) {
+        heatmap_nofixed_width = unit(rep(0, n), "null")
+    } else {
+        heatmap_nofixed_width = (unit(1, "npc") - sum(width_without_heatmap_body) - sum(heatmap_fixed_width) - sum(gap) + gap[length(gap)]) * (1/sum(heatmap_ncol)) * heatmap_ncol
+    }
 
     # width of heatmap including body, and other components
     # width without fixed width
-    heatmap_width = sum(width_without_heatmap_body[1:3]) + heatmap_body_width[1] + sum(width_without_heatmap_body[5:7-1])
+    heatmap_width = sum(width_without_heatmap_body[1:3]) + heatmap_nofixed_width[1] + sum(width_without_heatmap_body[5:7-1])
     for(i in seq_len(n - 1) + 1) {
-        heatmap_width = unit.c(heatmap_width, sum(width_without_heatmap_body[6*(i-1) + 1:3]) + heatmap_body_width[i] + sum(width_without_heatmap_body[6*(i-1) + 5:7-1]))
+        heatmap_width = unit.c(heatmap_width, sum(width_without_heatmap_body[6*(i-1) + 1:3]) + heatmap_nofixed_width[i] + sum(width_without_heatmap_body[6*(i-1) + 5:7-1]))
     }
     # width with fixed width
     heatmap_width = heatmap_width + heatmap_fixed_width

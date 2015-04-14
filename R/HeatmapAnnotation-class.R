@@ -57,6 +57,9 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # == value
 # A `HeatmapAnnotation-class` object.
 #
+# == seealso
+# There are two shortcut functions: `rowAnnotation` and `columnAnnotation`.
+#
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
@@ -154,6 +157,48 @@ HeatmapAnnotation = function(df, name, col, show_legend, ...,
     .Object@size = size
 
     return(.Object)
+}
+
+# == title
+# Construct row annotations
+#
+# == param
+# -... pass to `HeatmapAnnotation`
+#
+# == details
+# The function is identical to 
+#
+#     HeatmapAnnotation(..., which = "row")
+#
+# == value
+# A `HeatmapAnnotation-class` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+rowAnnotation = function(...) {
+	HeatmapAnnotation(..., which = "row")
+}
+
+# == title
+# Construct column annotations
+#
+# == param
+# -... pass to `HeatmapAnnotation`
+#
+# == details
+# The function is identical to
+#
+#     HeatmapAnnotation(..., which = "column")
+#
+# == value
+# A `HeatmapAnnotation-class` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+columnAnnotation = function(...) {
+	HeatmapAnnotation(..., which = "column")
 }
 
 # == title

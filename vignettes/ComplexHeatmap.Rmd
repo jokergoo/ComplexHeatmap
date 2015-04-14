@@ -649,6 +649,14 @@ ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "cm"))
 draw(ha, 1:12)
 ```
 
+Similar, there can be more than one row annotation:
+
+```{r, fig.width = 3, fig.height = 7}
+ha_combined = HeatmapAnnotation(df = df, boxplot = anno_boxplot(mat, which = "row"), 
+    which = "row", annotation_width = unit(c(1, 3), "cm"))
+draw(ha_combined, 1:12)
+```
+
 ### Mix heatmaps and row annotations
 
 Essentially, row annotations and column annotations are identical graphics, but in applications,
@@ -677,7 +685,7 @@ For row annotations, more complex annotation graphics can help to visualize the 
 ht1 = Heatmap(mat, name = "ht1", km = 2)
 random_data = lapply(1:12, function(x) runif(20))
 random_data[1:6] = lapply(random_data[1:6], function(x) x*0.5)
-ha = HeatmapAnnotation(distribution = function(index) {
+ha2 = HeatmapAnnotation(distribution = function(index) {
         random_data = random_data[index]
         n = length(index)
         
@@ -692,7 +700,18 @@ ha = HeatmapAnnotation(distribution = function(index) {
             upViewport()
         }
     }, which = "row", width = unit(10, "cm"))
-draw(ht1 + ha, row_hclust_side = "left", row_sub_title_side = "right")
+draw(ht1 + ha2, row_hclust_side = "left", row_sub_title_side = "right")
+```
+
+If no heatmap is needed to draw and users only want to arrange a list of row annotations, an empty
+matrix with no column can be added to the heatmap list. (This functionality will be improved later)
+
+```{r all_row_annotations, fig.width = 6}
+nr = nrow(mat)
+ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "npc") - unit(14, "cm"))
+ht_list = Heatmap(matrix(nrow = nr, ncol = 0), cluster_rows = FALSE, cluster_columns = FALSE, show_heatmap_legend = FALSE,
+    split = sample(c("A", "B"), nr, replace = TRUE), width = unit(0, "null")) + ha + ha_boxplot + ha2
+draw(ht_list, show_annotation_legend = FALSE, show_heatmap_legend = FALSE)
 ```
 
 ## Access components

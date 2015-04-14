@@ -40,6 +40,11 @@ A \code{\link{HeatmapAnnotation-class}} object.
 
 
 }
+\seealso{
+\code{\link{rowAnnotation}}, \code{\link{columnAnnotation}}  
+
+
+}
 \author{
 Zuguang Gu <z.gu@dkfz.de>  
 
