@@ -47,7 +47,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -annotation_height height of each annotation if annotations are column annotations.
 # -annotation_width width of each annotation if annotations are row annotations.
 # -height not using currently.
-# -width width of the whole heatmap annotations, only used for column annotation when appending to the list of heatmaps.
+# -width width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.
 # -gp graphic parameters for simple annotations.
 #
 # == details

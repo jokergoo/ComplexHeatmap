@@ -26,7 +26,7 @@ HeatmapAnnotation(df, name, col, show_legend, ...,
   \item{annotation_height}{height of each annotation if annotations are column annotations.}
   \item{annotation_width}{width of each annotation if annotations are row annotations.}
   \item{height}{not using currently.}
-  \item{width}{width of the whole heatmap annotations, only used for column annotation when appending to the list of heatmaps.}
+  \item{width}{width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.}
   \item{gp}{graphic parameters for simple annotations.}
 
 }
@@ -41,7 +41,7 @@ A \code{\link{HeatmapAnnotation-class}} object.
 
 }
 \seealso{
-\code{\link{rowAnnotation}}, \code{\link{columnAnnotation}}  
+There are two shortcut functions: \code{\link{rowAnnotation}} and \code{\link{columnAnnotation}}.  
 
 
 }
