@@ -228,6 +228,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
 
     if(ncol(matrix) == 0) {
         .Object@heatmap_param$show_heatmap_legend = FALSE
+        .Object@heatmap_param$width = unit(0, "null")
     }
 
     if(is.character(matrix) || ncol(matrix) <= 1) {
