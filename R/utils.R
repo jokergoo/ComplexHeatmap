@@ -1,4 +1,5 @@
 
+# environment that contains global variables
 INDEX_ENV = new.env()
 
 INDEX_ENV$I_HEATMAP = 0

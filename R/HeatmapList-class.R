@@ -688,7 +688,8 @@ setMethod(f = "draw_heatmap_list",
             } else {
                 row_anno_fix_width = unit(0, "null")
             }
-            object@ht_list[[i_row_anno_nofix_width]]@size = unit(1, "npc") - ht@heatmap_param$width - row_anno_fix_width - sum(gap) + gap[length(gap)]
+            object@ht_list[[i_row_anno_nofix_width]]@size = unit(1, "npc") - ht@heatmap_param$width - sum(component_width(ht, k = c(1:3, 5:7))) - 
+                row_anno_fix_width - sum(gap) + gap[length(gap)]
         }
     }
 
@@ -914,6 +915,7 @@ setMethod(f = "draw_heatmap_legend",
         }
     }
     draw_legend(ColorMappingList, side = side, padding = padding, ...)
+
     upViewport()
 })
 

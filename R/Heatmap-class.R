@@ -232,10 +232,14 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
     }
 
     if(is.character(matrix) || ncol(matrix) <= 1) {
-        cluster_rows = FALSE
-        cluster_columns = FALSE
-        show_row_hclust = FALSE
-        show_column_hclust = FALSE
+        if(!inherits(cluster_rows, c("dendrogram", "hclust"))) {
+            cluster_rows = FALSE
+            show_row_hclust = FALSE
+        }
+        if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
+            cluster_columns = FALSE
+            show_column_hclust = FALSE
+        }
         km = 1
     }
     .Object@matrix = matrix
@@ -1342,7 +1346,6 @@ setMethod(f = "draw",
             layout = grid.layout(nrow = 9, ncol = 7, widths = component_width(object, 1:7), 
                 heights = component_height(object, 1:9))
             pushViewport(viewport(layout = layout))
-
             ht_layout_index = object@layout$layout_index
             ht_graphic_fun_list = object@layout$graphic_fun_list
             

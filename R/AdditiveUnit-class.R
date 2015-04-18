@@ -4,7 +4,7 @@
 #
 # == detail
 # This class is a super class for `Heatmap-class`, `HeatmapList-class` and `HeatmapAnnotation-class` classes.
-# It is only designed for ``+`` generic method.
+# It is only designed for ``+`` generic method so that above three classes can be appended to each other.
 #
 AdditiveUnit = setClass("AdditiveUnit")
 
@@ -39,7 +39,7 @@ AdditiveUnit = function(...) {
 # It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
 # or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input objects.
 #
-# The `HeatmapAnnotation-class` object to be added should only be row annotation.
+# The `HeatmapAnnotation-class` object to be added should only be row annotations.
 #
 # == value
 # A `HeatmapList-class` object.
@@ -50,12 +50,12 @@ AdditiveUnit = function(...) {
 "+.AdditiveUnit" = function(x, y) {
     if(inherits(x, "HeatmapAnnotation")) {
     	if(x@which != "row") {
-    		stop("You should specify `which` to `row` if you add a HeatmapAnnotation which shows row annotations.")
+    		stop("You should specify `which` to `row` or use `rowAnnotation()` directly if you want to add row annotations.")
     	}
     }
     if(inherits(y, "HeatmapAnnotation")) {
     	if(y@which != "row") {
-    		stop("You should specify `which` to `row` if you add a HeatmapAnnotation which shows row annotations.")
+            stop("You should specify `which` to `row` or use `rowAnnotation()` directly if you want to add row annotations.")
     	}
     }
     add_heatmap(x, y)
