@@ -1,7 +1,7 @@
 library(ComplexHeatmap)
 library(GetoptLong)
 
-mat = read.table("tcga_adenocarcinoma_provisional_ras_raf_mek_jnk_signalling.txt", header = TRUE,stringsAsFactors=FALSE, sep = "\t")
+mat = read.table("tcga_lung_adenocarcinoma_provisional_ras_raf_mek_jnk_signalling.txt", header = TRUE,stringsAsFactors=FALSE, sep = "\t")
 mat[is.na(mat)] = ""
 rownames(mat) = mat[, 1]
 mat = mat[, -1]

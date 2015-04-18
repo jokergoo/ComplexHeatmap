@@ -145,7 +145,7 @@ HeatmapAnnotation = function(df, name, col, show_legend, ...,
 	}
 
 	if(!is.unit(anno_size)) {
-		anno_size = unit(anno_size/sum(anno_size), "null")
+		anno_size = unit(anno_size/sum(anno_size), "npc")
 	}
 
 
