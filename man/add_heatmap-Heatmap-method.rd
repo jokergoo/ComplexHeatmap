@@ -20,7 +20,7 @@ Add heatmaps or row annotations as a heatmap list
 
 }
 \details{
-There is a shortcut function \code{+.Heatmap}.  
+There is a shortcut function \code{+.AdditiveUnit}.  
 
 
 }

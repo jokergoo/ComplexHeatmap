@@ -1,7 +1,12 @@
-CHANGES IN VERSION 0.99.4
+CHANGES IN VERSION 1.1.1
 
 * fixed a bug when setting `cluster_rows` to FALSE but still cluster
   on rows.
+* add `rowAnnotation` and `columnAnnotation` functions
+* add examples in the vignette
+* No error if the heatmap list only contains zero-column matrix
+
+=================================================
 
 CHANGES IN VERSION 0.99.2
 
