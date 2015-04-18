@@ -691,7 +691,7 @@ ha2 = HeatmapAnnotation(distribution = function(index) {
         
         for(i in seq_len(n)) {
             y = random_data[[i]]
-            pushViewport(viewport(x= 0, y = (i-0.5)/n, width = unit(1, "npc") - unit(1, "cm"), 
+            pushViewport(viewport(x= 0, y = (i-0.5)/n, width = unit(9, "cm"), 
                 height = 1/n*0.8, just = "left", xscale = c(0, 20), yscale = c(0, 1)))
             if(index[i] %in% 1:6) fill = "blue" else fill = "red"
             grid.polygon(c(1:20, 20, 1), c(y, 0, 0), default.units = "native", 
@@ -704,13 +704,22 @@ draw(ht1 + ha2, row_hclust_side = "left", row_sub_title_side = "right")
 ```
 
 If no heatmap is needed to draw and users only want to arrange a list of row annotations, an empty
-matrix with no column can be added to the heatmap list. (This functionality will be improved in the future)
+matrix with no column can be added to the heatmap list. Within the zero-column matrix, you can either
+split row annotaitons:
 
-```{r all_row_annotations, fig.width = 4}
+```{r all_row_annotations, fig.width = 6}
 nr = nrow(mat)
 ha = HeatmapAnnotation(df = df, which = "row", width = NULL)
 Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
-    ha + ha_boxplot
+    ha_boxplot + ha2 + ha
+```
+
+or add dendrograms to the row annotations:
+
+```{r no_heatmap_but_with_cluster, fig.width = 6}
+dend = hclust(dist(mat))
+Heatmap(matrix(nrow = nr, ncol = 0), cluster_rows = dend) + 
+    ha_boxplot + ha2 + ha
 ```
 
 ## Access components
