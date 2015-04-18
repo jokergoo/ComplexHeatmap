@@ -24,7 +24,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 		anno_list = "list",  # a list of `SingleAnnotation` objects
 		anno_size = "ANY",
 		which = "character",
-		size = "ANY"  # only for  consistent of Heatmap
+		size = "ANY",  # only for  consistent of Heatmap
+		gap = "ANY"
 	),
 	prototype = list(
 		anno_list = list(),
@@ -49,6 +50,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -height not using currently.
 # -width width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.
 # -gp graphic parameters for simple annotations.
+# -gap gap between each annotation
 #
 # == details
 # The simple annotations are defined by ``df`` and ``col`` arguments. Complex annotations are
@@ -65,7 +67,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 HeatmapAnnotation = function(df, name, col, show_legend, ..., 
 	which = c("column", "row"), annotation_height = 1, annotation_width = 1, 
-	height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA)) {
+	height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA),
+	gap = unit(0, "null")) {
 
 	.Object = new("HeatmapAnnotation")
 
@@ -142,7 +145,7 @@ HeatmapAnnotation = function(df, name, col, show_legend, ...,
 	}
 
 	if(!is.unit(anno_size)) {
-		anno_size = unit(anno_size/sum(anno_size), "npc")
+		anno_size = unit(anno_size/sum(anno_size), "null")
 	}
 
 
@@ -155,6 +158,18 @@ HeatmapAnnotation = function(df, name, col, show_legend, ...,
 		row = width)
 
     .Object@size = size
+
+    if(is.null(gap)) gap = unit(0, "null")
+
+    if(length(gap) == 1) {
+    	.Object@gap = rep(gap, n_anno)
+    } else if(length(gap) == n_anno - 1) {
+    	.Object@gap = unit.c(gap, unit(0, "null"))
+    } else if(length(gap) < n_anno - 1) {
+    	stop("Length of `gap` is wrong.")
+    } else {
+    	.Object@gap = gap
+    }
 
     return(.Object)
 }
@@ -255,13 +270,14 @@ setMethod(f = "draw",
 	which = object@which
 	n_anno = length(object@anno_list)
 	anno_size = object@anno_size
+	gap = object@gap
 
 	pushViewport(viewport(...))
 	for(i in seq_len(n_anno)) {
 		if(which == "column") {
-			pushViewport(viewport(y = sum(anno_size[seq_len(i)]), height = anno_size[i], just = c("center", "top")))
+			pushViewport(viewport(y = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], height = anno_size[i], just = c("center", "top")))
 		} else {
-			pushViewport(viewport(x = sum(anno_size[seq_len(i)]), width = anno_size[i], just = c("right", "center")))
+			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
 		}
 		draw(object@anno_list[[i]], index)
 		upViewport()

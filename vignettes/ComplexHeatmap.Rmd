@@ -706,12 +706,11 @@ draw(ht1 + ha2, row_hclust_side = "left", row_sub_title_side = "right")
 If no heatmap is needed to draw and users only want to arrange a list of row annotations, an empty
 matrix with no column can be added to the heatmap list. (This functionality will be improved in the future)
 
-```{r all_row_annotations, fig.width = 6}
+```{r all_row_annotations, fig.width = 4}
 nr = nrow(mat)
-ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "npc") - unit(14, "cm"))
-ht_list = Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
-    ha + ha_boxplot + ha2
-draw(ht_list, show_annotation_legend = FALSE, show_heatmap_legend = FALSE)
+ha = HeatmapAnnotation(df = df, which = "row", width = NULL)
+Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
+    ha + ha_boxplot
 ```
 
 ## Access components

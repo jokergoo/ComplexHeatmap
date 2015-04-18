@@ -668,8 +668,30 @@ setMethod(f = "draw_heatmap_list",
 
     gap = object@ht_list_param$gap
     ht_index = which(sapply(object@ht_list, inherits, "Heatmap"))
-
     n = length(object@ht_list)
+
+    # if there is only one heatmap but with zero column, width for one
+    # row annotations is allowed to have no width set
+    if(length(ht_index) == 1) {
+        ht = object@ht_list[[ht_index]]
+        i_row_anno_nofix_width = which(sapply(object@ht_list, function(ht) {
+            if(inherits(ht, "Heatmap")) {
+                return(FALSE)
+            } else {
+                return(is.null(ht@size))
+            }
+        }))
+        i_row_anno_fix_width = setdiff(seq_len(n), c(i_row_anno_nofix_width, ht_index))
+        if(!is.null(ht@heatmap_param$width) && length(i_row_anno_nofix_width) == 1) {
+            if(length(i_row_anno_fix_width)) {
+                row_anno_fix_width = sum(do.call("unit.c", lapply(object@ht_list[i_row_anno_fix_width], function(x) x@size)))
+            } else {
+                row_anno_fix_width = unit(0, "null")
+            }
+            object@ht_list[[i_row_anno_nofix_width]]@size = unit(1, "npc") - ht@heatmap_param$width - row_anno_fix_width - sum(gap) + gap[length(gap)]
+        }
+    }
+
     # since each heatmap actually has nine rows, calculate the maximum height of corresponding rows in all heatmap 
     max_component_height = unit.c(
         max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, k = 1)))),

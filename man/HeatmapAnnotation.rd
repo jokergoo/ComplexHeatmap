@@ -13,7 +13,8 @@ Constructor method for HeatmapAnnotation class
 \usage{
 HeatmapAnnotation(df, name, col, show_legend, ...,
     which = c("column", "row"), annotation_height = 1, annotation_width = 1,
-    height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA))
+    height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA),
+    gap = NULL)
 }
 \arguments{
 
@@ -28,6 +29,7 @@ HeatmapAnnotation(df, name, col, show_legend, ...,
   \item{height}{not using currently.}
   \item{width}{width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.}
   \item{gp}{graphic parameters for simple annotations.}
+  \item{gap}{gap between each annotation}
 
 }
 \details{

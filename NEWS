@@ -1,4 +1,4 @@
-CHANGES IN VERSION 0.99.4
+CHANGES IN VERSION 1.1.1
 
 * fixed a bug when setting `cluster_rows` to FALSE but still cluster
   on rows.
