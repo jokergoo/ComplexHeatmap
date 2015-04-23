@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jokergoo/ComplexHeatmap.svg)](https://travis-ci.org/jokergoo/ComplexHeatmap)
+
 Make Complex Heatmap
 =========================
 
