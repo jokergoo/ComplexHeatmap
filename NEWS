@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.1.2
+
+* `anno_density`: graphics are now in correct order
+* add `anno_text`
+* add new examples corresponding to new functions
+
+================================================
+
 CHANGES IN VERSION 1.1.1
 
 * fixed a bug when setting `cluster_rows` to FALSE but still cluster

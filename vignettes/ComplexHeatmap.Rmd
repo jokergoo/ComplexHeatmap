@@ -486,6 +486,16 @@ ha_mix_right = HeatmapAnnotation(histogram = anno_histogram(mat, gp = gpar(fill 
 Heatmap(mat, name = "foo", top_annotation = ha_mix_top, top_annotation_height = unit(8, "cm")) + ha_mix_right
 ```
 
+Text is also one of the annotaiton graphics. `anno_text()` supports adding text as heatmap annotations. With this annotation
+function, it is easy to add column names with rotations (it can also be applied on row names for row annotations). 
+Note you need to calcualte the space for the text annotations by hand.
+
+```{r rotated_column_names}
+long_cn = do.call("paste0", rep(list(colnames(mat)), 3))  # just to construct long text
+ha_rot_cn = HeatmapAnnotation(text = anno_text(long_cn, rot = 45, just = "left", offset = unit(2, "mm")))
+Heatmap(mat, name = "foo", top_annotation = ha_rot_cn, top_annotation_height = unit(2, "cm"))
+```
+
 The `HeatmapAnnotation` is also used for construction of row annotations which we will introduce in later sections.
 
 ## A list of heatmaps
@@ -669,7 +679,7 @@ ht1 = Heatmap(mat, name = "ht1")
 ht1 + ha + ht1
 ```
 
-Also complex row annotations can be added. Pleast note in following code, the dendrogram and row title are put 
+Also complex row annotations can be added. Please note in following code, the dendrogram and row title are put 
 on the two sides of the heatmap list by specifying `row_hclust_side` and `row_sub_title_side`.
 
 ```{r heatmap_list_with_row_annotation_complex}
