@@ -33,7 +33,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.points(x[index], seq_along(index), gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
+			grid.points(x[index], rev(seq_along(index)), gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
 			upViewport()
 		},
 		column = function(index) {
@@ -81,7 +81,7 @@ anno_barplot = function(x, which = c("column", "row"),
 			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.rect(x = data_scale[1], y = seq_along(index), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = recycle_gp(gp, n))
+			grid.rect(x = data_scale[1], y = rev(seq_along(index)), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = recycle_gp(gp, n))
 			upViewport()
 		},
 		column = function(index) {
@@ -140,18 +140,18 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.segments(boxplot_stats[5, ], seq_along(index) - 0.5*factor, 
-				          boxplot_stats[5, ], seq_along(index) + 0.5*factor, default.units = "native", gp = gp)
-			grid.segments(boxplot_stats[5, ], seq_along(index),
-				          boxplot_stats[4, ], seq_along(index), default.units = "native", gp = gp)
-			grid.segments(boxplot_stats[1, ], seq_along(index), 
-				          boxplot_stats[2, ], seq_along(index), default.units = "native", gp = gp)
-			grid.segments(boxplot_stats[1, ], seq_along(index) - 0.5*factor, 
-				          boxplot_stats[1, ], seq_along(index) + 0.5*factor, default.units = "native", gp = gp)
-			grid.rect(x = boxplot_stats[2, ], y = seq_along(index),  
+			grid.segments(boxplot_stats[5, ], rev(seq_along(index)) - 0.5*factor, 
+				          boxplot_stats[5, ], rev(seq_along(index)) + 0.5*factor, default.units = "native", gp = gp)
+			grid.segments(boxplot_stats[5, ], rev(seq_along(index)),
+				          boxplot_stats[4, ], rev(seq_along(index)), default.units = "native", gp = gp)
+			grid.segments(boxplot_stats[1, ], rev(seq_along(index)), 
+				          boxplot_stats[2, ], rev(seq_along(index)), default.units = "native", gp = gp)
+			grid.segments(boxplot_stats[1, ], rev(seq_along(index)) - 0.5*factor, 
+				          boxplot_stats[1, ], rev(seq_along(index)) + 0.5*factor, default.units = "native", gp = gp)
+			grid.rect(x = boxplot_stats[2, ], y = rev(seq_along(index)),  
 				height = 1*factor, width = boxplot_stats[4, ] - boxplot_stats[2, ], just = "left", 
 				default.units = "native", gp = gp)
-			grid.points(x = boxplot_stats[3, ], y = seq_along(index), default.units = "native", gp = gp, pch = pch, size = size)
+			grid.points(x = boxplot_stats[3, ], y = rev(seq_along(index)), default.units = "native", gp = gp, pch = pch, size = size)
 			upViewport()
 		},
 		column = function(index) {
@@ -331,7 +331,6 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				max_y = max(unlist(density_y))
 				col_fun = colorRamp2(seq(min_y, max_y, length = 11), rev(brewer.pal(name = "RdYlBu", n = 11)))
 			}
-
 			n = length(index)
 			gp = recycle_gp(gp, n)
 			if(n != length(density_x)) {
@@ -405,3 +404,47 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 		})
 }
 
+# == title
+# Using text as annotation
+#
+# == param
+# -x a vector of text
+# -which is the annotation a column annotation or a row annotation?
+# -gp graphic parameters.
+# -rot rotation of text
+# -just justification of text, pass to `grid::grid.text`
+# -offset offset relative to start position
+#
+# == value
+# A graphic function which can be set in `HeatmapAnnotation` constructor method.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0, 
+	just = NULL, offset = unit(0.5, "npc")) {
+
+	x = x
+	which = match.arg(which)[1]
+	gp = check_gp(gp)
+
+	switch(which,
+		row = function(index) {
+			n = length(index)
+			if(n != length(x)) {
+				stop(paste0("Length of index should be ", length(x)))
+			}
+			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
+			grid.text(x[index], offset, unit(rev(seq_along(index)), "native"), gp = recycle_gp(gp, n), just = just, rot = rot)
+			upViewport()
+		},
+		column = function(index) {
+			n = length(index)
+			if(n != length(x)) {
+				stop(paste0("Length of index should be ", length(x)))
+			}
+			pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
+			grid.text(x[index], unit(seq_along(index), "native"), offset, gp = recycle_gp(gp, n), just = just, rot = rot)
+			upViewport()
+		})
+}

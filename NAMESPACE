@@ -47,6 +47,7 @@ exportMethods(draw_heatmap_legend)
 exportMethods(add_heatmap)
 export(columnAnnotation)
 export(anno_barplot)
+export(anno_text)
 export(anno_density)
 
 import(grid)
