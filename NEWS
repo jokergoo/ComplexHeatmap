@@ -1,3 +1,10 @@
+CHANGES IN VERSION 1.1.3
+
+* Improved vignette to describe how to use row index in row annotation function
+  if row annotations are also splitted by rows.
+
+===============================================
+
 CHANGES IN VERSION 1.1.2
 
 * `anno_density`: graphics are now in correct order
