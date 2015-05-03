@@ -67,6 +67,9 @@ SingleAnnotation = setClass("SingleAnnotation",
 # of rows or columns which is already adjusted by the clustering. In the package, there are already
 # several annotation graphic function generators: `anno_points`, `anno_histogram` and `anno_boxplot`.
 #
+# In the case that row annotations are splitted by rows, ``index`` corresponding to row orders in each row-slice
+# and ``fun`` will be applied on each of the row slices.
+#
 # One thing that users should be careful is the difference of coordinates when the annotation is a row
 # annotation or a column annotation. 
 #

@@ -689,7 +689,10 @@ ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"),
 draw(ha_boxplot + ht1, row_hclust_side = "left", row_sub_title_side = "right")
 ```
 
-For row annotations, more complex annotation graphics can help to visualize the data:
+For row annotations, more complex annotation graphics can help to visualize the data. In following example,
+row annotations are also splitted by k-means clustering. In the self-defined annotation graphic function ``distribution``,
+the argument ``x`` is the index for the row order in the 'current' row slice and ``distribution`` will be applied on
+each of the row slices.
 
 ```{r complex_heatmap, fig.width = 7}
 ht1 = Heatmap(mat, name = "ht1", km = 2)
