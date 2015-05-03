@@ -27,6 +27,13 @@ source("http://bioconductor.org/biocLite.R")
 biocLite("ComplexHeatmap")
 ```
 
+If you want the latest version, install it directly from GitHub:
+
+```{r}
+library(devtools)
+install_github("jokergoo/ComplexHeatmap")
+```
+
 ## Usage
 
 Make a single heatmap:
