@@ -123,6 +123,24 @@ Heatmap(discrete_mat, col = colors)
 As you see, for the numeric matrix, by default clustering is applied on both dimensions while
 for character matrix, clustering is suppressed.
 
+``NA`` is allowed in the heatmap. You can either suppress clustering to show ``NA`` in the heatmap
+or define a "NA-insensitive clustering" by self-define a distance function (see **Clustering** section below).
+
+```{r na_value}
+mat_with_na = mat
+mat_with_na[sample(c(TRUE, FALSE), nrow(mat)*ncol(mat), replace = TRUE, prob = c(1, 11))] = NA
+Heatmap(mat_with_na, na_col = "orange", cluster_rows = FALSE, cluster_columns = FALSE)
+# or define a 'NA-insensitive clustering'
+dist_with_na = function(x, y) {
+    l = is.na(x) | is.na(y)
+    x = x[!l]
+    y = y[!l]
+    sqrt(sum((x - y)^2))
+}
+Heatmap(mat_with_na, na_col = "orange", clustering_distance_rows = dist_with_na,
+    clustering_distance_columns = dist_with_na)
+```
+
 ### Titles
 
 The name of the heatmap is used as the title of the heatmap legend.
@@ -296,6 +314,12 @@ Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], each = 5))
 ```
 
 ### Self define the heatmap body
+
+`rect_gp` argument provides basic graphic settings for the heatmap body.
+
+```{r rect_gp}
+Heatmap(mat, name = "foo", rect_gp = gpar(col = "green", lty = 2, lwd = 2))
+```
 
 The heatmap body can also be self-defined. By default the heatmap body is composed by an array of rectangles
 with different filled colors. If `type` in `rect_gp` is set to `none`, the array for rectangles is initialized but
