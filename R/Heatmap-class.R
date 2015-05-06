@@ -108,6 +108,7 @@ Heatmap = setClass("Heatmap",
 # -col a vector of colors if the color mapping is discrete or a color mapping 
 #      function if the matrix is continuous numbers. Pass to `ColorMapping`.
 # -name name of the heatmap. The name is used as the title of the heatmap legend.
+# -na_col color for ``NA`` values.
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
 # -cell_fun self-defined function to add graphics on each cell. Six parameters will be passed into 
 #           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height`` which are row index,
@@ -185,7 +186,7 @@ Heatmap = setClass("Heatmap",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA), 
+Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA), 
     cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), column_title = character(0),
@@ -272,7 +273,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
             col = default_col(matrix, main_matrix = TRUE)
         }
         if(is.function(col)) {
-            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name)
+            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(matrix))) {
@@ -281,7 +282,7 @@ Heatmap = function(matrix, col, name, rect_gp = gpar(col = NA),
                     stop("`col` should have names to map to values in `mat`.")
                 }
             }
-            .Object@matrix_color_mapping = ColorMapping(colors = col, name = name)
+            .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
         }
     }
     

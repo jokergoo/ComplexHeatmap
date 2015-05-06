@@ -11,7 +11,7 @@ Constructor method for Heatmap class
 
 }
 \usage{
-Heatmap(matrix, col, name, rect_gp = gpar(col = NA),
+Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14), column_title = character(0),
@@ -41,6 +41,7 @@ Heatmap(matrix, col, name, rect_gp = gpar(col = NA),
   \item{matrix}{a matrix. Either numeric or character. If it is a simple vector, it will be converted to a one-column matrix.}
   \item{col}{a vector of colors if the color mapping is discrete or a color mapping  function if the matrix is continuous numbers. Pass to \code{\link{ColorMapping}}.}
   \item{name}{name of the heatmap. The name is used as the title of the heatmap legend.}
+  \item{na_col}{color for \code{NA} values.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
   \item{cell_fun}{self-defined function to add graphics on each cell. Six parameters will be passed into  this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height} which are row index, column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport, and the width and height of the cell. }
   \item{row_title}{title on row.}
