@@ -45,6 +45,8 @@ default_col = function(x, main_matrix = FALSE) {
 
     attributes(x) = NULL
 
+    x = x[!is.na(x)]
+
     if(is.character(x)) {  # discrete
         levels = unique(x)
         colors = rainbow_hcl(length(levels), c = 60, l = 75)
