@@ -1,3 +1,9 @@
+CHANGES IN VERSION 1.1.5
+
+* support NA value in simple annotations
+
+===============================================
+
 CHANGES IN VERSION 1.1.4
 
 * support color mapping for NA values

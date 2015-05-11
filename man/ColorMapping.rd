@@ -12,7 +12,7 @@ Constructor methods for ColorMapping class
 }
 \usage{
 ColorMapping(name, colors = NULL, levels = NULL,
-    col_fun = NULL, breaks = NULL, na_col = "grey")
+    col_fun = NULL, breaks = NULL, na_col = "#FFFFFF")
 }
 \arguments{
 
