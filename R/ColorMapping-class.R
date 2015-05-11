@@ -56,7 +56,7 @@ ColorMapping = setClass("ColorMapping",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 ColorMapping = function(name, colors = NULL, levels = NULL, 
-	col_fun = NULL, breaks = NULL, na_col = "grey") {
+	col_fun = NULL, breaks = NULL, na_col = "#FFFFFF") {
 
 	.Object = new("ColorMapping")
 
@@ -173,12 +173,14 @@ setMethod(f = "map_to_colors",
 	x2 = vector(length = length(x))
 
 	if(object@type == "discrete") {
+		lna = is.na(x)
+
 		if(is.numeric(x)) x = as.character(x)
-		if(any(! x %in% object@levels)) {
-			msg = paste0("Cannot map some of the levels:\n", paste(setdiff(x, object@levels), sep = ", ", collapse = ", "))
+		if(any(! x[!lna] %in% object@levels)) {
+			msg = paste0("Cannot map some of the levels:\n", paste(setdiff(x[!lna], object@levels), sep = ", ", collapse = ", "))
 			stop(msg)
 		}	
-		lna = is.na(x)
+		
 		x2[lna] = object@na_col
 		x2[!lna] = object@colors[ x[!lna] ]
 	} else {
