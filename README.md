@@ -58,7 +58,7 @@ Heatmap(mat1, ...) + Heatmap(mat2, ...)
 Make a list of heatmaps and row annotations:
 
 ```{r}
-ha = HeatmapAnnotation(anno1, anno2, ..., which = "row")
+ha = HeatmapAnnotation(df = anno1, anno_fun = anno2, ..., which = "row")
 Heatmap(mat1, ...) + Heatmap(mat2, ...) + ha
 ```
 
