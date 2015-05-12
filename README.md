@@ -45,7 +45,7 @@ Heatmap(mat, ...)
 A single Heatmap with column annotations:
 
 ```{r}
-ha = HeatmapAnnotation(anno1, anno2, ...)
+ha = HeatmapAnnotation(df = anno1, anno_fun = anno2, ...)
 Heatmap(mat, ..., top_annotation = ha)
 ```
 
