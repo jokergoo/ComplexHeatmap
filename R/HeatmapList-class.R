@@ -986,7 +986,7 @@ setMethod(f = "draw_annotation_legend",
             pushViewport(viewport(name = "annotation_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
         }
     }
-    draw_legend(ColorMappingList, side = side, annotation_legend_list = annotation_legend_list, padding = padding, ...)
+    draw_legend(rev(ColorMappingList), side = side, annotation_legend_list = annotation_legend_list, padding = padding, ...)
     upViewport()
 })
 
@@ -1069,7 +1069,7 @@ setMethod(f = "annotation_legend_size",
         }
     }
 
-    size = draw_legend(ColorMappingList, side = side, plot = FALSE, annotation_legend_list = annotation_legend_list, padding = padding, ...)
+    size = draw_legend(rev(ColorMappingList), side = side, plot = FALSE, annotation_legend_list = annotation_legend_list, padding = padding, ...)
     
     return(size)
 })
@@ -1106,8 +1106,6 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
     }
 
     if(side %in% c("left", "right")) {
-
-        ColorMappingList = rev(ColorMappingList)
 
         width = max(cm_width)
         height = sum(cm_height) + gap*(n + length(annotation_legend_list) -1)

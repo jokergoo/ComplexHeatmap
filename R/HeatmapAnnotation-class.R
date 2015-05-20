@@ -54,7 +54,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 # == details
 # The simple annotations are defined by ``df`` and ``col`` arguments. Complex annotations are
-# defined by the function list. So you need to at least to define ``df` or a annotation function.
+# defined by the function list. So you need to at least to define ``df`` or a annotation function.
 #
 # == value
 # A `HeatmapAnnotation-class` object.

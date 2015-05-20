@@ -11,11 +11,12 @@ Draw a list of heatmaps
 
 }
 \usage{
-\S4method{draw}{HeatmapList}(object, ..., newpage= TRUE)
+\S4method{draw}{HeatmapList}(object, padding = unit(c(2, 2, 2, 2), "mm"), ..., newpage= TRUE)
 }
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{padding}{padding of the plot. Elements correspond to bottom, left, top, right paddings.}
   \item{...}{pass to \code{\link{make_layout,HeatmapList-method}}}
   \item{newpage}{whether to create a new page}
 

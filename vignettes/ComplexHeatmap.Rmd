@@ -400,8 +400,9 @@ draw(ha, 1:10)
 Put more than one annotations together.
 
 ```{r heatmap_annotation_mixed, fig.width = 7, fig.height = 1}
-ha = HeatmapAnnotation(df = data.frame(type = c(rep("a", 5), rep("b", 5)),
-                                       age = sample(1:20, 10)),
+df = data.frame(type = c(rep("a", 5), rep("b", 5)),
+                age = sample(1:20, 10))
+ha = HeatmapAnnotation(df = df,
     col = list(type = c("a" = "red", "b" = "blue"),
                age = colorRamp2(c(0, 20), c("white", "red")))
 )
@@ -467,13 +468,13 @@ annotations shown in the heatmap.
 
 ```{r, fig.width = 7, fig.height = 3}
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(mat),
-    annotation_height = c(1, 2, 3))
+    annotation_height = c(1, 2, 3, 4))
 draw(ha, 1:10)
 ```
 
 ```{r, fig.width = 7, fig.height = 3}
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(mat),
-    annotation_height = unit.c(unit(1, "null"), unit(3, "cm"), unit(3, "cm")))
+    annotation_height = unit.c(unit(1, "null"), unit(1, "null"), unit(3, "cm"), unit(3, "cm")))
 draw(ha, 1:10)
 ```
 
@@ -484,7 +485,7 @@ Also you can control the size of total column annotations by `top_annotation_hei
 ha = HeatmapAnnotation(df = df, points = anno_points(value))
 ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat))
 Heatmap(mat, name = "foo", top_annotation = ha, bottom_annotation = ha_boxplot, 
-    bottom_annotation_height = unit(2, "cm"))
+    bottom_annotation_height = unit(3, "cm"))
 ```
 
 You can suppress some of the annotation legend by specifying `show_legend` to `FALSE` when creating the `HeatmapAnnotation` object.
@@ -744,7 +745,7 @@ If no heatmap is needed to draw and users only want to arrange a list of row ann
 matrix with no column can be added to the heatmap list. Within the zero-column matrix, you can either
 split row annotaitons:
 
-```{r all_row_annotations, fig.width = 6}
+```{r all_row_annotations, fig.width = 8}
 nr = nrow(mat)
 ha = HeatmapAnnotation(df = df, which = "row", width = NULL)
 Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
@@ -753,7 +754,7 @@ Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = T
 
 or add dendrograms to the row annotations:
 
-```{r no_heatmap_but_with_cluster, fig.width = 6}
+```{r no_heatmap_but_with_cluster, fig.width = 8}
 dend = hclust(dist(mat))
 Heatmap(matrix(nrow = nr, ncol = 0), cluster_rows = dend) + 
     ha_boxplot + ha2 + ha
