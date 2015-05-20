@@ -518,6 +518,7 @@ setMethod(f = "make_layout",
 #
 # == param
 # -object a `HeatmapList-class` object
+# -padding padding of the plot. Elements correspond to bottom, left, top, right paddings.
 # -... pass to `make_layout,HeatmapList-method`
 # -newpage whether to create a new page
 #
@@ -535,7 +536,7 @@ setMethod(f = "make_layout",
 #
 setMethod(f = "draw",
     signature = "HeatmapList",
-    definition = function(object, ..., newpage= TRUE) {
+    definition = function(object, padding = unit(c(2, 2, 2, 2), "mm"), ..., newpage= TRUE) {
 
     if(! any(sapply(object@ht_list, inherits, "Heatmap"))) {
         stop("There should be at least one Heatmap in the heatmap list.")
@@ -547,8 +548,17 @@ setMethod(f = "draw",
     
     object = make_layout(object, ...)
 
+    if(length(padding) == 1) {
+        padding = rep(padding, 4)
+    } else if(length(padding) == 2) {
+        padding = rep(padding, 2)
+    } else if(length(padding) != 4) {
+        stop("`padding` can only have length of 1, 2, 4")
+    }
+
     layout = grid.layout(nrow = 7, ncol = 7, widths = component_width(object, 1:7), heights = component_height(object, 1:7))
-    pushViewport(viewport(layout = layout, name = "global"))
+    pushViewport(viewport(layout = layout, name = "global", width = unit(1, "npc") - padding[2] - padding[4],
+        height = unit(1, "npc") - padding[1] - padding[3]))
     ht_layout_index = object@layout$layout_index
     ht_graphic_fun_list = object@layout$graphic_fun_list
     
@@ -1096,6 +1106,8 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
     }
 
     if(side %in% c("left", "right")) {
+
+        ColorMappingList = rev(ColorMappingList)
 
         width = max(cm_width)
         height = sum(cm_height) + gap*(n + length(annotation_legend_list) -1)
