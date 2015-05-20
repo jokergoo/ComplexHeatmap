@@ -11,7 +11,7 @@ Constructor method for HeatmapAnnotation class
 
 }
 \usage{
-HeatmapAnnotation(df, name, col, show_legend, ...,
+HeatmapAnnotation(df, name, col, show_legend = rep(TRUE, n_anno), ...,
     which = c("column", "row"), annotation_height = 1, annotation_width = 1,
     height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA),
     gap = unit(0, "null"))
@@ -19,7 +19,7 @@ HeatmapAnnotation(df, name, col, show_legend, ...,
 \arguments{
 
   \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
-  \item{name}{name of the heatmap annotation}
+  \item{name}{name of the heatmap annotation, optional.}
   \item{col}{a list of colors which contains color mapping to columns in \code{df}. See \code{\link{SingleAnnotation}} for how to set colors.}
   \item{show_legend}{whether show legend for each column in \code{df}.}
   \item{...}{functions which define complex annotations. Values should be named arguments.}
@@ -33,7 +33,7 @@ HeatmapAnnotation(df, name, col, show_legend, ...,
 
 }
 \details{
-The simple annotations are defined by \code{df} and \code{col} arguments. Complex annotations are defined by the function list.   
+The simple annotations are defined by \code{df} and \code{col} arguments. Complex annotations are defined by the function list. So you need to at least to define \code{df} or a annotation function.  
 
 
 }
