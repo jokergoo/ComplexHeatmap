@@ -951,14 +951,14 @@ setMethod(f = "draw_annotation_legend",
         ht = object@ht_list[[i]]
         if(inherits(ht, "Heatmap")) {
             if(!is.null(ht@top_annotation)) {
-                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+                ColorMappingList = c(get_color_mapping_list(ht@top_annotation), ColorMappingList)
             }
             if(!is.null(ht@bottom_annotation)) {
-                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+                ColorMappingList = c(get_color_mapping_list(ht@bottom_annotation), ColorMappingList)
             }
         }
     }
-
+    
     heatmap_legend_side = object@heatmap_legend_param$side
     heatmap_legend_size = object@heatmap_legend_param$size
     if(side != heatmap_legend_side) {
