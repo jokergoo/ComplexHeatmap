@@ -40,7 +40,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 # == param
 # -df a data frame. Each column will be treated as a simple annotation. The data frame must have column names.
-# -name name of the heatmap annotation
+# -name name of the heatmap annotation, optional.
 # -col a list of colors which contains color mapping to columns in ``df``. See `SingleAnnotation` for how to set colors.
 # -show_legend whether show legend for each column in ``df``.
 # -... functions which define complex annotations. Values should be named arguments.
@@ -54,7 +54,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 # == details
 # The simple annotations are defined by ``df`` and ``col`` arguments. Complex annotations are
-# defined by the function list. 
+# defined by the function list. So you need to at least to define ``df` or a annotation function.
 #
 # == value
 # A `HeatmapAnnotation-class` object.
@@ -65,7 +65,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-HeatmapAnnotation = function(df, name, col, show_legend, ..., 
+HeatmapAnnotation = function(df, name, col, show_legend = rep(TRUE, n_anno), ..., 
 	which = c("column", "row"), annotation_height = 1, annotation_width = 1, 
 	height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA),
 	gap = unit(0, "null")) {
@@ -90,9 +90,6 @@ HeatmapAnnotation = function(df, name, col, show_legend, ...,
 	    anno_name = colnames(df)
 	    n_anno = ncol(df)
 
-	    if(missing(show_legend)) {
-	    	show_legend = rep(TRUE, n_anno)
-	    }
 	    if(length(show_legend) == 1) {
 	    	show_legend = rep(show_legend, n_anno)
 	    }
@@ -110,6 +107,9 @@ HeatmapAnnotation = function(df, name, col, show_legend, ...,
 	        	}
 	        }
 	    }
+	}
+	if(which == "column") {
+		anno_list = rev(anno_list)
 	}
 
 	# self-defined anntatoin graph are passed by a list of named functions
