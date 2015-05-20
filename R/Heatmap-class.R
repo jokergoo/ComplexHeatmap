@@ -992,13 +992,13 @@ setMethod(f = "draw_hclust",
     pushViewport(viewport(name = paste(object@name, which, "cluster", sep = "_"), ...))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(3, "mm"), just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "null"), width = unit(1, "npc") - unit(1, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "null"), width = unit(1, "npc") - unit(3, "mm"), just = "left")
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = unit(0, "null"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = unit(2, "mm"), height = unit(1, "npc") - unit(3, "mm"), just = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", y = unit(1, "mm"), height = unit(1, "npc") - unit(3, "mm"), just = "bottom")
     } 
 
     upViewport()
@@ -1171,7 +1171,11 @@ setMethod(f = "draw_annotation",
         return(invisible(NULL))
     }
 
-    draw(annotation, index = object@column_order)
+    if(which == "top") {
+        draw(annotation, index = object@column_order, y = unit(2, "mm"), height = unit(1, "npc") - unit(2, "mm"), just = "bottom")
+    } else {
+        draw(annotation, index = object@column_order, y = unit(0, "null"), height = unit(1, "npc") - unit(2, "mm"), just = "bottom")
+    }
 })
 
 # == title
