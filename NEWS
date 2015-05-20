@@ -1,6 +1,14 @@
+CHANGES IN VERSION 1.1.6
+
+* improved generation of random colors
+* order of heatmap annotation legends are same as the order of annotations
+* support NA value in simple annotations
+
+==============================================
+
 CHANGES IN VERSION 1.1.5
 
-* support NA value in simple annotations
+* add gaps between heatmap components
 
 ===============================================
 

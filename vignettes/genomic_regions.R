@@ -86,8 +86,8 @@ anno_enhancer_3 = sapply(mean_meth, function(m) {
 
 anno_enhancer = data.frame(enhancer_1 = anno_enhancer_1, enhancer_2 = anno_enhancer_2, enhancer_3 = anno_enhancer_3)
 
-ha = HeatmapAnnotation(df = data.frame(type = c(rep("Tumor", 10), rep("Control", 10))))
-ha2 = HeatmapAnnotation(df = data.frame(type = c(rep("Tumor", 10), rep("Control", 10))), show_legend = FALSE)
+ha = HeatmapAnnotation(df = data.frame(type = c(rep("Tumor", 10), rep("Control", 10))), col = list(type = c("Tumor" = "red", "Control" = "blue")))
+ha2 = HeatmapAnnotation(df = data.frame(type = c(rep("Tumor", 10), rep("Control", 10))), col = list(type = c("Tumor" = "red", "Control" = "blue")), show_legend = FALSE)
 
 column_tree = hclust(dist(t(mat_meth)))
 
