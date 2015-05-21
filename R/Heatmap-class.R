@@ -106,7 +106,8 @@ Heatmap = setClass("Heatmap",
 # -matrix a matrix. Either numeric or character. If it is a simple vector, it will be
 #         converted to a one-column matrix.
 # -col a vector of colors if the color mapping is discrete or a color mapping 
-#      function if the matrix is continuous numbers. Pass to `ColorMapping`.
+#      function if the matrix is continuous numbers. If the matrix is continuous,
+#      the value can also be a vector of colors so that colors will be interpolated. Pass to `ColorMapping`.
 # -name name of the heatmap. The name is used as the title of the heatmap legend.
 # -na_col color for ``NA`` values.
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
@@ -278,11 +279,17 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
             if(is.null(names(col))) {
                 if(length(col) == length(unique(matrix))) {
                     names(col) = unique(matrix)
+                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
+                } else if(is.numeric(matrix)) {
+                    col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
+                                     col)
+                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
                 } else {
                     stop("`col` should have names to map to values in `mat`.")
                 }
+            } else {
+                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
             }
-            .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
         }
     }
     

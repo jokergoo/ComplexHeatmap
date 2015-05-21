@@ -103,6 +103,12 @@ is a vector of breaks values and corresponding colors.
 Heatmap(mat, col = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
 ```
 
+If the matrix is continuous, you can also provide a vector of colors and colors will be interpolated.
+
+```{r color_vector}
+Heatmap(mat, col = rev(rainbow(10)))
+```
+
 If the matrix contains discrete values (either numeric or character), colors should be specified as
 a named vector to make it possible for the mapping from discrete values to colors.
 
@@ -269,6 +275,12 @@ Heatmap(mat, name = "foo", show_row_names = FALSE)
 Heatmap(mat, name = "foo", row_names_gp = gpar(fontsize = 20))
 Heatmap(mat, name = "foo", row_names_gp = gpar(col = c(rep("red", 4), rep("blue", 8))))
 ```
+
+Currently, rotations for column names and row names are not supported. Because
+after the rotation, the dimension names will go inside other heatmap components
+which will mess up the heatmap layout. However, as will be introduced in later part of the 
+vignette, text rotation is allowed in the heatmap annotations. Thus, users can provide a row annotation
+or column annotaiton which only contains rotated text to simulate rotated column names.
 
 ### Split heatmap by rows
 
@@ -745,7 +757,7 @@ If no heatmap is needed to draw and users only want to arrange a list of row ann
 matrix with no column can be added to the heatmap list. Within the zero-column matrix, you can either
 split row annotaitons:
 
-```{r all_row_annotations, fig.width = 8}
+```{r all_row_annotations, fig.width = 7}
 nr = nrow(mat)
 ha = HeatmapAnnotation(df = df, which = "row", width = NULL)
 Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
@@ -754,10 +766,22 @@ Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = T
 
 or add dendrograms to the row annotations:
 
-```{r no_heatmap_but_with_cluster, fig.width = 8}
+```{r no_heatmap_but_with_cluster, fig.width = 7}
 dend = hclust(dist(mat))
 Heatmap(matrix(nrow = nr, ncol = 0), cluster_rows = dend) + 
     ha_boxplot + ha2 + ha
+```
+
+Finally, if your row annotations are simple annotations, I recommand to use heatmap instead.
+Following two methods generate similar figures.
+
+```{r}
+df = data.frame(type = c(rep("a", 6), rep("b", 6)))
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")), 
+    which = "row", width = unit(1, "cm"))
+Heatmap(mat) + ha
+Heatmap(mat) + Heatmap(df, name = "type", col = c("a" = "red", "b" = "blue"), 
+    width = unit(1, "cm"))
 ```
 
 ## Access components
@@ -810,6 +834,30 @@ grid.text("outlier", 1.5/10, 2.5/4, default.units = "npc")
 
 seekViewport("annotation_type")
 grid.text("type", unit(1, "npc") + unit(2, "mm"), 0.5, default.units = "npc", just = "left")
+```
+
+## Add annotation names
+
+By default, annotation names are not plotted along with the heatmap annotations. The reason is
+if annotation names is plotted, they will located in the area of other heatmap components which
+would makes the adjustment of the heatmap layout difficult. But since you can go to any component 
+in the heatmap list by its name, actually it is not difficult to add annotation names manually.
+
+Following code add annotation names on the both sides of the column annotations. The drawback is
+since there is no 
+
+```{r}
+df = data.frame(type1 = c(rep("a", 5), rep("b", 5)),
+                type2 = c(rep("A", 3), rep("B", 7)))
+ha = HeatmapAnnotation(df)
+Heatmap(mat, name = "ht", top_annotation = ha)
+for(an in colnames(df)) {
+    seekViewport(qq("annotation_@{an}"))
+    # annotation names on the right
+    grid.text(an, unit(1, "npc") + unit(2, "mm"), 0.5, default.units = "npc", just = "left")
+    # annotation names on the left
+    grid.text(an, unit(0, "npc") - unit(2, "mm"), 0.5, default.units = "npc", just = "right")
+}
 ```
 
 ## Real applications
@@ -865,6 +913,26 @@ Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blo
 
 ```{r, echo = FALSE, fig.width = 10, fig.height = 8}
 source("genomic_regions.R")
+```
+
+Following examples visualize the density distribution for each column in the matrix.
+
+```{r density}
+mat = matrix(rnorm(1000), nc = 10)
+
+breaks = seq(min(mat), max(mat), length.out = 201)
+mat_den = apply(mat, 2, function(x) {
+    den = density(x)
+    interval = cut(den$x, breaks = breaks)
+    y = tapply(den$y, as.vector(interval), mean)
+    res = rep(0, length(breaks) - 1)
+    names(res) = levels(interval)
+    res[names(y)] = y
+    res
+})
+
+Heatmap(mat_den, name = "density", cluster_rows = FALSE, 
+    cluster_columns = FALSE, show_row_names = FALSE)
 ```
 
 ## Session info
