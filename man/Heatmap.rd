@@ -39,7 +39,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
 \arguments{
 
   \item{matrix}{a matrix. Either numeric or character. If it is a simple vector, it will be converted to a one-column matrix.}
-  \item{col}{a vector of colors if the color mapping is discrete or a color mapping  function if the matrix is continuous numbers. Pass to \code{\link{ColorMapping}}.}
+  \item{col}{a vector of colors if the color mapping is discrete or a color mapping  function if the matrix is continuous numbers. If the matrix is continuous, the value can also be a vector of colors so that colors will be interpolated. Pass to \code{\link{ColorMapping}}.}
   \item{name}{name of the heatmap. The name is used as the title of the heatmap legend.}
   \item{na_col}{color for \code{NA} values.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
