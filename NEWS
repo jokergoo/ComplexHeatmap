@@ -3,6 +3,10 @@ CHANGES IN VERSION 1.1.6
 * improved generation of random colors
 * order of heatmap annotation legends are same as the order of annotations
 * support NA value in simple annotations
+* add examples in the vignette
+* simple row annotations now have the correct order
+* `col` can be a vector of colors if matrix is continuous
+* simple annotation can be logical
 
 ==============================================
 
