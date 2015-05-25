@@ -844,7 +844,8 @@ would makes the adjustment of the heatmap layout difficult. But since you can go
 in the heatmap list by its name, actually it is not difficult to add annotation names manually.
 
 Following code add annotation names on the both sides of the column annotations. The drawback is
-since there is no 
+since there is no specific component designed for annotatio names, if the annotation name is too long,
+it will be exceeding the figure region.
 
 ```{r}
 df = data.frame(type1 = c(rep("a", 5), rep("b", 5)),
@@ -915,7 +916,7 @@ Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blo
 source("genomic_regions.R")
 ```
 
-Following examples visualize the density distribution for each column in the matrix.
+Following example visualizes the density distribution for each column in the matrix.
 
 ```{r density}
 mat = matrix(rnorm(1000), nc = 10)
