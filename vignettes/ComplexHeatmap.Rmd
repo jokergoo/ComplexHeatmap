@@ -492,10 +492,11 @@ draw(ha, 1:10)
 
 With the annotation, you can assign in to the heatmap either by `top_annotation` or `bottom_annotation`.
 Also you can control the size of total column annotations by `top_annotation_height` and `bottom_annotation_height`.
+If the annotation has proper size, it would be helpful to add axis on it. `anno_points()`, `anno_barplot()` and `anno_boxplot()` support axes.
 
 ```{r add_annotation}
 ha = HeatmapAnnotation(df = df, points = anno_points(value))
-ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat))
+ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, axis = TRUE))
 Heatmap(mat, name = "foo", top_annotation = ha, bottom_annotation = ha_boxplot, 
     bottom_annotation_height = unit(3, "cm"))
 ```

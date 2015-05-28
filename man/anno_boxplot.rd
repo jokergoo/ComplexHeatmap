@@ -12,7 +12,8 @@ Using boxplot as annotation
 }
 \usage{
 anno_boxplot(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
-    pch = 16, size = unit(2, "mm"))
+    pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL,
+    axis_gp = gpar(fontsize = 8))
 }
 \arguments{
 
@@ -21,6 +22,9 @@ anno_boxplot(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
   \item{gp}{graphic parameters}
   \item{pch}{point type}
   \item{size}{point size}
+  \item{axis}{whether add axis}
+  \item{axis_side}{value in "left", "right", "bottom" and "top"}
+  \item{axis_gp}{graphic parameters for axis}
 
 }
 \value{
