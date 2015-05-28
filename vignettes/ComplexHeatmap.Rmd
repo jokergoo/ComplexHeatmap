@@ -454,7 +454,7 @@ draw(ha, 1:10)
 ```
 
 ```{r heatmap_annotation_barplot, fig.width = 7, fig.height = 1}
-ha = HeatmapAnnotation(points = anno_barplot(value))
+ha = HeatmapAnnotation(barplot = anno_barplot(value))
 draw(ha, 1:10)
 ```
 
