@@ -8,6 +8,9 @@
 # -gp graphic parameters.
 # -pch point type.
 # -size point size.
+# -axis whether add axis
+# -axis_side value in "left", "right", "bottom" and "top"
+# -axis_gp graphic parameters for axis
 # -... for future use.
 #
 # == value
@@ -17,13 +20,27 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16, 
-	size = unit(2, "mm"), ...) {
+	size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
+	axis_gp = gpar(fontsize = 8), ...) {
 
 	x = x
 	which = match.arg(which)[1]
 	data_scale = range(x)
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
+
+	if(which == "column") {
+		if(is.null(axis_side)) axis_side = "left"
+		if(axis_side == "top" || axis_side == "bottom") {
+			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		}
+	}
+	if(which == "column") {
+		if(is.null(axis_side)) axis_side = "bottom"
+		if(axis_side == "top" || axis_side == "bottom") {
+			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		}
+	}
 
 	switch(which,
 		row = function(index) {
@@ -34,6 +51,13 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
 			grid.points(x[index], rev(seq_along(index)), gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
+			if(axis) {
+				if(axis_side == "top") {
+					grid.xaxis(main = FALSE, gp = axis_gp)
+				} else {
+					grid.xaxis(gp = axis_gp)
+				}
+			}
 			upViewport()
 		},
 		column = function(index) {
@@ -44,6 +68,13 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
 			grid.points(seq_along(index), x[index], gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
+			if(axis) {
+				if(axis_side == "left") {
+					grid.yaxis(gp = axis_gp)
+				} else {
+					grid.yaxis(main = FALSE, gp = axis_gp)
+				}
+			}
 			upViewport()
 		})
 }
@@ -55,6 +86,9 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # -x a vector of values.
 # -which is the annotation a column annotation or a row annotation?
 # -gp graphic parameters.
+# -axis whether add axis
+# -axis_side value in "left", "right", "bottom" and "top"
+# -axis_gp graphic parameters for axis
 # -... for future use.
 #
 # == value
@@ -64,7 +98,9 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_barplot = function(x, which = c("column", "row"), 
-	gp = gpar(fill = "#CCCCCC"), ...) {
+	gp = gpar(fill = "#CCCCCC"), axis = FALSE, axis_side = NULL, 
+	axis_gp = gpar(fontsize = 8), ...) {
+
 	x = x
 	which = match.arg(which)[1]
 
@@ -72,6 +108,19 @@ anno_barplot = function(x, which = c("column", "row"),
 	data_scale = range(x)
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
+
+	if(which == "column") {
+		if(is.null(axis_side)) axis_side = "left"
+		if(axis_side == "top" || axis_side == "bottom") {
+			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		}
+	}
+	if(which == "column") {
+		if(is.null(axis_side)) axis_side = "bottom"
+		if(axis_side == "top" || axis_side == "bottom") {
+			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		}
+	}
 
 	switch(which,
 		row = function(index) {
@@ -82,6 +131,13 @@ anno_barplot = function(x, which = c("column", "row"),
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
 			grid.rect(x = data_scale[1], y = rev(seq_along(index)), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = recycle_gp(gp, n))
+			if(axis) {
+				if(axis_side == "top") {
+					grid.xaxis(main = FALSE, gp = axis_gp)
+				} else {
+					grid.xaxis(gp = axis_gp)
+				}
+			}
 			upViewport()
 		},
 		column = function(index) {
@@ -92,6 +148,13 @@ anno_barplot = function(x, which = c("column", "row"),
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
 			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = recycle_gp(gp, n))
+			if(axis) {
+				if(axis_side == "left") {
+					grid.yaxis(gp = axis_gp)
+				} else {
+					grid.yaxis(main = FALSE, gp = axis_gp)
+				}
+			}
 			upViewport()
 		})
 }
@@ -106,6 +169,9 @@ anno_barplot = function(x, which = c("column", "row"),
 # -gp graphic parameters
 # -pch point type
 # -size point size
+# -axis whether add axis
+# -axis_side value in "left", "right", "bottom" and "top"
+# -axis_gp graphic parameters for axis
 #
 # == value
 # A graphic function which can be set in `HeatmapAnnotation` constructor method.
@@ -114,7 +180,9 @@ anno_barplot = function(x, which = c("column", "row"),
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), 
-	pch = 16, size = unit(2, "mm")) {
+	pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
+	axis_gp = gpar(fontsize = 8)) {
+
 	x = x
 	which = match.arg(which)[1]
 
@@ -122,6 +190,19 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	data_scale = range(x)
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
+
+	if(which == "column") {
+		if(is.null(axis_side)) axis_side = "left"
+		if(axis_side == "top" || axis_side == "bottom") {
+			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		}
+	}
+	if(which == "column") {
+		if(is.null(axis_side)) axis_side = "bottom"
+		if(axis_side == "top" || axis_side == "bottom") {
+			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		}
+	}
 
 	switch(which,
 		row = function(index) {
@@ -152,6 +233,13 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				height = 1*factor, width = boxplot_stats[4, ] - boxplot_stats[2, ], just = "left", 
 				default.units = "native", gp = gp)
 			grid.points(x = boxplot_stats[3, ], y = rev(seq_along(index)), default.units = "native", gp = gp, pch = pch, size = size)
+			if(axis) {
+				if(axis_side == "top") {
+					grid.xaxis(main = FALSE, gp = axis_gp)
+				} else {
+					grid.xaxis(gp = axis_gp)
+				}
+			}
 			upViewport()
 		},
 		column = function(index) {
@@ -182,6 +270,13 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				height = boxplot_stats[4, ] - boxplot_stats[2, ], width = 1*factor, just = "bottom", 
 				default.units = "native", gp = gp)
 			grid.points(x = seq_along(index), y = boxplot_stats[3, ], default.units = "native", gp = gp, pch = pch, size = size)
+			if(axis) {
+				if(axis_side == "left") {
+					grid.yaxis(gp = axis_gp)
+				} else {
+					grid.yaxis(main = FALSE, gp = axis_gp)
+				}
+			}
 			upViewport()
 		})
 }
