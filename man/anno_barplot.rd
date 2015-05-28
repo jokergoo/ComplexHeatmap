@@ -12,13 +12,17 @@ Using barplot as annotation
 }
 \usage{
 anno_barplot(x, which = c("column", "row"),
-    gp = gpar(fill = "#CCCCCC"), ...)
+    gp = gpar(fill = "#CCCCCC"), axis = FALSE, axis_side = NULL,
+    axis_gp = gpar(fontsize = 8), ...)
 }
 \arguments{
 
   \item{x}{a vector of values.}
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{gp}{graphic parameters.}
+  \item{axis}{whether add axis}
+  \item{axis_side}{value in "left", "right", "bottom" and "top"}
+  \item{axis_gp}{graphic parameters for axis}
   \item{...}{for future use.}
 
 }
