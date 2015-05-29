@@ -935,7 +935,7 @@ setMethod(f = "draw_heatmap_body",
     cell_fun = object@matrix_param$cell_fun
     for(i in row_order) {
         for(j in column_order) {
-            cell_fun(j, i, x[j], y[i], unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[i, j])
+            cell_fun(j, i, x[which(column_order == j)], y[which(row_order == i)], unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[i, j])
         }
     }
 
