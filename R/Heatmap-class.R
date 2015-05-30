@@ -111,10 +111,10 @@ Heatmap = setClass("Heatmap",
 # -name name of the heatmap. The name is used as the title of the heatmap legend.
 # -na_col color for ``NA`` values.
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
-# -cell_fun self-defined function to add graphics on each cell. Six parameters will be passed into 
-#           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height`` which are row index,
+# -cell_fun self-defined function to add graphics on each cell. Seven parameters will be passed into 
+#           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height``, ``fill`` which are row index,
 #           column index in ``matrix``, coordinate of the middle points in the heatmap body viewport,
-#           and the width and height of the cell. 
+#           the width and height of the cell and the filled color. 
 # -row_title title on row.
 # -row_title_side will the title be put on the left or right of the heatmap?
 # -row_title_gp graphic parameters for drawing text.
