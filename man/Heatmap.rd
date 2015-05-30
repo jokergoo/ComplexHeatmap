@@ -43,7 +43,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{name}{name of the heatmap. The name is used as the title of the heatmap legend.}
   \item{na_col}{color for \code{NA} values.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
-  \item{cell_fun}{self-defined function to add graphics on each cell. Six parameters will be passed into  this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height} which are row index, column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport, and the width and height of the cell. }
+  \item{cell_fun}{self-defined function to add graphics on each cell. Seven parameters will be passed into  this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are row index, column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport, the width and height of the cell and the filled color. }
   \item{row_title}{title on row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap?}
   \item{row_title_gp}{graphic parameters for drawing text.}
