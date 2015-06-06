@@ -352,7 +352,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@row_hclust_param$distance = clustering_distance_rows
     .Object@row_hclust_param$method = clustering_method_rows
     .Object@row_hclust_param$side = match.arg(row_hclust_side)[1]
-    .Object@row_hclust_param$width = row_hclust_width + unit(2, "mm")  # append the gap
+    .Object@row_hclust_param$width = row_hclust_width + unit(1, "mm")  # append the gap
     .Object@row_hclust_param$show = show_row_hclust
     .Object@row_hclust_param$gp = check_gp(row_hclust_gp)
     .Object@row_order_list = list(seq_len(nrow(matrix))) # default order
@@ -377,7 +377,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@column_hclust_param$distance = clustering_distance_columns
     .Object@column_hclust_param$method = clustering_method_columns
     .Object@column_hclust_param$side = match.arg(column_hclust_side)[1]
-    .Object@column_hclust_param$height = column_hclust_height + unit(2, "mm")  # append the gap
+    .Object@column_hclust_param$height = column_hclust_height + unit(1, "mm")  # append the gap
     .Object@column_hclust_param$show = show_column_hclust
     .Object@column_hclust_param$gp = check_gp(column_hclust_gp)
     .Object@column_order = seq_len(ncol(matrix))
@@ -386,7 +386,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     if(is.null(top_annotation)) {
         .Object@top_annotation_param$height = unit(0, "null")    
     } else {
-        .Object@top_annotation_param$height = top_annotation_height + unit(2, "mm")  # append the gap
+        .Object@top_annotation_param$height = top_annotation_height + unit(1, "mm")  # append the gap
     }
     if(!is.null(top_annotation)) {
         if(length(top_annotation@anno_list) > 0) {
@@ -400,7 +400,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     if(is.null(bottom_annotation)) {
         .Object@bottom_annotation_param$height = unit(0, "null")
     } else {
-        .Object@bottom_annotation_param$height = bottom_annotation_height + unit(2, "mm")  # append the gap
+        .Object@bottom_annotation_param$height = bottom_annotation_height + unit(1, "mm")  # append the gap
     }
     if(!is.null(bottom_annotation)) {
         if(length(bottom_annotation@anno_list) > 0) {
@@ -999,13 +999,13 @@ setMethod(f = "draw_hclust",
     pushViewport(viewport(name = paste(object@name, which, "cluster", sep = "_"), ...))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(3, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(2, "mm"), just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "null"), width = unit(1, "npc") - unit(3, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "null"), width = unit(1, "npc") - unit(2, "mm"), just = "left")
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = unit(2, "mm"), height = unit(1, "npc") - unit(3, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = unit(1, "mm"), height = unit(1, "npc") - unit(2, "mm"), just = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", y = unit(1, "mm"), height = unit(1, "npc") - unit(3, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", y = unit(1, "mm"), height = unit(1, "npc") - unit(2, "mm"), just = "bottom")
     } 
 
     upViewport()
@@ -1179,9 +1179,9 @@ setMethod(f = "draw_annotation",
     }
 
     if(which == "top") {
-        draw(annotation, index = object@column_order, y = unit(2, "mm"), height = unit(1, "npc") - unit(2, "mm"), just = "bottom")
+        draw(annotation, index = object@column_order, y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     } else {
-        draw(annotation, index = object@column_order, y = unit(0, "null"), height = unit(1, "npc") - unit(2, "mm"), just = "bottom")
+        draw(annotation, index = object@column_order, y = unit(0, "null"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
     }
 })
 
