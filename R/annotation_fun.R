@@ -45,9 +45,9 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 	switch(which,
 		row = function(index) {
 			n = length(index)
-			if(n != length(x)) {
-				stop(paste0("Length of index should be ", length(x)))
-			}
+		#	if(n != length(x)) {
+		#		stop(paste0("Length of index should be ", length(x)))
+		#	}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
 			grid.points(x[index], rev(seq_along(index)), gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
@@ -62,9 +62,9 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 		},
 		column = function(index) {
 			n = length(index)
-			if(n != length(x)) {
-				stop(paste0("Length of index should be ", length(x)))
-			}
+		#	if(n != length(x)) {
+		#		stop(paste0("Length of index should be ", length(x)))
+		#	}
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
 			grid.points(seq_along(index), x[index], gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
@@ -125,9 +125,9 @@ anno_barplot = function(x, which = c("column", "row"),
 	switch(which,
 		row = function(index) {
 			n = length(index)
-			if(n != length(x)) {
-				stop(paste0("Length of index should be ", length(x)))
-			}
+			# if(n != length(x)) {
+			# 	stop(paste0("Length of index should be ", length(x)))
+			# }
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
 			grid.rect(x = data_scale[1], y = rev(seq_along(index)), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = recycle_gp(gp, n))
@@ -142,9 +142,9 @@ anno_barplot = function(x, which = c("column", "row"),
 		},
 		column = function(index) {
 			n = length(index)
-			if(n != length(x)) {
-				stop(paste0("Length of index should be ", length(x)))
-			}
+			# if(n != length(x)) {
+			# 	stop(paste0("Length of index should be ", length(x)))
+			# }
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
 			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = recycle_gp(gp, n))
@@ -526,18 +526,18 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 	switch(which,
 		row = function(index) {
 			n = length(index)
-			if(n != length(x)) {
-				stop(paste0("Length of index should be ", length(x)))
-			}
+			# if(n != length(x)) {
+			# 	stop(paste0("Length of index should be ", length(x)))
+			# }
 			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
 			grid.text(x[index], offset, unit(rev(seq_along(index)), "native"), gp = recycle_gp(gp, n), just = just, rot = rot)
 			upViewport()
 		},
 		column = function(index) {
 			n = length(index)
-			if(n != length(x)) {
-				stop(paste0("Length of index should be ", length(x)))
-			}
+			# if(n != length(x)) {
+			# 	stop(paste0("Length of index should be ", length(x)))
+			# }
 			pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
 			grid.text(x[index], unit(seq_along(index), "native"), offset, gp = recycle_gp(gp, n), just = just, rot = rot)
 			upViewport()
