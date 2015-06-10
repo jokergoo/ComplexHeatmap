@@ -222,7 +222,10 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     }
     if(!is.matrix(matrix)) {
         if(is.atomic(matrix)) {
-           matrix = matrix(matrix, ncol = 1)
+            rn = names(matrix)
+            matrix = matrix(matrix, ncol = 1)
+            if(!is.null(rn)) rownames(matrix) = rn
+            if(!missing(name)) colnames(matrix) = name
         } else {
             stop("If data is not a matrix, it should be a simple vector.")
         }
