@@ -510,6 +510,24 @@ setMethod(f = "make_layout",
         object@annotation_legend_param$size = unit(c(0, 0), "null")
     }
 
+    main_matrix_rn = rownames(object@ht_list[[i_main]]@matrix)
+    if(!is.null(main_matrix_rn)) {
+        for(i in seq_len(n)) {
+            if(i == i_main) next
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                matrix_rn = rownames(object@ht_list[[i]]@matrix)
+                if(!is.null(matrix_rn)) {
+                    # if same set but different order
+                    if(setequal(main_matrix_rn, matrix_rn)) {
+                        if(!identical(main_matrix_rn, matrix_rn)) {
+                            warning("Row names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     return(object)
 })
 
@@ -547,6 +565,8 @@ setMethod(f = "draw",
     }
     
     object = make_layout(object, ...)
+
+
 
     if(length(padding) == 1) {
         padding = rep(padding, 4)
@@ -1187,9 +1207,6 @@ draw_legend = function(ColorMappingList, side = c("right", "left", "top", "botto
 # == value
 # This function returns no value.
 #
-# == author
-# Zuguang Gu <z.gu@dkfz.de>
-#
 setMethod(f = "show",
     signature = "HeatmapList",
     definition = function(object) {
@@ -1202,6 +1219,42 @@ setMethod(f = "show",
     # }
     draw(object)
 })
+
+# == title
+# Draw a list of heatmaps with default parameters
+#
+# == param
+# -x a `HeatmapList-class` object.
+# -... additional arguments
+#
+# == details
+# Actually it calls `draw,HeatmapList-method`, but only with default parameters. If users want to customize the heatmap,
+# they can pass parameters directly to `draw,HeatmapList-method`.
+#
+# == value
+# This function returns no value.
+#
+print.HeatmapList = function(x, ...) {
+    draw(x)
+}
+
+# == title
+# Draw a list of heatmaps with default parameters
+#
+# == param
+# -x a `HeatmapList-class` object.
+# -... additional arguments
+#
+# == details
+# Actually it calls `draw,HeatmapList-method`, but only with default parameters. If users want to customize the heatmap,
+# they can pass parameters directly to `draw,HeatmapList-method`.
+#
+# == value
+# This function returns no value.
+#
+plot.HeatmapList = function(x, ...) {
+    draw(x)
+}
 
 compare_unit = function(u1, u2) {
     u1 = convertUnit(u1, "cm", valueOnly = TRUE)

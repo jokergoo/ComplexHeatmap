@@ -1,22 +1,21 @@
 [![Build Status](https://travis-ci.org/jokergoo/ComplexHeatmap.svg)](https://travis-ci.org/jokergoo/ComplexHeatmap)
 
-Make Complex Heatmap
+Make Complex Heatmaps
 =========================
 
-The aim of this package is to place any numbers of heatmaps, and any types of annotation graphics (both on rows and columns).
-Then it would be very helpful to visualize multiple sources of data and reveal potential correlations.
+Complex heatmaps are efficient to visualize associations between different sources of data sets and reveal potential features. Here the ComplexHeatmap package provides a highly flexible way to arrange multiple heatmaps and supports self-defined annotation graphics.
 
 A single heatmap or a list of heatmaps are composed by basic components:
 
 ![default](https://cloud.githubusercontent.com/assets/449218/6541828/75c77f8a-c4e5-11e4-80af-6ebb5e649898.png)
 
-The package makes heatmaps in an object oriented way by abstracting heatmaps into several classes:
+The package makes heatmaps in an object-oriented way by abstracting heatmaps into several classes:
 
 - `Heatmap` a single heatmap
 - `HeatmapList` a list of heatmaps
 - `HeatmapAnnotation` annotation on columns or rows
 
-and provides methods for arranging and plotting each heatmap components.
+and provides methods for arranging and plotting heatmap components.
 
 ## Install
 

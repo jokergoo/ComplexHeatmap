@@ -1,3 +1,9 @@
+CHANGES IN VERSION 1.1.7
+
+* check consistency of matrix row names
+
+=============================================
+
 CHANGES IN VERSION 1.1.6
 
 * improved generation of random colors
