@@ -1,5 +1,5 @@
-\name{show-HeatmapList-method}
-\alias{show,HeatmapList-method}
+\name{print.HeatmapList}
+\alias{print.HeatmapList}
 \title{
 Draw a list of heatmaps with default parameters  
 
@@ -11,11 +11,12 @@ Draw a list of heatmaps with default parameters
 
 }
 \usage{
-\S4method{show}{HeatmapList}(object)
+\method{print}{HeatmapList}(x, ...)
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList-class}} object.}
+  \item{x}{a \code{\link{HeatmapList-class}} object.}
+  \item{...}{additional arguments}
 
 }
 \details{
@@ -27,7 +28,4 @@ Actually it calls \code{\link{draw,HeatmapList-method}}, but only with default p
 This function returns no value.  
 
 
-}
-\author{
-Zuguang Gu <z.gu@dkfz.de>
 }
