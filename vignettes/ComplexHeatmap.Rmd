@@ -41,13 +41,13 @@ Generally, a heatmap list contains several heatmaps and row annotations.
 ```{r design, echo = FALSE, fig.width = 10, fig.height = 5}
 source("design.R")
 ```
-
-There are several classes that are abstracted from the heatmap. Surrounding the heatmap list,
+Surrounding the heatmap list,
 there are legends for heatmaps themselves and annotations, also there are titles which are placed
-on the four sides of the heatmap list. For each heatmap, there are also different components standing
+on the four sides of the heatmap list. And for each heatmap, there are also different components
 surrounding the heatmap body.
 
-In **ComplexHeatmap** package, components of heatmap lists are abstracted into several classes.
+The **ComplexHeatmap** package is implemented in an object-oriented way. To decsribe a heatmap list, 
+there are following classes:
 
 - `Heatmap` class: a single heatmap containing heatmap body, row/column names, titles, dendrograms and column annotations.
 - `HeatmapList` class: a list of heatmaps and row annotations.
@@ -64,21 +64,24 @@ to get full use of **ComplexHeatmap** package.
 ## A single heatmap
 
 A single heatmap is mostly used for a quick view of the data. It is a special case of 
-a heatmap list which only contains one heatmap. In following examples, we will demonstrate
-how to set parameters for visualization a single heatmap.
+a heatmap list which only contains one heatmap. Compare to available tools, **ComplexHeatmap** package provides a more flexible
+way to support visualization of a single heatmap. In following examples, we will demonstrate
+how to set parameters to visualize a single heatmap.
 
 First let's load packages and generate a random matrix:
 
 ```{r data}
 library(ComplexHeatmap)
 library(circlize)
-library(colorspace)
 library(GetoptLong)
 
 set.seed(123)
 
 mat = cbind(rbind(matrix(rnorm(16, -1), 4), matrix(rnorm(32, 1), 8)),
             rbind(matrix(rnorm(24, 1), 4), matrix(rnorm(48, -1), 8)))
+
+# permute the rows and columns
+mat = mat[sample(nrow(mat), nrow(mat)), sample(ncol(mat), ncol(mat))]
 
 rownames(mat) = paste0("R", 1:12)
 colnames(mat) = paste0("C", 1:10)
@@ -97,13 +100,16 @@ In most cases, the heatmap visualizes a matrix with continuous values.
 In this case, user should provide a color mapping function. A color mapping function
 should accept a vector of values and return a vector of corresponding colors. The `colorRamp2()` from
 the **circlize** package is helpful for generating such functions. The two arguments for `colorRamp2()`
-is a vector of breaks values and corresponding colors.
+is a vector of breaks values and corresponding colors. In following example, values between -3 and 3 are 
+linearly interpolated to obtain corresponding colors, values larger than 3 are all mapped to red and values less than -3 are
+all mapped to green.
 
 ```{r color_fun}
 Heatmap(mat, col = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
 ```
 
-If the matrix is continuous, you can also provide a vector of colors and colors will be interpolated.
+If the matrix is continuous, you can also provide a vector of colors and colors will be interpolated according to the 'n' quantiles.
+But remember this method is not robust to outliers.
 
 ```{r color_vector}
 Heatmap(mat, col = rev(rainbow(10)))
@@ -114,7 +120,7 @@ a named vector to make it possible for the mapping from discrete values to color
 
 ```{r discrete_matrix}
 discrete_mat = matrix(sample(1:4, 100, replace = TRUE), 10, 10)
-colors = structure(rainbow_hcl(4), names = c("1", "2", "3", "4"))
+colors = structure(circlize::rand_color(4), names = c("1", "2", "3", "4"))
 Heatmap(discrete_mat, col = colors)
 ```
 
@@ -122,7 +128,7 @@ Or a character matrix:
 
 ```{r discrete_character_matrix}
 discrete_mat = matrix(sample(letters[1:4], 100, replace = TRUE), 10, 10)
-colors = structure(rainbow_hcl(4), names = letters[1:4])
+colors = structure(circlize::rand_color(4), names = letters[1:4])
 Heatmap(discrete_mat, col = colors)
 ```
 
@@ -130,7 +136,7 @@ As you see, for the numeric matrix, by default clustering is applied on both dim
 for character matrix, clustering is suppressed.
 
 ``NA`` is allowed in the heatmap. You can either suppress clustering to show ``NA`` in the heatmap
-or define a "NA-insensitive clustering" by self-define a distance function (see **Clustering** section below).
+or define a "NA-insensitive clustering" by self-define a distance function (see [**Clustering**](#toc_5) section below).
 
 ```{r na_value}
 mat_with_na = mat
@@ -173,8 +179,8 @@ Heatmap(mat, name = "foo", column_title = "I am a big column title",
 ### Clustering
 
 Clustering may be the key feature of the heatmap visualization. In **ComplexHeatmap** package,
-clustering is supported with high flexibility. For different levels, you can specify the 
-clustering either by a pre-defined method, or by a distance function, or by a object that already
+clustering is supported with high flexibility. You can specify the 
+clustering either by a pre-defined method (e.g. "eulidean"), or by a distance function, or by a object that already
 contains clustering, or directly by a clustering function. It is also possible to render 
 your dendrograms with different colors and styles for different branches for better revealing
 structures of your data.
@@ -205,8 +211,7 @@ Heatmap(mat, name = "foo", clustering_distance_rows = function(m) dist(m))
 Heatmap(mat, name = "foo", clustering_distance_rows = function(x, y) 1 - cor(x, y))
 ```
 
-Maybe we can apply a robust clustering based on the pair-wise distance. Also with self-defining
-`col` by `colorRamp2()`, we can make a outlier-unsensitive heatmap.
+For this feature, we can apply clustering which is robust to outliers based on the pair-wise distance.
 
 ```{r cluster_distance_advanced}
 mat_with_outliers = mat
@@ -280,7 +285,7 @@ Currently, rotations for column names and row names are not supported. Because
 after the rotation, the dimension names will go inside other heatmap components
 which will mess up the heatmap layout. However, as will be introduced in later part of the 
 vignette, text rotation is allowed in the heatmap annotations. Thus, users can provide a row annotation
-or column annotaiton which only contains rotated text to simulate rotated column names.
+or column annotation which only contains rotated text to simulate rotated row/column names.
 
 ### Split heatmap by rows
 
@@ -293,7 +298,7 @@ Heatmap(mat, name = "foo", km = 2)
 
 More generally, `split` can be set to a vector or a data frame in which different combination of levels
 split the rows of the heatmap. Actually, k-means clustering just generates a vector of row classes and appends
-`split` with one additional column. The combined row titles can be controlled by `combined_name_fun` argument.
+`split` with one additional column. The combined row titles for each row slice can be controlled by `combined_name_fun` argument.
 
 ```{r split}
 Heatmap(mat, name = "foo", split = rep(c("A", "B"), 6))
@@ -313,7 +318,7 @@ pa = pam(mat, k = 3)
 Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering))
 ```
 
-Height of gaps between every row slices can be controlled by `gap`.
+Height of gaps between row slices can be controlled by `gap`.
 
 ```{r split_gap}
 Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering), gap = unit(5, "mm"))
@@ -327,7 +332,7 @@ Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], each = 5))
 
 ### Self define the heatmap body
 
-`rect_gp` argument provides basic graphic settings for the heatmap body.
+`rect_gp` argument provides basic graphic settings for the heatmap body (`fill` parameter is disabled).
 
 ```{r rect_gp}
 Heatmap(mat, name = "foo", rect_gp = gpar(col = "green", lty = 2, lwd = 2))
@@ -338,8 +343,8 @@ with different filled colors. If `type` in `rect_gp` is set to `none`, the array
 no graphics are put in. Then, users can define their own graphic function by `cell_fun`. `cell_fun` is applied
 on every cell in the heatmap and provides following information on the 'current' cell:
 
+- `j`: column index in the matrix. Column index corresponds to the x-axis in the viewport, that's why `j` is put as the first argument.
 - `i`: row index in the matrix.
-- `j`: column index in the matrix.
 - `x`: x coordinate of middle point of the cell which is measured in the viewport of the heatmap body.
 - `y`: y coordinate of middle point of the cell which is measured in the viewport of the heatmap body.
 - `width`: width of the cell.
@@ -351,18 +356,12 @@ and make the plot explicitly by calling `draw()`, just in order to suppress the 
 This functionality will be introduced in later sections.
 
 ```{r cell_fun}
-mat2 = matrix(sample(1:10, 12, replace = TRUE), 4, 3)
+mat2 = matrix(sample(1:12, 12, replace = TRUE), 4, 3)
 
 ht = Heatmap(mat2, rect_gp = gpar(col = "white", lwd = 2, type = "none"), 
     cell_fun = function(j, i, x, y, width, height, fill) {
-        grid.roundrect(x, y, width*0.8, height*0.8, gp = gpar(fill = fill))
-        if(mat2[i, j] <= 4) {
-            grid.text("cold", x = x, y = y)
-        } else if(mat2[i, j] >= 7) {
-            grid.text("hot", x = x, y = y)
-        } else {
-            grid.text("normal", x = x, y = y)
-        }
+        grid.roundrect(x, y, width*0.9*(mat2[i, j]/12), height*0.8*(mat2[i, j]/12), gp = gpar(fill = fill))
+        grid.text(mat2[i, j], x = x, y = y)
     },
     cluster_rows = FALSE, cluster_columns = FALSE)
 draw(ht, show_heatmap_legend = FALSE)
@@ -370,7 +369,7 @@ draw(ht, show_heatmap_legend = FALSE)
 
 ## The HeatmapAnnotation class
 
-In this section, we only describe how to generate a column annotations. Row annotations
+In this section, we only describe how to generate column annotations. Row annotations
 will be described in later sections.
 
 The annotation graphics actually are quite general. The only common characteristic for column annotation
@@ -379,12 +378,12 @@ define annotations on columns.
 
 ### Simple annotation
 
-A simple annotation is defined as a vector which contains discrete classes or continuous values corresponding to the columns.
+A simple annotation is defined as a vector which contains discrete classes or continuous values.
 Since the simple annotation is represented as a vector, multiple simple annotations can be specified
 as a data frame. Colors for the simple annotations can be specified by `col` with discrete values or
 color mapping functions, depending on whether the simple annotations are discrete or continuous.
 
-When plotting the heatmap, simple annotations will be represented as rows of grids.
+In the heatmap, simple annotations will be represented as rows of grids.
 
 There is a `draw()` method for the `HeatmapAnnotation` class. `draw()` is used internally and here
 we just use it for illustration.
@@ -427,7 +426,7 @@ draw(ha, 1:10)
 Besides simple annotations, these are complex annotations. The complex annotations are always
 represented as self-defined functions. Actually, for each column annotation, there will be a viewport
 created waiting for graphics. The annotation function here defines how to put the graphics to
-this viewport. The only argument of the function is an index of column which may be adjusted by column clustering.
+this viewport. The only argument of the function is an index of column which is adjusted by column clustering.
 
 In following example, an annotation of points is created. Please note how we define `xscale` so that positions
 of points correspond to middle points of the columns.
@@ -486,7 +485,7 @@ draw(ha, 1:10)
 
 ```{r, fig.width = 7, fig.height = 3}
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(mat),
-    annotation_height = unit.c(unit(1, "null"), unit(1, "null"), unit(3, "cm"), unit(3, "cm")))
+    annotation_height = unit.c(unit(1, "null"), unit(1, "null"), unit(2, "cm"), unit(2, "cm")))
 draw(ha, 1:10)
 ```
 
@@ -508,7 +507,7 @@ ha = HeatmapAnnotation(df = df, show_legend = FALSE)
 Heatmap(mat, name = "foo", top_annotation = ha)
 ```
 
-More types of annotations which show data distribution in corresponding rows and columns can be supported
+More types of annotations which show data distribution in corresponding rows and columns are supported
 by `anno_histogram()` and `anno_density()`.
 
 ```{r annotation_more, fig.height = 10, fig.width = 10}
@@ -525,7 +524,7 @@ Heatmap(mat, name = "foo", top_annotation = ha_mix_top, top_annotation_height = 
 ```
 
 Text is also one of the annotaiton graphics. `anno_text()` supports adding text as heatmap annotations. With this annotation
-function, it is easy to add column names with rotations (it can also be applied on row names for row annotations). 
+function, it is easy to add column names with rotations (Text rotations can also be applied on row names for row annotations). 
 Note you need to calcualte the space for the text annotations by hand.
 
 ```{r rotated_column_names}
@@ -560,8 +559,8 @@ ht1 + ht2
 
 Under default mode, dendrograms from the second heatmap will be removed and row orders will be same as the first one.
 
-The returned value of addition of two heatmaps is a `HeatmapList` object. Directly call `ht_list` object
-will call `draw()` method with default settings. With explicitly calling `draw()` method, you can have more control
+The returned value of addition of two heatmaps is a `HeatmapList` object. Directly calling `ht_list` object
+will call `draw()` method with default settings. With explicitly calling `draw()` method, you can have more controls
 on the legend and titles.
 
 ```{r}
@@ -617,7 +616,7 @@ ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", show_heatmap_legend
 ht1 + ht2
 ```
 
-**ComplexHeatmap** only generate legends for heatmaps and simple annotations. Self-defined legends
+**ComplexHeatmap** only generates legends for heatmaps and simple annotations. Self-defined legends
 can be passed by `annotation_legend_list` as a list of `grob` objects.
 
 ```{r self_defined_legend, fig.width = 10}
@@ -628,7 +627,7 @@ draw(ht1 + ht2, annotation_legend_list = list(lgd))
 ```
 
 Graphic parameters for legends for simple annotations can be set. Actually these arguments are passed
-to `color_mapping_legend()` on `ColorMapping` class.
+to `color_mapping_legend()` in `ColorMapping` class.
 
 ```{r heatmap_list_advanced, fig.width = 10}
 draw(ht1 + ht2, legend_grid_width = unit(6, "mm"), 
@@ -637,7 +636,7 @@ draw(ht1 + ht2, legend_grid_width = unit(6, "mm"),
 
 ### Gaps between heatmaps
 
-The gaps between heatmaps can be set by `gap` argument by a `unit` object.
+The gaps between heatmaps can be set by `gap` argument with a `unit` object.
 
 ```{r heatmap_list_gap, fig.width = 10, fig.keep = "all"}
 draw(ht_list, gap = unit(1, "cm"))
@@ -697,11 +696,17 @@ ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "cm"))
 draw(ha, 1:12)
 ```
 
+There is a shortcut function `rowAnnotation()` which is same as `HeatmapAnnotation(..., which = "row")`.
+
+```{r, eval = FALSE}
+ha = rowAnnotation(df = df, width = unit(1, "cm"))
+```
+
 Similar, there can be more than one row annotation:
 
 ```{r, fig.width = 3, fig.height = 7}
-ha_combined = HeatmapAnnotation(df = df, boxplot = anno_boxplot(mat, which = "row"), 
-    which = "row", annotation_width = c(1, 3))
+ha_combined = rowAnnotation(df = df, boxplot = anno_boxplot(mat, which = "row"), 
+    annotation_width = c(1, 3))
 draw(ha_combined, 1:12)
 ```
 
@@ -722,15 +727,19 @@ on the two sides of the heatmap list by specifying `row_hclust_side` and `row_su
 
 ```{r heatmap_list_with_row_annotation_complex}
 ht1 = Heatmap(mat, name = "ht1", km = 2)
-ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, which = "row"), 
-    which = "row", width = unit(2, "cm"))
+ha_boxplot = rowAnnotation(boxplot = anno_boxplot(mat, which = "row"), 
+    width = unit(2, "cm"))
 draw(ha_boxplot + ht1, row_hclust_side = "left", row_sub_title_side = "right")
 ```
 
 For row annotations, more complex annotation graphics can help to visualize the data. In following example,
 row annotations are also splitted by k-means clustering. In the self-defined annotation graphic function ``distribution``,
-the argument ``x`` is the index for the row order in the 'current' row slice and ``distribution`` will be applied on
+the argument ``index`` is the index for the row order in the 'current' row slice and ``distribution`` will be applied on
 each of the row slices.
+
+In the following code that generates `ha2`, we assign `(n - i + 0.5)/n` to `y`. The reason is that `index` is the order of rows of the matrix
+and it is counted from top to the bottom while in the coordinate system which corresponds to the annotation viewport, the direction 
+of values on y-axis is from bottom to top, we need to transfrom `i + 0.5` to `n - i + 1 - 0.5` here.
 
 ```{r complex_heatmap, fig.width = 7}
 ht1 = Heatmap(mat, name = "ht1", km = 2)
@@ -742,7 +751,7 @@ ha2 = HeatmapAnnotation(distribution = function(index) {
         
         for(i in seq_len(n)) {
             y = random_data[[i]]
-            pushViewport(viewport(x= 0, y = (i-0.5)/n, width = unit(9, "cm"), 
+            pushViewport(viewport(x= 0, y = (n - i + 0.5)/n, width = unit(9, "cm"), 
                 height = 1/n*0.8, just = "left", xscale = c(0, 20), yscale = c(0, 1)))
             if(index[i] %in% 1:6) fill = "blue" else fill = "red"
             grid.polygon(c(1:20, 20, 1), c(y, 0, 0), default.units = "native", 
@@ -761,8 +770,11 @@ split row annotaitons:
 ```{r all_row_annotations, fig.width = 7}
 nr = nrow(mat)
 ha = HeatmapAnnotation(df = df, which = "row", width = NULL)
+text = paste0("row", seq_len(nr))
+ha_text = HeatmapAnnotation(text = anno_text(text, which = "row"), 
+    width = max(grobWidth(textGrob(text))), which = "row")
 Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
-    ha_boxplot + ha2 + ha
+    ha_boxplot + ha2 + ha + ha_text
 ```
 
 or add dendrograms to the row annotations:
@@ -770,8 +782,11 @@ or add dendrograms to the row annotations:
 ```{r no_heatmap_but_with_cluster, fig.width = 7}
 dend = hclust(dist(mat))
 Heatmap(matrix(nrow = nr, ncol = 0), cluster_rows = dend) + 
-    ha_boxplot + ha2 + ha
+    ha_boxplot + ha2 + ha + ha_text
 ```
+
+Remember it is not allowed to only concantenate row annotations because row annotations don't provide
+information of number of rows.
 
 Finally, if your row annotations are simple annotations, I recommand to use heatmap instead.
 Following two methods generate similar figures.
@@ -787,8 +802,8 @@ Heatmap(mat) + Heatmap(df, name = "type", col = c("a" = "red", "b" = "blue"),
 
 ## Access components
 
-Each components of the heatmap/heatmap list has a name. You can go to any viewport by `seekViewport()`.
-Following figure almost contains all types of components.
+Each components of the heatmap/heatmap list has a name (unique id). You can go to any viewport by `seekViewport()`.
+First generate a figure that almost contains all types of heatmap components.
 
 ```{r access_components, fig.width = 10, fig.height = 7}
 ha_column1 = HeatmapAnnotation(points = anno_points(rnorm(10)))
@@ -824,9 +839,11 @@ The components that have names are:
 - `annotation_legend`: the viewport which contains all annotation legends.
 - `legend_@{annotation_name}`: the viewport which contains a single annotation legend.
 
-```{r, fig.width = 10, fig.height = 7}
-hclust_list = draw(ht_list)
+Following code add annotation names, mark one grid in the heatmap and seperate the first column clusters with two rectangles.
 
+```{r, fig.width = 10, fig.height = 7}
+hclust_list = draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
+    heatmap_legend_side = "right", annotation_legend_side = "left")
 seekViewport("annotation_points")
 grid.text("points", unit(0, "npc") - unit(2, "mm"), 0.5, default.units = "npc", just = "right")
 
