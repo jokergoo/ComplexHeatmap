@@ -666,6 +666,7 @@ setMethod(f = "make_layout",
         }
     })
 
+    title_padding = unit(2.5, "mm")
     ############################################
     ## title on top or bottom
     column_title = object@column_title
@@ -673,10 +674,10 @@ setMethod(f = "make_layout",
     column_title_gp = object@column_title_param$gp
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
-            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
+            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(1, 4))
         } else {
-            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
+            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(9, 4))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "column"))
@@ -689,10 +690,10 @@ setMethod(f = "make_layout",
     row_title_gp = object@row_title_param$gp
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
-            object@layout$layout_row_title_left_width = max(grobHeight(textGrob(row_title, gp = row_title_gp)))*2
+            object@layout$layout_row_title_left_width = max(grobHeight(textGrob(row_title, gp = row_title_gp))) + title_padding*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 1))
         } else {
-            object@layout$layout_row_title_right_width = max(grobHeight(textGrob(row_title, gp = row_title_gp)))*2
+            object@layout$layout_row_title_right_width = max(grobHeight(textGrob(row_title, gp = row_title_gp))) + title_padding*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 7))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
@@ -739,6 +740,9 @@ setMethod(f = "make_layout",
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_hclust(object, which = "column"))
     }
     
+
+    dimname_padding = unit(2, "mm")
+
     #######################################
     ## row_names on left or right
     row_names_side = object@row_names_param$side
@@ -749,7 +753,7 @@ setMethod(f = "make_layout",
         row_names_width = max(do.call("unit.c", lapply(seq_along(row_names), function(x) {
             cgp = subset_gp(row_names_gp, x)
             grobWidth(textGrob(row_names[x], gp = cgp))
-        }))) + unit(2, "mm")
+        }))) + dimname_padding
         row_names_width = min(row_names_width, object@row_names_param$max_width)
         if(row_names_side == "left") {
             object@layout$layout_row_names_left_width = row_names_width
@@ -761,13 +765,13 @@ setMethod(f = "make_layout",
         if(row_names_side == "right") {
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(n_slice)) {
-                    draw_dimnames(object, k = i, which = "row", x = unit(2, "mm"), y = slice_y[i], height = slice_height[i], just = c("left", "top"))
+                    draw_dimnames(object, k = i, which = "row", x = dimname_padding, y = slice_y[i], height = slice_height[i], just = c("left", "top"))
                 }
             })
         } else {
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(n_slice)) {
-                    draw_dimnames(object, k = i, which = "row", x = unit(0, "npc"), y = slice_y[i], height = slice_height[i], width = unit(1, "npc") - unit(2, "mm"), just = c("left", "top"))
+                    draw_dimnames(object, k = i, which = "row", x = unit(0, "npc"), y = slice_y[i], height = slice_height[i], width = unit(1, "npc") - dimname_padding, just = c("left", "top"))
                 }
             })
         }
@@ -783,7 +787,7 @@ setMethod(f = "make_layout",
         column_names_height = max(do.call("unit.c", lapply(seq_along(column_names), function(x) {
             cgp = subset_gp(column_names_gp, x)
             grobWidth(textGrob(column_names[x], gp = cgp))
-        }))) + unit(2, "mm")
+        }))) + dimname_padding
         column_names_height = min(column_names_height, object@column_names_param$max_height)
         if(column_names_side == "top") {
             object@layout$layout_column_names_top_height = column_names_height
@@ -793,9 +797,9 @@ setMethod(f = "make_layout",
             object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
         }
         if(column_names_side == "top") {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc"), height = unit(1, "npc") - unit(2, "mm"), just = c("center", "top")))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc"), height = unit(1, "npc") - dimname_padding, just = c("center", "top")))
         } else {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc") - unit(2, "mm"), just = c("center", "top")))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc") - dimname_padding, just = c("center", "top")))
         }
     }
     
@@ -999,16 +1003,17 @@ setMethod(f = "draw_hclust",
     dend = as.dendrogram(hc)
     n = length(labels(dend))
 
+    hclust_padding = unit(1, "mm")
     pushViewport(viewport(name = paste(object@name, which, "cluster", sep = "_"), ...))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = unit(1, "mm"), width = unit(1, "npc") - unit(2, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = hclust_padding, width = unit(1, "npc") - hclust_padding*2, just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "null"), width = unit(1, "npc") - unit(2, "mm"), just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "null"), width = unit(1, "npc") - hclust_padding*2, just = "left")
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = unit(1, "mm"), height = unit(1, "npc") - unit(2, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = hclust_padding, height = unit(1, "npc") - hclust_padding*2, just = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", y = unit(1, "mm"), height = unit(1, "npc") - unit(2, "mm"), just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", y = hclust_padding, height = unit(1, "npc") - hclust_padding*2, just = "bottom")
     } 
 
     upViewport()
@@ -1181,10 +1186,11 @@ setMethod(f = "draw_annotation",
         return(invisible(NULL))
     }
 
+    padding = unit(1, "mm")
     if(which == "top") {
-        draw(annotation, index = object@column_order, y = unit(1, "mm"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
+        draw(annotation, index = object@column_order, y = padding, height = unit(1, "npc") - padding, just = "bottom")
     } else {
-        draw(annotation, index = object@column_order, y = unit(0, "null"), height = unit(1, "npc") - unit(1, "mm"), just = "bottom")
+        draw(annotation, index = object@column_order, y = unit(0, "null"), height = unit(1, "npc") - padding, just = "bottom")
     }
 })
 
