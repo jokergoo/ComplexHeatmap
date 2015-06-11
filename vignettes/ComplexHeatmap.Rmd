@@ -825,7 +825,7 @@ The components that have names are:
 - `legend_@{annotation_name}`: the viewport which contains a single annotation legend.
 
 ```{r, fig.width = 10, fig.height = 7}
-ht_list
+hclust_list = draw(ht_list)
 
 seekViewport("annotation_points")
 grid.text("points", unit(0, "npc") - unit(2, "mm"), 0.5, default.units = "npc", just = "right")
@@ -835,6 +835,17 @@ grid.text("outlier", 1.5/10, 2.5/4, default.units = "npc")
 
 seekViewport("annotation_type")
 grid.text("type", unit(1, "npc") + unit(2, "mm"), 0.5, default.units = "npc", just = "left")
+
+seekViewport("ht1_hclust_column")
+tree = hclust_list$ht1$column
+ind = cutree(tree, k = 2)[tree$order]
+
+first_index = function(l) which(l)[1]
+last_index = function(l) { x = which(l); x[length(x)] }
+x1 = c(first_index(ind == 1), first_index(ind == 2)) - 1
+x2 = c(last_index(ind == 1), last_index(ind == 2))
+grid.rect(x = x1/length(ind), width = (x2 - x1)/length(ind), just = "left",
+    default.units = "npc", gp = gpar(fill = c("#FF000040", "#00FF0040"), col = NA))
 ```
 
 ## Add annotation names
