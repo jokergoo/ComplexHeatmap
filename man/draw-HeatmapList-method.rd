@@ -27,7 +27,7 @@ The function first calls \code{\link{make_layout,HeatmapList-method}} to calcula
 
 }
 \value{
-This function returns no value.  
+This function returns a list of \code{\link{stats:hclust}} objects.  
 
 
 }

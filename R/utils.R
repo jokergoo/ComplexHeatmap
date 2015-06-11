@@ -105,7 +105,7 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
         }
     }
     
-    draw.d = function(dend, max_height, facing = "bottom", order = "normal", max_width = 0) {
+    draw.d = function(dend, max_height, facing = "bottom", order = "normal", max_width = 0, env = NULL) {
         leaf = attr(dend, "leaf")
         d1 = dend[[1]]  # child tree 1
         d2 = dend[[2]]  # child tree 2
@@ -127,45 +127,110 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
         y2 = attr(d2, "height")
 
         # graphic parameters for current branch
-        edge_gp1 = do.call("gpar", as.list(attr(d1, "edgePar")))
-        edge_gp2 = do.call("gpar", as.list(attr(d2, "edgePar")))
+        edge_gp1 = as.list(attr(d1, "edgePar"))
+        edge_gp2 = as.list(attr(d2, "edgePar"))
+
+        if(is.null(env)) {
+            begin = TRUE
+            env = new.env()
+            n = nobs(dend)
+            env$x0 = NULL
+            env$y0 = NULL
+            env$x1 = NULL
+            env$y1 = NULL
+            env$col = NULL
+            env$lty = NULL
+            env$lwd = NULL
+        } else {
+            begin = FALSE
+        }
+
+        for(gp_name in c("col", "lwd", "lty")) {
+            if(is.null(edge_gp1[[gp_name]])) {
+                env[[gp_name]] = c(env[[gp_name]], rep(get.gpar(gp_name)[[gp_name]], 2))
+            } else {
+                env[[gp_name]] = c(env[[gp_name]], rep(edge_gp1[[gp_name]], 2))
+            }
+            if(is.null(edge_gp2[[gp_name]])) {
+                env[[gp_name]] = c(env[[gp_name]], rep(get.gpar(gp_name)[[gp_name]], 2))
+            } else {
+                env[[gp_name]] = c(env[[gp_name]], rep(edge_gp2[[gp_name]], 2))
+            }
+        }
+
 
         # plot the connection line
         if(order == "normal") {
             if(facing == "bottom") {
-                grid.lines(c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native", gp = edge_gp1)
-                grid.lines(c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native", gp = edge_gp2)
+                # grid.lines(c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native", gp = edge_gp1)
+                # grid.lines(c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, c(x1, x1, x2, x2))
+                env$y0 = c(env$y0, c(y1, height, y2, height))
+                env$x1 = c(env$x1, c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+                env$y1 = c(env$y1, c(height, height, height, height))
             } else if(facing == "top") {
-                grid.lines(c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native", gp = edge_gp1)
-                grid.lines(c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native", gp = edge_gp2)
+                # grid.lines(c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native", gp = edge_gp1)
+                # grid.lines(c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, c(x1, x1, x2, x2))
+                env$y0 = c(env$y0, max_height - c(y1, height, y2, height))
+                env$x1 = c(env$x1, c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+                env$y1 = c(env$y1, max_height - c(height, height, height, height))
             } else if(facing == "right") {
-                grid.lines(max_height - c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
-                grid.lines(max_height - c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                # grid.lines(max_height - c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                # grid.lines(max_height - c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, max_height - c(y1, height, y2, height))
+                env$y0 = c(env$y0, c(x1, x1, x2, x2))
+                env$x1 = c(env$x1, max_height - c(height, height, height, height))
+                env$y1 = c(env$y1, c(x1, (x1+x2)/2, x2, (x1+x2)/2))
             } else if(facing == "left") {
-                grid.lines(c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
-                grid.lines(c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                # grid.lines(c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                # grid.lines(c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, c(y1, height, y2, height))
+                env$y0 = c(env$y0, c(x1, x1, x2, x2))
+                env$x1 = c(env$x1, c(height, height, height, height))
+                env$y1 = c(env$y1, c(x1, (x1+x2)/2, x2, (x1+x2)/2))
             }
         } else {
             if(facing == "bottom") {
-                grid.lines(max_width - c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native", gp = edge_gp1)
-                grid.lines(max_width - c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native", gp = edge_gp2)
+                # grid.lines(max_width - c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native", gp = edge_gp1)
+                # grid.lines(max_width - c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, max_width - c(x1, x1, x2, x2))
+                env$y0 = c(env$y0, c(y1, height, y2, height))
+                env$x1 = c(env$x1, max_width - c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+                env$y1 = c(env$y1, c(height, height, height, height))
             } else if(facing == "top") {
-                grid.lines(max_width - c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native", gp = edge_gp1)
-                grid.lines(max_width - c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native", gp = edge_gp2)
+                # grid.lines(max_width - c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native", gp = edge_gp1)
+                # grid.lines(max_width - c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, max_width - c(x1, x1, x2, x2))
+                env$y0 = c(env$y0, max_height - c(y1, height, y2, height))
+                env$x1 = c(env$x1, max_width - c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+                env$y1 = c(env$y1, max_height - c(height, height, height, height))
             } else if(facing == "right") {
-                grid.lines(max_height - c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
-                grid.lines(max_height - c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                # grid.lines(max_height - c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                # grid.lines(max_height - c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, max_height - c(y1, height, y2, height))
+                env$y0 = c(env$y0, max_width - c(x1, x1, x2, x2))
+                env$x1 = c(env$x1, max_height - c(height, height, height, height))
+                env$y1 = c(env$y1, max_width - c(x1, (x1+x2)/2, x2, (x1+x2)/2))
             } else if(facing == "left") {
-                grid.lines(c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
-                grid.lines(c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                # grid.lines(c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                # grid.lines(c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, c(y1, height, y2, height))
+                env$y0 = c(env$y0, max_width - c(x1, x1, x2, x2))
+                env$x1 = c(env$x1, c(height, height, height, height))
+                env$y1 = c(env$y1, max_width - c(x1, (x1+x2)/2, x2, (x1+x2)/2))
             }
         }
         # do it recursively
         if(!is.leaf(d1)) {
-            draw.d(d1, max_height, facing, order, max_width)
+            draw.d(d1, max_height, facing, order, max_width, env = env)
         }
         if(!is.leaf(d2)) {
-            draw.d(d2, max_height, facing, order, max_width)
+            draw.d(d2, max_height, facing, order, max_width, env = env)
+        }
+
+        if(begin) {
+            grid.segments(env$x0, env$y0, env$x1, env$y1, default.units = "native", gp = gpar(col = env$col, lty = env$lty, lwd = env$lwd))
         }
     }
     
