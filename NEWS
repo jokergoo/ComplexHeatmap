@@ -1,6 +1,9 @@
 CHANGES in VERSION 1.1.8
 
 * dendrograms are implemented by `grid.segments` 
+* setting padding for each component
+* adjust gaps between heatmaps/row annotations if the column of the 
+  heatmap is zero.
 
 ============================================
 
