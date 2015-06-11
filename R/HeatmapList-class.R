@@ -243,6 +243,21 @@ setMethod(f = "make_layout",
     }
     object@ht_list_param$gap = gap
 
+    for(i in seq_len(n)) {
+        # if the zero-column matrix is the first one
+        if(inherits(object@ht_list[[i]], "Heatmap")) {
+            if(i == 1 && ncol(object@ht_list[[1]]@matrix) == 0) {
+                gap[1] = unit(0, "null")
+            } else if(i == n && ncol(object@ht_list[[n]]@matrix) == 0) {
+                gap[n - 1] = unit(0, "null")
+            } else if(ncol(object@ht_list[[i]]@matrix) == 0) {
+                gap[i] = unit(0, "null")
+            }
+        }
+    }
+
+    # else if the zero-column matrix is in the middle, set the front gap to 0
+
     if(auto_adjust) {
         ht_main = object@ht_list[[i_main]]
         ht_main = make_row_cluster(ht_main)
@@ -373,6 +388,8 @@ setMethod(f = "make_layout",
     object@layout$layout_index = rbind(c(4, 4))
     object@layout$graphic_fun_list = list(function(object) draw_heatmap_list(object))
 
+    title_padding = unit(2.5, "mm")
+
     ############################################
     ## title on top or bottom
     column_title_side = match.arg(column_title_side)[1]
@@ -388,10 +405,10 @@ setMethod(f = "make_layout",
     object@column_title_param$side = column_title_side
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
-            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
+            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(3, 4))
         } else {
-            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp))*2
+            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 4))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "column"))
@@ -412,10 +429,10 @@ setMethod(f = "make_layout",
     object@row_title_param$side = row_title_side
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
-            object@layout$layout_row_title_left_width = grobHeight(textGrob(row_title, gp = row_title_gp))*2
+            object@layout$layout_row_title_left_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + title_padding*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 3))
         } else {
-            object@layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp))*2
+            object@layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + title_padding*2
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 5))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "row"))
@@ -429,25 +446,25 @@ setMethod(f = "make_layout",
     object@heatmap_legend_param$side = heatmap_legend_side   
     if(show_heatmap_legend) {
         if(heatmap_legend_side == "top") {
-            object@heatmap_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
+            object@heatmap_legend_param$padding = unit(c(2, 0, 0, 0), "mm")
             size = heatmap_legend_size(object, ...)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(2, 4))
         } else if(heatmap_legend_side == "bottom") {
-            object@heatmap_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
+            object@heatmap_legend_param$padding = unit(c(0, 0, 2, 0), "mm")
             size = heatmap_legend_size(object, ...)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
         } else if(heatmap_legend_side == "left") {
-            object@heatmap_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
+            object@heatmap_legend_param$padding = unit(c(0, 0, 0, 2), "mm")
             size = heatmap_legend_size(object, ...)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 2))
         } else if(heatmap_legend_side == "right") {
-            object@heatmap_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
+            object@heatmap_legend_param$padding = unit(c(0, 2, 0, 0), "mm")
             size = heatmap_legend_size(object, ...)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_right_width = size[1]
@@ -481,25 +498,25 @@ setMethod(f = "make_layout",
     object@annotation_legend_param$side = annotation_legend_side
     if(show_annotation_legend) {
         if(annotation_legend_side == "top") {
-            object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
+            object@annotation_legend_param$padding = unit(c(2, 0, 0, 0), "mm")
             size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list, ...)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(1, 4))
         } else if(annotation_legend_side == "bottom") {
-            object@annotation_legend_param$padding = unit(c(2, 0, 2, 0), "mm")
+            object@annotation_legend_param$padding = unit(c(0, 0, 2, 0), "mm")
             size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list, ...)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
         } else if(annotation_legend_side == "left") {
-            object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
+            object@annotation_legend_param$padding = unit(c(0, 0, 0, 2), "mm")
             size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list, ...)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, c(4, 1))
         } else if(annotation_legend_side == "right") {
-            object@annotation_legend_param$padding = unit(c(0, 2, 0, 2), "mm")
+            object@annotation_legend_param$padding = unit(c(0, 2, 0, 0), "mm")
             size = annotation_legend_size(object, annotation_legend_list = annotation_legend_list, ...)
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_right_width = size[1]
@@ -547,7 +564,7 @@ setMethod(f = "make_layout",
 # in the layout.
 #
 # == value
-# This function returns a list of `stats:hclust` objects.
+# This function returns a list of `stats::hclust` objects.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -557,7 +574,7 @@ setMethod(f = "draw",
     definition = function(object, padding = unit(c(2, 2, 2, 2), "mm"), ..., newpage= TRUE) {
 
     if(! any(sapply(object@ht_list, inherits, "Heatmap"))) {
-        stop("There should be at least one Heatmap in the heatmap list.")
+        stop("There should be at least one Heatmap in the heatmap list. You can add a matrix with zero column to the list.")
     }
     
     if(newpage) {

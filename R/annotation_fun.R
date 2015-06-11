@@ -50,7 +50,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 		#	}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.points(x[index], rev(seq_along(index)), gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
+			grid.points(x[index], n - seq_along(index) + 1, gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
 			if(axis) {
 				if(axis_side == "top") {
 					grid.xaxis(main = FALSE, gp = axis_gp)
@@ -130,7 +130,7 @@ anno_barplot = function(x, which = c("column", "row"),
 			# }
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.rect(x = data_scale[1], y = rev(seq_along(index)), width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = recycle_gp(gp, n))
+			grid.rect(x = data_scale[1], y = n - seq_along(index) + 1, width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = recycle_gp(gp, n))
 			if(axis) {
 				if(axis_side == "top") {
 					grid.xaxis(main = FALSE, gp = axis_gp)
@@ -221,18 +221,18 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.segments(boxplot_stats[5, ], rev(seq_along(index)) - 0.5*factor, 
-				          boxplot_stats[5, ], rev(seq_along(index)) + 0.5*factor, default.units = "native", gp = gp)
-			grid.segments(boxplot_stats[5, ], rev(seq_along(index)),
-				          boxplot_stats[4, ], rev(seq_along(index)), default.units = "native", gp = gp)
-			grid.segments(boxplot_stats[1, ], rev(seq_along(index)), 
-				          boxplot_stats[2, ], rev(seq_along(index)), default.units = "native", gp = gp)
-			grid.segments(boxplot_stats[1, ], rev(seq_along(index)) - 0.5*factor, 
-				          boxplot_stats[1, ], rev(seq_along(index)) + 0.5*factor, default.units = "native", gp = gp)
-			grid.rect(x = boxplot_stats[2, ], y = rev(seq_along(index)),  
+			grid.segments(boxplot_stats[5, ], n - seq_along(index) + 1 - 0.5*factor, 
+				          boxplot_stats[5, ], n - seq_along(index) + 1 + 0.5*factor, default.units = "native", gp = gp)
+			grid.segments(boxplot_stats[5, ], n - seq_along(index) + 1,
+				          boxplot_stats[4, ], n - seq_along(index) + 1, default.units = "native", gp = gp)
+			grid.segments(boxplot_stats[1, ], n - seq_along(index) + 1, 
+				          boxplot_stats[2, ], n - seq_along(index) + 1, default.units = "native", gp = gp)
+			grid.segments(boxplot_stats[1, ], n - seq_along(index) + 1 - 0.5*factor, 
+				          boxplot_stats[1, ], n - seq_along(index) + 1 + 0.5*factor, default.units = "native", gp = gp)
+			grid.rect(x = boxplot_stats[2, ], y = n - seq_along(index) + 1,  
 				height = 1*factor, width = boxplot_stats[4, ] - boxplot_stats[2, ], just = "left", 
 				default.units = "native", gp = gp)
-			grid.points(x = boxplot_stats[3, ], y = rev(seq_along(index)), default.units = "native", gp = gp, pch = pch, size = size)
+			grid.points(x = boxplot_stats[3, ], y = n - seq_along(index) + 1, default.units = "native", gp = gp, pch = pch, size = size)
 			if(axis) {
 				if(axis_side == "top") {
 					grid.xaxis(main = FALSE, gp = axis_gp)
@@ -530,7 +530,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 			# 	stop(paste0("Length of index should be ", length(x)))
 			# }
 			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
-			grid.text(x[index], offset, unit(rev(seq_along(index)), "native"), gp = recycle_gp(gp, n), just = just, rot = rot)
+			grid.text(x[index], offset, unit(n - seq_along(index) + 1, "native"), gp = recycle_gp(gp, n), just = just, rot = rot)
 			upViewport()
 		},
 		column = function(index) {

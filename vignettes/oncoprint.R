@@ -64,7 +64,9 @@ anno_row_bar = function(index) {
 	for(i in seq_along(tb)) {
 		if(length(tb[[i]])) {
 			x = cumsum(tb[[i]])
-			grid.rect(x, i, width = tb[[i]], height = 0.8, default.units = "native", just = "right", gp = gpar(col = NA, fill = type_col[names(tb[[i]])]))
+			# row order is from top to end while coordinate of y is from bottom to top
+			# so here we need to use n-i+1
+			grid.rect(x, n-i+1, width = tb[[i]], height = 0.8, default.units = "native", just = "right", gp = gpar(col = NA, fill = type_col[names(tb[[i]])]))
 		}
 	}
 	breaks = grid.pretty(c(0, max_count))
