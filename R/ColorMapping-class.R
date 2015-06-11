@@ -231,16 +231,18 @@ setMethod(f = "color_mapping_legend",
 	legend_title_height = grobHeight(legend_title_grob)
 	legend_title_width = grobWidth(legend_title_grob)
 
+	grid_padding = unit(1, "mm")
+	legend_padding = unit(1.5, "mm")
 	nlevel = length(object@levels)
 	x = unit(rep(0, nlevel), "npc")
-	y = 1.5*legend_title_height + (0:(nlevel-1))*(legend_grid_height + unit(1, "mm"))
+	y = legend_title_height + legend_padding + (0:(nlevel-1))*(legend_grid_height + grid_padding)
 	y = unit(1, "npc") - y
 	legend_label_max_width = max(do.call("unit.c", lapply(object@levels, function(x) {
 			grobWidth(textGrob(x, gp = legend_label_gp))
 		})))
 	vp_width = max(unit.c(legend_title_width, 
-				   legend_grid_width + unit(1, "mm") + legend_label_max_width ))
-	vp_height = legend_title_height*1.5 + nlevel*(legend_grid_height + unit(1, "mm"))
+				   legend_grid_width + grid_padding + legend_label_max_width ))
+	vp_height = legend_title_height + legend_padding + nlevel*(legend_grid_height + grid_padding)
 
 	if(plot) {
 		pushViewport(viewport(..., width = vp_width, height = vp_height, name = paste0("legend_", object@name)))
@@ -248,7 +250,7 @@ setMethod(f = "color_mapping_legend",
 			gp = legend_title_gp)
 		grid.rect(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
 			gp = gpar(col = NA, fill = object@colors))
-		grid.text(rev(object@levels), x + legend_grid_width + unit(1, "mm"), y - legend_grid_height*0.5, 
+		grid.text(rev(object@levels), x + legend_grid_width + grid_padding, y - legend_grid_height*0.5, 
 			just = c("left", "center"), gp = legend_label_gp)
 		upViewport()
 	}

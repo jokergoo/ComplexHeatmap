@@ -129,7 +129,7 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 		} else {
 			.Object@fun = function(index) {
 				n = length(index)
-				y = (rev(seq_len(n)) - 0.5) / n
+				y = (n - seq_len(n) + 0.5) / n
 				fill = map_to_colors(color_mapping, value[index])
 				l = which(!is.na(value[index]))
 				grid.rect(x = 0.5, y[l], height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill[l]), gp)))
