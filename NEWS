@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.1.9
+
+* add `plotDataFrame` function which provides a quick way to 
+  visualize a data frame
+
+============================================
+
 CHANGES in VERSION 1.1.8
 
 * dendrograms are implemented by `grid.segments` 
