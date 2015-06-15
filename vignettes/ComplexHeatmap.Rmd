@@ -971,7 +971,7 @@ There is a shortcut function which can directly visualize a data frame. The func
 columns and character columns into different heatmaps and automatically grouping numeric columns if the
 data ranges are similar. If a character column contains too many levels, the column will be removed.
 
-```
+```{r, plot_data_frame, fig.width = 10, fig.height = 8}
 expr = readRDS(paste0(system.file(package = "ComplexHeatmap"), "/extdata/gene_expression.rds"))
 plotDataFrame(expr)
 ```
