@@ -57,9 +57,11 @@ plotDataFrame = function(df, overlap = 0.5, nlevel = 30, show_row_names = TRUE,
 					} else {
 						# if previous columns are numeric
 						range2 = range(df[[i]], c(0.1, 0.9))
+						intersected_range = c(max(current_range[1], range2[1]), min(current_range[2], range2[2]))
 
-						rg = current_range[2] - current_range[1]
-						if(abs(range2[1] - current_range[1])/rg < overlap && abs(range2[2] - current_range[2])/rg < overlap) {
+						l = df[[i]] >= intersected_range[1] & df[[i]] <= intersected_range[2]
+						l2 = df[[i-1]] >= intersected_range[1] & df[[i-1]] <= intersected_range[2]
+						if(sum(l)/length(l) > overlap && sum(l2)/length(l2) > overlap) {
 							group[[ current_group ]] = c(group[[ current_group ]], i)
 
 						} else {

@@ -965,6 +965,20 @@ Heatmap(mat_den, name = "density", cluster_rows = FALSE,
     cluster_columns = FALSE, show_row_names = FALSE)
 ```
 
+## Shortcut function to visualize a data frame
+
+There is a shortcut function which can directly visualize a data frame. The function separate numeric
+columns and character columns into different heatmaps and automatically grouping numeric columns if the
+data ranges are similar. If a character column contains too many levels, the column will be removed.
+
+```
+expr = readRDS(paste0(system.file(package = "ComplexHeatmap"), "/extdata/gene_expression.rds"))
+plotDataFrame(expr)
+```
+
+The `plotDataFrame()` does not provides too many settings. It aims to provide a quick graphical view of the
+data frame. Users still need to construct a `HeatmapList` object if they want to customize the heatmaps. 
+
 ## Session info
 
 ```{r}
