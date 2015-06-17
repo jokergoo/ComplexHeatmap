@@ -890,12 +890,36 @@ for(an in colnames(df)) {
 }
 ```
 
+
+## Shortcut function to visualize a data frame
+
+There is a shortcut function which can directly visualize a data frame. The function separates numeric
+columns and character columns into different heatmaps and automatically group numeric columns if the
+data ranges are similar. If a character column contains too many levels, the column will be removed.
+
+```{r, plot_data_frame}
+df = data.frame(matrix(rnorm(400), nrow = 100, dimnames = list(NULL, letters[1:4])),
+                large = runif(100)*100,
+                t1 = sample(letters[1:3], 100, replace = TRUE),
+                matrix(runif(600), nrow = 100, dimnames = list(NULL, LETTERS[1:6])),
+                t2 = sample(LETTERS[1:3], 100, replace = TRUE))
+plotDataFrame(df)
+plotDataFrame(df, group = list(1:4, 5, 6, 7:12, 13), group_names = c("mat1", "large", "t1", "mat2", "t2"),
+    main_heatmap = 4, km = 2, column_title = "column title", row_title = "row title")
+```
+
+The `plotDataFrame()` does not provides too many settings. It aims to provide a quick graphical view of the
+data frame. Users still need to construct a `HeatmapList` object if they want to customize the heatmaps. 
+
+
 ## Real applications
 
 Data frame is an ideal data structure to store different subjects of information 
 in which each row in the data frame focuses on the same element.
 Then, each subject can be visualized as a single heatmap and putting all subjects 
 together can give you a full view of your data.
+
+### Add more information for gene expression matrix
 
 In gene expression matrix, rows correspond to genes. More information about genes can be attached after the expression
 heatmap such as gene length and type of genes.
@@ -917,6 +941,8 @@ Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))),
     width = unit(5, "mm"))
 ```
 
+### Show more statistics for OncoPrint
+
 Following examples is <a href="http://www.cbioportal.org/faq.jsp#what-are-oncoprints">OncoPrint</a>.
 The basic idea is to self define the heatmap body. Besides the default style which is 
 provided by <a href="http://www.cbioportal.org/index.do">cBioPortal</a>, there are
@@ -926,6 +952,8 @@ each sample and for each gene. Source code is available <a href="https://github.
 ```{r, echo = FALSE, fig.width = 10, fig.height = 8}
 source("oncoprint.R")
 ```
+
+### Visualize genomic regions and other correspondance
 
 Following examples visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 
 From left to right, heatmaps are:
@@ -945,45 +973,19 @@ Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blo
 source("genomic_regions.R")
 ```
 
-Following example visualizes the density distribution for each column in the matrix.
+### Visualize distribution in matrix columns
 
-```{r density}
-mat = matrix(rnorm(1000), nc = 10)
+To visualize distribution of columns in a matrix or in a list, sometimes we use boxplot or beanplot.
+Here we can also use colors to map to the density values and visualize distribution of values
+in each column (or each list element) through a heatmap. Sometimes it can give you a more clear
+image of your data.
 
-breaks = seq(min(mat), max(mat), length.out = 201)
-mat_den = apply(mat, 2, function(x) {
-    den = density(x)
-    interval = cut(den$x, breaks = breaks)
-    y = tapply(den$y, as.vector(interval), mean)
-    res = rep(0, length(breaks) - 1)
-    names(res) = levels(interval)
-    res[names(y)] = y
-    res
-})
+Here the package has a `densityHeatmap()` function, the usage is quite straightforward:
 
-Heatmap(mat_den, name = "density", cluster_rows = FALSE, 
-    cluster_columns = FALSE, show_row_names = FALSE)
+```{r, density}
+matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]
+densityHeatmap(matrix, anno = rep(c("A", "B"), each = 5))
 ```
-
-## Shortcut function to visualize a data frame
-
-There is a shortcut function which can directly visualize a data frame. The function separate numeric
-columns and character columns into different heatmaps and automatically grouping numeric columns if the
-data ranges are similar. If a character column contains too many levels, the column will be removed.
-
-```{r, plot_data_frame}
-df = data.frame(matrix(rnorm(40), nrow = 10, dimnames = list(letters[1:10], letters[1:4])),
-                large = runif(10)*100,
-                t1 = sample(letters[1:3], 10, replace = TRUE),
-                matrix(runif(60), nrow = 10, dimnames = list(LETTERS[1:10], LETTERS[1:6])),
-                t2 = sample(LETTERS[1:3], 10, replace = TRUE))
-plotDataFrame(df)
-plotDataFrame(df, group = list(1:4, 5, 6, 7:12, 13), group_names = c("mat1", "large", "t1", "mat2", "t2"),
-    main_heatmap = 4, km = 2, column_title = "column title", row_title = "row title")
-```
-
-The `plotDataFrame()` does not provides too many settings. It aims to provide a quick graphical view of the
-data frame. Users still need to construct a `HeatmapList` object if they want to customize the heatmaps. 
 
 ## Session info
 
