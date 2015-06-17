@@ -151,6 +151,7 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 # == param
 # -object a `SingleAnnotation-class` object.
 # -index a vector of orders
+# -k if row annotation is splitted, the value identifies which row slice.
 #
 # == details
 # A viewport is created.
@@ -165,9 +166,13 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 #
 setMethod(f = "draw",
 	signature = "SingleAnnotation",
-	definition = function(object, index) {
+	definition = function(object, index, k = NULL) {
 
-	pushViewport(viewport(name = paste("annotation", object@name, sep = "_")))
+	if(is.null(k)) {
+		pushViewport(viewport(name = paste("annotation", object@name, sep = "_")))
+	} else {
+		pushViewport(viewport(name = paste("annotation", object@name, k, sep = "_")))
+	}
 	object@fun(index)
 	upViewport()
 
