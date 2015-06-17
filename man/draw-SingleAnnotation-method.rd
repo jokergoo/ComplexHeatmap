@@ -11,12 +11,13 @@ Draw the single annotation
 
 }
 \usage{
-\S4method{draw}{SingleAnnotation}(object, index)
+\S4method{draw}{SingleAnnotation}(object, index, k = NULL)
 }
 \arguments{
 
   \item{object}{a \code{\link{SingleAnnotation-class}} object.}
   \item{index}{a vector of orders}
+  \item{k}{if row annotation is splitted, the value identifies which row slice.}
 
 }
 \details{
