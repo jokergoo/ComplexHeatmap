@@ -68,7 +68,7 @@ densityHeatmap = function(data, col = rev(brewer.pal(11, "Spectral")),
 
 	draw(ht_list, column_title = title)
 
-	seekViewport("annotation_axis")
+	seekViewport("annotation_axis_1")
 	grid.text(ylab, x = grobHeight(textGrob(ylab)), rot = 90)
 
 	seekViewport("density_heatmap_body_1")

@@ -805,7 +805,7 @@ Heatmap(mat) + Heatmap(df, name = "type", col = c("a" = "red", "b" = "blue"),
 Each components of the heatmap/heatmap list has a name (unique id). You can go to any viewport by `seekViewport()`.
 First generate a figure that almost contains all types of heatmap components.
 
-```{r access_components, fig.width = 10, fig.height = 7}
+```{r access_components, fig.width = 10, fig.height = 7, echo = 1:8}
 ha_column1 = HeatmapAnnotation(points = anno_points(rnorm(10)))
 ht1 = Heatmap(mat, name = "ht1", km = 2, row_title = "Heatmap 1", column_title = "Heatmap 1", 
     top_annotation = ha_column1)
@@ -814,9 +814,44 @@ ha_column2 = HeatmapAnnotation(df = data.frame(type = c(rep("a", 5), rep("b", 5)
 ht2 = Heatmap(mat, name = "ht2", row_title = "Heatmap 2", column_title = "Heatmap 2",
     bottom_annotation = ha_column2)
 
-ht_list = ht1 + ht2
+ht_list = ht1 + ht2 + rowAnnotation(bar = anno_barplot(rowMeans(mat), which = "row"))
 draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
     heatmap_legend_side = "right", annotation_legend_side = "left")
+
+seekViewport("global"); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport("global_column_title"); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport("global_row_title"); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport("main_heatmap_list"); grid.rect(gp = gpar(fill = NA, col = "red"))
+for(heatmap_name in c("ht1", "ht2")) {
+    seekViewport(qq("heatmap_@{heatmap_name}")); grid.rect(gp = gpar(fill = NA, col = "red"))
+    for(i in 1:2) {
+        seekViewport(qq("@{heatmap_name}_heatmap_body_@{i}")); grid.rect(gp = gpar(fill = NA, col = "red"))
+        seekViewport(qq("@{heatmap_name}_row_names_@{i}")); grid.rect(gp = gpar(fill = NA, col = "red"))
+    }
+        
+    seekViewport(qq("@{heatmap_name}_column_title")); grid.rect(gp = gpar(fill = NA, col = "red"))
+    seekViewport(qq("@{heatmap_name}_hclust_column")); grid.rect(gp = gpar(fill = NA, col = "red"))
+    seekViewport(qq("@{heatmap_name}_column_names")); grid.rect(gp = gpar(fill = NA, col = "red"))
+    seekViewport(qq("legend_@{heatmap_name}")); grid.rect(gp = gpar(fill = NA, col = "red"))
+}
+seekViewport(qq("ht1_hclust_row_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("ht1_hclust_row_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("ht1_row_title_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("ht1_row_title_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
+
+
+for(annotation_name in c("points", "type")) {
+    seekViewport(qq("annotation_@{annotation_name}")); grid.rect(gp = gpar(fill = NA, col = "red"))
+}
+seekViewport(qq("annotation_bar_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("annotation_bar_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
+
+seekViewport(qq("legend_type")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("legend_ht1")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("legend_ht2")); grid.rect(gp = gpar(fill = NA, col = "red"))
+
+seekViewport("heatmap_legend"); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport("annotation_legend"); grid.rect(gp = gpar(fill = NA, col = "red"))
 ```
 
 The components that have names are:
@@ -827,6 +862,7 @@ The components that have names are:
 - `main_heatmap_list`: the viewport which contains a list of heatmaps and row annotations.
 - `heatmap_@{heatmap_name}`: the viewport which contains a single heatmap
 - `annotation_@{annotation_name}`: the viewport which contains an annotation either on columns or rows.
+- `annotation_@{annotation_name}_@{i}`: for row annotations
 - `@{heatmap_name}_heatmap_body_@{i}`: the heatmap body.
 - `@{heatmap_name}_column_title`: column title for a single heatmap.
 - `@{heatmap_name}_row_title_@{i}`: since a heatmap body may be splitted into several parts. `@{i}` is the index of the row slice.
@@ -941,7 +977,7 @@ Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))),
     width = unit(5, "mm"))
 ```
 
-### Show more statistics for OncoPrint
+### Show number of alterations for OncoPrint
 
 Following examples is <a href="http://www.cbioportal.org/faq.jsp#what-are-oncoprints">OncoPrint</a>.
 The basic idea is to self define the heatmap body. Besides the default style which is 
@@ -986,6 +1022,12 @@ Here the package has a `densityHeatmap()` function, the usage is quite straightf
 matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]
 densityHeatmap(matrix, anno = rep(c("A", "B"), each = 5))
 ```
+
+The implementation of the function is a little tricky. Empty row annotations are first created in front of
+the heatmap and after the heatmap by `rowAnnotation(name = function(index) NULL)`. Later after the heatmap
+is plotted, we go to the blank region which corresponds to the first empty row annotation and add labels of y-axis.
+Similarly, we go to the heatmap body by `seekViewport()` and push a viewport with no filled color 
+which contains data ranges corresponding to x-values and y-values of the matrix, and add a y-axis on the left. Also, in this viewport, we add lines that correspond to the five quantile numbers. Finally, the text for the five quantile levels are added in the right of this viewport but exceeds the viewport (they locate perfectly in the blank region of the second empty row annotation).
 
 ## Session info
 

@@ -1,5 +1,6 @@
 CHANGES in VERSION 1.1.9
 
+* adjust names and size of each component
 * add `densityHeatmap` function which visualizes column distribution
   in a matrix
 * add `plotDataFrame` function which provides a quick way to 

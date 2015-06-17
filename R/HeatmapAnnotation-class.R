@@ -252,6 +252,7 @@ setMethod(f = "get_color_mapping_list",
 # == param
 # -object a `HeatmapAnnotation-class` object.
 # -index a vector of order.
+# -k if row annotation is splitted, the value identifies which row slice.
 # -... pass to `grid::viewport` which contains all annotations.
 #
 # == details
@@ -265,7 +266,7 @@ setMethod(f = "get_color_mapping_list",
 #
 setMethod(f = "draw",
 	signature = "HeatmapAnnotation",
-	definition = function(object, index, ...) {
+	definition = function(object, index, k = NULL, ...) {
 
 	which = object@which
 	n_anno = length(object@anno_list)
@@ -279,7 +280,7 @@ setMethod(f = "draw",
 		} else {
 			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
 		}
-		draw(object@anno_list[[i]], index)
+		draw(object@anno_list[[i]], index, k)
 		upViewport()
 	}
 	upViewport()

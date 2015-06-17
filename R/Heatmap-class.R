@@ -762,19 +762,11 @@ setMethod(f = "make_layout",
             object@layout$layout_row_names_right_width = row_names_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 5))
         }
-        if(row_names_side == "right") {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
-                for(i in seq_len(n_slice)) {
-                    draw_dimnames(object, k = i, which = "row", x = dimname_padding, y = slice_y[i], height = slice_height[i], just = c("left", "top"))
-                }
-            })
-        } else {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
-                for(i in seq_len(n_slice)) {
-                    draw_dimnames(object, k = i, which = "row", x = unit(0, "npc"), y = slice_y[i], height = slice_height[i], width = unit(1, "npc") - dimname_padding, just = c("left", "top"))
-                }
-            })
-        }
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+            for(i in seq_len(n_slice)) {
+                draw_dimnames(object, k = i, which = "row", x = unit(0, "npc"), y = slice_y[i], height = slice_height[i], just = c("left", "top"), dimname_padding = dimname_padding)
+            }
+        })
     }
 
     #########################################
@@ -796,11 +788,7 @@ setMethod(f = "make_layout",
             object@layout$layout_column_names_bottom_height = column_names_height
             object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
         }
-        if(column_names_side == "top") {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc"), height = unit(1, "npc") - dimname_padding, just = c("center", "top")))
-        } else {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc") - dimname_padding, just = c("center", "top")))
-        }
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc"), just = c("center", "top"), dimname_padding = dimname_padding))
     }
     
     ##########################################
@@ -1004,7 +992,7 @@ setMethod(f = "draw_hclust",
     n = length(labels(dend))
 
     hclust_padding = unit(1, "mm")
-    pushViewport(viewport(name = paste(object@name, which, "cluster", sep = "_"), ...))
+    pushViewport(viewport(name = paste(object@name, which, "cluster", k, sep = "_"), ...))
 
     if(side == "left") {
         grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = hclust_padding, width = unit(1, "npc") - hclust_padding*2, just = "left")
@@ -1027,6 +1015,7 @@ setMethod(f = "draw_hclust",
 # -object a `Heatmap-class` object.
 # -which are names put on the row or on the column of the heatmap?
 # -k a matrix may be split by rows, the value identifies which row-slice.
+# -dimname_padding padding for the row/column names
 # -... pass to `grid::viewport`, basically for defining the position of the viewport.
 #
 # == details
@@ -1043,7 +1032,7 @@ setMethod(f = "draw_hclust",
 setMethod(f = "draw_dimnames",
     signature = "Heatmap",
     definition = function(object,
-    which = c("row", "column"), k = 1, ...) {
+    which = c("row", "column"), k = 1, dimname_padding = unit(0, "mm"), ...) {
 
     which = match.arg(which)[1]
 
@@ -1072,10 +1061,10 @@ setMethod(f = "draw_dimnames",
     if(which == "row") {
         pushViewport(viewport(name = paste(object@name, "row_names", k, sep = "_"), ...))
         if(side == "left") {
-            x = unit(1, "npc")
+            x = unit(1, "npc") - dimname_padding
             just = c("right", "center")
         } else {
-            x = unit(0, "npc")
+            x = unit(0, "npc") + dimname_padding
             just = c("left", "center")
         }
         y = (rev(seq_len(n)) - 0.5) / n
@@ -1084,10 +1073,10 @@ setMethod(f = "draw_dimnames",
         pushViewport(viewport(name = paste(object@name, "column_names", sep = "_"), ...))
         x = (seq_len(n) - 0.5) / n
         if(side == "top") {
-            y = unit(0, "npc")
+            y = unit(0, "npc") + dimname_padding
             just = c("left", "center")
         } else {
-            y = unit(1, "npc")
+            y = unit(1, "npc") - dimname_padding
             just = c("right", "center")
         }
         grid.text(nm, x, y, rot = 90, just = just, gp = gp)

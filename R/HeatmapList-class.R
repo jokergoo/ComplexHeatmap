@@ -873,7 +873,7 @@ setMethod(f = "draw_heatmap_list",
         } else if(inherits(ht, "HeatmapAnnotation")) {
             # calcualte the position of the heatmap body
             for(j in seq_len(n_slice)) {
-                draw(ht, index = htkk@row_order_list[[j]], y = slice_y[j], height = slice_height[j], just = c("center", "top"))
+                draw(ht, index = htkk@row_order_list[[j]], y = slice_y[j], height = slice_height[j], just = c("center", "top"), k = j)
             }
         }
         upViewport()

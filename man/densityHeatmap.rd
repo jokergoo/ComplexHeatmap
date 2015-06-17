@@ -29,6 +29,13 @@ To visualize distribution of columns in a matrix or in a list, sometimes we use 
 
 
 }
+\section{Example}{
+matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10] densityHeatmap(matrix) densityHeatmap(matrix, anno = rep(c("A", "B"), each = 5)) densityHeatmap(matrix, col = c("white", "red"), anno = rep(c("A", "B"), each = 5))  
+
+lt = list(rnorm(10), rnorm(10)) densityHeatmap(lt)  
+
+
+}
 \examples{
 matrix = matrix(rnorm(100), 10) 
 colnames(matrix) = letters[1:10]
@@ -37,6 +44,5 @@ densityHeatmap(matrix, anno = rep(c("A", "B"), each = 5))
 densityHeatmap(matrix, col = c("white", "red"), anno = rep(c("A", "B"), each = 5))  
 
 lt = list(a = rnorm(10), b = rnorm(10))
-densityHeatmap(lt)  
-
+densityHeatmap(lt)
 }
