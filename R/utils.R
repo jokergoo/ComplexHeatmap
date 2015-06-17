@@ -49,7 +49,7 @@ default_col = function(x, main_matrix = FALSE) {
 
     if(is.character(x)) {  # discrete
         levels = unique(x)
-        colors = hsv(runif(length(levels)), (runif(length(levels))-0.5)*0.4 + 0.6, 1)
+        colors = hsv(runif(length(levels)), 1-runif(1)/2, 1-runif(1)/2)
         names(colors) = levels
         return(colors)
     } else if(is.numeric(x)) {
@@ -60,7 +60,7 @@ default_col = function(x, main_matrix = FALSE) {
                 col_fun = colorRamp2(seq(min(x), max(x), length.out = 100), diverge_hcl(100, c = 100, l = c(50, 90), power = 1))
             }
         } else {
-            col_fun = colorRamp2(range(min(x), max(x)), c("white", hsv(runif(1), (runif(1)-0.5)*0.4+0.6, 1)))
+            col_fun = colorRamp2(range(min(x), max(x)), c("white", hsv(runif(1), 1, 1)))
         }
         return(col_fun)
     }

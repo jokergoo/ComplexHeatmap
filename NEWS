@@ -1,5 +1,7 @@
 CHANGES in VERSION 1.1.9
 
+* add `densityHeatmap` function which visualizes column distribution
+  in a matrix
 * add `plotDataFrame` function which provides a quick way to 
   visualize a data frame
 
