@@ -10,8 +10,8 @@ Method dispatch page for \code{make_layout}.
 \code{make_layout} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{make_layout,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
-\item \code{\link{make_layout,Heatmap-method}}, \code{\link{Heatmap-class}} class method
+\item \code{\link{make_layout,HeatmapList-method}}, \code{\link{HeatmapList}} class method
+\item \code{\link{make_layout,Heatmap-method}}, \code{\link{Heatmap}} class method
 }
 
 }
