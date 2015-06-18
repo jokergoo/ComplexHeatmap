@@ -23,6 +23,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"),
     show_column_hclust = TRUE, column_hclust_gp = gpar(),
+    row_order = NULL, column_order = NULL,
     row_names_side = c("right", "left"), show_row_names = TRUE,
     row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12),
     column_names_side = c("bottom", "top"),
@@ -64,6 +65,8 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{column_hclust_height}{height of the column cluster, should be a \code{\link[grid]{unit}} object.}
   \item{show_column_hclust}{whether show column clusters.}
   \item{column_hclust_gp}{graphic parameters for drawling lines. Same settings as \code{row_hclust_gp}.}
+  \item{row_order}{order of rows. It makes it easy to adjust row order for a list of heatmaps if this heatmap  is selected as the main heatmap. Manually setting row order should turn off clustering}
+  \item{column_order}{order of column. It makes it easy to adjust column order for both matrix and column annotations.}
   \item{row_names_side}{should the row names be put on the left or right of the heatmap?}
   \item{show_row_names}{whether show row names.}
   \item{row_names_max_width}{maximum width of row names viewport. Because some times row names can be very long, it is not reasonable to show them all.}

@@ -260,7 +260,7 @@ setMethod(f = "make_layout",
 
     if(auto_adjust) {
         ht_main = object@ht_list[[i_main]]
-        ht_main = make_row_cluster(ht_main)
+        ht_main = make_row_cluster(ht_main, order = ht_main@row_order_list[[1]])
         
         row_order = unlist(ht_main@row_order_list)
         split = ht_main@matrix_param$split
@@ -377,6 +377,7 @@ setMethod(f = "make_layout",
         }
 
         for(i in seq_len(n)) {
+            # supress row clustering because all rows in all heatmaps are adjusted
             if(inherits(object@ht_list[[i]], "Heatmap")) {
                 object@ht_list[[i]]@matrix_param$km = 1
                 object@ht_list[[i]]@row_title_param$combined_name_fun = NULL

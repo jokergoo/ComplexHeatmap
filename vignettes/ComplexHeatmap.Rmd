@@ -269,6 +269,16 @@ Heatmap(mat, name = "foo", cluster_rows = function(m) hclust(dist(m)),
     cluster_columns = function(m) hclust(dist(m)))
 ```
 
+Clustering can help to adjust order in rows and in columns. But you can still set the order manually by `row_order`
+and `column_order`. This is convenient if you want to adjust the order of columns when you have many column annotations or 
+adjust the order of rows if you have many parallel heatmaps plotted together. Note you need to turn off clustering
+if you want to set order manually.
+
+```{r manual_order}
+Heatmap(mat, name = "foo", cluster_rows = FALSE, cluster_columns = FALSE, 
+    row_order = 12:1, column_order = 10:1)
+```
+
 ### Dimension names
 
 Side, visibility and graphics parameter for dimension names can be set.
