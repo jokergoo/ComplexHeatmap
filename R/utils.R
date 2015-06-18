@@ -55,7 +55,7 @@ default_col = function(x, main_matrix = FALSE) {
     } else if(is.numeric(x)) {
         if(main_matrix) {
             if(length(unique(x) > 100)) {
-                col_fun = colorRamp2(seq(quantile(x, 0.05), quantile(x, 0.95), length.out = 100), diverge_hcl(100, c = 100, l = c(50, 90), power = 1))
+                col_fun = colorRamp2(seq(quantile(x, 0.01), quantile(x, 0.99), length.out = 100), diverge_hcl(100, c = 100, l = c(50, 90), power = 1))
             } else {
                 col_fun = colorRamp2(seq(min(x), max(x), length.out = 100), diverge_hcl(100, c = 100, l = c(50, 90), power = 1))
             }

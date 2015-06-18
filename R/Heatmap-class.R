@@ -145,6 +145,9 @@ Heatmap = setClass("Heatmap",
 # -column_hclust_height height of the column cluster, should be a `grid::unit` object.
 # -show_column_hclust whether show column clusters.
 # -column_hclust_gp graphic parameters for drawling lines. Same settings as ``row_hclust_gp``.
+# -row_order order of rows. It makes it easy to adjust row order for a list of heatmaps if this heatmap 
+#      is selected as the main heatmap. Manually setting row order should turn off clustering
+# -column_order order of column. It makes it easy to adjust column order for both matrix and column annotations.
 # -row_names_side should the row names be put on the left or right of the heatmap?
 # -show_row_names whether show row names.
 # -row_names_max_width maximum width of row names viewport. Because some times row names can be very long, it is not reasonable
@@ -199,6 +202,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"), 
     show_column_hclust = TRUE, column_hclust_gp = gpar(), 
+    row_order = NULL, column_order = NULL,
     row_names_side = c("right", "left"), show_row_names = TRUE, 
     row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12), 
     column_names_side = c("bottom", "top"), 
@@ -358,7 +362,11 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@row_hclust_param$width = row_hclust_width + unit(1, "mm")  # append the gap
     .Object@row_hclust_param$show = show_row_hclust
     .Object@row_hclust_param$gp = check_gp(row_hclust_gp)
-    .Object@row_order_list = list(seq_len(nrow(matrix))) # default order
+    if(is.null(row_order)) {
+        .Object@row_order_list = list(seq_len(nrow(matrix))) # default order
+    } else {
+        .Object@row_order_list = list(row_order)
+    }
 
     if(inherits(cluster_columns, "dendrogram") || inherits(cluster_columns, "hclust")) {
         .Object@column_hclust_param$obj = cluster_columns
@@ -383,7 +391,11 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@column_hclust_param$height = column_hclust_height + unit(1, "mm")  # append the gap
     .Object@column_hclust_param$show = show_column_hclust
     .Object@column_hclust_param$gp = check_gp(column_hclust_gp)
-    .Object@column_order = seq_len(ncol(matrix))
+    if(is.null(column_order)) {
+        .Object@column_order = seq_len(ncol(matrix))
+    } else {
+        .Object@column_order = column_order
+    }
 
     .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
     if(is.null(top_annotation)) {
@@ -470,7 +482,7 @@ setMethod(f = "make_column_cluster",
         order = seq_len(ncol(mat))
     }
 
-    if(is.null(order)) {
+    if(is.null(order) || object@column_hclust_param$cluster) {
         if(!is.null(object@column_hclust_param$obj)) {
             object@column_hclust = object@column_hclust_param$obj
         } else if(!is.null(object@column_hclust_param$fun)) {
@@ -483,6 +495,7 @@ setMethod(f = "make_column_cluster",
         column_order = order
     }
 
+    # re-order
     object@column_order = column_order
 
     return(object)
@@ -513,7 +526,7 @@ setMethod(f = "make_column_cluster",
 #
 setMethod(f = "make_row_cluster",
     signature = "Heatmap",
-    definition = function(object, order = NULL, km = object@matrix_param$km, 
+    definition = function(object, order = unlist(object@row_order_list), km = object@matrix_param$km, 
     split = object@matrix_param$split) {
 
     mat = object@matrix
@@ -524,7 +537,7 @@ setMethod(f = "make_row_cluster",
         order = seq_len(nrow(mat))
     }
 
-    if(is.null(order)) {
+    if(is.null(order) || object@row_hclust_param$cluster) {
 
         if(!is.null(object@row_hclust_param$obj)) {
             if(km > 1) {
@@ -591,7 +604,7 @@ setMethod(f = "make_row_cluster",
     }
 
     # make hclust in each slice
-    if(is.null(order)) {
+    if(is.null(order) || object@row_hclust_param$cluster) {
         row_hclust_list = rep(list(NULL), length(row_order_list))
         for(i in seq_along(row_order_list)) {
             submat = mat[ row_order_list[[i]], , drop = FALSE]

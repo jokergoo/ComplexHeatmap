@@ -12,7 +12,7 @@ Make cluster on rows
 
 }
 \usage{
-\S4method{make_row_cluster}{Heatmap}(object, order = NULL, km = object@matrix_param$km,
+\S4method{make_row_cluster}{Heatmap}(object, order = unlist(object@row_order_list), km = object@matrix_param$km,
     split = object@matrix_param$split)
 }
 \arguments{
