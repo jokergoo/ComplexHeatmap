@@ -498,6 +498,10 @@ setMethod(f = "make_column_cluster",
     # re-order
     object@column_order = column_order
 
+    if(ncol(mat) != length(column_order)) {
+        stop("Number of columns in the matrix are not the same as the length of\nthe cluster or the column order.")
+    }
+
     return(object)
 })
 
@@ -624,6 +628,10 @@ setMethod(f = "make_row_cluster",
     }
     object@row_order_list = row_order_list
     object@matrix_param$split = split
+
+    if(nrow(mat) != length(unlist(row_order_list))) {
+        stop("Number of rows in the matrix are not the same as the length of\nthe cluster or the row orders.")
+    }
 
     return(object)
 
@@ -1137,17 +1145,27 @@ setMethod(f = "draw_title",
         "row" = object@row_title[k],
         "column" = object@column_title)
 
+    title_padding = unit(2.5, "mm")
+
     if(which == "row") {
         rot = switch(side,
             "left" = 90,
             "right" = 270)
 
         pushViewport(viewport(name = paste(object@name, "row_title", k, sep = "_"), clip = FALSE, ...))
-        grid.text(title, rot = rot, gp = gp)
+        if(side == "left") {
+            grid.text(title, x = unit(1, "npc") - title_padding, rot = rot, vjust = 0, gp = gp)
+        } else {
+            grid.text(title, x = title_padding, rot = rot, vjust = 0, gp = gp)
+        }
         upViewport()
     } else {
         pushViewport(viewport(name = paste(object@name, "column_title", sep = "_"), clip = FALSE, ...))
-        grid.text(title, gp = gp)
+        if(side == "top") {
+            grid.text(title, y = title_padding, vjust = 0, gp = gp)
+        } else {
+            grid.text(title, y = unit(1, "npc") - title_padding, vjust = 1, gp = gp)
+        }
         upViewport()
     }
 })
