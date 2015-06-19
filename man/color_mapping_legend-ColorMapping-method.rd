@@ -12,8 +12,8 @@ Draw legend based on color mapping
 
 }
 \usage{
-\S4method{color_mapping_legend}{ColorMapping}(object, ..., plot = TRUE, legend_grid_height = unit(3, "mm"),
-    legend_grid_width = unit(3, "mm"),
+\S4method{color_mapping_legend}{ColorMapping}(object, ..., plot = TRUE, legend_grid_height = unit(4, "mm"),
+    legend_grid_width = unit(4, "mm"),
     legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
     legend_label_gp = gpar(fontsize = 10))
 }
