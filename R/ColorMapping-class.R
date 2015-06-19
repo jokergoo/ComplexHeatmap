@@ -204,6 +204,7 @@ setMethod(f = "map_to_colors",
 # -plot whether to plot or just return the size of the legend viewport.
 # -legend_grid_height height of each legend grid.
 # -legend_grid_width width of each legend grid.
+# -legend_grid_border color for legend grid borders.
 # -legend_title_gp graphic parameter for legend title.
 # -legend_label_gp graphic parameter for legend label.
 #
@@ -219,7 +220,7 @@ setMethod(f = "map_to_colors",
 setMethod(f = "color_mapping_legend",
 	signature = "ColorMapping",
 	definition = function(object, ..., plot = TRUE, legend_grid_height = unit(4, "mm"),
-	legend_grid_width = unit(4, "mm"), 
+	legend_grid_width = unit(4, "mm"), legend_grid_border = "white",
 	legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
 	legend_label_gp = gpar(fontsize = 10)) {
 
@@ -249,7 +250,7 @@ setMethod(f = "color_mapping_legend",
 		grid.text(object@name, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), 
 			gp = legend_title_gp)
 		grid.rect(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
-			gp = gpar(col = "white", fill = object@colors))
+			gp = gpar(col = legend_grid_border, fill = object@colors))
 		grid.text(rev(object@levels), x + legend_grid_width + grid_padding, y - legend_grid_height*0.5, 
 			just = c("left", "center"), gp = legend_label_gp)
 		upViewport()
