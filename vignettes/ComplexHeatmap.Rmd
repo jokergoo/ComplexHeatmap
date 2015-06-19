@@ -361,20 +361,24 @@ on every cell in the heatmap and provides following information on the 'current'
 - `height`: height of the cell.
 - `fill`: color of the cell.
 
-In following example, we draw round rectangles and add text. We assign the heatmap to a variable
-and make the plot explicitly by calling `draw()`, just in order to suppress the heatmap legend. 
-This functionality will be introduced in later sections.
+In following example, we make a heatmap which shows correlation matrix similar by the **corrplot** package:
 
-```{r cell_fun}
-mat2 = matrix(sample(1:12, 12, replace = TRUE), 4, 3)
-
-ht = Heatmap(mat2, rect_gp = gpar(col = "white", lwd = 2, type = "none"), 
+```{r cell_fun, fig.width = 6.5, fig.height = 6}
+cor_mat = cor(mat)
+nm = rownames(cor_mat)
+col_fun = circlize::colorRamp2(c(-1, 0, 1), c("green", "white", "red"))
+# `col = col_fun` here is used to generate the legend
+Heatmap(cor_mat, name = "correlation", col = col_fun, rect_gp = gpar(type = "none"), 
     cell_fun = function(j, i, x, y, width, height, fill) {
-        grid.roundrect(x, y, width*0.9*(mat2[i, j]/12), height*0.8*(mat2[i, j]/12), gp = gpar(fill = fill))
-        grid.text(mat2[i, j], x = x, y = y)
-    },
-    cluster_rows = FALSE, cluster_columns = FALSE)
-draw(ht, show_heatmap_legend = FALSE)
+        grid.rect(x = x, y = y, width = width, height = height, gp = gpar(col = "grey", fill = NA))
+        if(i == j) {
+            grid.text(nm[i], x = x, y = y)
+        } else {
+            grid.circle(x = x, y = y, r = abs(cor_mat[i, j])/2 * min(unit.c(width, height)), 
+                gp = gpar(fill = col_fun(cor_mat[i, j]), col = NA))
+        }
+    }, show_row_hclust = FALSE, show_column_hclust = FALSE,
+    show_row_names = FALSE, show_column_names = FALSE)
 ```
 
 ## The HeatmapAnnotation class
