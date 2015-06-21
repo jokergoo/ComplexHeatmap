@@ -2,27 +2,22 @@
 \alias{prepare,Heatmap-method}
 \alias{prepare}
 \title{
-Prepare the heatmap  
-
+Prepare the heatmap
 
 }
 \description{
-Prepare the heatmap  
-
+Prepare the heatmap
 
 }
 \usage{
-\S4method{prepare}{Heatmap}(object, row_order = NULL, split = object@matrix_param$split)
-}
+\S4method{prepare}{Heatmap}(object, process_rows = TRUE)}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{row_order}{orders of rows, pass to \code{\link{make_row_cluster,Heatmap-method}}. Because if more than one heatmaps are drawn by columns, the order of some heatmap will be adjusted by one certain heatmap, this argument is used to pass a pre-defined row order.}
-  \item{split}{how to split rows in the matrix, passing to \code{\link{make_row_cluster,Heatmap-method}}.}
-
+  \item{process_rows}{whether process rows of the heatmap}
 }
 \details{
-The preparation of the heatmap includes following steps:  
+The preparation of the heatmap includes following steps:
 
 \itemize{
   \item making clustering on rows if specified (by calling \code{\link{make_row_cluster,Heatmap-method}})
@@ -30,21 +25,17 @@ The preparation of the heatmap includes following steps:
   \item making the layout of the heatmap (by calling \code{\link{make_layout,Heatmap-method}})
 }
 
-This function is only for internal use.  
-
+This function is only for internal use.
 
 }
 \value{
-A \code{\link{Heatmap-class}} object.  
-
+A \code{\link{Heatmap-class}} object.
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
-
+Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
 # no example for this internal method
-NULL
-}
+NULL}

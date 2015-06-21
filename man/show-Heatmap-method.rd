@@ -1,36 +1,30 @@
 \name{show-Heatmap-method}
 \alias{show,Heatmap-method}
 \title{
-Draw the single heatmap with default parameters  
-
+Draw the single heatmap with default parameters
 
 }
 \description{
-Draw the single heatmap with default parameters  
-
+Draw the single heatmap with default parameters
 
 }
 \usage{
-\S4method{show}{Heatmap}(object)
-}
+\S4method{show}{Heatmap}(object)}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
-
 }
 \details{
-Actually it calls \code{\link{draw,Heatmap-method}}, but only with default parameters. If users want to customize the heatmap, they can pass parameters directly to \code{\link{draw,Heatmap-method}}.  
-
+Actually it calls \code{\link{draw,Heatmap-method}}, but only with default parameters. If users want to customize the heatmap,
+they can pass parameters directly to \code{\link{draw,Heatmap-method}}.
 
 }
 \value{
-This function returns no value.  
-
+This function returns no value.
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
-
+Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
@@ -41,5 +35,4 @@ colnames(mat) = letters[1:10]
 
 ht = Heatmap(mat)
 ht
-draw(ht, heatmap_legend_side = "left")
-}
+draw(ht, heatmap_legend_side = "left")}

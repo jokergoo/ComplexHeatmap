@@ -1,13 +1,11 @@
 \name{make_layout-HeatmapList-method}
 \alias{make_layout,HeatmapList-method}
 \title{
-Make layout for the complete plot  
-
+Make layout for the complete plot
 
 }
 \description{
-Make layout for the complete plot  
-
+Make layout for the complete plot
 
 }
 \usage{
@@ -19,11 +17,10 @@ Make layout for the complete plot
     show_heatmap_legend = TRUE,
     annotation_legend_side = c("right", "left", "bottom", "top"),
     show_annotation_legend = TRUE, annotation_legend_list = list(),
-    gap = unit(3, "mm"), auto_adjust = TRUE,
+    gap = unit(3, "mm"),
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_hclust_side = c("original", "left", "right"),
-    row_sub_title_side = c("original", "left", "right"), ...)
-}
+    row_sub_title_side = c("original", "left", "right"), ...)}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object.}
@@ -39,33 +36,27 @@ Make layout for the complete plot
   \item{show_annotation_legend}{whether show annotation legend.}
   \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
   \item{gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
-  \item{auto_adjust}{auto adjust if the number of heatmap is larger than one.}
   \item{main_heatmap}{name or index for the main heatmap}
   \item{row_hclust_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
   \item{row_sub_title_side}{if auto adjust, where to put sub row titles for the main heatmap}
   \item{...}{graphic parameters pass to \code{\link{color_mapping_legend,ColorMapping-method}}.}
-
 }
 \details{
-It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.  
+It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
 
-The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.  
+The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.
 
-This function is only for internal use.  
-
+This function is only for internal use.
 
 }
 \value{
-A \code{\link{HeatmapList-class}} object in which settings for each heatmap are adjusted.  
-
+A \code{\link{HeatmapList-class}} object in which settings for each heatmap are adjusted.
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
-
+Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
 # no example for this internal method
-NULL
-}
+NULL}

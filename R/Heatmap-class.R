@@ -76,6 +76,7 @@ Heatmap = setClass("Heatmap",
         row_hclust_list = "list", # one or more row clusters
         row_hclust_param = "list", # parameters for row cluster
         row_order_list = "list",
+        row_order = "numeric",
 
         column_hclust = "ANY",
         column_hclust_param = "list", # parameters for column cluster
@@ -235,6 +236,10 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
         }
     }
 
+    if(is.null(width)) {
+        .Object@heatmap_param$width = ncol(matrix)
+    }
+
     if(ncol(matrix) == 0) {
         .Object@heatmap_param$show_heatmap_legend = FALSE
         .Object@heatmap_param$width = unit(0, "null")
@@ -362,10 +367,11 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@row_hclust_param$width = row_hclust_width + unit(1, "mm")  # append the gap
     .Object@row_hclust_param$show = show_row_hclust
     .Object@row_hclust_param$gp = check_gp(row_hclust_gp)
+    .Object@row_order_list = list() # default order
     if(is.null(row_order)) {
-        .Object@row_order_list = list(seq_len(nrow(matrix))) # default order
-    } else {
-        .Object@row_order_list = list(row_order)
+        .Object@row_order = seq_len(nrow(matrix))
+    }  else {
+        .Object@row_order = row_order
     }
 
     if(inherits(cluster_columns, "dendrogram") || inherits(cluster_columns, "hclust")) {
@@ -457,7 +463,6 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
 #
 # == param
 # -object a `Heatmap-class` object.
-# -order a pre-defined order.
 #
 # == details
 # The function will fill or adjust ``column_hclust`` and ``column_order`` slots.
@@ -472,17 +477,14 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
 #
 setMethod(f = "make_column_cluster",
     signature = "Heatmap",
-    definition = function(object, order = NULL) {
+    definition = function(object) {
     
     mat = object@matrix
     distance = object@column_hclust_param$distance
     method = object@column_hclust_param$method
+    order = object@column_order
 
-    if(!object@column_hclust_param$cluster && is.null(order)) {
-        order = seq_len(ncol(mat))
-    }
-
-    if(is.null(order) || object@column_hclust_param$cluster) {
+    if(object@column_hclust_param$cluster) {
         if(!is.null(object@column_hclust_param$obj)) {
             object@column_hclust = object@column_hclust_param$obj
         } else if(!is.null(object@column_hclust_param$fun)) {
@@ -490,7 +492,7 @@ setMethod(f = "make_column_cluster",
         } else {
             object@column_hclust = hclust(get_dist(t(mat), distance), method = method)
         }
-        column_order = get_hclust_order(object@column_hclust)
+        column_order = get_hclust_order(object@column_hclust)  # we don't need the pre-defined orders
     } else {
         column_order = order
     }
@@ -511,9 +513,6 @@ setMethod(f = "make_column_cluster",
 #
 # == param
 # -object a `Heatmap-class` object.
-# -order a pre-defined order.
-# -km if apply k-means clustering on rows, number of clusters.
-# -split a vector or a data frame by which the rows are be split.
 #
 # == details
 # The function will fill or adjust ``row_hclust_list``, ``row_order_list``, ``row_title`` and ``matrix_param`` slots.
@@ -530,18 +529,16 @@ setMethod(f = "make_column_cluster",
 #
 setMethod(f = "make_row_cluster",
     signature = "Heatmap",
-    definition = function(object, order = unlist(object@row_order_list), km = object@matrix_param$km, 
-    split = object@matrix_param$split) {
+    definition = function(object) {
 
     mat = object@matrix
     distance = object@row_hclust_param$distance
     method = object@row_hclust_param$method
+    order = object@row_order  # pre-defined row order
+    km = object@matrix_param$km
+    split = object@matrix_param$split
 
-    if(!object@row_hclust_param$cluster && is.null(order)) {
-        order = seq_len(nrow(mat))
-    }
-
-    if(is.null(order) || object@row_hclust_param$cluster) {
+    if(object@row_hclust_param$cluster) {
 
         if(!is.null(object@row_hclust_param$obj)) {
             if(km > 1) {
@@ -555,7 +552,7 @@ setMethod(f = "make_row_cluster",
             return(object)
         }
 
-        row_order = seq_len(nrow(mat))  # default row order
+        row_order = seq_len(nrow(mat))
     } else {
         row_order = order
     }
@@ -570,7 +567,7 @@ setMethod(f = "make_row_cluster",
         meanmat = as.matrix(as.data.frame(meanmat))
         hc = hclust(dist(t(meanmat)))
         cluster2 = numeric(length(cluster))
-        for(i in seq_along(hc$order)) {
+        for(i in hc$order) {
             cluster2[cluster == hc$order[i]] = i
         }
         cluster2 = paste0("cluster", cluster2)
@@ -600,7 +597,7 @@ setMethod(f = "make_row_cluster",
         row_levels = unique(split)
         for(i in seq_along(row_levels)) {
             l = split == row_levels[i]
-            row_order_list[[i]] = nature_order[l][ order(row_order[l]) ]
+            row_order_list[[i]] = intersect(row_order, which(l))
         }
 
         if(!is.null(object@row_title_param$combined_name_fun)) {
@@ -609,7 +606,7 @@ setMethod(f = "make_row_cluster",
     }
 
     # make hclust in each slice
-    if(is.null(order) || object@row_hclust_param$cluster) {
+    if(object@row_hclust_param$cluster) {
         row_hclust_list = rep(list(NULL), length(row_order_list))
         for(i in seq_along(row_order_list)) {
             submat = mat[ row_order_list[[i]], , drop = FALSE]
@@ -1413,10 +1410,7 @@ setMethod(f = "draw",
 #
 # == param
 # -object a `Heatmap-class` object.
-# -row_order orders of rows, pass to `make_row_cluster,Heatmap-method`. Because if more than one heatmaps
-#            are drawn by columns, the order of some heatmap will be adjusted by one certain heatmap, this
-#            argument is used to pass a pre-defined row order.
-# -split how to split rows in the matrix, passing to `make_row_cluster,Heatmap-method`.
+# -process_rows whether process rows of the heatmap
 #
 # == detail
 # The preparation of the heatmap includes following steps:
@@ -1435,10 +1429,10 @@ setMethod(f = "draw",
 #
 setMethod(f = "prepare",
     signature = "Heatmap",
-    definition = function(object, row_order = NULL, split = object@matrix_param$split) {
+    definition = function(object, process_rows = TRUE) {
 
-    if(object@row_hclust_param$cluster || !is.null(split)) {
-        object = make_row_cluster(object, order = row_order, split = split)
+    if(process_rows) {
+        object = make_row_cluster(object)
     }
     if(object@column_hclust_param$cluster) object = make_column_cluster(object)
 

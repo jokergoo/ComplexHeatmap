@@ -1,39 +1,32 @@
 \name{draw-HeatmapAnnotation-method}
 \alias{draw,HeatmapAnnotation-method}
 \title{
-Draw the heatmap annotations  
-
+Draw the heatmap annotations
 
 }
 \description{
-Draw the heatmap annotations  
-
+Draw the heatmap annotations
 
 }
 \usage{
-\S4method{draw}{HeatmapAnnotation}(object, index, k = NULL, ...)
-}
+\S4method{draw}{HeatmapAnnotation}(object, index, k = NULL, ...)}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
   \item{index}{a vector of order.}
   \item{k}{if row annotation is splitted, the value identifies which row slice.}
   \item{...}{pass to \code{\link[grid]{viewport}} which contains all annotations.}
-
 }
 \details{
-A viewport is created. Mostly, this method is used inside \code{\link{draw,HeatmapList-method}}.  
-
+A viewport is created. Mostly, this method is used inside \code{\link{draw,HeatmapList-method}}.
 
 }
 \value{
-No value is returned.  
-
+No value is returned.
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
-
+Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
@@ -57,5 +50,4 @@ grid.newpage(); draw(ha, 1:6)
 
 mat = matrix(rnorm(36), 6)
 ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
-grid.newpage(); draw(ha, 1:6)
-}
+grid.newpage(); draw(ha, 1:6)}
