@@ -1,13 +1,11 @@
 \name{Heatmap}
 \alias{Heatmap}
 \title{
-Constructor method for Heatmap class  
-
+Constructor method for Heatmap class
 
 }
 \description{
-Constructor method for Heatmap class  
-
+Constructor method for Heatmap class
 
 }
 \usage{
@@ -35,29 +33,28 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     bottom_annotation_height = unit(5*length(bottom_annotation@anno_list), "mm"),
     km = 1, split = NULL, gap = unit(1, "mm"),
     combined_name_fun = function(x) paste(x, collapse = "/"),
-    width = NULL, show_heatmap_legend = TRUE)
-}
+    width = NULL, show_heatmap_legend = TRUE)}
 \arguments{
 
-  \item{matrix}{a matrix. Either numeric or character. If it is a simple vector, it will be converted to a one-column matrix.}
-  \item{col}{a vector of colors if the color mapping is discrete or a color mapping  function if the matrix is continuous numbers. If the matrix is continuous, the value can also be a vector of colors so that colors will be interpolated. Pass to \code{\link{ColorMapping}}.}
+  \item{matrix}{a matrix. Either numeric or character. If it is a simple vector, it will beconverted to a one-column matrix.}
+  \item{col}{a vector of colors if the color mapping is discrete or a color mapping function if the matrix is continuous numbers. If the matrix is continuous,the value can also be a vector of colors so that colors will be interpolated. Pass to \code{\link{ColorMapping}}.}
   \item{name}{name of the heatmap. The name is used as the title of the heatmap legend.}
   \item{na_col}{color for \code{NA} values.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
-  \item{cell_fun}{self-defined function to add graphics on each cell. Seven parameters will be passed into  this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are row index, column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport, the width and height of the cell and the filled color. }
+  \item{cell_fun}{self-defined function to add graphics on each cell. Seven parameters will be passed into this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are row index,column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport,the width and height of the cell and the filled color. }
   \item{row_title}{title on row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap?}
   \item{row_title_gp}{graphic parameters for drawing text.}
   \item{column_title}{title on column.}
   \item{column_title_side}{will the title be put on the top or bottom of the heatmap?}
   \item{column_title_gp}{graphic parameters for drawing text.}
-  \item{cluster_rows}{If the value is a logical, it means whether make cluster on rows. The value can also be a \code{\link[stats]{hclust}} or a \code{\link[stats]{dendrogram}} that already contains clustering information. This means you can use any type of clustering methods and render the \code{\link[stats]{dendrogram}} object with self-defined graphic settings.}
-  \item{clustering_distance_rows}{it can be a pre-defined character which is in  ("euclidean", "maximum", "manhattan", "canberra", "binary",  "minkowski", "pearson", "spearman", "kendall"). It can also be a function. If the function has one argument, the input argument should be a matrix and  the returned value should be a \code{\link[stats]{dist}} object. If the function has two arguments, the input arguments are two vectors and the function calculates distance between these two vectors.}
+  \item{cluster_rows}{If the value is a logical, it means whether make cluster on rows. The value can alsobe a \code{\link[stats]{hclust}} or a \code{\link[stats]{dendrogram}} that already contains clustering information.This means you can use any type of clustering methods and render the \code{\link[stats]{dendrogram}}object with self-defined graphic settings.}
+  \item{clustering_distance_rows}{it can be a pre-defined character which is in ("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski", "pearson", "spearman", "kendall"). It can also be a function.If the function has one argument, the input argument should be a matrix and the returned value should be a \code{\link[stats]{dist}} object. If the function has two arguments,the input arguments are two vectors and the function calculates distance between thesetwo vectors.}
   \item{clustering_method_rows}{method to make cluster, pass to \code{\link[stats]{hclust}}.}
   \item{row_hclust_side}{should the row cluster be put on the left or right of the heatmap?}
   \item{row_hclust_width}{width of the row cluster, should be a \code{\link[grid]{unit}} object.}
   \item{show_row_hclust}{whether show row clusters. }
-  \item{row_hclust_gp}{graphics parameters for drawing lines. If users already provide a \code{\link[stats]{dendrogram}} object with edges rendered, this argument will be ignored.}
+  \item{row_hclust_gp}{graphics parameters for drawing lines. If users already provide a \code{\link[stats]{dendrogram}}object with edges rendered, this argument will be ignored.}
   \item{cluster_columns}{whether make cluster on columns. Same settings as \code{cluster_rows}.}
   \item{clustering_distance_columns}{same setting as \code{clustering_distance_rows}.}
   \item{clustering_method_columns}{method to make cluster, pass to \code{\link[stats]{hclust}}.}
@@ -65,11 +62,11 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{column_hclust_height}{height of the column cluster, should be a \code{\link[grid]{unit}} object.}
   \item{show_column_hclust}{whether show column clusters.}
   \item{column_hclust_gp}{graphic parameters for drawling lines. Same settings as \code{row_hclust_gp}.}
-  \item{row_order}{order of rows. It makes it easy to adjust row order for a list of heatmaps if this heatmap  is selected as the main heatmap. Manually setting row order should turn off clustering}
+  \item{row_order}{order of rows. It makes it easy to adjust row order for a list of heatmaps if this heatmap is selected as the main heatmap. Manually setting row order should turn off clustering}
   \item{column_order}{order of column. It makes it easy to adjust column order for both matrix and column annotations.}
   \item{row_names_side}{should the row names be put on the left or right of the heatmap?}
   \item{show_row_names}{whether show row names.}
-  \item{row_names_max_width}{maximum width of row names viewport. Because some times row names can be very long, it is not reasonable to show them all.}
+  \item{row_names_max_width}{maximum width of row names viewport. Because some times row names can be very long, it is not reasonableto show them all.}
   \item{row_names_gp}{graphic parameters for drawing text.}
   \item{column_names_side}{should the column names be put on the top or bottom of the heatmap?}
   \item{column_names_max_height}{maximum height of column names viewport.}
@@ -79,18 +76,18 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{top_annotation_height}{total height of the column annotations on the top.}
   \item{bottom_annotation}{a \code{\link{HeatmapAnnotation}} object.}
   \item{bottom_annotation_height}{total height of the column annotations on the bottom.}
-  \item{km}{do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering. For each row-clusters, hierarchical clustering is still applied with parameters above.}
+  \item{km}{do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering.For each row-clusters, hierarchical clustering is still applied with parameters above.}
   \item{split}{a vector or a data frame by which the rows are split.}
   \item{gap}{gap between row-slices if the heatmap is split by rows, should be \code{\link[grid]{unit}} object.}
-  \item{combined_name_fun}{if the heatmap is split by rows, how to make a combined row title for each slice? The input parameter for this function is a vector which contains level names under each column in \code{split}.}
-  \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmap is appended to a list of heatmaps.}
+  \item{combined_name_fun}{if the heatmap is split by rows, how to make a combined row title for each slice?The input parameter for this function is a vector which contains level names under each column in \code{split}.}
+  \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmapis appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
-
 }
 \details{
-The initialization function only applies parameter checking and fill values to each slot with proper ones. Then it will be ready for clustering and layout.  
+The initialization function only applies parameter checking and fill values to each slot with proper ones.
+Then it will be ready for clustering and layout.
 
-Following methods can be applied on the \code{\link{Heatmap-class}} object:  
+Following methods can be applied on the \code{\link{Heatmap-class}} object:
 
 \itemize{
   \item \code{\link{show,Heatmap-method}}: draw a single heatmap with default parameters
@@ -98,18 +95,16 @@ Following methods can be applied on the \code{\link{Heatmap-class}} object:
   \item \code{\link{add_heatmap,Heatmap-method}} append heatmaps and row annotations to a list of heatmaps.
 }
 
-The constructor function pretends to be a high-level graphic function because the \code{show} method of the \code{\link{Heatmap-class}} object actually plots the graphics.  
-
+The constructor function pretends to be a high-level graphic function because the \code{show} method
+of the \code{\link{Heatmap-class}} object actually plots the graphics.
 
 }
 \value{
-A \code{\link{Heatmap-class}} object.  
-
+A \code{\link{Heatmap-class}} object.
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
-
+Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
@@ -183,5 +178,4 @@ Heatmap(mat, rect_gp = gpar(col = "white"),
         grid.text(mat[i, j], x = x, y = y)
     },
     cluster_rows = FALSE, cluster_columns = FALSE, row_names_side = "left", 
-    column_names_side = "top")
-}
+    column_names_side = "top")}

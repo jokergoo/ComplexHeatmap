@@ -1,40 +1,33 @@
 \name{draw-SingleAnnotation-method}
 \alias{draw,SingleAnnotation-method}
 \title{
-Draw the single annotation  
-
+Draw the single annotation
 
 }
 \description{
-Draw the single annotation  
-
+Draw the single annotation
 
 }
 \usage{
-\S4method{draw}{SingleAnnotation}(object, index, k = NULL)
-}
+\S4method{draw}{SingleAnnotation}(object, index, k = NULL)}
 \arguments{
 
   \item{object}{a \code{\link{SingleAnnotation-class}} object.}
   \item{index}{a vector of orders}
   \item{k}{if row annotation is splitted, the value identifies which row slice.}
-
 }
 \details{
-A viewport is created.  
+A viewport is created.
 
-The graphics would be different depending the annotation is a row annotation or a column annotation.  
-
+The graphics would be different depending the annotation is a row annotation or a column annotation.
 
 }
 \value{
-No value is returned.  
-
+No value is returned.
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
-
+Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
@@ -59,5 +52,4 @@ anno = SingleAnnotation(value = 1:10, col = colorRamp2(c(1, 10), c("blue", "red"
 grid.newpage(); draw(anno, 1:10)
 
 anno = SingleAnnotation(fun = anno_points(1:10))
-grid.newpage(); draw(anno, 1:10)
-}
+grid.newpage(); draw(anno, 1:10)}

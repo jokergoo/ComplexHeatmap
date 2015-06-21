@@ -1,11 +1,9 @@
 \name{show-dispatch}
 \alias{show}
 \title{
-Method dispatch page for show
-}
+Method dispatch page for show}
 \description{
-Method dispatch page for \code{show}.
-}
+Method dispatch page for \code{show}.}
 \section{Dispatch}{
 \code{show} can be dispatched on following classes:
 
@@ -16,9 +14,11 @@ Method dispatch page for \code{show}.
 \item \code{\link{show,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
 \item \code{\link{show,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
-
 }
-\examples{
+\section{Example}{
 # no example
 NULL
 }
+\examples{
+# no example
+NULL}

@@ -673,6 +673,16 @@ ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", width = unit(5, "cm
 ht1 + ht2
 ```
 
+or the width can be set as relative values. Please not in this case, `width` for all heatmaps
+should be set (relative width and fixed width can be mixed).
+
+```{r heatmap_list_relative_size, fig.width = 10, fig.keep = "all"}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", width = 2)
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", width = 1)
+ht1 + ht2
+```
+
+
 ### Auto adjustment
 
 There are some automatic adjustment if more than one heatmaps are plotted. There should be a main heatmap
