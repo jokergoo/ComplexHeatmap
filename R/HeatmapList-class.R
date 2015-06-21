@@ -177,7 +177,6 @@ setMethod(f = "add_heatmap",
 # -show_annotation_legend whether show annotation legend.
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 # -gap gap between heatmaps, should be a `grid::unit` object.
-# -auto_adjust auto adjust if the number of heatmap is larger than one.
 # -main_heatmap name or index for the main heatmap
 # -row_hclust_side if auto adjust, where to put the row dendrograms for the main heatmap
 # -row_sub_title_side if auto adjust, where to put sub row titles for the main heatmap
@@ -206,7 +205,7 @@ setMethod(f = "make_layout",
     show_heatmap_legend = TRUE,
     annotation_legend_side = c("right", "left", "bottom", "top"), 
     show_annotation_legend = TRUE, annotation_legend_list = list(),
-    gap = unit(3, "mm"), auto_adjust = TRUE, 
+    gap = unit(3, "mm"), 
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_hclust_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right"), ...) {
@@ -233,8 +232,8 @@ setMethod(f = "make_layout",
             }
         } else if(length(gap) == n - 1) {
             gap = unit.c(gap, unit(1, "null"))
-        } else if(length(gap) != n) {
-            stop(paste0("length of `gap` can only be 1 or ", n-1, " or ", n, "."))
+        } else if(length(gap) > n) {
+            stop(paste0("length of `gap` can only be 1 or ", n-1, "."))
         }
     } else {
         if(!is.unit(gap)) {
@@ -256,133 +255,67 @@ setMethod(f = "make_layout",
         }
     }
 
-    # else if the zero-column matrix is in the middle, set the front gap to 0
+    ######## auto adjust ##########
+    ht_main = object@ht_list[[i_main]]
+    ht_main = make_row_cluster(ht_main)  # with pre-defined order
+    object@ht_list[[i_main]] = ht_main
 
-    if(auto_adjust) {
-        ht_main = object@ht_list[[i_main]]
-        ht_main = make_row_cluster(ht_main, order = ht_main@row_order_list[[1]])
-        
-        row_order = unlist(ht_main@row_order_list)
-        split = ht_main@matrix_param$split
+    row_hclust_side = match.arg(row_hclust_side)[1]
+    row_sub_title_side = match.arg(row_sub_title_side)[1]
 
-        row_hclust_side = match.arg(row_hclust_side)[1]
-        row_sub_title_side = match.arg(row_sub_title_side)[1]
-
-        if(row_hclust_side == "left" || row_sub_title_side == "left") {
-            # if the first one is a HeatmapAnnotation object
-            if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
-                object = Heatmap(matrix(nrow = nr, ncol = 0)) + object
-                gap = unit.c(unit(0, "null"), gap)
-                i_main = i_main + 1
-            }
+    if(row_hclust_side == "left" || row_sub_title_side == "left") {
+        # if the first one is a HeatmapAnnotation object
+        # add a heatmap with zero column so that we can put titles and hclust on the most left
+        if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
+            object = Heatmap(matrix(nrow = nr, ncol = 0)) + object
+            gap = unit.c(unit(0, "null"), gap)
+            i_main = i_main + 1
+        }
             
+    }
+
+    if(row_hclust_side == "right" || row_sub_title_side == "right") {
+        # if the last one is a HeatmapAnnotation object
+        if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
+            object = object + Heatmap(matrix(nrow = nr, ncol = 0))
+            gap = unit.c(gap, unit(0, "null"))
         }
+    }
+    object@ht_list_param$gap = gap
 
-        if(row_hclust_side == "right" || row_sub_title_side == "right") {
-            # if the last one is a HeatmapAnnotation object
-            if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
-                object = object + Heatmap(matrix(nrow = nr, ncol = 0))
-                gap = unit.c(gap, unit(0, "null"))
-            }
+    n = length(object@ht_list)
+
+    ## orders of other heatmaps should be changed
+    for(i in seq_len(n)) {
+        if(inherits(object@ht_list[[i]], "Heatmap")) {
+            object@ht_list[[i]]@row_order_list = ht_main@row_order_list
+            object@ht_list[[i]]@row_order = ht_main@row_order
+            object@ht_list[[i]]@row_hclust_param$cluster = FALSE  # don't do clustering because cluster was already done
         }
-        object@ht_list_param$gap = gap
+    }
 
-        n = length(object@ht_list)
-
-        if(row_sub_title_side == "left") {
-            for(i in seq_len(n)) {
-                if(i == 1) {
-                    object@ht_list[[i]]@row_title = ht_main@row_title
-                    object@ht_list[[i]]@row_title_param = ht_main@row_title_param
-                    object@ht_list[[i]]@row_title_param$side = "left"
-                } else {
-                    if(inherits(object@ht_list[[i]], "Heatmap")) {
-                        object@ht_list[[i]]@row_title = character(0)
-                    }
-                }
-            }
-        } else if(row_sub_title_side == "right") {
-            for(i in seq_len(n)) {
-                if(i == n) {
-                    object@ht_list[[n]]@row_title = ht_main@row_title
-                    object@ht_list[[n]]@row_title_param = ht_main@row_title_param
-                    object@ht_list[[n]]@row_title_param$side = "right"
-                } else {
-                    if(inherits(object@ht_list[[i]], "Heatmap")) {
-                        object@ht_list[[i]]@row_title = character(0)
-                    }
-                }
-            }
-        } else {
-            for(i in seq_len(n)) {
-                if(i == i_main) {
-                    object@ht_list[[i]]@row_title = ht_main@row_title
-                    object@ht_list[[i]]@row_title_param = ht_main@row_title_param      
-                } else {
-                    if(inherits(object@ht_list[[i]], "Heatmap")) {
-                        object@ht_list[[i]]@row_title = character(0)
-                    }
-                }
-            }
-        }
-
-
-        if(row_hclust_side == "left") {
-            for(i in seq_len(n)) {
-                if(i == 1) {
-                    object@ht_list[[1]]@row_hclust_list = ht_main@row_hclust_list
-                    object@ht_list[[1]]@row_hclust_param = ht_main@row_hclust_param
-                    object@ht_list[[1]]@row_hclust_param$side = "left"
-                } else {
-                    if(inherits(object@ht_list[[i]], "Heatmap")) {
-                        object@ht_list[[i]]@row_hclust_param$show = FALSE
-                    }
-                }
-                if(inherits(object@ht_list[[i]], "Heatmap")) {
-                    object@ht_list[[i]]@row_order_list = ht_main@row_order_list
-                    object@ht_list[[i]]@row_hclust_param$cluster = FALSE
-                }
-            }
-        } else if(row_hclust_side == "right") {
-            for(i in seq_len(n)) {
-                if(i == n) {
-                    object@ht_list[[n]]@row_hclust_list = ht_main@row_hclust_list
-                    object@ht_list[[n]]@row_hclust_param = ht_main@row_hclust_param
-                    object@ht_list[[n]]@row_hclust_param$side = "right"
-                } else {
-                    if(inherits(object@ht_list[[i]], "Heatmap")) {
-                        object@ht_list[[i]]@row_hclust_param$show = FALSE
-                    }
-                }
-                if(inherits(object@ht_list[[i]], "Heatmap")) {
-                    object@ht_list[[i]]@row_order_list = ht_main@row_order_list
-                    object@ht_list[[i]]@row_hclust_param$cluster = FALSE
-                }
-            }
-        } else {
-            for(i in seq_len(n)) {
-                if(i == i_main) {
-                    object@ht_list[[i]]@row_hclust_list = ht_main@row_hclust_list
-                    object@ht_list[[i]]@row_hclust_param = ht_main@row_hclust_param
-                } else {
-                    if(inherits(object@ht_list[[i]], "Heatmap")) {
-                        object@ht_list[[i]]@row_hclust_param$show = FALSE
-                    }
-                }
-                if(inherits(object@ht_list[[i]], "Heatmap")) {
-                    object@ht_list[[i]]@row_order_list = ht_main@row_order_list
-                    object@ht_list[[i]]@row_hclust_param$cluster = FALSE
-                }
-            }
-        }
-
+    if(row_hclust_side == "left" && i == 1) {
+        object@ht_list[[1]]@row_hclust_list = ht_main@row_hclust_list
+        object@ht_list[[1]]@row_hclust_param = ht_main@row_hclust_param
+        object@ht_list[[1]]@row_hclust_param$side = "left"
+    } else if(row_hclust_side == "right" && i == n) {
+        object@ht_list[[n]]@row_hclust_list = ht_main@row_hclust_list
+        object@ht_list[[n]]@row_hclust_param = ht_main@row_hclust_param
+        object@ht_list[[n]]@row_hclust_param$side = "right"
+    } else {
         for(i in seq_len(n)) {
-            # supress row clustering because all rows in all heatmaps are adjusted
-            if(inherits(object@ht_list[[i]], "Heatmap")) {
-                object@ht_list[[i]]@matrix_param$km = 1
-                object@ht_list[[i]]@row_title_param$combined_name_fun = NULL
-                object@ht_list[[i]] = prepare(object@ht_list[[i]], row_order = NULL, split = NULL)
+            if(i != i_main) {
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    object@ht_list[[i]]@row_hclust_param$show = FALSE
+                }
             }
+        }
+    }
+
+    for(i in seq_len(n)) {
+        # supress row clustering because all rows in all heatmaps are adjusted
+        if(inherits(object@ht_list[[i]], "Heatmap")) {
+            object@ht_list[[i]] = prepare(object@ht_list[[i]], process_rows = FALSE)
         }
     }
 
@@ -805,8 +738,8 @@ setMethod(f = "draw_heatmap_list",
     # number of columns in heatmap whic are not fixed width
     heatmap_ncol = sapply(object@ht_list, function(ht) {
         if(inherits(ht, "Heatmap")) {
-            if(is.null(ht@heatmap_param$width)) {
-                return(ncol(ht@matrix))
+            if(!is.unit(ht@heatmap_param$width)) {
+                return(ht@heatmap_param$width)
             }
         }
         return(0)
@@ -814,7 +747,7 @@ setMethod(f = "draw_heatmap_list",
 
     heatmap_fixed_width = lapply(object@ht_list, function(ht) {
         if(inherits(ht, "Heatmap")) {
-            if(!is.null(ht@heatmap_param$width)) {
+            if(is.unit(ht@heatmap_param$width)) {
                 return(ht@heatmap_param$width)
             } else {
                 return(unit(0, "null"))

@@ -1,11 +1,9 @@
 \name{draw-dispatch}
 \alias{draw}
 \title{
-Method dispatch page for draw
-}
+Method dispatch page for draw}
 \description{
-Method dispatch page for \code{draw}.
-}
+Method dispatch page for \code{draw}.}
 \section{Dispatch}{
 \code{draw} can be dispatched on following classes:
 
@@ -15,9 +13,11 @@ Method dispatch page for \code{draw}.
 \item \code{\link{draw,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
 \item \code{\link{draw,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
-
 }
-\examples{
+\section{Example}{
 # no example
 NULL
 }
+\examples{
+# no example
+NULL}

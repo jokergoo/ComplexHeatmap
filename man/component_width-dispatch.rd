@@ -1,11 +1,9 @@
 \name{component_width-dispatch}
 \alias{component_width}
 \title{
-Method dispatch page for component_width
-}
+Method dispatch page for component_width}
 \description{
-Method dispatch page for \code{component_width}.
-}
+Method dispatch page for \code{component_width}.}
 \section{Dispatch}{
 \code{component_width} can be dispatched on following classes:
 
@@ -13,9 +11,11 @@ Method dispatch page for \code{component_width}.
 \item \code{\link{component_width,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
 \item \code{\link{component_width,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
-
 }
-\examples{
+\section{Example}{
 # no example
 NULL
 }
+\examples{
+# no example
+NULL}
