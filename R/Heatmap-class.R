@@ -596,10 +596,11 @@ setMethod(f = "make_row_cluster",
             split = apply(as.matrix(split), 1, paste, collapse = "/")
         }
         
+        nature_order = seq_len(nrow(mat))
         row_levels = unique(split)
         for(i in seq_along(row_levels)) {
             l = split == row_levels[i]
-            row_order_list[[i]] = row_order[l]
+            row_order_list[[i]] = nature_order[l][ order(row_order[l]) ]
         }
 
         if(!is.null(object@row_title_param$combined_name_fun)) {
