@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.2.0
+
+* correct row orders if km and row_order is set in `Heatmap`
+
+===========================================
+
 CHANGES in VERSION 1.1.9
 
 * adjust names and size of each component

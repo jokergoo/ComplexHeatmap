@@ -328,6 +328,12 @@ pa = pam(mat, k = 3)
 Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering))
 ```
 
+If ``row_order`` is set, in each slice, rows are still ordered.
+
+```{r split_row_order}
+Heatmap(mat, name = "foo", row_order = 12:1, cluster_rows = FALSE, km = 2)
+```
+
 Height of gaps between row slices can be controlled by `gap`.
 
 ```{r split_gap}
