@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.2.1
+
+* adjust orders of row slices
+* support text rotation for heatmap titles 
+
+===========================================
+
 CHANGES in VERSION 1.2.0
 
 * correct row orders if km and row_order is set in `Heatmap`
