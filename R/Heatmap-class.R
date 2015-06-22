@@ -623,7 +623,7 @@ setMethod(f = "make_row_cluster",
             split_name = apply(as.matrix(split), 1, paste, collapse = "\n")
         }
 
-        row_order = do.call("order", split)
+        row_order = do.call("order", cbind(split, row_order))
         row_order_list = tapply(row_order, split_name[row_order], function(x) x, simplify = FALSE)
 
         split_name2 = NULL
