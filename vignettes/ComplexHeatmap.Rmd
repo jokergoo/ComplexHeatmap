@@ -309,13 +309,14 @@ Heatmap(mat, name = "foo", km = 2)
 More generally, `split` can be set to a vector or a data frame in which different combination of levels
 split the rows of the heatmap. Actually, k-means clustering just generates a vector of row classes and appends
 `split` with one additional column. The combined row titles for each row slice can be controlled by `combined_name_fun` argument.
+The order of each slice can be controlled by `levels` of each variable.
 
 ```{r split}
 Heatmap(mat, name = "foo", split = rep(c("A", "B"), 6))
 Heatmap(mat, name = "foo", split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D"), each = 6)))
 Heatmap(mat, name = "foo", split = data.frame(rep(c("A", "B"), 6), rep(c("C", "D"), each = 6)), 
     combined_name_fun = function(x) paste(x, collapse = "\n"))
-Heatmap(mat, name = "foo", km = 2, split = rep(c("A", "B"), 6), 
+Heatmap(mat, name = "foo", km = 2, split = factor(rep(c("A", "B"), 6), levels = c("B", "A")), 
     combined_name_fun = function(x) paste(x, collapse = "\n"))
 Heatmap(mat, name = "foo", km = 2, split = rep(c("A", "B"), 6), combined_name_fun = NULL)
 ```
