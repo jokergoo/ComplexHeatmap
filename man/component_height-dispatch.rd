@@ -12,10 +12,8 @@ Method dispatch page for \code{component_height}.}
 \item \code{\link{component_height,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 }
-\section{Example}{
+\examples{
 # no example
 NULL
+
 }
-\examples{
-# no example for this internal method
-NULL}
