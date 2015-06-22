@@ -581,7 +581,7 @@ setMethod(f = "make_row_cluster",
         for(i in seq_along(hc$order)) {
             cluster2[cluster == hc$order[i]] = i
         }
-        cluster2 = paste0("cluster", cluster2)
+        # cluster2 = structure(cluster2, names = paste0("cluster", cluster2))
         split = cbind(split, cluster2)
     }
 
