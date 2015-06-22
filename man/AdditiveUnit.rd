@@ -1,31 +1,39 @@
 \name{AdditiveUnit}
 \alias{AdditiveUnit}
 \title{
-Constructor method for AdditiveUnit class
+Constructor method for AdditiveUnit class  
+
 
 }
 \description{
-Constructor method for AdditiveUnit class
+Constructor method for AdditiveUnit class  
+
 
 }
 \usage{
-AdditiveUnit(...)}
+AdditiveUnit(...)
+}
 \arguments{
 
   \item{...}{arguments.}
+
 }
 \details{
-This method is not used in the package.
+This method is not used in the package.  
+
 
 }
 \value{
-No value is returned.
+No value is returned.  
+
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>
+Zuguang Gu <z.gu@dkfz.de>  
+
 
 }
 \examples{
 # no example
-NULL}
+NULL
+}

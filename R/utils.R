@@ -344,3 +344,44 @@ subset_gp = function(gp, k) {
     class(gp) = "gpar"
     return(gp)
 }
+
+
+get_text_just = function(rot, side) {
+    rot = rot %% 360
+    if(! rot %in% c(0, 90, 270)) {
+        stop("Only support horizontal or vertical rotations for text.\n")
+    }
+    if(side == "left") {
+        if(rot == 0) {
+            return(c(1, 0.5))
+        } else if(rot == 90) {
+            return(c(0.5, 0))
+        } else if(rot == 270) {
+            return(c(0.5, 1))
+        }
+    } else if(side == "right") {
+        if(rot == 0) {
+            return(c(0, 0.5))
+        } else if(rot == 90) {
+            return(c(0.5, 1))
+        } else if(rot == 270) {
+            return(c(0.5, 0))
+        }
+    } else if(side == "top") {
+        if(rot == 0) {
+            return(c(0.5, 0))
+        } else if(rot == 90) {
+            return(c(0, 0.5))
+        } else if(rot == 270) {
+            return(c(1, 0.5))
+        }
+    } else if(side == "bottom") {
+        if(rot == 0) {
+            return(c(0.5, 1))
+        } else if(rot == 90) {
+            return(c(1, 0.5))
+        } else if(rot == 270) {
+            return(c(0, 0.5))
+        }
+    }
+}
