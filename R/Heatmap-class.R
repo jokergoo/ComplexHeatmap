@@ -581,8 +581,19 @@ setMethod(f = "make_row_cluster",
         for(i in seq_along(hc$order)) {
             cluster2[cluster == hc$order[i]] = i
         }
-        # cluster2 = structure(cluster2, names = paste0("cluster", cluster2))
-        split = cbind(split, cluster2)
+        cluster2 = factor(paste0("cluster", cluster2), levels = paste0("cluster", seq_along(hc$order)))
+
+        if(is.null(split)) {
+            split = data.frame(cluster2)
+        } else if(is.matrix(split)) {
+            split = as.data.frame(split)
+            split = cbind(cluster2, split)
+        } else if(is.null(ncol(split))) {
+            split = data.frame(cluster2, split)
+        } else {
+            split = cbind(cluster2, split)
+        }
+            
     }
 
     # split the original order into a list according to split
@@ -591,29 +602,44 @@ setMethod(f = "make_row_cluster",
         row_order_list[[1]] = row_order
     } else {
         if(is.null(ncol(split))) split = data.frame(split)
-        for(i in seq_len(ncol(split))) split[[i]] = as.character(split[[i]])
-        # convert the data frame into a vector
-        if(ncol(split) == 1) {
-            split = split[, 1]
-            split_name = split
-        } else {
-            combined_name_fun = object@row_title_param$combined_name_fun
-            if(!is.null(combined_name_fun)) {
-                split_name = apply(as.matrix(split), 1, combined_name_fun)
+        if(is.matrix(split)) split = as.data.frame(split)
+
+        for(i in seq_len(ncol(split))) {
+            if(is.numeric(split[[i]])) {
+                split[[i]] = factor(as.character(split[[i]]), levels = as.character(sort(unique(split[[i]]))))
+            } else if(!is.factor(split[[i]])) {
+                split[[i]] = factor(split[[i]])
+            } else {
+                # re-factor
+                split[[i]] = factor(split[[i]], levels = intersect(levels(split[[i]]), unique(split[[i]])))
             }
-            split = apply(as.matrix(split), 1, paste, collapse = "/")
-        }
-        
-        nature_order = seq_len(nrow(mat))
-        row_levels = unique(split)
-        for(i in seq_along(row_levels)) {
-            l = split == row_levels[i]
-            row_order_list[[i]] = intersect(row_order, which(l))
         }
 
-        if(!is.null(object@row_title_param$combined_name_fun)) {
-            object@row_title = unique(split_name)
+        split_name = NULL
+        combined_name_fun = object@row_title_param$combined_name_fun
+        if(!is.null(combined_name_fun)) {
+            split_name = apply(as.matrix(split), 1, combined_name_fun)
+        } else {
+            split_name = apply(as.matrix(split), 1, paste, collapse = "\n")
         }
+
+        row_order = do.call("order", split)
+        row_order_list = tapply(row_order, split_name[row_order], function(x) x, simplify = FALSE)
+
+        split_name2 = NULL
+        if(!is.null(combined_name_fun)) {
+            split_name2 = apply(as.matrix(unique(split[row_order, , drop = FALSE])), 1, combined_name_fun)
+        } else {
+            split_name2 = apply(as.matrix(unique(split[row_order, , drop = FALSE])), 1, paste, collapse = "\n")
+        }
+
+        row_order_list = row_order_list[split_name2]
+
+        if(!is.null(object@row_title_param$combined_name_fun)) {
+            object@row_title = names(row_order_list)
+        }
+
+        attributes(row_order_list) = NULL
     }
 
     # make hclust in each slice
