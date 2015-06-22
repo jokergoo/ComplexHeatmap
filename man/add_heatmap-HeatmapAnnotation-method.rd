@@ -1,30 +1,37 @@
 \name{add_heatmap-HeatmapAnnotation-method}
 \alias{add_heatmap,HeatmapAnnotation-method}
 \title{
-Add row annotations or heatmaps as a heatmap list
+Add row annotations or heatmaps as a heatmap list  
+
 
 }
 \description{
-Add row annotations or heatmaps as a heatmap list
+Add row annotations or heatmaps as a heatmap list  
+
 
 }
 \usage{
-\S4method{add_heatmap}{HeatmapAnnotation}(object, x)}
+\S4method{add_heatmap}{HeatmapAnnotation}(object, x)
+}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
   \item{x}{a \code{\link{Heatmap-class}} object, a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
+
 }
 \details{
-There is a shortcut function \code{+.AdditiveUnit}.
+There is a shortcut function \code{+.AdditiveUnit}.  
+
 
 }
 \value{
-A \code{\link{HeatmapList-class}} object.
+A \code{\link{HeatmapList-class}} object.  
+
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>
+Zuguang Gu <z.gu@dkfz.de>  
+
 
 }
 \examples{
@@ -37,4 +44,5 @@ ht = Heatmap(mat)
 
 ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"), 
     which = "row")
-add_heatmap(ha, ht)}
+add_heatmap(ha, ht)
+}

@@ -2,16 +2,19 @@
 \alias{draw_hclust,Heatmap-method}
 \alias{draw_hclust}
 \title{
-Draw dendrogram on row or column
+Draw dendrogram on row or column  
+
 
 }
 \description{
-Draw dendrogram on row or column
+Draw dendrogram on row or column  
+
 
 }
 \usage{
 \S4method{draw_hclust}{Heatmap}(object,
-    which = c("row", "column"), k = 1, max_height = NULL, ...)}
+    which = c("row", "column"), k = 1, max_height = NULL, ...)
+}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
@@ -19,28 +22,33 @@ Draw dendrogram on row or column
   \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
   \item{max_height}{maximum height of the dendrograms.}
   \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
+
 }
 \details{
-If the matrix is split into several row slices, a list of dendrograms will be drawn by 
-the heatmap that each dendrogram corresponds to its row slices.
+If the matrix is split into several row slices, a list of dendrograms will be drawn by  the heatmap that each dendrogram corresponds to its row slices.  
 
-A viewport is created which contains dendrograms.
+A viewport is created which contains dendrograms.  
 
-This function is only for internal use.
+This function is only for internal use.  
+
 
 }
 \value{
-This function returns no value.
+This function returns no value.  
+
 
 }
 \seealso{
-\code{\link{grid.dendrogram}}
+\code{\link{grid.dendrogram}}  
+
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>
+Zuguang Gu <z.gu@dkfz.de>  
+
 
 }
 \examples{
 # no example for this internal method
-NULL}
+NULL
+}

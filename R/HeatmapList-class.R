@@ -294,6 +294,15 @@ setMethod(f = "make_layout",
         }
     }
 
+    # remote other heatmaps' row titles
+    for(i in seq_len(n)) {
+        if(inherits(object@ht_list[[i]], "Heatmap")) {
+            if(i != i_main) {
+                object@ht_list[[i]]@row_title = character(0)
+            }
+        }
+    }
+
     if(row_hclust_side == "left" && i == 1) {
         object@ht_list[[1]]@row_hclust_list = ht_main@row_hclust_list
         object@ht_list[[1]]@row_hclust_param = ht_main@row_hclust_param

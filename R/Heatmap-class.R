@@ -69,9 +69,13 @@ Heatmap = setClass("Heatmap",
         matrix_color_mapping = "ANY",
 
         row_title = "character",
+        row_title_rot = "numeric",
+        row_title_just = "numeric",
         row_title_param = "list",
         column_title = "character",
         column_title_param = "list",
+        column_title_rot = "numeric",
+        column_title_just = "numeric",
 
         row_hclust_list = "list", # one or more row clusters
         row_hclust_param = "list", # parameters for row cluster
@@ -119,9 +123,11 @@ Heatmap = setClass("Heatmap",
 # -row_title title on row.
 # -row_title_side will the title be put on the left or right of the heatmap?
 # -row_title_gp graphic parameters for drawing text.
+# -row_title_rot rotation of row titles. Only 0, 90, 270 are allowed to set.
 # -column_title title on column.
 # -column_title_side will the title be put on the top or bottom of the heatmap?
 # -column_title_gp graphic parameters for drawing text.
+# -column_title_rot rotation of column titles. Only 0, 90, 270 are allowed to set.
 # -cluster_rows If the value is a logical, it means whether make cluster on rows. The value can also
 #               be a `stats::hclust` or a `stats::dendrogram` that already contains clustering information.
 #               This means you can use any type of clustering methods and render the `stats::dendrogram`
@@ -194,8 +200,9 @@ Heatmap = setClass("Heatmap",
 Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA), 
     cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"), 
-    row_title_gp = gpar(fontsize = 14), column_title = character(0),
-    column_title_side = c("top", "bottom"), column_title_gp = gpar(fontsize = 14),
+    row_title_gp = gpar(fontsize = 14), row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
+    column_title = character(0), column_title_side = c("top", "bottom"), 
+    column_title_gp = gpar(fontsize = 14), column_title_rot = 0,
     cluster_rows = TRUE, clustering_distance_rows = "euclidean",
     clustering_method_rows = "complete", row_hclust_side = c("left", "right"),
     row_hclust_width = unit(10, "mm"), show_row_hclust = TRUE, 
@@ -313,9 +320,11 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
         row_title = character(0)
     }
     .Object@row_title = row_title
+    .Object@row_title_rot = row_title_rot %% 360
     .Object@row_title_param$side = match.arg(row_title_side)[1]
     .Object@row_title_param$gp = check_gp(row_title_gp)
     .Object@row_title_param$combined_name_fun = combined_name_fun
+    .Object@row_title_just = get_text_just(rot = row_title_rot, side = .Object@row_title_param$side)
 
     if(length(column_title) == 0) {
         column_title = character(0)
@@ -325,8 +334,10 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
         column_title = character(0)
     }
     .Object@column_title = column_title
+    .Object@column_title_rot = column_title_rot %% 360
     .Object@column_title_param$side = match.arg(column_title_side)[1]
     .Object@column_title_param$gp = check_gp(column_title_gp)
+    .Object@column_title_just = get_text_just(rot = column_title_rot, side = .Object@column_title_param$side)
 
     if(is.null(rownames(matrix))) {
         show_row_names = FALSE
@@ -693,10 +704,18 @@ setMethod(f = "make_layout",
     column_title_gp = object@column_title_param$gp
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
-            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+            if(object@column_title_rot %in% c(0, 180)) {
+                object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+            } else {
+                object@layout$layout_column_title_top_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+            }
             object@layout$layout_index = rbind(object@layout$layout_index, c(1, 4))
         } else {
-            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+            if(object@column_title_rot %in% c(0, 180)) {
+                object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+            } else {
+                object@layout$layout_column_title_bottom_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+            }
             object@layout$layout_index = rbind(object@layout$layout_index, c(9, 4))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "column"))
@@ -709,10 +728,18 @@ setMethod(f = "make_layout",
     row_title_gp = object@row_title_param$gp
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
-            object@layout$layout_row_title_left_width = max(grobHeight(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+            if(object@row_title_rot %in% c(0, 180)) {
+                object@layout$layout_row_title_left_width = max(grobWidth(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+            } else {
+                object@layout$layout_row_title_left_width = max(grobHeight(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+            }
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 1))
         } else {
-            object@layout$layout_row_title_right_width = max(grobHeight(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+            if(object@row_title_rot %in% c(0, 180)) {
+                object@layout$layout_row_title_right_width = max(grobWidth(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+            } else {
+                object@layout$layout_row_title_right_width = max(grobHeight(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+            }
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 7))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
@@ -1132,8 +1159,8 @@ setMethod(f = "draw_title",
     which = match.arg(which)[1]
 
     side = switch(which,
-        "row" = object@row_hclust_param$side,
-        "column" = object@column_hclust_param$side)
+        "row" = object@row_title_param$side,
+        "column" = object@column_title_param$side)
 
     gp = switch(which,
         "row" = object@row_title_param$gp,
@@ -1143,26 +1170,31 @@ setMethod(f = "draw_title",
         "row" = object@row_title[k],
         "column" = object@column_title)
 
+    rot = switch(which,
+        "row" = object@row_title_rot,
+        "column" = object@column_title_rot)
+
+    just = switch(which, 
+        "row" = object@row_title_just,
+        "column" = object@column_title_just)
+
     title_padding = unit(2.5, "mm")
 
     if(which == "row") {
-        rot = switch(side,
-            "left" = 90,
-            "right" = 270)
-
+        
         pushViewport(viewport(name = paste(object@name, "row_title", k, sep = "_"), clip = FALSE, ...))
         if(side == "left") {
-            grid.text(title, x = unit(1, "npc") - title_padding, rot = rot, vjust = 0, gp = gp)
+            grid.text(title, x = unit(1, "npc") - title_padding, rot = rot, just = just, gp = gp)
         } else {
-            grid.text(title, x = title_padding, rot = rot, vjust = 0, gp = gp)
+            grid.text(title, x = title_padding, rot = rot, just = just, gp = gp)
         }
         upViewport()
     } else {
         pushViewport(viewport(name = paste(object@name, "column_title", sep = "_"), clip = FALSE, ...))
         if(side == "top") {
-            grid.text(title, y = title_padding, vjust = 0, gp = gp)
+            grid.text(title, y = title_padding, rot = rot, just = just, gp = gp)
         } else {
-            grid.text(title, y = unit(1, "npc") - title_padding, vjust = 1, gp = gp)
+            grid.text(title, y = unit(1, "npc") - title_padding, rot = rot, just = just, gp = gp)
         }
         upViewport()
     }
