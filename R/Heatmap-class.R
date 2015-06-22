@@ -567,7 +567,7 @@ setMethod(f = "make_row_cluster",
         meanmat = as.matrix(as.data.frame(meanmat))
         hc = hclust(dist(t(meanmat)))
         cluster2 = numeric(length(cluster))
-        for(i in hc$order) {
+        for(i in seq_along(hc$order)) {
             cluster2[cluster == hc$order[i]] = i
         }
         cluster2 = paste0("cluster", cluster2)
