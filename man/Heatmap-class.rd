@@ -2,17 +2,15 @@
 \docType{class}
 \alias{Heatmap-class}
 \title{
-Class for a single heatmap  
-
+Class for a single heatmap
 
 }
 \description{
-Class for a single heatmap  
-
+Class for a single heatmap
 
 }
 \details{
-The components for a single heamtap are placed into a 9 x 7 layout:  
+The components for a single heamtap are placed into a 9 x 7 layout:
 
   \preformatted{
          +------+ (1)
@@ -28,7 +26,7 @@ The components for a single heamtap are placed into a 9 x 7 layout:
          +------+ (9)
   }
 
-From top to bottom in column 4, the regions are:  
+From top to bottom in column 4, the regions are:
 
 \itemize{
   \item title which is put on the top of the heatmap, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
@@ -42,7 +40,7 @@ From top to bottom in column 4, the regions are:
   \item title on the bottom, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
 }
 
-From left to right in row 5, the regions are:  
+From left to right in row 5, the regions are:
 
 \itemize{
   \item title which is put in the left of the heatmap, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
@@ -54,12 +52,13 @@ From left to right in row 5, the regions are:
   \item title on the right, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
 }
 
-The \code{\link{Heatmap-class}} is not responsible for heatmap legend and annotation legends. The \code{\link{draw,Heatmap-method}} method will construct a \code{\link{HeatmapList-class}} object which only contains one single heatmap and call \code{\link{draw,HeatmapList-method}} to make a complete heatmap.  
-
+The \code{\link{Heatmap-class}} is not responsible for heatmap legend and annotation legends. The \code{\link{draw,Heatmap-method}} method
+will construct a \code{\link{HeatmapList-class}} object which only contains one single heatmap
+and call \code{\link{draw,HeatmapList-method}} to make a complete heatmap.
 
 }
 \section{Methods}{
-The \code{\link{Heatmap-class}} provides following methods:  
+The \code{\link{Heatmap-class}} provides following methods:
 
 \itemize{
   \item \code{\link{Heatmap}}: constructor method.
@@ -67,14 +66,11 @@ The \code{\link{Heatmap-class}} provides following methods:
   \item \code{\link{add_heatmap,Heatmap-method}} append heatmaps and row annotations to a list of heatmaps.
 }
 
-
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>  
-
+Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
 # for examples, please go to `Heatmap` method page
-NULL
-}
+NULL}
