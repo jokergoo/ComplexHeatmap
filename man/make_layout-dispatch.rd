@@ -12,10 +12,8 @@ Method dispatch page for \code{make_layout}.}
 \item \code{\link{make_layout,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 }
-\section{Example}{
-# no example
-NULL
-}
 \examples{
 # no example
-NULL}
+NULL
+
+}

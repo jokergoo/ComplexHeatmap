@@ -12,10 +12,8 @@ Method dispatch page for \code{component_width}.}
 \item \code{\link{component_width,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 }
-\section{Example}{
-# no example
-NULL
-}
 \examples{
 # no example
-NULL}
+NULL
+
+}
