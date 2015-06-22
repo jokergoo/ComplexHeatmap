@@ -1,16 +1,19 @@
 \name{anno_text}
 \alias{anno_text}
 \title{
-Using text as annotation
+Using text as annotation  
+
 
 }
 \description{
-Using text as annotation
+Using text as annotation  
+
 
 }
 \usage{
 anno_text(x, which = c("column", "row"), gp = gpar(), rot = 0,
-    just = NULL, offset = unit(0.5, "npc"))}
+    just = NULL, offset = unit(0.5, "npc"))
+}
 \arguments{
 
   \item{x}{a vector of text}
@@ -19,13 +22,16 @@ anno_text(x, which = c("column", "row"), gp = gpar(), rot = 0,
   \item{rot}{rotation of text}
   \item{just}{justification of text, pass to \code{\link[grid]{grid.text}}}
   \item{offset}{offset relative to start position}
+
 }
 \value{
-A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
+A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.  
+
 
 }
 \author{
-Zuguang Gu <z.gu@dkfz.de>
+Zuguang Gu <z.gu@dkfz.de>  
+
 
 }
 \examples{
@@ -34,4 +40,5 @@ colnames(mat) = letters[1:10]
 rownames(mat) = LETTERS[1:10]
 long_cn = do.call("paste0", rep(list(colnames(mat)), 4))  # just to construct long text
 ha_rot_cn = HeatmapAnnotation(text = anno_text(long_cn, rot = 45, offset = unit(5, "mm")))
-Heatmap(mat, name = "foo", top_annotation = ha_rot_cn, top_annotation_height = unit(1.2, "cm"))}
+Heatmap(mat, name = "foo", top_annotation = ha_rot_cn, top_annotation_height = unit(1.2, "cm"))
+}
