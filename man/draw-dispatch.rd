@@ -14,10 +14,8 @@ Method dispatch page for \code{draw}.}
 \item \code{\link{draw,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 }
-\section{Example}{
-# no example
-NULL
-}
 \examples{
 # no example
-NULL}
+NULL
+
+}
