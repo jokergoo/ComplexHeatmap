@@ -623,23 +623,18 @@ setMethod(f = "make_row_cluster",
             split_name = apply(as.matrix(split), 1, paste, collapse = "\n")
         }
 
-        row_order = do.call("order", cbind(split, row_order))
-        row_order_list = tapply(row_order, split_name[row_order], function(x) x, simplify = FALSE)
+        row_order2 = do.call("order", split)
+        row_level = unique(split_name[row_order2])
+        for(k in seq_along(row_level)) {
+            l = split_name == row_level[k]
+            row_order_list[[k]] = intersect(row_order, which(l))
+        }
 
-        split_name2 = NULL
+        object@row_order_list = row_order_list
+
         if(!is.null(combined_name_fun)) {
-            split_name2 = apply(as.matrix(unique(split[row_order, , drop = FALSE])), 1, combined_name_fun)
-        } else {
-            split_name2 = apply(as.matrix(unique(split[row_order, , drop = FALSE])), 1, paste, collapse = "\n")
+            object@row_title = row_level
         }
-
-        row_order_list = row_order_list[split_name2]
-
-        if(!is.null(object@row_title_param$combined_name_fun)) {
-            object@row_title = names(row_order_list)
-        }
-
-        attributes(row_order_list) = NULL
     }
 
     # make hclust in each slice
