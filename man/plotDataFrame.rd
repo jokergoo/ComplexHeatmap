@@ -47,6 +47,7 @@ Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
 
+
 df = data.frame(matrix(rnorm(40), nrow = 10, dimnames = list(letters[1:10], letters[1:4])),
                 large = runif(10)*100,
                 t1 = sample(letters[1:3], 10, replace = TRUE),
