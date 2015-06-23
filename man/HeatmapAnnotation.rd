@@ -46,6 +46,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df)
 
@@ -59,4 +60,6 @@ ha = HeatmapAnnotation(points = anno_points(1:6))
 ha = HeatmapAnnotation(histogram = anno_points(1:6))
 
 mat = matrix(rnorm(36), 6)
-ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))}
+ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
+
+}

@@ -28,6 +28,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 mat = matrix(rnorm(32), nrow = 4)
 f = anno_density(mat)
 grid.newpage(); f(1:8)
@@ -37,4 +38,6 @@ grid.newpage(); f(1:4)
 
 lt = lapply(1:4, function(i) rnorm(8))
 f = anno_density(lt, type = "heatmap")
-grid.newpage(); f(1:4)}
+grid.newpage(); f(1:4)
+
+}

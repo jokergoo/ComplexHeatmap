@@ -33,6 +33,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]
@@ -42,4 +43,6 @@ ht = Heatmap(mat)
 ht_list = ht + ht
 draw(ht_list)
 draw(ht_list, row_title = "row title", column_title = "column title", 
-	heatmap_legend_side = "top")}
+	heatmap_legend_side = "top")
+
+}
