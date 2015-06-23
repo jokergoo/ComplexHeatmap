@@ -49,6 +49,7 @@ Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
 
+
 # discrete character
 SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"))
 SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"), 
