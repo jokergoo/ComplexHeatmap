@@ -26,6 +26,10 @@ Here we use colors to map to the density values and visualize distribution of va
 in each column (or each list element) through a heatmap.
 
 }
+\value{
+No value is returned.
+
+}
 \examples{
 matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]
 densityHeatmap(matrix)
