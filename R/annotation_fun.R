@@ -35,10 +35,10 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			stop("`axis_side` can only be 'left' and 'right' for column annotations")
 		}
 	}
-	if(which == "column") {
+	if(which == "row") {
 		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		if(axis_side == "left" || axis_side == "right") {
+			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
 		}
 	}
 
@@ -115,10 +115,10 @@ anno_barplot = function(x, which = c("column", "row"),
 			stop("`axis_side` can only be 'left' and 'right' for column annotations")
 		}
 	}
-	if(which == "column") {
+	if(which == "row") {
 		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		if(axis_side == "left" || axis_side == "right") {
+			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
 		}
 	}
 
@@ -197,10 +197,10 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			stop("`axis_side` can only be 'left' and 'right' for column annotations")
 		}
 	}
-	if(which == "column") {
+	if(which == "row") {
 		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
+		if(axis_side == "left" || axis_side == "right") {
+			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
 		}
 	}
 
