@@ -776,7 +776,7 @@ of values on y-axis is from bottom to top, we need to transfrom `i + 0.5` to `n 
 ht1 = Heatmap(mat, name = "ht1", km = 2)
 random_data = lapply(1:12, function(x) runif(20))
 random_data[1:6] = lapply(random_data[1:6], function(x) x*0.5)
-ha2 = HeatmapAnnotation(distribution = function(index) {
+ha2 = rowAnnotation(distribution = function(index) {
         random_data = random_data[index]
         n = length(index)
         
@@ -790,7 +790,7 @@ ha2 = HeatmapAnnotation(distribution = function(index) {
             grid.yaxis(main = FALSE, gp = gpar(fontsize = 8))
             upViewport()
         }
-    }, which = "row", width = unit(10, "cm"))
+    }, width = unit(10, "cm"))
 draw(ht1 + ha2, row_hclust_side = "left", row_sub_title_side = "right")
 ```
 
@@ -800,10 +800,9 @@ split row annotaitons:
 
 ```{r all_row_annotations, fig.width = 7}
 nr = nrow(mat)
-ha = HeatmapAnnotation(df = df, which = "row", width = NULL)
+ha = rowAnnotation(df = df, width = NULL)
 text = paste0("row", seq_len(nr))
-ha_text = HeatmapAnnotation(text = anno_text(text, which = "row"), 
-    width = max(grobWidth(textGrob(text))), which = "row")
+ha_text = rowAnnotation(text = anno_text(text, which = "row"), width = max(grobWidth(textGrob(text))))
 Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
     ha_boxplot + ha2 + ha + ha_text
 ```
@@ -824,8 +823,8 @@ Following two methods generate similar figures.
 
 ```{r}
 df = data.frame(type = c(rep("a", 6), rep("b", 6)))
-ha = HeatmapAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")), 
-    which = "row", width = unit(1, "cm"))
+ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")), 
+    width = unit(1, "cm"))
 Heatmap(mat) + ha
 Heatmap(mat) + Heatmap(df, name = "type", col = c("a" = "red", "b" = "blue"), 
     width = unit(1, "cm"))
