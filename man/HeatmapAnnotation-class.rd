@@ -29,5 +29,8 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 # for examples, please go to `HeatmapAnnotation` method page
-NULL}
+NULL
+
+}

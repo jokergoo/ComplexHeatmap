@@ -34,6 +34,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 hc = hclust(dist(USArrests[1:5, ]))
 dend = as.dendrogram(hc)
 
@@ -45,4 +46,6 @@ grid.dendrogram(dend, facing = "top", layout.pos.row = 1, layout.pos.col = 2)
 grid.dendrogram(dend, facing = "top", order = "reverse", layout.pos.row = 2, 
     layout.pos.col = 1)
 grid.dendrogram(dend, facing = "left", layout.pos.row = 2, layout.pos.col = 2)
-upViewport()}
+upViewport()
+
+}
