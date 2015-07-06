@@ -31,8 +31,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]
@@ -50,6 +48,4 @@ ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"),
 ht + ha
 ht_list + ha
 
-ha + ha + ht
-
-}
+ha + ha + ht}

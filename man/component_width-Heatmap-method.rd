@@ -20,8 +20,6 @@ This function is only for internal use.
 
 }
 \section{Detials}{
-
-
 This function is only for internal use.}
 \value{
 A \code{\link[grid]{unit}} object.
@@ -32,8 +30,4 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
-# no example for this internal method
-
-}
+# no example for this internal method}
