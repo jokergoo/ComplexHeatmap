@@ -27,9 +27,5 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
 # no example
-NULL
-
-}
+NULL}

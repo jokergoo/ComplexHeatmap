@@ -322,6 +322,14 @@ get_hclust_order = function(x) {
         dendrogram = order.dendrogram(x))
 }
 
+# can only cut dendrogram for which branches at every node are two
+cut_dendrogram = function(dend, k) {
+    h = sort(get_branches_heights(dend), decreasing = TRUE)
+    height = (h[k-1] + h[k])/2
+    trees = cut(dend, h = height)
+    trees$lower
+}
+
 recycle_gp = function(gp, n = 1) {
     for(i in seq_along(gp)) {
         x = gp[[i]]

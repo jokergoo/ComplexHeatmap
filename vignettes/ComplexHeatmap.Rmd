@@ -272,7 +272,7 @@ Heatmap(mat, name = "foo", cluster_rows = function(m) hclust(dist(m)),
 Clustering can help to adjust order in rows and in columns. But you can still set the order manually by `row_order`
 and `column_order`. This is convenient if you want to adjust the order of columns when you have many column annotations or 
 adjust the order of rows if you have many parallel heatmaps plotted together. Note you need to turn off clustering
-if you want to set order manually.
+if you want to set order manually. `row_order` and `column_order` can also be set according to matrix row names and column names.
 
 ```{r manual_order}
 Heatmap(mat, name = "foo", cluster_rows = FALSE, cluster_columns = FALSE, 
@@ -345,6 +345,14 @@ Character matrix can only be split by `split` argument.
 
 ```{r split_discrete_matrix}
 Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], each = 5))
+```
+
+Users may alreay have a dendrogram for rows which were adjusted by some other methods
+and they want to split rows by splitting the dendrogram into k sub trees. In this case,
+`split` can be specified as a number:
+
+```{r split_dendrogram}
+Heatmap(mat, name = "foo", cluster_rows = dend, split = 2)
 ```
 
 ### Self define the heatmap body

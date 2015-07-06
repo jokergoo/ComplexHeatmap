@@ -24,8 +24,4 @@ This function returns no value.
 
 }
 \author{
-
-
-Zuguang Gu <z.gu@dkfz.de>
-
-}
+Zuguang Gu <z.gu@dkfz.de>}
