@@ -61,6 +61,13 @@ ha = HeatmapAnnotation(df = anno1, anno_fun = anno2, ..., which = "row")
 Heatmap(mat1, ...) + Heatmap(mat2, ...) + ha
 ```
 
+## As a base package
+
+**ComplexHeatmap** can be used as a base package to build other packages which focus
+On specific applications. E.g. [EnrichedHeatmap](http://github.com/jokergoo/EnrichedHeatmap) package
+uses **ComplexHeatmap** as base to make heatmaps which visualize the enrichment of genomic signals
+to specific target regions.
+
 ## Examples
 
 
