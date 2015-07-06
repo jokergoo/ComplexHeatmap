@@ -170,7 +170,8 @@ Heatmap = setClass("Heatmap",
 # -bottom_annotation_height total height of the column annotations on the bottom.
 # -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering.
 #     For each row-clusters, hierarchical clustering is still applied with parameters above.
-# -split a vector or a data frame by which the rows are split.
+# -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
+#        indicating rows are to be split according to the split on the tree.
 # -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object.
 # -combined_name_fun if the heatmap is split by rows, how to make a combined row title for each slice?
 #                 The input parameter for this function is a vector which contains level names under each column in ``split``.
@@ -267,9 +268,13 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@matrix_param$km = km
     .Object@matrix_param$gap = gap
     if(!is.null(split)) {
-        if(!is.data.frame(split)) split = data.frame(split)
-        if(nrow(split) != nrow(matrix)) {
-            stop("Length or number of rows of `split` should be same as rows in `matrix`.")
+        if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
+            .Object@matrix_param$split = split
+        } else {
+            if(!is.data.frame(split)) split = data.frame(split)
+            if(nrow(split) != nrow(matrix)) {
+                stop("Length or number of rows of `split` should be same as rows in `matrix`.")
+            }
         }
     }
     .Object@matrix_param$split = split
@@ -382,6 +387,9 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     if(is.null(row_order)) {
         .Object@row_order = seq_len(nrow(matrix))
     }  else {
+        if(is.character(row_order)) {
+            row_order = structure(seq_len(nrow(matrix)), names = rownames(matrix))[row_order]
+        }
         .Object@row_order = row_order
     }
 
@@ -411,6 +419,9 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     if(is.null(column_order)) {
         .Object@column_order = seq_len(ncol(matrix))
     } else {
+        if(is.character(column_order)) {
+            column_order = structure(seq_len(ncol(matrix)), names = colnames(matrix))[column_order]
+        }
         .Object@column_order = column_order
     }
 
@@ -555,11 +566,26 @@ setMethod(f = "make_row_cluster",
             if(km > 1) {
                 stop("You can not make k-means clustering since you have already specified a clustering object.")
             }
-            if(!is.null(split)) {
-                stop("You can not split by rows since you have already specified a clustering object.")
+            if(is.null(split)) {
+                object@row_hclust_list = list(object@row_hclust_param$obj)
+                object@row_order_list = list(get_hclust_order(object@row_hclust_param$obj))
+            } else {
+                if(length(split) > 1 || !is.numeric(split)) {
+                    stop("Since you specified a clustering object, you can only split rows by providing a number (number of row slices.")
+                }
+                if(split < 2) {
+                    stop("Here `split` should be equal or larger than 2.")
+                }
+                if(inherits(object@row_hclust_param$obj, "hclust")) {
+                    object@row_hclust_param$obj = as.dendrogram(object@row_hclust_param$obj)
+                }
+                object@row_hclust_list = cut_dendrogram(object@row_hclust_param$obj, split)
+                sth = tapply(order.dendrogram(object@row_hclust_param$obj), 
+                    rep(seq_along(object@row_hclust_list), times = sapply(object@row_hclust_list, nobs)), 
+                    function(x) x)
+                attributes(sth) = NULL
+                object@row_order_list = sth
             }
-            object@row_hclust_list = list(object@row_hclust_param$obj)
-            object@row_order_list = list(get_hclust_order(object@row_hclust_param$obj))
             return(object)
         }
 

@@ -46,8 +46,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
 df = data.frame(matrix(rnorm(40), nrow = 10, dimnames = list(letters[1:10], letters[1:4])),
                 large = runif(10)*100,
                 t1 = sample(letters[1:3], 10, replace = TRUE),
@@ -55,6 +53,4 @@ df = data.frame(matrix(rnorm(40), nrow = 10, dimnames = list(letters[1:10], lett
                 t2 = sample(LETTERS[1:3], 10, replace = TRUE))
 plotDataFrame(df)
 plotDataFrame(df, group = list(1:4, 5, 6, 7:12, 13), group_names = c("mat1", "large", "t1", "mat2", "t2"),
-    main_heatmap = 4, km = 2, column_title = "column title", row_title = "row title")
-
-}
+    main_heatmap = 4, km = 2, column_title = "column title", row_title = "row title")}

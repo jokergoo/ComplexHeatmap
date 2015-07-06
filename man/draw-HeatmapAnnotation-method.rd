@@ -30,8 +30,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
 df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df)
 grid.newpage(); draw(ha, 1:6)
@@ -52,6 +50,4 @@ grid.newpage(); draw(ha, 1:6)
 
 mat = matrix(rnorm(36), 6)
 ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
-grid.newpage(); draw(ha, 1:6)
-
-}
+grid.newpage(); draw(ha, 1:6)}

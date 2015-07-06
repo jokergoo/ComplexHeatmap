@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.2.2
+
+* rows can be split if `cluster_rows` are a clustering object
+* `row_order` and `column_order` can be set by dimension names
+
+===========================================
+
 CHANGES in VERSION 1.2.1
 
 * adjust orders of row slices

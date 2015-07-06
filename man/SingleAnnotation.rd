@@ -48,8 +48,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
 # discrete character
 SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"))
 SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"), 
@@ -65,6 +63,4 @@ SingleAnnotation(value = 1:10)
 SingleAnnotation(value = 1:10, col = colorRamp2(c(1, 10), c("blue", "red")))
 
 # self-defined graphic function
-SingleAnnotation(fun = anno_points(1:10))
-
-}
+SingleAnnotation(fun = anno_points(1:10))}

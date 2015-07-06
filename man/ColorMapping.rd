@@ -34,8 +34,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
 # discrete color mapping for characters
 cm = ColorMapping(name = "test",
     colors = c("blue", "white", "red"),
@@ -52,6 +50,4 @@ cm
 require(circlize)
 cm = ColorMapping(name = "test",
     col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
-cm
-
-}
+cm}
