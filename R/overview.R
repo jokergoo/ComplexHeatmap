@@ -5,7 +5,7 @@
 # This package aims to provide a simple and flexible way to arrange
 # multiple heatmaps as well as self-defining annotation graphics.
 #
-# The package is implemented in an object oriented way. 
+# The package is implemented in an object-oriented way. 
 # Components of heatmap lists are abstracted into several classes.
 #
 # - `Heatmap-class`: a single heatmap containing heatmap body, row/column names, titles, dendrograms and column annotations.

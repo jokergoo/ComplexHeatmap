@@ -73,8 +73,8 @@ default_col = function(x, main_matrix = FALSE) {
 # -dend a `stats::dendrogram` object.
 # -facing facing of the dendrogram.
 # -max_height maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.
-# -order should leaves of dendrogram be put in the normal order or reverse order?
-# -... pass to `grid::viewport` that contains the dendrogram.
+# -order should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)?
+# -... pass to `grid::viewport` which contains the dendrogram.
 #
 # == details
 # The dendrogram tree can be renderred (e.g. by ``dendextend`` package).

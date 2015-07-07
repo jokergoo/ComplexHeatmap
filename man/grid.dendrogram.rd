@@ -16,8 +16,8 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
   \item{dend}{a \code{\link[stats]{dendrogram}} object.}
   \item{facing}{facing of the dendrogram.}
   \item{max_height}{maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.}
-  \item{order}{should leaves of dendrogram be put in the normal order or reverse order?}
-  \item{...}{pass to \code{\link[grid]{viewport}} that contains the dendrogram.}
+  \item{order}{should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)?}
+  \item{...}{pass to \code{\link[grid]{viewport}} which contains the dendrogram.}
 }
 \details{
 The dendrogram tree can be renderred (e.g. by \code{dendextend} package).
