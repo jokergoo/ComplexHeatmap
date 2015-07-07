@@ -1,5 +1,6 @@
 CHANGES in VERSION 1.2.2
 
+* adjust positions for row titles
 * rows can be split if `cluster_rows` are a clustering object
 * `row_order` and `column_order` can be set by dimension names
 

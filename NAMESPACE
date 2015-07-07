@@ -67,3 +67,4 @@ importFrom("colorspace", rainbow_hcl)
 importFrom("colorspace", diverge_hcl)
 importFrom("RColorBrewer", brewer.pal)
 importFrom("dendextend", get_branches_heights)
+
