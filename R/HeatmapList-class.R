@@ -303,22 +303,51 @@ setMethod(f = "make_layout",
         }
     }
 
-    if(row_hclust_side == "left" && i == 1) {
+    # adjust row clustering
+    for(i in seq_len(n)) {
+        if(i != i_main) {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                object@ht_list[[i]]@row_hclust_param$show = FALSE
+            }
+        }
+    }
+    if(row_hclust_side == "left") {
+        # move hclust to the first one
+        object@ht_list[[i_main]]@row_hclust_param$show = FALSE
         object@ht_list[[1]]@row_hclust_list = ht_main@row_hclust_list
         object@ht_list[[1]]@row_hclust_param = ht_main@row_hclust_param
         object@ht_list[[1]]@row_hclust_param$side = "left"
-    } else if(row_hclust_side == "right" && i == n) {
+    } else if(row_hclust_side == "right") {
+        object@ht_list[[i_main]]@row_hclust_param$show = FALSE
         object@ht_list[[n]]@row_hclust_list = ht_main@row_hclust_list
         object@ht_list[[n]]@row_hclust_param = ht_main@row_hclust_param
         object@ht_list[[n]]@row_hclust_param$side = "right"
-    } else {
-        for(i in seq_len(n)) {
-            if(i != i_main) {
-                if(inherits(object@ht_list[[i]], "Heatmap")) {
-                    object@ht_list[[i]]@row_hclust_param$show = FALSE
-                }
+    }
+
+    # adjust row subtitles
+    for(i in seq_len(n)) {
+        if(i != i_main) {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                object@ht_list[[i]]@row_title = character(0)
             }
         }
+    }
+    if(row_sub_title_side == "left") {
+        object@ht_list[[i_main]]@row_title = character(0)
+        object@ht_list[[1]]@row_title = ht_main@row_title
+        object@ht_list[[1]]@row_title_rot = ht_main@row_title_rot
+        #object@ht_list[[1]]@row_title_just = ht_main@row_title_just
+        object@ht_list[[1]]@row_title_param = ht_main@row_title_param
+        object@ht_list[[1]]@row_title_param$side = "left"
+        object@ht_list[[1]]@row_title_just = get_text_just(ht_main@row_title_rot, "left")
+    } else if(row_sub_title_side == "right") {
+        object@ht_list[[i_main]]@row_title = character(0)
+        object@ht_list[[n]]@row_title = ht_main@row_title
+        object@ht_list[[n]]@row_title_rot = ht_main@row_title_rot
+        #object@ht_list[[n]]@row_title_just = ht_main@row_title_just
+        object@ht_list[[n]]@row_title_param = ht_main@row_title_param
+        object@ht_list[[n]]@row_title_param$side = "right"
+        object@ht_list[[n]]@row_title_just = get_text_just(ht_main@row_title_rot, "right")
     }
 
     for(i in seq_len(n)) {
