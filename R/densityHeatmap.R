@@ -1,18 +1,18 @@
 
 # == title
-# use colors to represent density distribution
+# Use colors to represent density distribution
 #
 # == param
 # -data  a matrix or a list. If it is a matrix, density will be calculated by columns
-# -col a list of colors that density values are to be mapped to
-# -anno annotation for matrix columns or list, a vector or a data frame
+# -col a list of colors that density values are mapped to
+# -anno annotation for matrix columns or list, a vector or a data frame. The order of elements or rows corresponding to the orders of elements of rows of ``data``
 # -ylab label on y-axis in the plot
 # -title title of the plot
 #
 # == details
 # To visualize distribution of columns in a matrix or in a list, sometimes we use boxplot or beanplot.
 # Here we use colors to map to the density values and visualize distribution of values
-# in each column (or each list element) through a heatmap.
+# in each column (or each list element) through a heatmap. It is useful if you have huge number of columns in ``data`` to visualize.
 #
 # == value
 # No value is returned.

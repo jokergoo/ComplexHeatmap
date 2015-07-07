@@ -37,16 +37,9 @@ add_oncoprint = function(type, x, y, width, height) {
 
 #####################################################################
 # row annotation which shows percent of mutations in all samples
-anno_pct = function(index) {
-	n = length(index)
-	pct = apply(mat_origin[index, ], 1, function(x) sum(!grepl("^\\s*$", x))/length(x))*100
-	pct = paste0(round(pct),"%")
-	pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n + 0.5)))
-	grid.text(pct, x = 1, y = seq_along(index), default.units = "native", just = "right", gp = gpar(fontsize = 10))
-    upViewport()
-}
-
-ha_pct = HeatmapAnnotation(pct = anno_pct, width = grobWidth(textGrob("100%", gp = gpar(fontsize = 10))), which = "row")
+pct = apply(mat_origin, 1, function(x) sum(!grepl("^\\s*$", x))/length(x))*100
+pct = paste0(round(pct),"%")
+ha_pct = rowAnnotation(pct = anno_text(pct, which = "row"), width = grobWidth(textGrob("100%", gp = gpar(fontsize = 10))))
 
 
 #####################################################################
@@ -74,7 +67,7 @@ anno_row_bar = function(index) {
 	upViewport()
 }
 
-ha_row_bar = HeatmapAnnotation(row_bar = anno_row_bar, width = unit(4, "cm"), which = "row")
+ha_row_bar = rowAnnotation(row_bar = anno_row_bar, width = unit(4, "cm"))
 
 ###################################################################
 # column annotation which is also a barplot
