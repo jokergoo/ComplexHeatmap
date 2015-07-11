@@ -19,8 +19,6 @@ test_that("color mapping is continuous", {
 	expect_that(map_to_colors(cm, 0), is_identical_to("#0000FFFF"))
 	expect_that(map_to_colors(cm, 2), is_identical_to("#FF0000FF"))
 	expect_that(map_to_colors(cm, seq(-1, 2, length = 4)), is_identical_to(c("#0000FFFF", "#0000FFFF", "#FF0000FF", "#FF0000FF")))
-	grob_size = color_mapping_legend(cm, plot = FALSE)
-	expect_that(length(grob_size), is_identical_to(as.integer(2)))
 })
 
 cm = ColorMapping(name = "test",

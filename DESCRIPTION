@@ -1,8 +1,8 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Making Complex Heatmaps
-Version: 1.2.2
-Date: 2015-6-17
+Version: 1.2.3
+Date: 2015-7-11
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.0), grid
@@ -17,6 +17,6 @@ Description: Complex heatmaps are efficient to visualize associations
 biocViews: Software, Visualization, Sequencing
 URL: https://github.com/jokergoo/ComplexHeatmap
 License: GPL (>= 2)
-Packaged: 2015-6-17 00:00:00 UTC; Administrator
+Packaged: 2015-7-11 00:00:00 UTC; Administrator
 Repository: Bioconductor
-Date/Publication: 2015-6-17 00:00:00
+Date/Publication: 2015-7-11 00:00:00
