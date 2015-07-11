@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.2.3
+
+* `color_mapping_legend` now returns a grob object
+
+===========================================
+
 CHANGES in VERSION 1.2.2
 
 * adjust positions for row titles
