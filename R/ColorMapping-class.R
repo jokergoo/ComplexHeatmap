@@ -254,9 +254,9 @@ setMethod(f = "color_mapping_legend",
 	x = unit(rep(0, nlevel), "npc")
 	y = legend_padding + (0:(nlevel-1))*(legend_grid_height)
 	y = unit(1, "npc") - y
-	gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, y, width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
+	gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
 			gp = gpar(col = legend_grid_border, fill = object@colors)))
-	gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, y - legend_grid_height*0.5, 
+	gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, rev(y) - legend_grid_height*0.5, 
 	 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE)
 
 	if(plot) {
