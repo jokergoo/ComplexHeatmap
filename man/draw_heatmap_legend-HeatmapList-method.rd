@@ -10,10 +10,11 @@ Draw legends for all heatmaps
 
 }
 \usage{
-\S4method{draw_heatmap_legend}{HeatmapList}(object, ...)}
+\S4method{draw_heatmap_legend}{HeatmapList}(object, legend_list = list(), ...)}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
   \item{...}{graphic parameters passed to \code{\link{color_mapping_legend,ColorMapping-method}}.}
 }
 \details{

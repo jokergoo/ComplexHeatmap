@@ -14,7 +14,7 @@ Make layout for the complete plot
     column_title = character(0), column_title_side = c("top", "bottom"),
     column_title_gp = gpar(fontsize = 14),
     heatmap_legend_side = c("right", "left", "bottom", "top"),
-    show_heatmap_legend = TRUE,
+    show_heatmap_legend = TRUE, heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"),
     show_annotation_legend = TRUE, annotation_legend_list = list(),
     gap = unit(3, "mm"),
@@ -32,6 +32,7 @@ Make layout for the complete plot
   \item{column_title_gp}{graphic parameters for drawing text.}
   \item{heatmap_legend_side}{side of the heatmap legend.}
   \item{show_heatmap_legend}{whether show heatmap legend.}
+  \item{heatmap_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
   \item{annotation_legend_side}{side of annotation legend.}
   \item{show_annotation_legend}{whether show annotation legend.}
   \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}

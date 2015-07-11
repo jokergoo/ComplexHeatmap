@@ -30,7 +30,7 @@ A viewport is created which contains a legend title, legend grids and correspond
 
 }
 \value{
-A \code{\link[grid]{unit}} object which corresponds to the width and height of the legend viewport.
+A \code{\link[grid]{grob}} object which contains the legend
 
 }
 \author{
