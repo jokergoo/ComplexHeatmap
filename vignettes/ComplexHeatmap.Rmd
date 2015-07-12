@@ -676,13 +676,22 @@ draw(ht1 + ht2, legend_grid_width = unit(6, "mm"),
 ```
 
 If you don't like the default breaks in the heatmap legend, you can construct a new legend by `ColorMapping` class
-and pass to `heatmap_legend_list`.
+and pass to `heatmap_legend_list`. Please make sure the color mapping for the matrix and that for the legend
+should be the same one.
 
 ```{r self_define_heatmap_legend, fig.width = 10}
-col_fun = colorRamp2(quantile(mat, c(0, 0.5, 1)), c("green", "white", "red"))
+col_fun = colorRamp2(c(-3, 0, 3), c("green", "white", "red"))
 ht2 = Heatmap(mat, name = "ht2", col = col_fun, column_title = "Heatmap 2", show_heatmap_legend = FALSE)
-cm = ColorMapping(col_fun = col_fun, breaks = c(-3, 0, 3), name = "heatmap2", enforce_breaks = TRUE)
+cm = ColorMapping(col_fun = col_fun, name = "heatmap2", enforce_breaks = TRUE)
 draw(ht1 + ht2, heatmap_legend_list = list(color_mapping_legend(cm, plot = FALSE)))
+```
+
+Default legend style for continuous color mapping is created by first calculating break values for continuous values and 
+then drawing these discrete break values as discrete legend grids. However, you can self construct a continuous
+legend by `ColorMapping` class.
+
+```{r self_define_heatmap_continuous_legend, fig.width = 10}
+draw(ht1 + ht2, heatmap_legend_list = list(color_mapping_legend(cm, plot = FALSE, color_bar = "continuous")))
 ```
 
 ### Gaps between heatmaps
