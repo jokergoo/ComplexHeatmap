@@ -1,5 +1,6 @@
 CHANGES in VERSION 1.2.3
 
+* `color_mapping_legend` can produce a continuous color legend
 * `color_mapping_legend` now returns a grob object
 
 ===========================================
