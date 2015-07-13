@@ -35,6 +35,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     km = 1, split = NULL, gap = unit(1, "mm"),
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE,
+    heatmap_legend_title = name,
     heatmap_legend_color_bar = c("discrete", "continuous"))}
 \arguments{
 
@@ -86,6 +87,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{combined_name_fun}{if the heatmap is split by rows, how to make a combined row title for each slice?The input parameter for this function is a vector which contains level names under each column in \code{split}.}
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmapis appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
+  \item{heatmap_legend_title}{title for the heatmap legend. By default it is the name of the heatmap}
   \item{heatmap_legend_color_bar}{if the matrix is continuous, whether should the legend as continuous color bar as well?}
 }
 \details{
@@ -113,8 +115,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]
