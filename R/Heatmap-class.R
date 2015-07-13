@@ -178,6 +178,7 @@ Heatmap = setClass("Heatmap",
 # -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
 #        is appended to a list of heatmaps.
 # -show_heatmap_legend whether show heatmap legend?
+# -heatmap_legend_color_bar if the matrix is continuous, whether should the legend as continuous color bar as well?
 #
 # == details
 # The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -223,7 +224,8 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     bottom_annotation_height = unit(5*length(bottom_annotation@anno_list), "mm"),
     km = 1, split = NULL, gap = unit(1, "mm"), 
     combined_name_fun = function(x) paste(x, collapse = "/"),
-    width = NULL, show_heatmap_legend = TRUE) {
+    width = NULL, show_heatmap_legend = TRUE,
+    heatmap_legend_color_bar = c("discrete", "continuous")) {
 
     .Object = new("Heatmap")
 
@@ -292,27 +294,28 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
         .Object@matrix = matrix
     }
 
+    heatmap_legend_color_bar = match.arg(heatmap_legend_color_bar)[1]
     # color for main matrix
     if(ncol(matrix) > 0) {
         if(missing(col)) {
             col = default_col(matrix, main_matrix = TRUE)
         }
         if(is.function(col)) {
-            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
+            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col, color_bar = heatmap_legend_color_bar)
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(matrix))) {
                     names(col) = unique(matrix)
-                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
+                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col, color_bar = heatmap_legend_color_bar)
                 } else if(is.numeric(matrix)) {
                     col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
                                      col)
-                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
+                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col, color_bar = heatmap_legend_color_bar)
                 } else {
                     stop("`col` should have names to map to values in `mat`.")
                 }
             } else {
-                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
+                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col, color_bar = heatmap_legend_color_bar)
             }
         }
     }
