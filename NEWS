@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.2.4
+
+*  legend for continuous values can be set as continuous legends
+
+==========================================
+
 CHANGES in VERSION 1.2.3
 
 * `color_mapping_legend` can produce a continuous color legend

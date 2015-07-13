@@ -10,7 +10,7 @@ Constructor method for SingleAnnotation class
 }
 \usage{
 SingleAnnotation(name, value, col, fun, which = c("column", "row"),
-    show_legend = TRUE, gp = gpar(col = NA))}
+    show_legend = TRUE, gp = gpar(col = NA), color_bar = c("discrete", "continuous"))}
 \arguments{
 
   \item{name}{name for this annotation.}
@@ -20,6 +20,7 @@ SingleAnnotation(name, value, col, fun, which = c("column", "row"),
   \item{which}{is the annotation a row annotation or a column annotation?}
   \item{show_legend}{if it is a simple annotation, whether show legend when making the complete heatmap.}
   \item{gp}{graphic parameters for simple annotations.}
+  \item{color_bar}{if the color mapping is continuous, whether draw the legend discrete or continuous. Onl works for simple annotation.}
 }
 \details{
 The most simple annotation is one row or one column grids in which different colors
@@ -48,6 +49,8 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
 # discrete character
 SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"))
 SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"), 

@@ -55,6 +55,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -which is the annotation a row annotation or a column annotation?
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
 # -gp graphic parameters for simple annotations.
+# -color_bar if the color mapping is continuous, whether draw the legend discrete or continuous. Onl works for simple annotation.
 #
 # == details
 # The most simple annotation is one row or one column grids in which different colors
@@ -80,7 +81,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 SingleAnnotation = function(name, value, col, fun, which = c("column", "row"), 
-	show_legend = TRUE, gp = gpar(col = NA)) {
+	show_legend = TRUE, gp = gpar(col = NA), color_bar = c("discrete", "continuous")) {
 
 	.Object = new("SingleAnnotation")
 
@@ -104,15 +105,17 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 	    }
 	}
 
+	color_bar = match.arg(color_bar)[1]
+
     if(missing(fun)) {
     	if(missing(col)) {
     		col = default_col(value)
     	}
 
     	if(is.atomic(col)) {
-            color_mapping = ColorMapping(name = name, colors = col)
+            color_mapping = ColorMapping(name = name, colors = col, color_bar = color_bar)
         } else if(is.function(col)) {
-            color_mapping = ColorMapping(name = name, col_fun = col)
+            color_mapping = ColorMapping(name = name, col_fun = col, color_bar = color_bar)
         }
 
         .Object@color_mapping = color_mapping

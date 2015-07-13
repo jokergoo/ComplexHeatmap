@@ -657,16 +657,6 @@ ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", show_heatmap_legend
 ht1 + ht2
 ```
 
-**ComplexHeatmap** only generates legends for heatmaps and simple annotations. Self-defined legends
-can be passed by `annotation_legend_list` as a list of `grob` objects.
-
-```{r self_defined_annotation_legend, fig.width = 10}
-ha = HeatmapAnnotation(points = anno_points(rnorm(10)))
-ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", top_annotation = ha, show_heatmap_legend = FALSE)
-lgd = legendGrob(c("dots"), pch = 16)
-draw(ht1 + ht2, annotation_legend_list = list(lgd))
-```
-
 Graphic parameters for legends for simple annotations can be set. Actually these arguments are passed
 to `color_mapping_legend()` in `ColorMapping` class.
 
@@ -687,12 +677,28 @@ draw(ht1 + ht2, heatmap_legend_list = list(color_mapping_legend(cm, plot = FALSE
 ```
 
 Default legend style for continuous color mapping is created by first calculating break values for continuous values and 
-then drawing these discrete break values as discrete legend grids. However, you can self construct a continuous
-legend by `ColorMapping` class.
+then drawing these discrete break values as discrete legend grids. You can switch to continuous legends both for heatmap legend
+and annotation legends.
 
 ```{r self_define_heatmap_continuous_legend, fig.width = 10}
-draw(ht1 + ht2, heatmap_legend_list = list(color_mapping_legend(cm, plot = FALSE, color_bar = "continuous")))
+df = data.frame(type = runif(10))
+ha = HeatmapAnnotation(df = df, color_bar = "continuous")
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", top_annotation = ha)
+ht2 = Heatmap(mat, name = "ht2", col = col_fun, column_title = "Heatmap 2", 
+    heatmap_legend_color_bar = "continuous")
+draw(ht1 + ht2)
 ```
+
+**ComplexHeatmap** only generates legends for heatmaps and simple annotations. Self-defined legends
+can be passed by 1heatmap_legend_list` and `annotation_legend_list` as a list of `grob` objects.
+
+```{r self_defined_annotation_legend, fig.width = 10}
+ha = HeatmapAnnotation(points = anno_points(rnorm(10)))
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", top_annotation = ha, show_heatmap_legend = FALSE)
+lgd = legendGrob(c("dots"), pch = 16)
+draw(ht1 + ht2, annotation_legend_list = list(lgd))
+```
+
 
 ### Gaps between heatmaps
 

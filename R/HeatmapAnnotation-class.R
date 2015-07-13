@@ -42,6 +42,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -df a data frame. Each column will be treated as a simple annotation. The data frame must have column names.
 # -name name of the heatmap annotation, optional.
 # -col a list of colors which contains color mapping to columns in ``df``. See `SingleAnnotation` for how to set colors.
+# -color_bar if there are continuous values in ``df``, show the legend as discrete or continuous
 # -show_legend whether show legend for each column in ``df``.
 # -... functions which define complex annotations. Values should be named arguments.
 # -which are the annotations row annotations or column annotations?
@@ -65,7 +66,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-HeatmapAnnotation = function(df, name, col, show_legend = rep(TRUE, n_anno), ..., 
+HeatmapAnnotation = function(df, name, col, color_bar = rep("discrete", ncol(df)), 
+	show_legend = rep(TRUE, n_anno), ..., 
 	which = c("column", "row"), annotation_height = 1, annotation_width = 1, 
 	height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA),
 	gap = unit(0, "null")) {
@@ -94,16 +96,18 @@ HeatmapAnnotation = function(df, name, col, show_legend = rep(TRUE, n_anno), ...
 	    	show_legend = rep(show_legend, n_anno)
 	    }
 
+	    if(length(color_bar) == 1) color_bar = rep(color_bar, ncol(df))
+
 	    if(missing(col)) {
 	        for(i in seq_len(n_anno)) {
-	        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp)))
+	        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp, color_bar = color_bar[i])))
 	        }
 	    } else {
 	        for(i in seq_len(n_anno)) {
 	        	if(is.null(col[[ anno_name[i] ]])) { # if the color is not provided
-	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp)))
+	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp, color_bar = color_bar[i])))
 	        	} else {
-	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], col = col[[ anno_name[i] ]], which = which, show_legend = show_legend[i], gp = gp)))
+	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], col = col[[ anno_name[i] ]], which = which, show_legend = show_legend[i], gp = gp, color_bar = color_bar[i])))
 	        	}
 	        }
 	    }

@@ -28,7 +28,8 @@ ColorMapping = setClass("ColorMapping",
 		col_fun = "function", # function to map values to colors
 		type    = "character",  # continuous or discrete
 		name    = "character",  # used to map to the dataset and taken as the title of the legend
-		na_col  = "character"
+		na_col  = "character",
+		color_bar = "character"
 	)
 )
 
@@ -46,6 +47,7 @@ ColorMapping = setClass("ColorMapping",
 # -enforce_breaks If it is set to `TRUE`, values of ``breaks`` will be the final break value in the legend.
 #            If it is ``FALSE``, proper breaks values will be automatically generated.
 # -na_col colors for ``NA`` values.
+# -color_bar if the color mapping is continuous, whether draw the legend discrete or continuous.
 #
 # == detail
 # ``colors`` and ``levels`` are used for discrete color mapping, ``col_fun`` and 
@@ -58,7 +60,8 @@ ColorMapping = setClass("ColorMapping",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 ColorMapping = function(name, colors = NULL, levels = NULL, 
-	col_fun = NULL, breaks = NULL, enforce_breaks = FALSE, na_col = "#FFFFFF") {
+	col_fun = NULL, breaks = NULL, enforce_breaks = FALSE, na_col = "#FFFFFF",
+	color_bar = c("discrete", "continuous")) {
 
 	.Object = new("ColorMapping")
 
@@ -112,6 +115,12 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 
 	.Object@name = name
 	.Object@na_col = na_col
+
+	color_bar = match.arg(color_bar)[1]
+	if(.Object@type == "discrete" && color_bar == "continuous") {
+		stop("Continuous color bar can only be applied to continuous color mapping.")
+	}
+	.Object@color_bar = color_bar
 
 	return(.Object)
 }
@@ -213,7 +222,6 @@ setMethod(f = "map_to_colors",
 # -legend_grid_border color for legend grid borders.
 # -legend_title_gp graphic parameter for legend title.
 # -legend_label_gp graphic parameter for legend label.
-# -color_bar if the color mapping is continuous, whether draw the legend discrete or continuous.
 #
 # == details
 # A viewport is created which contains a legend title, legend grids and corresponding labels.
@@ -229,15 +237,12 @@ setMethod(f = "color_mapping_legend",
 	definition = function(object, ..., plot = TRUE, legend_grid_height = unit(4, "mm"),
 	legend_grid_width = unit(4, "mm"), legend_grid_border = "white",
 	legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
-	legend_label_gp = gpar(fontsize = 10), color_bar = c("discrete", "continuous")) {
+	legend_label_gp = gpar(fontsize = 10)) {
 
 	legend_title_gp = check_gp(legend_title_gp)
 	legend_label_gp = check_gp(legend_label_gp)
 
-	color_bar = match.arg(color_bar)[1]
-	if(object@type == "discrete" && color_bar == "continuous") {
-		stop("Continuous color bar can only be applied to continuous color mapping.")
-	}
+	color_bar = object@color_bar
 
 	# add title
 	legend_title_grob = textGrob(object@name, just = c("left", "top"), gp = legend_title_gp)
