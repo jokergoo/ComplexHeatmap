@@ -9,7 +9,8 @@ Constructor method for HeatmapAnnotation class
 
 }
 \usage{
-HeatmapAnnotation(df, name, col, show_legend = rep(TRUE, n_anno), ...,
+HeatmapAnnotation(df, name, col, color_bar = rep("discrete", ncol(df)),
+    show_legend = rep(TRUE, n_anno), ...,
     which = c("column", "row"), annotation_height = 1, annotation_width = 1,
     height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA),
     gap = unit(0, "null"))}
@@ -18,6 +19,7 @@ HeatmapAnnotation(df, name, col, show_legend = rep(TRUE, n_anno), ...,
   \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
   \item{name}{name of the heatmap annotation, optional.}
   \item{col}{a list of colors which contains color mapping to columns in \code{df}. See \code{\link{SingleAnnotation}} for how to set colors.}
+  \item{color_bar}{if there are continuous values in \code{df}, show the legend as discrete or continuous}
   \item{show_legend}{whether show legend for each column in \code{df}.}
   \item{...}{functions which define complex annotations. Values should be named arguments.}
   \item{which}{are the annotations row annotations or column annotations?}
@@ -46,6 +48,8 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
 df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df)
 
