@@ -29,7 +29,8 @@ ColorMapping = setClass("ColorMapping",
 		type    = "character",  # continuous or discrete
 		name    = "character",  # used to map to the dataset and taken as the title of the legend
 		na_col  = "character",
-		color_bar = "character"
+		color_bar = "character",
+		legend_title = "ANY"
 	)
 )
 
@@ -47,6 +48,7 @@ ColorMapping = setClass("ColorMapping",
 # -enforce_breaks If it is set to `TRUE`, values of ``breaks`` will be the final break value in the legend.
 #            If it is ``FALSE``, proper breaks values will be automatically generated.
 # -na_col colors for ``NA`` values.
+# -legend_title title of the legend, by default it is the name of the legend
 # -color_bar if the color mapping is continuous, whether draw the legend discrete or continuous.
 #
 # == detail
@@ -61,7 +63,7 @@ ColorMapping = setClass("ColorMapping",
 #
 ColorMapping = function(name, colors = NULL, levels = NULL, 
 	col_fun = NULL, breaks = NULL, enforce_breaks = FALSE, na_col = "#FFFFFF",
-	color_bar = c("discrete", "continuous")) {
+	legend_title = name, color_bar = c("discrete", "continuous")) {
 
 	.Object = new("ColorMapping")
 
@@ -116,6 +118,7 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 	.Object@name = name
 	.Object@na_col = na_col
 
+	.Object@legend_title = legend_title
 	color_bar = match.arg(color_bar)[1]
 	if(.Object@type == "discrete" && color_bar == "continuous") {
 		stop("Continuous color bar can only be applied to continuous color mapping.")
@@ -245,7 +248,7 @@ setMethod(f = "color_mapping_legend",
 	color_bar = object@color_bar
 
 	# add title
-	legend_title_grob = textGrob(object@name, just = c("left", "top"), gp = legend_title_gp)
+	legend_title_grob = textGrob(object@legend_title, just = c("left", "top"), gp = legend_title_gp)
 	legend_title_height = grobHeight(legend_title_grob)
 	legend_title_width = grobWidth(legend_title_grob)
 
@@ -261,7 +264,7 @@ setMethod(f = "color_mapping_legend",
 	gf = frameGrob(layout = grid.layout(nr = 2, nc = 2, width = unit.c(legend_grid_width, grid_padding + legend_label_max_width),
 		                                                height = unit.c(legend_title_height, legend_padding + nlevel*(legend_grid_height))))
 	# legend title
-	gf = packGrob(gf, row = 1, col = 1:2, grob = textGrob(object@name, x = 0, y = 1, default.units = "npc", just = c("left", "top"), gp = legend_title_gp))
+	gf = packGrob(gf, row = 1, col = 1:2, grob = textGrob(object@legend_title, x = 0, y = 1, default.units = "npc", just = c("left", "top"), gp = legend_title_gp))
 	
 	# legend grid
 	x = unit(rep(0, nlevel), "npc")

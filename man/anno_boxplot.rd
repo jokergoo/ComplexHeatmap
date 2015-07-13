@@ -32,8 +32,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
-
 mat = matrix(rnorm(32), nrow = 4)
 f = anno_boxplot(mat)
 grid.newpage(); f(1:8)

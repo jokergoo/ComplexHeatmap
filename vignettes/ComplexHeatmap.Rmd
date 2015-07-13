@@ -690,7 +690,7 @@ draw(ht1 + ht2)
 ```
 
 **ComplexHeatmap** only generates legends for heatmaps and simple annotations. Self-defined legends
-can be passed by 1heatmap_legend_list` and `annotation_legend_list` as a list of `grob` objects.
+can be passed by `heatmap_legend_list` and `annotation_legend_list` as a list of `grob` objects.
 
 ```{r self_defined_annotation_legend, fig.width = 10}
 ha = HeatmapAnnotation(points = anno_points(rnorm(10)))
@@ -699,6 +699,13 @@ lgd = legendGrob(c("dots"), pch = 16)
 draw(ht1 + ht2, annotation_legend_list = list(lgd))
 ```
 
+Finally, you can change legend title for heatmap legend by specifying `heatmap_legend_title` in `Heatmap()`:
+
+```{r}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", heatmap_legend_title = expression(alpha))
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", heatmap_legend_title = "HHHHH")
+draw(ht1 + ht2)
+```
 
 ### Gaps between heatmaps
 

@@ -68,11 +68,11 @@ Heatmap = setClass("Heatmap",
         matrix_param = "list",
         matrix_color_mapping = "ANY",
 
-        row_title = "character",
+        row_title = "ANY",
         row_title_rot = "numeric",
         row_title_just = "numeric",
         row_title_param = "list",
-        column_title = "character",
+        column_title = "ANY",
         column_title_param = "list",
         column_title_rot = "numeric",
         column_title_just = "numeric",
@@ -178,6 +178,7 @@ Heatmap = setClass("Heatmap",
 # -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
 #        is appended to a list of heatmaps.
 # -show_heatmap_legend whether show heatmap legend?
+# -heatmap_legend_title title for the heatmap legend. By default it is the name of the heatmap
 # -heatmap_legend_color_bar if the matrix is continuous, whether should the legend as continuous color bar as well?
 #
 # == details
@@ -225,6 +226,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     km = 1, split = NULL, gap = unit(1, "mm"), 
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE,
+    heatmap_legend_title = name,
     heatmap_legend_color_bar = c("discrete", "continuous")) {
 
     .Object = new("Heatmap")
@@ -301,31 +303,33 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
             col = default_col(matrix, main_matrix = TRUE)
         }
         if(is.function(col)) {
-            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col, color_bar = heatmap_legend_color_bar)
+            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar)
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(matrix))) {
                     names(col) = unique(matrix)
-                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col, color_bar = heatmap_legend_color_bar)
+                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar)
                 } else if(is.numeric(matrix)) {
                     col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
                                      col)
-                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col, color_bar = heatmap_legend_color_bar)
+                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar)
                 } else {
                     stop("`col` should have names to map to values in `mat`.")
                 }
             } else {
-                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col, color_bar = heatmap_legend_color_bar)
+                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar)
             }
         }
     }
     
     if(length(row_title) == 0) {
         row_title = character(0)
-    } else if(is.na(row_title)) {
-        row_title = character(0)
-    } else if(row_title == "") {
-        row_title = character(0)
+    } else if(!inherits(row_title, "expression")) {
+            if(is.na(row_title)) {
+            row_title = character(0)
+        } else if(row_title == "") {
+            row_title = character(0)
+        }
     }
     .Object@row_title = row_title
     .Object@row_title_rot = row_title_rot %% 360
@@ -336,10 +340,12 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
 
     if(length(column_title) == 0) {
         column_title = character(0)
-    } else if(is.na(column_title)) {
-        column_title = character(0)
-    } else if(column_title == "") {
-        column_title = character(0)
+    } else if(!inherits(column_title, "expression")) {
+            if(is.na(column_title)) {
+            column_title = character(0)
+        } else if(column_title == "") {
+            column_title = character(0)
+        }
     }
     .Object@column_title = column_title
     .Object@column_title_rot = column_title_rot %% 360

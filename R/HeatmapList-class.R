@@ -54,9 +54,9 @@ HeatmapList = setClass("HeatmapList",
         ht_list = "list",
         ht_list_param = "list",
 
-        row_title = "character",
+        row_title = "ANY",
         row_title_param = "list",
-        column_title = "character",
+        column_title = "ANY",
         column_title_param = "list",
 
         annotation_legend_param = "list",
@@ -368,10 +368,12 @@ setMethod(f = "make_layout",
     column_title_side = match.arg(column_title_side)[1]
     if(length(column_title) == 0) {
         column_title = character(0)
-    } else if(is.na(column_title)) {
-        column_title = character(0)
-    } else if(column_title == "") {
-        column_title = character(0)
+    } else if(!inherits(column_title, "expression")) {
+        if(is.na(column_title)) {
+            column_title = character(0)
+        } else if(column_title == "") {
+            column_title = character(0)
+        }
     }
     object@column_title = column_title
     object@column_title_param$gp = check_gp(column_title_gp)
@@ -392,10 +394,12 @@ setMethod(f = "make_layout",
     row_title_side = match.arg(row_title_side)[1]
     if(length(row_title) == 0) {
         row_title = character(0)
-    } else if(is.na(row_title)) {
-        row_title = character(0)
-    } else if(row_title == "") {
-        row_title = character(0)
+    } else if(!inherits(row_title, "expression")) { 
+        if(is.na(row_title)) {
+            row_title = character(0)
+        } else if(row_title == "") {
+            row_title = character(0)
+        }
     }
     object@row_title = row_title
     object@row_title_param$gp = check_gp(row_title_gp)
