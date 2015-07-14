@@ -3,6 +3,7 @@ CHANGES in VERSION 1.2.4
 * legend for continuous values can be set as continuous legends
 * row title and column title as well as legend title support expression
 * add `heatmap_legend_title` in `Heatmap` and `ColorMapping`
+* fixed a bug in `plotDataFrame`
 
 ==========================================
 
