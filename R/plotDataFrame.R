@@ -98,9 +98,7 @@ plotDataFrame = function(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
 		}
 
 		if(is.null(main_heatmap)) {
-			if(all(sapply(group, length) == 1)) {
-				main_heatmap = 1
-			}
+			main_heatmap = which.max(sapply(group, length))
 		}
 
 		i_max = max(unlist(group))
@@ -113,14 +111,12 @@ plotDataFrame = function(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
 				}
 			}
 
-			if(!is.null(main_heatmap)) {
-				if(i == main_heatmap) {
-					split2 = split
-					km2 = km
-				} else {
-					split2 = NULL
-					km2 = 1
-				}
+			if(i == main_heatmap) {
+				split2 = split
+				km2 = km
+			} else {
+				split2 = NULL
+				km2 = 1
 			}
 
 			if(length(ci) > 1) {
@@ -128,7 +124,7 @@ plotDataFrame = function(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
 			} else {
 				column_title = character(0)
 			}
-
+			
 			if(i == 1) {
 				if(i == i_max) {
 					ht_list = Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = show_row_names, show_column_names = show_column_names, km = km2, split = split2)
