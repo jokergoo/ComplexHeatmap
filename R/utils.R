@@ -5,6 +5,7 @@ INDEX_ENV = new.env()
 INDEX_ENV$I_HEATMAP = 0
 INDEX_ENV$I_ANNOTATION = 0
 INDEX_ENV$I_ROW_ANNOTATION = 0
+INDEX_ENV$I_COLOR_MAPPING = 0
 
 get_heatmap_index = function() {
 	INDEX_ENV$I_HEATMAP
@@ -30,6 +31,13 @@ increase_row_annotation_index = function() {
 	INDEX_ENV$I_ROW_ANNOTATION = INDEX_ENV$I_ROW_ANNOTATION + 1
 }
 
+get_color_mapping_index = function() {
+    INDEX_ENV$I_COLOR_MAPPING
+}
+
+increase_color_mapping_index = function() {
+    INDEX_ENV$I_COLOR_MAPPING = INDEX_ENV$I_COLOR_MAPPING + 1
+}
 
 # default colors for matrix or annotations
 # this function should be improved later

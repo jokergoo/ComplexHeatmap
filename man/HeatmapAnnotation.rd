@@ -48,6 +48,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df)
 

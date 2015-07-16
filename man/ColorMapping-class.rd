@@ -30,5 +30,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 # for examples, please go to `ColorMapping` method page
 NULL}
