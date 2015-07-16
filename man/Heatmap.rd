@@ -88,7 +88,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmapis appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
   \item{heatmap_legend_title}{title for the heatmap legend. By default it is the name of the heatmap}
-  \item{heatmap_legend_color_bar}{if the matrix is continuous, whether should the legend as continuous color bar as well?}
+  \item{heatmap_legend_color_bar}{if the matrix is continuous, whether should the legend as continuous color bar as well? Accepts either "discrete" or "continuous".}
 }
 \details{
 The initialization function only applies parameter checking and fill values to each slot with proper ones.
