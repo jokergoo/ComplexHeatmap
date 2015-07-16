@@ -72,5 +72,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 # for examples, please go to `Heatmap` method page
 NULL}

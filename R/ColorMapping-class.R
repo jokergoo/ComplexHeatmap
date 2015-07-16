@@ -67,8 +67,9 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 
 	.Object = new("ColorMapping")
 
-	if(is.null(name)) {
-		stop("You should provide name.")
+	if(missing(name)) {
+		increase_color_mapping_index()
+		name = get_color_mapping_index()
 	}
 	if(!is.null(colors)) {
 		if(is.null(levels)) {
