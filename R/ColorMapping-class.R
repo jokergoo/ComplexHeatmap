@@ -69,7 +69,7 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 
 	if(missing(name)) {
 		increase_color_mapping_index()
-		name = get_color_mapping_index()
+		name = paste0("color_mapping_", get_color_mapping_index())
 	}
 	if(!is.null(colors)) {
 		if(is.null(levels)) {
