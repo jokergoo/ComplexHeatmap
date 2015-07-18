@@ -179,7 +179,11 @@ Heatmap = setClass("Heatmap",
 #        is appended to a list of heatmaps.
 # -show_heatmap_legend whether show heatmap legend?
 # -heatmap_legend_title title for the heatmap legend. By default it is the name of the heatmap
-# -heatmap_legend_color_bar if the matrix is continuous, whether should the legend as continuous color bar as well?
+# -heatmap_legend_color_bar if the matrix is continuous, whether should the legend as continuous color bar as well? 
+#           Possible values are "discrete" and "continuous". Current implementation of continuous color bar is not a nice one and will be improved in future.
+# -heatmap_legend_enforce_breaks For numeric matrix, if it is set to `TRUE` and ``col`` is specified by `circlize::colorRamp2`
+#        break values specified in `circlize::colorRamp2` will be the final break value in the legend.
+#        Or else, proper breaks values will be automatically generated.
 #
 # == details
 # The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -203,7 +207,8 @@ Heatmap = setClass("Heatmap",
 Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA), 
     cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"), 
-    row_title_gp = gpar(fontsize = 14), row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
+    row_title_gp = gpar(fontsize = 14), 
+    row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
     column_title = character(0), column_title_side = c("top", "bottom"), 
     column_title_gp = gpar(fontsize = 14), column_title_rot = 0,
     cluster_rows = TRUE, clustering_distance_rows = "euclidean",
@@ -227,7 +232,8 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE,
     heatmap_legend_title = name,
-    heatmap_legend_color_bar = c("discrete", "continuous")) {
+    heatmap_legend_color_bar = c("discrete", "continuous"),
+    heatmap_legend_enforce_breaks = FALSE) {
 
     .Object = new("Heatmap")
 
@@ -303,21 +309,21 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
             col = default_col(matrix, main_matrix = TRUE)
         }
         if(is.function(col)) {
-            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar)
+            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar, enforce_breaks = heatmap_legend_enforce_breaks)
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(matrix))) {
                     names(col) = unique(matrix)
-                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar)
+                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar, enforce_breaks = heatmap_legend_enforce_breaks)
                 } else if(is.numeric(matrix)) {
                     col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
                                      col)
-                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar)
+                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar, enforce_breaks = heatmap_legend_enforce_breaks)
                 } else {
                     stop("`col` should have names to map to values in `mat`.")
                 }
             } else {
-                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar)
+                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar, enforce_breaks = heatmap_legend_enforce_breaks)
             }
         }
     }

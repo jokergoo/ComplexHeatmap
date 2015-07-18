@@ -262,16 +262,16 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
 }
 
 # == title
-# Calculate distance from a matrix
+# Calculate pairwise distance from a matrix
 #
 # == param
 # -mat a matrix. The distance is calculated by rows.
 # -pairwise_fun a function which calculates distance between two vectors.
-# -... pass to `stats::dist`.
+# -... pass to `stats::as.dist`.
 #
 # == detail
 # You can construct any type of distance measurements by defining a pair-wise distance function.
-# The function is implemented by two nested ``for`` loops, thus the efficiency may not be so good.
+# The function is implemented by two nested ``for`` loops, so the efficiency may not be so good.
 #
 # == value
 # A `stats::dist` object.

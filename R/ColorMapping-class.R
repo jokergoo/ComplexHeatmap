@@ -16,7 +16,7 @@
 #
 # - `ColorMapping`: contructor methods.
 # - `map_to_colors,ColorMapping-method`: mapping values to colors.
-# - `color_mapping_legend,ColorMapping-method`: draw legend or get the size of the legend.
+# - `color_mapping_legend,ColorMapping-method`: draw legend or get legend as a `grid::grob` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -38,7 +38,7 @@ ColorMapping = setClass("ColorMapping",
 # Constructor methods for ColorMapping class
 #
 # == param
-# -name name for this color mapping. It is used for drawing the title of the legend.
+# -name name for this color mapping. The name is automatically generated if it is not specified.
 # -colors discrete colors.
 # -levels levels that correspond to ``colors``. If ``colors`` is name indexed, 
 #         ``levels`` can be ignored.
@@ -49,7 +49,8 @@ ColorMapping = setClass("ColorMapping",
 #            If it is ``FALSE``, proper breaks values will be automatically generated.
 # -na_col colors for ``NA`` values.
 # -legend_title title of the legend, by default it is the name of the legend
-# -color_bar if the color mapping is continuous, whether draw the legend discrete or continuous.
+# -color_bar if the color mapping is continuous, whether draw the legend discrete or continuous. 
+#         Possible values are "discrete" and "continuous". Current implementation of continuous color bar is not a nice one and will be improved in future.
 #
 # == detail
 # ``colors`` and ``levels`` are used for discrete color mapping, ``col_fun`` and 

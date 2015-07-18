@@ -14,13 +14,13 @@ anno_points(x, which = c("column", "row"), gp = gpar(), pch = 16,
     axis_gp = gpar(fontsize = 8), ...)}
 \arguments{
 
-  \item{x}{a vector of values.}
+  \item{x}{a vector of numeric values.}
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{gp}{graphic parameters.}
   \item{pch}{point type.}
   \item{size}{point size.}
-  \item{axis}{whether add axis}
-  \item{axis_side}{value in "left", "right", "bottom" and "top"}
+  \item{axis}{whether add axis.}
+  \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right".If it is placed as row annotation, value can only be "bottom" or "top".}
   \item{axis_gp}{graphic parameters for axis}
   \item{...}{for future use.}
 }
@@ -33,6 +33,5 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 f = anno_points(rnorm(10))
 grid.newpage(); f(1:10)}
