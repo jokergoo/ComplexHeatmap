@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.2.5
+
+* add dependency of base packages
+
+=========================================
+
 CHANGES in VERSION 1.2.4
 
 * name for ColorMapping object has default value now. 
