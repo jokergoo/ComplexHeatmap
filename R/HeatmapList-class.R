@@ -1243,41 +1243,6 @@ setMethod(f = "show",
     draw(object)
 })
 
-# == title
-# Draw a list of heatmaps with default parameters
-#
-# == param
-# -x a `HeatmapList-class` object.
-# -... additional arguments
-#
-# == details
-# Actually it calls `draw,HeatmapList-method`, but only with default parameters. If users want to customize the heatmap,
-# they can pass parameters directly to `draw,HeatmapList-method`.
-#
-# == value
-# This function returns no value.
-#
-print.HeatmapList = function(x, ...) {
-    draw(x)
-}
-
-# == title
-# Draw a list of heatmaps with default parameters
-#
-# == param
-# -x a `HeatmapList-class` object.
-# -... additional arguments
-#
-# == details
-# Actually it calls `draw,HeatmapList-method`, but only with default parameters. If users want to customize the heatmap,
-# they can pass parameters directly to `draw,HeatmapList-method`.
-#
-# == value
-# This function returns no value.
-#
-plot.HeatmapList = function(x, ...) {
-    draw(x)
-}
 
 compare_unit = function(u1, u2) {
     u1 = convertUnit(u1, "cm", valueOnly = TRUE)
