@@ -14,7 +14,7 @@ Draw the single annotation
 
   \item{object}{a \code{\link{SingleAnnotation-class}} object.}
   \item{index}{a vector of orders}
-  \item{k}{if row annotation is splitted, the value identifies which row slice.}
+  \item{k}{if row annotation is splitted, the value identifies which row slice. It is only used for the naems of the viewportwhich contains the annotation graphics.}
 }
 \details{
 A viewport is created.
@@ -31,7 +31,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 anno = SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"))
 grid.newpage(); draw(anno, 1:5)
 grid.newpage(); draw(anno, c(1, 4, 3, 5, 2))

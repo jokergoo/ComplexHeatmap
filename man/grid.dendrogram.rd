@@ -34,7 +34,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 hc = hclust(dist(USArrests[1:5, ]))
 dend = as.dendrogram(hc)
 

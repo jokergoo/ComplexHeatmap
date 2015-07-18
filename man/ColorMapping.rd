@@ -14,7 +14,7 @@ ColorMapping(name, colors = NULL, levels = NULL,
     legend_title = name, color_bar = c("discrete", "continuous"))}
 \arguments{
 
-  \item{name}{name for this color mapping. It is used for drawing the title of the legend.}
+  \item{name}{name for this color mapping. The name is automatically generated if it is not specified.}
   \item{colors}{discrete colors.}
   \item{levels}{levels that correspond to \code{colors}. If \code{colors} is name indexed, \code{levels} can be ignored.}
   \item{col_fun}{color mapping function that maps continuous values to colors.}
@@ -22,7 +22,7 @@ ColorMapping(name, colors = NULL, levels = NULL,
   \item{enforce_breaks}{If it is set to \code{\link{TRUE}}, values of \code{breaks} will be the final break value in the legend.If it is \code{FALSE}, proper breaks values will be automatically generated.}
   \item{na_col}{colors for \code{NA} values.}
   \item{legend_title}{title of the legend, by default it is the name of the legend}
-  \item{color_bar}{if the color mapping is continuous, whether draw the legend discrete or continuous.}
+  \item{color_bar}{if the color mapping is continuous, whether draw the legend discrete or continuous. Possible values are "discrete" and "continuous". Current implementation of continuous color bar is not a nice one and will be improved in future.}
 }
 \details{
 \code{colors} and \code{levels} are used for discrete color mapping, \code{col_fun} and 
@@ -38,7 +38,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 # discrete color mapping for characters
 cm = ColorMapping(name = "test",
     colors = c("blue", "white", "red"),

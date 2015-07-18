@@ -9,7 +9,8 @@ Draw a list of heatmaps
 
 }
 \usage{
-\S4method{draw}{HeatmapList}(object, padding = unit(c(2, 2, 2, 2), "mm"), ..., newpage= TRUE)}
+\S4method{draw}{HeatmapList}(object, padding = unit(c(2, 2, 2, 2), "mm"), ...,
+    newpage= TRUE)}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object}
@@ -33,7 +34,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]

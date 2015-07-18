@@ -45,8 +45,8 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Constructor method for SingleAnnotation class
 #
 # == param
-# -name name for this annotation.
-# -value A vector of annotation.
+# -name name for this annotation. If it is not specified, an internal name is assigned to it.
+# -value A vector of discrete or continuous annotation.
 # -col colors corresponding to ``value``. If the mapping is discrete mapping, the value of ``col``
 #      should be a vector; If the mapping is continuous mapping, the value of ``col`` should be 
 #      a color mapping function. 
@@ -54,8 +54,9 @@ SingleAnnotation = setClass("SingleAnnotation",
 #      be a vector of index that corresponds to rows or columns.
 # -which is the annotation a row annotation or a column annotation?
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
-# -gp graphic parameters for simple annotations.
+# -gp Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.
 # -color_bar if the color mapping is continuous, whether draw the legend discrete or continuous. Onl works for simple annotation.
+#            Pass to `ColorMapping`.
 #
 # == details
 # The most simple annotation is one row or one column grids in which different colors
@@ -154,7 +155,8 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 # == param
 # -object a `SingleAnnotation-class` object.
 # -index a vector of orders
-# -k if row annotation is splitted, the value identifies which row slice.
+# -k if row annotation is splitted, the value identifies which row slice. It is only used for the naems of the viewport
+#    which contains the annotation graphics.
 #
 # == details
 # A viewport is created.

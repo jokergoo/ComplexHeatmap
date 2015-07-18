@@ -12,7 +12,8 @@ Constructor method for Heatmap class
 Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"),
-    row_title_gp = gpar(fontsize = 14), row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
+    row_title_gp = gpar(fontsize = 14),
+    row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
     column_title = character(0), column_title_side = c("top", "bottom"),
     column_title_gp = gpar(fontsize = 14), column_title_rot = 0,
     cluster_rows = TRUE, clustering_distance_rows = "euclidean",
@@ -36,7 +37,8 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE,
     heatmap_legend_title = name,
-    heatmap_legend_color_bar = c("discrete", "continuous"))}
+    heatmap_legend_color_bar = c("discrete", "continuous"),
+    heatmap_legend_enforce_breaks = FALSE)}
 \arguments{
 
   \item{matrix}{a matrix. Either numeric or character. If it is a simple vector, it will beconverted to a one-column matrix.}
@@ -88,7 +90,8 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmapis appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
   \item{heatmap_legend_title}{title for the heatmap legend. By default it is the name of the heatmap}
-  \item{heatmap_legend_color_bar}{if the matrix is continuous, whether should the legend as continuous color bar as well? Accepts either "discrete" or "continuous".}
+  \item{heatmap_legend_color_bar}{if the matrix is continuous, whether should the legend as continuous color bar as well? Possible values are "discrete" and "continuous". Current implementation of continuous color bar is not a nice one and will be improved in future.}
+  \item{heatmap_legend_enforce_breaks}{For numeric matrix, if it is set to \code{\link{TRUE}} and \code{col} is specified by \code{\link[circlize]{colorRamp2}}break values specified in \code{\link[circlize]{colorRamp2}} will be the final break value in the legend.Or else, proper breaks values will be automatically generated.}
 }
 \details{
 The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -115,7 +118,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]

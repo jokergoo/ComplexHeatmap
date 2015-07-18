@@ -3,16 +3,17 @@
 # Use colors to represent density distribution
 #
 # == param
-# -data  a matrix or a list. If it is a matrix, density will be calculated by columns
-# -col a list of colors that density values are mapped to
-# -anno annotation for matrix columns or list, a vector or a data frame. The order of elements or rows corresponding to the orders of elements of rows of ``data``
+# -data  a matrix or a list. If it is a matrix, density will be calculated by columns.
+# -col a list of colors that density values are scaled to.
+# -anno annotation for matrix columns or list. The value should be a vector or a data frame. 
+#       It can also be a `HeatmapAnnotation-class` object.
 # -ylab label on y-axis in the plot
 # -title title of the plot
 #
 # == details
 # To visualize distribution of columns in a matrix or in a list, sometimes we use boxplot or beanplot.
 # Here we use colors to map to the density values and visualize distribution of values
-# in each column (or each list element) through a heatmap. It is useful if you have huge number of columns in ``data`` to visualize.
+# in each column (or each element in the list) through a heatmap. It is useful if you have huge number of columns in ``data`` to visualize.
 #
 # == value
 # No value is returned.
@@ -23,12 +24,15 @@
 # densityHeatmap(matrix, anno = rep(c("A", "B"), each = 5))
 # densityHeatmap(matrix, col = c("white", "red"), anno = rep(c("A", "B"), each = 5))
 #
+# ha = HeatmapAnnotation(points = anno_points(runif(10)))
+# densityHeatmap(matrix, anno = ha)
+#
 # lt = list(rnorm(10), rnorm(10))
 # densityHeatmap(lt)
 #
 densityHeatmap = function(data, col = rev(brewer.pal(11, "Spectral")),
 	anno = NULL, ylab = deparse(substitute(data)), 
-	title = paste0("density heatmap of ", deparse(substitute(data)))) {
+	title = paste0("Density heatmap of ", deparse(substitute(data)))) {
 
 	if(is.matrix(data)) {
 		density_list = apply(data, 2, density)
@@ -59,6 +63,8 @@ densityHeatmap = function(data, col = rev(brewer.pal(11, "Spectral")),
 
 	if(is.null(anno)) {
 		ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
+	} else if(inherits(anno, "HeatmapAnnotation")) {
+		ht = Heatmap(mat, col = col, top_annotation = ha, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
 	} else {
 		if(!is.data.frame(anno)) anno = data.frame(anno = anno)
 		ha = HeatmapAnnotation(df = anno)

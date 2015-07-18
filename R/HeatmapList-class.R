@@ -560,7 +560,8 @@ setMethod(f = "make_layout",
 #
 setMethod(f = "draw",
     signature = "HeatmapList",
-    definition = function(object, padding = unit(c(2, 2, 2, 2), "mm"), ..., newpage= TRUE) {
+    definition = function(object, padding = unit(c(2, 2, 2, 2), "mm"), ..., 
+        newpage= TRUE) {
 
     if(! any(sapply(object@ht_list, inherits, "Heatmap"))) {
         stop("There should be at least one Heatmap in the heatmap list. You can add a matrix with zero column to the list.")
