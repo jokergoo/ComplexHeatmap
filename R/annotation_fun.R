@@ -3,13 +3,14 @@
 # Using points as annotation
 #
 # == param
-# -x a vector of values.
+# -x a vector of numeric values.
 # -which is the annotation a column annotation or a row annotation?
 # -gp graphic parameters.
 # -pch point type.
 # -size point size.
-# -axis whether add axis
-# -axis_side value in "left", "right", "bottom" and "top"
+# -axis whether add axis.
+# -axis_side if it is placed as column annotation, value can only be "left" or "right".
+#            If it is placed as row annotation, value can only be "bottom" or "top".
 # -axis_gp graphic parameters for axis
 # -... for future use.
 #
@@ -83,11 +84,12 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # Using barplot as annotation
 #
 # == param
-# -x a vector of values.
+# -x a vector of numeric values.
 # -which is the annotation a column annotation or a row annotation?
 # -gp graphic parameters.
 # -axis whether add axis
-# -axis_side value in "left", "right", "bottom" and "top"
+# -axis_side if it is placed as column annotation, value can only be "left" or "right".
+#            If it is placed as row annotation, value can only be "bottom" or "top".
 # -axis_gp graphic parameters for axis
 # -... for future use.
 #
@@ -170,7 +172,8 @@ anno_barplot = function(x, which = c("column", "row"),
 # -pch point type
 # -size point size
 # -axis whether add axis
-# -axis_side value in "left", "right", "bottom" and "top"
+# -axis_side if it is placed as column annotation, value can only be "left" or "right".
+#            If it is placed as row annotation, value can only be "bottom" or "top".
 # -axis_gp graphic parameters for axis
 #
 # == value
@@ -508,7 +511,9 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 # -gp graphic parameters.
 # -rot rotation of text
 # -just justification of text, pass to `grid::grid.text`
-# -offset offset relative to start position
+# -offset if it is a row annotation, ``offset`` corresponds to the x-coordinates of text.
+#         and if it is a column annotation, ``offset`` corresponds to the y-coordinates of text.
+#         The value should be a `grid::unit` object.
 #
 # == value
 # A graphic function which can be set in `HeatmapAnnotation` constructor method.

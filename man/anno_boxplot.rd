@@ -20,7 +20,7 @@ anno_boxplot(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
   \item{pch}{point type}
   \item{size}{point size}
   \item{axis}{whether add axis}
-  \item{axis_side}{value in "left", "right", "bottom" and "top"}
+  \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right".If it is placed as row annotation, value can only be "bottom" or "top".}
   \item{axis_gp}{graphic parameters for axis}
 }
 \value{
@@ -32,7 +32,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 mat = matrix(rnorm(32), nrow = 4)
 f = anno_boxplot(mat)
 grid.newpage(); f(1:8)

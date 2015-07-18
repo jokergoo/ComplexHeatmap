@@ -19,7 +19,7 @@ HeatmapAnnotation(df, name, col, color_bar = rep("discrete", ncol(df)),
   \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
   \item{name}{name of the heatmap annotation, optional.}
   \item{col}{a list of colors which contains color mapping to columns in \code{df}. See \code{\link{SingleAnnotation}} for how to set colors.}
-  \item{color_bar}{if there are continuous values in \code{df}, show the legend as discrete or continuous}
+  \item{color_bar}{if there are continuous values in \code{df}, whether show the legend as discrete or continuous. Possible values are "discrete" and "continuous". It can be a vector for which each one corresponds to each column in \code{df}.}
   \item{show_legend}{whether show legend for each column in \code{df}.}
   \item{...}{functions which define complex annotations. Values should be named arguments.}
   \item{which}{are the annotations row annotations or column annotations?}
@@ -48,7 +48,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df)
 

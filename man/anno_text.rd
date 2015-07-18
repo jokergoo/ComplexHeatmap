@@ -18,7 +18,7 @@ anno_text(x, which = c("column", "row"), gp = gpar(), rot = 0,
   \item{gp}{graphic parameters.}
   \item{rot}{rotation of text}
   \item{just}{justification of text, pass to \code{\link[grid]{grid.text}}}
-  \item{offset}{offset relative to start position}
+  \item{offset}{if it is a row annotation, \code{offset} corresponds to the x-coordinates of text.and if it is a column annotation, \code{offset} corresponds to the y-coordinates of text.The value should be a \code{\link[grid]{unit}} object.}
 }
 \value{
 A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
@@ -29,7 +29,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
-
 mat = matrix(rnorm(100), 10)
 colnames(mat) = letters[1:10]
 rownames(mat) = LETTERS[1:10]

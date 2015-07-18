@@ -1,13 +1,11 @@
 
-
-
 # == title
 # Class for heatmap annotations
 #
 # == details
-# A complex heatmap contains a list of annotations which represent as different graphics
-# placed on rows and columns. The `HeatmapAnnotation-class` is a category of single annotations which are
-# by a list of `SingleAnnotation-class` objects with same number of rows or columns.
+# A complex heatmap contains a list of annotations which are represented as different graphics
+# placed on rows and columns. The `HeatmapAnnotation-class` contains a list of single annotations which are
+# represented as a list of `SingleAnnotation-class` objects with same number of rows or columns.
 #
 # == methods
 # The `HeatmapAnnotation-class` provides following methods:
@@ -42,7 +40,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -df a data frame. Each column will be treated as a simple annotation. The data frame must have column names.
 # -name name of the heatmap annotation, optional.
 # -col a list of colors which contains color mapping to columns in ``df``. See `SingleAnnotation` for how to set colors.
-# -color_bar if there are continuous values in ``df``, show the legend as discrete or continuous
+# -color_bar if there are continuous values in ``df``, whether show the legend as discrete or continuous. 
+#            Possible values are "discrete" and "continuous". It can be a vector for which each one corresponds to each column in ``df``.
 # -show_legend whether show legend for each column in ``df``.
 # -... functions which define complex annotations. Values should be named arguments.
 # -which are the annotations row annotations or column annotations?

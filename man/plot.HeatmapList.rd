@@ -24,7 +24,3 @@ they can pass parameters directly to \code{\link{draw,HeatmapList-method}}.
 This function returns no value.
 
 }
-\examples{
-
-# no example 
-NULL}
