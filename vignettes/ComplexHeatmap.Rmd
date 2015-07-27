@@ -478,7 +478,7 @@ value = rnorm(10)
 column_anno = function(index) {
     n = length(index)
     pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = range(value)))
-    grid.points(index, value, pch = 16)
+    grid.points(index, value[index], pch = 16)
     upViewport() # this is very important in order not to mess up the layout
 }
 ha = HeatmapAnnotation(points = column_anno)
