@@ -5,7 +5,7 @@ Version: 1.2.5
 Date: 2015-7-18
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
-Depends: R (>= 3.2), grid, graphics, stats, grDevices
+Depends: R (>= 3.1.2), grid, graphics, stats, grDevices
 Imports: methods, circlize (>= 0.2.3), GetoptLong, colorspace,
     RColorBrewer, dendextend (>= 1.0.1)
 Suggests: testthat (>= 0.3), knitr, markdown, cluster
