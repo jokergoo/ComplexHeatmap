@@ -1,0 +1,56 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Quick Examples of Making Complex Heatmaps}
+-->
+
+Quick Examples of Making Complex Heatmaps
+========================================
+
+**Author**: Zuguang Gu ( z.gu@dkfz.de )
+
+**Date**: `r Sys.Date()`
+
+-------------------------------------------------------------
+
+```{r global_settings, echo = FALSE, message = FALSE}
+library(markdown)
+
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    fig.align = "center",
+    fig.width = 5,
+    fig.height = 5)
+options(markdown.HTML.stylesheet = "custom.css")
+
+options(width = 100)
+```
+
+*There will be more examples in this vignette.*
+
+## Combine pvclust and heatmap
+
+**pvclust** package provides a robust way to test the stability of the clustering
+by random sampling from original data. Here you can organize the heatmap by the clustering
+returned from `pvclust()`.
+
+```{r}
+library(MASS)
+library(pvclust)
+data(Boston)
+boston.pv <- pvclust(Boston, nboot=100)
+plot(boston.pv)
+```
+
+Since by default `pvclust` clusters columns by 'correlation' method, we scale columns for
+`Boston` data set to see the relative trend.
+
+```{r}
+Boston_scaled = apply(Boston, 2, scale)
+Heatmap(Boston_scaled, cluster_columns = boston.pv$hclust, heatmap_legend_title = "Boston")
+```
+
+
+

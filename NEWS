@@ -1,3 +1,14 @@
+CHANGES in VERSION 1.2.6
+
+* graphical parameters for row names can be set as same length
+  as row slices
+* graphical parameters for annotation functions are consistent with
+  the matrix now
+* insert `k = NULL` into anno_function if they are row annotations
+* add a new vignette "quick examples"
+
+=========================================
+
 CHANGES in VERSION 1.2.5
 
 * add dependency of base packages
