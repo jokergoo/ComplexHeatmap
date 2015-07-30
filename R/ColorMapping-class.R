@@ -263,8 +263,8 @@ setMethod(f = "color_mapping_legend",
 
 	legend_label_max_width = max(unit.c(legend_label_max_width + grid_padding + legend_grid_width, legend_title_width)) - legend_grid_width - grid_padding
 	
-	gf = frameGrob(layout = grid.layout(nr = 2, nc = 2, width = unit.c(legend_grid_width, grid_padding + legend_label_max_width),
-		                                                height = unit.c(legend_title_height, legend_padding + nlevel*(legend_grid_height))))
+	gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 2, widths = unit.c(legend_grid_width, grid_padding + legend_label_max_width),
+		                                                heights = unit.c(legend_title_height, legend_padding + nlevel*(legend_grid_height))))
 	# legend title
 	gf = packGrob(gf, row = 1, col = 1:2, grob = textGrob(object@legend_title, x = 0, y = 1, default.units = "npc", just = c("left", "top"), gp = legend_title_gp))
 	

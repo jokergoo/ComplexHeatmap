@@ -360,6 +360,14 @@ Character matrix can only be split by `split` argument.
 Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], each = 5))
 ```
 
+When split is applied on rows, graphical parameters for row title and row names can be specified as same
+length as number of row slices.
+
+```{r split_graphical_parameter}
+Heatmap(mat, name = "foo", km = 2, row_title_gp = gpar(col = c("red", "blue"), font = 1:2),
+    row_names_gp = gpar(col = c("green", "orange"), fontsize = c(10, 14)))
+```
+
 Users may alreay have a dendrogram for rows which were adjusted by some other methods
 and they want to split rows by splitting the dendrogram into k sub trees. In this case,
 `split` can be specified as a single number:
@@ -808,6 +816,15 @@ ht1 = Heatmap(mat, name = "ht1", km = 2)
 ha_boxplot = rowAnnotation(boxplot = anno_boxplot(mat, which = "row"), 
     width = unit(2, "cm"))
 ha_boxplot + ht1
+```
+
+When row split is applied, graphical parameters for annotation function can be specified as with the same length
+as the number of row slices.
+
+```{r heatmap_list_with_row_annotation_graphical_parameter}
+ha_boxplot2 = rowAnnotation(boxplot = anno_boxplot(mat, gp = gpar(fill = c("red", "blue")), which = "row"), 
+    width = unit(2, "cm"))
+ha_boxplot2 + ht1
 ```
 
 Since only row clustering and row titles for the main heatmap are kept, the side of these two types of graphics

@@ -340,7 +340,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@row_title = row_title
     .Object@row_title_rot = row_title_rot %% 360
     .Object@row_title_param$side = match.arg(row_title_side)[1]
-    .Object@row_title_param$gp = check_gp(row_title_gp)
+    .Object@row_title_param$gp = check_gp(row_title_gp)  # if the number of settings is same as number of row-splits, gp will be adjusted by `make_row_hclust`
     .Object@row_title_param$combined_name_fun = combined_name_fun
     .Object@row_title_just = get_text_just(rot = row_title_rot, side = .Object@row_title_param$side)
 
@@ -364,7 +364,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     }
     .Object@row_names_param$side = match.arg(row_names_side)[1]
     .Object@row_names_param$show = show_row_names
-    .Object@row_names_param$gp = recycle_gp(check_gp(row_names_gp), nrow(matrix))
+    .Object@row_names_param$gp = check_gp(row_names_gp)
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
 
     if(is.null(colnames(matrix))) {
@@ -372,7 +372,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     }
     .Object@column_names_param$side = match.arg(column_names_side)[1]
     .Object@column_names_param$show = show_column_names
-    .Object@column_names_param$gp = recycle_gp(check_gp(column_names_gp), ncol(matrix))
+    .Object@column_names_param$gp = check_gp(column_names_gp)
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
 
     if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
@@ -702,6 +702,17 @@ setMethod(f = "make_row_cluster",
 
     if(nrow(mat) != length(unlist(row_order_list))) {
         stop("Number of rows in the matrix are not the same as the length of\nthe cluster or the row orders.")
+    }
+
+    # adjust row_names_param$gp is the length of some elements is the same as row slices
+    for(i in seq_along(object@row_names_param$gp)) {
+        if(length(object@row_names_param$gp[[i]]) == length(object@row_order_list)) {
+            gp_temp = NULL
+            for(j in seq_along(object@row_order_list)) {
+                gp_temp[ object@row_order_list[[j]] ] = object@row_names_param$gp[[i]][j]
+            }
+            object@row_names_param$gp[[i]] = gp_temp
+        }
     }
 
     return(object)
@@ -1034,11 +1045,11 @@ setMethod(f = "draw_heatmap_body",
     } else {
         grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
     }
-    
+
     cell_fun = object@matrix_param$cell_fun
     for(i in row_order) {
         for(j in column_order) {
-            cell_fun(j, i, x[which(column_order == j)], y[which(row_order == i)], unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[i, j])
+            cell_fun(j, i, x[which(column_order == j)], y[which(row_order == i)], unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[which(row_order == i), which(column_order == j)])
         }
     }
 
@@ -1150,15 +1161,13 @@ setMethod(f = "draw_dimnames",
 
     nm = switch(which,
         "row" = rownames(object@matrix)[ object@row_order_list[[k]] ],
-        "column" = colnames(object@matrix)[ object@column_order ])
+        "column" = colnames(object@matrix)[ object@column_order ]
+    )
     
     gp = switch(which,
-        "row" = object@row_names_param$gp,
-        "column" = object@column_names_param$gp)
-
-    if(which == "row") {
-        gp = subset_gp(gp, object@row_order_list[[k]])
-    }
+        "row" = subset_gp(object@row_names_param$gp, object@row_order_list[[k]]),
+        "column" = subset_gp(object@column_names_param$gp, object@column_order)
+    )
 
     if(is.null(nm)) {
         return(invisible(NULL))
@@ -1227,7 +1236,11 @@ setMethod(f = "draw_title",
     gp = switch(which,
         "row" = object@row_title_param$gp,
         "column" = object@column_title_param$gp)
-
+    
+    if(which == "row") {
+        gp = subset_gp(gp, k)
+    }
+    
     title = switch(which,
         "row" = object@row_title[k],
         "column" = object@column_title)

@@ -44,14 +44,18 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 	}
 
 	switch(which,
-		row = function(index) {
+		row = function(index, k = NULL) {
 			n = length(index)
-		#	if(n != length(x)) {
-		#		stop(paste0("Length of index should be ", length(x)))
-		#	}
+			
+			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else {
+				gp = subset_gp(gp, k)
+			}
+
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.points(x[index], n - seq_along(index) + 1, gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
+			grid.points(x[index], n - seq_along(index) + 1, gp = gp, default.units = "native", pch = pch, size = size)
 			if(axis) {
 				if(axis_side == "top") {
 					grid.xaxis(main = FALSE, gp = axis_gp)
@@ -63,12 +67,11 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 		},
 		column = function(index) {
 			n = length(index)
-		#	if(n != length(x)) {
-		#		stop(paste0("Length of index should be ", length(x)))
-		#	}
+			gp = subset_gp(gp, index)
+
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
-			grid.points(seq_along(index), x[index], gp = recycle_gp(gp, n), default.units = "native", pch = pch, size = size)
+			grid.points(seq_along(index), x[index], gp = gp, default.units = "native", pch = pch, size = size)
 			if(axis) {
 				if(axis_side == "left") {
 					grid.yaxis(gp = axis_gp)
@@ -125,14 +128,18 @@ anno_barplot = function(x, which = c("column", "row"),
 	}
 
 	switch(which,
-		row = function(index) {
+		row = function(index, k = NULL) {
 			n = length(index)
-			# if(n != length(x)) {
-			# 	stop(paste0("Length of index should be ", length(x)))
-			# }
+			
+			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else {
+				gp = subset_gp(gp, k)
+			}
+
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			grid.rect()
-			grid.rect(x = data_scale[1], y = n - seq_along(index) + 1, width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = recycle_gp(gp, n))
+			grid.rect(x = data_scale[1], y = n - seq_along(index) + 1, width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = gp)
 			if(axis) {
 				if(axis_side == "top") {
 					grid.xaxis(main = FALSE, gp = axis_gp)
@@ -144,12 +151,12 @@ anno_barplot = function(x, which = c("column", "row"),
 		},
 		column = function(index) {
 			n = length(index)
-			# if(n != length(x)) {
-			# 	stop(paste0("Length of index should be ", length(x)))
-			# }
+
+			gp = subset_gp(gp, index)
+			
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			grid.rect()
-			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = recycle_gp(gp, n))
+			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = gp)
 			if(axis) {
 				if(axis_side == "left") {
 					grid.yaxis(gp = axis_gp)
@@ -208,7 +215,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	}
 
 	switch(which,
-		row = function(index) {
+		row = function(index, k = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
 				boxplot_stats = boxplot(t(x), plot = FALSE)$stats
@@ -218,7 +225,11 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 
 			n = length(index)
-			gp = recycle_gp(gp, n)
+			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else {
+				gp = subset_gp(gp, k)
+			}
 			if(n != ncol(boxplot_stats)) {
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
@@ -255,7 +266,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 
 			n = length(index)
-			gp = recycle_gp(gp, n)
+			gp = subset_gp(gp, index)
 			if(n != ncol(boxplot_stats)) {
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
@@ -307,7 +318,7 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 	gp = check_gp(gp)
 
 	switch(which,
-		row = function(index) {
+		row = function(index, k = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
 				x_range =range(x)
@@ -328,7 +339,11 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 			yscale[2] = yscale[2]*1.05
 			
 			n = length(index)
-			gp = recycle_gp(gp, n)
+			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else {
+				gp = subset_gp(gp, k)
+			}
 			if(n != length(histogram_counts)) {
 				stop(paste0("Length of index should be ", length(histogram_counts)))
 			}
@@ -360,7 +375,7 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 			xscale[2] = xscale[2]*1.05
 
 			n = length(index)
-			gp = recycle_gp(gp, n)
+			gp = subset_gp(gp, index)
 			if(n != length(histogram_counts)) {
 				stop(paste0("Length of index should be ", length(histogram_counts)))
 			}
@@ -399,7 +414,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	gp = check_gp(gp)
 
 	switch(which,
-		row = function(index) {
+		row = function(index, k = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
 				density_stats = apply(x, 1, density, ...)
@@ -430,7 +445,11 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				col_fun = colorRamp2(seq(min_y, max_y, length = 11), rev(brewer.pal(name = "RdYlBu", n = 11)))
 			}
 			n = length(index)
-			gp = recycle_gp(gp, n)
+			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else {
+				gp = subset_gp(gp, k)
+			}
 			if(n != length(density_x)) {
 				stop(paste0("Length of index should be ", length(density_x)))
 			}
@@ -481,7 +500,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 
 			n = length(index)
-			gp = recycle_gp(gp, n)
+			gp = subset_gp(gp, index)
 			if(n != length(density_x)) {
 				stop(paste0("Length of index should be ", length(density_x)))
 			}
@@ -529,22 +548,23 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 	gp = check_gp(gp)
 
 	switch(which,
-		row = function(index) {
+		row = function(index, k = NULL) {
 			n = length(index)
-			# if(n != length(x)) {
-			# 	stop(paste0("Length of index should be ", length(x)))
-			# }
+			
+			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else {
+				gp = subset_gp(gp, k)
+			}
 			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
-			grid.text(x[index], offset, unit(n - seq_along(index) + 1, "native"), gp = recycle_gp(gp, n), just = just, rot = rot)
+			grid.text(x[index], offset, unit(n - seq_along(index) + 1, "native"), gp = gp, just = just, rot = rot)
 			upViewport()
 		},
 		column = function(index) {
 			n = length(index)
-			# if(n != length(x)) {
-			# 	stop(paste0("Length of index should be ", length(x)))
-			# }
+			gp = subset_gp(gp, index)
 			pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
-			grid.text(x[index], unit(seq_along(index), "native"), offset, gp = recycle_gp(gp, n), just = just, rot = rot)
+			grid.text(x[index], unit(seq_along(index), "native"), offset, gp = gp, just = just, rot = rot)
 			upViewport()
 		})
 }

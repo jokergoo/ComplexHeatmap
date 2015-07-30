@@ -131,7 +131,7 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 				grid.rect(x[l], y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill[l]), gp)))
 			}
 		} else {
-			.Object@fun = function(index) {
+			.Object@fun = function(index, k = NULL) {
 				n = length(index)
 				y = (n - seq_len(n) + 0.5) / n
 				fill = map_to_colors(color_mapping, value[index])
@@ -144,6 +144,12 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
     } else {
     	.Object@fun = fun
     	.Object@show_legend = FALSE
+    }
+
+    if(which == "row") {
+    	if(length(formals(.Object@fun)) == 1) {
+    		formals(.Object@fun) = alist(index = , k = NULL)
+    	}
     }
 
     return(.Object)
@@ -175,10 +181,11 @@ setMethod(f = "draw",
 
 	if(is.null(k)) {
 		pushViewport(viewport(name = paste("annotation", object@name, sep = "_")))
+		object@fun(index)
 	} else {
 		pushViewport(viewport(name = paste("annotation", object@name, k, sep = "_")))
+		object@fun(index, k)
 	}
-	object@fun(index)
 	upViewport()
 
 })
