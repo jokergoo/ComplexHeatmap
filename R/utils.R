@@ -314,12 +314,32 @@ get_dist = function(matrix, method) {
             stop("Since your distance method is a funciton, it can only accept one or two arguments.")
         }
     } else if(method %in% c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")) {
-        dst = dist(matrix, method = method)
+        if(any(is.na(matrix))) {
+            dst = get_dist(matrix, function(x, y) {
+                l = is.na(x) | is.na(y)
+                x = x[!l]
+                y = y[!l]
+                as.vector(dist(rbind(x, y), method = method))
+            })
+            warning("NA exists in the matrix, calculating distance by removing NA values.")
+        } else {
+            dst = dist(matrix, method = method)
+        }
     } else if(method %in% c("pearson", "spearman", "kendall")) {
-        dst = switch(method,
-                     pearson = as.dist(1 - cor(t(matrix), method = "pearson")),
-                     spearman = as.dist(1 - cor(t(matrix), method = "spearman")),
-                     kendall = as.dist(1 - cor(t(matrix), method = "kendall")))
+        if(any(is.na(matrix))) {
+            dst = get_dist(matrix, function(x, y) {
+                    l = is.na(x) | is.na(y)
+                    x = x[!l]
+                    y = y[!l]
+                    1 - cor(x, y, method = method)
+                })
+            warning("NA exists in the matrix, calculating distance by removing NA values.")
+        } else {
+            dst = switch(method,
+                         pearson = as.dist(1 - cor(t(matrix), method = "pearson")),
+                         spearman = as.dist(1 - cor(t(matrix), method = "spearman")),
+                         kendall = as.dist(1 - cor(t(matrix), method = "kendall")))
+        }
     }
     return(dst)
 }
@@ -356,7 +376,10 @@ check_gp = function(gp) {
 
 # gp should already be checked by `check_gp`
 subset_gp = function(gp, k) {
-    gp = lapply(gp, function(x) x[k])
+    gp = lapply(gp, function(x) {
+        if(length(x) == 1) x
+        else x[k]
+    })
     class(gp) = "gpar"
     return(gp)
 }
