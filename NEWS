@@ -6,6 +6,7 @@ CHANGES in VERSION 1.2.6
   the matrix now
 * insert `k = NULL` into anno_function if they are row annotations
 * add a new vignette "quick examples"
+* change style for continuous legend color bar
 
 =========================================
 
