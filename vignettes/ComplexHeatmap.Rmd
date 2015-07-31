@@ -700,12 +700,20 @@ lgd = legendGrob(c("dots"), pch = 16)
 draw(ht1 + ht2, annotation_legend_list = list(lgd))
 ```
 
-Finally, you can change legend title for heatmap legend by specifying `heatmap_legend_title` in `Heatmap()`:
+You can change legend title for heatmap legend by specifying `heatmap_legend_title` in `Heatmap()`:
 
 ```{r}
 ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", heatmap_legend_title = expression(alpha))
 ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", heatmap_legend_title = "HHHHH")
 draw(ht1 + ht2)
+```
+
+If you don't like the default discrete color bar for legends, you can specify `heatmap_legend_color_bar` to `continuous`.
+For the simple annotation which contains continuous values, `color_bar` can also be set to `continuous`.
+
+```{r}
+ha = HeatmapAnnotation(df = data.frame(value = runif(10)), color_bar = "continuous")
+Heatmap(mat, name = "ht1", top_annotation = ha, heatmap_legend_color_bar = "continuous")
 ```
 
 ### Gaps between heatmaps
