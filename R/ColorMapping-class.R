@@ -276,10 +276,17 @@ setMethod(f = "color_mapping_legend",
 		x = unit(rep(0, nlevel), "npc")
 		y = (0:(nlevel-1))*(legend_grid_height)
 		y = unit(1, "npc") - y
-		gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
-				gp = gpar(col = legend_grid_border, fill = object@colors)))
-		gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, rev(y) - legend_grid_height*0.5, 
-	 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE)
+		if(object@type == "discrete") {
+			gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, y - legend_grid_height*0.5, 
+		 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE)
+			gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, y, width = legend_grid_width, height = legend_grid_height, just = c("left", "top"),
+					gp = gpar(col = legend_grid_border, fill = object@colors)))
+		} else {
+			gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, rev(y) - legend_grid_height*0.5, 
+		 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE)
+			gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
+					gp = gpar(col = legend_grid_border, fill = object@colors)))
+		}
 	} else {
 		label_height = grobHeight(textGrob("foo", gp = legend_label_gp))
 		gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 2, widths = unit.c(legend_grid_width, grid_padding + legend_label_max_width),
@@ -291,6 +298,8 @@ setMethod(f = "color_mapping_legend",
 		x = unit(rep(0, nlevel), "npc")
 		y = seq(0, 1, length = nlevel) * (unit(1, "npc") - label_height) + label_height*0.5
 		y = unit(1, "npc") - y
+		gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, rev(y), 
+	 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE, height = (2*nlevel-1)*label_height, force.height = TRUE)
 
 		colors = unlist(lapply(seq_len(nlevel-1), function(i) object@col_fun(seq(as.numeric(object@levels[i]), as.numeric(object@levels[i+1]), length = 16))))
 		x2 = unit(rep(0, length(colors)), "npc")
@@ -298,8 +307,7 @@ setMethod(f = "color_mapping_legend",
 		y2 = y2[-length(y2)] * unit(1, "npc")
 		gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x2, rev(y2), width = legend_grid_width, height = (unit(1, "npc"))*(1/length(colors)), just = c("left", "top"),
 				gp = gpar(col = rev(colors), fill = rev(colors))), height = (2*nlevel-1)*label_height, force.height = TRUE)
-		gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, rev(y) - label_height*0.5, 
-	 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE, height = (2*nlevel-1)*label_height, force.height = TRUE)
+		
 	}
 	
 

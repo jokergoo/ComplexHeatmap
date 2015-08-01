@@ -52,5 +52,19 @@ Boston_scaled = apply(Boston, 2, scale)
 Heatmap(Boston_scaled, cluster_columns = boston.pv$hclust, heatmap_legend_title = "Boston")
 ```
 
+## Change styles of legend
+
+By default, for both discrete and continuous colors, the legend is represented as a discrete color bar.
+But continuous colors can also be set to continuous color bar. You can change the legend style both
+for heatmap legend and simple annotation legend.
+
+```{r}
+mat = matrix(rnorm(100), 10)
+ha = HeatmapAnnotation(df = data.frame(value = runif(10)), 
+	col = list(value = colorRamp2(c(0, 1), c("white", "red"))),
+	color_bar = "continuous")
+Heatmap(mat, heatmap_legend_title = "mat", heatmap_legend_color_bar = "continuous", 
+	top_annotation = ha)
+```
 
 

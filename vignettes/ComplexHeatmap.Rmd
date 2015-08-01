@@ -212,7 +212,8 @@ Heatmap(mat, name = "foo", column_hclust_height = unit(2, "cm"))
 There are three ways to specify distance metric for clustering:
 
 - specify distance as a pre-defined option. The valid values are the supported methods
-  in `dist()` function and within `pearson`, `spearman` and `kendall`.
+  in `dist()` function and within `pearson`, `spearman` and `kendall`. `NA` values are ignored
+  for pre-defined clustering but with giving a warning.
 - a self-defined function which calculates distance from a matrix. The function should
   only contain one argument. Please note for clustering on columns, the matrix will be transposed
   automatically.
@@ -517,7 +518,9 @@ draw(ha, 1:10)
 You can combine more than one annotations into the object.
 
 ```{r heatmap_annotation_mixed_with_complex, fig.width = 7, fig.height = 2}
-ha = HeatmapAnnotation(df = df, points = anno_points(value))
+ha = HeatmapAnnotation(df = df, points = anno_points(value),
+    col = list(type = c("a" = "red", "b" = "blue"),
+               age = colorRamp2(c(0, 20), c("white", "red"))))
 ha
 draw(ha, 1:10)
 ```
@@ -529,12 +532,16 @@ annotations shown in the heatmap.
 
 ```{r, fig.width = 7, fig.height = 3}
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(mat),
+    col = list(type = c("a" = "red", "b" = "blue"),
+               age = colorRamp2(c(0, 20), c("white", "red"))),
     annotation_height = c(1, 2, 3, 4))
 draw(ha, 1:10)
 ```
 
 ```{r, fig.width = 7, fig.height = 3}
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(mat),
+    col = list(type = c("a" = "red", "b" = "blue"),
+               age = colorRamp2(c(0, 20), c("white", "red"))),
     annotation_height = unit.c((unit(1, "npc") - unit(4, "cm"))*0.5, (unit(1, "npc") - unit(4, "cm"))*0.5, 
         unit(2, "cm"), unit(2, "cm")))
 draw(ha, 1:10)
@@ -547,16 +554,29 @@ and `anno_boxplot()` support axes. Please note we didn't allocate space for axes
 we only assume there are empty spaces for showing axes.
 
 ```{r add_annotation}
-ha = HeatmapAnnotation(df = df, points = anno_points(value))
+ha = HeatmapAnnotation(df = df, points = anno_points(value),
+    col = list(type = c("a" = "red", "b" = "blue"),
+               age = colorRamp2(c(0, 20), c("white", "red"))))
 ha_boxplot = HeatmapAnnotation(boxplot = anno_boxplot(mat, axis = TRUE))
 Heatmap(mat, name = "foo", top_annotation = ha, bottom_annotation = ha_boxplot, 
     bottom_annotation_height = unit(3, "cm"))
 ```
 
+Gaps below each annotation can be specified by `gap` in `HeatmapAnnotation()`. 
+
+```{r}
+ha = HeatmapAnnotation(df = df, points = anno_points(value), gap = unit(c(2, 4), "mm"),
+    col = list(type = c("a" = "red", "b" = "blue"),
+               age = colorRamp2(c(0, 20), c("white", "red"))))
+Heatmap(mat, name = "foo", top_annotation = ha)
+```
+
 You can suppress some of the annotation legend by specifying `show_legend` to `FALSE` when creating the `HeatmapAnnotation` object.
 
 ```{r annotation_show}
-ha = HeatmapAnnotation(df = df, show_legend = FALSE)
+ha = HeatmapAnnotation(df = df, show_legend = FALSE,
+    col = list(type = c("a" = "red", "b" = "blue"),
+               age = colorRamp2(c(0, 20), c("white", "red"))))
 Heatmap(mat, name = "foo", top_annotation = ha)
 ```
 
@@ -712,7 +732,9 @@ If you don't like the default discrete color bar for legends, you can specify `h
 For the simple annotation which contains continuous values, `color_bar` can also be set to `continuous`.
 
 ```{r}
-ha = HeatmapAnnotation(df = data.frame(value = runif(10)), color_bar = "continuous")
+ha = HeatmapAnnotation(df = data.frame(value = runif(10)), 
+    col = list(value = colorRamp2(c(0, 1), c("white", "blue"))), 
+    color_bar = "continuous")
 Heatmap(mat, name = "ht1", top_annotation = ha, heatmap_legend_color_bar = "continuous")
 ```
 
@@ -784,14 +806,15 @@ Row annotation is also defined by the `HeatmapAnnotation` class, but with specif
 
 ```{r row_annotation, fig.width = 1, fig.height = 7}
 df = data.frame(type = c(rep("a", 6), rep("b", 6)))
-ha = HeatmapAnnotation(df = df, which = "row", width = unit(1, "cm"))
+ha = HeatmapAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")),
+    which = "row", width = unit(1, "cm"))
 draw(ha, 1:12)
 ```
 
 There is a shortcut function `rowAnnotation()` which is same as `HeatmapAnnotation(..., which = "row")`.
 
 ```{r, eval = FALSE}
-ha = rowAnnotation(df = df, width = unit(1, "cm"))
+ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")), width = unit(1, "cm"))
 ```
 
 Similar, there can be more than one row annotation. Note in `anno_boxplot()`, `which` is set to `row`
@@ -799,6 +822,7 @@ to tell that boxplot is calcualted by rows.
 
 ```{r, fig.width = 3, fig.height = 7}
 ha_combined = rowAnnotation(df = df, boxplot = anno_boxplot(mat, which = "row"), 
+    col = list(type = c("a" = "red", "b" = "blue")),
     annotation_width = c(1, 3))
 draw(ha_combined, 1:12)
 ```
@@ -879,7 +903,7 @@ split row annotaitons:
 
 ```{r all_row_annotations, fig.width = 7}
 nr = nrow(mat)
-ha = rowAnnotation(df = df, width = NULL)
+ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")), width = NULL)
 text = paste0("row", seq_len(nr))
 ha_text = rowAnnotation(text = anno_text(text, which = "row"), width = max(grobWidth(textGrob(text))))
 Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
@@ -918,7 +942,8 @@ ha_column1 = HeatmapAnnotation(points = anno_points(rnorm(10)))
 ht1 = Heatmap(mat, name = "ht1", km = 2, row_title = "Heatmap 1", column_title = "Heatmap 1", 
     top_annotation = ha_column1)
 
-ha_column2 = HeatmapAnnotation(df = data.frame(type = c(rep("a", 5), rep("b", 5))))
+ha_column2 = HeatmapAnnotation(df = data.frame(type = c(rep("a", 5), rep("b", 5))),
+    col = list(type = c("a" = "red", "b" = "blue")))
 ht2 = Heatmap(mat, name = "ht2", row_title = "Heatmap 2", column_title = "Heatmap 2",
     bottom_annotation = ha_column2)
 
@@ -1023,7 +1048,8 @@ it will be exceeding the figure region.
 ```{r}
 df = data.frame(type1 = c(rep("a", 5), rep("b", 5)),
                 type2 = c(rep("A", 3), rep("B", 7)))
-ha = HeatmapAnnotation(df)
+ha = HeatmapAnnotation(df, col = list(type1 = c("a" = "red", "b" = "blue"),
+                                      type2 = c("A" = "green", "B" = "orange")))
 Heatmap(mat, name = "ht", top_annotation = ha)
 for(an in colnames(df)) {
     seekViewport(qq("annotation_@{an}"))
@@ -1129,6 +1155,7 @@ Here the package has a `densityHeatmap()` function, the usage is quite straightf
 ```{r, density}
 matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]
 ha = HeatmapAnnotation(df = data.frame(anno = rep(c("A", "B"), each = 5)),
+    col = list(anno = c("A" = "green", "B" = "orange")),
     points = anno_points(runif(10)))
 densityHeatmap(matrix, anno = ha)
 ```
