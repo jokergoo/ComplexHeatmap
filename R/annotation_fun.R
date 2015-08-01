@@ -44,7 +44,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 	}
 
 	switch(which,
-		row = function(index, k = NULL) {
+		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
 			
 			if(is.null(k)) {
@@ -57,9 +57,9 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			grid.rect()
 			grid.points(x[index], n - seq_along(index) + 1, gp = gp, default.units = "native", pch = pch, size = size)
 			if(axis) {
-				if(axis_side == "top") {
+				if(k == 1 && axis_side == "top") {
 					grid.xaxis(main = FALSE, gp = axis_gp)
-				} else {
+				} else if(k == N && axis_side == "bottom") {
 					grid.xaxis(gp = axis_gp)
 				}
 			}
@@ -128,7 +128,7 @@ anno_barplot = function(x, which = c("column", "row"),
 	}
 
 	switch(which,
-		row = function(index, k = NULL) {
+		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
 			
 			if(is.null(k)) {
@@ -141,9 +141,9 @@ anno_barplot = function(x, which = c("column", "row"),
 			grid.rect()
 			grid.rect(x = data_scale[1], y = n - seq_along(index) + 1, width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = gp)
 			if(axis) {
-				if(axis_side == "top") {
+				if(k == 1 && axis_side == "top") {
 					grid.xaxis(main = FALSE, gp = axis_gp)
-				} else {
+				} else if(k == N && axis_side == "bottom") {
 					grid.xaxis(gp = axis_gp)
 				}
 			}
@@ -215,7 +215,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	}
 
 	switch(which,
-		row = function(index, k = NULL) {
+		row = function(index, k = NULL, N = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
 				boxplot_stats = boxplot(t(x), plot = FALSE)$stats
@@ -248,9 +248,9 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				default.units = "native", gp = gp)
 			grid.points(x = boxplot_stats[3, ], y = n - seq_along(index) + 1, default.units = "native", gp = gp, pch = pch, size = size)
 			if(axis) {
-				if(axis_side == "top") {
+				if(k == 1 && axis_side == "top") {
 					grid.xaxis(main = FALSE, gp = axis_gp)
-				} else {
+				} else if(k == N && axis_side == "bottom") {
 					grid.xaxis(gp = axis_gp)
 				}
 			}
@@ -318,7 +318,7 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 	gp = check_gp(gp)
 
 	switch(which,
-		row = function(index, k = NULL) {
+		row = function(index, k = NULL, N = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
 				x_range =range(x)
@@ -414,7 +414,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	gp = check_gp(gp)
 
 	switch(which,
-		row = function(index, k = NULL) {
+		row = function(index, k = NULL, N = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
 				density_stats = apply(x, 1, density, ...)
@@ -548,7 +548,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 	gp = check_gp(gp)
 
 	switch(which,
-		row = function(index, k = NULL) {
+		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
 			
 			if(is.null(k)) {
