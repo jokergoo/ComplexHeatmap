@@ -845,7 +845,7 @@ splitted as well.
 
 ```{r heatmap_list_with_row_annotation_complex}
 ht1 = Heatmap(mat, name = "ht1", km = 2)
-ha_boxplot = rowAnnotation(boxplot = anno_boxplot(mat, which = "row"), 
+ha_boxplot = rowAnnotation(boxplot = anno_boxplot(mat, axis = TRUE, which = "row"), 
     width = unit(2, "cm"))
 ha_boxplot + ht1
 ```
@@ -854,7 +854,7 @@ When row split is applied, graphical parameters for annotation function can be s
 as the number of row slices.
 
 ```{r heatmap_list_with_row_annotation_graphical_parameter}
-ha_boxplot2 = rowAnnotation(boxplot = anno_boxplot(mat, gp = gpar(fill = c("red", "blue")), which = "row"), 
+ha_boxplot2 = rowAnnotation(boxplot = anno_boxplot(mat, gp = gpar(fill = c("red", "blue")), axis = TRUE, which = "row"), 
     width = unit(2, "cm"))
 ha_boxplot2 + ht1
 ```
