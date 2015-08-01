@@ -9,12 +9,13 @@ Draw the heatmap annotations
 
 }
 \usage{
-\S4method{draw}{HeatmapAnnotation}(object, index, k = NULL, ...)}
+\S4method{draw}{HeatmapAnnotation}(object, index, k = NULL, n = NULL, ...)}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
   \item{index}{a vector of order.}
   \item{k}{if row annotation is splitted, the value identifies which row slice.}
+  \item{n}{total number of row slices.}
   \item{...}{pass to \code{\link[grid]{viewport}} which contains all annotations.}
 }
 \details{
