@@ -1,5 +1,6 @@
 library(ComplexHeatmap)
 library(circlize)
+library(RColorBrewer)
 
 rand_meth = function(k, mean) {
 	(runif(k) - 0.5)*min(c(1-mean), mean) + mean
@@ -97,8 +98,8 @@ ht_list = Heatmap(mat_meth, name = "methylation", col = colorRamp2(c(0, 0.5, 1),
 	Heatmap(mat_expr[, column_tree$order], name = "expression", col = colorRamp2(c(-2, 0, 2), c("green", "white", "red")),
 		cluster_columns = FALSE, top_annotation = ha2, column_names_gp = gpar(fontsize = 8), column_title = "Expression", column_title_gp = gpar(fontsize = 10)) +
 	Heatmap(cor_pvalue, name = "-log10(cor_p)", col = colorRamp2(c(0, 2, 4), c("white", "white", "red")), column_names_gp = gpar(fontsize = 8)) +
-	Heatmap(gene_type, name = "gene type", column_names_gp = gpar(fontsize = 8)) +
-	Heatmap(anno_gene, name = "anno_gene", column_names_gp = gpar(fontsize = 8)) +
+	Heatmap(gene_type, name = "gene type", col = brewer.pal(length(unique(gene_type)), "Set1"), column_names_gp = gpar(fontsize = 8)) +
+	Heatmap(anno_gene, name = "anno_gene", col = brewer.pal(length(unique(anno_gene)), "Set2"), column_names_gp = gpar(fontsize = 8)) +
 	Heatmap(dist, name = "dist_tss", col = colorRamp2(c(0, 10000), c("black", "white")), column_names_gp = gpar(fontsize = 8)) +
 	Heatmap(anno_enhancer, name = "anno_enhancer", col = colorRamp2(c(0, 1), c("white", "orange")), cluster_columns = FALSE, column_names_gp = gpar(fontsize = 8), column_title = "Enhancer", column_title_gp = gpar(fontsize = 10))
 
