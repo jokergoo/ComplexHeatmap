@@ -37,7 +37,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 	prototype = list(
 		color_mapping = NULL,
 		fun = function(index) NULL,
-		show = TRUE
+		show_legend= TRUE
 	)
 )
 
@@ -131,7 +131,7 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 				grid.rect(x[l], y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill[l]), gp)))
 			}
 		} else {
-			.Object@fun = function(index, k = NULL) {
+			.Object@fun = function(index, k = NULL, N = NULL) {
 				n = length(index)
 				y = (n - seq_len(n) + 0.5) / n
 				fill = map_to_colors(color_mapping, value[index])
@@ -148,7 +148,7 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 
     if(which == "row") {
     	if(length(formals(.Object@fun)) == 1) {
-    		formals(.Object@fun) = alist(index = , k = NULL)
+    		formals(.Object@fun) = alist(index = , k = NULL, N = NULL)
     	}
     }
 
@@ -163,6 +163,7 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 # -index a vector of orders
 # -k if row annotation is splitted, the value identifies which row slice. It is only used for the naems of the viewport
 #    which contains the annotation graphics.
+# -n total number of row slices
 #
 # == details
 # A viewport is created.
@@ -177,14 +178,14 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 #
 setMethod(f = "draw",
 	signature = "SingleAnnotation",
-	definition = function(object, index, k = NULL) {
+	definition = function(object, index, k = NULL, n = NULL) {
 
 	if(is.null(k)) {
 		pushViewport(viewport(name = paste("annotation", object@name, sep = "_")))
 		object@fun(index)
 	} else {
 		pushViewport(viewport(name = paste("annotation", object@name, k, sep = "_")))
-		object@fun(index, k)
+		object@fun(index, k, n)
 	}
 	upViewport()
 
