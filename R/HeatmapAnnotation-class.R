@@ -28,7 +28,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 	prototype = list(
 		anno_list = list(),
 		size = unit(0, "null"),
-		which = "row"
+		which = "row",
+		gap = unit(0, "null")
 	),
     contains = "AdditiveUnit"
 )
@@ -126,7 +127,7 @@ HeatmapAnnotation = function(df, name, col, color_bar = rep("discrete", ncol(df)
 		if(is.null(fun_name)) {
 			stop("functions should be specified as named arguments.")
 		}
-		if(any(fun_name %in% c("df", "col", "show_legend", "which", "height", "width", "annotation_height", "annotation_width", "gp"))) {
+		if(any(fun_name %in% c("df", "col", "show_legend", "which", "height", "width", "annotation_height", "annotation_width", "gp", "color_bar"))) {
 			stop("function names should be same as other argument names.")
 		}
 			
@@ -136,6 +137,18 @@ HeatmapAnnotation = function(df, name, col, color_bar = rep("discrete", ncol(df)
 	}
 
 	n_anno = length(anno_list)
+
+	if(is.null(gap)) gap = unit(0, "null")
+
+    if(length(gap) == 1) {
+    	.Object@gap = rep(gap, n_anno)
+    } else if(length(gap) == n_anno - 1) {
+    	.Object@gap = unit.c(gap, unit(0, "null"))
+    } else if(length(gap) < n_anno - 1) {
+    	stop("Length of `gap` is wrong.")
+    } else {
+    	.Object@gap = gap
+    }
 
 	anno_size = switch(which,
 		column = annotation_height,
@@ -148,7 +161,7 @@ HeatmapAnnotation = function(df, name, col, color_bar = rep("discrete", ncol(df)
 	}
 
 	if(!is.unit(anno_size)) {
-		anno_size = unit(anno_size/sum(anno_size), "npc")
+		anno_size = anno_size/sum(anno_size)*(unit(1, "npc") - sum(.Object@gap))
 	}
 
 
@@ -162,17 +175,7 @@ HeatmapAnnotation = function(df, name, col, color_bar = rep("discrete", ncol(df)
 
     .Object@size = size
 
-    if(is.null(gap)) gap = unit(0, "null")
-
-    if(length(gap) == 1) {
-    	.Object@gap = rep(gap, n_anno)
-    } else if(length(gap) == n_anno - 1) {
-    	.Object@gap = unit.c(gap, unit(0, "null"))
-    } else if(length(gap) < n_anno - 1) {
-    	stop("Length of `gap` is wrong.")
-    } else {
-    	.Object@gap = gap
-    }
+    
 
     return(.Object)
 }
