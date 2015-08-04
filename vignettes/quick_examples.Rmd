@@ -37,6 +37,8 @@ by random sampling from original data. Here you can organize the heatmap by the 
 returned from `pvclust()`.
 
 ```{r}
+library(ComplexHeatmap)
+
 library(MASS)
 library(pvclust)
 data(Boston)
@@ -59,6 +61,7 @@ But continuous colors can also be set to continuous color bar. You can change th
 for heatmap legend and simple annotation legend.
 
 ```{r}
+library(circlize)
 mat = matrix(rnorm(100), 10)
 ha = HeatmapAnnotation(df = data.frame(value = runif(10)), 
 	col = list(value = colorRamp2(c(0, 1), c("white", "red"))),
@@ -67,4 +70,16 @@ Heatmap(mat, heatmap_legend_title = "mat", heatmap_legend_color_bar = "continuou
 	top_annotation = ha)
 ```
 
+## Make a same plot as heatmap()
 
+```{r}
+heatmap(mat, col = topo.colors(50))
+```
+
+Compare to the native `heatmap()`, `Heatmap()` can give more accurate interpolation
+for colors for continous values.
+
+```{r}
+Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(4, "cm"), 
+    column_hclust_height = unit(4, "cm"), row_reorder= -rowMeans(mat))
+```
