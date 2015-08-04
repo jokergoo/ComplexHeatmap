@@ -80,6 +80,6 @@ Compare to the native `heatmap()`, `Heatmap()` can give more accurate interpolat
 for colors for continous values.
 
 ```{r}
-Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(4, "cm"), 
-    column_hclust_height = unit(4, "cm"), row_reorder= -rowMeans(mat))
+Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(2, "cm"), 
+    column_hclust_height = unit(2, "cm"), row_reorder= -rowMeans(mat))
 ```
