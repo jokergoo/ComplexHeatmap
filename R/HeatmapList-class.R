@@ -553,7 +553,7 @@ setMethod(f = "make_layout",
 # in the layout.
 #
 # == value
-# This function returns a list of `stats::hclust` objects.
+# This function returns a list of row dendrograms and column dendrogram.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -595,35 +595,21 @@ setMethod(f = "draw",
 
     upViewport()
 
-    # return a list of hclust object
+    # return a list of orders
     n = length(object@ht_list)
-    hclust_list = vector("list", n)
-    names(hclust_list) = sapply(object@ht_list, function(ht) ht@name)
+    dend_list = vector("list", n)
+    names(dend_list) = sapply(object@ht_list, function(ht) ht@name)
 
     for(i in seq_len(n)) {
-        hclust_list[[i]] = list(row = NULL, column = NULL)
+        dend_list[[i]] = list(row = NULL, column = NULL)
         if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
         } else {
-            tree = object@ht_list[[i]]@column_hclust
-            # if(is.null(tree)) {
-            #     hclust_list[[i]]$column = NULL
-            # } else if(inherits(tree, "dendrogram")) {
-            #     hclust_list[[i]]$column = as.hclust(tree)
-            # } else {
-                hclust_list[[i]]$column = tree
-            # }
-            tree_list = object@ht_list[[i]]@row_hclust_list
-            # for(j in seq_along(tree_list)) {
-            #     if(is.null(tree_list[[j]])) {
-            #     } else if(inherits(tree_list[[j]], "dendrogram")) {
-            #         tree_list[[j]] = as.hclust(tree_list[[j]])
-            #     }
-            # }
-            hclust_list[[i]]$row = tree_list
+            dend_list[[i]]$column = object@ht_list[[i]]@column_hclust
+            dend_list[[i]]$row = object@ht_list[[i]]@row_hclust_list
         }
     }
 
-    return(invisible(hclust_list))
+    return(invisible(dend_list))
 })
 
 # == title

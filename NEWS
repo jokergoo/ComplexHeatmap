@@ -1,3 +1,11 @@
+CHANGES in VERSION 1.2.7
+
+* add `rows_reorder_weight` and `columns_reorder_weight` in `Heatmap()`
+* `draw,HeatmapList-method` returns a list of orders
+* clustering is stored as dendrogram internally
+
+=========================================
+
 CHANGES in VERSION 1.2.6
 
 * graphical parameters for row names can be set as same length

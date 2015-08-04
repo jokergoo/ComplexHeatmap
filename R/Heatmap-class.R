@@ -157,12 +157,16 @@ Heatmap = setClass("Heatmap",
 # -column_order order of column. It makes it easy to adjust column order for both matrix and column annotations.
 # -row_names_side should the row names be put on the left or right of the heatmap?
 # -show_row_names whether show row names.
+# -row_reorder apply reordering on rows. The value can be a logical value or a vector which contains weight 
+#               which is used to reorder rows
 # -row_names_max_width maximum width of row names viewport. Because some times row names can be very long, it is not reasonable
 #                      to show them all.
 # -row_names_gp graphic parameters for drawing text.
 # -column_names_side should the column names be put on the top or bottom of the heatmap?
 # -column_names_max_height maximum height of column names viewport.
 # -show_column_names whether show column names.
+# -column_reorder apply reordering on columns. The value can be a logical value or a vector which contains weight 
+#               which is used to reorder columns
 # -column_names_gp graphic parameters for drawing text.
 # -top_annotation a `HeatmapAnnotation` object which contains a list of annotations.
 # -top_annotation_height total height of the column annotations on the top.
@@ -214,10 +218,12 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     cluster_rows = TRUE, clustering_distance_rows = "euclidean",
     clustering_method_rows = "complete", row_hclust_side = c("left", "right"),
     row_hclust_width = unit(10, "mm"), show_row_hclust = TRUE, 
+    row_reorder = NULL,
     row_hclust_gp = gpar(), cluster_columns = TRUE, 
     clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"), 
     show_column_hclust = TRUE, column_hclust_gp = gpar(), 
+    column_reorder = NULL,
     row_order = NULL, column_order = NULL,
     row_names_side = c("right", "left"), show_row_names = TRUE, 
     row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12), 
@@ -281,9 +287,13 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
         if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
             .Object@matrix_param$split = split
         } else {
-            if(!is.data.frame(split)) split = data.frame(split)
-            if(nrow(split) != nrow(matrix)) {
-                stop("Length or number of rows of `split` should be same as rows in `matrix`.")
+            if(identical(cluster_rows, TRUE) && is.numeric(split) && length(split) == 1) {
+
+            } else {
+                if(!is.data.frame(split)) split = data.frame(split)
+                if(nrow(split) != nrow(matrix)) {
+                    stop("Length or number of rows of `split` should be same as rows in `matrix`.")
+                }
             }
         }
     }
@@ -398,6 +408,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@row_hclust_param$width = row_hclust_width + unit(1, "mm")  # append the gap
     .Object@row_hclust_param$show = show_row_hclust
     .Object@row_hclust_param$gp = check_gp(row_hclust_gp)
+    .Object@row_hclust_param$reorder = row_reorder
     .Object@row_order_list = list() # default order
     if(is.null(row_order)) {
         .Object@row_order = seq_len(nrow(matrix))
@@ -431,6 +442,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     .Object@column_hclust_param$height = column_hclust_height + unit(1, "mm")  # append the gap
     .Object@column_hclust_param$show = show_column_hclust
     .Object@column_hclust_param$gp = check_gp(column_hclust_gp)
+    .Object@column_hclust_param$reorder = column_reorder
     if(is.null(column_order)) {
         .Object@column_order = seq_len(ncol(matrix))
     } else {
@@ -520,6 +532,7 @@ setMethod(f = "make_column_cluster",
     distance = object@column_hclust_param$distance
     method = object@column_hclust_param$method
     order = object@column_order
+    reorder = object@column_hclust_param$reorder
 
     if(object@column_hclust_param$cluster) {
         if(!is.null(object@column_hclust_param$obj)) {
@@ -530,6 +543,35 @@ setMethod(f = "make_column_cluster",
             object@column_hclust = hclust(get_dist(t(mat), distance), method = method)
         }
         column_order = get_hclust_order(object@column_hclust)  # we don't need the pre-defined orders
+
+        if(inherits(object@column_hclust, "hclust")) {
+            object@column_hclust = as.dendrogram(object@column_hclust)
+        }
+
+        if(identical(reorder, NULL)) {
+            if(is.numeric(mat)) {
+                reorder = TRUE
+            } else {
+                reorder = FALSE
+            }
+        }
+
+        do_reorder = TRUE
+        if(identical(reorder, NA) || identical(reorder, FALSE)) {
+            do_reorder = FALSE
+        }
+        if(identical(reorder, TRUE)) {
+            do_reorder = TRUE
+            reorder = colMeans(mat, na.rm = TRUE)
+        }
+
+        if(do_reorder) {
+            if(length(reorder) != ncol(mat)) {
+                stop("weight of reordering should have same length as number of columns.\n")
+            }
+            object@column_hclust = reorder(object@column_hclust, reorder)
+            column_order = order.dendrogram(object@column_hclust)
+        }
     } else {
         column_order = order
     }
@@ -574,8 +616,15 @@ setMethod(f = "make_row_cluster",
     order = object@row_order  # pre-defined row order
     km = object@matrix_param$km
     split = object@matrix_param$split
+    reorder = object@row_hclust_param$reorder
 
     if(object@row_hclust_param$cluster) {
+
+        if(is.numeric(split) && length(split) == 1) {
+            if(is.null(object@row_hclust_param$obj)) {
+                object@row_hclust_param$obj = hclust(get_dist(mat, distance), method = method)
+            }
+        }
 
         if(!is.null(object@row_hclust_param$obj)) {
             if(km > 1) {
@@ -677,7 +726,7 @@ setMethod(f = "make_row_cluster",
             object@row_title = row_level
         }
     }
-
+    o_row_order_list = row_order_list
     # make hclust in each slice
     if(object@row_hclust_param$cluster) {
         row_hclust_list = rep(list(NULL), length(row_order_list))
@@ -696,15 +745,52 @@ setMethod(f = "make_row_cluster",
             }
         }
         object@row_hclust_list = row_hclust_list
+
+        for(i in seq_along(object@row_hclust_list)) {
+            if(inherits(object@row_hclust_list[[i]], "hclust")) {
+                object@row_hclust_list[[i]] = as.dendrogram(object@row_hclust_list[[i]])
+            }
+        }
+
+        if(identical(reorder, NULL)) {
+            if(is.numeric(mat)) {
+                reorder = TRUE
+            } else {
+                reorder = FALSE
+            }
+        }
+
+        do_reorder = TRUE
+        if(identical(reorder, NA) || identical(reorder, FALSE)) {
+            do_reorder = FALSE
+        }
+        if(identical(reorder, TRUE)) {
+            do_reorder = TRUE
+            reorder = rowMeans(mat, na.rm = TRUE)
+        }
+
+        if(do_reorder) {
+            if(length(reorder) != nrow(mat)) {
+                stop("weight of reordering should have same length as number of rows.\n")
+            }
+            for(i in seq_along(row_hclust_list)) {
+                object@row_hclust_list[[i]] = reorder(object@row_hclust_list[[i]], reorder[which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])])
+                row_order_list[[i]] = o_row_order_list[[i]][ order.dendrogram(object@row_hclust_list[[i]]) ]
+            }
+        }
     }
+
+    
+
     object@row_order_list = row_order_list
     object@matrix_param$split = split
+
 
     if(nrow(mat) != length(unlist(row_order_list))) {
         stop("Number of rows in the matrix are not the same as the length of\nthe cluster or the row orders.")
     }
 
-    # adjust row_names_param$gp is the length of some elements is the same as row slices
+    # adjust row_names_param$gp if the length of some elements is the same as row slices
     for(i in seq_along(object@row_names_param$gp)) {
         if(length(object@row_names_param$gp[[i]]) == length(object@row_order_list)) {
             gp_temp = NULL
@@ -714,7 +800,6 @@ setMethod(f = "make_row_cluster",
             object@row_names_param$gp[[i]] = gp_temp
         }
     }
-
     return(object)
 
 })
