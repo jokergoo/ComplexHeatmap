@@ -19,10 +19,12 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     cluster_rows = TRUE, clustering_distance_rows = "euclidean",
     clustering_method_rows = "complete", row_hclust_side = c("left", "right"),
     row_hclust_width = unit(10, "mm"), show_row_hclust = TRUE,
+    row_reorder = NULL,
     row_hclust_gp = gpar(), cluster_columns = TRUE,
     clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"),
     show_column_hclust = TRUE, column_hclust_gp = gpar(),
+    column_reorder = NULL,
     row_order = NULL, column_order = NULL,
     row_names_side = c("right", "left"), show_row_names = TRUE,
     row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12),
@@ -73,11 +75,13 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{column_order}{order of column. It makes it easy to adjust column order for both matrix and column annotations.}
   \item{row_names_side}{should the row names be put on the left or right of the heatmap?}
   \item{show_row_names}{whether show row names.}
+  \item{row_reorder}{apply reordering on rows. The value can be a logical value or a vector which contains weight which is used to reorder rows}
   \item{row_names_max_width}{maximum width of row names viewport. Because some times row names can be very long, it is not reasonableto show them all.}
   \item{row_names_gp}{graphic parameters for drawing text.}
   \item{column_names_side}{should the column names be put on the top or bottom of the heatmap?}
   \item{column_names_max_height}{maximum height of column names viewport.}
   \item{show_column_names}{whether show column names.}
+  \item{column_reorder}{apply reordering on columns. The value can be a logical value or a vector which contains weight which is used to reorder columns}
   \item{column_names_gp}{graphic parameters for drawing text.}
   \item{top_annotation}{a \code{\link{HeatmapAnnotation}} object which contains a list of annotations.}
   \item{top_annotation_height}{total height of the column annotations on the top.}
@@ -118,6 +122,8 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]

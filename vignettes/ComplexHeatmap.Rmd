@@ -377,6 +377,13 @@ and they want to split rows by splitting the dendrogram into k sub trees. In thi
 Heatmap(mat, name = "foo", cluster_rows = dend, split = 2)
 ```
 
+Or they just split rows by specifying `split` as an integer. Note it is different from by `km`.
+If `split` is an integer, the dendrogram is cut by `cutree`.
+
+```{r}
+Heatmap(mat, name = "foo", split = 2)
+```
+
 ### Self define the heatmap body
 
 `rect_gp` argument provides basic graphic settings for the heatmap body (`fill` parameter is disabled).
@@ -1011,7 +1018,7 @@ The components that have names are:
 Following code add annotation names, mark one grid in the heatmap and seperate the first column clusters with two rectangles.
 
 ```{r, fig.width = 10, fig.height = 7}
-hclust_list = draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
+dend_list = draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
     heatmap_legend_side = "right", annotation_legend_side = "left")
 seekViewport("annotation_points")
 grid.text("points", unit(0, "npc") - unit(2, "mm"), 0.5, default.units = "npc", just = "right")
@@ -1023,8 +1030,8 @@ seekViewport("annotation_type")
 grid.text("type", unit(1, "npc") + unit(2, "mm"), 0.5, default.units = "npc", just = "left")
 
 seekViewport("ht1_hclust_column")
-tree = hclust_list$ht1$column
-ind = cutree(tree, k = 2)[tree$order]
+tree = dend_list$ht1$column
+ind = cutree(as.hclust(tree), k = 2)[order.dendrogram(tree)]
 
 first_index = function(l) which(l)[1]
 last_index = function(l) { x = which(l); x[length(x)] }
