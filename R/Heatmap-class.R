@@ -766,7 +766,7 @@ setMethod(f = "make_row_cluster",
         }
         if(identical(reorder, TRUE)) {
             do_reorder = TRUE
-            reorder = rowMeans(mat, na.rm = TRUE)
+            reorder = -rowMeans(mat, na.rm = TRUE)
         }
 
         if(do_reorder) {
