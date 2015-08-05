@@ -81,5 +81,5 @@ for colors for continous values.
 
 ```{r}
 Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(2, "cm"), 
-    column_hclust_height = unit(2, "cm"), row_reorder= -rowMeans(mat))
+    column_hclust_height = unit(2, "cm"))
 ```
