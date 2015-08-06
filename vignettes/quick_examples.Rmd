@@ -101,7 +101,8 @@ ha_column = HeatmapAnnotation(cn = function(index) {
 })
 Heatmap(mat, name = "cases", col = colorRamp2(c(0, 800, 1000, 127000), c("white", "cornflowerblue", "yellow", "red")),
     cluster_columns = FALSE, show_row_hclust = FALSE, rect_gp = gpar(col= "white"), show_column_names = FALSE,
-    row_names_side = "left", column_title = 'Measles cases in US states 1930-2001\nVaccine introduced 1961',
+    row_names_side = "left", row_names_gp = gpar(fontsize = 10),
+    column_title = 'Measles cases in US states 1930-2001\nVaccine introduced 1961',
     top_annotation = ha1, top_annotation_height = unit(1, "cm"),
     bottom_annotation = ha_column, bottom_annotation_height = grobHeight(textGrob("1900"))) + ha2
 
