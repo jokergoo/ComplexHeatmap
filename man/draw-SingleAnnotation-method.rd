@@ -34,6 +34,10 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 
 
+
+
+
+
 anno = SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"))
 grid.newpage(); draw(anno, 1:5)
 grid.newpage(); draw(anno, c(1, 4, 3, 5, 2))
