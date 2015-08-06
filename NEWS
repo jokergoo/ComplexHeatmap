@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.2.8
+
+* add decorate* functions
+
+=========================================
+
 CHANGES in VERSION 1.2.7
 
 * add `rows_reorder_weight` and `columns_reorder_weight` in `Heatmap()`

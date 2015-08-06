@@ -81,5 +81,20 @@ for colors for continous values.
 
 ```{r}
 Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(2, "cm"), 
-    column_hclust_height = unit(2, "cm"), row_reorder= -rowMeans(mat))
+    column_hclust_height = unit(2, "cm"))
+```
+
+```
+mat = readRDS(paste0(system.files("extdata", package = "ComplexHeatmap"), "/measles.RData"))
+ha = HeatmapAnnotation(dist = anno_barplot(colSums(mat)))
+Heatmap(mat, name = "mat", col = colorRamp2(c(0, 800, 1000, 127000), c("white", "cornflowerblue", "yellow", "red")),
+    cluster_columns = FALSE, show_row_hclust = FALSE, rect_gp = gpar(col= "white"),
+    column_title = 'Measles cases in US states 1930-2001\nVaccine introduced 1961\n(data from Project Tycho)',
+    top_annotation = ha, top_annotation_height = unit(4, "cm"))
+
+decorate_heatmap_body("mat", {
+    i = which(yd$year == 1961)
+    x = i/ncol(mat)
+    grid.lines(c(x, x), c(0, 1), gp = gpar(lty = 2, lwd = 2))
+})
 ```

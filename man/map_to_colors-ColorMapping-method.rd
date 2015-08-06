@@ -31,6 +31,11 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 
 
+
+
+
+
+
 # discrete color mapping for characters
 cm = ColorMapping(name = "test",
     colors = c("blue", "white", "red"),

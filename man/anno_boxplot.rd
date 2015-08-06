@@ -9,13 +9,15 @@ Using boxplot as annotation
 
 }
 \usage{
-anno_boxplot(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
+anno_boxplot(x, which = c("column", "row"), border = TRUE,
+    gp = gpar(fill = "#CCCCCC"),
     pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL,
     axis_gp = gpar(fontsize = 8))}
 \arguments{
 
   \item{x}{a matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for boxplotis calculated by columns, if \code{which} is \code{row}, the calculation is by rows.}
   \item{which}{is the annotation a column annotation or a row annotation?}
+  \item{border}{whether show border of the annotation compoment}
   \item{gp}{graphic parameters}
   \item{pch}{point type}
   \item{size}{point size}
@@ -32,6 +34,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
+
+
+
 
 
 mat = matrix(rnorm(32), nrow = 4)
