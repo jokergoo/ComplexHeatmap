@@ -264,6 +264,16 @@ Heatmap(mat, name = "foo", cluster_rows = as.dendrogram(diana(mat)),
    cluster_columns = as.dendrogram(agnes(t(mat))))
 ```
 
+By default, dendrograms on row and on column are reordered to let features with larger different
+separated more from each other. You can first generate a dendrogram and apply other reordering
+method.
+
+```{r}
+library(dendsort)
+dend = hclust(dist(mat))
+Heatmap(mat, name = "foo", cluster_rows = dend, row_reorder = FALSE)
+```
+
 You can render your `dendrogram` object by the **dendextend** package and make a more customized
 visualization of the dendrogram. 
 
