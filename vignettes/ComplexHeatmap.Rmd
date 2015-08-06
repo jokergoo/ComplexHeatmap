@@ -266,11 +266,11 @@ Heatmap(mat, name = "foo", cluster_rows = as.dendrogram(diana(mat)),
 
 By default, dendrograms on row and on column are reordered to let features with larger different
 separated more from each other. You can first generate a dendrogram and apply other reordering
-method.
+method. But remember you need to set `row_reorder` to `FALSE` to turn off the default reordering.
 
 ```{r}
 library(dendsort)
-dend = hclust(dist(mat))
+dend = dendsort(hclust(dist(mat)))
 Heatmap(mat, name = "foo", cluster_rows = dend, row_reorder = FALSE)
 ```
 
