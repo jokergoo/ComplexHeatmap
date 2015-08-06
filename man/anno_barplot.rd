@@ -33,6 +33,10 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 
 
+
+
+
+
 f = anno_barplot(rnorm(10))
 grid.newpage(); f(1:10)
 

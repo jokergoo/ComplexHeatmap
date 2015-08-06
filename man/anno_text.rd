@@ -31,6 +31,10 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 
 
+
+
+
+
 mat = matrix(rnorm(100), 10)
 colnames(mat) = letters[1:10]
 rownames(mat) = LETTERS[1:10]
