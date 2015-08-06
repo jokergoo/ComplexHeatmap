@@ -37,5 +37,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 
+
 df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = columnAnnotation(df = df)}

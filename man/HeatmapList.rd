@@ -33,8 +33,10 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 
+
 There is no public constructor method for the \code{\link{HeatmapList-class}}.}
 \examples{
+
 
 
 

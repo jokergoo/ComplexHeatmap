@@ -36,5 +36,6 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 
+
 # for examples, please go to `ColorMapping` method page
 NULL}

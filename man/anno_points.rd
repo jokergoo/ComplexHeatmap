@@ -9,13 +9,14 @@ Using points as annotation
 
 }
 \usage{
-anno_points(x, which = c("column", "row"), gp = gpar(), pch = 16,
+anno_points(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16,
     size = unit(2, "mm"), axis = FALSE, axis_side = NULL,
     axis_gp = gpar(fontsize = 8), ...)}
 \arguments{
 
   \item{x}{a vector of numeric values.}
   \item{which}{is the annotation a column annotation or a row annotation?}
+  \item{border}{whether show border of the annotation compoment}
   \item{gp}{graphic parameters.}
   \item{pch}{point type.}
   \item{size}{point size.}
@@ -33,6 +34,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 
 
 
