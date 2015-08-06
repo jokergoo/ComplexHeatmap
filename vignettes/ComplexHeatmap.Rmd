@@ -1041,7 +1041,7 @@ decorate_annotation("points", {
 
 decorate_heatmap_body("ht1", {
     grid.text("outlier", 1.5/10, 2.5/4, default.units = "npc")
-    grid.lines(c(0.5, 0.5), c(0, 1), gp = gpar(lty = 2, col = "#EEEEEE"))
+    grid.lines(c(0.5, 0.5), c(0, 1), gp = gpar(lty = 2, lwd = 2))
 }, slice = 2)
 
 decorate_hclust("ht1", {
