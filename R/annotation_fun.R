@@ -5,6 +5,7 @@
 # == param
 # -x a vector of numeric values.
 # -which is the annotation a column annotation or a row annotation?
+# -border whether show border of the annotation compoment
 # -gp graphic parameters.
 # -pch point type.
 # -size point size.
@@ -20,7 +21,7 @@
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16, 
+anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16, 
 	size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), ...) {
 
@@ -54,7 +55,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			}
 
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
-			grid.rect()
+			if(border) grid.rect()
 			grid.points(x[index], n - seq_along(index) + 1, gp = gp, default.units = "native", pch = pch, size = size)
 			if(axis) {
 				if(k == 1 && axis_side == "top") {
@@ -70,7 +71,7 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 			gp = subset_gp(gp, index)
 
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
-			grid.rect()
+			if(border) grid.rect()
 			grid.points(seq_along(index), x[index], gp = gp, default.units = "native", pch = pch, size = size)
 			if(axis) {
 				if(axis_side == "left") {
@@ -89,6 +90,8 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # == param
 # -x a vector of numeric values.
 # -which is the annotation a column annotation or a row annotation?
+# -border whether show border of the annotation compoment
+# -bar_width relative width of the bars, should less than one
 # -gp graphic parameters.
 # -axis whether add axis
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
@@ -102,14 +105,14 @@ anno_points = function(x, which = c("column", "row"), gp = gpar(), pch = 16,
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_barplot = function(x, which = c("column", "row"), 
+anno_barplot = function(x, which = c("column", "row"), border = TRUE, bar_width = 0.6,
 	gp = gpar(fill = "#CCCCCC"), axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), ...) {
 
 	x = x
 	which = match.arg(which)[1]
 
-	factor = 0.6
+	factor = bar_width
 	data_scale = range(x)
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
@@ -138,7 +141,7 @@ anno_barplot = function(x, which = c("column", "row"),
 			}
 
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
-			grid.rect()
+			if(border) grid.rect()
 			grid.rect(x = data_scale[1], y = n - seq_along(index) + 1, width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = gp)
 			if(axis) {
 				if(k == 1 && axis_side == "top") {
@@ -155,7 +158,7 @@ anno_barplot = function(x, which = c("column", "row"),
 			gp = subset_gp(gp, index)
 			
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
-			grid.rect()
+			if(border) grid.rect()
 			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = gp)
 			if(axis) {
 				if(axis_side == "left") {
@@ -175,6 +178,7 @@ anno_barplot = function(x, which = c("column", "row"),
 # -x a matrix or a list. If ``x`` is a matrix and if ``which`` is ``column``, statistics for boxplot
 #    is calculated by columns, if ``which`` is ``row``, the calculation is by rows.
 # -which is the annotation a column annotation or a row annotation?
+# -border whether show border of the annotation compoment
 # -gp graphic parameters
 # -pch point type
 # -size point size
@@ -189,7 +193,8 @@ anno_barplot = function(x, which = c("column", "row"),
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), 
+anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
+	gp = gpar(fill = "#CCCCCC"), 
 	pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8)) {
 
@@ -234,7 +239,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
-			grid.rect()
+			if(border) grid.rect()
 			grid.segments(boxplot_stats[5, ], n - seq_along(index) + 1 - 0.5*factor, 
 				          boxplot_stats[5, ], n - seq_along(index) + 1 + 0.5*factor, default.units = "native", gp = gp)
 			grid.segments(boxplot_stats[5, ], n - seq_along(index) + 1,
@@ -271,7 +276,7 @@ anno_boxplot = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
-			grid.rect()
+			if(border) grid.rect()
 			grid.segments(seq_along(index) - 0.5*factor, boxplot_stats[5, ],
 				          seq_along(index) + 0.5*factor, boxplot_stats[5, ], default.units = "native", gp = gp)
 			grid.segments(seq_along(index), boxplot_stats[5, ],
