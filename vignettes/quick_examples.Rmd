@@ -86,7 +86,7 @@ Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(2, "cm"),
 
 ## The measles vaccine heatmap
 
-Following code reproduces the heatmap introduced [here](https://biomickwatson.wordpress.com/2015/04/09/recreating-a-famous-visualisation/) and [here](https://benjaminlmoore.wordpress.com/2015/04/09/recreating-the-vaccination-heatmaps-in-r/)
+Following code reproduces the heatmap introduced [here](https://biomickwatson.wordpress.com/2015/04/09/recreating-a-famous-visualisation/) and [here](https://benjaminlmoore.wordpress.com/2015/04/09/recreating-the-vaccination-heatmaps-in-r/).
 
 ```{r, fig.width = 10, fig.height = 8}
 mat = readRDS(paste0(system.file("extdata", package = "ComplexHeatmap"), "/measles.rds"))
