@@ -9,13 +9,15 @@ Using barplot as annotation
 
 }
 \usage{
-anno_barplot(x, which = c("column", "row"),
+anno_barplot(x, which = c("column", "row"), border = TRUE, bar_width = 0.6,
     gp = gpar(fill = "#CCCCCC"), axis = FALSE, axis_side = NULL,
     axis_gp = gpar(fontsize = 8), ...)}
 \arguments{
 
   \item{x}{a vector of numeric values.}
   \item{which}{is the annotation a column annotation or a row annotation?}
+  \item{border}{whether show border of the annotation compoment}
+  \item{bar_width}{relative width of the bars, should less than one}
   \item{gp}{graphic parameters.}
   \item{axis}{whether add axis}
   \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right".If it is placed as row annotation, value can only be "bottom" or "top".}
@@ -31,6 +33,7 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
 
 
 
