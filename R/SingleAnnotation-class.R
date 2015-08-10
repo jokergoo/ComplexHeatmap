@@ -29,7 +29,8 @@
 SingleAnnotation = setClass("SingleAnnotation",
 	slots = list(
 		name = "character",
-		color_mapping = "ANY",
+		color_mapping = "ANY",  # a ColorMapping object or NULL
+		color_mapping_param = "ANY", # a list or NULL, it contains parameters for color_mapping_legend
 		fun = "function",
 		show_legend = "logical",
 		which = "character"
@@ -55,8 +56,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -which is the annotation a row annotation or a column annotation?
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
 # -gp Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.
-# -color_bar if the color mapping is continuous, whether draw the legend discrete or continuous. Onl works for simple annotation.
-#            Pass to `ColorMapping`.
+# -legend_param parameters for the legend. See `color_mapping_legend,ColorMapping-method` for options.
 #
 # == details
 # The most simple annotation is one row or one column grids in which different colors
@@ -82,7 +82,23 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 SingleAnnotation = function(name, value, col, fun, which = c("column", "row"), 
-	show_legend = TRUE, gp = gpar(col = NA), color_bar = c("discrete", "continuous")) {
+	show_legend = TRUE, gp = gpar(col = NA), legend_param = list()) {
+
+	# re-define some of the argument values according to global settings
+    called_args = names(as.list(match.call())[-1])
+    if("legend_param" %in% called_args) {
+        for(opt_name in setdiff(c("title_gp", "labels_gp", "grid_width", "grid_height", "grid_border"), names(legend_param))) {
+            opt_name2 = paste0("annotation_legend_", opt_name)
+            if(!is.null(ht_global_opt(opt_name2)))
+                legend_param[[opt_name]] = ht_global_opt(opt_name2)
+        }
+    } else {
+        for(opt_name in c("title_gp", "labels_gp", "grid_width", "grid_height", "grid_border")) {
+            opt_name2 = paste0("annotation_legend_", opt_name)
+            if(!is.null(ht_global_opt(opt_name2)))
+                legend_param[[opt_name]] = ht_global_opt(opt_name2)
+        }
+    }
 
 	.Object = new("SingleAnnotation")
 
@@ -106,20 +122,20 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
 	    }
 	}
 
-	color_bar = match.arg(color_bar)[1]
-
     if(missing(fun)) {
     	if(missing(col)) {
     		col = default_col(value)
     	}
 
     	if(is.atomic(col)) {
-            color_mapping = ColorMapping(name = name, colors = col, color_bar = color_bar)
+            color_mapping = ColorMapping(name = name, colors = col)
         } else if(is.function(col)) {
-            color_mapping = ColorMapping(name = name, col_fun = col, color_bar = color_bar)
+            color_mapping = ColorMapping(name = name, col_fun = col)
         }
 
         .Object@color_mapping = color_mapping
+        if(is.null(legend_param)) legend_param = list()
+        .Object@color_mapping_param = legend_param
         value = value
 
         if(which == "column") {
@@ -149,6 +165,8 @@ SingleAnnotation = function(name, value, col, fun, which = c("column", "row"),
     if(which == "row") {
     	if(length(formals(.Object@fun)) == 1) {
     		formals(.Object@fun) = alist(index = , k = NULL, N = NULL)
+    	} else if(length(formals(.Object@fun)) == 2) {  # assume index and k are specified
+    		formals(.Object@fun) = alist(index = , k = , N = NULL)
     	}
     }
 

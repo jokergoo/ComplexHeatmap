@@ -1,3 +1,13 @@
+CHANGES in VERSION 1.3.0
+
+* parameters for legend are specified by a list
+* vignette was split into several vignettes which focus on specific topics
+* ColorMapping class suppoorts `at` and `labels`
+* add `row_anno_*` and `column_anno_*` functions
+* `anno_barplot` add `baseline` option to define the baseline of bars
+
+=========================================
+
 CHANGES in VERSION 1.2.8
 
 * add decorate* functions

@@ -1,0 +1,176 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Making a list of Heatmaps}
+-->
+
+Making A List of Heatmaps
+========================================
+
+**Author**: Zuguang Gu ( z.gu@dkfz.de )
+
+**Date**: `r Sys.Date()`
+
+-------------------------------------------------------------
+
+```{r global_settings, echo = FALSE, message = FALSE}
+library(markdown)
+options(markdown.HTML.options = c(options('markdown.HTML.options')[[1]], "toc"))
+
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    fig.align = "center",
+    fig.width = 5,
+    fig.height = 5)
+options(markdown.HTML.stylesheet = "custom.css")
+
+options(width = 100)
+```
+
+A list of heatmaps can improve visualization of the correspondence between multiple data sources.
+In this vignette, we will discuss configurations for making a list of heatmaps and you can
+see more real-world examples in the [**Examples**](6.examples.html) vignette.
+
+## Heatmap concatenation
+
+You can arrange more than one heatmaps on the plot from left to right. Actually, one single
+heatmap is just a special case of the heatmap list of length one.
+
+`Heatmap()` is actually a class constructor function for a single heatmap. If more than one heatmaps
+are to be combined, users can append one heatmap to the other by `+` operator.
+
+```{r heatmap_list_default, fig.width = 10}
+library(ComplexHeatmap)
+
+mat = matrix(rnorm(80, 2), 8, 10)
+mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
+rownames(mat) = paste0("R", 1:12)
+colnames(mat) = paste0("C", 1:10)
+
+ht1 = Heatmap(mat, name = "ht1")
+ht2 = Heatmap(mat, name = "ht2")
+class(ht1)
+class(ht2)
+
+ht1 + ht2
+```
+
+Under default mode, dendrograms from the second heatmap will be removed and row orders will be same as the first one.
+
+The returned value of addition of two heatmaps is a `HeatmapList` object. Directly calling `ht_list` object
+will call `draw()` method with default settings. With explicitly calling `draw()` method, you can have more controls
+on the legend and titles.
+
+```{r}
+ht_list = ht1 + ht2
+class(ht_list)
+```
+
+You can append any number of heatmaps to the heatmap list. Also you can append a heatmap list to a heatmap list.
+
+```{r, eval = FALSE}
+ht1 + ht1 + ht1
+ht1 + ht_list
+ht_list + ht1
+ht_list + ht_list
+```
+
+## Titles
+
+A heatmap list also has titles which are independent to the heatmap titles.
+
+```{r heatmap_list_title, fig.width = 10}
+ht1 = Heatmap(mat, name = "ht1", row_title = "Heatmap 1", column_title = "Heatmap 1")
+ht2 = Heatmap(mat, name = "ht2", row_title = "Heatmap 2", column_title = "Heatmap 2")
+ht_list = ht1 + ht2
+
+draw(ht_list, row_title = "Two heatmaps, row title", row_title_gp = gpar(col = "red"),
+    column_title = "Two heatmaps, column title", column_title_side = "bottom")
+```
+
+## Gaps between heatmaps
+
+The gaps between heatmaps can be set by `gap` argument with a `unit` object.
+
+```{r heatmap_list_gap, fig.width = 10, fig.keep = "all"}
+draw(ht_list, gap = unit(1, "cm"))
+draw(ht_list + ht_list, gap = unit(c(3, 6, 9, 0), "mm"))
+```
+
+## Size of heatmaps
+
+The width for some (not all) heatmaps can be set to a fixed width.
+
+```{r heatmap_list_size, fig.width = 10, fig.keep = "all"}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1")
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", width = unit(5, "cm"))
+ht1 + ht2
+```
+
+or the width can be set as relative values. Please not in this case, `width` for all heatmaps
+should be set (relative width and fixed width can be mixed).
+
+```{r heatmap_list_relative_size, fig.width = 10, fig.keep = "all"}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", width = 2)
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", width = 1)
+ht1 + ht2
+```
+
+## Auto adjustment
+
+There are some automatic adjustment if more than one heatmaps are plotted. There should be a main heatmap
+which by default is the first one. Some settings for the remaining heatmaps will be modified to the settings
+in the main heatmap. The adjustment are:
+
+- row clusters are removed.
+- row titles are removed.
+- if the main heatmap is split by rows, all remaining heatmaps will also be split by same levels as the main one.
+
+The main heatmap can be specified by `main_heatmap` argument. The value can be a numeric index or the name of the heatmap
+(of course, you need to set the heatmap name when you create the `Heatmap` object).
+
+```{r heatmap_list_auto_adjust, fig.width = 10, fig.keep = "all"}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", km = 2)
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
+ht1 + ht2
+
+# note we changed the order of `ht1` and `ht2`
+draw(ht2 + ht1)
+
+# here although `ht1` is the second heatmap, we specify `ht1` to be
+# the main heatmap by explicitely setting `main_heatmap` argument
+draw(ht2 + ht1, main_heatmap = "ht1")
+```
+
+If there is no row clustering in the main heatmap, all other heatmaps have no row clustering neither.
+
+```{r heatmap_list_auto_adjust_no_row_cluster, fig.width = 10}
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", cluster_rows = FALSE)
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
+ht1 + ht2
+```
+
+## Change graphic parameters simultaneously
+
+`ht_global_opt()` can set graphic parameters for dimension names and titles as global settings.
+
+```{r, fig.width = 10}
+ht_global_opt(heatmap_row_names_gp = gpar(fontface = "italic"), heatmap_column_names_gp = gpar(fontsize = 14))
+ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1")
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
+ht1 + ht2
+ht_global_opt(RESET = TRUE)
+```
+
+## Heatmap list with row annotations
+
+Row annotations can also be reordered and split according to the main heatmap, 
+please see [**Heatmap Annotation**](3.heatmap_annotationhtml) for more explanations.
+
+## Session info
+
+```{r}
+sessionInfo()
+```

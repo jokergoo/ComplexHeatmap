@@ -24,13 +24,11 @@
 ColorMapping = setClass("ColorMapping",
 	slots = list(
 		colors  = "character", # a list of colors
-		levels  = "character", # levels which colors correspond to
+		levels  = "ANY", # levels which colors correspond to
 		col_fun = "function", # function to map values to colors
 		type    = "character",  # continuous or discrete
 		name    = "character",  # used to map to the dataset and taken as the title of the legend
-		na_col  = "character",
-		color_bar = "character",
-		legend_title = "ANY"
+		na_col  = "character"	
 	)
 )
 
@@ -63,8 +61,7 @@ ColorMapping = setClass("ColorMapping",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 ColorMapping = function(name, colors = NULL, levels = NULL, 
-	col_fun = NULL, breaks = NULL, enforce_breaks = FALSE, na_col = "#FFFFFF",
-	legend_title = name, color_bar = c("discrete", "continuous")) {
+	col_fun = NULL, breaks = NULL, na_col = "#FFFFFF") {
 
 	.Object = new("ColorMapping")
 
@@ -82,6 +79,7 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 		if(length(colors) != length(levels)) {
 			stop("length of colors and length of levels should be the same.\n")
 		}
+		colors = rgb(t(col2rgb(colors)), max = 255)
 		.Object@colors = colors
 		if(is.numeric(levels)) {
 			.Object@levels = as.character(levels)
@@ -98,19 +96,17 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 				stop("You should provide breaks.\n")
 			}
 		}
-		if(enforce_breaks) {
-			le = breaks
+		
+		le1 = grid.pretty(range(breaks))
+		le2 = pretty(breaks, n = 3)
+		if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
+			le = le1
 		} else {
-			le1 = grid.pretty(range(breaks))
-			le2 = pretty(breaks, n = 3)
-			if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
-				le = le1
-			} else {
-				le = le2
-			}
+			le = le2
 		}
+		
 		.Object@colors = col_fun(le)
-		.Object@levels = as.character(le)
+		.Object@levels = le
 		.Object@col_fun = col_fun
 		.Object@type = "continuous"
 	} else {
@@ -119,13 +115,6 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 
 	.Object@name = name
 	.Object@na_col = na_col
-
-	.Object@legend_title = legend_title
-	color_bar = match.arg(color_bar)[1]
-	if(.Object@type == "discrete" && color_bar == "continuous") {
-		stop("Continuous color bar can only be applied to continuous color mapping.")
-	}
-	.Object@color_bar = color_bar
 
 	return(.Object)
 }
@@ -158,7 +147,7 @@ setMethod(f = "show",
 	} else if(object@type == "continuous") {
 		cat("Continuous color mapping:\n")
 		cat("name:", object@name, "\n")
-		cat("breaks:\n")
+		cat("default breaks:\n")
 		print(object@levels)
 		cat("\n")
 		cat("colors:\n")
@@ -222,14 +211,21 @@ setMethod(f = "map_to_colors",
 # -object a `ColorMapping-class` object.
 # -... pass to `grid::viewport`.
 # -plot whether to plot or just return the size of the legend viewport.
-# -legend_grid_height height of each legend grid.
-# -legend_grid_width width of each legend grid.
-# -legend_grid_border color for legend grid borders.
-# -legend_title_gp graphic parameter for legend title.
-# -legend_label_gp graphic parameter for legend label.
+# -title title of the legend, by default it is the name of the legend
+# -title_gp graphical parameters for legend title
+# -color_bar if the mapping is continuous, whether show the legend as discrete color bar or continuous color bar
+# -grid_height height of each legend grid.
+# -grid_width width of each legend grid.
+# -grid_border color for legend grid borders.
+# -at break values of the legend
+# -labels labels corresponding to break values
+# -labels_gp graphcial parameters for legend labels
+# -param will be parsed if the parameters are specified as a list
 #
 # == details
 # A viewport is created which contains a legend title, legend grids and corresponding labels.
+#
+# This function will be improved in the future to support more types of legends.
 #
 # == value
 # A `grid::grob` object which contains the legend
@@ -239,74 +235,100 @@ setMethod(f = "map_to_colors",
 #
 setMethod(f = "color_mapping_legend",
 	signature = "ColorMapping",
-	definition = function(object, ..., plot = TRUE, legend_grid_height = unit(4, "mm"),
-	legend_grid_width = unit(4, "mm"), legend_grid_border = "white",
-	legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
-	legend_label_gp = gpar(fontsize = 10)) {
+	definition = function(object, ..., 
+	plot = TRUE, 
+	title = object@name,
+	title_gp = gpar(fontsize = 10, fontface = "bold"),
+	color_bar = c("discrete", "continuous"),
+	grid_height = unit(4, "mm"),
+	grid_width = unit(4, "mm"),
+	grid_border = "white",
+	at = object@levels,
+	labels = at,
+	labels_gp = gpar(fontsize = 10),
+	param = NULL) {
 
-	legend_title_gp = check_gp(legend_title_gp)
-	legend_label_gp = check_gp(legend_label_gp)
+	e = environment()
+	if(!is.null(param)) {
+		for(nm in names(param)) {
+			assign(nm, param[[nm]], envir = e)
+		}
+	}
 
-	color_bar = object@color_bar
+	title_gp = check_gp(title_gp)
+	labels_gp = check_gp(labels_gp)
 
-	grid_padding = unit(1, "mm") # padding to the legend labels
-	legend_padding = unit(1.5, "mm")
+	color_bar = match.arg(color_bar)
+
+	if(object@type == "discrete" && color_bar == "continuous") {
+		stop("'color_bar' can only be set to 'continuous' only if the color mapping is continuous")
+	}
+
+	labels_padding_left = unit(1, "mm") # padding to the legend labels
 
 	# add title
-	legend_title_grob = textGrob(object@legend_title, just = c("left", "top"), gp = legend_title_gp)
-	legend_title_height = grobHeight(legend_title_grob) + legend_padding
-	legend_title_width = grobWidth(legend_title_grob)
+	title_grob = textGrob(title, just = c("left", "top"), gp = title_gp)
+	title_height = grobHeight(title_grob) + unit(1.5, "mm")
+	title_width = grobWidth(title_grob)
 
-	
-	nlevel = length(object@levels)
-	legend_label_max_width = max(do.call("unit.c", lapply(object@levels, function(x) {
-			grobWidth(textGrob(x, gp = legend_label_gp))
+	# get labels
+	if(length(at) != length(labels)) {
+		stop("Length of 'at' should be same as length of 'labels'.")
+	}
+	n_labels = length(labels)
+	labels_max_width = max(do.call("unit.c", lapply(labels, function(x) {
+			grobWidth(textGrob(x, gp = labels_gp))
 		})))
 
-	legend_label_max_width = max(unit.c(legend_label_max_width + grid_padding + legend_grid_width, legend_title_width)) - legend_grid_width - grid_padding
+	labels_max_width = max(unit.c(labels_max_width + labels_padding_left + grid_width, title_width)) - grid_width - labels_padding_left
 	
 	
 	if(color_bar == "discrete") {
-		gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 2, widths = unit.c(legend_grid_width, grid_padding + legend_label_max_width),
-			                                                heights = unit.c(legend_title_height, nlevel*(legend_grid_height))))
+		gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 2, widths = unit.c(grid_width, labels_padding_left + labels_max_width),
+			                                                heights = unit.c(title_height, n_labels*(grid_height))))
 		# legend title
-		gf = packGrob(gf, row = 1, col = 1:2, grob = textGrob(object@legend_title, x = 0, y = 1, default.units = "npc", just = c("left", "top"), gp = legend_title_gp))
+		gf = packGrob(gf, row = 1, col = 1:2, grob = textGrob(title, x = 0, y = 1, default.units = "npc", just = c("left", "top"), gp = title_gp))
 		
 		# legend grid
-		x = unit(rep(0, nlevel), "npc")
-		y = (0:(nlevel-1))*(legend_grid_height)
+		x = unit(rep(0, n_labels), "npc")
+		y = (0:(n_labels-1))*(grid_height)
 		y = unit(1, "npc") - y
 		if(object@type == "discrete") {
-			gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, y - legend_grid_height*0.5, 
-		 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE)
-			gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, y, width = legend_grid_width, height = legend_grid_height, just = c("left", "top"),
-					gp = gpar(col = legend_grid_border, fill = object@colors)))
+			gf = packGrob(gf, row = 2, col = 2, grob = textGrob(labels, x + labels_padding_left, y - grid_height*0.5, 
+		 		just = c("left", "center"), gp = labels_gp), width = labels_padding_left + labels_max_width, force.width = TRUE)
+			gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, y, width = grid_width, height = grid_height, just = c("left", "top"),
+					gp = gpar(col = grid_border, fill = map_to_colors(object, at))))
 		} else {
-			gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, rev(y) - legend_grid_height*0.5, 
-		 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE)
-			gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, rev(y), width = legend_grid_width, height = rev(legend_grid_height), just = c("left", "top"),
-					gp = gpar(col = legend_grid_border, fill = object@colors)))
+			gf = packGrob(gf, row = 2, col = 2, grob = textGrob(labels, x + labels_padding_left, rev(y) - grid_height*0.5, 
+		 		just = c("left", "center"), gp = labels_gp), width = labels_padding_left + labels_max_width, force.width = TRUE)
+			gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x, rev(y), width = grid_width, height = rev(grid_height), just = c("left", "top"),
+					gp = gpar(col = grid_border, fill = map_to_colors(object, at))))
 		}
 	} else {
-		label_height = grobHeight(textGrob("foo", gp = legend_label_gp))
-		gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 2, widths = unit.c(legend_grid_width, grid_padding + legend_label_max_width),
-			                                                heights = unit.c(legend_title_height, (2*nlevel-1)*label_height)))
+		labels_height = grobHeight(textGrob("foo", gp = labels_gp))
+		gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 2, widths = unit.c(grid_width, labels_padding_left + labels_max_width),
+			                                                heights = unit.c(title_height, (2*n_labels-1)*labels_height)))
 		# legend title
-		gf = packGrob(gf, row = 1, col = 1:2, grob = textGrob(object@legend_title, x = 0, y = 1, default.units = "npc", just = c("left", "top"), gp = legend_title_gp))
+		gf = packGrob(gf, row = 1, col = 1:2, grob = textGrob(title, x = 0, y = 1, default.units = "npc", just = c("left", "top"), gp = title_gp))
 		
 		# legend grid
-		x = unit(rep(0, nlevel), "npc")
-		y = seq(0, 1, length = nlevel) * (unit(1, "npc") - label_height) + label_height*0.5
+		x = unit(rep(0, n_labels), "npc")
+		y = seq(0, 1, length = n_labels) * (unit(1, "npc") - labels_height) + labels_height*0.5
 		y = unit(1, "npc") - y
-		gf = packGrob(gf, row = 2, col = 2, grob = textGrob(object@levels, x + grid_padding, rev(y), 
-	 		just = c("left", "center"), gp = legend_label_gp), width = grid_padding + legend_label_max_width, force.width = TRUE, height = (2*nlevel-1)*label_height, force.height = TRUE)
+		gf = packGrob(gf, row = 2, col = 2, grob = textGrob(labels, x + labels_padding_left, rev(y), 
+	 		just = c("left", "center"), gp = labels_gp), width = labels_padding_left + labels_max_width, force.width = TRUE, height = (2*n_labels-1)*labels_height, force.height = TRUE)
 
-		colors = unlist(lapply(seq_len(nlevel-1), function(i) object@col_fun(seq(as.numeric(object@levels[i]), as.numeric(object@levels[i+1]), length = 16))))
+		at2 = unlist(lapply(seq_len(n_labels - 1), function(i) {
+			x = seq(at[i], at[i+1], length = 16)
+			x = x[-length(x)]
+		}))
+		at2 = c(at2, at[length(at)])
+		colors = map_to_colors(object, at2)
 		x2 = unit(rep(0, length(colors)), "npc")
 		y2 = seq(0, 1, length = length(colors)+1)
 		y2 = y2[-length(y2)] * unit(1, "npc")
-		gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x2, rev(y2), width = legend_grid_width, height = (unit(1, "npc"))*(1/length(colors)), just = c("left", "top"),
-				gp = gpar(col = rev(colors), fill = rev(colors))), height = (2*nlevel-1)*label_height, force.height = TRUE)
+		gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x2, rev(y2), width = grid_width, height = (unit(1, "npc"))*(1/length(colors)), just = c("left", "top"),
+				gp = gpar(col = rev(colors), fill = rev(colors))), height = (2*n_labels-1)*labels_height, force.height = TRUE)
 		
 	}
 	

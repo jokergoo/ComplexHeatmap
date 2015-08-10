@@ -182,11 +182,20 @@ decorate_annotation = function(annotation, code, slice = NULL) {
 
 	if(is.null(slice)) {
 		vp_name = paste0("annotation_", annotation)
+		o = try(seekViewport(vp_name), silent = TRUE)
+		if(inherits(o, "try-error")) {
+			vp_name2 = paste0("annotation_", annotation, "_", 1)
+			o = try(seekViewport(vp_name2), silent = TRUE)
+			if(inherits(o, "try-error")) {
+				stop(paste0("Cannot find viewport ", vp_name, " or ", vp_name2, "\n"))
+			}
+		}
+		seekViewport(vp_name)
 	} else {
 		vp_name = paste0("annotation_", annotation, "_", slice)
+		seekViewport(vp_name)
 	}
 
-	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
 }

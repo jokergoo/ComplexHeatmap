@@ -67,6 +67,7 @@ Heatmap = setClass("Heatmap",
         matrix = "matrix",  # one or more matrix which are spliced by rows
         matrix_param = "list",
         matrix_color_mapping = "ANY",
+        matrix_color_mapping_param = "ANY",
 
         row_title = "ANY",
         row_title_rot = "numeric",
@@ -182,12 +183,7 @@ Heatmap = setClass("Heatmap",
 # -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
 #        is appended to a list of heatmaps.
 # -show_heatmap_legend whether show heatmap legend?
-# -heatmap_legend_title title for the heatmap legend. By default it is the name of the heatmap
-# -heatmap_legend_color_bar if the matrix is continuous, whether should the legend as continuous color bar as well? 
-#           Possible values are "discrete" and "continuous". Current implementation of continuous color bar is not a nice one and will be improved in future.
-# -heatmap_legend_enforce_breaks For numeric matrix, if it is set to `TRUE` and ``col`` is specified by `circlize::colorRamp2`
-#        break values specified in `circlize::colorRamp2` will be the final break value in the legend.
-#        Or else, proper breaks values will be automatically generated.
+# -heatmap_legend_param a list contains parameters for the heatmap legend. See `color_mapping_legend,ColorMapping-method` for all available parameters.
 #
 # == details
 # The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -231,15 +227,39 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     show_column_names = TRUE, column_names_max_height = unit(4, "cm"), 
     column_names_gp = gpar(fontsize = 12),
     top_annotation = new("HeatmapAnnotation"),
-    top_annotation_height = unit(5*length(top_annotation@anno_list), "mm") + sum(top_annotation@gap),
+    top_annotation_height = top_annotation@size,
     bottom_annotation = new("HeatmapAnnotation"),
-    bottom_annotation_height = unit(5*length(bottom_annotation@anno_list), "mm") + sum(bottom_annotation@gap),
+    bottom_annotation_height = bottom_annotation@size,
     km = 1, split = NULL, gap = unit(1, "mm"), 
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE,
-    heatmap_legend_title = name,
-    heatmap_legend_color_bar = c("discrete", "continuous"),
-    heatmap_legend_enforce_breaks = FALSE) {
+    heatmap_legend_param = list(title = name, color_bar = "discrete")) {
+
+    # re-define some of the argument values according to global settings
+    called_args = names(as.list(match.call())[-1])
+    e = environment()
+    for(opt_name in c("row_names_gp", "column_names_gp", "row_title_gp", "column_title_gp")) {
+        opt_name2 = paste0("heatmap_", opt_name)
+        if(! opt_name %in% called_args) { # if this argument is not called
+            if(!is.null(ht_global_opt(opt_name2))) {
+                assign(opt_name, ht_global_opt(opt_name2), envir = e)
+            }
+        }
+    }
+   
+    if("heatmap_legend_param" %in% called_args) {
+        for(opt_name in setdiff(c("title_gp", "labels_gp", "grid_width", "grid_height", "grid_border"), names(heatmap_legend_param))) {
+            opt_name2 = paste0("heatmap_legend_", opt_name)
+            if(!is.null(ht_global_opt(opt_name2)))
+                heatmap_legend_param[[opt_name]] = ht_global_opt(opt_name2)
+        }
+    } else {
+        for(opt_name in c("title_gp", "labels_gp", "grid_width", "grid_height", "grid_border")) {
+            opt_name2 = paste0("heatmap_legend_", opt_name)
+            if(!is.null(ht_global_opt(opt_name2)))
+                heatmap_legend_param[[opt_name]] = ht_global_opt(opt_name2)
+        }
+    }
 
     .Object = new("Heatmap")
 
@@ -269,7 +289,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
         .Object@heatmap_param$width = unit(0, "null")
     }
 
-    if(is.character(matrix) || ncol(matrix) <= 1) {
+    if(ncol(matrix) <= 1) {
         if(!inherits(cluster_rows, c("dendrogram", "hclust"))) {
             cluster_rows = FALSE
             show_row_hclust = FALSE
@@ -278,6 +298,24 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
             cluster_columns = FALSE
             show_column_hclust = FALSE
         }
+        km = 1
+    }
+    if(is.character(matrix)) {
+        called_args = names(match.call()[-1])
+        if("clustering_distance_rows" %in% called_args) {
+        } else if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
+        } else {
+            cluster_rows = FALSE
+            show_row_hclust = FALSE
+        }
+        row_reorder = FALSE
+        if("clustering_distance_columns" %in% called_args) {
+        } else if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
+        } else {
+            cluster_columns = FALSE
+            show_column_hclust = FALSE
+        }
+        column_reorder = FALSE
         km = 1
     }
     .Object@matrix = matrix
@@ -312,30 +350,30 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
         .Object@matrix = matrix
     }
 
-    heatmap_legend_color_bar = match.arg(heatmap_legend_color_bar)[1]
     # color for main matrix
     if(ncol(matrix) > 0) {
         if(missing(col)) {
             col = default_col(matrix, main_matrix = TRUE)
         }
         if(is.function(col)) {
-            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar, enforce_breaks = heatmap_legend_enforce_breaks)
+            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(matrix))) {
                     names(col) = unique(matrix)
-                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar, enforce_breaks = heatmap_legend_enforce_breaks)
+                    .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
                 } else if(is.numeric(matrix)) {
                     col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
                                      col)
-                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar, enforce_breaks = heatmap_legend_enforce_breaks)
+                    .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
                 } else {
                     stop("`col` should have names to map to values in `mat`.")
                 }
             } else {
-                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, legend_title = heatmap_legend_title, na_col = na_col, color_bar = heatmap_legend_color_bar, enforce_breaks = heatmap_legend_enforce_breaks)
+                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
             }
         }
+        .Object@matrix_color_mapping_param = heatmap_legend_param
     }
     
     if(length(row_title) == 0) {
@@ -667,6 +705,8 @@ setMethod(f = "make_row_cluster",
         })
         meanmat = as.matrix(as.data.frame(meanmat))
         hc = hclust(dist(t(meanmat)))
+        weight = colMeans(meanmat)
+        hc = as.hclust(reorder(as.dendrogram(hc), -weight))
         cluster2 = numeric(length(cluster))
         for(i in seq_along(hc$order)) {
             cluster2[cluster == hc$order[i]] = i
@@ -737,11 +777,14 @@ setMethod(f = "make_row_cluster",
                     row_hclust_list[[i]] = object@row_hclust_param$fun(mat)
                     row_order_list[[i]] = row_order_list[[i]][ get_hclust_order(row_hclust_list[[i]]) ]
                 } else {
-                    if(is.numeric(mat)) {
+                    #if(is.numeric(mat)) {
                         row_hclust_list[[i]] = hclust(get_dist(submat, distance), method = method)
                         row_order_list[[i]] = row_order_list[[i]][ get_hclust_order(row_hclust_list[[i]]) ]
-                    }
+                    #}
                 }
+            } else {
+                row_hclust_list[[i]] = NULL
+                row_order_list[[i]] = row_order_list[[i]][1]
             }
         }
         object@row_hclust_list = row_hclust_list
@@ -770,12 +813,15 @@ setMethod(f = "make_row_cluster",
         }
 
         if(do_reorder) {
+
             if(length(reorder) != nrow(mat)) {
                 stop("weight of reordering should have same length as number of rows.\n")
             }
             for(i in seq_along(row_hclust_list)) {
-                object@row_hclust_list[[i]] = reorder(object@row_hclust_list[[i]], reorder[which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])])
-                row_order_list[[i]] = o_row_order_list[[i]][ order.dendrogram(object@row_hclust_list[[i]]) ]
+                if(length(row_order_list[[i]]) > 1) {
+                    object@row_hclust_list[[i]] = reorder(object@row_hclust_list[[i]], reorder[which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])])
+                    row_order_list[[i]] = o_row_order_list[[i]][ order.dendrogram(object@row_hclust_list[[i]]) ]
+                }
             }
         }
     }
@@ -1191,6 +1237,8 @@ setMethod(f = "draw_hclust",
     if(length(hc) == 0) {
         return(invisible(NULL))
     }
+
+    if(is.null(hc)) return(invisible(NULL))
 
     dend = as.dendrogram(hc)
     n = length(labels(dend))
