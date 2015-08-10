@@ -20,7 +20,7 @@ Make layout for the complete plot
     gap = unit(3, "mm"),
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_hclust_side = c("original", "left", "right"),
-    row_sub_title_side = c("original", "left", "right"), ...)}
+    row_sub_title_side = c("original", "left", "right"))}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object.}
@@ -40,7 +40,6 @@ Make layout for the complete plot
   \item{main_heatmap}{name or index for the main heatmap}
   \item{row_hclust_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
   \item{row_sub_title_side}{if auto adjust, where to put sub row titles for the main heatmap}
-  \item{...}{graphic parameters pass to \code{\link{color_mapping_legend,ColorMapping-method}}.}
 }
 \details{
 It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
@@ -59,6 +58,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
+
+
+
 
 
 

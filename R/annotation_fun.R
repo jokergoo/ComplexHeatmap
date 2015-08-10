@@ -13,6 +13,7 @@
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
 #            If it is placed as row annotation, value can only be "bottom" or "top".
 # -axis_gp graphic parameters for axis
+# -axis_direction if the annotation is row annotation, should the axis be from left to right (default) or follow the reversed direction?
 # -... for future use.
 #
 # == value
@@ -23,7 +24,7 @@
 #
 anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16, 
 	size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
-	axis_gp = gpar(fontsize = 8), ...) {
+	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...) {
 
 	x = x
 	which = match.arg(which)[1]
@@ -43,7 +44,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
 		}
 	}
-
+	axis_direction = match.arg(axis_direction)[1]
 	switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
@@ -56,12 +57,24 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			if(border) grid.rect()
+			if(axis_direction == "reverse") x = data_scale[2] - x + data_scale[1]
 			grid.points(x[index], n - seq_along(index) + 1, gp = gp, default.units = "native", pch = pch, size = size)
 			if(axis) {
-				if(k == 1 && axis_side == "top") {
-					grid.xaxis(main = FALSE, gp = axis_gp)
-				} else if(k == N && axis_side == "bottom") {
-					grid.xaxis(gp = axis_gp)
+				at = grid.pretty(data_scale)
+				label = at
+				if(axis_direction == "reverse") at = data_scale[2] - at + data_scale[1]
+				if(is.null(k)) {
+					if(axis_side == "top") {
+						grid.xaxis(main = FALSE, gp = axis_gp, at = at, label = label)
+					} else if(axis_side == "bottom") {
+						grid.xaxis(gp = axis_gp, at = at, label = label)
+					}
+				} else {
+					if(k == 1 && axis_side == "top") {
+						grid.xaxis(main = FALSE, gp = axis_gp, at = at, label = label)
+					} else if(k == N && axis_side == "bottom") {
+						grid.xaxis(gp = axis_gp, at = at, label = label)
+					}
 				}
 			}
 			upViewport()
@@ -89,6 +102,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 #
 # == param
 # -x a vector of numeric values.
+# -baseline baseline for bars. The value should be "min" or "max", or a numeric value.
 # -which is the annotation a column annotation or a row annotation?
 # -border whether show border of the annotation compoment
 # -bar_width relative width of the bars, should less than one
@@ -97,6 +111,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
 #            If it is placed as row annotation, value can only be "bottom" or "top".
 # -axis_gp graphic parameters for axis
+# -axis_direction if the annotation is row annotation, should the axis be from left to right (default) or follow the reversed direction?
 # -... for future use.
 #
 # == value
@@ -105,9 +120,9 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_barplot = function(x, which = c("column", "row"), border = TRUE, bar_width = 0.6,
+anno_barplot = function(x, baseline = "min", which = c("column", "row"), border = TRUE, bar_width = 0.6,
 	gp = gpar(fill = "#CCCCCC"), axis = FALSE, axis_side = NULL, 
-	axis_gp = gpar(fontsize = 8), ...) {
+	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...) {
 
 	x = x
 	which = match.arg(which)[1]
@@ -129,7 +144,7 @@ anno_barplot = function(x, which = c("column", "row"), border = TRUE, bar_width 
 			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
 		}
 	}
-
+	axis_direction = match.arg(axis_direction)[1]
 	switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
@@ -142,12 +157,30 @@ anno_barplot = function(x, which = c("column", "row"), border = TRUE, bar_width 
 
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			if(border) grid.rect()
-			grid.rect(x = data_scale[1], y = n - seq_along(index) + 1, width = x[index] - data_scale[1], height = 1*factor, just = "left", default.units = "native", gp = gp)
+			if(baseline == "min") baseline = data_scale[1]
+			else if(baseline == "max") baseline = data_scale[2]
+			if(axis_direction == "reverse") {
+				x = data_scale[2] - x + data_scale[1]
+				baseline = data_scale[2] - baseline + data_scale[1]
+			}
+			width = x[index] - baseline
+			grid.rect(x = width/2+baseline, y = n - seq_along(index) + 1, width = abs(width), height = 1*factor, default.units = "native", gp = gp)
 			if(axis) {
-				if(k == 1 && axis_side == "top") {
-					grid.xaxis(main = FALSE, gp = axis_gp)
-				} else if(k == N && axis_side == "bottom") {
-					grid.xaxis(gp = axis_gp)
+				at = grid.pretty(data_scale)
+				label = at
+				if(axis_direction == "reverse") at = data_scale[2] - at + data_scale[1]
+				if(is.null(k)) {
+					if(axis_side == "top") {
+						grid.xaxis(main = FALSE, gp = axis_gp, at = at, label = label)
+					} else if(axis_side == "bottom") {
+						grid.xaxis(gp = axis_gp, at = at, label = label)
+					}
+				} else {
+					if(k == 1 && axis_side == "top") {
+						grid.xaxis(main = FALSE, gp = axis_gp, at = at, label = label)
+					} else if(k == N && axis_side == "bottom") {
+						grid.xaxis(gp = axis_gp, at = at, label = label)
+					}
 				}
 			}
 			upViewport()
@@ -159,7 +192,10 @@ anno_barplot = function(x, which = c("column", "row"), border = TRUE, bar_width 
 			
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 			if(border) grid.rect()
-			grid.rect(x = seq_along(index), y = data_scale[1], height = x[index] - data_scale[1], width = 1*factor, just = "bottom", default.units = "native", gp = gp)
+			if(baseline == "min") baseline = data_scale[1]
+			else if(baseline == "max") baseline = data_scale[2]
+			height = x[index] - baseline
+			grid.rect(x = seq_along(index), y = height/2 + baseline, height = abs(height), width = 1*factor, default.units = "native", gp = gp)
 			if(axis) {
 				if(axis_side == "left") {
 					grid.yaxis(gp = axis_gp)
@@ -186,6 +222,7 @@ anno_barplot = function(x, which = c("column", "row"), border = TRUE, bar_width 
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
 #            If it is placed as row annotation, value can only be "bottom" or "top".
 # -axis_gp graphic parameters for axis
+# -axis_direction if the annotation is row annotation, should the axis be from left to right (default) or follow the reversed direction?
 #
 # == value
 # A graphic function which can be set in `HeatmapAnnotation` constructor method.
@@ -196,7 +233,7 @@ anno_barplot = function(x, which = c("column", "row"), border = TRUE, bar_width 
 anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 	gp = gpar(fill = "#CCCCCC"), 
 	pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
-	axis_gp = gpar(fontsize = 8)) {
+	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse")) {
 
 	x = x
 	which = match.arg(which)[1]
@@ -218,13 +255,16 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
 		}
 	}
-
+	axis_direction = match.arg(axis_direction)[1]
 	switch(which,
 		row = function(index, k = NULL, N = NULL) {
+
 			if(is.matrix(x)) {
+				if(axis_direction == "reverse") x = data_scale[2] - x + data_scale[1]
 				x = x[index, , drop = FALSE]
 				boxplot_stats = boxplot(t(x), plot = FALSE)$stats
 			} else {
+				if(axis_direction == "reverse") x = lapply(x, function(y) data_scale[2] - y + data_scale[1])
 				x = x[index]
 				boxplot_stats = boxplot(x, plot = FALSE)$stats
 			}
@@ -240,6 +280,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			}
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 			if(border) grid.rect()
+			
 			grid.segments(boxplot_stats[5, ], n - seq_along(index) + 1 - 0.5*factor, 
 				          boxplot_stats[5, ], n - seq_along(index) + 1 + 0.5*factor, default.units = "native", gp = gp)
 			grid.segments(boxplot_stats[5, ], n - seq_along(index) + 1,
@@ -252,11 +293,20 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 				height = 1*factor, width = boxplot_stats[4, ] - boxplot_stats[2, ], just = "left", 
 				default.units = "native", gp = gp)
 			grid.points(x = boxplot_stats[3, ], y = n - seq_along(index) + 1, default.units = "native", gp = gp, pch = pch, size = size)
-			if(axis) {
+			at = grid.pretty(data_scale)
+			label = at
+			if(axis_direction == "reverse") at = data_scale[2] - at + data_scale[1]
+			if(is.null(k)) {
+				if(axis_side == "top") {
+					grid.xaxis(main = FALSE, gp = axis_gp, at = at, label = label)
+				} else if(axis_side == "bottom") {
+					grid.xaxis(gp = axis_gp, at = at, label = label)
+				}
+			} else {
 				if(k == 1 && axis_side == "top") {
-					grid.xaxis(main = FALSE, gp = axis_gp)
+					grid.xaxis(main = FALSE, gp = axis_gp, at = at, label = label)
 				} else if(k == N && axis_side == "bottom") {
-					grid.xaxis(gp = axis_gp)
+					grid.xaxis(gp = axis_gp, at = at, label = label)
 				}
 			}
 			upViewport()
@@ -573,3 +623,160 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 			upViewport()
 		})
 }
+
+# == title
+# Row annotation which is represented as points
+#
+# == param
+# -... pass to `anno_points`
+#
+# == details
+# A wrapper of `anno_points` with pre-defined ``which`` to ``row``.
+#
+row_anno_points = function(...) {
+	anno_points(..., which = "row")
+}
+
+# == title
+# Column annotation which is represented as points
+#
+# == param
+# -... pass to `anno_points`
+#
+# == details
+# A wrapper of `anno_points` with pre-defined ``which`` to ``column``.
+#
+column_anno_points = function(...) {
+	anno_points(..., which = "column")
+}
+
+# == title
+# Row annotation which is represented as barplots
+#
+# == param
+# -... pass to `anno_barplot`
+#
+# == details
+# A wrapper of `anno_barplot` with pre-defined ``which`` to ``row``.
+#
+row_anno_barplot = function(...) {
+	anno_barplot(..., which = "row")
+}
+
+# == title
+# Column annotation which is represented as barplots
+#
+# == param
+# -... pass to `anno_barplot`
+#
+# == details
+# A wrapper of `anno_barplot` with pre-defined ``which`` to ``column``.
+#
+column_anno_barplot = function(...) {
+	anno_barplot(..., which = "column")
+}
+
+# == title
+# Row annotation which is represented as boxplots
+#
+# == param
+# -... pass to `anno_boxplot`
+#
+# == details
+# A wrapper of `anno_boxplot` with pre-defined ``which`` to ``row``.
+#
+row_anno_boxplot = function(...) {
+	anno_boxplot(..., which = "row")
+}
+
+# == title
+# Column annotation which is represented as boxplots
+#
+# == param
+# -... pass to `anno_boxplot`
+#
+# == details
+# A wrapper of `anno_boxplot` with pre-defined ``which`` to ``column``.
+#
+column_anno_boxplot = function(...) {
+	anno_boxplot(..., which = "column")
+}
+
+# == title
+# Row annotation which is represented as histogram
+#
+# == param
+# -... pass to `anno_histogram`
+#
+# == details
+# A wrapper of `anno_histogram` with pre-defined ``which`` to ``row``.
+#
+row_anno_histogram = function(...) {
+	anno_histogram(..., which = "row")
+}
+
+# == title
+# Column annotation which is represented as histogram
+#
+# == param
+# -... pass to `anno_histogram`
+#
+# == details
+# A wrapper of `anno_histogram` with pre-defined ``which`` to ``column``.
+#
+column_anno_histogram = function(...) {
+	anno_histogram(..., which = "column")
+}
+
+# == title
+# Row annotation which is represented as density plot
+#
+# == param
+# -... pass to `anno_density`
+#
+# == details
+# A wrapper of `anno_density` with pre-defined ``which`` to ``row``.
+#
+row_anno_density = function(...) {
+	anno_density(..., which = "row")
+}
+
+# == title
+# Column annotation which is represented as density plot
+#
+# == param
+# -... pass to `anno_density`
+#
+# == details
+# A wrapper of `anno_density` with pre-defined ``which`` to ``column``.
+#
+column_anno_density = function(...) {
+	anno_density(..., which = "column")
+}
+
+# == title
+# Row annotation which is represented as text
+#
+# == param
+# -... pass to `anno_text`
+#
+# == details
+# A wrapper of `anno_text` with pre-defined ``which`` to ``row``.
+#
+row_anno_text = function(...) {
+	anno_text(..., which = "row")
+}
+
+# == title
+# Column annotation which is represented as text
+#
+# == param
+# -... pass to `anno_text`
+#
+# == details
+# A wrapper of `anno_text` with pre-defined ``which`` to ``column``.
+#
+column_anno_text = function(...) {
+	anno_text(..., which = "column")
+}
+

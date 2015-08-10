@@ -11,7 +11,7 @@ Using points as annotation
 \usage{
 anno_points(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16,
     size = unit(2, "mm"), axis = FALSE, axis_side = NULL,
-    axis_gp = gpar(fontsize = 8), ...)}
+    axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...)}
 \arguments{
 
   \item{x}{a vector of numeric values.}
@@ -23,6 +23,7 @@ anno_points(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16,
   \item{axis}{whether add axis.}
   \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right".If it is placed as row annotation, value can only be "bottom" or "top".}
   \item{axis_gp}{graphic parameters for axis}
+  \item{axis_direction}{if the annotation is row annotation, should the axis be from left to right (default) or follow the reversed direction?}
   \item{...}{for future use.}
 }
 \value{
@@ -34,6 +35,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
+
+
+
 
 
 

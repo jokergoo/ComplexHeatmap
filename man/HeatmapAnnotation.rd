@@ -9,11 +9,11 @@ Constructor method for HeatmapAnnotation class
 
 }
 \usage{
-HeatmapAnnotation(df, name, col, color_bar = rep("discrete", ncol(df)),
+HeatmapAnnotation(df, name, col, annotation_legend_param = list(),
     show_legend = rep(TRUE, n_anno), ...,
     which = c("column", "row"), annotation_height = 1, annotation_width = 1,
-    height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA),
-    gap = unit(0, "null"))}
+    height = calc_anno_size(), width = calc_anno_size(), gp = gpar(col = NA),
+    gap = unit(0, "mm"))}
 \arguments{
 
   \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
@@ -48,6 +48,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
+
+
+
 
 
 

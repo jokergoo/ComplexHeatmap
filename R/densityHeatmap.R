@@ -77,16 +77,18 @@ densityHeatmap = function(data, col = rev(brewer.pal(11, "Spectral")),
 
 	draw(ht_list, column_title = title)
 
-	seekViewport("annotation_axis_1")
-	grid.text(ylab, x = grobHeight(textGrob(ylab)), rot = 90)
+	decorate_annotation("axis", {
+		grid.text(ylab, x = grobHeight(textGrob(ylab)), rot = 90)
+	}, slice = 1)
 
-	seekViewport("density_heatmap_body_1")
-	pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x)))
-	grid.rect(gp = gpar(fill = NA))
-	grid.yaxis()
-	for(i in seq_len(5)) {
-		grid.lines(1:n, quantile_list[i, ], default.units = "native", gp = gpar(lty = 2))
-		grid.text(rownames(quantile_list)[i], unit(1, "npc")+unit(2, "mm"), quantile_list[i, n], default.units = "native", just = "left")
-	}
-	upViewport()
+	decorate_heatmap_body("density", {
+		pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x)))
+		grid.rect(gp = gpar(fill = NA))
+		grid.yaxis()
+		for(i in seq_len(5)) {
+			grid.lines(1:n, quantile_list[i, ], default.units = "native", gp = gpar(lty = 2))
+			grid.text(rownames(quantile_list)[i], unit(1, "npc")+unit(2, "mm"), quantile_list[i, n], default.units = "native", just = "left")
+		}
+		upViewport()
+	})
 }

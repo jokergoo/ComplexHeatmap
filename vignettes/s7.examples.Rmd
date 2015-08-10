@@ -1,0 +1,198 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Quick Examples of Making Complex Heatmaps}
+-->
+
+Quick Examples of Making Complex Heatmaps
+========================================
+
+**Author**: Zuguang Gu ( z.gu@dkfz.de )
+
+**Date**: `r Sys.Date()`
+
+-------------------------------------------------------------
+
+```{r global_settings, echo = FALSE, message = FALSE}
+library(markdown)
+
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    fig.align = "center",
+    fig.width = 5,
+    fig.height = 5)
+options(markdown.HTML.stylesheet = "custom.css")
+
+options(width = 100)
+```
+
+
+### Add more information for gene expression matrix
+
+In gene expression matrix, rows correspond to genes. More information about genes can be attached after the expression
+heatmap such as gene length and type of genes.
+
+```{r expression_example, fig.width = 10, fig.height = 8}
+library(ComplexHeatmap)
+
+expr = readRDS(paste0(system.file(package = "ComplexHeatmap"), "/extdata/gene_expression.rds"))
+mat = as.matrix(expr[, grep("cell", colnames(expr))])
+
+type = gsub("s\\d+_", "", colnames(mat))
+ha = HeatmapAnnotation(df = data.frame(type = type))
+
+Heatmap(mat, name = "expression", km = 5, top_annotation = ha, 
+    top_annotation_height = unit(4, "mm"), show_row_names = FALSE, 
+    show_column_names = FALSE) +
+Heatmap(expr$length, name = "length", col = colorRamp2(c(0, 100000), c("white", "orange")),
+    width = unit(5, "mm")) +
+Heatmap(expr$type, name = "type", width = unit(5, "mm")) +
+Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))), 
+    width = unit(5, "mm"))
+```
+
+### Show number of alterations for OncoPrint
+
+Following examples is <a href="http://www.cbioportal.org/faq.jsp#what-are-oncoprints">OncoPrint</a>.
+The basic idea is to self define the heatmap body. Besides the default style which is 
+provided by <a href="http://www.cbioportal.org/index.do">cBioPortal</a>, there are
+additional barplots at both sides of the heatmap which show numbers of different alterations for
+each sample and for each gene. Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blob/master/vignettes/oncoprint.R">here</a>.
+
+```{r, echo = FALSE, fig.width = 10, fig.height = 8}
+source("oncoprint.R")
+```
+
+### Visualize genomic regions and other correspondance
+
+Following examples visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 
+From left to right, heatmaps are:
+
+1. methylation for each DMR (by rows) in samples.
+2. direction of the methylation (one column heatmap), i.e. is methylation hyper in tumor or hypo?
+3. expression for the genes that are associated with corresponding DMRs (e.g. closest gene).
+4. significance for the correlation between methylation and expression (-log10(p-value)).
+5. type of genes, i.e. is the gene a protein coding gene or a lincRNA?
+6. annotation to gene models, i.e. is the DMR located in the intragenic region of the corresponding gene or the DMR is intergenic?
+7. distance from the DMR to the TSS of the corresponding gene.
+8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
+
+Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blob/master/vignettes/genomic_regions.R">here</a>.
+
+```{r, echo = FALSE, fig.width = 10, fig.height = 8}
+library(circlize)
+library(RColorBrewer)
+
+lt = readRDS(paste0(system.file(package = "ComplexHeatmap"), "/extdata/meth.rds"))
+list2env(lt, envir = environment())
+
+ha = HeatmapAnnotation(df = data.frame(type = c(rep("Tumor", 10), rep("Control", 10))), 
+    col = list(type = c("Tumor" = "red", "Control" = "blue")))
+ha2 = HeatmapAnnotation(df = data.frame(type = c(rep("Tumor", 10), rep("Control", 10))), 
+    col = list(type = c("Tumor" = "red", "Control" = "blue")), show_legend = FALSE)
+
+# to make column order of expression matrix is the same as methylation matrix
+column_tree = hclust(dist(t(meth)))
+
+ht_list = 
+    Heatmap(meth, name = "methylation", col = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")),
+        cluster_columns = column_tree, top_annotation = ha, column_names_gp = gpar(fontsize = 8), km = 5, 
+        column_title = "Methylation", column_title_gp = gpar(fontsize = 10), row_title_gp = gpar(fontsize = 10)) +
+    Heatmap(direction, name = "direction", col = c("hyper" = "red", "hypo" = "blue"), 
+        column_names_gp = gpar(fontsize = 8)) +
+    Heatmap(expr[, column_tree$order], name = "expression", col = colorRamp2(c(-2, 0, 2), c("green", "white", "red")),
+        cluster_columns = FALSE, top_annotation = ha2, column_names_gp = gpar(fontsize = 8), column_title = "Expression",
+        column_title_gp = gpar(fontsize = 10)) +
+    Heatmap(cor_pvalue, name = "-log10(cor_p)", col = colorRamp2(c(0, 2, 4), c("white", "white", "red")), 
+        column_names_gp = gpar(fontsize = 8)) +
+    Heatmap(gene_type, name = "gene type", col = brewer.pal(length(unique(gene_type)), "Set1"), 
+        column_names_gp = gpar(fontsize = 8)) +
+    Heatmap(anno, name = "anno_gene", col = brewer.pal(length(unique(anno)), "Set2"), 
+        column_names_gp = gpar(fontsize = 8)) +
+    Heatmap(dist, name = "dist_tss", col = colorRamp2(c(0, 10000), c("black", "white")), 
+        column_names_gp = gpar(fontsize = 8)) +
+    Heatmap(enhancer, name = "anno_enhancer", col = colorRamp2(c(0, 1), c("white", "orange")), 
+        cluster_columns = FALSE, column_names_gp = gpar(fontsize = 8), column_title = "Enhancer", 
+        column_title_gp = gpar(fontsize = 10))
+
+ht_global_opt(heatmap_legend_title_gp = gpar(fontsize = 8, fontface = "bold"), 
+              heatmap_legend_labels_gp = gpar(fontsize = 8))
+draw(ht_list, newpage = FALSE, column_title = "Correspondence between methylation, expression and other genomic features", 
+    column_title_gp = gpar(fontsize = 12, fontface = "bold"), heatmap_legend_side = "bottom")
+ht_global_opt(RESET = TRUE)
+```
+
+
+## Combine pvclust and heatmap
+
+**pvclust** package provides a robust way to test the stability of the clustering
+by random sampling from original data. Here you can organize the heatmap by the clustering
+returned from `pvclust()`.
+
+```{r}
+library(ComplexHeatmap)
+
+library(MASS)
+library(pvclust)
+data(Boston)
+boston.pv <- pvclust(Boston, nboot=100)
+plot(boston.pv)
+```
+
+Since by default `pvclust` clusters columns by 'correlation' method, we scale columns for
+`Boston` data set to see the relative trend.
+
+```{r}
+Boston_scaled = apply(Boston, 2, scale)
+Heatmap(Boston_scaled, cluster_columns = boston.pv$hclust, heatmap_legend_param = list(title = "Boston"))
+```
+
+## Make a same plot as heatmap()
+
+```{r}
+mat = matrix(rnorm(100), 10)
+heatmap(mat, col = topo.colors(50))
+```
+
+Compare to the native `heatmap()`, `Heatmap()` can give more accurate interpolation
+for colors for continous values.
+
+```{r}
+Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(2, "cm"), 
+    column_hclust_height = unit(2, "cm"))
+```
+
+## The measles vaccine heatmap
+
+Following code reproduces the heatmap introduced [here](https://biomickwatson.wordpress.com/2015/04/09/recreating-a-famous-visualisation/) and [here](https://benjaminlmoore.wordpress.com/2015/04/09/recreating-the-vaccination-heatmaps-in-r/).
+
+```{r, fig.width = 10, fig.height = 8}
+mat = readRDS(paste0(system.file("extdata", package = "ComplexHeatmap"), "/measles.rds"))
+ha1 = HeatmapAnnotation(dist1 = anno_barplot(colSums(mat), bar_width = 1, gp = gpar(col = NA, fill = "#FFE200"), 
+    border = FALSE, axis = TRUE))
+ha2 = rowAnnotation(dist2 = anno_barplot(rowSums(mat), bar_width = 1, gp = gpar(col = NA, fill = "#FFE200"), 
+    border = FALSE, which = "row", axis = TRUE), width = unit(1, "cm"))
+ha_column = HeatmapAnnotation(cn = function(index) {
+    year = as.numeric(colnames(mat))
+    which_decade = which(year %% 10 == 0)
+    grid.text(year[which_decade], which_decade/length(year), 1, just = c("center", "top"))
+})
+Heatmap(mat, name = "cases", col = colorRamp2(c(0, 800, 1000, 127000), c("white", "cornflowerblue", "yellow", "red")),
+    cluster_columns = FALSE, show_row_hclust = FALSE, rect_gp = gpar(col= "white"), show_column_names = FALSE,
+    row_names_side = "left", row_names_gp = gpar(fontsize = 10),
+    column_title = 'Measles cases in US states 1930-2001\nVaccine introduced 1961',
+    top_annotation = ha1, top_annotation_height = unit(1, "cm"),
+    bottom_annotation = ha_column, bottom_annotation_height = grobHeight(textGrob("1900"))) + ha2
+
+decorate_heatmap_body("cases", {
+    i = which(colnames(mat) == "1961")
+    x = i/ncol(mat)
+    grid.lines(c(x, x), c(0, 1), gp = gpar(lwd = 2))
+    grid.text("Vaccine introduced", x, unit(1, "npc") + unit(5, "mm"))
+})
+```
+
+## What if my annotation name is too long?
+

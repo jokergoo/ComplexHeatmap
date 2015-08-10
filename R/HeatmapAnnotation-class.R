@@ -66,11 +66,11 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-HeatmapAnnotation = function(df, name, col, color_bar = rep("discrete", ncol(df)), 
+HeatmapAnnotation = function(df, name, col, annotation_legend_param = list(), 
 	show_legend = rep(TRUE, n_anno), ..., 
 	which = c("column", "row"), annotation_height = 1, annotation_width = 1, 
-	height = unit(1, "cm"), width = unit(1, "cm"), gp = gpar(col = NA),
-	gap = unit(0, "null")) {
+	height = calc_anno_size(), width = calc_anno_size(), gp = gpar(col = NA),
+	gap = unit(0, "mm")) {
 
 	.Object = new("HeatmapAnnotation")
 
@@ -97,18 +97,44 @@ HeatmapAnnotation = function(df, name, col, color_bar = rep("discrete", ncol(df)
 	    	show_legend = rep(show_legend, n_anno)
 	    }
 
-	    if(length(color_bar) == 1) color_bar = rep(color_bar, ncol(df))
+	    if(length(annotation_legend_param) == 0) {
+	    	annotation_legend_param = rep.list(NULL, n_anno)
+	    } else if(inherits(annotation_legend_param, "list")) {
+	    	if(all(sapply(annotation_legend_param, inherits, "list"))) {  # if it is a list of lists
+	    		nl = length(annotation_legend_param)
+	    		if(nl > n_anno) {
+	    			stop("Amount of legend params is larger than the number of simple annotations.")
+	    		}
+	    		if(is.null(names(annotation_legend_param))) {
+	    			names(annotation_legend_param) = anno_name[seq_len(nl)]
+	    		} else if(length(setdiff(names(annotation_legend_param), anno_name))) {
+	    			stop("Some names in 'annotation_legend_param' are not in names of simple annotations.")
+	    		} else {
+	    			annotation_legend_param = annotation_legend_param[ intersect(anno_name, names(annotation_legend_param)) ]
+	    		}
+	    		lp = rep.list(NULL, n_anno)
+
+	    		names(lp) = anno_name
+	    		for(i in seq_along(lp)) {
+	    			lp[[i]] = annotation_legend_param[[i]]
+	    		}
+	    		annotation_legend_param = lp
+	    	} else {
+	    		annotation_legend_param = rep.list(annotation_legend_param, n_anno)
+	    	}
+	    }
+
 
 	    if(missing(col)) {
 	        for(i in seq_len(n_anno)) {
-	        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp, color_bar = color_bar[i])))
+	        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp, legend_param = annotation_legend_param[[i]])))
 	        }
 	    } else {
 	        for(i in seq_len(n_anno)) {
 	        	if(is.null(col[[ anno_name[i] ]])) { # if the color is not provided
-	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp, color_bar = color_bar[i])))
+	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], which = which, show_legend = show_legend[i], gp = gp, legend_param = annotation_legend_param[[i]])))
 	        	} else {
-	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], col = col[[ anno_name[i] ]], which = which, show_legend = show_legend[i], gp = gp, color_bar = color_bar[i])))
+	        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], col = col[[ anno_name[i] ]], which = which, show_legend = show_legend[i], gp = gp, legend_param = annotation_legend_param[[i]])))
 	        	}
 	        }
 	    }
@@ -165,18 +191,25 @@ HeatmapAnnotation = function(df, name, col, color_bar = rep("discrete", ncol(df)
 		anno_size = anno_size/sum(anno_size)*(unit(1, "npc") - sum(.Object@gap))
 	}
 
-
     .Object@anno_list = anno_list
     .Object@anno_size = anno_size
     .Object@which = which
+
+    calc_anno_size = function() sum(.Object@anno_size)
 
     size = switch(which,
 		column = height,
 		row = width)
 
-    .Object@size = size
+    called_args = names(match.call()[-1])
 
-    
+    if(!is_abs_unit(size)) {
+    	if(which == "row" && !("width" %in% called_args))
+    		size = unit(5*length(anno_list), "mm") + sum(gap)
+    	else if(which == "column" && !("height" %in% called_args))
+    		size = unit(5*length(anno_list), "mm") + sum(gap)	
+    }
+    .Object@size = size
 
     return(.Object)
 }
@@ -247,10 +280,40 @@ setMethod(f = "get_color_mapping_list",
 	color_mapping_list = list()
 	for(i in seq_along(object@anno_list)) {
 		if(object@anno_list[[i]]@show_legend) {
-			color_mapping_list = c(color_mapping_list, list(object@anno_list[[i]]@color_mapping))
+			color_mapping_list = c.list(color_mapping_list, object@anno_list[[i]]@color_mapping)
 		}
 	}
 	return(color_mapping_list)
+})
+
+# == title
+# Get a list of color mapping parameters
+#
+# == param
+# -object a `HeatmapAnnotation-class` object.
+#
+# == details
+# Color mapping parameters for visible simple annotations are only returned.
+#
+# This function is only for internal use.
+#
+# == values
+# A list.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+setMethod(f = "get_color_mapping_param_list",
+	signature = "HeatmapAnnotation",
+	definition = function(object) {
+
+	color_mapping_param_list = list()
+	for(i in seq_along(object@anno_list)) {
+		if(object@anno_list[[i]]@show_legend) {
+			color_mapping_param_list = c.list(color_mapping_param_list, object@anno_list[[i]]@color_mapping_param)
+		}
+	}
+	return(color_mapping_param_list)
 })
 
 # == title

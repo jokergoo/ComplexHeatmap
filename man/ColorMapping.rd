@@ -10,8 +10,7 @@ Constructor methods for ColorMapping class
 }
 \usage{
 ColorMapping(name, colors = NULL, levels = NULL,
-    col_fun = NULL, breaks = NULL, enforce_breaks = FALSE, na_col = "#FFFFFF",
-    legend_title = name, color_bar = c("discrete", "continuous"))}
+    col_fun = NULL, breaks = NULL, na_col = "#FFFFFF")}
 \arguments{
 
   \item{name}{name for this color mapping. The name is automatically generated if it is not specified.}
@@ -38,6 +37,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
+
+
+
 
 
 

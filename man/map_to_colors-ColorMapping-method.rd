@@ -36,6 +36,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 
+
+
+
+
+
 # discrete color mapping for characters
 cm = ColorMapping(name = "test",
     colors = c("blue", "white", "red"),
