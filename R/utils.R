@@ -424,3 +424,69 @@ get_text_just = function(rot, side) {
         }
     }
 }
+
+compare_unit = function(u1, u2) {
+    x1 = convertUnit(u1, "mm", valueOnly = TRUE)
+    x2 = convertUnit(u2, "mm", valueOnly = TRUE)
+    ifelse(x1 > x2, 1, ifelse(x1 < x2, -1, 0))
+}
+
+is.fixedUnit = function(x) {
+    # npc = 0
+    # cm = 1
+    # inches = 2
+    # mm = 3
+    # points = 4
+    # picas = 5
+    # bigpts = 6
+    # dida = 7
+    # cicero = 8
+    # scaledpts = 9
+    # lines =10
+    # char = 11
+    # native = 12
+    # snpc = 13
+    # strwidth = 14
+    # strheight = 15
+    # grobwidth = 16  # we only simply think grobwidth is a fixed unit
+    # grobheight = 17
+    fixed_units = c(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17)
+    if(inherits(x, "unit.list")) {
+        sapply(x, function(u) {
+            is.fixedUnit(u)
+        })
+    } else {
+        if(inherits(x, "unit.arithemtic")) {
+            ind = grep("arg", names(x), value = TRUE)
+            all(sapply(ind, function(i) attr(x[[i]], "valid.unit") %in% fixed_units))
+        } else {
+            attr(x, "valid.unit") %in% fixed_units
+        }
+    }
+}
+
+
+c.list = function(lt, ..., list = NULL) {
+    if(length(lt) == 0) lt = list()
+
+    if(is.null(list)) {
+        lt_add = list(...)
+
+        n = length(lt)
+        for(i in seq_along(lt_add)) {
+            lt[[n+i]] = lt_add[[i]]
+        }
+    } else {
+        lt = c(lt, list)
+    }
+    return(lt)
+}
+
+rep.list = function(x, n) {
+    lt = vector("list", n)
+    for(i in seq_len(n)) {
+        lt[i] = list(x)
+    }
+    return(lt)
+}
+

@@ -10,23 +10,38 @@ Draw legend based on color mapping
 
 }
 \usage{
-\S4method{color_mapping_legend}{ColorMapping}(object, ..., plot = TRUE, legend_grid_height = unit(4, "mm"),
-    legend_grid_width = unit(4, "mm"), legend_grid_border = "white",
-    legend_title_gp = gpar(fontsize = 10, fontface = "bold"),
-    legend_label_gp = gpar(fontsize = 10))}
+\S4method{color_mapping_legend}{ColorMapping}(object, ...,
+    plot = TRUE,
+    title = object@name,
+    title_gp = gpar(fontsize = 10, fontface = "bold"),
+    color_bar = c("discrete", "continuous"),
+    grid_height = unit(4, "mm"),
+    grid_width = unit(4, "mm"),
+    grid_border = "white",
+    at = object@levels,
+    labels = at,
+    labels_gp = gpar(fontsize = 10),
+    param = NULL)}
 \arguments{
 
   \item{object}{a \code{\link{ColorMapping-class}} object.}
   \item{...}{pass to \code{\link[grid]{viewport}}.}
   \item{plot}{whether to plot or just return the size of the legend viewport.}
-  \item{legend_grid_height}{height of each legend grid.}
-  \item{legend_grid_width}{width of each legend grid.}
-  \item{legend_grid_border}{color for legend grid borders.}
-  \item{legend_title_gp}{graphic parameter for legend title.}
-  \item{legend_label_gp}{graphic parameter for legend label.}
+  \item{title}{title of the legend, by default it is the name of the legend}
+  \item{title_gp}{graphical parameters for legend title}
+  \item{color_bar}{if the mapping is continuous, whether show the legend as discrete color bar or continuous color bar}
+  \item{grid_height}{height of each legend grid.}
+  \item{grid_width}{width of each legend grid.}
+  \item{grid_border}{color for legend grid borders.}
+  \item{at}{break values of the legend}
+  \item{labels}{labels corresponding to break values}
+  \item{labels_gp}{graphcial parameters for legend labels}
+  \item{param}{will be parsed if the parameters are specified as a list}
 }
 \details{
 A viewport is created which contains a legend title, legend grids and corresponding labels.
+
+This function will be improved in the future to support more types of legends.
 
 }
 \value{
@@ -38,6 +53,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
+
+
+
 
 
 

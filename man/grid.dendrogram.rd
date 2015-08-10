@@ -41,6 +41,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 
+
+
+
+
+
 hc = hclust(dist(USArrests[1:5, ]))
 dend = as.dendrogram(hc)
 

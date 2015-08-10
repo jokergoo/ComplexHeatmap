@@ -36,5 +36,10 @@ Zuguang Gu <z.gu@dkfz.de>
 
 
 
+
+
+
+
+
 # for examples, please go to `HeatmapAnnotation` method page
 NULL}

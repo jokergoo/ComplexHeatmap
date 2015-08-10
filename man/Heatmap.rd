@@ -32,15 +32,13 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     show_column_names = TRUE, column_names_max_height = unit(4, "cm"),
     column_names_gp = gpar(fontsize = 12),
     top_annotation = new("HeatmapAnnotation"),
-    top_annotation_height = unit(5*length(top_annotation@anno_list), "mm") + sum(top_annotation@gap),
+    top_annotation_height = top_annotation@size,
     bottom_annotation = new("HeatmapAnnotation"),
-    bottom_annotation_height = unit(5*length(bottom_annotation@anno_list), "mm") + sum(bottom_annotation@gap),
+    bottom_annotation_height = bottom_annotation@size,
     km = 1, split = NULL, gap = unit(1, "mm"),
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE,
-    heatmap_legend_title = name,
-    heatmap_legend_color_bar = c("discrete", "continuous"),
-    heatmap_legend_enforce_breaks = FALSE)}
+    heatmap_legend_param = list(title = name, color_bar = "discrete"))}
 \arguments{
 
   \item{matrix}{a matrix. Either numeric or character. If it is a simple vector, it will beconverted to a one-column matrix.}
@@ -93,9 +91,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{combined_name_fun}{if the heatmap is split by rows, how to make a combined row title for each slice?The input parameter for this function is a vector which contains level names under each column in \code{split}.}
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmapis appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
-  \item{heatmap_legend_title}{title for the heatmap legend. By default it is the name of the heatmap}
-  \item{heatmap_legend_color_bar}{if the matrix is continuous, whether should the legend as continuous color bar as well? Possible values are "discrete" and "continuous". Current implementation of continuous color bar is not a nice one and will be improved in future.}
-  \item{heatmap_legend_enforce_breaks}{For numeric matrix, if it is set to \code{\link{TRUE}} and \code{col} is specified by \code{\link[circlize]{colorRamp2}}break values specified in \code{\link[circlize]{colorRamp2}} will be the final break value in the legend.Or else, proper breaks values will be automatically generated.}
+  \item{heatmap_legend_param}{a list contains parameters for the heatmap legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
 }
 \details{
 The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -122,6 +118,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
+
+
+
 
 
 

@@ -27,6 +27,11 @@ This function is only for internal use.
 
 
 
+
+
+
+
+
 This function is only for internal use.}
 \value{
 A \code{\link[grid]{unit}} object.
@@ -37,6 +42,11 @@ Zuguang Gu <z.gu@dkfz.de>
 
 }
 \examples{
+
+
+
+
+
 
 
 
