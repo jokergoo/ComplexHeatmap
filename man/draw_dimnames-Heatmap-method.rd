@@ -3,11 +3,9 @@
 \alias{draw_dimnames}
 \title{
 Draw row names or column names
-
 }
 \description{
 Draw row names or column names
-
 }
 \usage{
 \S4method{draw_dimnames}{Heatmap}(object,
@@ -22,30 +20,15 @@ Draw row names or column names
 }
 \details{
 A viewport is created which contains row names or column names.
-
 This function is only for internal use.
-
 }
 \value{
 This function returns no value.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 # no example for this internal method
-NULL}
+NULL
+}

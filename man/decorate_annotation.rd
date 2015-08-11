@@ -2,11 +2,9 @@
 \alias{decorate_annotation}
 \title{
 Decorate the heatmap annotation
-
 }
 \description{
 Decorate the heatmap annotation
-
 }
 \usage{
 decorate_annotation(annotation, code, slice = NULL)}
@@ -20,11 +18,9 @@ decorate_annotation(annotation, code, slice = NULL)}
 This simple function actually contructs the name of the viewport,
 goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
 to that viewport.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
 set.seed(123)
@@ -39,5 +35,4 @@ decorate_annotation("type", {
 decorate_annotation("point", {
     grid.rect(gp = gpar(fill = "#FF000080"))
 }, slice = 2)
-
 }

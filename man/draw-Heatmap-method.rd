@@ -2,11 +2,9 @@
 \alias{draw,Heatmap-method}
 \title{
 Draw a single heatmap
-
 }
 \description{
 Draw a single heatmap
-
 }
 \usage{
 \S4method{draw}{Heatmap}(object, internal = FALSE, test = FALSE, ...)}
@@ -20,33 +18,19 @@ Draw a single heatmap
 \details{
 The function creates a \code{\link{HeatmapList-class}} object which only contains a single heatmap
 and call \code{\link{draw,HeatmapList-method}} to make the final heatmap.
-
 }
 \value{
 This function returns no value.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]
 colnames(mat) = letters[1:10]
 
 ht = Heatmap(mat)
-draw(ht, heatmap_legend_side = "left")}
+draw(ht, heatmap_legend_side = "left")
+}

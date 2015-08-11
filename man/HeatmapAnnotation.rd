@@ -2,11 +2,9 @@
 \alias{HeatmapAnnotation}
 \title{
 Constructor method for HeatmapAnnotation class
-
 }
 \description{
 Constructor method for HeatmapAnnotation class
-
 }
 \usage{
 HeatmapAnnotation(df, name, col, annotation_legend_param = list(),
@@ -19,7 +17,7 @@ HeatmapAnnotation(df, name, col, annotation_legend_param = list(),
   \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
   \item{name}{name of the heatmap annotation, optional.}
   \item{col}{a list of colors which contains color mapping to columns in \code{df}. See \code{\link{SingleAnnotation}} for how to set colors.}
-  \item{color_bar}{if there are continuous values in \code{df}, whether show the legend as discrete or continuous. Possible values are "discrete" and "continuous". It can be a vector for which each one corresponds to each column in \code{df}.}
+  \item{annotation_legend_param}{a list which contains parameters for annotation legends}
   \item{show_legend}{whether show legend for each column in \code{df}.}
   \item{...}{functions which define complex annotations. Values should be named arguments.}
   \item{which}{are the annotations row annotations or column annotations?}
@@ -33,33 +31,17 @@ HeatmapAnnotation(df, name, col, annotation_legend_param = list(),
 \details{
 The simple annotations are defined by \code{df} and \code{col} arguments. Complex annotations are
 defined by the function list. So you need to at least to define \code{df} or a annotation function.
-
 }
 \value{
 A \code{\link{HeatmapAnnotation-class}} object.
-
 }
 \seealso{
 There are two shortcut functions: \code{\link{rowAnnotation}} and \code{\link{columnAnnotation}}.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df)
 
@@ -73,4 +55,5 @@ ha = HeatmapAnnotation(points = anno_points(1:6))
 ha = HeatmapAnnotation(histogram = anno_points(1:6))
 
 mat = matrix(rnorm(36), 6)
-ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))}
+ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
+}

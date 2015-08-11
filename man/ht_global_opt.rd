@@ -2,11 +2,9 @@
 \alias{ht_global_opt}
 \title{
 Global options
-
 }
 \description{
 Global options
-
 }
 \usage{
 ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)}
@@ -19,12 +17,11 @@ ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)}
 \details{
 You can set some parameters for all heatmaps/annotations by this global function.
 There are following parameters:
-
 \describe{
   \item{heatmap_row_names_gp}{set \code{row_names_gp} in \code{\link{Heatmap}}.}
   \item{heatmap_column_names_gp}{set \code{column_names_gp} in \code{\link{Heatmap}}.}
-  \item{heatmap_row_title_gp}{set \code{\link{row_title_gp}}\code{\link{ in }}Heatmap`.}
-  \item{heatmap_column_title_gp}{set \code{\link{column_title_gp}} in \code{\link{Heatmap}}.}
+  \item{heatmap_row_title_gp}{set \code{row_title_gp} in \code{\link{Heatmap}}.}
+  \item{heatmap_column_title_gp}{set \code{column_title_gp} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_title_gp}{set \code{title_gp} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_labels_gp}{set \code{labels_gp} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_grid_width}{set \code{grid_width} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
@@ -40,5 +37,4 @@ There are following parameters:
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }

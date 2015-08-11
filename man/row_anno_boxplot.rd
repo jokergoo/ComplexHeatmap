@@ -2,11 +2,9 @@
 \alias{row_anno_boxplot}
 \title{
 Row annotation which is represented as boxplots
-
 }
 \description{
 Row annotation which is represented as boxplots
-
 }
 \usage{
 row_anno_boxplot(...)}
@@ -16,5 +14,4 @@ row_anno_boxplot(...)}
 }
 \details{
 A wrapper of \code{\link{anno_boxplot}} with pre-defined \code{which} to \code{row}.
-
 }

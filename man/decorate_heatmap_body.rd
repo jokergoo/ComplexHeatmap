@@ -2,11 +2,9 @@
 \alias{decorate_heatmap_body}
 \title{
 Decorate the heatmap body
-
 }
 \description{
 Decorate the heatmap body
-
 }
 \usage{
 decorate_heatmap_body(heatmap, code = {}, slice = 1)}
@@ -20,11 +18,9 @@ decorate_heatmap_body(heatmap, code = {}, slice = 1)}
 This simple function actually contructs the name of the viewport,
 goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
 to that viewport.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
 set.seed(123)
@@ -32,5 +28,4 @@ Heatmap(matrix(rnorm(100), 10), name = "mat")
 decorate_heatmap_body("mat", {
     grid.circle(gp = gpar(fill = "#FF000080"))
 })
-
 }
