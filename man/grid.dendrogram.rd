@@ -2,11 +2,9 @@
 \alias{grid.dendrogram}
 \title{
 Draw dendrogram under grid system
-
 }
 \description{
 Draw dendrogram under grid system
-
 }
 \usage{
 grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
@@ -21,31 +19,15 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
 }
 \details{
 The dendrogram tree can be renderred (e.g. by \code{dendextend} package).
-
 A viewport is created which contains the dendrogram.
-
 }
 \value{
 No value is returned.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 hc = hclust(dist(USArrests[1:5, ]))
 dend = as.dendrogram(hc)
 
@@ -57,4 +39,5 @@ grid.dendrogram(dend, facing = "top", layout.pos.row = 1, layout.pos.col = 2)
 grid.dendrogram(dend, facing = "top", order = "reverse", layout.pos.row = 2, 
     layout.pos.col = 1)
 grid.dendrogram(dend, facing = "left", layout.pos.row = 2, layout.pos.col = 2)
-upViewport()}
+upViewport()
+}

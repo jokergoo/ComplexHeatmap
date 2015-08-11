@@ -2,11 +2,9 @@
 \alias{+.AdditiveUnit}
 \title{
 Add heatmaps or row annotations to a heatmap list
-
 }
 \description{
 Add heatmaps or row annotations to a heatmap list
-
 }
 \usage{
 \method{+}{AdditiveUnit}(x, y)}
@@ -18,31 +16,15 @@ Add heatmaps or row annotations to a heatmap list
 \details{
 It is only a shortcut function. It actually calls \code{\link{add_heatmap,Heatmap-method}}, \code{\link{add_heatmap,HeatmapList-method}}
 or \code{\link{add_heatmap,HeatmapAnnotation-method}} depending on the class of the input objects.
-
 The \code{\link{HeatmapAnnotation-class}} object to be added should only be row annotations.
-
 }
 \value{
 A \code{\link{HeatmapList-class}} object.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]
@@ -60,4 +42,5 @@ ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"),
 ht + ha
 ht_list + ha
 
-ha + ha + ht}
+ha + ha + ht
+}

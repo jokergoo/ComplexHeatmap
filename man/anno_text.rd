@@ -2,11 +2,9 @@
 \alias{anno_text}
 \title{
 Using text as annotation
-
 }
 \description{
 Using text as annotation
-
 }
 \usage{
 anno_text(x, which = c("column", "row"), gp = gpar(), rot = 0,
@@ -22,28 +20,15 @@ anno_text(x, which = c("column", "row"), gp = gpar(), rot = 0,
 }
 \value{
 A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 mat = matrix(rnorm(100), 10)
 colnames(mat) = letters[1:10]
 rownames(mat) = LETTERS[1:10]
 long_cn = do.call("paste0", rep(list(colnames(mat)), 4))  # just to construct long text
 ha_rot_cn = HeatmapAnnotation(text = anno_text(long_cn, rot = 45, offset = unit(5, "mm")))
-Heatmap(mat, name = "foo", top_annotation = ha_rot_cn, top_annotation_height = unit(1.2, "cm"))}
+Heatmap(mat, name = "foo", top_annotation = ha_rot_cn, top_annotation_height = unit(1.2, "cm"))
+}

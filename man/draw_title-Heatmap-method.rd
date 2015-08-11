@@ -2,11 +2,9 @@
 \alias{draw_title,Heatmap-method}
 \title{
 Draw heatmap title
-
 }
 \description{
 Draw heatmap title
-
 }
 \usage{
 \S4method{draw_title}{Heatmap}(object,
@@ -20,30 +18,15 @@ Draw heatmap title
 }
 \details{
 A viewport is created which contains heatmap title.
-
 This function is only for internal use.
-
 }
 \value{
 This function returns no value.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 # no example for this internal method
-NULL}
+NULL
+}

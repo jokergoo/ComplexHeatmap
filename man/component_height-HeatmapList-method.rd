@@ -2,11 +2,9 @@
 \alias{component_height,HeatmapList-method}
 \title{
 Height of each heatmap list component
-
 }
 \description{
 Height of each heatmap list component
-
 }
 \usage{
 \S4method{component_height}{HeatmapList}(object, k = 1:7)}
@@ -17,23 +15,10 @@ Height of each heatmap list component
 }
 \value{
 A \code{\link[grid]{unit}} object
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
-# no example for this internal method}
+# no example for this internal method
+}

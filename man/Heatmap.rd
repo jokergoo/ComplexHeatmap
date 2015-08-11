@@ -2,11 +2,9 @@
 \alias{Heatmap}
 \title{
 Constructor method for Heatmap class
-
 }
 \description{
 Constructor method for Heatmap class
-
 }
 \usage{
 Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
@@ -96,9 +94,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
 \details{
 The initialization function only applies parameter checking and fill values to each slot with proper ones.
 Then it will be ready for clustering and layout.
-
 Following methods can be applied on the \code{\link{Heatmap-class}} object:
-
 \itemize{
   \item \code{\link{show,Heatmap-method}}: draw a single heatmap with default parameters
   \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
@@ -107,29 +103,14 @@ Following methods can be applied on the \code{\link{Heatmap-class}} object:
 
 The constructor function pretends to be a high-level graphic function because the \code{show} method
 of the \code{\link{Heatmap-class}} object actually plots the graphics.
-
 }
 \value{
 A \code{\link{Heatmap-class}} object.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]
@@ -200,4 +181,5 @@ Heatmap(mat, rect_gp = gpar(col = "white"),
         grid.text(mat[i, j], x = x, y = y)
     },
     cluster_rows = FALSE, cluster_columns = FALSE, row_names_side = "left", 
-    column_names_side = "top")}
+    column_names_side = "top")
+}

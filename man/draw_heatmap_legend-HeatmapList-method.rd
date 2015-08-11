@@ -3,11 +3,9 @@
 \alias{draw_heatmap_legend}
 \title{
 Draw legends for all heatmaps
-
 }
 \description{
 Draw legends for all heatmaps
-
 }
 \usage{
 \S4method{draw_heatmap_legend}{HeatmapList}(object, legend_list = list(), ...)}
@@ -19,30 +17,15 @@ Draw legends for all heatmaps
 }
 \details{
 A viewport is created which contains heatmap legends.
-
 This function is only for internal use.
-
 }
 \value{
 This function returns no value.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 # no example for this internal method
-NULL}
+NULL
+}
