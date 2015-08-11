@@ -2,11 +2,9 @@
 \alias{make_layout,HeatmapList-method}
 \title{
 Make layout for the complete plot
-
 }
 \description{
 Make layout for the complete plot
-
 }
 \usage{
 \S4method{make_layout}{HeatmapList}(object, row_title = character(0),
@@ -43,32 +41,16 @@ Make layout for the complete plot
 }
 \details{
 It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
-
 The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.
-
 This function is only for internal use.
-
 }
 \value{
 A \code{\link{HeatmapList-class}} object in which settings for each heatmap are adjusted.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 # no example for this internal method
-NULL}
+NULL
+}

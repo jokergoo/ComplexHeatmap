@@ -2,11 +2,9 @@
 \alias{column_anno_points}
 \title{
 Column annotation which is represented as points
-
 }
 \description{
 Column annotation which is represented as points
-
 }
 \usage{
 column_anno_points(...)}
@@ -16,5 +14,4 @@ column_anno_points(...)}
 }
 \details{
 A wrapper of \code{\link{anno_points}} with pre-defined \code{which} to \code{column}.
-
 }

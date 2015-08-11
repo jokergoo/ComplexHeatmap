@@ -3,11 +3,9 @@
 \alias{get_color_mapping_param_list}
 \title{
 Get a list of color mapping parameters
-
 }
 \description{
 Get a list of color mapping parameters
-
 }
 \usage{
 \S4method{get_color_mapping_param_list}{HeatmapAnnotation}(object)}
@@ -17,15 +15,11 @@ Get a list of color mapping parameters
 }
 \details{
 Color mapping parameters for visible simple annotations are only returned.
-
 This function is only for internal use.
-
 }
 \value{
 A list.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }

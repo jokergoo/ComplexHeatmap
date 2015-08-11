@@ -14,8 +14,8 @@
 #
 # -heatmap_row_names_gp set ``row_names_gp`` in `Heatmap`.
 # -heatmap_column_names_gp set ``column_names_gp`` in `Heatmap`.
-# -heatmap_row_title_gp set `row_title_gp`` in `Heatmap`.
-# -heatmap_column_title_gp set `column_title_gp` in `Heatmap`.
+# -heatmap_row_title_gp set ``row_title_gp`` in `Heatmap`.
+# -heatmap_column_title_gp set ``column_title_gp`` in `Heatmap`.
 # -heatmap_legend_title_gp set ``title_gp`` element in ``heatmap_legend_param`` in `Heatmap`.
 # -heatmap_legend_labels_gp set ``labels_gp`` element in ``heatmap_legend_param`` in `Heatmap`.
 # -heatmap_legend_grid_width set ``grid_width`` element in ``heatmap_legend_param`` in `Heatmap`.

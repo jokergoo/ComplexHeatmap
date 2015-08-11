@@ -2,11 +2,9 @@
 \alias{show,HeatmapAnnotation-method}
 \title{
 Print the Heatmap Annotation object
-
 }
 \description{
 Print the Heatmap Annotation object
-
 }
 \usage{
 \S4method{show}{HeatmapAnnotation}(object)}
@@ -16,9 +14,7 @@ Print the Heatmap Annotation object
 }
 \value{
 No value is returned.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }

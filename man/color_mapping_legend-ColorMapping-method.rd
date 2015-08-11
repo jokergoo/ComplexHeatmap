@@ -3,11 +3,9 @@
 \alias{color_mapping_legend}
 \title{
 Draw legend based on color mapping
-
 }
 \description{
 Draw legend based on color mapping
-
 }
 \usage{
 \S4method{color_mapping_legend}{ColorMapping}(object, ...,
@@ -40,31 +38,15 @@ Draw legend based on color mapping
 }
 \details{
 A viewport is created which contains a legend title, legend grids and corresponding labels.
-
 This function will be improved in the future to support more types of legends.
-
 }
 \value{
 A \code{\link[grid]{grob}} object which contains the legend
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 # discrete color mapping for characters
 cm = ColorMapping(name = "test",
     colors = c("blue", "white", "red"),
@@ -84,4 +66,5 @@ require(circlize)
 cm = ColorMapping(name = "test",
     col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
 grid.newpage()
-color_mapping_legend(cm, legend_title_gp = gpar(fontsize = 16))}
+color_mapping_legend(cm, title_gp = gpar(fontsize = 16))
+}
