@@ -3,11 +3,9 @@
 \alias{set_component_height}
 \title{
 Set height of each heatmap component
-
 }
 \description{
 Set height of each heatmap component
-
 }
 \usage{
 \S4method{set_component_height}{Heatmap}(object, k, v)}
@@ -19,28 +17,14 @@ Set height of each heatmap component
 }
 \details{
 This function is only for internal use.
-
 }
 \value{
 This function returns no value.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 # no example for this internal method
-NULL}
+NULL
+}

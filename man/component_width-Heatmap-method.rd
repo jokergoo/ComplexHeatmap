@@ -2,11 +2,9 @@
 \alias{component_width,Heatmap-method}
 \title{
 Width of each heatmap component
-
 }
 \description{
 Width of each heatmap component
-
 }
 \usage{
 \S4method{component_width}{Heatmap}(object, k = 1:7)}
@@ -17,41 +15,15 @@ Width of each heatmap component
 }
 \details{
 This function is only for internal use.
-
 }
 \section{Detials}{
-
-
-
-
-
-
-
-
-
-
-
-
 This function is only for internal use.}
 \value{
 A \code{\link[grid]{unit}} object.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
-# no example for this internal method}
+# no example for this internal method
+}

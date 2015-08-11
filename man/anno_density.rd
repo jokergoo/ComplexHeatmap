@@ -2,11 +2,9 @@
 \alias{anno_density}
 \title{
 Using kernel density as annotation
-
 }
 \description{
 Using kernel density as annotation
-
 }
 \usage{
 anno_density(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
@@ -21,25 +19,11 @@ anno_density(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
 }
 \value{
 A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 mat = matrix(rnorm(32), nrow = 4)
 f = anno_density(mat)
 grid.newpage(); f(1:8)
@@ -49,4 +33,5 @@ grid.newpage(); f(1:4)
 
 lt = lapply(1:4, function(i) rnorm(8))
 f = anno_density(lt, type = "heatmap")
-grid.newpage(); f(1:4)}
+grid.newpage(); f(1:4)
+}

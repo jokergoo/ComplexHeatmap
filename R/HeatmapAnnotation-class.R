@@ -41,8 +41,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -df a data frame. Each column will be treated as a simple annotation. The data frame must have column names.
 # -name name of the heatmap annotation, optional.
 # -col a list of colors which contains color mapping to columns in ``df``. See `SingleAnnotation` for how to set colors.
-# -color_bar if there are continuous values in ``df``, whether show the legend as discrete or continuous. 
-#            Possible values are "discrete" and "continuous". It can be a vector for which each one corresponds to each column in ``df``.
+# -annotation_legend_param a list which contains parameters for annotation legends
 # -show_legend whether show legend for each column in ``df``.
 # -... functions which define complex annotations. Values should be named arguments.
 # -which are the annotations row annotations or column annotations?

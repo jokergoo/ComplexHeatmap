@@ -2,11 +2,9 @@
 \alias{add_heatmap,HeatmapList-method}
 \title{
 Add heatmaps and row annotations to the heatmap list
-
 }
 \description{
 Add heatmaps and row annotations to the heatmap list
-
 }
 \usage{
 \S4method{add_heatmap}{HeatmapList}(object, x)}
@@ -17,29 +15,14 @@ Add heatmaps and row annotations to the heatmap list
 }
 \details{
 There is a shortcut function \code{+.AdditiveUnit}.
-
 }
 \value{
 A \code{\link{HeatmapList-class}} object.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 mat = matrix(rnorm(80, 2), 8, 10)
 mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
 rownames(mat) = letters[1:12]
@@ -51,4 +34,5 @@ add_heatmap(ht_list, ht)
 
 ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"), 
     which = "row")
-add_heatmap(ht_list, ha)}
+add_heatmap(ht_list, ha)
+}

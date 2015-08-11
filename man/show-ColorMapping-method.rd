@@ -2,11 +2,9 @@
 \alias{show,ColorMapping-method}
 \title{
 Print ColorMapping object
-
 }
 \description{
 Print ColorMapping object
-
 }
 \usage{
 \S4method{show}{ColorMapping}(object)}
@@ -16,9 +14,7 @@ Print ColorMapping object
 }
 \value{
 This function returns no value.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }

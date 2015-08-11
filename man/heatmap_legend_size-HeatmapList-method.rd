@@ -3,11 +3,9 @@
 \alias{heatmap_legend_size}
 \title{
 Size of the heatmap legend viewport
-
 }
 \description{
 Size of the heatmap legend viewport
-
 }
 \usage{
 \S4method{heatmap_legend_size}{HeatmapList}(object, legend_list = list(), ...)}
@@ -19,28 +17,14 @@ Size of the heatmap legend viewport
 }
 \details{
 This function is only for internal use.
-
 }
 \value{
 A \code{\link[grid]{unit}} object.
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
-
 }
 \examples{
-
-
-
-
-
-
-
-
-
-
-
-
 # no example for this internal method
-NULL}
+NULL
+}
