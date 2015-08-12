@@ -10,9 +10,11 @@ r-packages:
 - colorspace
 - RColorBrewer
 - testthat
-- circlize
 - knitr
 - markdown
 - dendextend
+
+r_github_packages:
+- jokergoo/circlize
 
 r_check_args: --no-build-vignettes --no-vignettes
