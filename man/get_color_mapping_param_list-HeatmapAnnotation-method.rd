@@ -8,10 +8,12 @@ Get a list of color mapping parameters
 Get a list of color mapping parameters
 }
 \usage{
-\S4method{get_color_mapping_param_list}{HeatmapAnnotation}(object)}
+\S4method{get_color_mapping_param_list}{HeatmapAnnotation}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
+
 }
 \details{
 Color mapping parameters for visible simple annotations are only returned.

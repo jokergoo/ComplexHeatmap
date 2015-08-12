@@ -1,9 +1,11 @@
 \name{component_width-dispatch}
 \alias{component_width}
 \title{
-Method dispatch page for component_width}
+Method dispatch page for component_width
+}
 \description{
-Method dispatch page for \code{component_width}.}
+Method dispatch page for \code{component_width}.
+}
 \section{Dispatch}{
 \code{component_width} can be dispatched on following classes:
 
@@ -15,5 +17,6 @@ Method dispatch page for \code{component_width}.}
 \examples{
 # no example
 NULL
+
 
 }

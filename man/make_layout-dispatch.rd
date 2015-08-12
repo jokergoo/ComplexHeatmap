@@ -1,9 +1,11 @@
 \name{make_layout-dispatch}
 \alias{make_layout}
 \title{
-Method dispatch page for make_layout}
+Method dispatch page for make_layout
+}
 \description{
-Method dispatch page for \code{make_layout}.}
+Method dispatch page for \code{make_layout}.
+}
 \section{Dispatch}{
 \code{make_layout} can be dispatched on following classes:
 
@@ -15,5 +17,6 @@ Method dispatch page for \code{make_layout}.}
 \examples{
 # no example
 NULL
+
 
 }

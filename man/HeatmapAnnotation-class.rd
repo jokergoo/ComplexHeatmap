@@ -17,13 +17,12 @@ The \code{\link{HeatmapAnnotation-class}} provides following methods:
 \itemize{
   \item \code{\link{HeatmapAnnotation}}: constructor method
   \item \code{\link{draw,HeatmapAnnotation-method}}: draw the annotations
-}
-
-}
+}}
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
 # for examples, please go to `HeatmapAnnotation` method page
 NULL
+
 }

@@ -7,10 +7,12 @@ Print ColorMapping object
 Print ColorMapping object
 }
 \usage{
-\S4method{show}{ColorMapping}(object)}
+\S4method{show}{ColorMapping}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{ColorMapping-class}} object.}
+
 }
 \value{
 This function returns no value.

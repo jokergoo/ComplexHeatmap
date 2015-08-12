@@ -7,10 +7,12 @@ Make the layout of a single heatmap
 Make the layout of a single heatmap
 }
 \usage{
-\S4method{make_layout}{Heatmap}(object)}
+\S4method{make_layout}{Heatmap}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
+
 }
 \details{
 The layout of the single heatmap will be established by setting the size of each heatmap components.
@@ -28,4 +30,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example for this internal method
 NULL
+
 }

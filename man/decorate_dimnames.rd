@@ -7,13 +7,15 @@ Decorate the heatmap dimension names
 Decorate the heatmap dimension names
 }
 \usage{
-decorate_dimnames(heatmap, code, slice = 1, which = c("column", "row"))}
+decorate_dimnames(heatmap, code, slice = 1, which = c("column", "row"))
+}
 \arguments{
 
   \item{heatmap}{name of the heatmap}
   \item{code}{code that is executed in the heatmap body}
   \item{slice}{index of row slices in the heatmap}
   \item{which}{on rows or on columns?}
+
 }
 \details{
 This simple function actually contructs the name of the viewport,

@@ -152,6 +152,7 @@ Heatmap(Boston_scaled, cluster_columns = boston.pv$hclust, heatmap_legend_param 
 ## Make a same plot as heatmap()
 
 ```{r}
+set.seed(123)
 mat = matrix(rnorm(100), 10)
 heatmap(mat, col = topo.colors(50))
 ```

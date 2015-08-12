@@ -66,7 +66,7 @@ In this case, user should provide a color mapping function. A color mapping func
 should accept a vector of values and return a vector of corresponding colors. The `colorRamp2()` from
 the **circlize** package is helpful for generating such functions. The two arguments for `colorRamp2()`
 is a vector of breaks values and corresponding colors. Currently `colorRamp2()` linearly interpolates
-colors in every interval through RGB color space.
+colors in every interval through LAB color space.
 
 In following example, values between -3 and 3 are 
 linearly interpolated to obtain corresponding colors, values larger than 3 are all mapped to red and values less than -3 are
@@ -115,6 +115,34 @@ The matrix which contains `NA` can also be clustered by `Heatmap()` but giving w
 mat_with_na = mat
 mat_with_na[sample(c(TRUE, FALSE), nrow(mat)*ncol(mat), replace = TRUE, prob = c(1, 9))] = NA
 Heatmap(mat_with_na, na_col = "orange")
+```
+
+Color space is important for interpolating colors. By default, colors are linearly interpolated in [LAB](https://en.wikipedia.org/wiki/Lab_color_space), but you can select the color space in `colorRamp2()` function. Compare following two plots
+(`+` operation on two heatmaps will be introduced in [**Making a list of heatmaps**](a3.a_list_of_heatmap.html) vignette):
+
+```{r, fig.width = 10}
+f1 = colorRamp2(seq(min(mat), max(mat), length = 3), c("blue", "#EEEEEE", "red"))
+f2 = colorRamp2(seq(min(mat), max(mat), length = 3), c("blue", "#EEEEEE", "red"), space = "RGB")
+Heatmap(mat, col = f1, column_title = "LAB color space") +
+Heatmap(mat, col = f2, column_title = "RGB color space")
+```
+
+On following figure, corresponding values change evenly on x-axis, you can see how colors change under different
+color spaces. Choosing a proper color space is a little bit subjective and it depends on specific data and color theme.
+Sometimes you need to try several color spaces to determine one which can best reveal potential structure of your data.
+
+```{r, fig.width = 10, fig.height = 4}
+space = c("RGB", "LAB", "XYZ", "sRGB", "LUV")
+x = seq(-1, 1, length = 100)
+
+par(xpd = NA)
+plot(NULL, xlim = c(-1, 1), ylim = c(0.5, length(space)-0.5), type = "n", axes = FALSE, ann = FALSE)
+for(i in seq_along(space)) {
+    f = colorRamp2(c(-1, 0, 1), c("blue", "#EEEEEE", "red"), space = space[i])
+    rect(x - 1/100, i - 0.5, x + 1/100, i + 0.5, col = f(x), border = NA)
+    text(1, i, space[i], adj = c(-0.2, 0.5))
+}
+axis(side = 1)
 ```
 
 ## Titles

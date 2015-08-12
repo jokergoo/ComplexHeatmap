@@ -7,11 +7,13 @@ Add heatmaps and row annotations to the heatmap list
 Add heatmaps and row annotations to the heatmap list
 }
 \usage{
-\S4method{add_heatmap}{HeatmapList}(object, x)}
+\S4method{add_heatmap}{HeatmapList}(object, x)
+}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object.}
   \item{x}{a \code{\link{Heatmap-class}} object or a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
+
 }
 \details{
 There is a shortcut function \code{+.AdditiveUnit}.
@@ -35,4 +37,5 @@ add_heatmap(ht_list, ht)
 ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"), 
     which = "row")
 add_heatmap(ht_list, ha)
+
 }

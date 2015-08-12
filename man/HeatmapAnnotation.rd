@@ -11,7 +11,8 @@ HeatmapAnnotation(df, name, col, annotation_legend_param = list(),
     show_legend = rep(TRUE, n_anno), ...,
     which = c("column", "row"), annotation_height = 1, annotation_width = 1,
     height = calc_anno_size(), width = calc_anno_size(), gp = gpar(col = NA),
-    gap = unit(0, "mm"))}
+    gap = unit(0, "mm"))
+}
 \arguments{
 
   \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
@@ -27,6 +28,7 @@ HeatmapAnnotation(df, name, col, annotation_legend_param = list(),
   \item{width}{width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.}
   \item{gp}{graphic parameters for simple annotations.}
   \item{gap}{gap between each annotation}
+
 }
 \details{
 The simple annotations are defined by \code{df} and \code{col} arguments. Complex annotations are
@@ -56,4 +58,5 @@ ha = HeatmapAnnotation(histogram = anno_points(1:6))
 
 mat = matrix(rnorm(36), 6)
 ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
+
 }

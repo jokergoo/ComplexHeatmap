@@ -8,7 +8,8 @@ Constructor method for SingleAnnotation class
 }
 \usage{
 SingleAnnotation(name, value, col, fun, which = c("column", "row"),
-    show_legend = TRUE, gp = gpar(col = NA), legend_param = list())}
+    show_legend = TRUE, gp = gpar(col = NA), legend_param = list())
+}
 \arguments{
 
   \item{name}{name for this annotation. If it is not specified, an internal name is assigned to it.}
@@ -19,6 +20,7 @@ SingleAnnotation(name, value, col, fun, which = c("column", "row"),
   \item{show_legend}{if it is a simple annotation, whether show legend when making the complete heatmap.}
   \item{gp}{Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.}
   \item{legend_param}{parameters for the legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for options.}
+
 }
 \details{
 The most simple annotation is one row or one column grids in which different colors
@@ -57,4 +59,5 @@ SingleAnnotation(value = 1:10, col = colorRamp2(c(1, 10), c("blue", "red")))
 
 # self-defined graphic function
 SingleAnnotation(fun = anno_points(1:10))
+
 }

@@ -7,10 +7,12 @@ Row annotation which is represented as points
 Row annotation which is represented as points
 }
 \usage{
-row_anno_points(...)}
+row_anno_points(...)
+}
 \arguments{
 
   \item{...}{pass to \code{\link{anno_points}}}
+
 }
 \details{
 A wrapper of \code{\link{anno_points}} with pre-defined \code{which} to \code{row}.

@@ -1,9 +1,11 @@
 \name{component_height-dispatch}
 \alias{component_height}
 \title{
-Method dispatch page for component_height}
+Method dispatch page for component_height
+}
 \description{
-Method dispatch page for \code{component_height}.}
+Method dispatch page for \code{component_height}.
+}
 \section{Dispatch}{
 \code{component_height} can be dispatched on following classes:
 
@@ -15,5 +17,6 @@ Method dispatch page for \code{component_height}.}
 \examples{
 # no example
 NULL
+
 
 }
