@@ -1,9 +1,11 @@
 \name{draw-dispatch}
 \alias{draw}
 \title{
-Method dispatch page for draw}
+Method dispatch page for draw
+}
 \description{
-Method dispatch page for \code{draw}.}
+Method dispatch page for \code{draw}.
+}
 \section{Dispatch}{
 \code{draw} can be dispatched on following classes:
 
@@ -17,5 +19,6 @@ Method dispatch page for \code{draw}.}
 \examples{
 # no example
 NULL
+
 
 }

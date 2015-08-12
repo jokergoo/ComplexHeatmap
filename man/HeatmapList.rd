@@ -7,10 +7,12 @@ Constructor method for HeatmapList class
 Constructor method for HeatmapList class
 }
 \usage{
-HeatmapList(...)}
+HeatmapList(...)
+}
 \arguments{
 
   \item{...}{arguments}
+
 }
 \details{
 There is no public constructor method for the \code{\link{HeatmapList-class}}.
@@ -22,8 +24,10 @@ No value is returned.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \section{Detailes}{
-There is no public constructor method for the \code{\link{HeatmapList-class}}.}
+There is no public constructor method for the \code{\link{HeatmapList-class}}.
+}
 \examples{
 # no example
 NULL
+
 }

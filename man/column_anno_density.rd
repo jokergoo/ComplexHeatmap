@@ -7,10 +7,12 @@ Column annotation which is represented as density plot
 Column annotation which is represented as density plot
 }
 \usage{
-column_anno_density(...)}
+column_anno_density(...)
+}
 \arguments{
 
   \item{...}{pass to \code{\link{anno_density}}}
+
 }
 \details{
 A wrapper of \code{\link{anno_density}} with pre-defined \code{which} to \code{column}.

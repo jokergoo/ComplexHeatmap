@@ -8,10 +8,12 @@ Get a list of color mapping objects
 Get a list of color mapping objects
 }
 \usage{
-\S4method{get_color_mapping_list}{HeatmapAnnotation}(object)}
+\S4method{get_color_mapping_list}{HeatmapAnnotation}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
+
 }
 \details{
 Color mapping for visible simple annotations are only returned.
@@ -26,4 +28,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example for this internal method
 NULL
+
 }

@@ -9,7 +9,8 @@ Draw dendrogram on row or column
 }
 \usage{
 \S4method{draw_hclust}{Heatmap}(object,
-    which = c("row", "column"), k = 1, max_height = NULL, ...)}
+    which = c("row", "column"), k = 1, max_height = NULL, ...)
+}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
@@ -17,6 +18,7 @@ Draw dendrogram on row or column
   \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
   \item{max_height}{maximum height of the dendrograms.}
   \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
+
 }
 \details{
 If the matrix is split into several row slices, a list of dendrograms will be drawn by 
@@ -36,4 +38,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example for this internal method
 NULL
+
 }

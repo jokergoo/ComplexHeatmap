@@ -7,10 +7,12 @@ Column annotation which is represented as barplots
 Column annotation which is represented as barplots
 }
 \usage{
-column_anno_barplot(...)}
+column_anno_barplot(...)
+}
 \arguments{
 
   \item{...}{pass to \code{\link{anno_barplot}}}
+
 }
 \details{
 A wrapper of \code{\link{anno_barplot}} with pre-defined \code{which} to \code{column}.

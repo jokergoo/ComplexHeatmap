@@ -7,17 +7,17 @@ Construct row annotations
 Construct row annotations
 }
 \usage{
-rowAnnotation(...)}
+rowAnnotation(...)
+}
 \arguments{
 
   \item{...}{pass to \code{\link{HeatmapAnnotation}}}
+
 }
 \details{
 The function is identical to
   \preformatted{
-HeatmapAnnotation(..., which = "row")
-  }
-
+HeatmapAnnotation(..., which = "row")  }
 }
 \value{
 A \code{\link{HeatmapAnnotation-class}} object.
@@ -28,4 +28,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = columnAnnotation(df = df)
+
 }

@@ -7,12 +7,14 @@ Decorate the heatmap body
 Decorate the heatmap body
 }
 \usage{
-decorate_heatmap_body(heatmap, code = {}, slice = 1)}
+decorate_heatmap_body(heatmap, code = {}, slice = 1)
+}
 \arguments{
 
   \item{heatmap}{name of the heatmap}
   \item{code}{code that is executed in the heatmap body}
   \item{slice}{index of row slices in the heatmap}
+
 }
 \details{
 This simple function actually contructs the name of the viewport,

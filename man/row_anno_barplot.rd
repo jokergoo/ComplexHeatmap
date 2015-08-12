@@ -7,10 +7,12 @@ Row annotation which is represented as barplots
 Row annotation which is represented as barplots
 }
 \usage{
-row_anno_barplot(...)}
+row_anno_barplot(...)
+}
 \arguments{
 
   \item{...}{pass to \code{\link{anno_barplot}}}
+
 }
 \details{
 A wrapper of \code{\link{anno_barplot}} with pre-defined \code{which} to \code{row}.

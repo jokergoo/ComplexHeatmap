@@ -8,11 +8,13 @@ Draw column annotations
 Draw column annotations
 }
 \usage{
-\S4method{draw_annotation}{Heatmap}(object, which = c("top", "bottom"))}
+\S4method{draw_annotation}{Heatmap}(object, which = c("top", "bottom"))
+}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{which}{are the annotations put on the top or bottom of the heatmap?}
+
 }
 \details{
 A viewport is created which contains column annotations.
@@ -29,4 +31,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example for this internal method
 NULL
+
 }

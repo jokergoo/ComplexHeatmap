@@ -8,11 +8,13 @@ Prepare the heatmap
 Prepare the heatmap
 }
 \usage{
-\S4method{prepare}{Heatmap}(object, process_rows = TRUE)}
+\S4method{prepare}{Heatmap}(object, process_rows = TRUE)
+}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
   \item{process_rows}{whether process rows of the heatmap}
+
 }
 \details{
 The preparation of the heatmap includes following steps:
@@ -33,4 +35,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example for this internal method
 NULL
+
 }

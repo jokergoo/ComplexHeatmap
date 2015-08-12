@@ -10,7 +10,8 @@ Quickly visualize a data frame
 plotDataFrame(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
     show_column_names = TRUE, group = NULL, group_names = names(group),
     main_heatmap = NULL, km = 1, split = NULL, cluster_rows = TRUE,
-    cluster_columns = TRUE, ...)}
+    cluster_columns = TRUE, ...)
+}
 \arguments{
 
   \item{df}{a data frame.}
@@ -26,6 +27,7 @@ plotDataFrame(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
   \item{cluster_rows}{whether perform clustering on rows of the main heatmap.}
   \item{cluster_columns}{whether perform clustering on columns for all heatmaps.}
   \item{...}{pass to \code{\link{draw,HeatmapList-method}} or \code{\link{make_layout,HeatmapList-method}}}
+
 }
 \details{
 The data frame contains heterogeneous information. The \code{\link{plotDataFrame}} function provides a simple and quick way to
@@ -49,4 +51,5 @@ df = data.frame(matrix(rnorm(40), nrow = 10, dimnames = list(letters[1:10], lett
 plotDataFrame(df)
 plotDataFrame(df, group = list(1:4, 5, 6, 7:12, 13), group_names = c("mat1", "large", "t1", "mat2", "t2"),
     main_heatmap = 4, km = 2, column_title = "column title", row_title = "row title")
+
 }

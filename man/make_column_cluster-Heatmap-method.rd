@@ -8,10 +8,12 @@ Make cluster on columns
 Make cluster on columns
 }
 \usage{
-\S4method{make_column_cluster}{Heatmap}(object)}
+\S4method{make_column_cluster}{Heatmap}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
+
 }
 \details{
 The function will fill or adjust \code{column_hclust} and \code{column_order} slots.
@@ -26,4 +28,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example for this internal method
 NULL
+
 }

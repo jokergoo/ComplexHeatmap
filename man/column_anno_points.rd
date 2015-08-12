@@ -7,10 +7,12 @@ Column annotation which is represented as points
 Column annotation which is represented as points
 }
 \usage{
-column_anno_points(...)}
+column_anno_points(...)
+}
 \arguments{
 
   \item{...}{pass to \code{\link{anno_points}}}
+
 }
 \details{
 A wrapper of \code{\link{anno_points}} with pre-defined \code{which} to \code{column}.

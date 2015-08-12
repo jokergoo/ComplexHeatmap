@@ -36,7 +36,8 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     km = 1, split = NULL, gap = unit(1, "mm"),
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, show_heatmap_legend = TRUE,
-    heatmap_legend_param = list(title = name, color_bar = "discrete"))}
+    heatmap_legend_param = list(title = name, color_bar = "discrete"))
+}
 \arguments{
 
   \item{matrix}{a matrix. Either numeric or character. If it is a simple vector, it will beconverted to a one-column matrix.}
@@ -90,6 +91,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmapis appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
   \item{heatmap_legend_param}{a list contains parameters for the heatmap legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
+
 }
 \details{
 The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -182,4 +184,5 @@ Heatmap(mat, rect_gp = gpar(col = "white"),
     },
     cluster_rows = FALSE, cluster_columns = FALSE, row_names_side = "left", 
     column_names_side = "top")
+
 }
