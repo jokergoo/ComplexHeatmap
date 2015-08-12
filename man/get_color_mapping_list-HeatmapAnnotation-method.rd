@@ -17,6 +17,7 @@ Get a list of color mapping objects
 }
 \details{
 Color mapping for visible simple annotations are only returned.
+
 This function is only for internal use.
 }
 \value{

@@ -20,6 +20,7 @@ Draw heatmap title
 }
 \details{
 A viewport is created which contains heatmap title.
+
 This function is only for internal use.
 }
 \value{

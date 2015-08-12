@@ -17,6 +17,7 @@ Draw the list of heatmaps
 }
 \details{
 A viewport is created which contains heatmaps.
+
 This function is only for internal use.
 }
 \value{

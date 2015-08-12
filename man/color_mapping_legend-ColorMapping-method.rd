@@ -40,6 +40,7 @@ Draw legend based on color mapping
 }
 \details{
 A viewport is created which contains a legend title, legend grids and corresponding labels.
+
 This function will be improved in the future to support more types of legends.
 }
 \value{
