@@ -19,6 +19,7 @@ ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)
 \details{
 You can set some parameters for all heatmaps/annotations by this global function.
 There are following parameters:
+
 \describe{
   \item{heatmap_row_names_gp}{set \code{row_names_gp} in \code{\link{Heatmap}}.}
   \item{heatmap_column_names_gp}{set \code{column_names_gp} in \code{\link{Heatmap}}.}

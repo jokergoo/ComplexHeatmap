@@ -43,7 +43,9 @@ Make layout for the complete plot
 }
 \details{
 It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
+
 The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.
+
 This function is only for internal use.
 }
 \value{

@@ -19,6 +19,7 @@ Draw legends for all heatmaps
 }
 \details{
 A viewport is created which contains heatmap legends.
+
 This function is only for internal use.
 }
 \value{

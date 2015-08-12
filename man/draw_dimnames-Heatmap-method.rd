@@ -22,6 +22,7 @@ Draw row names or column names
 }
 \details{
 A viewport is created which contains row names or column names.
+
 This function is only for internal use.
 }
 \value{

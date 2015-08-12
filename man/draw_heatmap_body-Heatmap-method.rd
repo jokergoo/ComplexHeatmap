@@ -21,7 +21,9 @@ Draw the heatmap body
 The matrix can be split into several parts by rows if \code{km} or \code{split} is 
 specified when initializing the \code{\link{Heatmap}} object. If the matrix is split, 
 there will be gaps between rows to identify different row-slice.
+
 A viewport is created which contains subset rows of the heatmap.
+
 This function is only for internal use.
 }
 \value{

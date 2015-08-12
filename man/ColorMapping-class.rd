@@ -14,6 +14,7 @@ a color mapping function.
 }
 \section{Methods}{
 The \code{\link{ColorMapping-class}} provides following methods:
+
 \itemize{
   \item \code{\link{ColorMapping}}: contructor methods.
   \item \code{\link{map_to_colors,ColorMapping-method}}: mapping values to colors.
