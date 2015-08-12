@@ -18,8 +18,10 @@ Draw column annotations
 }
 \details{
 A viewport is created which contains column annotations.
+
 Since the column annotations is a \code{\link{HeatmapAnnotation-class}} object, the function
 calls \code{\link{draw,HeatmapAnnotation-method}} to draw the annotations.
+
 This function is only for internal use.
 }
 \value{

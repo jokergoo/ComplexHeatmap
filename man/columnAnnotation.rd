@@ -16,6 +16,7 @@ columnAnnotation(...)
 }
 \details{
 The function is identical to
+
   \preformatted{
 HeatmapAnnotation(..., which = "column")  }
 }

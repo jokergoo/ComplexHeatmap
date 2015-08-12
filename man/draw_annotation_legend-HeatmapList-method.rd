@@ -19,6 +19,7 @@ Draw legends for all column annotations
 }
 \details{
 A viewport is created which contains annotation legends.
+
 This function is only for internal use.
 }
 \value{

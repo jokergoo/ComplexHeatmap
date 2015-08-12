@@ -17,6 +17,7 @@ Get a list of color mapping parameters
 }
 \details{
 Color mapping parameters for visible simple annotations are only returned.
+
 This function is only for internal use.
 }
 \value{

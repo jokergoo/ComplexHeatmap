@@ -96,7 +96,9 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
 \details{
 The initialization function only applies parameter checking and fill values to each slot with proper ones.
 Then it will be ready for clustering and layout.
+
 Following methods can be applied on the \code{\link{Heatmap-class}} object:
+
 \itemize{
   \item \code{\link{show,Heatmap-method}}: draw a single heatmap with default parameters
   \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.

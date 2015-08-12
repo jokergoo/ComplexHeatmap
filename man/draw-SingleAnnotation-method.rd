@@ -19,6 +19,7 @@ Draw the single annotation
 }
 \details{
 A viewport is created.
+
 The graphics would be different depending the annotation is a row annotation or a column annotation.
 }
 \value{

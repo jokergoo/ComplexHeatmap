@@ -21,6 +21,7 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
 }
 \details{
 The dendrogram tree can be renderred (e.g. by \code{dendextend} package).
+
 A viewport is created which contains the dendrogram.
 }
 \value{

@@ -16,6 +16,7 @@ rowAnnotation(...)
 }
 \details{
 The function is identical to
+
   \preformatted{
 HeatmapAnnotation(..., which = "row")  }
 }

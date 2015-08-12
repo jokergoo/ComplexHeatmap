@@ -9,7 +9,9 @@ Class for a list of heatmaps
 }
 \details{
 A heatmap list is defined as a list of heatmaps and row annotations.
+
 The components for the heamtap list are placed into a 7 x 7 layout:
+
   \preformatted{
 +------+(1)
          +------+(2)
@@ -22,6 +24,7 @@ The components for the heamtap list are placed into a 7 x 7 layout:
          +------+(7)  }
 
 From top to bottom in column 4, the regions are:
+
 \itemize{
   \item annotation legend on the top, graphics are drawn by \code{\link{draw_annotation_legend,HeatmapList-method}}.
   \item heatmap legend on the top, graphics are drawn by \code{\link{draw_heatmap_legend,HeatmapList-method}}.
@@ -33,6 +36,7 @@ From top to bottom in column 4, the regions are:
 }
 
 From left to right in row 4, the regions are:
+
 \itemize{
   \item annotation legend on the left, graphics are drawn by \code{\link{draw_annotation_legend,HeatmapList-method}}.
   \item heatmap legend on the left, graphics are drawn by \code{\link{draw_heatmap_legend,HeatmapList-method}}.
@@ -48,6 +52,7 @@ are placed one after the other.
 }
 \section{Methods}{
 The \code{\link{HeatmapList-class}} provides following methods:
+
 \itemize{
   \item \code{\link{draw,HeatmapList-method}}: draw the list of heatmaps and row annotations.
   \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
