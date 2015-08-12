@@ -7,10 +7,12 @@ Constructor method for AdditiveUnit class
 Constructor method for AdditiveUnit class
 }
 \usage{
-AdditiveUnit(...)}
+AdditiveUnit(...)
+}
 \arguments{
 
   \item{...}{arguments.}
+
 }
 \details{
 This method is not used in the package.
@@ -24,4 +26,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example
 NULL
+
 }

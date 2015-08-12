@@ -7,12 +7,14 @@ Decorate the heatmap annotation
 Decorate the heatmap annotation
 }
 \usage{
-decorate_annotation(annotation, code, slice = NULL)}
+decorate_annotation(annotation, code, slice = NULL)
+}
 \arguments{
 
   \item{annotation}{name of the annotation}
   \item{code}{code that is executed in the heatmap body}
   \item{slice}{index of row slices in the heatmap}
+
 }
 \details{
 This simple function actually contructs the name of the viewport,

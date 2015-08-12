@@ -7,10 +7,12 @@ Print the SingleAnnotation object
 Print the SingleAnnotation object
 }
 \usage{
-\S4method{show}{SingleAnnotation}(object)}
+\S4method{show}{SingleAnnotation}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{SingleAnnotation-class}} object.}
+
 }
 \value{
 No value is returned.

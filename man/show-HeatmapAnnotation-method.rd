@@ -7,10 +7,12 @@ Print the Heatmap Annotation object
 Print the Heatmap Annotation object
 }
 \usage{
-\S4method{show}{HeatmapAnnotation}(object)}
+\S4method{show}{HeatmapAnnotation}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
+
 }
 \value{
 No value is returned.

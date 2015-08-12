@@ -8,10 +8,12 @@ Make cluster on rows
 Make cluster on rows
 }
 \usage{
-\S4method{make_row_cluster}{Heatmap}(object)}
+\S4method{make_row_cluster}{Heatmap}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{Heatmap-class}} object.}
+
 }
 \details{
 The function will fill or adjust \code{row_hclust_list}, \code{row_order_list}, \code{row_title} and \code{matrix_param} slots.
@@ -27,4 +29,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example for this internal method
 NULL
+
 }

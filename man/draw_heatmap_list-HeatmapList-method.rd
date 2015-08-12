@@ -8,10 +8,12 @@ Draw the list of heatmaps
 Draw the list of heatmaps
 }
 \usage{
-\S4method{draw_heatmap_list}{HeatmapList}(object)}
+\S4method{draw_heatmap_list}{HeatmapList}(object)
+}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object}
+
 }
 \details{
 A viewport is created which contains heatmaps.
@@ -26,4 +28,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # no example for this internal method
 NULL
+
 }

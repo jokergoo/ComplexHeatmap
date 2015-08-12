@@ -7,7 +7,8 @@ Draw the heatmap annotations
 Draw the heatmap annotations
 }
 \usage{
-\S4method{draw}{HeatmapAnnotation}(object, index, k = NULL, n = NULL, ...)}
+\S4method{draw}{HeatmapAnnotation}(object, index, k = NULL, n = NULL, ...)
+}
 \arguments{
 
   \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
@@ -15,6 +16,7 @@ Draw the heatmap annotations
   \item{k}{if row annotation is splitted, the value identifies which row slice.}
   \item{n}{total number of row slices.}
   \item{...}{pass to \code{\link[grid]{viewport}} which contains all annotations.}
+
 }
 \details{
 A viewport is created. Mostly, this method is used inside \code{\link{draw,HeatmapList-method}}.
@@ -47,4 +49,5 @@ grid.newpage(); draw(ha, 1:6)
 mat = matrix(rnorm(36), 6)
 ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
 grid.newpage(); draw(ha, 1:6)
+
 }

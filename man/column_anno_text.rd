@@ -7,10 +7,12 @@ Column annotation which is represented as text
 Column annotation which is represented as text
 }
 \usage{
-column_anno_text(...)}
+column_anno_text(...)
+}
 \arguments{
 
   \item{...}{pass to \code{\link{anno_text}}}
+
 }
 \details{
 A wrapper of \code{\link{anno_text}} with pre-defined \code{which} to \code{column}.

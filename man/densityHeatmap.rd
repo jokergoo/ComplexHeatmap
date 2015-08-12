@@ -9,7 +9,8 @@ Use colors to represent density distribution
 \usage{
 densityHeatmap(data, col = rev(brewer.pal(11, "Spectral")),
     anno = NULL, ylab = deparse(substitute(data)),
-    title = paste0("Density heatmap of ", deparse(substitute(data))))}
+    title = paste0("Density heatmap of ", deparse(substitute(data))))
+}
 \arguments{
 
   \item{data}{a matrix or a list. If it is a matrix, density will be calculated by columns.}
@@ -17,6 +18,7 @@ densityHeatmap(data, col = rev(brewer.pal(11, "Spectral")),
   \item{anno}{annotation for matrix columns or list. The value should be a vector or a data frame. It can also be a \code{\link{HeatmapAnnotation-class}} object.}
   \item{ylab}{label on y-axis in the plot}
   \item{title}{title of the plot}
+
 }
 \details{
 To visualize distribution of columns in a matrix or in a list, sometimes we use boxplot or beanplot.

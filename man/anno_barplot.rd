@@ -9,7 +9,8 @@ Using barplot as annotation
 \usage{
 anno_barplot(x, baseline = "min", which = c("column", "row"), border = TRUE, bar_width = 0.6,
     gp = gpar(fill = "#CCCCCC"), axis = FALSE, axis_side = NULL,
-    axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...)}
+    axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...)
+}
 \arguments{
 
   \item{x}{a vector of numeric values.}
@@ -23,6 +24,7 @@ anno_barplot(x, baseline = "min", which = c("column", "row"), border = TRUE, bar
   \item{axis_gp}{graphic parameters for axis}
   \item{axis_direction}{if the annotation is row annotation, should the axis be from left to right (default) or follow the reversed direction?}
   \item{...}{for future use.}
+
 }
 \value{
 A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
@@ -36,4 +38,5 @@ grid.newpage(); f(1:10)
 
 f = anno_barplot(rnorm(10), which = "row")
 grid.newpage(); f(1:10)
+
 }

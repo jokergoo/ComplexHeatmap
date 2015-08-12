@@ -19,7 +19,8 @@ Draw legend based on color mapping
     at = object@levels,
     labels = at,
     labels_gp = gpar(fontsize = 10),
-    param = NULL)}
+    param = NULL)
+}
 \arguments{
 
   \item{object}{a \code{\link{ColorMapping-class}} object.}
@@ -35,6 +36,7 @@ Draw legend based on color mapping
   \item{labels}{labels corresponding to break values}
   \item{labels_gp}{graphcial parameters for legend labels}
   \item{param}{will be parsed if the parameters are specified as a list}
+
 }
 \details{
 A viewport is created which contains a legend title, legend grids and corresponding labels.
@@ -67,4 +69,5 @@ cm = ColorMapping(name = "test",
     col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
 grid.newpage()
 color_mapping_legend(cm, title_gp = gpar(fontsize = 16))
+
 }

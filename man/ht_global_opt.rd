@@ -7,12 +7,14 @@ Global options
 Global options
 }
 \usage{
-ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)}
+ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)
+}
 \arguments{
 
   \item{...}{options, see 'details' section}
   \item{RESET}{reset all the options}
   \item{READ.ONLY}{how to return read-only options}
+
 }
 \details{
 You can set some parameters for all heatmaps/annotations by this global function.
@@ -33,7 +35,6 @@ There are following parameters:
   \item{heatmap_legend_grid_height}{set \code{grid_height} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
   \item{heatmap_legend_grid_border}{set \code{grid_border} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
 }
-
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

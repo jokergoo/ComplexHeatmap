@@ -8,7 +8,8 @@ Draw dendrogram under grid system
 }
 \usage{
 grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
-    max_height = NULL, order = c("normal", "reverse"), ...)}
+    max_height = NULL, order = c("normal", "reverse"), ...)
+}
 \arguments{
 
   \item{dend}{a \code{\link[stats]{dendrogram}} object.}
@@ -16,6 +17,7 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
   \item{max_height}{maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.}
   \item{order}{should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)?}
   \item{...}{pass to \code{\link[grid]{viewport}} which contains the dendrogram.}
+
 }
 \details{
 The dendrogram tree can be renderred (e.g. by \code{dendextend} package).
@@ -40,4 +42,5 @@ grid.dendrogram(dend, facing = "top", order = "reverse", layout.pos.row = 2,
     layout.pos.col = 1)
 grid.dendrogram(dend, facing = "left", layout.pos.row = 2, layout.pos.col = 2)
 upViewport()
+
 }

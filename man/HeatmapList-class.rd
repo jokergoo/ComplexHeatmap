@@ -19,8 +19,7 @@ The components for the heamtap list are placed into a 7 x 7 layout:
    +-+-+-+------+-+-+-+
          +------+(5)
          +------+(6)
-         +------+(7)
-  }
+         +------+(7)  }
 
 From top to bottom in column 4, the regions are:
 \itemize{
@@ -52,9 +51,7 @@ The \code{\link{HeatmapList-class}} provides following methods:
 \itemize{
   \item \code{\link{draw,HeatmapList-method}}: draw the list of heatmaps and row annotations.
   \item \code{\link{add_heatmap,HeatmapList-method}} add heatmaps to the list of heatmaps.
-}
-
-}
+}}
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
@@ -75,4 +72,5 @@ ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"),
     which = "row")
 ht + ha
 ht_list + ha
+
 }

@@ -8,11 +8,13 @@ Map values to colors
 Map values to colors
 }
 \usage{
-\S4method{map_to_colors}{ColorMapping}(object, x)}
+\S4method{map_to_colors}{ColorMapping}(object, x)
+}
 \arguments{
 
   \item{object}{a \code{\link{ColorMapping-class}} object.}
   \item{x}{input values.}
+
 }
 \details{
 It maps a vector of values to a vector of colors.
@@ -45,4 +47,5 @@ cm = ColorMapping(name = "test",
     col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
 map_to_colors(cm, 0.2)
 map_to_colors(cm, seq(0.2, 0.8, by = 0.1))
+
 }
