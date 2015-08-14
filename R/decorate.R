@@ -69,6 +69,33 @@ decorate_hclust = function(heatmap, code, slice = 1, which = c("column", "row"))
 }
 
 # == title
+# Decorate heatmap dendrogram on columns
+#
+# == param
+# -... pass to `decorate_hclust`
+#
+# == details
+# This is a wrapper function which pre-defined ``which`` argument in `decorate_hclust`.
+#
+decorate_column_hclust = function(...) {
+	decorate_hclust(..., which = "column")
+}
+
+# == title
+# Decorate heatmap dendrogram on rows
+#
+# == param
+# -... pass to `decorate_hclust`
+#
+# == details
+# This is a wrapper function which pre-defined ``which`` argument in `decorate_hclust`.
+#
+decorate_row_hclust = function(...) {
+	decorate_hclust(..., which = "row")
+}
+
+
+# == title
 # Decorate the heatmap dimension names
 #
 # == param
@@ -111,6 +138,33 @@ decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"
 }
 
 # == title
+# Decorate heatmap row names
+#
+# == param
+# -... pass to `decorate_dimnames`
+#
+# == details
+# This is a wrapper function which pre-defined ``which`` argument in `decorate_dimnames`.
+#
+decorate_row_names = function(...) {
+	decorate_dimnames(..., which = "row")
+}
+
+# == title
+# Decorate heatmap column names
+#
+# == param
+# -... pass to `decorate_dimnames`
+#
+# == details
+# This is a wrapper function which pre-defined ``which`` argument in `decorate_dimnames`.
+#
+decorate_column_names = function(...) {
+	decorate_dimnames(..., which = "column")
+}
+
+
+# == title
 # Decorate the heatmap title
 #
 # == param
@@ -146,6 +200,32 @@ decorate_title = function(heatmap, code, slice = 1, which = c("column", "row")) 
 	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
+}
+
+# == title
+# Decorate heatmap row title
+#
+# == param
+# -... pass to `decorate_title`
+#
+# == details
+# This is a wrapper function which pre-defined ``which`` argument in `decorate_title`.
+#
+decorate_row_title = function(...) {
+	decorate_title(..., which = "row")
+}
+
+# == title
+# Decorate heatmap column title
+#
+# == param
+# -... pass to `decorate_title`
+#
+# == details
+# This is a wrapper function which pre-defined ``which`` argument in `decorate_title`.
+#
+decorate_column_title = function(...) {
+	decorate_title(..., which = "column")
 }
 
 # == title
