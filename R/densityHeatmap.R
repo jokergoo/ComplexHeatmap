@@ -64,7 +64,7 @@ densityHeatmap = function(data, col = rev(brewer.pal(11, "Spectral")),
 	if(is.null(anno)) {
 		ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
 	} else if(inherits(anno, "HeatmapAnnotation")) {
-		ht = Heatmap(mat, col = col, top_annotation = ha, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
+		ht = Heatmap(mat, col = col, top_annotation = anno, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
 	} else {
 		if(!is.data.frame(anno)) anno = data.frame(anno = anno)
 		ha = HeatmapAnnotation(df = anno)
