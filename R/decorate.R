@@ -189,6 +189,7 @@ decorate_annotation = function(annotation, code, slice = NULL) {
 			if(inherits(o, "try-error")) {
 				stop(paste0("Cannot find viewport ", vp_name, " or ", vp_name2, "\n"))
 			}
+			vp_name = vp_name2
 		}
 		seekViewport(vp_name)
 	} else {
