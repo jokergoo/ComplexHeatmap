@@ -1,0 +1,196 @@
+
+# == title
+# Make oncoPrint
+#
+# == param
+# -mat a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary
+#      value representing the alteration is present or absent. When it is a list, the names represent alteration types.
+# -get_type If different alterations are encoded in the matrix, this self-defined function
+#           determines how to extract them. Only work when ``mat`` is a matrix.
+# -alter_fun_list a list of functions which define how to add graphics for different alterations.
+#                 The names of the list should cover all alteration types.
+# -col a vector of color for which names correspond to alteration types.
+# -show_column_names whether show column names
+# -pct_gp graphic paramters for percent row annotation
+# -axis_gp graphic paramters for axes
+# -show_row_barplot whether show barplot annotation on rows
+# -row_barplot_width width of barplot annotation on rows. It should be a `grid::unit` object
+# -show_column_barplot whether show barplot annotation on columns
+# -column_barplot_height height of barplot annotatioin on columns. it should be a `grid::unit` object.
+# -... pass to `Heatmap`
+#
+# == details
+# The function returns a normal heatmap list and you can add more heatmaps/row annotations to it.
+#
+# For more explanation, please go to the vignette.
+#
+# == value
+# a `HeatmapList-class` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+oncoPrint = function(mat, get_type = function(x) x,
+	alter_fun_list, col, show_column_names = FALSE, 
+	pct_gp = gpar(), axis_gp = gpar(fontsize = 8), 
+	show_row_barplot = TRUE, row_barplot_width = unit(2, "cm"),
+	show_column_barplot = TRUE, column_barplot_height = unit(2, "cm"),
+	...) {
+	
+	# convert mat to mat_list
+	if(inherits(mat, "matrix")) {
+
+		all_type = unique(unlist(lapply(mat, get_type)))
+		all_type = all_type[!is.na(all_type)]
+		all_type = all_type[grepl("\\S", all_type)]
+
+		mat_list = lapply(all_type, function(type) {
+			m = sapply(mat, function(x) type %in% get_type(x))
+			dim(m) = dim(mat)
+			dimnames(m) = dimnames(mat)
+			m
+		})
+	} else if(inherits(mat, "list")) {
+		mat_list = mat
+		all_type = names(mat_list)
+		mat_list = lapply(mat_list, function(x) {
+				oattr = attributes(x)
+				x = as.logical(x)
+				attributes(x) = oattr
+				x
+			})
+
+		if(length(unique(sapply(mat_list, nrow))) > 1) {
+			stop("All matrix in 'mat_list' should have same number of rows.")
+		}
+
+		if(length(unique(sapply(mat_list, ncol))) > 1) {
+			stop("All matrix in 'mat_list' should have same number of columns.")
+		}
+	} else {
+		stop("Incorrect type of 'mat'")
+	}
+
+	# type as the third dimension
+	arr = array(FALSE, dim = c(dim(mat_list[[1]]), length(all_type)), dimnames = c(dimnames(mat_list[[1]]), list(all_type)))
+	for(i in seq_along(all_type)) {
+		arr[, , i] = mat_list[[i]]
+	}
+
+	l = rowSums(apply(arr, c(2, 3), sum)) > 0
+	arr = arr[, l, , drop = FALSE]
+
+	# validate alter_fun_list
+	if(is.null(alter_fun_list$background)) alter_fun_list$background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
+	sdf = setdiff(all_type, names(alter_fun_list))
+	if(length(sdf) > 0) {
+		stop(paste0("You should define shape function for:", paste(sdf, collapse = ", ")))
+	}
+
+	all_type = names(alter_fun_list)
+	all_type = setdiff(all_type, "background")
+
+	arr = arr[, , all_type, drop = FALSE]
+
+	# validate col
+	sdf = setdiff(all_type, names(col))
+	if(length(sdf) > 0) {
+		stop(paste0("You should define colors for:", paste(sdf, collapse = ", ")))
+	}
+
+	add_oncoprint = function(type, x, y, width, height) {
+		alter_fun_list[[type]](x, y, width, height)
+	}
+
+	# for each gene, percent of samples that have alterations
+	pct = rowSums(apply(arr, 1:2, any)) / ncol(mat_list[[1]])
+	pct = paste0(round(pct * 100), "%")
+	ha_pct = rowAnnotation(pct = row_anno_text(pct, just = "right", offset = unit(1, "npc"), gp = pct_gp), width = grobWidth(textGrob("100%", gp = pct_gp)))
+
+	#####################################################################
+	# row annotation which is a barplot
+	anno_row_bar = function(index, k = NULL, N = NULL) {
+		n = length(index)
+		count = apply(arr, c(1, 3), sum)[index, , drop = FALSE]
+		max_count = max(rowSums(count))
+		pushViewport(viewport(xscale = c(0, max_count*1.1), yscale = c(0.5, n + 0.5)))
+		for(i in seq_len(nrow(count))) {
+			if(any(count[i, ] > 0)) {
+				x = count[i, ]
+				x = x[x > 0]
+				x2 = cumsum(x)
+				type = all_type[count[i, ] > 0]
+				# row order is from top to end while coordinate of y is from bottom to top
+				# so here we need to use n-i+1
+				grid.rect(x2, n-i+1, width = x, height = 0.8, default.units = "native", just = "right", gp = gpar(col = NA, fill = col[type]))
+			}
+		}
+		breaks = grid.pretty(c(0, max_count))
+		if(k == 1) {
+			grid.xaxis(at = breaks, label = breaks, main = FALSE, gp = axis_gp)
+		}
+		upViewport()
+	}
+
+	ha_row_bar = rowAnnotation(row_bar = anno_row_bar, width = row_barplot_width)
+
+	###################################################################
+	# column annotation which is also a barplot
+	anno_column_bar = function(index) {
+		n = length(index)
+		count = apply(arr, c(2, 3), sum)[index, , drop = FALSE]
+		max_count = max(rowSums(count))
+		pushViewport(viewport(yscale = c(0, max_count*1.1), xscale = c(0.5, n + 0.5)))
+		for(i in seq_len(nrow(count))) {
+			if(any(count[i, ] > 0)) {
+				y = count[i, ]
+				y = y[y > 0]
+				y2 = cumsum(y)
+				type = all_type[count[i, ] > 0]
+				grid.rect(i, y2, height = y, width = 0.8, default.units = "native", just = "top", gp = gpar(col = NA, fill = col[type]))
+			}
+		}
+		breaks = grid.pretty(c(0, max_count))
+		grid.yaxis(at = breaks, label = breaks, gp = axis_gp)
+		upViewport()
+	}
+
+	ha_column_bar = HeatmapAnnotation(column_bar = anno_column_bar, which = "column", height = column_barplot_height)
+
+	#####################################################################
+	# the main matrix
+	pheudo = c(all_type, rep(NA, nrow(arr)*ncol(arr) - length(all_type)))
+	dim(pheudo) = dim(arr[, , 1])
+	dimnames(pheudo) = dimnames(arr[, , 1])
+	if(show_column_barplot) {
+		ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
+			cluster_rows = FALSE, cluster_columns = FALSE,
+			cell_fun = function(j, i, x, y, width, height, fill) {
+				z = arr[i, j, ]
+				add_oncoprint("background", x, y, width, height)
+				for(type in all_type[z]) {
+					add_oncoprint(type, x, y, width, height)
+				}
+			}, show_column_names = show_column_names,
+			top_annotation = ha_column_bar, ...)
+	} else {
+		ht = Heatmap(pheudo, rect_gp = gpar(type = "none"), 
+			cluster_rows = FALSE, cluster_columns = FALSE,
+			cell_fun = function(j, i, x, y, width, height, fill) {
+				z = arr[i, j, ]
+				add_oncoprint("background", x, y, width, height)
+				for(type in all_type[z]) {
+					add_oncoprint(type, x, y, width, height)
+				}
+			}, show_column_names = show_column_names, ...)
+	}
+
+	if(show_row_barplot) {
+		ht_list = ha_pct + ht + ha_row_bar
+	} else {
+		ht_list = ha_pct + ht
+	}
+
+	return(ht_list)
+
+}

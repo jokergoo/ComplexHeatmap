@@ -16,5 +16,6 @@ r-packages:
 
 r_github_packages:
 - jokergoo/circlize
+- jokergoo/HilbertCurve
 
 r_check_args: --no-build-vignettes --no-vignettes

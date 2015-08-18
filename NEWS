@@ -8,6 +8,7 @@ CHANGES in VERSION 1.3.0
 * change default colors for matrix
 * allow heatmap with zero-row
 * heatmap components can all have absolute units
+* add `oncoPriint()`
 
 =========================================
 

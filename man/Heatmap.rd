@@ -7,8 +7,8 @@ Constructor method for Heatmap class
 Constructor method for Heatmap class
 }
 \usage{
-Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
-    cell_fun = function(j, i, x, y, width, height, fill) NULL,
+Heatmap(matrix, col, name, na_col = "grey", color_space = "LAB",
+    rect_gp = gpar(col = NA), cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14),
     row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
@@ -45,6 +45,7 @@ Heatmap(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
   \item{name}{name of the heatmap. The name is used as the title of the heatmap legend.}
   \item{na_col}{color for \code{NA} values.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
+  \item{color_space}{the color space in which colors are interpolated. Only used if \code{matrix} is numeric and \code{col} is a vector of colors. Pass to \code{\link[circlize]{colorRamp2}}.}
   \item{cell_fun}{self-defined function to add graphics on each cell. Seven parameters will be passed into this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are row index,column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport,the width and height of the cell and the filled color. }
   \item{row_title}{title on row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap?}

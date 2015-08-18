@@ -31,7 +31,7 @@ options(width = 100)
 
 A list of heatmaps can improve visualization of the correspondence between multiple data sources.
 In this vignette, we will discuss configurations for making a list of heatmaps and you can
-see more real-world examples in the [**Examples**](6.examples.html) vignette.
+see more real-world examples in the [**Examples**](s7.examples.html) vignette.
 
 ## Heatmap concatenation
 
@@ -167,7 +167,7 @@ ht_global_opt(RESET = TRUE)
 ## Heatmap list with row annotations
 
 Row annotations can also be reordered and split according to the main heatmap, 
-please see [**Heatmap Annotation**](3.heatmap_annotationhtml) for more explanations.
+please see [**Heatmap Annotation**](s4.heatmap_annotation.html) for more explanations.
 
 ## Session info
 

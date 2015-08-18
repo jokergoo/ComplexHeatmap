@@ -117,6 +117,8 @@ Heatmap = setClass("Heatmap",
 # -name name of the heatmap. The name is used as the title of the heatmap legend.
 # -na_col color for ``NA`` values.
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
+# -color_space the color space in which colors are interpolated. Only used if ``matrix`` is numeric and 
+#            ``col`` is a vector of colors. Pass to `circlize::colorRamp2`.
 # -cell_fun self-defined function to add graphics on each cell. Seven parameters will be passed into 
 #           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height``, ``fill`` which are row index,
 #           column index in ``matrix``, coordinate of the middle points in the heatmap body viewport,
@@ -204,8 +206,8 @@ Heatmap = setClass("Heatmap",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA), 
-    cell_fun = function(j, i, x, y, width, height, fill) NULL,
+Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
+    rect_gp = gpar(col = NA), cell_fun = function(j, i, x, y, width, height, fill) NULL,
     row_title = character(0), row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), 
     row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
@@ -377,7 +379,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
                     .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
                 } else if(is.numeric(matrix)) {
                     col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
-                                     col)
+                                     col, space = color_space)
                     .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
                 } else {
                     stop("`col` should have names to map to values in `mat`.")
