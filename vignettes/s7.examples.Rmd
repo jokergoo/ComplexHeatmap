@@ -53,18 +53,6 @@ Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))),
     width = unit(5, "mm"))
 ```
 
-### Show number of alterations for OncoPrint
-
-Following examples is <a href="http://www.cbioportal.org/faq.jsp#what-are-oncoprints">OncoPrint</a>.
-The basic idea is to self define the heatmap body. Besides the default style which is 
-provided by <a href="http://www.cbioportal.org/index.do">cBioPortal</a>, there are
-additional barplots at both sides of the heatmap which show numbers of different alterations for
-each sample and for each gene. Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blob/master/vignettes/oncoprint.R">here</a>.
-
-```{r, echo = FALSE, fig.width = 10, fig.height = 8}
-source("oncoprint.R")
-```
-
 ### Visualize genomic regions and other correspondance
 
 Following examples visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 

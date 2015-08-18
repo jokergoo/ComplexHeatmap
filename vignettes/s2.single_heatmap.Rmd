@@ -117,8 +117,8 @@ mat_with_na[sample(c(TRUE, FALSE), nrow(mat)*ncol(mat), replace = TRUE, prob = c
 Heatmap(mat_with_na, na_col = "orange")
 ```
 
-Color space is important for interpolating colors. By default, colors are linearly interpolated in [LAB](https://en.wikipedia.org/wiki/Lab_color_space), but you can select the color space in `colorRamp2()` function. Compare following two plots
-(`+` operation on two heatmaps will be introduced in [**Making a list of heatmaps**](a3.a_list_of_heatmap.html) vignette):
+Color space is important for interpolating colors. By default, colors are linearly interpolated in [LAB color space](https://en.wikipedia.org/wiki/Lab_color_space), but you can select the color space in `colorRamp2()` function. Compare following two plots
+(`+` operation on two heatmaps will be introduced in [**Making a list of heatmaps**](s3.a_list_of_heatmaps.html) vignette):
 
 ```{r, fig.width = 10}
 f1 = colorRamp2(seq(min(mat), max(mat), length = 3), c("blue", "#EEEEEE", "red"))
@@ -127,22 +127,39 @@ Heatmap(mat, col = f1, column_title = "LAB color space") +
 Heatmap(mat, col = f2, column_title = "RGB color space")
 ```
 
-On following figure, corresponding values change evenly on x-axis, you can see how colors change under different
-color spaces. Choosing a proper color space is a little bit subjective and it depends on specific data and color theme.
+On following figure, corresponding values change evenly on the folded axis, you can see how colors change under different
+color spaces (the plot is made by **HilbertCurve** package). Choosing a proper color space is a little bit 
+subjective and it depends on specific data and color theme.
 Sometimes you need to try several color spaces to determine one which can best reveal potential structure of your data.
 
-```{r, fig.width = 10, fig.height = 4}
-space = c("RGB", "LAB", "XYZ", "sRGB", "LUV")
-x = seq(-1, 1, length = 100)
 
-par(xpd = NA)
-plot(NULL, xlim = c(-1, 1), ylim = c(0.5, length(space)-0.5), type = "n", axes = FALSE, ann = FALSE)
+```{r, fig.width = 14, fig.height = 14/5, echo = FALSE, message = FALSE}
+suppressPackageStartupMessages(library(HilbertCurve))
+space = c("RGB", "LAB", "XYZ", "sRGB", "LUV")
+pushViewport(viewport(layout = grid.layout(nr = 1, nc = length(space))))
 for(i in seq_along(space)) {
-    f = colorRamp2(c(-1, 0, 1), c("blue", "#EEEEEE", "red"), space = space[i])
-    rect(x - 1/100, i - 0.5, x + 1/100, i + 0.5, col = f(x), border = NA)
-    text(1, i, space[i], adj = c(-0.2, 0.5))
+    pushViewport(viewport(layout.pos.row = 1, layout.pos.col = i))
+    hc = HilbertCurve(1, 100, level = 4, newpage = FALSE, title = space[i])
+    ir = IRanges(start = 1:99, end = 2:100)
+    f = colorRamp2(c(-1, 0, 1), c("green", "black", "red"), space = space[i])
+    col = f(seq(-1, 1, length = 100))
+    hc_points(hc, ir, np = 3, gp = gpar(col = col, fill = col))
+    upViewport()
 }
-axis(side = 1)
+upViewport()
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nr = 1, nc = length(space))))
+for(i in seq_along(space)) {
+    pushViewport(viewport(layout.pos.row = 1, layout.pos.col = i))
+    hc = HilbertCurve(1, 100, level = 4, newpage = FALSE, title = space[i])
+    ir = IRanges(start = 1:99, end = 2:100)
+    f = colorRamp2(c(-1, 0, 1), c("blue", "white", "red"), space = space[i])
+    col = f(seq(-1, 1, length = 100))
+    hc_points(hc, ir, np = 3, gp = gpar(col = col, fill = col))
+    upViewport()
+}
+upViewport()
+
 ```
 
 ## Titles
@@ -150,14 +167,14 @@ axis(side = 1)
 The name of the heatmap by default is used as the title of the heatmap legend.
 The name also plays as a unique id if you plot more than one heatmaps together.
 Later we can use this name to go to the corresponding heatmap to add more graphics 
-(see [**Heatmap Decoration**](5.heatmap_decoration.html) vignette).
+(see [**Heatmap Decoration**](s6.heatmap_decoration.html) vignette).
 
 ```{r with_matrix_name}
 Heatmap(mat, name = "foo")
 ```
 
 The title of the heatmap legend can be modified by `heatmap_legend_param` 
-(see [**Heatmap and Annotation Legends**](4.legend.html) vignette
+(see [**Heatmap and Annotation Legends**](s5.legend.html) vignette
 for more control on the legend).
 
 ```{r heatmap_legend_title}
@@ -348,10 +365,10 @@ Heatmap(mat, name = "foo", row_names_gp = gpar(col = c(rep("red", 4), rep("blue"
 
 Currently, rotations for column names and row names are not supported (or maybe in the future versions). Because
 after the text rotation, the dimension names will go inside other heatmap components
-which will mess up the heatmap layout. However, as will be introduced in [**Heatmap Annotation**](3.heatmap_annotation.html)
+which will mess up the heatmap layout. However, as will be introduced in [**Heatmap Annotation**](s4.heatmap_annotation.html)
 vignette, text rotation is allowed in the heatmap annotations. Thus, users can provide a row annotation
 or column annotation which only contains rotated text to simulate rotated row/column names (You will see the 
-example in the [**Heatmap Annotation**](3.heatmap_annotation.html) vignette).
+example in the [**Heatmap Annotation**](s4.heatmap_annotation.html) vignette).
 
 ## Split heatmap by rows
 
