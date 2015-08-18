@@ -490,3 +490,29 @@ rep.list = function(x, n) {
     return(lt)
 }
 
+
+list_component = function() {
+    vp_name = grid.ls(viewports = TRUE, grobs = FALSE, print = FALSE)$name
+}
+
+# == title
+# Maximum width of text
+#
+# == param
+# -text a vector of text
+# -... pass to `grid::textGrob`
+#
+max_text_width = function(text, ...) {
+    max(do.call("unit.c", lapply(text, function(x) grobWidth(textGrob(x, ...)))))
+}
+
+# == title
+# Maximum height of text
+#
+# == param
+# -text a vector of text
+# -... pass to `grid::textGrob`
+#
+max_text_height = function(text, ...) {
+    max(do.call("unit.c", lapply(text, function(x) grobHeight(textGrob(x, ...)))))
+}
