@@ -381,6 +381,21 @@ ha = rowAnnotation(points = row_anno, width = unit(1, "cm"))
 ht1 + ha
 ```
 
+### Heatmap with zero row
+
+If you only want to visualize meta data of your matrix, you can set the matrix with zero row.
+In this case, only one heatmap is allowed.
+
+```{r zero_row_heatmap, fig.height = 2}
+ha = HeatmapAnnotation(df = data.frame(value = runif(10), type = rep(letters[1:2], 5)),
+    barplot = anno_barplot(runif(10)),
+    points = anno_points(runif(10)),
+    height = unit(3, "cm"))
+zero_row_mat = matrix(nrow = 0, ncol = 10)
+colnames(zero_row_mat) = letters[1:10]
+Heatmap(zero_row_mat, top_annotation = ha, column_title = "only annotations")
+```
+
 ### Heatmap with zero column
 
 If no heatmap is needed to draw and users only want to arrange a list of row annotations, an empty
@@ -391,7 +406,7 @@ split row annotaitons:
 ha_boxplot = rowAnnotation(boxplot = row_anno_boxplot(mat), width = unit(3, "cm"))
 ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")), width = unit(2, "cm"))
 text = paste0("row", seq_len(nrow(mat)))
-ha_text = rowAnnotation(text = row_anno_text(text), width = max(grobWidth(textGrob(text))))
+ha_text = rowAnnotation(text = row_anno_text(text), width = max_text_width(text))
 nr = nrow(mat)
 Heatmap(matrix(nrow = nr, ncol = 0), split = sample(c("A", "B"), nr, replace = TRUE)) + 
     ha_boxplot + ha + ha_text

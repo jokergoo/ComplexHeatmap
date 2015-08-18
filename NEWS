@@ -6,6 +6,8 @@ CHANGES in VERSION 1.3.0
 * add `row_anno_*` and `column_anno_*` functions
 * `anno_barplot` add `baseline` option to define the baseline of bars
 * change default colors for matrix
+* allow heatmap with zero-row
+* heatmap components can all have absolute units
 
 =========================================
 

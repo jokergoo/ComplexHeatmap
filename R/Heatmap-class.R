@@ -286,17 +286,30 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
 
     if(ncol(matrix) == 0) {
         .Object@heatmap_param$show_heatmap_legend = FALSE
-        .Object@heatmap_param$width = unit(0, "null")
+        .Object@heatmap_param$width = unit(0, "mm")
     }
 
-    if(ncol(matrix) <= 1) {
+    if(ncol(matrix) == 0 || nrow(matrix) == 0) {
+        if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
+            cluster_columns = FALSE
+            show_column_hclust = FALSE
+        }
         if(!inherits(cluster_rows, c("dendrogram", "hclust"))) {
             cluster_rows = FALSE
             show_row_hclust = FALSE
         }
+        km = 1
+    }
+    if(ncol(matrix) == 1) {
         if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
             cluster_columns = FALSE
             show_column_hclust = FALSE
+        }
+    }
+    if(nrow(matrix) == 1) {
+        if(!inherits(cluster_rows, c("dendrogram", "hclust"))) {
+            cluster_rows = FALSE
+            show_row_hclust = FALSE
         }
         km = 1
     }
@@ -351,7 +364,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     }
 
     # color for main matrix
-    if(ncol(matrix) > 0) {
+    if(ncol(matrix) > 0 && nrow(matrix) > 0) {
         if(missing(col)) {
             col = default_col(matrix, main_matrix = TRUE)
         }
@@ -432,12 +445,12 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     } else {
         .Object@row_hclust_param$cluster = cluster_rows
         if(!cluster_rows) {
-            row_hclust_width = unit(0, "null")
+            row_hclust_width = unit(0, "mm")
             show_row_hclust = FALSE
         }
     }
     if(!show_row_hclust) {
-        row_hclust_width = unit(0, "null")
+        row_hclust_width = unit(0, "mm")
     }
     .Object@row_hclust_list = list()
     .Object@row_hclust_param$distance = clustering_distance_rows
@@ -466,12 +479,12 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     } else {
         .Object@column_hclust_param$cluster = cluster_columns
         if(!cluster_columns) {
-            column_hclust_height = unit(0, "null")
+            column_hclust_height = unit(0, "mm")
             show_column_hclust = FALSE
         }
     }
     if(!show_column_hclust) {
-        column_hclust_height = unit(0, "null")
+        column_hclust_height = unit(0, "mm")
     }
     .Object@column_hclust = NULL
     .Object@column_hclust_param$distance = clustering_distance_columns
@@ -492,7 +505,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
 
     .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
     if(is.null(top_annotation)) {
-        .Object@top_annotation_param$height = unit(0, "null")    
+        .Object@top_annotation_param$height = unit(0, "mm")    
     } else {
         .Object@top_annotation_param$height = top_annotation_height + unit(1, "mm")  # append the gap
     }
@@ -506,7 +519,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     
     .Object@bottom_annotation = bottom_annotation # a `HeatmapAnnotation` object
     if(is.null(bottom_annotation)) {
-        .Object@bottom_annotation_param$height = unit(0, "null")
+        .Object@bottom_annotation_param$height = unit(0, "mm")
     } else {
         .Object@bottom_annotation_param$height = bottom_annotation_height + unit(1, "mm")  # append the gap
     }
@@ -519,21 +532,21 @@ Heatmap = function(matrix, col, name, na_col = "grey", rect_gp = gpar(col = NA),
     }
 
     .Object@layout = list(
-        layout_column_title_top_height = unit(0, "null"),
-        layout_column_hclust_top_height = unit(0, "null"),
-        layout_column_anno_top_height = unit(0, "null"),
-        layout_column_names_top_height = unit(0, "null"),
-        layout_column_title_bottom_height = unit(0, "null"),
-        layout_column_hclust_bottom_height = unit(0, "null"),
-        layout_column_anno_bottom_height = unit(0, "null"),
-        layout_column_names_bottom_height = unit(0, "null"),
+        layout_column_title_top_height = unit(0, "mm"),
+        layout_column_hclust_top_height = unit(0, "mm"),
+        layout_column_anno_top_height = unit(0, "mm"),
+        layout_column_names_top_height = unit(0, "mm"),
+        layout_column_title_bottom_height = unit(0, "mm"),
+        layout_column_hclust_bottom_height = unit(0, "mm"),
+        layout_column_anno_bottom_height = unit(0, "mm"),
+        layout_column_names_bottom_height = unit(0, "mm"),
 
-        layout_row_title_left_width = unit(0, "null"),
-        layout_row_hclust_left_width = unit(0, "null"),
-        layout_row_names_left_width = unit(0, "null"),
-        layout_row_hclust_right_width = unit(0, "null"),
-        layout_row_names_right_width = unit(0, "null"),
-        layout_row_title_right_width = unit(0, "null"),
+        layout_row_title_left_width = unit(0, "mm"),
+        layout_row_hclust_left_width = unit(0, "mm"),
+        layout_row_names_left_width = unit(0, "mm"),
+        layout_row_hclust_right_width = unit(0, "mm"),
+        layout_row_names_right_width = unit(0, "mm"),
+        layout_row_title_right_width = unit(0, "mm"),
 
         layout_heatmap_width = width, # for the layout of heatmap list
 
@@ -882,23 +895,25 @@ setMethod(f = "make_layout",
     gap = object@matrix_param$gap
     n_slice = length(object@row_order_list)
     snr = sapply(object@row_order_list, length)
-    slice_height = (unit(1, "npc") - gap*(n_slice-1))*(snr/sum(snr))
-    for(i in seq_len(n_slice)) {
-        if(i == 1) {
-            slice_y = unit(1, "npc")
-        } else {
-            slice_y = unit.c(slice_y, unit(1, "npc") - sum(slice_height[seq_len(i-1)]) - gap*(i-1))
-        }
-    }
-
-    ###########################################
-    ## heatmap body
-    object@layout$layout_index = rbind(c(5, 4))
-    object@layout$graphic_fun_list = list(function(object) {
+    if(sum(snr)) {
+        slice_height = (unit(1, "npc") - gap*(n_slice-1))*(snr/sum(snr))
         for(i in seq_len(n_slice)) {
-            draw_heatmap_body(object, k = i, y = slice_y[i], height = slice_height[i], just = c("center", "top"))
+            if(i == 1) {
+                slice_y = unit(1, "npc")
+            } else {
+                slice_y = unit.c(slice_y, unit(1, "npc") - sum(slice_height[seq_len(i-1)]) - gap*(i-1))
+            }
         }
-    })
+
+        ###########################################
+        ## heatmap body
+        object@layout$layout_index = rbind(c(5, 4))
+        object@layout$graphic_fun_list = list(function(object) {
+            for(i in seq_len(n_slice)) {
+                draw_heatmap_body(object, k = i, y = slice_y[i], height = slice_height[i], just = c("center", "top"))
+            }
+        })
+    }
 
     title_padding = unit(2.5, "mm")
     ############################################
@@ -933,16 +948,16 @@ setMethod(f = "make_layout",
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
             if(object@row_title_rot %in% c(0, 180)) {
-                object@layout$layout_row_title_left_width = max(grobWidth(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+                object@layout$layout_row_title_left_width = max_text_width(row_title, gp = row_title_gp) + title_padding*2
             } else {
-                object@layout$layout_row_title_left_width = max(grobHeight(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+                object@layout$layout_row_title_left_width = max_text_height(row_title, gp = row_title_gp) + title_padding*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 1))
         } else {
             if(object@row_title_rot %in% c(0, 180)) {
-                object@layout$layout_row_title_right_width = max(grobWidth(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+                object@layout$layout_row_title_right_width = max_text_width(row_title, gp = row_title_gp) + title_padding*2
             } else {
-                object@layout$layout_row_title_right_width = max(grobHeight(textGrob(row_title, gp = row_title_gp))) + title_padding*2
+                object@layout$layout_row_title_right_width = max_text_height(row_title, gp = row_title_gp) + title_padding*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 7))
         }
@@ -1249,7 +1264,7 @@ setMethod(f = "draw_hclust",
     if(side == "left") {
         grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = hclust_padding, width = unit(1, "npc") - hclust_padding*2, just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "null"), width = unit(1, "npc") - hclust_padding*2, just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "mm"), width = unit(1, "npc") - hclust_padding*2, just = "left")
     } else if(side == "top") {
         grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = hclust_padding, height = unit(1, "npc") - hclust_padding*2, just = "bottom")
     } else if(side == "bottom") {
@@ -1448,7 +1463,7 @@ setMethod(f = "draw_annotation",
     if(which == "top") {
         draw(annotation, index = object@column_order, y = padding, height = unit(1, "npc") - padding, just = "bottom")
     } else {
-        draw(annotation, index = object@column_order, y = unit(0, "null"), height = unit(1, "npc") - padding, just = "bottom")
+        draw(annotation, index = object@column_order, y = unit(0, "mm"), height = unit(1, "npc") - padding, just = "bottom")
     }
 })
 
@@ -1482,9 +1497,13 @@ setMethod(f = "component_width",
             object@layout$layout_row_names_left_width
         } else if(k == 4) {
             if(ncol(object@matrix) == 0) {
-                unit(0, "null")
+                unit(0, "mm")
             } else {
-                unit(1, "null")
+                if(!is.unit(object@heatmap_param$width)) {
+                    unit(1, "null")
+                } else {
+                    object@heatmap_param$width - sum(component_width(object, c(1:3, 5:7)))
+                }
             }
         } else if(k == 5) {
             object@layout$layout_row_names_right_width
