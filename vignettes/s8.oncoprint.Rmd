@@ -1,0 +1,189 @@
+
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{OncoPrint}
+-->
+
+OncoPrint
+========================================
+
+**Author**: Zuguang Gu ( z.gu@dkfz.de )
+
+**Date**: `r Sys.Date()`
+
+-------------------------------------------------------------
+
+```{r global_settings, echo = FALSE, message = FALSE}
+library(markdown)
+options(markdown.HTML.options = c(options('markdown.HTML.options')[[1]], "toc"))
+
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    fig.align = "center",
+    fig.width = 5,
+    fig.height = 5)
+options(markdown.HTML.stylesheet = "custom.css")
+
+options(width = 100)
+```
+
+<a href="http://www.cbioportal.org/faq.jsp#what-are-oncoprints">OncoPrint</a> is a way to visualize 
+multiple genomic alteration events by heatmap. Here the **ComplexHeatmap** package provides a `oncoPrint()` function.
+Besides the default style which is provided by <a href="http://www.cbioportal.org/index.do">cBioPortal</a>, there are
+additional barplots at both sides of the heatmap which show numbers of different alterations for
+each sample and for each gene. Also with the functionality of **ComplexHeatmap**, you can control oncoPrint with
+more flexibilities.
+
+There are two different forms of input data. The first is represented as a matrix in which 
+element would include multiple alterations in a form of a complex string. In follow example,
+'g1' in 's1' has two types of alterations which are 'snv' and 'indel'.
+
+```{r}
+mat = read.table(textConnection(
+"	s1	s2	s3
+g1	snv;indel	snv	indel
+g2		snv;indel	snv
+g3	snv		indel;snv"), row.names = 1, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+mat = as.matrix(mat)
+mat
+```
+
+In this case, we need to define a function to extract different alteration types and send the function
+to `get_type` argument. The function should return a vector of alteration types.
+
+Since different alteration types may be drawn into one same grid in the heatmap, we need to define
+graphic function to add the graphics. Here if the graphics have no transparency, orders of how to add
+graphics matters. In following example, snv are first drawn and then the indel. You can see rectangles
+for indels are actually smaller than that for snvs so that you can visualiza both snvs and indels if they
+are in a same grid.
+
+For the self-defined graphic function, there should be four arguments which are positions of the grids 
+on the heatmap (`x` and `y`), and widths and heights of the grids (`w` and `h`).
+
+Colors for different alterations are defined in `col`. It should be a named vector for which names correspond
+to alteration types.
+
+
+```{r}
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+	alter_fun_list = list(
+		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)),
+		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
+	), col = c(snv = "red", indel = "blue"))
+```
+
+The second type of input data is a list of matrix for which each matrix contains binary value representing
+whether the alteration is absent or present. The list should have names and the name corresponds to the alteration
+types.
+
+```{r}
+mat_list = list(snv = matrix(c(1, 0, 1, 1, 1, 0, 0, 1, 1), nrow = 3),
+	            indel = matrix(c(1, 0, 0, 0, 1, 0, 1, 0, 1), nrow = 3))
+rownames(mat_list$snv) = rownames(mat_list$indel) = c("g1", "g2", "g3")
+colnames(mat_list$snv) = colnames(mat_list$indel) = c("s1", "s2", "s3")
+mat_list
+```
+
+Same as the first example, but here we define `background` in `alter_fun_list` argument. This function defines
+how to add graphics when there is no alteration.
+
+```{r}
+oncoPrint(mat_list,
+	alter_fun_list = list(
+		background = function(x, y, w, h) NULL,
+		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)),
+		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
+	), col = c(snv = "red", indel = "blue"))
+```
+
+Now we make an oncoPrint with a real-world data. The data is retrieved from [cBioPortal](http://www.cbioportal.org/). 
+Steps for getting the data are as follows:
+
+1. go to http://www.cbioportal.org
+2. search Cancer Study: "Lung Adenocarcinoma Carcinoma" and select: "Lung Adenocarcinoma Carcinoma (TCGA, Provisinal)"
+3. In "Enter Gene Set" field, select: "General: Ras-Raf-MEK-Erk/JNK signaling (26 genes)"
+4. submit the form
+
+In the results page,
+
+5. go to "Download" tab, download text in "Type of Genetic alterations across all cases"
+
+The order of samples can also be downloaded from the results page,
+
+6. go to "OncoPrint" tab, move the mouse above the plot, click "download" icon and click "Sample order"
+
+First we read the data and do some pre-processing.
+
+```{r}
+mat = read.table(paste0(system.file("extdata", package = "ComplexHeatmap"), 
+	"/tcga_lung_adenocarcinoma_provisional_ras_raf_mek_jnk_signalling.txt"), 
+	header = TRUE,stringsAsFactors=FALSE, sep = "\t")
+mat[is.na(mat)] = ""
+rownames(mat) = mat[, 1]
+mat = mat[, -1]
+mat=  mat[, -ncol(mat)]
+mat = t(as.matrix(mat))
+```
+
+We can adjust the order of the matrix. Here cbioPortal also provides sample orders:
+
+```{r}
+sample_order = scan(paste0(system.file("extdata", package = "ComplexHeatmap"), 
+    "/sample_order.txt"), what = "character")
+mat = mat[, sample_order]
+```
+
+There are three different alterations in `mat`: `HOMDEL`, `AMP` and `MUT`. We first 
+define how to add graphics to correspond to different alterations. 
+
+```{r}
+alter_fun_list = list(
+	background = function(x, y, w, h) {
+		grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "#CCCCCC", col = NA))
+	},
+	HOMDEL = function(x, y, w, h) {
+		grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "blue", col = NA))
+	},
+	AMP = function(x, y, w, h) {
+		grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "red", col = NA))
+	},
+	MUT = function(x, y, w, h) {
+		grid.rect(x, y, w-unit(0.5, "mm"), h*0.33, gp = gpar(fill = "#008000", col = NA))
+	}
+)
+```
+
+Also colors for different alterations which will be used for barplots.
+
+```{r}
+col = c("MUT" = "#008000", "AMP" = "red", "HOMDEL" = "blue")
+```
+
+Make the oncoPrint and adjust heatmap components such as the title and the legend.
+
+```{r, fig.width = 12, fig.height = 8}
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+	alter_fun_list = alter_fun_list, col = col, 
+	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
+	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
+		labels = c("Amplification", "Deep deletion", "Mutation")))
+```
+
+`oncoPrint()` actually returns a `HeatmapList` object, so you can add more Heatmaps or row annotations
+to it to visualize more complicated information.
+
+Following example splits the heatmap into two halves and add a new heatmap to the right.
+
+```{r, fig.width = 12, fig.height = 8}
+ht_list = oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+	alter_fun_list = alter_fun_list, col = col, 
+	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
+	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
+		labels = c("Amplification", "Deep deletion", "Mutation")),
+	split = sample(letters[1:2], nrow(mat), replace = TRUE)) +
+Heatmap(matrix(rnorm(nrow(mat)*10), ncol = 10), width = unit(4, "cm"))
+draw(ht_list, row_sub_title_side = "left")
+```
