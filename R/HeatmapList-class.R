@@ -66,19 +66,19 @@ HeatmapList = setClass("HeatmapList",
     ),
     prototype = list(
         layout = list(
-            layout_annotation_legend_left_width = unit(0, "null"),
-            layout_heatmap_legend_left_width = unit(0, "null"),
-            layout_row_title_left_width = unit(0, "null"),
-            layout_row_title_right_width = unit(0, "null"),
-            layout_heatmap_legend_right_width = unit(0, "null"),
-            layout_annotation_legend_right_width = unit(0, "null"),
+            layout_annotation_legend_left_width = unit(0, "mm"),
+            layout_heatmap_legend_left_width = unit(0, "mm"),
+            layout_row_title_left_width = unit(0, "mm"),
+            layout_row_title_right_width = unit(0, "mm"),
+            layout_heatmap_legend_right_width = unit(0, "mm"),
+            layout_annotation_legend_right_width = unit(0, "mm"),
 
-            layout_annotation_legend_top_height = unit(0, "null"),
-            layout_heatmap_legend_top_height = unit(0, "null"),
-            layout_column_title_top_height = unit(0, "null"),
-            layout_column_title_bottom_height = unit(0, "null"),
-            layout_heatmap_legend_bottom_height = unit(0, "null"),
-            layout_annotation_legend_bottom_height = unit(0, "null"),
+            layout_annotation_legend_top_height = unit(0, "mm"),
+            layout_heatmap_legend_top_height = unit(0, "mm"),
+            layout_column_title_top_height = unit(0, "mm"),
+            layout_column_title_bottom_height = unit(0, "mm"),
+            layout_heatmap_legend_bottom_height = unit(0, "mm"),
+            layout_annotation_legend_bottom_height = unit(0, "mm"),
             
             layout_index = matrix(nrow = 0, ncol = 2),
             graphic_fun_list = list()
@@ -237,7 +237,7 @@ setMethod(f = "make_layout",
         }
     } else {
         if(!is.unit(gap)) {
-            gap = unit(rep(0, n), "null")    
+            gap = unit(rep(0, n), "mm")    
         }
     }
     object@ht_list_param$gap = gap
@@ -246,11 +246,11 @@ setMethod(f = "make_layout",
         # if the zero-column matrix is the first one
         if(inherits(object@ht_list[[i]], "Heatmap")) {
             if(i == 1 && ncol(object@ht_list[[1]]@matrix) == 0) {
-                gap[1] = unit(0, "null")
+                gap[1] = unit(0, "mm")
             } else if(i == n && ncol(object@ht_list[[n]]@matrix) == 0) {
-                gap[n - 1] = unit(0, "null")
+                gap[n - 1] = unit(0, "mm")
             } else if(ncol(object@ht_list[[i]]@matrix) == 0) {
-                gap[i] = unit(0, "null")
+                gap[i] = unit(0, "mm")
             }
         }
     }
@@ -268,7 +268,7 @@ setMethod(f = "make_layout",
         # add a heatmap with zero column so that we can put titles and hclust on the most left
         if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
             object = Heatmap(matrix(nrow = nr, ncol = 0)) + object
-            gap = unit.c(unit(0, "null"), gap)
+            gap = unit.c(unit(0, "mm"), gap)
             i_main = i_main + 1
         }
             
@@ -278,8 +278,13 @@ setMethod(f = "make_layout",
         # if the last one is a HeatmapAnnotation object
         if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
             object = object + Heatmap(matrix(nrow = nr, ncol = 0))
-            gap = unit.c(gap, unit(0, "null"))
+            gap = unit.c(gap, unit(0, "mm"))
         }
+    }
+    if(n == 1) {
+        gap = unit(0, "mm")
+    } else if(length(gap) == n) {
+        gap = gap[seq_len(n-1)]
     }
     object@ht_list_param$gap = gap
 
@@ -425,10 +430,14 @@ setMethod(f = "make_layout",
                 ColorMappingList = c(ColorMappingList, ht@matrix_color_mapping)
             }
         }
+        if(inherits(ht, "HeatmapAnnotation")) {
+            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht))
+        }
     }
     if(length(ColorMappingList) == 0 && length(heatmap_legend_list) == 0) {
         show_heatmap_legend = FALSE
     }
+
     object@heatmap_legend_param$show = show_heatmap_legend
     heatmap_legend_side = match.arg(heatmap_legend_side)[1]
     object@heatmap_legend_param$side = heatmap_legend_side   
@@ -562,10 +571,14 @@ setMethod(f = "draw",
     definition = function(object, padding = unit(c(2, 2, 2, 2), "mm"), ..., 
         newpage= TRUE) {
 
-    if(! any(sapply(object@ht_list, inherits, "Heatmap"))) {
+    l = sapply(object@ht_list, inherits, "Heatmap")
+    if(! any(l)) {
         stop("There should be at least one Heatmap in the heatmap list. You can add a matrix with zero column to the list.")
     }
-    
+    if(nrow(object@ht_list[[ which(l)[1] ]]@matrix) == 0 && length(l) > 1) {
+        stop("Since you have a zeor-row matrix, only one heatmap (no row annotation) is allowed.")
+    }
+
     if(newpage) {
         grid.newpage()
     }
@@ -639,7 +652,18 @@ setMethod(f = "component_width",
         } else if(k == 3) {
             object@layout$layout_row_title_left_width
         } else if(k == 4) {
-            unit(1, "null")
+            size = sum(do.call("unit.c", lapply(object@ht_list, function(ht) {
+                    if(inherits(ht, "Heatmap")) {
+                        sum(component_width(ht, 1:7))
+                    } else if(inherits(ht, "HeatmapAnnotation")) {
+                        ht@size
+                    }
+                })))
+            if(is_abs_unit(size)) { # summation of all heatmap/rowannotation are fixed unit
+                size + sum(object@ht_list_param$gap)
+            } else {
+                unit(1, "null") 
+            }
         } else if(k == 5) {
             object@layout$layout_row_title_right_width
         } else if(k == 6) {
@@ -671,6 +695,9 @@ setMethod(f = "component_height",
     signature = "HeatmapList",
     definition = function(object, k = 1:7) {
 
+    ht_index = which(sapply(object@ht_list, inherits, "Heatmap"))
+    n = length(object@ht_list)
+
     .single_unit = function(k) {
         if(k == 1) {
             object@layout$layout_annotation_legend_top_height
@@ -679,7 +706,11 @@ setMethod(f = "component_height",
         } else if(k == 3) {
             object@layout$layout_column_title_top_height
         } else if(k == 4) {
-            unit(1, "null")
+            if(nrow(object@ht_list[[ht_index[1]]]@matrix) == 0) {
+                unit(0, "mm")
+            } else {
+                unit(1, "null")
+            }
         } else if(k == 5) {
             object@layout$layout_column_title_bottom_height
         } else if(k == 6) {
@@ -736,7 +767,7 @@ setMethod(f = "draw_heatmap_list",
             if(length(i_row_anno_fix_width)) {
                 row_anno_fix_width = sum(do.call("unit.c", lapply(object@ht_list[i_row_anno_fix_width], function(x) x@size)))
             } else {
-                row_anno_fix_width = unit(0, "null")
+                row_anno_fix_width = unit(0, "mm")
             }
             object@ht_list[[i_row_anno_nofix_width]]@size = unit(1, "npc") - ht@heatmap_param$width - sum(component_width(ht, k = c(1:3, 5:7))) - 
                 row_anno_fix_width - sum(gap) + gap[length(gap)]
@@ -772,7 +803,7 @@ setMethod(f = "draw_heatmap_list",
         if(inherits(ht, "Heatmap")) {
             component_width(ht, c(1:3, 5:7))
         } else {
-            unit(rep(0, 6), "null")  # to be consistent with heatmap non-body columns
+            unit(rep(0, 6), "mm")  # to be consistent with heatmap non-body columns
         }
     }))
     
@@ -791,11 +822,11 @@ setMethod(f = "draw_heatmap_list",
             if(is.unit(ht@heatmap_param$width)) {
                 return(ht@heatmap_param$width)
             } else {
-                return(unit(0, "null"))
+                return(unit(0, "mm"))
             }
         } else if(inherits(ht, "HeatmapAnnotation")) {
             if(is.null(ht@size)) {
-                return(unit(0, "null"))
+                return(unit(0, "mm"))
             } else {
                 return(ht@size)
             }
@@ -804,9 +835,9 @@ setMethod(f = "draw_heatmap_list",
     heatmap_fixed_width = do.call("unit.c", heatmap_fixed_width)
     # width for body for each heatmap
     if(sum(heatmap_ncol) == 0) {
-        heatmap_nofixed_width = unit(rep(0, n), "null")
+        heatmap_nofixed_width = unit(rep(0, n), "mm")
     } else {
-        heatmap_nofixed_width = (unit(1, "npc") - sum(width_without_heatmap_body) - sum(heatmap_fixed_width) - sum(gap) + gap[length(gap)]) * (1/sum(heatmap_ncol)) * heatmap_ncol
+        heatmap_nofixed_width = (unit(1, "npc") - sum(width_without_heatmap_body) - sum(heatmap_fixed_width) - sum(gap)) * (1/sum(heatmap_ncol)) * heatmap_ncol
     }
 
     # width of heatmap including body, and other components
@@ -1150,7 +1181,7 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
         height = sum(cm_height) + gap*(n + length(legend_list) -1)
 
         if(plot) {
-            cm_height = unit.c(unit(0, "null"), cm_height)
+            cm_height = unit.c(unit(0, "mm"), cm_height)
 
         	for(i in seq_len(n)) {
                 cm = ColorMappingList[[i]]
@@ -1185,7 +1216,7 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
         height = max(cm_height)
 
         if(plot) {
-            cm_width = unit.c(unit(0, "null"), cm_width)
+            cm_width = unit.c(unit(0, "mm"), cm_width)
             for(i in seq_len(n)) {
                 cm = ColorMappingList[[i]]
                 cm_param = ColorMappingParamList[[i]]

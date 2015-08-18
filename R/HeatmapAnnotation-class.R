@@ -27,9 +27,9 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 	),
 	prototype = list(
 		anno_list = list(),
-		size = unit(0, "null"),
+		size = unit(0, "mm"),
 		which = "row",
-		gap = unit(0, "null")
+		gap = unit(0, "mm")
 	),
     contains = "AdditiveUnit"
 )
@@ -164,12 +164,12 @@ HeatmapAnnotation = function(df, name, col, annotation_legend_param = list(),
 
 	n_anno = length(anno_list)
 
-	if(is.null(gap)) gap = unit(0, "null")
+	if(is.null(gap)) gap = unit(0, "mm")
 
     if(length(gap) == 1) {
     	.Object@gap = rep(gap, n_anno)
     } else if(length(gap) == n_anno - 1) {
-    	.Object@gap = unit.c(gap, unit(0, "null"))
+    	.Object@gap = unit.c(gap, unit(0, "mm"))
     } else if(length(gap) < n_anno - 1) {
     	stop("Length of `gap` is wrong.")
     } else {
