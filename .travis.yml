@@ -14,6 +14,10 @@ r-packages:
 - markdown
 - dendextend
 
+bioc_packages:
+- GenomicRanges
+- HilbertVis
+
 r_github_packages:
 - jokergoo/circlize
 - jokergoo/HilbertCurve
