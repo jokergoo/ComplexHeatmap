@@ -68,8 +68,6 @@ From left to right, heatmaps are:
 7. distance from the DMR to the TSS of the corresponding gene.
 8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
 
-Source code is available <a href="https://github.com/jokergoo/ComplexHeatmap/blob/master/vignettes/genomic_regions.R">here</a>.
-
 ```{r, echo = FALSE, fig.width = 10, fig.height = 8}
 library(circlize)
 library(RColorBrewer)
@@ -186,3 +184,18 @@ decorate_heatmap_body("cases", {
 
 ## What if my annotation name is too long?
 
+There is no space allocated for annotation name, but when the annotation name is too long,
+you can add paddings of the whole plot to give empty spaces for the annotation names.
+
+```{r, fig.width = 10}
+ha = HeatmapAnnotation(df = data.frame(a_long_long_long_annotation_name = runif(10)),
+    show_legend = FALSE)
+ht = Heatmap(matrix(rnorm(100), 10), name = "foo", top_annotation = ha)
+# because the default width for row cluster is 1cm
+padding = unit.c(unit(2, "mm"), grobWidth(textGrob("a_long_long_long_annotation_name")) - unit(1, "cm"),
+    unit(c(2, 2), "mm"))
+draw(ht, padding = padding)
+decorate_annotation("a_long_long_long_annotation_name", {
+    grid.text("a_long_long_long_annotation_name", 0, 0.5, just = "right")
+})
+```
