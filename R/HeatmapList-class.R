@@ -594,8 +594,8 @@ setMethod(f = "draw",
     }
 
     layout = grid.layout(nrow = 7, ncol = 7, widths = component_width(object, 1:7), heights = component_height(object, 1:7))
-    pushViewport(viewport(layout = layout, name = "global", width = unit(1, "npc") - padding[2] - padding[4],
-        height = unit(1, "npc") - padding[1] - padding[3]))
+    pushViewport(viewport(layout = layout, name = "global", x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
+        height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
     ht_layout_index = object@layout$layout_index
     ht_graphic_fun_list = object@layout$graphic_fun_list
     
