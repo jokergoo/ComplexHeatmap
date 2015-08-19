@@ -36,6 +36,7 @@ heatmap such as gene length and type of genes.
 
 ```{r expression_example, fig.width = 10, fig.height = 8}
 library(ComplexHeatmap)
+library(circlize)
 
 expr = readRDS(paste0(system.file(package = "ComplexHeatmap"), "/extdata/gene_expression.rds"))
 mat = as.matrix(expr[, grep("cell", colnames(expr))])
