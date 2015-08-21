@@ -1,6 +1,6 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Heatmap Decoration}
+%\VignetteIndexEntry{6.Heatmap Decoration}
 -->
 
 Heatmap Decoration
