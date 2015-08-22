@@ -1,6 +1,10 @@
 <!--
 %\VignetteEngine{knitr}
+<<<<<<< HEAD
 %\VignetteIndexEntry{Making a list of Heatmaps}
+=======
+%\VignetteIndexEntry{s3.Making a list of Heatmaps}
+>>>>>>> master
 -->
 
 Making A List of Heatmaps

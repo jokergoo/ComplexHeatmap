@@ -68,16 +68,9 @@ On specific applications. E.g. [EnrichedHeatmap](http://github.com/jokergoo/Enri
 uses **ComplexHeatmap** as base to make heatmaps which visualize the enrichment of genomic signals
 to specific target regions.
 
-## Examples
+## Visualize high dimensional genomic data
 
-
-The first examples is <a href="http://www.cbioportal.org/faq.jsp#what-are-oncoprints">OncoPrint</a>.
-The basic idea is to self define the heatmap body. Besides the default style which is 
-provided by <a href="http://www.cbioportal.org/index.do">cBioPortal</a>, there are
-additional barplots at both sides of the heatmap which show numbers of different alterations for
-each sample and for each gene.
-
-The second examples visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 
+The examples visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 
 From left to right, heatmaps are:
 
 1. methylation for each DMRs in samples.
@@ -90,3 +83,15 @@ From left to right, heatmaps are:
 8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
 
 ![example](https://cloud.githubusercontent.com/assets/449218/6862097/1bc46436-d443-11e4-91f5-431bc9210c80.png)
+
+## OncoPrint
+
+<a href="http://www.cbioportal.org/faq.jsp#what-are-oncoprints">OncoPrint</a> visualize multiple genomic alteration
+events through a heatmap. From verion 1.3.0, **ComplexHeatmap** package provides a new `oncoPrint()` function. By this
+function, users can define their own graphics which correspond to differnet alteration events. Also the function additionally
+add barplots on two sides of the heatmap which tell number of different alterations in patients or samples.
+
+With general functionality of **ComplexHeamtap**, you can add more heatmaps / row annotations to the oncoPrint, even split the
+oncoPrint to enphasize sub groups.
+
+![oncoprint](https://cloud.githubusercontent.com/assets/449218/9370313/9c9b6b00-46cf-11e5-9740-c5c2a7a40eb5.png)
