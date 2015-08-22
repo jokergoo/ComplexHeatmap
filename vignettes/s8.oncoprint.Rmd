@@ -1,7 +1,11 @@
 
 <!--
 %\VignetteEngine{knitr}
+<<<<<<< HEAD
 %\VignetteIndexEntry{OncoPrint}
+=======
+%\VignetteIndexEntry{8.OncoPrint}
+>>>>>>> master
 -->
 
 OncoPrint
