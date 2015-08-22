@@ -1,7 +1,7 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Making Complex Heatmaps
-Version: 1.3.0
+Version: 1.3.1
 Date: 2015-8-18
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
@@ -9,7 +9,7 @@ Depends: R (>= 3.1.2), grid, graphics, stats, grDevices
 Imports: methods, circlize (>= 0.3.1), GetoptLong, colorspace,
     RColorBrewer, dendextend (>= 1.0.1), GlobalOptions (>= 0.0.6)
 Suggests: testthat (>= 0.3), knitr, markdown, cluster, MASS, pvclust, 
-    dendsort, HilbertCurve (>= 0.99.2)
+    dendsort, HilbertCurve
 VignetteBuilder: knitr
 Description: Complex heatmaps are efficient to visualize associations 
     between different sources of data sets and reveal potential structures. 
