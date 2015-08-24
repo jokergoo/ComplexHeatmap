@@ -1,11 +1,7 @@
-
-<!--
+<--
 %\VignetteEngine{knitr}
-<<<<<<< HEAD
 %\VignetteIndexEntry{Introduction to ComplexHeatmap package}
-=======
 %\VignetteIndexEntry{1.Introduction to ComplexHeatmap package}
->>>>>>> master
 -->
 
 Introduction to ComplexHeatmap package
