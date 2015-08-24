@@ -1,10 +1,7 @@
 <!--
 %\VignetteEngine{knitr}
-<<<<<<< HEAD
 %\VignetteIndexEntry{Quick Examples of Making Complex Heatmaps}
-=======
 %\VignetteIndexEntry{7.Quick Examples of Making Complex Heatmaps}
->>>>>>> master
 -->
 
 Quick Examples of Making Complex Heatmaps

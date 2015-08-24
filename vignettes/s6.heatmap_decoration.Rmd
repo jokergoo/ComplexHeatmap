@@ -1,10 +1,7 @@
 <!--
 %\VignetteEngine{knitr}
-<<<<<<< HEAD
 %\VignetteIndexEntry{Heatmap Decoration}
-=======
 %\VignetteIndexEntry{6.Heatmap Decoration}
->>>>>>> master
 -->
 
 Heatmap Decoration
