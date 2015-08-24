@@ -1,10 +1,7 @@
 <!--
 %\VignetteEngine{knitr}
-<<<<<<< HEAD
 %\VignetteIndexEntry{Making a single heatmap}
-=======
 %\VignetteIndexEntry{2.Making a single heatmap}
->>>>>>> master
 -->
 
 Making A Single Heatmap

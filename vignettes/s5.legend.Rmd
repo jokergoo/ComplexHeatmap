@@ -1,10 +1,7 @@
 <!--
 %\VignetteEngine{knitr}
-<<<<<<< HEAD
 %\VignetteIndexEntry{Heatmap and Annotation Legends}
-=======
 %\VignetteIndexEntry{5.Heatmap and Annotation Legends}
->>>>>>> master
 -->
 
 Heatmap and Annotation Legends
