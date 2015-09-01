@@ -7,6 +7,8 @@ setGeneric('set_component_height', function(object, ...) standardGeneric('set_co
 
 setGeneric('draw_heatmap_body', function(object, ...) standardGeneric('draw_heatmap_body'))
 
+setGeneric('column_order', function(object, ...) standardGeneric('column_order'))
+
 setGeneric('draw_hclust', function(object, ...) standardGeneric('draw_hclust'))
 
 setGeneric('draw_annotation_legend', function(object, ...) standardGeneric('draw_annotation_legend'))
@@ -25,9 +27,9 @@ setGeneric('prepare', function(object, ...) standardGeneric('prepare'))
 
 setGeneric('draw_annotation', function(object, ...) standardGeneric('draw_annotation'))
 
-setGeneric('draw_dimnames', function(object, ...) standardGeneric('draw_dimnames'))
-
 setGeneric('get_color_mapping_param_list', function(object, ...) standardGeneric('get_color_mapping_param_list'))
+
+setGeneric('draw_dimnames', function(object, ...) standardGeneric('draw_dimnames'))
 
 setGeneric('color_mapping_legend', function(object, ...) standardGeneric('color_mapping_legend'))
 
@@ -41,6 +43,12 @@ setGeneric('make_column_cluster', function(object, ...) standardGeneric('make_co
 
 setGeneric('component_width', function(object, ...) standardGeneric('component_width'))
 
+setGeneric('column_dend', function(object, ...) standardGeneric('column_dend'))
+
 setGeneric('get_color_mapping_list', function(object, ...) standardGeneric('get_color_mapping_list'))
 
+setGeneric('row_order', function(object, ...) standardGeneric('row_order'))
+
 setGeneric('draw_heatmap_list', function(object, ...) standardGeneric('draw_heatmap_list'))
+
+setGeneric('row_dend', function(object, ...) standardGeneric('row_dend'))

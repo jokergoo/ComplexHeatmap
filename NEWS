@@ -1,3 +1,13 @@
+CHANGES in VERSION 1.3.4
+
+* returned value for `draw` method has been changes
+* add `row_order`, `column_order`, `row_dend` and `column_dend`
+  to extract orders and dendrograms after heatmap clustering
+* add `select_region` to interactively select sub region in the heatmap
+  and retrieve row/column index in the selected sub region.
+
+====================================
+
 CHANGES in VERSION 1.3.3
 
 * set `row_reorder` and `column_reorder` to FALSE by default in `Heatmap()`

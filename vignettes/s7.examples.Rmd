@@ -70,7 +70,7 @@ From left to right, heatmaps are:
 8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
 
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 8}
+```{r, fig.width = 10, fig.height = 8}
 library(circlize)
 library(RColorBrewer)
 
@@ -151,7 +151,8 @@ for colors for continous values.
 
 ```{r}
 Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(2, "cm"), 
-    column_hclust_height = unit(2, "cm"))
+    column_hclust_height = unit(2, "cm"), row_hclust_reorder = TRUE,
+    column_hclust_reorder = TRUE)
 ```
 
 ## The measles vaccine heatmap

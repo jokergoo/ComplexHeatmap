@@ -28,6 +28,8 @@ decorate_heatmap_body = function(heatmap, code = {}, slice = 1) {
 	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
+
+	seekViewport("global")
 }
 
 # == title
@@ -66,6 +68,8 @@ decorate_hclust = function(heatmap, code, slice = 1, which = c("column", "row"))
 	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
+
+	seekViewport("global")
 }
 
 # == title
@@ -135,6 +139,7 @@ decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"
 	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
+	seekViewport("global")
 }
 
 # == title
@@ -200,6 +205,7 @@ decorate_title = function(heatmap, code, slice = 1, which = c("column", "row")) 
 	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
+	seekViewport("global")
 }
 
 # == title
@@ -279,5 +285,6 @@ decorate_annotation = function(annotation, code, slice = NULL) {
 
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
+	seekViewport("global")
 }
 

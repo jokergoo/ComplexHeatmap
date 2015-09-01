@@ -81,7 +81,8 @@ HeatmapList = setClass("HeatmapList",
             layout_annotation_legend_bottom_height = unit(0, "mm"),
             
             layout_index = matrix(nrow = 0, ncol = 2),
-            graphic_fun_list = list()
+            graphic_fun_list = list(),
+            initialized = FALSE
         )
     ),
     contains = "AdditiveUnit"
@@ -209,6 +210,10 @@ setMethod(f = "make_layout",
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_hclust_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right")) {
+
+    if(object@layout$initialized) {
+        return(object)
+    }
 
     n = length(object@ht_list)
     i_main = main_heatmap[1]
@@ -542,6 +547,8 @@ setMethod(f = "make_layout",
         }
     }
 
+    object@layout$initialized = TRUE
+
     return(object)
 })
 
@@ -607,22 +614,13 @@ setMethod(f = "draw",
 
     upViewport()
 
-    # return a list of orders
-    n = length(object@ht_list)
-    dend_list = vector("list", n)
-    names(dend_list) = sapply(object@ht_list, function(ht) ht@name)
+    .LAST_HT_LIST$object = object
 
-    for(i in seq_len(n)) {
-        dend_list[[i]] = list(row = NULL, column = NULL)
-        if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
-        } else {
-            dend_list[[i]]$column = object@ht_list[[i]]@column_hclust
-            dend_list[[i]]$row = object@ht_list[[i]]@row_hclust_list
-        }
-    }
 
-    return(invisible(dend_list))
+    return(invisible(object))
 })
+
+.LAST_HT_LIST = new.env()
 
 # == title
 # Width of each heatmap list component

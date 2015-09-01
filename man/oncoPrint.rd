@@ -12,6 +12,7 @@ oncoPrint(mat, get_type = function(x) x,
     pct_gp = gpar(), axis_gp = gpar(fontsize = 8),
     show_row_barplot = TRUE, row_barplot_width = unit(2, "cm"),
     show_column_barplot = TRUE, column_barplot_height = unit(2, "cm"),
+    remove_empty_columns = TRUE,
     ...)
 }
 \arguments{
@@ -27,6 +28,7 @@ oncoPrint(mat, get_type = function(x) x,
   \item{row_barplot_width}{width of barplot annotation on rows. It should be a \code{\link[grid]{unit}} object}
   \item{show_column_barplot}{whether show barplot annotation on columns}
   \item{column_barplot_height}{height of barplot annotatioin on columns. it should be a \code{\link[grid]{unit}} object.}
+  \item{remove_empty_columns}{if there is no alteration in that sample, whether remove it on the heatmap}
   \item{...}{pass to \code{\link{Heatmap}}}
 
 }

@@ -160,7 +160,7 @@ Heatmap = setClass("Heatmap",
 # -column_order order of column. It makes it easy to adjust column order for both matrix and column annotations.
 # -row_names_side should the row names be put on the left or right of the heatmap?
 # -show_row_names whether show row names.
-# -row_reorder apply reordering on rows. The value can be a logical value or a vector which contains weight 
+# -row_hclust_reorder apply reordering on rows. The value can be a logical value or a vector which contains weight 
 #               which is used to reorder rows
 # -row_names_max_width maximum width of row names viewport. Because some times row names can be very long, it is not reasonable
 #                      to show them all.
@@ -168,7 +168,7 @@ Heatmap = setClass("Heatmap",
 # -column_names_side should the column names be put on the top or bottom of the heatmap?
 # -column_names_max_height maximum height of column names viewport.
 # -show_column_names whether show column names.
-# -column_reorder apply reordering on columns. The value can be a logical value or a vector which contains weight 
+# -column_hclust_reorder apply reordering on columns. The value can be a logical value or a vector which contains weight 
 #               which is used to reorder columns
 # -column_names_gp graphic parameters for drawing text.
 # -top_annotation a `HeatmapAnnotation` object which contains a list of annotations.
@@ -216,12 +216,12 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
     cluster_rows = TRUE, clustering_distance_rows = "euclidean",
     clustering_method_rows = "complete", row_hclust_side = c("left", "right"),
     row_hclust_width = unit(10, "mm"), show_row_hclust = TRUE, 
-    row_reorder = FALSE,
+    row_hclust_reorder = FALSE,
     row_hclust_gp = gpar(), cluster_columns = TRUE, 
     clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
     column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"), 
     show_column_hclust = TRUE, column_hclust_gp = gpar(), 
-    column_reorder = FALSE,
+    column_hclust_reorder = FALSE,
     row_order = NULL, column_order = NULL,
     row_names_side = c("right", "left"), show_row_names = TRUE, 
     row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12), 
@@ -323,14 +323,14 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
             cluster_rows = FALSE
             show_row_hclust = FALSE
         }
-        row_reorder = FALSE
+        row_hclust_reorder = FALSE
         if("clustering_distance_columns" %in% called_args) {
         } else if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
         } else {
             cluster_columns = FALSE
             show_column_hclust = FALSE
         }
-        column_reorder = FALSE
+        column_hclust_reorder = FALSE
         km = 1
     }
     .Object@matrix = matrix
@@ -461,7 +461,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
     .Object@row_hclust_param$width = row_hclust_width + unit(1, "mm")  # append the gap
     .Object@row_hclust_param$show = show_row_hclust
     .Object@row_hclust_param$gp = check_gp(row_hclust_gp)
-    .Object@row_hclust_param$reorder = row_reorder
+    .Object@row_hclust_param$reorder = row_hclust_reorder
     .Object@row_order_list = list() # default order
     if(is.null(row_order)) {
         .Object@row_order = seq_len(nrow(matrix))
@@ -495,7 +495,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
     .Object@column_hclust_param$height = column_hclust_height + unit(1, "mm")  # append the gap
     .Object@column_hclust_param$show = show_column_hclust
     .Object@column_hclust_param$gp = check_gp(column_hclust_gp)
-    .Object@column_hclust_param$reorder = column_reorder
+    .Object@column_hclust_param$reorder = column_hclust_reorder
     if(is.null(column_order)) {
         .Object@column_order = seq_len(ncol(matrix))
     } else {
