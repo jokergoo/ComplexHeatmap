@@ -1,6 +1,5 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Making Complex Heatmaps}
 %\VignetteIndexEntry{4.Making Complex Heatmaps}
 -->
 

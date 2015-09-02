@@ -1,7 +1,6 @@
 
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{OncoPrint}
 %\VignetteIndexEntry{8.OncoPrint}
 -->
 

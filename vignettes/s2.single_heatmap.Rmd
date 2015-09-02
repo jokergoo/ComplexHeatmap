@@ -1,6 +1,5 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Making a single heatmap}
 %\VignetteIndexEntry{2.Making a single heatmap}
 -->
 

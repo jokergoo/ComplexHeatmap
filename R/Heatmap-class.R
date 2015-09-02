@@ -1650,7 +1650,11 @@ setMethod(f = "draw",
             ht_graphic_fun_list = object@layout$graphic_fun_list
             
             for(j in seq_len(nrow(ht_layout_index))) {
-                pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
+                if(ht_layout_index[j, 1] == 5 && ht_layout_index[j, 2] == 4) {
+                    pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2], name = paste(object@name, "heatmap_body_wrap", sep = "_")))
+                } else {
+                    pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
+                }
                 ht_graphic_fun_list[[j]](object)
                 upViewport()
             }

@@ -1,6 +1,5 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Heatmap Decoration}
 %\VignetteIndexEntry{6.Heatmap Decoration}
 -->
 
@@ -121,7 +120,7 @@ You can easily go to these component and add graphics by `decorate_*` family fun
 Following code add annotation names, mark one grid in the heatmap and seperate the first column clusters with two rectangles.
 
 ```{r components, fig.width = 10, fig.height = 7}
-dend_list = draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
+ht_list = draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
     heatmap_legend_side = "right", annotation_legend_side = "left")
 decorate_annotation("points", {
     grid.text("points", unit(0, "npc") - unit(2, "mm"), 0.5, 
@@ -134,7 +133,7 @@ decorate_heatmap_body("ht1", {
 }, slice = 2)
 
 decorate_hclust("ht1", {
-    tree = dend_list$ht1$column
+    tree = column_dend(ht_list)$ht1
     ind = cutree(as.hclust(tree), k = 2)[order.dendrogram(tree)]
 
     first_index = function(l) which(l)[1]

@@ -1,5 +1,5 @@
-\name{select_region}
-\alias{select_region}
+\name{select}
+\alias{select}
 \title{
 Select a region in the heatmap
 }
@@ -7,7 +7,7 @@ Select a region in the heatmap
 Select a region in the heatmap
 }
 \usage{
-select_region(mark = FALSE)
+select(mark = FALSE)
 }
 \arguments{
 

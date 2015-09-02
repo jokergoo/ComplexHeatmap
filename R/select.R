@@ -9,14 +9,14 @@
 # Users can use mouse to click two positions on the heatmap, the function
 # will return the row index and column index for the selected region in the selected matrix.
 # 
-select_region = function(mark = FALSE) {
+select = function(mark = FALSE) {
 
 	if(!interactive()) {
 		stop("`select()` can only be used under interactive mode.")
 	}
 
 	x = dev.cur()
-	if(! (names(x) %in% c("quartz", "X11", "windows", "JavaGD", "CairoX11", "CairoWin")) ) {
+	if(! (names(x) %in% deviceIsInteractive()) ) {
 		stop("Can not detect any interactive graphic device.")
 	}
 
@@ -42,6 +42,9 @@ select_region = function(mark = FALSE) {
 		pos1$y = tmp
 	}
 
+	# grid.rect( (0.5*pos1$x + 0.5*pos2$x), (0.5*pos1$y + 0.5*pos2$y),
+	# 	abs_width(pos2$x - pos1$x), abs_height(pos2$y - pos1$y), gp = gpar(col = "orange") )
+
 	for(i in seq_along(.LAST_HT_LIST$object@ht_list)) {
 		if(inherits(.LAST_HT_LIST$object@ht_list[[i]], "Heatmap")) {
 			ht = .LAST_HT_LIST$object@ht_list[[i]]
@@ -49,7 +52,7 @@ select_region = function(mark = FALSE) {
 			
 			seekViewport(qq("heatmap_@{ht_name}", code.pattern = "@\\{CODE\\}"))
 			vp = current.viewport()
-
+			seekViewport("main_heatmap_list")
 			pos1_cp = list()
 			pos2_cp = list()
 
@@ -69,8 +72,11 @@ select_region = function(mark = FALSE) {
 				pos1_cp2 = list()
 				pos2_cp2 = list()
 
-				seekViewport(qq("@{ht_name}_heatmap_body_@{i}"))
+				seekViewport(qq("@{ht_name}_heatmap_body_@{i}", code.pattern = "@\\{CODE\\}"))
+
 				vp2 = current.viewport()
+
+				seekViewport(qq("@{ht_name}_heatmap_body_wrap", code.pattern = "@\\{CODE\\}"))
 				pos1_cp2$x = pos1_cp$x
 				pos1_cp2$y = pos1_cp$y - (vp2$y - vp2$height)
 				pos2_cp2$x = pos2_cp$x
@@ -80,19 +86,20 @@ select_region = function(mark = FALSE) {
 				pos1_cp2$y = convertHeight(pos1_cp2$y, "mm")
 				pos2_cp2$x = convertWidth(pos2_cp2$x, "mm")
 				pos2_cp2$y = convertHeight(pos2_cp2$y, "mm")
-			
+
+				ht_width = convertWidth(vp2$width, "mm")
+				ht_height = convertHeight(vp2$height, "mm")
+
+				seekViewport(qq("@{ht_name}_heatmap_body_@{i}"))
+
 				# test whether two clicks are in one heatmap body
 				if(compare_width(pos1_cp2$x) < 0 || compare_height(pos1_cp2$y) < 0 ||
 				   compare_width(pos2_cp2$x) < 0 || compare_height(pos2_cp2$y) < 0 ||
-				   compare_width(pos1_cp2$x, vp2$width) > 0 || compare_width(pos2_cp2$x, vp2$width) > 0 ||
-				   compare_height(pos1_cp2$y, vp2$height) > 0 || compare_height(pos2_cp2$y, vp2$height) > 0) {
+				   compare_width(pos1_cp2$x, unit(1, "npc")) > 0 || compare_width(pos2_cp2$x, unit(1, "npc")) > 0 ||
+				   compare_height(pos1_cp2$y, unit(1, "npc")) > 0 || compare_height(pos2_cp2$y, unit(1, "npc")) > 0) {
 					
 				} else {
-					# extract row index and column index
-					# be careful with row slices
-					ht_width = convertWidth(vp2$width, "mm")
-					ht_height = convertHeight(vp2$height, "mm")
-
+					
 					res = list()
 
 					nc = length(ht@column_order)
@@ -104,14 +111,14 @@ select_region = function(mark = FALSE) {
 
 					nr = length(ht@row_order_list[[i]])
 
-					y1 = 1 +nr - ceiling(as.numeric(pos1_cp2$y) / as.numeric(ht_height) * nr)
+					y1 = 1 + nr - ceiling(as.numeric(pos1_cp2$y) / as.numeric(ht_height) * nr)
 					y2 = 1 + nr - ceiling(as.numeric(pos2_cp2$y) / as.numeric(ht_height) * nr)
 
 					res$row_order = ht@row_order_list[[i]][y2:y1]
 
 					if(mark) {
-						grid.rect( (pos1_cp2$x + pos2_cp2$x)*0.5, (pos1_cp2$y + pos2_cp2$y)*0.5,
-							       abs_unit(pos2_cp2$x - pos1_cp2$x), abs_unit(pos2_cp2$y - pos1_cp2$y) )
+						grid.rect( (0.5*pos1_cp2$x + 0.5*pos2_cp2$x), (0.5*pos1_cp2$y + 0.5*pos2_cp2$y),
+							       abs_width(pos2_cp2$x - pos1_cp2$x), abs_height(pos2_cp2$y - pos1_cp2$y) )
 					}
 
 					return(res)
@@ -123,7 +130,7 @@ select_region = function(mark = FALSE) {
 	}
 
 	cat("\nTwo clicks should be in one same heatmap (or slice) region.\n\n")
-	select_region()
+	select(mark = mark)
 
 }
 
@@ -144,9 +151,13 @@ compare_height = function(u1, u2 = unit(0, "mm")) {
 	ifelse(u1 > u2, 1, ifelse(u1 < u2, -1, 0))
 }
 
-abs_unit = function(u) {
-	if(compare_unit(u) < 0) u = -1*u
+abs_width = function(u) {
+	if(compare_width(u) < 0) u = -1*u
 	return(u)
 }
 
+abs_height = function(u) {
+	if(compare_height(u) < 0) u = -1*u
+	return(u)
+}
 

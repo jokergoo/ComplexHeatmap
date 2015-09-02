@@ -1,6 +1,5 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Making a list of Heatmaps}
 %\VignetteIndexEntry{s3.Making a list of Heatmaps}
 -->
 
