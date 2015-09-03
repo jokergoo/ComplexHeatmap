@@ -43,7 +43,7 @@ There are following parameters:
 You can get or set option values by the traditional way (like \code{\link[base]{options}}) or by \code{$} operator:
 
   \preformatted{
-# to get option values
+    # to get option values
     ht_global_opt("heatmap_row_names_gp")
     ht_global_opt$heatmap_row_names_gp
 

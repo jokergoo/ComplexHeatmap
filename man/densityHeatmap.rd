@@ -9,7 +9,7 @@ Use colors to represent density distribution
 \usage{
 densityHeatmap(data,
     col = rev(brewer.pal(11, "Spectral")),
-    color_space = "RGB",
+    color_space = "LAB",
     anno = NULL,
     ylab = deparse(substitute(data)),
     title = paste0("Density heatmap of ", deparse(substitute(data))))

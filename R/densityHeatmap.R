@@ -37,7 +37,7 @@
 #
 densityHeatmap = function(data, 
 	col = rev(brewer.pal(11, "Spectral")),
-	color_space = "RGB", 
+	color_space = "LAB", 
 	anno = NULL, 
 	ylab = deparse(substitute(data)), 
 	title = paste0("Density heatmap of ", deparse(substitute(data)))) {
@@ -69,21 +69,23 @@ densityHeatmap = function(data,
 	mat = as.matrix(as.data.frame(mat))
 	colnames(mat) = nm
 
+	col = colorRamp2(seq(0, max(mat, na.rm = TRUE), length = length(col)), col, space = color_space)
+
 	if(is.null(anno)) {
-		ht = Heatmap(mat, col = col, color_space = color_space, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
+		ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
 	} else if(inherits(anno, "HeatmapAnnotation")) {
-		ht = Heatmap(mat, col = col, color_space = color_space, top_annotation = anno, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
+		ht = Heatmap(mat, col = col, top_annotation = anno, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
 	} else {
 		if(!is.data.frame(anno)) anno = data.frame(anno = anno)
 		ha = HeatmapAnnotation(df = anno)
-		ht = Heatmap(mat, col = col, color_space = color_space, top_annotation = ha, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
+		ht = Heatmap(mat, col = col, top_annotation = ha, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
 	}
 
 	bb = grid.pretty(c(min_x, max_x))
 	ht_list = rowAnnotation(axis = function(index) NULL, width = grobHeight(textGrob(ylab))*2 + max(grobWidth(textGrob(bb))) + unit(6, "mm")) + 
 		ht + rowAnnotation(quantile = function(index) NULL, width = grobWidth(textGrob("100%")))
 
-	draw(ht_list, column_title = title)
+	ht_list = draw(ht_list, column_title = title)
 
 	decorate_annotation("axis", {
 		grid.text(ylab, x = grobHeight(textGrob(ylab)), rot = 90)
@@ -99,4 +101,6 @@ densityHeatmap = function(data,
 		}
 		upViewport()
 	})
+
+	return(invisible(ht_list))
 }

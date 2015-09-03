@@ -16,7 +16,7 @@ max_text_width(text, ...)
 
 }
 \value{
-A \code{\link{grid.unit}} object.
+A \code{\link[grid]{unit}} object.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

@@ -27,7 +27,7 @@ simple to calculate the position of every small grid in the row slice.
 E.g., the position for the grid in i^th row and j^th column is:
 
   \preformatted{
-# assume nc is the number of columns 
+    # assume nc is the number of columns 
     # and nr is the number of rows in that row slice
     unit((i-0.5)/nc, "npc")
     unit((j-0.5)/nr, "npc")

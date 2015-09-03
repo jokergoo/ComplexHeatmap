@@ -35,4 +35,5 @@ The vignette provides detailed explanation of how to use this package.
 \examples{
 # There is no example
 NULL
+
 }

@@ -11,7 +11,7 @@ Class for a single heatmap
 The components for a single heamtap are placed into a 9 x 7 layout:
 
   \preformatted{
-+------+ (1)
+         +------+ (1)
          +------+ (2)
          +------+ (3)
          +------+ (4)

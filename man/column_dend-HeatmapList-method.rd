@@ -20,4 +20,5 @@ A list of dendrograms for which dendrogram corresponds to each matrix
 \examples{
 # There is no example
 NULL
+
 }

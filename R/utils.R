@@ -467,7 +467,7 @@ list_component = function() {
 # -... pass to `grid::textGrob`
 #
 # == value
-# A `grid.unit` object.
+# A `grid::unit` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -487,7 +487,7 @@ max_text_width = function(text, ...) {
 # -... pass to `grid::textGrob`
 #
 # == value
-# A `grid.unit` object.
+# A `grid::unit` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

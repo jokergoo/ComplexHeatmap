@@ -20,4 +20,5 @@ A vector containing column orders
 \examples{
 # There is no example
 NULL
+
 }

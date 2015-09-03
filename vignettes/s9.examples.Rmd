@@ -1,9 +1,9 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{7.Quick Examples of Making Complex Heatmaps}
+%\VignetteIndexEntry{9. Examples of Making Complex Heatmaps}
 -->
 
-Quick Examples of Making Complex Heatmaps
+Examples of Making Complex Heatmaps
 ========================================
 
 **Author**: Zuguang Gu ( z.gu@dkfz.de )

@@ -1,6 +1,6 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{5.Heatmap and Annotation Legends}
+%\VignetteIndexEntry{5. Heatmap and Annotation Legends}
 -->
 
 Heatmap and Annotation Legends

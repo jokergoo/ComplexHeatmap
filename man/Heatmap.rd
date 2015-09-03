@@ -176,10 +176,10 @@ Heatmap(mat, clustering_distance_rows = "pearson")
 Heatmap(mat, clustering_distance_rows = function(x) dist(x))
 Heatmap(mat, clustering_distance_rows = function(x, y) 1 - cor(x, y))
 Heatmap(mat, clustering_method_rows = "single")
-Heatmap(mat, row_hclust_side = "right")
-Heatmap(mat, row_hclust_width = unit(1, "cm"))
-Heatmap(mat, row_names_side = "left", row_hclust_side = "right", 
-    column_names_side = "top", column_hclust_side = "bottom")
+Heatmap(mat, row_dend_side = "right")
+Heatmap(mat, row_dend_width = unit(1, "cm"))
+Heatmap(mat, row_names_side = "left", row_dend_side = "right", 
+    column_names_side = "top", column_dend_side = "bottom")
 Heatmap(mat, show_row_names = FALSE)
 
 mat2 = mat

@@ -20,4 +20,5 @@ A dendrogram object
 \examples{
 # There is no example
 NULL
+
 }

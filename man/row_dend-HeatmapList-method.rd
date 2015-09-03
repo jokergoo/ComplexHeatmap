@@ -20,4 +20,5 @@ A list of dendrograms for which each dendrogram corresponds to a row slice
 \examples{
 # There is no example
 NULL
+
 }

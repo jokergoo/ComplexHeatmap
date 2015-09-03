@@ -1,6 +1,6 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{6.Heatmap Decoration}
+%\VignetteIndexEntry{6. Heatmap Decoration}
 -->
 
 Heatmap Decoration
@@ -135,7 +135,7 @@ decorate_heatmap_body("ht1", {
 suppressPackageStartupMessages(library(dendextend))
 decorate_dend("ht1", {
     tree = column_dend(ht_list)$ht1
-    ind = cutree_1k.dendrogram(tree, k = 2)
+    ind = cutree(as.hclust(tree), k = 2)[order.dendrogram(tree)]
 
     first_index = function(l) which(l)[1]
     last_index = function(l) { x = which(l); x[length(x)] }

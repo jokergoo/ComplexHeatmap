@@ -20,4 +20,5 @@ A list contains row orders which correspond to the original matrix
 \examples{
 # There is no example
 NULL
+
 }

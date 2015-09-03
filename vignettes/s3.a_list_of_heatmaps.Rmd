@@ -1,6 +1,6 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{s3.Making a list of Heatmaps}
+%\VignetteIndexEntry{3. Making a list of Heatmaps}
 -->
 
 Making A List of Heatmaps
@@ -162,6 +162,31 @@ ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1")
 ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
 ht1 + ht2
 ht_global_opt(RESET = TRUE)
+```
+
+## Retrieve orders and dendrograms
+
+`row_order`, `column_order`, `row_dend` and `column_dend` can be used to retrieve corresponding information from
+the heatmaps. The usage is straightforward by following example:
+
+```{r}
+ht_list = ht1 + ht2
+row_order(ht_list)
+column_order(ht_list)
+row_dend(ht_list)
+column_dend(ht_list)
+```
+
+If `ht_list` has not been drawn yet, calling these four functions would be a little bit slow if the matrix are huge.
+But if `ht_list` is already drawn which means clustering is already applied to the matrix, it will be fast to retrieve 
+these information.
+
+```{r, eval = FALSE}
+ht_list = draw(ht1 + ht2)
+row_order(ht_list)
+column_order(ht_list)
+row_dend(ht_list)
+column_dend(ht_list)
 ```
 
 ## Heatmap list with row annotations

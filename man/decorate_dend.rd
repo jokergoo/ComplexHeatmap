@@ -28,7 +28,7 @@ simple to calculate the position of every leave in the dendrogram.
 E.g., for the column dendrogram, the i^th leave is located at:
 
   \preformatted{
-# assume nc is the number of columns 
+    # assume nc is the number of columns 
     unit((i-0.5)/nc, "npc")  }
 }
 \value{

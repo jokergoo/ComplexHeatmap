@@ -634,7 +634,7 @@ setMethod(f = "draw",
 
     for(i in seq_along(.LAST_HT_LIST$object@ht_list)) {
         if(inherits(.LAST_HT_LIST$object@ht_list[[i]], "Heatmap")) {
-            .LAST_HT_LIST$object@ht_list[[i]]@matrix = matrix(nr = 0, nc = 0)
+            .LAST_HT_LIST$object@ht_list[[i]]@matrix = matrix(nrow = 0, ncol = 0)
         }
     }
 

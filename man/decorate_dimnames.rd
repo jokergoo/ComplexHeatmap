@@ -28,7 +28,7 @@ simple to calculate the position of every row name or column name in the heatmap
 E.g., for the column column, the i^th name is located at:
 
   \preformatted{
-# assume nc is the number of columns 
+    # assume nc is the number of columns 
     unit((i-0.5)/nc, "npc")  }
 }
 \value{

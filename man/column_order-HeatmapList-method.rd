@@ -20,4 +20,5 @@ A list contains column orders which correspond every matrix
 \examples{
 # There is no example
 NULL
+
 }
