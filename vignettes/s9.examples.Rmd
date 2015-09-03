@@ -1,10 +1,9 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Quick Examples of Making Complex Heatmaps}
-%\VignetteIndexEntry{7.Quick Examples of Making Complex Heatmaps}
+%\VignetteIndexEntry{9. Examples of Making Complex Heatmaps}
 -->
 
-Quick Examples of Making Complex Heatmaps
+Examples of Making Complex Heatmaps
 ========================================
 
 **Author**: Zuguang Gu ( z.gu@dkfz.de )
@@ -70,7 +69,7 @@ From left to right, heatmaps are:
 8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
 
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 8}
+```{r, fig.width = 10, fig.height = 8}
 library(circlize)
 library(RColorBrewer)
 
@@ -150,8 +149,9 @@ Compare to the native `heatmap()`, `Heatmap()` can give more accurate interpolat
 for colors for continous values.
 
 ```{r}
-Heatmap(mat, col = topo.colors(50), row_hclust_width = unit(2, "cm"), 
-    column_hclust_height = unit(2, "cm"))
+Heatmap(mat, col = topo.colors(50), row_dend_width = unit(2, "cm"), 
+    column_dend_height = unit(2, "cm"), row_dend_reorder = TRUE,
+    column_dend_reorder = TRUE)
 ```
 
 ## The measles vaccine heatmap
@@ -170,7 +170,7 @@ ha_column = HeatmapAnnotation(cn = function(index) {
     grid.text(year[which_decade], which_decade/length(year), 1, just = c("center", "top"))
 })
 Heatmap(mat, name = "cases", col = colorRamp2(c(0, 800, 1000, 127000), c("white", "cornflowerblue", "yellow", "red")),
-    cluster_columns = FALSE, show_row_hclust = FALSE, rect_gp = gpar(col= "white"), show_column_names = FALSE,
+    cluster_columns = FALSE, show_row_dend = FALSE, rect_gp = gpar(col= "white"), show_column_names = FALSE,
     row_names_side = "left", row_names_gp = gpar(fontsize = 10),
     column_title = 'Measles cases in US states 1930-2001\nVaccine introduced 1961',
     top_annotation = ha1, top_annotation_height = unit(1, "cm"),

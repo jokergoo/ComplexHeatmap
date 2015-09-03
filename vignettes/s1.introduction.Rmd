@@ -1,7 +1,6 @@
-<--
+<!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Introduction to ComplexHeatmap package}
-%\VignetteIndexEntry{1.Introduction to ComplexHeatmap package}
+%\VignetteIndexEntry{1. Introduction to ComplexHeatmap package}
 -->
 
 Introduction to ComplexHeatmap package
@@ -111,11 +110,15 @@ lists the general topics discussed in these vignettes:
     This vignette introduces methods to add more self-defined graphics to the heatmaps after the heatmaps
     are generated.
 
-  6. [**Examples**](s7.examples.html)
+  6. [**Interactive with Heatmaps**](s7.interactive.html)
 
-    More simulated and real-world examples are shown in this vignette.
+    How to select a region in the heatmap to retrieve the sub-matrix.
   
   7. [**OncoPrint**](s8.oncoprint.html)
 
     How to make an oncoPrint.
+
+  8. [**Examples**](s9.examples.html)
+
+    More simulated and real-world examples are shown in this vignette.
     

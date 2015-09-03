@@ -17,6 +17,7 @@
 # -row_barplot_width width of barplot annotation on rows. It should be a `grid::unit` object
 # -show_column_barplot whether show barplot annotation on columns
 # -column_barplot_height height of barplot annotatioin on columns. it should be a `grid::unit` object.
+# -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -... pass to `Heatmap`
 #
 # == details
@@ -25,16 +26,21 @@
 # For more explanation, please go to the vignette.
 #
 # == value
-# a `HeatmapList-class` object.
+# A `HeatmapList-class` object which means you can add other heatmaps or row annotations to it.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
 oncoPrint = function(mat, get_type = function(x) x,
-	alter_fun_list, col, show_column_names = FALSE, 
-	pct_gp = gpar(), axis_gp = gpar(fontsize = 8), 
-	show_row_barplot = TRUE, row_barplot_width = unit(2, "cm"),
-	show_column_barplot = TRUE, column_barplot_height = unit(2, "cm"),
+	alter_fun_list, col, 
+	show_column_names = FALSE, 
+	pct_gp = gpar(), 
+	axis_gp = gpar(fontsize = 8), 
+	show_row_barplot = TRUE, 
+	row_barplot_width = unit(2, "cm"),
+	show_column_barplot = TRUE, 
+	column_barplot_height = unit(2, "cm"),
+	remove_empty_columns = TRUE,
 	...) {
 	
 	# convert mat to mat_list
@@ -77,8 +83,10 @@ oncoPrint = function(mat, get_type = function(x) x,
 		arr[, , i] = mat_list[[i]]
 	}
 
-	l = rowSums(apply(arr, c(2, 3), sum)) > 0
-	arr = arr[, l, , drop = FALSE]
+	if(remove_empty_columns) {
+		l = rowSums(apply(arr, c(2, 3), sum)) > 0
+		arr = arr[, l, , drop = FALSE]
+	}
 
 	# validate alter_fun_list
 	if(is.null(alter_fun_list$background)) alter_fun_list$background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))

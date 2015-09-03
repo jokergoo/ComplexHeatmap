@@ -81,8 +81,11 @@ SingleAnnotation = setClass("SingleAnnotation",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-SingleAnnotation = function(name, value, col, fun, which = c("column", "row"), 
-	show_legend = TRUE, gp = gpar(col = NA), legend_param = list()) {
+SingleAnnotation = function(name, value, col, fun, 
+	which = c("column", "row"), 
+	show_legend = TRUE, 
+	gp = gpar(col = NA), 
+	legend_param = list()) {
 
 	# re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
