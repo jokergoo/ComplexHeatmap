@@ -18,7 +18,7 @@ rowAnnotation(...)
 The function is identical to
 
   \preformatted{
-HeatmapAnnotation(..., which = "row")  }
+    HeatmapAnnotation(..., which = "row")  }
 }
 \value{
 A \code{\link{HeatmapAnnotation-class}} object.

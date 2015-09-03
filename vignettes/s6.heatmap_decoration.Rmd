@@ -1,7 +1,6 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Heatmap Decoration}
-%\VignetteIndexEntry{6.Heatmap Decoration}
+%\VignetteIndexEntry{6. Heatmap Decoration}
 -->
 
 Heatmap Decoration
@@ -69,12 +68,12 @@ for(heatmap_name in c("ht1", "ht2")) {
     }
         
     seekViewport(qq("@{heatmap_name}_column_title")); grid.rect(gp = gpar(fill = NA, col = "red"))
-    seekViewport(qq("@{heatmap_name}_hclust_column")); grid.rect(gp = gpar(fill = NA, col = "red"))
+    seekViewport(qq("@{heatmap_name}_dend_column")); grid.rect(gp = gpar(fill = NA, col = "red"))
     seekViewport(qq("@{heatmap_name}_column_names")); grid.rect(gp = gpar(fill = NA, col = "red"))
     seekViewport(qq("legend_@{heatmap_name}")); grid.rect(gp = gpar(fill = NA, col = "red"))
 }
-seekViewport(qq("ht1_hclust_row_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
-seekViewport(qq("ht1_hclust_row_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("ht1_dend_row_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("ht1_dend_row_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
 seekViewport(qq("ht1_row_title_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
 seekViewport(qq("ht1_row_title_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
 
@@ -105,8 +104,8 @@ The components (viewports) that have names are:
 - `@{heatmap_name}_heatmap_body_@{i}`: the heatmap body.
 - `@{heatmap_name}_column_title`: column title for a single heatmap.
 - `@{heatmap_name}_row_title_@{i}`: since a heatmap body may be splitted into several parts. `@{i}` is the index of the row slice.
-- `@{heatmap_name}_hclust_row_@{i}`: dendrogram for ith row slice.
-- `@{heatmap_name}_hclust_column`: dendrogram on columns
+- `@{heatmap_name}_dend_row_@{i}`: dendrogram for ith row slice.
+- `@{heatmap_name}_dend_column`: dendrogram on columns
 - `@{heatmap_name}_row_names_@{i}`: the viewport which contains row names.
 - `@{heatmap_name}_column_names`: the viewport which contains column names.
 - `heatmap_legend`: the viewport which contains all heatmap legends.
@@ -121,7 +120,7 @@ You can easily go to these component and add graphics by `decorate_*` family fun
 Following code add annotation names, mark one grid in the heatmap and seperate the first column clusters with two rectangles.
 
 ```{r components, fig.width = 10, fig.height = 7}
-dend_list = draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
+ht_list = draw(ht_list, row_title = "Heatmap list", column_title = "Heatmap list", 
     heatmap_legend_side = "right", annotation_legend_side = "left")
 decorate_annotation("points", {
     grid.text("points", unit(0, "npc") - unit(2, "mm"), 0.5, 
@@ -133,8 +132,9 @@ decorate_heatmap_body("ht1", {
     grid.lines(c(0.5, 0.5), c(0, 1), gp = gpar(lty = 2, lwd = 2))
 }, slice = 2)
 
-decorate_hclust("ht1", {
-    tree = dend_list$ht1$column
+suppressPackageStartupMessages(library(dendextend))
+decorate_dend("ht1", {
+    tree = column_dend(ht_list)$ht1
     ind = cutree(as.hclust(tree), k = 2)[order.dendrogram(tree)]
 
     first_index = function(l) which(l)[1]

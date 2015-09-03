@@ -16,7 +16,7 @@ Make cluster on rows
 
 }
 \details{
-The function will fill or adjust \code{row_hclust_list}, \code{row_order_list}, \code{row_title} and \code{matrix_param} slots.
+The function will fill or adjust \code{row_dend_list}, \code{row_order_list}, \code{row_title} and \code{matrix_param} slots.
 
 If \code{order} is defined, no clustering will be applied.
 

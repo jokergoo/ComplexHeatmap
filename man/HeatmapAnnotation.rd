@@ -7,10 +7,16 @@ Constructor method for HeatmapAnnotation class
 Constructor method for HeatmapAnnotation class
 }
 \usage{
-HeatmapAnnotation(df, name, col, annotation_legend_param = list(),
-    show_legend = rep(TRUE, n_anno), ...,
-    which = c("column", "row"), annotation_height = 1, annotation_width = 1,
-    height = calc_anno_size(), width = calc_anno_size(), gp = gpar(col = NA),
+HeatmapAnnotation(df, name, col,
+    annotation_legend_param = list(),
+    show_legend = rep(TRUE, n_anno),
+    ...,
+    which = c("column", "row"),
+    annotation_height = 1,
+    annotation_width = 1,
+    height = calc_anno_size(),
+    width = calc_anno_size(),
+    gp = gpar(col = NA),
     gap = unit(0, "mm"))
 }
 \arguments{

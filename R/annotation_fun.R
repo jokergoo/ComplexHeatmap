@@ -633,6 +633,12 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 # == details
 # A wrapper of `anno_points` with pre-defined ``which`` to ``row``.
 #
+# == value
+# See help page of `anno_points`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 row_anno_points = function(...) {
 	anno_points(..., which = "row")
 }
@@ -645,6 +651,12 @@ row_anno_points = function(...) {
 #
 # == details
 # A wrapper of `anno_points` with pre-defined ``which`` to ``column``.
+#
+# == value
+# See help page of `anno_points`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 column_anno_points = function(...) {
 	anno_points(..., which = "column")
@@ -659,6 +671,12 @@ column_anno_points = function(...) {
 # == details
 # A wrapper of `anno_barplot` with pre-defined ``which`` to ``row``.
 #
+# == value
+# See help page of `anno_barplot`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 row_anno_barplot = function(...) {
 	anno_barplot(..., which = "row")
 }
@@ -671,6 +689,12 @@ row_anno_barplot = function(...) {
 #
 # == details
 # A wrapper of `anno_barplot` with pre-defined ``which`` to ``column``.
+#
+# == value
+# See help page of `anno_barplot`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 column_anno_barplot = function(...) {
 	anno_barplot(..., which = "column")
@@ -685,6 +709,12 @@ column_anno_barplot = function(...) {
 # == details
 # A wrapper of `anno_boxplot` with pre-defined ``which`` to ``row``.
 #
+# == value
+# See help page of `anno_boxplot`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 row_anno_boxplot = function(...) {
 	anno_boxplot(..., which = "row")
 }
@@ -697,6 +727,12 @@ row_anno_boxplot = function(...) {
 #
 # == details
 # A wrapper of `anno_boxplot` with pre-defined ``which`` to ``column``.
+#
+# == value
+# See help page of `anno_boxplot`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 column_anno_boxplot = function(...) {
 	anno_boxplot(..., which = "column")
@@ -711,6 +747,12 @@ column_anno_boxplot = function(...) {
 # == details
 # A wrapper of `anno_histogram` with pre-defined ``which`` to ``row``.
 #
+# == value
+# See help page of `anno_histogram`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 row_anno_histogram = function(...) {
 	anno_histogram(..., which = "row")
 }
@@ -723,6 +765,12 @@ row_anno_histogram = function(...) {
 #
 # == details
 # A wrapper of `anno_histogram` with pre-defined ``which`` to ``column``.
+#
+# == value
+# See help page of `anno_histogram`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 column_anno_histogram = function(...) {
 	anno_histogram(..., which = "column")
@@ -737,6 +785,12 @@ column_anno_histogram = function(...) {
 # == details
 # A wrapper of `anno_density` with pre-defined ``which`` to ``row``.
 #
+# == value
+# See help page of `anno_density`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 row_anno_density = function(...) {
 	anno_density(..., which = "row")
 }
@@ -749,6 +803,12 @@ row_anno_density = function(...) {
 #
 # == details
 # A wrapper of `anno_density` with pre-defined ``which`` to ``column``.
+#
+# == value
+# See help page of `anno_density`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 column_anno_density = function(...) {
 	anno_density(..., which = "column")
@@ -763,6 +823,12 @@ column_anno_density = function(...) {
 # == details
 # A wrapper of `anno_text` with pre-defined ``which`` to ``row``.
 #
+# == value
+# See help page of `anno_text`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 row_anno_text = function(...) {
 	anno_text(..., which = "row")
 }
@@ -775,6 +841,12 @@ row_anno_text = function(...) {
 #
 # == details
 # A wrapper of `anno_text` with pre-defined ``which`` to ``column``.
+#
+# == value
+# See help page of `anno_text`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
 #
 column_anno_text = function(...) {
 	anno_text(..., which = "column")

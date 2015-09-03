@@ -1,8 +1,7 @@
 
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{OncoPrint}
-%\VignetteIndexEntry{8.OncoPrint}
+%\VignetteIndexEntry{8. OncoPrint}
 -->
 
 OncoPrint
@@ -169,6 +168,18 @@ Make the oncoPrint and adjust heatmap components such as the title and the legen
 ```{r, fig.width = 12, fig.height = 8}
 oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	alter_fun_list = alter_fun_list, col = col, 
+	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
+	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
+		labels = c("Amplification", "Deep deletion", "Mutation")))
+```
+
+By default, if one sample has no alteration, it will be removed from the heatmap. but you can set
+`remove_empty_columns` to `FALSE` to keep it:
+
+```{r, fig.width = 12, fig.height = 8}
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+	alter_fun_list = alter_fun_list, col = col, 
+	remove_empty_columns = FALSE,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
 		labels = c("Amplification", "Deep deletion", "Mutation")))

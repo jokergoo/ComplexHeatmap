@@ -65,10 +65,16 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-HeatmapAnnotation = function(df, name, col, annotation_legend_param = list(), 
-	show_legend = rep(TRUE, n_anno), ..., 
-	which = c("column", "row"), annotation_height = 1, annotation_width = 1, 
-	height = calc_anno_size(), width = calc_anno_size(), gp = gpar(col = NA),
+HeatmapAnnotation = function(df, name, col, 
+	annotation_legend_param = list(), 
+	show_legend = rep(TRUE, n_anno), 
+	..., 
+	which = c("column", "row"), 
+	annotation_height = 1, 
+	annotation_width = 1, 
+	height = calc_anno_size(), 
+	width = calc_anno_size(), 
+	gp = gpar(col = NA),
 	gap = unit(0, "mm")) {
 
 	.Object = new("HeatmapAnnotation")
