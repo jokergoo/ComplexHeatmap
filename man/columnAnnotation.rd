@@ -18,7 +18,7 @@ columnAnnotation(...)
 The function is identical to
 
   \preformatted{
-HeatmapAnnotation(..., which = "column")  }
+    HeatmapAnnotation(..., which = "column")  }
 }
 \value{
 A \code{\link{HeatmapAnnotation-class}} object.

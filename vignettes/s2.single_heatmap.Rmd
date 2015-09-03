@@ -1,7 +1,6 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Making a single heatmap}
-%\VignetteIndexEntry{2.Making a single heatmap}
+%\VignetteIndexEntry{2. Making a single heatmap}
 -->
 
 Making A Single Heatmap
@@ -293,27 +292,29 @@ Heatmap(mat, name = "foo", cluster_rows = as.dendrogram(diana(mat)),
    cluster_columns = as.dendrogram(agnes(t(mat))))
 ```
 
-By default, dendrograms on row and on column are reordered to let features with larger different
-separated more from each other (to behave same as the native `heatmap()`). 
-You can first generate a dendrogram and apply other reordering
-method. But remember you need to set `row_reorder` to `FALSE` to turn off the default reordering.
+In the native `heatmap()` function, dendrograms on row and on column are reordered to let features with larger different
+separated more from each other, but according to my experience, the default reordering can not always give nice visualization.
+So the reordering for the dendrograms are turned off for `Heatmap()` function. 
+
+Besides the default reordering method, you can first generate a dendrogram and apply other reordering
+method and then send the reordered dendrogram to `cluster_rows` argument. 
 
 Compare following three plots:
 
 ```{r cluster_dendsort, fig.width = 14}
 pushViewport(viewport(layout = grid.layout(nr = 1, nc = 3)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
-draw(Heatmap(mat, name = "foo", row_reorder = FALSE, column_title = "no reordering"), newpage = FALSE)
+draw(Heatmap(mat, name = "foo", row_hclust_reorder = FALSE, column_title = "no reordering"), newpage = FALSE)
 upViewport()
 
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
-draw(Heatmap(mat, name = "foo", column_title = "default reordering"), newpage = FALSE)
+draw(Heatmap(mat, name = "foo", row_hclust_reorder = TRUE, column_title = "default reordering"), newpage = FALSE)
 upViewport()
 
 library(dendsort)
 dend = dendsort(hclust(dist(mat)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 3))
-draw(Heatmap(mat, name = "foo", cluster_rows = dend, row_reorder = FALSE, 
+draw(Heatmap(mat, name = "foo", cluster_rows = dend, row_hclust_reorder = FALSE, 
     column_title = "reordering by dendsort"), newpage = FALSE)
 upViewport(2)
 ```

@@ -39,6 +39,7 @@ increase_color_mapping_index = function() {
     INDEX_ENV$I_COLOR_MAPPING = INDEX_ENV$I_COLOR_MAPPING + 1
 }
 
+
 # default colors for matrix or annotations
 # this function should be improved later
 default_col = function(x, main_matrix = FALSE) {
@@ -80,14 +81,18 @@ default_col = function(x, main_matrix = FALSE) {
 # == param
 # -dend a `stats::dendrogram` object.
 # -facing facing of the dendrogram.
-# -max_height maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.
+# -max_height maximum height of the dendrogram. It is useful to make dendrograms comparable
+#             if you want to plot more than one dendrograms.
 # -order should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)?
 # -... pass to `grid::viewport` which contains the dendrogram.
 #
 # == details
-# The dendrogram tree can be renderred (e.g. by ``dendextend`` package).
+# The dendrogram can be renderred (e.g. by ``dendextend`` package).
 #
 # A viewport is created which contains the dendrogram.
+#
+# This function only plots the dendrogram without adding labels. The leaves of the dendrogram
+# locates at ``unit(c(0.5, 1.5, ...(n-0.5))/n, "npc")``.
 #
 # == value
 # No value is returned.
@@ -344,7 +349,7 @@ get_dist = function(matrix, method) {
     return(dst)
 }
 
-get_hclust_order = function(x) {
+get_dend_order = function(x) {
     switch(class(x),
         hclust = x$order,
         dendrogram = order.dendrogram(x))
@@ -425,47 +430,6 @@ get_text_just = function(rot, side) {
     }
 }
 
-compare_unit = function(u1, u2) {
-    x1 = convertUnit(u1, "mm", valueOnly = TRUE)
-    x2 = convertUnit(u2, "mm", valueOnly = TRUE)
-    ifelse(x1 > x2, 1, ifelse(x1 < x2, -1, 0))
-}
-
-is.fixedUnit = function(x) {
-    # npc = 0
-    # cm = 1
-    # inches = 2
-    # mm = 3
-    # points = 4
-    # picas = 5
-    # bigpts = 6
-    # dida = 7
-    # cicero = 8
-    # scaledpts = 9
-    # lines =10
-    # char = 11
-    # native = 12
-    # snpc = 13
-    # strwidth = 14
-    # strheight = 15
-    # grobwidth = 16  # we only simply think grobwidth is a fixed unit
-    # grobheight = 17
-    fixed_units = c(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17)
-    if(inherits(x, "unit.list")) {
-        sapply(x, function(u) {
-            is.fixedUnit(u)
-        })
-    } else {
-        if(inherits(x, "unit.arithemtic")) {
-            ind = grep("arg", names(x), value = TRUE)
-            all(sapply(ind, function(i) attr(x[[i]], "valid.unit") %in% fixed_units))
-        } else {
-            attr(x, "valid.unit") %in% fixed_units
-        }
-    }
-}
-
-
 c.list = function(lt, ..., list = NULL) {
     if(length(lt) == 0) lt = list()
 
@@ -502,6 +466,15 @@ list_component = function() {
 # -text a vector of text
 # -... pass to `grid::textGrob`
 #
+# == value
+# A `grid::unit` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+# == example
+# max_text_width(letters, gp = gpar(fontsize = 10))
+#
 max_text_width = function(text, ...) {
     max(do.call("unit.c", lapply(text, function(x) grobWidth(textGrob(x, ...)))))
 }
@@ -512,6 +485,15 @@ max_text_width = function(text, ...) {
 # == param
 # -text a vector of text
 # -... pass to `grid::textGrob`
+#
+# == value
+# A `grid::unit` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+# == example
+# max_text_height(letters, gp = gpar(fontsize = 10))
 #
 max_text_height = function(text, ...) {
     max(do.call("unit.c", lapply(text, function(x) grobHeight(textGrob(x, ...)))))

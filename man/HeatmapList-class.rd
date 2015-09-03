@@ -13,7 +13,7 @@ A heatmap list is defined as a list of heatmaps and row annotations.
 The components for the heamtap list are placed into a 7 x 7 layout:
 
   \preformatted{
-+------+(1)
+         +------+(1)
          +------+(2)
          +------+(3)
    +-+-+-+------+-+-+-+

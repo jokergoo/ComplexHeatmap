@@ -15,3 +15,12 @@ max_text_height(text, ...)
   \item{...}{pass to \code{\link[grid]{textGrob}}}
 
 }
+\value{
+A \code{\link[grid]{unit}} object.
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
+\examples{
+max_text_height(letters, gp = gpar(fontsize = 10))
+}

@@ -7,8 +7,11 @@ Constructor method for SingleAnnotation class
 Constructor method for SingleAnnotation class
 }
 \usage{
-SingleAnnotation(name, value, col, fun, which = c("column", "row"),
-    show_legend = TRUE, gp = gpar(col = NA), legend_param = list())
+SingleAnnotation(name, value, col, fun,
+    which = c("column", "row"),
+    show_legend = TRUE,
+    gp = gpar(col = NA),
+    legend_param = list())
 }
 \arguments{
 

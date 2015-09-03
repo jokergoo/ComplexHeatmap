@@ -16,7 +16,7 @@ Make cluster on columns
 
 }
 \details{
-The function will fill or adjust \code{column_hclust} and \code{column_order} slots.
+The function will fill or adjust \code{column_dend} and \code{column_order} slots.
 
 This function is only for internal use.
 }
