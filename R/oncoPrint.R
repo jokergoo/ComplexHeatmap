@@ -26,16 +26,20 @@
 # For more explanation, please go to the vignette.
 #
 # == value
-# a `HeatmapList-class` object.
+# A `HeatmapList-class` object which means you can add other heatmaps or row annotations to it.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
 oncoPrint = function(mat, get_type = function(x) x,
-	alter_fun_list, col, show_column_names = FALSE, 
-	pct_gp = gpar(), axis_gp = gpar(fontsize = 8), 
-	show_row_barplot = TRUE, row_barplot_width = unit(2, "cm"),
-	show_column_barplot = TRUE, column_barplot_height = unit(2, "cm"),
+	alter_fun_list, col, 
+	show_column_names = FALSE, 
+	pct_gp = gpar(), 
+	axis_gp = gpar(fontsize = 8), 
+	show_row_barplot = TRUE, 
+	row_barplot_width = unit(2, "cm"),
+	show_column_barplot = TRUE, 
+	column_barplot_height = unit(2, "cm"),
 	remove_empty_columns = TRUE,
 	...) {
 	

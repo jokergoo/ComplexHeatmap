@@ -7,35 +7,65 @@ Constructor method for Heatmap class
 Constructor method for Heatmap class
 }
 \usage{
-Heatmap(matrix, col, name, na_col = "grey", color_space = "LAB",
-    rect_gp = gpar(col = NA), cell_fun = function(j, i, x, y, width, height, fill) NULL,
-    row_title = character(0), row_title_side = c("left", "right"),
+Heatmap(matrix, col, name,
+    na_col = "grey",
+    color_space = "LAB",
+    rect_gp = gpar(col = NA),
+    cell_fun = function(j, i, x, y, width, height, fill) NULL,
+    row_title = character(0),
+    row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14),
     row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
-    column_title = character(0), column_title_side = c("top", "bottom"),
-    column_title_gp = gpar(fontsize = 14), column_title_rot = 0,
-    cluster_rows = TRUE, clustering_distance_rows = "euclidean",
-    clustering_method_rows = "complete", row_hclust_side = c("left", "right"),
-    row_hclust_width = unit(10, "mm"), show_row_hclust = TRUE,
-    row_hclust_reorder = FALSE,
-    row_hclust_gp = gpar(), cluster_columns = TRUE,
-    clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
-    column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"),
-    show_column_hclust = TRUE, column_hclust_gp = gpar(),
-    column_hclust_reorder = FALSE,
-    row_order = NULL, column_order = NULL,
-    row_names_side = c("right", "left"), show_row_names = TRUE,
-    row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12),
+    column_title = character(0),
+    column_title_side = c("top", "bottom"),
+    column_title_gp = gpar(fontsize = 14),
+    column_title_rot = 0,
+    cluster_rows = TRUE,
+    clustering_distance_rows = "euclidean",
+    clustering_method_rows = "complete",
+    row_dend_side = c("left", "right"),
+    row_dend_width = unit(10, "mm"),
+    show_row_dend = TRUE,
+    row_dend_reorder = FALSE,
+    row_dend_gp = gpar(),
+    row_hclust_side = row_dend_side,
+    row_hclust_width = row_dend_width,
+    show_row_hclust = show_row_dend,
+    row_hclust_reorder = row_dend_reorder,
+    row_hclust_gp = row_dend_gp,
+    cluster_columns = TRUE,
+    clustering_distance_columns = "euclidean",
+    clustering_method_columns = "complete",
+    column_dend_side = c("top", "bottom"),
+    column_dend_height = unit(10, "mm"),
+    show_column_dend = TRUE,
+    column_dend_gp = gpar(),
+    column_dend_reorder = FALSE,
+    column_hclust_side = column_dend_side,
+    column_hclust_height = column_dend_height,
+    show_column_hclust = show_column_dend,
+    column_hclust_gp = column_dend_gp,
+    column_hclust_reorder = column_dend_reorder,
+    row_order = NULL,
+    column_order = NULL,
+    row_names_side = c("right", "left"),
+    show_row_names = TRUE,
+    row_names_max_width = unit(4, "cm"),
+    row_names_gp = gpar(fontsize = 12),
     column_names_side = c("bottom", "top"),
-    show_column_names = TRUE, column_names_max_height = unit(4, "cm"),
+    show_column_names = TRUE,
+    column_names_max_height = unit(4, "cm"),
     column_names_gp = gpar(fontsize = 12),
     top_annotation = new("HeatmapAnnotation"),
     top_annotation_height = top_annotation@size,
     bottom_annotation = new("HeatmapAnnotation"),
     bottom_annotation_height = bottom_annotation@size,
-    km = 1, split = NULL, gap = unit(1, "mm"),
+    km = 1,
+    split = NULL,
+    gap = unit(1, "mm"),
     combined_name_fun = function(x) paste(x, collapse = "/"),
-    width = NULL, show_heatmap_legend = TRUE,
+    width = NULL,
+    show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name, color_bar = "discrete"))
 }
 \arguments{
@@ -58,28 +88,38 @@ Heatmap(matrix, col, name, na_col = "grey", color_space = "LAB",
   \item{cluster_rows}{If the value is a logical, it means whether make cluster on rows. The value can alsobe a \code{\link[stats]{hclust}} or a \code{\link[stats]{dendrogram}} that already contains clustering information.This means you can use any type of clustering methods and render the \code{\link[stats]{dendrogram}}object with self-defined graphic settings.}
   \item{clustering_distance_rows}{it can be a pre-defined character which is in ("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski", "pearson", "spearman", "kendall"). It can also be a function.If the function has one argument, the input argument should be a matrix and the returned value should be a \code{\link[stats]{dist}} object. If the function has two arguments,the input arguments are two vectors and the function calculates distance between thesetwo vectors.}
   \item{clustering_method_rows}{method to make cluster, pass to \code{\link[stats]{hclust}}.}
-  \item{row_hclust_side}{should the row cluster be put on the left or right of the heatmap?}
-  \item{row_hclust_width}{width of the row cluster, should be a \code{\link[grid]{unit}} object.}
-  \item{show_row_hclust}{whether show row clusters. }
-  \item{row_hclust_gp}{graphics parameters for drawing lines. If users already provide a \code{\link[stats]{dendrogram}}object with edges rendered, this argument will be ignored.}
+  \item{row_dend_side}{should the row cluster be put on the left or right of the heatmap?}
+  \item{row_dend_width}{width of the row cluster, should be a \code{\link[grid]{unit}} object.}
+  \item{show_row_dend}{whether show row clusters. }
+  \item{row_dend_gp}{graphics parameters for drawing lines. If users already provide a \code{\link[stats]{dendrogram}}object with edges rendered, this argument will be ignored.}
+  \item{row_dend_reorder}{apply reordering on rows. The value can be a logical value or a vector which contains weight which is used to reorder rows}
+  \item{row_hclust_side}{deprecated, use \code{row_dend_side} instead}
+  \item{row_hclust_width}{deprecated, use \code{row_dend_width} instead}
+  \item{show_row_hclust}{deprecated, use \code{show_row_dend} instead}
+  \item{row_hclust_gp}{deprecated, use \code{row_dend_gp} instead}
+  \item{row_hclust_reorder}{deprecated, use \code{row_dend_reorder} instead}
   \item{cluster_columns}{whether make cluster on columns. Same settings as \code{cluster_rows}.}
   \item{clustering_distance_columns}{same setting as \code{clustering_distance_rows}.}
   \item{clustering_method_columns}{method to make cluster, pass to \code{\link[stats]{hclust}}.}
-  \item{column_hclust_side}{should the column cluster be put on the top or bottom of the heatmap?}
-  \item{column_hclust_height}{height of the column cluster, should be a \code{\link[grid]{unit}} object.}
-  \item{show_column_hclust}{whether show column clusters.}
-  \item{column_hclust_gp}{graphic parameters for drawling lines. Same settings as \code{row_hclust_gp}.}
+  \item{column_dend_side}{should the column cluster be put on the top or bottom of the heatmap?}
+  \item{column_dend_height}{height of the column cluster, should be a \code{\link[grid]{unit}} object.}
+  \item{show_column_dend}{whether show column clusters.}
+  \item{column_dend_gp}{graphic parameters for drawling lines. Same settings as \code{row_dend_gp}.}
+  \item{column_dend_reorder}{apply reordering on columns. The value can be a logical value or a vector which contains weight which is used to reorder columns}
+  \item{column_hclust_side}{deprecated, use \code{column_dend_side} instead}
+  \item{column_hclust_height}{deprecated, use \code{column_dend_height} instead}
+  \item{show_column_hclust}{deprecated, use \code{show_column_dend} instead}
+  \item{column_hclust_gp}{deprecated, use \code{column_dend_gp} instead}
+  \item{column_hclust_reorder}{deprecated, use \code{column_dend_reorder} instead}
   \item{row_order}{order of rows. It makes it easy to adjust row order for a list of heatmaps if this heatmap is selected as the main heatmap. Manually setting row order should turn off clustering}
   \item{column_order}{order of column. It makes it easy to adjust column order for both matrix and column annotations.}
   \item{row_names_side}{should the row names be put on the left or right of the heatmap?}
   \item{show_row_names}{whether show row names.}
-  \item{row_hclust_reorder}{apply reordering on rows. The value can be a logical value or a vector which contains weight which is used to reorder rows}
   \item{row_names_max_width}{maximum width of row names viewport. Because some times row names can be very long, it is not reasonableto show them all.}
   \item{row_names_gp}{graphic parameters for drawing text.}
   \item{column_names_side}{should the column names be put on the top or bottom of the heatmap?}
   \item{column_names_max_height}{maximum height of column names viewport.}
   \item{show_column_names}{whether show column names.}
-  \item{column_hclust_reorder}{apply reordering on columns. The value can be a logical value or a vector which contains weight which is used to reorder columns}
   \item{column_names_gp}{graphic parameters for drawing text.}
   \item{top_annotation}{a \code{\link{HeatmapAnnotation}} object which contains a list of annotations.}
   \item{top_annotation_height}{total height of the column annotations on the top.}

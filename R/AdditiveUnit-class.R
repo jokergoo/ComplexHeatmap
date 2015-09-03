@@ -23,6 +23,10 @@ AdditiveUnit = setClass("AdditiveUnit")
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
+# == example
+# # no example for this function
+# NULL
+#
 AdditiveUnit = function(...) {
     new("AdditiveUnit", ...)
 }
@@ -36,7 +40,7 @@ AdditiveUnit = function(...) {
 # -y a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == detail
-# It is only a shortcut function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
+# It is only a helper function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
 # or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input objects.
 #
 # The `HeatmapAnnotation-class` object to be added should only be row annotations.

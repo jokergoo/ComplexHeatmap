@@ -18,7 +18,9 @@ setMethod(f = "row_order",
 	for(i in seq_len(n)) {
         if(inherits(object@ht_list[[i]], "Heatmap")) {
         	lt = object@ht_list[[i]]@row_order_list
-        	names(lt) = object@ht_list[[i]]@row_title
+        	if(length(object@ht_list[[i]]@row_title) > 0) {
+        		names(lt) = object@ht_list[[i]]@row_title
+        	}
         	return(lt)
         }
     }
@@ -43,7 +45,9 @@ setMethod(f = "row_order",
 	object = prepare(object)
 
 	lt = object@row_order_list
-	names(lt) = object@row_title
+	if(length(object@row_title) > 0) {
+		names(lt) = object@row_title
+	}
 	return(lt)
 	
 })
@@ -115,8 +119,10 @@ setMethod(f = "row_dend",
 	n = length(object@ht_list)
     for(i in seq_len(n)) {
         if(inherits(object@ht_list[[i]], "Heatmap")) {
-        	lt = object@ht_list[[i]]@row_hclust_list
-        	names(lt) = object@ht_list[[i]]@row_title
+        	lt = object@ht_list[[i]]@row_dend_list
+        	if(length(object@ht_list[[i]]@row_title) > 0) {
+        		names(lt) = object@ht_list[[i]]@row_title
+        	}
         	return(lt)
         }
     }
@@ -139,8 +145,10 @@ setMethod(f = "row_dend",
 
 	object = prepare(object)
 
-	lt = object@row_hclust_list
-	names(lt) = object@row_title
+	lt = object@row_dend_list
+	if(length(object@row_title) > 0) {
+		names(lt) = object@row_title
+	}
 	return(lt)
 })
 
@@ -167,7 +175,7 @@ setMethod(f = "column_dend",
     for(i in seq_len(n)) {
         if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
         } else {
-            dend_list[[i]] = object@ht_list[[i]]@column_hclust
+            dend_list[[i]] = object@ht_list[[i]]@column_dend
         }
     }
 
@@ -189,6 +197,6 @@ setMethod(f = "column_dend",
 
 	object = prepare(object)
 
-	return(object@column_hclust)
+	return(object@column_dend)
 })
 

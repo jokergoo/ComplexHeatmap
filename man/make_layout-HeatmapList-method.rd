@@ -8,16 +8,21 @@ Make layout for the complete plot
 }
 \usage{
 \S4method{make_layout}{HeatmapList}(object, row_title = character(0),
-    row_title_side = c("left", "right"), row_title_gp = gpar(fontsize = 14),
-    column_title = character(0), column_title_side = c("top", "bottom"),
+    row_title_side = c("left", "right"),
+    row_title_gp = gpar(fontsize = 14),
+    column_title = character(0),
+    column_title_side = c("top", "bottom"),
     column_title_gp = gpar(fontsize = 14),
     heatmap_legend_side = c("right", "left", "bottom", "top"),
-    show_heatmap_legend = TRUE, heatmap_legend_list = list(),
+    show_heatmap_legend = TRUE,
+    heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"),
-    show_annotation_legend = TRUE, annotation_legend_list = list(),
+    show_annotation_legend = TRUE,
+    annotation_legend_list = list(),
     gap = unit(3, "mm"),
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
-    row_hclust_side = c("original", "left", "right"),
+    row_dend_side = c("original", "left", "right"),
+    row_hclust_side = row_dend_side,
     row_sub_title_side = c("original", "left", "right"))
 }
 \arguments{
@@ -37,7 +42,8 @@ Make layout for the complete plot
   \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
   \item{gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
   \item{main_heatmap}{name or index for the main heatmap}
-  \item{row_hclust_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
+  \item{row_dend_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
+  \item{row_hclust_side}{deprecated, use \code{row_dend_side} instead}
   \item{row_sub_title_side}{if auto adjust, where to put sub row titles for the main heatmap}
 
 }

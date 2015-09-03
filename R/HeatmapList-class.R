@@ -180,7 +180,8 @@ setMethod(f = "add_heatmap",
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 # -gap gap between heatmaps, should be a `grid::unit` object.
 # -main_heatmap name or index for the main heatmap
-# -row_hclust_side if auto adjust, where to put the row dendrograms for the main heatmap
+# -row_dend_side if auto adjust, where to put the row dendrograms for the main heatmap
+# -row_hclust_side deprecated, use ``row_dend_side`` instead
 # -row_sub_title_side if auto adjust, where to put sub row titles for the main heatmap
 #
 # == detail
@@ -199,16 +200,21 @@ setMethod(f = "add_heatmap",
 setMethod(f = "make_layout",
     signature = "HeatmapList",
     definition = function(object, row_title = character(0), 
-    row_title_side = c("left", "right"), row_title_gp = gpar(fontsize = 14),
-    column_title = character(0), column_title_side = c("top", "bottom"), 
+    row_title_side = c("left", "right"), 
+    row_title_gp = gpar(fontsize = 14),
+    column_title = character(0), 
+    column_title_side = c("top", "bottom"), 
     column_title_gp = gpar(fontsize = 14), 
     heatmap_legend_side = c("right", "left", "bottom", "top"), 
-    show_heatmap_legend = TRUE, heatmap_legend_list = list(),
+    show_heatmap_legend = TRUE, 
+    heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"), 
-    show_annotation_legend = TRUE, annotation_legend_list = list(),
+    show_annotation_legend = TRUE, 
+    annotation_legend_list = list(),
     gap = unit(3, "mm"), 
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
-    row_hclust_side = c("original", "left", "right"),
+    row_dend_side = c("original", "left", "right"),
+    row_hclust_side = row_dend_side,
     row_sub_title_side = c("original", "left", "right")) {
 
     if(object@layout$initialized) {
@@ -265,12 +271,20 @@ setMethod(f = "make_layout",
     ht_main = make_row_cluster(ht_main)  # with pre-defined order
     object@ht_list[[i_main]] = ht_main
 
-    row_hclust_side = match.arg(row_hclust_side)[1]
+    called_args = names(as.list(match.call())[-1])
+    if("row_hclust_side" %in% called_args) {
+        if(!'row_dend_side' %in% called_args) {
+            row_dend_side = row_hclust_side
+            warning("'row_hclust_side' is deprecated in the future, use 'row_dend_side' instead.")
+        }
+    }
+
+    row_dend_side = match.arg(row_dend_side)[1]
     row_sub_title_side = match.arg(row_sub_title_side)[1]
 
-    if(row_hclust_side == "left" || row_sub_title_side == "left") {
+    if(row_dend_side == "left" || row_sub_title_side == "left") {
         # if the first one is a HeatmapAnnotation object
-        # add a heatmap with zero column so that we can put titles and hclust on the most left
+        # add a heatmap with zero column so that we can put titles and dend on the most left
         if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
             object = Heatmap(matrix(nrow = nr, ncol = 0)) + object
             gap = unit.c(unit(0, "mm"), gap)
@@ -279,7 +293,7 @@ setMethod(f = "make_layout",
             
     }
 
-    if(row_hclust_side == "right" || row_sub_title_side == "right") {
+    if(row_dend_side == "right" || row_sub_title_side == "right") {
         # if the last one is a HeatmapAnnotation object
         if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
             object = object + Heatmap(matrix(nrow = nr, ncol = 0))
@@ -300,7 +314,7 @@ setMethod(f = "make_layout",
         if(inherits(object@ht_list[[i]], "Heatmap")) {
             object@ht_list[[i]]@row_order_list = ht_main@row_order_list
             object@ht_list[[i]]@row_order = ht_main@row_order
-            object@ht_list[[i]]@row_hclust_param$cluster = FALSE  # don't do clustering because cluster was already done
+            object@ht_list[[i]]@row_dend_param$cluster = FALSE  # don't do clustering because cluster was already done
         }
     }
 
@@ -317,21 +331,21 @@ setMethod(f = "make_layout",
     for(i in seq_len(n)) {
         if(i != i_main) {
             if(inherits(object@ht_list[[i]], "Heatmap")) {
-                object@ht_list[[i]]@row_hclust_param$show = FALSE
+                object@ht_list[[i]]@row_dend_param$show = FALSE
             }
         }
     }
-    if(row_hclust_side == "left") {
-        # move hclust to the first one
-        object@ht_list[[i_main]]@row_hclust_param$show = FALSE
-        object@ht_list[[1]]@row_hclust_list = ht_main@row_hclust_list
-        object@ht_list[[1]]@row_hclust_param = ht_main@row_hclust_param
-        object@ht_list[[1]]@row_hclust_param$side = "left"
-    } else if(row_hclust_side == "right") {
-        object@ht_list[[i_main]]@row_hclust_param$show = FALSE
-        object@ht_list[[n]]@row_hclust_list = ht_main@row_hclust_list
-        object@ht_list[[n]]@row_hclust_param = ht_main@row_hclust_param
-        object@ht_list[[n]]@row_hclust_param$side = "right"
+    if(row_dend_side == "left") {
+        # move dend to the first one
+        object@ht_list[[i_main]]@row_dend_param$show = FALSE
+        object@ht_list[[1]]@row_dend_list = ht_main@row_dend_list
+        object@ht_list[[1]]@row_dend_param = ht_main@row_dend_param
+        object@ht_list[[1]]@row_dend_param$side = "left"
+    } else if(row_dend_side == "right") {
+        object@ht_list[[i_main]]@row_dend_param$show = FALSE
+        object@ht_list[[n]]@row_dend_list = ht_main@row_dend_list
+        object@ht_list[[n]]@row_dend_param = ht_main@row_dend_param
+        object@ht_list[[n]]@row_dend_param$side = "right"
     }
 
     # adjust row subtitles
@@ -558,8 +572,8 @@ setMethod(f = "make_layout",
 # == param
 # -object a `HeatmapList-class` object
 # -padding padding of the plot. Elements correspond to bottom, left, top, right paddings.
+# -newpage whether create a new page for the graphics.
 # -... pass to `make_layout,HeatmapList-method`
-# -newpage whether to create a new page
 #
 # == detail
 # The function first calls `make_layout,HeatmapList-method` to calculate
@@ -575,8 +589,10 @@ setMethod(f = "make_layout",
 #
 setMethod(f = "draw",
     signature = "HeatmapList",
-    definition = function(object, padding = unit(c(2, 2, 2, 2), "mm"), ..., 
-        newpage= TRUE) {
+    definition = function(object, 
+        padding = unit(c(2, 2, 2, 2), "mm"), 
+        newpage = TRUE,
+        ...) {
 
     l = sapply(object@ht_list, inherits, "Heatmap")
     if(! any(l)) {
@@ -615,6 +631,12 @@ setMethod(f = "draw",
     upViewport()
 
     .LAST_HT_LIST$object = object
+
+    for(i in seq_along(.LAST_HT_LIST$object@ht_list)) {
+        if(inherits(.LAST_HT_LIST$object@ht_list[[i]], "Heatmap")) {
+            .LAST_HT_LIST$object@ht_list[[i]]@matrix = matrix(nr = 0, nc = 0)
+        }
+    }
 
 
     return(invisible(object))
@@ -1272,8 +1294,3 @@ setMethod(f = "show",
 })
 
 
-compare_unit = function(u1, u2) {
-    u1 = convertUnit(u1, "cm", valueOnly = TRUE)
-    u2 = convertUnit(u2, "cm", valueOnly = TRUE)
-    ifelse(u1 > u2, 1, ifelse(u1 < u2, -1, 0))
-}

@@ -17,3 +17,13 @@ row_anno_text(...)
 \details{
 A wrapper of \code{\link{anno_text}} with pre-defined \code{which} to \code{row}.
 }
+\value{
+See help page of \code{\link{anno_text}}
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
+\examples{
+# There is no example
+NULL
+}

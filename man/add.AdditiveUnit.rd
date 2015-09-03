@@ -16,7 +16,7 @@ Add heatmaps or row annotations to a heatmap list
 
 }
 \details{
-It is only a shortcut function. It actually calls \code{\link{add_heatmap,Heatmap-method}}, \code{\link{add_heatmap,HeatmapList-method}}
+It is only a helper function. It actually calls \code{\link{add_heatmap,Heatmap-method}}, \code{\link{add_heatmap,HeatmapList-method}}
 or \code{\link{add_heatmap,HeatmapAnnotation-method}} depending on the class of the input objects.
 
 The \code{\link{HeatmapAnnotation-class}} object to be added should only be row annotations.
@@ -40,8 +40,7 @@ ht + ht + ht
 ht_list = ht + ht
 ht + ht_list
 
-ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"), 
-    which = "row")
+ha = rowAnnotation(points = row_anno_points(1:12))
 ht + ha
 ht_list + ha
 

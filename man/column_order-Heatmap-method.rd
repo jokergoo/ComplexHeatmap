@@ -17,3 +17,7 @@ Get column order from a heatmap list
 \value{
 A vector containing column orders
 }
+\examples{
+# There is no example
+NULL
+}

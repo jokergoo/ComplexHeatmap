@@ -17,3 +17,13 @@ column_anno_boxplot(...)
 \details{
 A wrapper of \code{\link{anno_boxplot}} with pre-defined \code{which} to \code{column}.
 }
+\value{
+See help page of \code{\link{anno_boxplot}}
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
+\examples{
+# There is no example
+NULL
+}

@@ -12,15 +12,19 @@ decorate_title(heatmap, code, slice = 1, which = c("column", "row"))
 \arguments{
 
   \item{heatmap}{name of the heatmap}
-  \item{code}{code that is executed in the heatmap body}
+  \item{code}{code that adds graphics in the selected heatmap body}
   \item{slice}{index of row slices in the heatmap}
   \item{which}{on rows or on columns?}
 
 }
 \details{
-This simple function actually contructs the name of the viewport,
+There is a viewport for row titles and column title in the heatmap.
+This function contructs the name of the viewport,
 goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
 to that viewport.
+}
+\value{
+The function returns no value.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

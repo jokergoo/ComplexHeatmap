@@ -7,8 +7,11 @@ Use colors to represent density distribution
 Use colors to represent density distribution
 }
 \usage{
-densityHeatmap(data, col = rev(brewer.pal(11, "Spectral")),
-    color_space = "RGB", anno = NULL, ylab = deparse(substitute(data)),
+densityHeatmap(data,
+    col = rev(brewer.pal(11, "Spectral")),
+    color_space = "RGB",
+    anno = NULL,
+    ylab = deparse(substitute(data)),
     title = paste0("Density heatmap of ", deparse(substitute(data))))
 }
 \arguments{
@@ -16,18 +19,22 @@ densityHeatmap(data, col = rev(brewer.pal(11, "Spectral")),
   \item{data}{a matrix or a list. If it is a matrix, density will be calculated by columns.}
   \item{col}{a list of colors that density values are scaled to.}
   \item{color_space}{the color space in which colors are interpolated. Pass to \code{\link[circlize]{colorRamp2}}.}
-  \item{anno}{annotation for matrix columns or list. The value should be a vector or a data frame. It can also be a \code{\link{HeatmapAnnotation-class}} object.}
+  \item{anno}{annotation for the matrix columns or the list. The value should be a vector or a data frame. It can also be a \code{\link{HeatmapAnnotation-class}} object.}
   \item{ylab}{label on y-axis in the plot}
   \item{title}{title of the plot}
 
 }
 \details{
-To visualize distribution of columns in a matrix or in a list, sometimes we use boxplot or beanplot.
-Here we use colors to map to the density values and visualize distribution of values
-in each column (or each element in the list) through a heatmap. It is useful if you have huge number of columns in \code{data} to visualize.
+To visualize data distribution in a matrix or in a list, sometimes we use boxplot or beanplot.
+Here we use colors to map the density values and visualize distribution of values
+in each column (or each vector in the list) through a heatmap. It is useful if you have huge number 
+of columns in \code{data} to visualize.
 }
 \value{
 No value is returned.
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
 matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]

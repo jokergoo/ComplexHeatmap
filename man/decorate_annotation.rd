@@ -12,14 +12,18 @@ decorate_annotation(annotation, code, slice = NULL)
 \arguments{
 
   \item{annotation}{name of the annotation}
-  \item{code}{code that is executed in the heatmap body}
+  \item{code}{code that adds graphics in the selected heatmap body}
   \item{slice}{index of row slices in the heatmap}
 
 }
 \details{
-This simple function actually contructs the name of the viewport,
+There is a viewport for every column annotation and row annotation.
+This function contructs the name of the viewport,
 goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
 to that viewport.
+}
+\value{
+The function returns no value.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

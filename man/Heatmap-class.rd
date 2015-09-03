@@ -27,13 +27,13 @@ From top to bottom in column 4, the regions are:
 
 \itemize{
   \item title which is put on the top of the heatmap, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
-  \item column cluster on the top, graphics are drawn by \code{\link{draw_hclust,Heatmap-method}}.
+  \item column cluster on the top, graphics are drawn by \code{\link{draw_dend,Heatmap-method}}.
   \item column annotation on the top, graphics are drawn by \code{\link{draw_annotation,Heatmap-method}}.
   \item column names on the top, graphics are drawn by \code{\link{draw_dimnames,Heatmap-method}}.
   \item heatmap body, graphics are drawn by \code{\link{draw_heatmap_body,Heatmap-method}}.
   \item column names on the bottom, graphics are drawn by \code{\link{draw_dimnames,Heatmap-method}}.
   \item column annotation on the bottom, graphics are drawn by \code{\link{draw_annotation,Heatmap-method}}.
-  \item column cluster on the bottom, graphics are drawn by \code{\link{draw_hclust,Heatmap-method}}.
+  \item column cluster on the bottom, graphics are drawn by \code{\link{draw_dend,Heatmap-method}}.
   \item title on the bottom, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
 }
 
@@ -41,11 +41,11 @@ From left to right in row 5, the regions are:
 
 \itemize{
   \item title which is put in the left of the heatmap, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
-  \item row cluster on the left, graphics are drawn by \code{\link{draw_hclust,Heatmap-method}}.
+  \item row cluster on the left, graphics are drawn by \code{\link{draw_dend,Heatmap-method}}.
   \item row names on the left, graphics are drawn by \code{\link{draw_dimnames,Heatmap-method}}.
   \item heatmap body
   \item row names on the right, graphics are drawn by \code{\link{draw_dimnames,Heatmap-method}}.
-  \item row cluster on the right, graphics are drawn by \code{\link{draw_hclust,Heatmap-method}}.
+  \item row cluster on the right, graphics are drawn by \code{\link{draw_dend,Heatmap-method}}.
   \item title on the right, graphics are drawn by \code{\link{draw_title,Heatmap-method}}.
 }
 

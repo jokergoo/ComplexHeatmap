@@ -1,6 +1,6 @@
-\name{draw_hclust-Heatmap-method}
-\alias{draw_hclust,Heatmap-method}
-\alias{draw_hclust}
+\name{draw_dend-Heatmap-method}
+\alias{draw_dend,Heatmap-method}
+\alias{draw_dend}
 \title{
 Draw dendrogram on row or column
 }
@@ -8,7 +8,7 @@ Draw dendrogram on row or column
 Draw dendrogram on row or column
 }
 \usage{
-\S4method{draw_hclust}{Heatmap}(object,
+\S4method{draw_dend}{Heatmap}(object,
     which = c("row", "column"), k = 1, max_height = NULL, ...)
 }
 \arguments{
@@ -38,7 +38,6 @@ This function returns no value.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

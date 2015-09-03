@@ -1,10 +1,10 @@
 \name{ht_global_opt}
 \alias{ht_global_opt}
 \title{
-Global options
+Global options for heatmaps
 }
 \description{
-Global options
+Global options for heatmaps
 }
 \usage{
 ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)
@@ -12,12 +12,15 @@ ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)
 \arguments{
 
   \item{...}{options, see 'details' section}
-  \item{RESET}{reset all the options}
-  \item{READ.ONLY}{how to return read-only options}
+  \item{RESET}{reset all the option values}
+  \item{READ.ONLY}{\code{TRUE} means only to return read-only values, \code{FALSE} means only to return non-read-onlyvalues, \code{NULL} means to return both.}
 
 }
 \details{
-You can set some parameters for all heatmaps/annotations by this global function.
+You can set some parameters for all heatmaps/annotations simultaneously by this global function.
+Pleast note you should better to put it in the first beginning of your heatmap code and reset
+all option values to get avoid of affecting next heatmap plotting.
+
 There are following parameters:
 
 \describe{
@@ -36,7 +39,25 @@ There are following parameters:
   \item{heatmap_legend_grid_height}{set \code{grid_height} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
   \item{heatmap_legend_grid_border}{set \code{grid_border} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
 }
+
+You can get or set option values by the traditional way (like \code{\link[base]{options}}) or by \code{$} operator:
+
+  \preformatted{
+# to get option values
+    ht_global_opt("heatmap_row_names_gp")
+    ht_global_opt$heatmap_row_names_gp
+
+    # to set option values
+    ht_global_opt("heatmap_row_names_gp" = gpar(fontsize = 8))
+    ht_global_opt$heatmap_row_names_gp = gpar(fontsize = 8)  }
+}
+\value{
+Depends on the options users selected.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
+}
+\examples{
+# no example for this function
+NULL
 }

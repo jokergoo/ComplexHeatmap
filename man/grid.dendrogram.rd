@@ -14,15 +14,18 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
 
   \item{dend}{a \code{\link[stats]{dendrogram}} object.}
   \item{facing}{facing of the dendrogram.}
-  \item{max_height}{maximum height of the dendrogram. It is useful if you want to plot more than one dendrograms.}
+  \item{max_height}{maximum height of the dendrogram. It is useful to make dendrograms comparableif you want to plot more than one dendrograms.}
   \item{order}{should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)?}
   \item{...}{pass to \code{\link[grid]{viewport}} which contains the dendrogram.}
 
 }
 \details{
-The dendrogram tree can be renderred (e.g. by \code{dendextend} package).
+The dendrogram can be renderred (e.g. by \code{dendextend} package).
 
 A viewport is created which contains the dendrogram.
+
+This function only plots the dendrogram without adding labels. The leaves of the dendrogram
+locates at \code{unit(c(0.5, 1.5, ...(n-0.5))/n, "npc")}.
 }
 \value{
 No value is returned.

@@ -27,23 +27,23 @@
 # From top to bottom in column 4, the regions are:
 #
 # - title which is put on the top of the heatmap, graphics are drawn by `draw_title,Heatmap-method`.
-# - column cluster on the top, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - column cluster on the top, graphics are drawn by `draw_dend,Heatmap-method`.
 # - column annotation on the top, graphics are drawn by `draw_annotation,Heatmap-method`.
 # - column names on the top, graphics are drawn by `draw_dimnames,Heatmap-method`.
 # - heatmap body, graphics are drawn by `draw_heatmap_body,Heatmap-method`.
 # - column names on the bottom, graphics are drawn by `draw_dimnames,Heatmap-method`.
 # - column annotation on the bottom, graphics are drawn by `draw_annotation,Heatmap-method`.
-# - column cluster on the bottom, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - column cluster on the bottom, graphics are drawn by `draw_dend,Heatmap-method`.
 # - title on the bottom, graphics are drawn by `draw_title,Heatmap-method`.
 # 
 # From left to right in row 5, the regions are:
 #
 # - title which is put in the left of the heatmap, graphics are drawn by `draw_title,Heatmap-method`.
-# - row cluster on the left, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - row cluster on the left, graphics are drawn by `draw_dend,Heatmap-method`.
 # - row names on the left, graphics are drawn by `draw_dimnames,Heatmap-method`.
 # - heatmap body
 # - row names on the right, graphics are drawn by `draw_dimnames,Heatmap-method`.
-# - row cluster on the right, graphics are drawn by `draw_hclust,Heatmap-method`.
+# - row cluster on the right, graphics are drawn by `draw_dend,Heatmap-method`.
 # - title on the right, graphics are drawn by `draw_title,Heatmap-method`.
 #
 # The `Heatmap-class` is not responsible for heatmap legend and annotation legends. The `draw,Heatmap-method` method
@@ -78,13 +78,13 @@ Heatmap = setClass("Heatmap",
         column_title_rot = "numeric",
         column_title_just = "numeric",
 
-        row_hclust_list = "list", # one or more row clusters
-        row_hclust_param = "list", # parameters for row cluster
+        row_dend_list = "list", # one or more row clusters
+        row_dend_param = "list", # parameters for row cluster
         row_order_list = "list",
         row_order = "numeric",
 
-        column_hclust = "ANY",
-        column_hclust_param = "list", # parameters for column cluster
+        column_dend = "ANY",
+        column_dend_param = "list", # parameters for column cluster
         column_order = "numeric",
 
         row_names_param = "list",
@@ -143,33 +143,43 @@ Heatmap = setClass("Heatmap",
 #                the input arguments are two vectors and the function calculates distance between these
 #                two vectors.
 # -clustering_method_rows method to make cluster, pass to `stats::hclust`.
-# -row_hclust_side should the row cluster be put on the left or right of the heatmap?
-# -row_hclust_width width of the row cluster, should be a `grid::unit` object.
-# -show_row_hclust whether show row clusters. 
-# -row_hclust_gp graphics parameters for drawing lines. If users already provide a `stats::dendrogram`
+# -row_dend_side should the row cluster be put on the left or right of the heatmap?
+# -row_dend_width width of the row cluster, should be a `grid::unit` object.
+# -show_row_dend whether show row clusters. 
+# -row_dend_gp graphics parameters for drawing lines. If users already provide a `stats::dendrogram`
 #                object with edges rendered, this argument will be ignored.
+# -row_dend_reorder apply reordering on rows. The value can be a logical value or a vector which contains weight 
+#               which is used to reorder rows
+# -row_hclust_side deprecated, use ``row_dend_side`` instead
+# -row_hclust_width deprecated, use ``row_dend_width`` instead
+# -show_row_hclust deprecated, use ``show_row_dend`` instead
+# -row_hclust_gp deprecated, use ``row_dend_gp`` instead
+# -row_hclust_reorder deprecated, use ``row_dend_reorder`` instead
 # -cluster_columns whether make cluster on columns. Same settings as ``cluster_rows``.
 # -clustering_distance_columns same setting as ``clustering_distance_rows``.
 # -clustering_method_columns method to make cluster, pass to `stats::hclust`.
-# -column_hclust_side should the column cluster be put on the top or bottom of the heatmap?
-# -column_hclust_height height of the column cluster, should be a `grid::unit` object.
-# -show_column_hclust whether show column clusters.
-# -column_hclust_gp graphic parameters for drawling lines. Same settings as ``row_hclust_gp``.
+# -column_dend_side should the column cluster be put on the top or bottom of the heatmap?
+# -column_dend_height height of the column cluster, should be a `grid::unit` object.
+# -show_column_dend whether show column clusters.
+# -column_dend_gp graphic parameters for drawling lines. Same settings as ``row_dend_gp``.
+# -column_dend_reorder apply reordering on columns. The value can be a logical value or a vector which contains weight 
+#               which is used to reorder columns
+# -column_hclust_side deprecated, use ``column_dend_side`` instead
+# -column_hclust_height deprecated, use ``column_dend_height`` instead
+# -show_column_hclust deprecated, use ``show_column_dend`` instead
+# -column_hclust_gp deprecated, use ``column_dend_gp`` instead
+# -column_hclust_reorder deprecated, use ``column_dend_reorder`` instead
 # -row_order order of rows. It makes it easy to adjust row order for a list of heatmaps if this heatmap 
 #      is selected as the main heatmap. Manually setting row order should turn off clustering
 # -column_order order of column. It makes it easy to adjust column order for both matrix and column annotations.
 # -row_names_side should the row names be put on the left or right of the heatmap?
 # -show_row_names whether show row names.
-# -row_hclust_reorder apply reordering on rows. The value can be a logical value or a vector which contains weight 
-#               which is used to reorder rows
 # -row_names_max_width maximum width of row names viewport. Because some times row names can be very long, it is not reasonable
 #                      to show them all.
 # -row_names_gp graphic parameters for drawing text.
 # -column_names_side should the column names be put on the top or bottom of the heatmap?
 # -column_names_max_height maximum height of column names viewport.
 # -show_column_names whether show column names.
-# -column_hclust_reorder apply reordering on columns. The value can be a logical value or a vector which contains weight 
-#               which is used to reorder columns
 # -column_names_gp graphic parameters for drawing text.
 # -top_annotation a `HeatmapAnnotation` object which contains a list of annotations.
 # -top_annotation_height total height of the column annotations on the top.
@@ -206,35 +216,65 @@ Heatmap = setClass("Heatmap",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
-    rect_gp = gpar(col = NA), cell_fun = function(j, i, x, y, width, height, fill) NULL,
-    row_title = character(0), row_title_side = c("left", "right"), 
+Heatmap = function(matrix, col, name, 
+    na_col = "grey", 
+    color_space = "LAB",
+    rect_gp = gpar(col = NA), 
+    cell_fun = function(j, i, x, y, width, height, fill) NULL,
+    row_title = character(0), 
+    row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), 
     row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
-    column_title = character(0), column_title_side = c("top", "bottom"), 
-    column_title_gp = gpar(fontsize = 14), column_title_rot = 0,
-    cluster_rows = TRUE, clustering_distance_rows = "euclidean",
-    clustering_method_rows = "complete", row_hclust_side = c("left", "right"),
-    row_hclust_width = unit(10, "mm"), show_row_hclust = TRUE, 
-    row_hclust_reorder = FALSE,
-    row_hclust_gp = gpar(), cluster_columns = TRUE, 
-    clustering_distance_columns = "euclidean", clustering_method_columns = "complete",
-    column_hclust_side = c("top", "bottom"), column_hclust_height = unit(10, "mm"), 
-    show_column_hclust = TRUE, column_hclust_gp = gpar(), 
-    column_hclust_reorder = FALSE,
-    row_order = NULL, column_order = NULL,
-    row_names_side = c("right", "left"), show_row_names = TRUE, 
-    row_names_max_width = unit(4, "cm"), row_names_gp = gpar(fontsize = 12), 
+    column_title = character(0), 
+    column_title_side = c("top", "bottom"), 
+    column_title_gp = gpar(fontsize = 14), 
+    column_title_rot = 0,
+    cluster_rows = TRUE, 
+    clustering_distance_rows = "euclidean",
+    clustering_method_rows = "complete", 
+    row_dend_side = c("left", "right"),
+    row_dend_width = unit(10, "mm"), 
+    show_row_dend = TRUE, 
+    row_dend_reorder = FALSE,
+    row_dend_gp = gpar(), 
+    row_hclust_side = row_dend_side,
+    row_hclust_width = row_dend_width, 
+    show_row_hclust = show_row_dend, 
+    row_hclust_reorder = row_dend_reorder,
+    row_hclust_gp = row_dend_gp, 
+    cluster_columns = TRUE, 
+    clustering_distance_columns = "euclidean", 
+    clustering_method_columns = "complete",
+    column_dend_side = c("top", "bottom"), 
+    column_dend_height = unit(10, "mm"), 
+    show_column_dend = TRUE, 
+    column_dend_gp = gpar(), 
+    column_dend_reorder = FALSE,
+    column_hclust_side = column_dend_side, 
+    column_hclust_height = column_dend_height, 
+    show_column_hclust = show_column_dend, 
+    column_hclust_gp = column_dend_gp, 
+    column_hclust_reorder = column_dend_reorder,
+    row_order = NULL, 
+    column_order = NULL,
+    row_names_side = c("right", "left"), 
+    show_row_names = TRUE, 
+    row_names_max_width = unit(4, "cm"), 
+    row_names_gp = gpar(fontsize = 12), 
     column_names_side = c("bottom", "top"), 
-    show_column_names = TRUE, column_names_max_height = unit(4, "cm"), 
+    show_column_names = TRUE, 
+    column_names_max_height = unit(4, "cm"), 
     column_names_gp = gpar(fontsize = 12),
     top_annotation = new("HeatmapAnnotation"),
     top_annotation_height = top_annotation@size,
     bottom_annotation = new("HeatmapAnnotation"),
     bottom_annotation_height = bottom_annotation@size,
-    km = 1, split = NULL, gap = unit(1, "mm"), 
+    km = 1, 
+    split = NULL, 
+    gap = unit(1, "mm"), 
     combined_name_fun = function(x) paste(x, collapse = "/"),
-    width = NULL, show_heatmap_legend = TRUE,
+    width = NULL, 
+    show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name, color_bar = "discrete")) {
 
     # re-define some of the argument values according to global settings
@@ -246,6 +286,17 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
             if(!is.null(ht_global_opt(opt_name2))) {
                 assign(opt_name, ht_global_opt(opt_name2), envir = e)
             }
+        }
+    }
+
+    for(ca in called_args) {
+        if(ca %in% c("row_hclust_side", "row_hclust_width", "show_row_hclust", "row_hclust_reorder", "row_hclust_gp",
+                     "column_hclust_side", "column_hclust_height", "show_column_hclust", "column_hclust_gp", "column_hclust_reorder")) {
+            ca_new = gsub("hclust", "dend", ca)
+            if(!ca_new %in% called_args) {
+                assign(ca_new, get(ca))
+            }
+            warning(paste0("'", ca, "' is deprecated in the future, use '", ca_new, "' instead."))
         }
     }
    
@@ -294,24 +345,24 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
     if(ncol(matrix) == 0 || nrow(matrix) == 0) {
         if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
             cluster_columns = FALSE
-            show_column_hclust = FALSE
+            show_column_dend = FALSE
         }
         if(!inherits(cluster_rows, c("dendrogram", "hclust"))) {
             cluster_rows = FALSE
-            show_row_hclust = FALSE
+            show_row_dend = FALSE
         }
         km = 1
     }
     if(ncol(matrix) == 1) {
         if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
             cluster_columns = FALSE
-            show_column_hclust = FALSE
+            show_column_dend = FALSE
         }
     }
     if(nrow(matrix) == 1) {
         if(!inherits(cluster_rows, c("dendrogram", "hclust"))) {
             cluster_rows = FALSE
-            show_row_hclust = FALSE
+            show_row_dend = FALSE
         }
         km = 1
     }
@@ -321,16 +372,16 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
         } else if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
         } else {
             cluster_rows = FALSE
-            show_row_hclust = FALSE
+            show_row_dend = FALSE
         }
-        row_hclust_reorder = FALSE
+        row_dend_reorder = FALSE
         if("clustering_distance_columns" %in% called_args) {
         } else if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
         } else {
             cluster_columns = FALSE
-            show_column_hclust = FALSE
+            show_column_dend = FALSE
         }
-        column_hclust_reorder = FALSE
+        column_dend_reorder = FALSE
         km = 1
     }
     .Object@matrix = matrix
@@ -403,7 +454,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
     .Object@row_title = row_title
     .Object@row_title_rot = row_title_rot %% 360
     .Object@row_title_param$side = match.arg(row_title_side)[1]
-    .Object@row_title_param$gp = check_gp(row_title_gp)  # if the number of settings is same as number of row-splits, gp will be adjusted by `make_row_hclust`
+    .Object@row_title_param$gp = check_gp(row_title_gp)  # if the number of settings is same as number of row-splits, gp will be adjusted by `make_row_dend`
     .Object@row_title_param$combined_name_fun = combined_name_fun
     .Object@row_title_just = get_text_just(rot = row_title_rot, side = .Object@row_title_param$side)
 
@@ -439,29 +490,29 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
 
     if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
-        .Object@row_hclust_param$obj = cluster_rows
-        .Object@row_hclust_param$cluster = TRUE
+        .Object@row_dend_param$obj = cluster_rows
+        .Object@row_dend_param$cluster = TRUE
     } else if(inherits(cluster_rows, "function")) {
-        .Object@row_hclust_param$fun = cluster_rows
-        .Object@row_hclust_param$cluster = TRUE
+        .Object@row_dend_param$fun = cluster_rows
+        .Object@row_dend_param$cluster = TRUE
     } else {
-        .Object@row_hclust_param$cluster = cluster_rows
+        .Object@row_dend_param$cluster = cluster_rows
         if(!cluster_rows) {
-            row_hclust_width = unit(0, "mm")
-            show_row_hclust = FALSE
+            row_dend_width = unit(0, "mm")
+            show_row_dend = FALSE
         }
     }
-    if(!show_row_hclust) {
-        row_hclust_width = unit(0, "mm")
+    if(!show_row_dend) {
+        row_dend_width = unit(0, "mm")
     }
-    .Object@row_hclust_list = list()
-    .Object@row_hclust_param$distance = clustering_distance_rows
-    .Object@row_hclust_param$method = clustering_method_rows
-    .Object@row_hclust_param$side = match.arg(row_hclust_side)[1]
-    .Object@row_hclust_param$width = row_hclust_width + unit(1, "mm")  # append the gap
-    .Object@row_hclust_param$show = show_row_hclust
-    .Object@row_hclust_param$gp = check_gp(row_hclust_gp)
-    .Object@row_hclust_param$reorder = row_hclust_reorder
+    .Object@row_dend_list = list()
+    .Object@row_dend_param$distance = clustering_distance_rows
+    .Object@row_dend_param$method = clustering_method_rows
+    .Object@row_dend_param$side = match.arg(row_dend_side)[1]
+    .Object@row_dend_param$width = row_dend_width + unit(1, "mm")  # append the gap
+    .Object@row_dend_param$show = show_row_dend
+    .Object@row_dend_param$gp = check_gp(row_dend_gp)
+    .Object@row_dend_param$reorder = row_dend_reorder
     .Object@row_order_list = list() # default order
     if(is.null(row_order)) {
         .Object@row_order = seq_len(nrow(matrix))
@@ -473,29 +524,29 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
     }
 
     if(inherits(cluster_columns, "dendrogram") || inherits(cluster_columns, "hclust")) {
-        .Object@column_hclust_param$obj = cluster_columns
-        .Object@column_hclust_param$cluster = TRUE
+        .Object@column_dend_param$obj = cluster_columns
+        .Object@column_dend_param$cluster = TRUE
     } else if(inherits(cluster_columns, "function")) {
-        .Object@column_hclust_param$fun = cluster_columns
-        .Object@column_hclust_param$cluster = TRUE
+        .Object@column_dend_param$fun = cluster_columns
+        .Object@column_dend_param$cluster = TRUE
     } else {
-        .Object@column_hclust_param$cluster = cluster_columns
+        .Object@column_dend_param$cluster = cluster_columns
         if(!cluster_columns) {
-            column_hclust_height = unit(0, "mm")
-            show_column_hclust = FALSE
+            column_dend_height = unit(0, "mm")
+            show_column_dend = FALSE
         }
     }
-    if(!show_column_hclust) {
-        column_hclust_height = unit(0, "mm")
+    if(!show_column_dend) {
+        column_dend_height = unit(0, "mm")
     }
-    .Object@column_hclust = NULL
-    .Object@column_hclust_param$distance = clustering_distance_columns
-    .Object@column_hclust_param$method = clustering_method_columns
-    .Object@column_hclust_param$side = match.arg(column_hclust_side)[1]
-    .Object@column_hclust_param$height = column_hclust_height + unit(1, "mm")  # append the gap
-    .Object@column_hclust_param$show = show_column_hclust
-    .Object@column_hclust_param$gp = check_gp(column_hclust_gp)
-    .Object@column_hclust_param$reorder = column_hclust_reorder
+    .Object@column_dend = NULL
+    .Object@column_dend_param$distance = clustering_distance_columns
+    .Object@column_dend_param$method = clustering_method_columns
+    .Object@column_dend_param$side = match.arg(column_dend_side)[1]
+    .Object@column_dend_param$height = column_dend_height + unit(1, "mm")  # append the gap
+    .Object@column_dend_param$show = show_column_dend
+    .Object@column_dend_param$gp = check_gp(column_dend_gp)
+    .Object@column_dend_param$reorder = column_dend_reorder
     if(is.null(column_order)) {
         .Object@column_order = seq_len(ncol(matrix))
     } else {
@@ -535,18 +586,18 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
 
     .Object@layout = list(
         layout_column_title_top_height = unit(0, "mm"),
-        layout_column_hclust_top_height = unit(0, "mm"),
+        layout_column_dend_top_height = unit(0, "mm"),
         layout_column_anno_top_height = unit(0, "mm"),
         layout_column_names_top_height = unit(0, "mm"),
         layout_column_title_bottom_height = unit(0, "mm"),
-        layout_column_hclust_bottom_height = unit(0, "mm"),
+        layout_column_dend_bottom_height = unit(0, "mm"),
         layout_column_anno_bottom_height = unit(0, "mm"),
         layout_column_names_bottom_height = unit(0, "mm"),
 
         layout_row_title_left_width = unit(0, "mm"),
-        layout_row_hclust_left_width = unit(0, "mm"),
+        layout_row_dend_left_width = unit(0, "mm"),
         layout_row_names_left_width = unit(0, "mm"),
-        layout_row_hclust_right_width = unit(0, "mm"),
+        layout_row_dend_right_width = unit(0, "mm"),
         layout_row_names_right_width = unit(0, "mm"),
         layout_row_title_right_width = unit(0, "mm"),
 
@@ -567,7 +618,7 @@ Heatmap = function(matrix, col, name, na_col = "grey", color_space = "LAB",
 # -object a `Heatmap-class` object.
 #
 # == details
-# The function will fill or adjust ``column_hclust`` and ``column_order`` slots.
+# The function will fill or adjust ``column_dend`` and ``column_order`` slots.
 #
 # This function is only for internal use.
 #
@@ -582,23 +633,23 @@ setMethod(f = "make_column_cluster",
     definition = function(object) {
     
     mat = object@matrix
-    distance = object@column_hclust_param$distance
-    method = object@column_hclust_param$method
+    distance = object@column_dend_param$distance
+    method = object@column_dend_param$method
     order = object@column_order
-    reorder = object@column_hclust_param$reorder
+    reorder = object@column_dend_param$reorder
 
-    if(object@column_hclust_param$cluster) {
-        if(!is.null(object@column_hclust_param$obj)) {
-            object@column_hclust = object@column_hclust_param$obj
-        } else if(!is.null(object@column_hclust_param$fun)) {
-            object@column_hclust = object@column_hclust_param$fun(t(mat))
+    if(object@column_dend_param$cluster) {
+        if(!is.null(object@column_dend_param$obj)) {
+            object@column_dend = object@column_dend_param$obj
+        } else if(!is.null(object@column_dend_param$fun)) {
+            object@column_dend = object@column_dend_param$fun(t(mat))
         } else {
-            object@column_hclust = hclust(get_dist(t(mat), distance), method = method)
+            object@column_dend = hclust(get_dist(t(mat), distance), method = method)
         }
-        column_order = get_hclust_order(object@column_hclust)  # we don't need the pre-defined orders
+        column_order = get_dend_order(object@column_dend)  # we don't need the pre-defined orders
 
-        if(inherits(object@column_hclust, "hclust")) {
-            object@column_hclust = as.dendrogram(object@column_hclust)
+        if(inherits(object@column_dend, "hclust")) {
+            object@column_dend = as.dendrogram(object@column_dend)
         }
 
         if(identical(reorder, NULL)) {
@@ -622,8 +673,8 @@ setMethod(f = "make_column_cluster",
             if(length(reorder) != ncol(mat)) {
                 stop("weight of reordering should have same length as number of columns.\n")
             }
-            object@column_hclust = reorder(object@column_hclust, reorder)
-            column_order = order.dendrogram(object@column_hclust)
+            object@column_dend = reorder(object@column_dend, reorder)
+            column_order = order.dendrogram(object@column_dend)
         }
     } else {
         column_order = order
@@ -647,7 +698,7 @@ setMethod(f = "make_column_cluster",
 # -object a `Heatmap-class` object.
 #
 # == details
-# The function will fill or adjust ``row_hclust_list``, ``row_order_list``, ``row_title`` and ``matrix_param`` slots.
+# The function will fill or adjust ``row_dend_list``, ``row_order_list``, ``row_title`` and ``matrix_param`` slots.
 #
 # If ``order`` is defined, no clustering will be applied.
 #
@@ -664,28 +715,28 @@ setMethod(f = "make_row_cluster",
     definition = function(object) {
 
     mat = object@matrix
-    distance = object@row_hclust_param$distance
-    method = object@row_hclust_param$method
+    distance = object@row_dend_param$distance
+    method = object@row_dend_param$method
     order = object@row_order  # pre-defined row order
     km = object@matrix_param$km
     split = object@matrix_param$split
-    reorder = object@row_hclust_param$reorder
+    reorder = object@row_dend_param$reorder
 
-    if(object@row_hclust_param$cluster) {
+    if(object@row_dend_param$cluster) {
 
         if(is.numeric(split) && length(split) == 1) {
-            if(is.null(object@row_hclust_param$obj)) {
-                object@row_hclust_param$obj = hclust(get_dist(mat, distance), method = method)
+            if(is.null(object@row_dend_param$obj)) {
+                object@row_dend_param$obj = hclust(get_dist(mat, distance), method = method)
             }
         }
 
-        if(!is.null(object@row_hclust_param$obj)) {
+        if(!is.null(object@row_dend_param$obj)) {
             if(km > 1) {
                 stop("You can not make k-means clustering since you have already specified a clustering object.")
             }
             if(is.null(split)) {
-                object@row_hclust_list = list(object@row_hclust_param$obj)
-                object@row_order_list = list(get_hclust_order(object@row_hclust_param$obj))
+                object@row_dend_list = list(object@row_dend_param$obj)
+                object@row_order_list = list(get_dend_order(object@row_dend_param$obj))
             } else {
                 if(length(split) > 1 || !is.numeric(split)) {
                     stop("Since you specified a clustering object, you can only split rows by providing a number (number of row slices.")
@@ -693,12 +744,12 @@ setMethod(f = "make_row_cluster",
                 if(split < 2) {
                     stop("Here `split` should be equal or larger than 2.")
                 }
-                if(inherits(object@row_hclust_param$obj, "hclust")) {
-                    object@row_hclust_param$obj = as.dendrogram(object@row_hclust_param$obj)
+                if(inherits(object@row_dend_param$obj, "hclust")) {
+                    object@row_dend_param$obj = as.dendrogram(object@row_dend_param$obj)
                 }
-                object@row_hclust_list = cut_dendrogram(object@row_hclust_param$obj, split)
-                sth = tapply(order.dendrogram(object@row_hclust_param$obj), 
-                    rep(seq_along(object@row_hclust_list), times = sapply(object@row_hclust_list, nobs)), 
+                object@row_dend_list = cut_dendrogram(object@row_dend_param$obj, split)
+                sth = tapply(order.dendrogram(object@row_dend_param$obj), 
+                    rep(seq_along(object@row_dend_list), times = sapply(object@row_dend_list, nobs)), 
                     function(x) x)
                 attributes(sth) = NULL
                 object@row_order_list = sth
@@ -782,31 +833,31 @@ setMethod(f = "make_row_cluster",
         }
     }
     o_row_order_list = row_order_list
-    # make hclust in each slice
-    if(object@row_hclust_param$cluster) {
-        row_hclust_list = rep(list(NULL), length(row_order_list))
+    # make dend in each slice
+    if(object@row_dend_param$cluster) {
+        row_dend_list = rep(list(NULL), length(row_order_list))
         for(i in seq_along(row_order_list)) {
             submat = mat[ row_order_list[[i]], , drop = FALSE]
             if(nrow(submat) > 1) {
-                if(!is.null(object@row_hclust_param$fun)) {
-                    row_hclust_list[[i]] = object@row_hclust_param$fun(mat)
-                    row_order_list[[i]] = row_order_list[[i]][ get_hclust_order(row_hclust_list[[i]]) ]
+                if(!is.null(object@row_dend_param$fun)) {
+                    row_dend_list[[i]] = object@row_dend_param$fun(mat)
+                    row_order_list[[i]] = row_order_list[[i]][ get_dend_order(row_dend_list[[i]]) ]
                 } else {
                     #if(is.numeric(mat)) {
-                        row_hclust_list[[i]] = hclust(get_dist(submat, distance), method = method)
-                        row_order_list[[i]] = row_order_list[[i]][ get_hclust_order(row_hclust_list[[i]]) ]
+                        row_dend_list[[i]] = hclust(get_dist(submat, distance), method = method)
+                        row_order_list[[i]] = row_order_list[[i]][ get_dend_order(row_dend_list[[i]]) ]
                     #}
                 }
             } else {
-                row_hclust_list[[i]] = NULL
+                row_dend_list[[i]] = NULL
                 row_order_list[[i]] = row_order_list[[i]][1]
             }
         }
-        object@row_hclust_list = row_hclust_list
+        object@row_dend_list = row_dend_list
 
-        for(i in seq_along(object@row_hclust_list)) {
-            if(inherits(object@row_hclust_list[[i]], "hclust")) {
-                object@row_hclust_list[[i]] = as.dendrogram(object@row_hclust_list[[i]])
+        for(i in seq_along(object@row_dend_list)) {
+            if(inherits(object@row_dend_list[[i]], "hclust")) {
+                object@row_dend_list[[i]] = as.dendrogram(object@row_dend_list[[i]])
             }
         }
 
@@ -832,10 +883,10 @@ setMethod(f = "make_row_cluster",
             if(length(reorder) != nrow(mat)) {
                 stop("weight of reordering should have same length as number of rows.\n")
             }
-            for(i in seq_along(row_hclust_list)) {
+            for(i in seq_along(row_dend_list)) {
                 if(length(row_order_list[[i]]) > 1) {
-                    object@row_hclust_list[[i]] = reorder(object@row_hclust_list[[i]], reorder[which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])])
-                    row_order_list[[i]] = o_row_order_list[[i]][ order.dendrogram(object@row_hclust_list[[i]]) ]
+                    object@row_dend_list[[i]] = reorder(object@row_dend_list[[i]], reorder[which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])])
+                    row_order_list[[i]] = o_row_order_list[[i]][ order.dendrogram(object@row_dend_list[[i]]) ]
                 }
             }
         }
@@ -971,40 +1022,40 @@ setMethod(f = "make_layout",
     }
 
     ##########################################
-    ## hclust on left or right
-    show_row_hclust = object@row_hclust_param$show
-    row_hclust_side = object@row_hclust_param$side
-    row_hclust_width = object@row_hclust_param$width
-    if(show_row_hclust) {
-        if(row_hclust_side == "left") {
-            object@layout$layout_row_hclust_left_width = row_hclust_width
+    ## dend on left or right
+    show_row_dend = object@row_dend_param$show
+    row_dend_side = object@row_dend_param$side
+    row_dend_width = object@row_dend_param$width
+    if(show_row_dend) {
+        if(row_dend_side == "left") {
+            object@layout$layout_row_dend_left_width = row_dend_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 2))
         } else {
-            object@layout$layout_row_hclust_right_width = row_hclust_width
+            object@layout$layout_row_dend_right_width = row_dend_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 6))
         }
-        #max_hclust_height = max(sapply(object@row_hclust_list, function(hc) attr(as.dendrogram(hc), "height")))
+        #max_dend_height = max(sapply(object@row_dend_list, function(hc) attr(as.dendrogram(hc), "height")))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             for(i in seq_len(n_slice)) {
-                draw_hclust(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = c("center", "top"))
+                draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = c("center", "top"))
             }
         })
     }
 
     ##########################################
-    ## hclust on top or bottom
-    show_column_hclust = object@column_hclust_param$show
-    column_hclust_side = object@column_hclust_param$side
-    column_hclust_height = object@column_hclust_param$height
-    if(show_column_hclust) {
-        if(column_hclust_side == "top") {
-            object@layout$layout_column_hclust_top_height = column_hclust_height
+    ## dend on top or bottom
+    show_column_dend = object@column_dend_param$show
+    column_dend_side = object@column_dend_param$side
+    column_dend_height = object@column_dend_param$height
+    if(show_column_dend) {
+        if(column_dend_side == "top") {
+            object@layout$layout_column_dend_top_height = column_dend_height
             object@layout$layout_index = rbind(object@layout$layout_index, c(2, 4))
         } else {
-            object@layout$layout_column_hclust_bottom_height = column_hclust_height
+            object@layout$layout_column_dend_bottom_height = column_dend_height
             object@layout$layout_index = rbind(object@layout$layout_index, c(8, 4))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_hclust(object, which = "column"))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dend(object, which = "column"))
     }
     
 
@@ -1232,7 +1283,7 @@ setMethod(f = "draw_heatmap_body",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-setMethod(f = "draw_hclust",
+setMethod(f = "draw_dend",
     signature = "Heatmap",
     definition = function(object,
     which = c("row", "column"), k = 1, max_height = NULL, ...) {
@@ -1240,16 +1291,16 @@ setMethod(f = "draw_hclust",
     which = match.arg(which)[1]
 
     side = switch(which,
-        "row" = object@row_hclust_param$side,
-        "column" = object@column_hclust_param$side)
+        "row" = object@row_dend_param$side,
+        "column" = object@column_dend_param$side)
     
     hc = switch(which,
-        "row" = object@row_hclust_list[[k]],
-        "column" = object@column_hclust)
+        "row" = object@row_dend_list[[k]],
+        "column" = object@column_dend)
     
     gp = switch(which,
-        "row" = object@row_hclust_param$gp,
-        "column" = object@column_hclust_param$gp)
+        "row" = object@row_dend_param$gp,
+        "column" = object@column_dend_param$gp)
 
     if(length(hc) == 0) {
         return(invisible(NULL))
@@ -1260,17 +1311,17 @@ setMethod(f = "draw_hclust",
     dend = as.dendrogram(hc)
     n = length(labels(dend))
 
-    hclust_padding = unit(1, "mm")
+    dend_padding = unit(1, "mm")
     pushViewport(viewport(name = paste(object@name, which, "cluster", k, sep = "_"), ...))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = hclust_padding, width = unit(1, "npc") - hclust_padding*2, just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "dend_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = dend_padding, width = unit(1, "npc") - dend_padding*2, just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "mm"), width = unit(1, "npc") - hclust_padding*2, just = "left")
+        grid.dendrogram(dend, name = paste(object@name, "dend_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "mm"), width = unit(1, "npc") - dend_padding*2, just = "left")
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "bottom", y = hclust_padding, height = unit(1, "npc") - hclust_padding*2, just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "dend_column", sep = "_"), max_height = max_height, facing = "bottom", y = dend_padding, height = unit(1, "npc") - dend_padding*2, just = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "hclust_column", sep = "_"), max_height = max_height, facing = "top", y = hclust_padding, height = unit(1, "npc") - hclust_padding*2, just = "bottom")
+        grid.dendrogram(dend, name = paste(object@name, "dend_column", sep = "_"), max_height = max_height, facing = "top", y = dend_padding, height = unit(1, "npc") - dend_padding*2, just = "bottom")
     } 
 
     upViewport()
@@ -1494,7 +1545,7 @@ setMethod(f = "component_width",
         if(k == 1) {
             object@layout$layout_row_title_left_width
         } else if(k == 2) {
-            object@layout$layout_row_hclust_left_width
+            object@layout$layout_row_dend_left_width
         } else if(k == 3) {
             object@layout$layout_row_names_left_width
         } else if(k == 4) {
@@ -1510,7 +1561,7 @@ setMethod(f = "component_width",
         } else if(k == 5) {
             object@layout$layout_row_names_right_width
         } else if(k == 6) {
-            object@layout$layout_row_hclust_right_width
+            object@layout$layout_row_dend_right_width
         } else if(k == 7) {
             object@layout$layout_row_title_right_width
         } else {
@@ -1546,7 +1597,7 @@ setMethod(f = "component_height",
         if(k == 1) {
             object@layout$layout_column_title_top_height
         } else if(k == 2) {
-            object@layout$layout_column_hclust_top_height
+            object@layout$layout_column_dend_top_height
         } else if(k == 3) {
             object@layout$layout_column_anno_top_height
         } else if(k == 4) {
@@ -1558,7 +1609,7 @@ setMethod(f = "component_height",
         } else if(k == 7) {
             object@layout$layout_column_anno_bottom_height
         } else if(k == 8) {
-            object@layout$layout_column_hclust_bottom_height
+            object@layout$layout_column_dend_bottom_height
         } else if(k == 9) {
             object@layout$layout_column_title_bottom_height
         } else {
@@ -1594,7 +1645,7 @@ setMethod(f = "set_component_height",
     if(k == 1) {
         object@layout$layout_column_title_top_height = v
     } else if(k == 2) {
-        object@layout$layout_column_hclust_top_height = v
+        object@layout$layout_column_dend_top_height = v
     } else if(k == 3) {
         object@layout$layout_column_anno_top_height = v
     } else if(k == 4) {
@@ -1604,7 +1655,7 @@ setMethod(f = "set_component_height",
     } else if(k == 7) {
         object@layout$layout_column_anno_bottom_height = v
     } else if(k == 8) {
-        object@layout$layout_column_hclust_bottom_height = v
+        object@layout$layout_column_dend_bottom_height = v
     } else if(k == 9) {
         object@layout$layout_column_title_bottom_height = v
     } else {
@@ -1699,7 +1750,7 @@ setMethod(f = "prepare",
     if(process_rows) {
         object = make_row_cluster(object)
     }
-    if(object@column_hclust_param$cluster) object = make_column_cluster(object)
+    if(object@column_dend_param$cluster) object = make_column_cluster(object)
 
     object = make_layout(object)
     return(object)

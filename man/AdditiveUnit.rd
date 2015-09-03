@@ -24,7 +24,6 @@ No value is returned.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# no example
+# no example for this function
 NULL
-
 }

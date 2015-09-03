@@ -17,3 +17,7 @@ Get column dendrograms from a heatmap list
 \value{
 A list of dendrograms for which dendrogram corresponds to each matrix
 }
+\examples{
+# There is no example
+NULL
+}

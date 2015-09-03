@@ -17,3 +17,7 @@ Get column dendrograms from a heatmap
 \value{
 A dendrogram object
 }
+\examples{
+# There is no example
+NULL
+}

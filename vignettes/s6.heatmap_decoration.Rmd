@@ -68,12 +68,12 @@ for(heatmap_name in c("ht1", "ht2")) {
     }
         
     seekViewport(qq("@{heatmap_name}_column_title")); grid.rect(gp = gpar(fill = NA, col = "red"))
-    seekViewport(qq("@{heatmap_name}_hclust_column")); grid.rect(gp = gpar(fill = NA, col = "red"))
+    seekViewport(qq("@{heatmap_name}_dend_column")); grid.rect(gp = gpar(fill = NA, col = "red"))
     seekViewport(qq("@{heatmap_name}_column_names")); grid.rect(gp = gpar(fill = NA, col = "red"))
     seekViewport(qq("legend_@{heatmap_name}")); grid.rect(gp = gpar(fill = NA, col = "red"))
 }
-seekViewport(qq("ht1_hclust_row_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
-seekViewport(qq("ht1_hclust_row_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("ht1_dend_row_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
+seekViewport(qq("ht1_dend_row_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
 seekViewport(qq("ht1_row_title_1")); grid.rect(gp = gpar(fill = NA, col = "red"))
 seekViewport(qq("ht1_row_title_2")); grid.rect(gp = gpar(fill = NA, col = "red"))
 
@@ -104,8 +104,8 @@ The components (viewports) that have names are:
 - `@{heatmap_name}_heatmap_body_@{i}`: the heatmap body.
 - `@{heatmap_name}_column_title`: column title for a single heatmap.
 - `@{heatmap_name}_row_title_@{i}`: since a heatmap body may be splitted into several parts. `@{i}` is the index of the row slice.
-- `@{heatmap_name}_hclust_row_@{i}`: dendrogram for ith row slice.
-- `@{heatmap_name}_hclust_column`: dendrogram on columns
+- `@{heatmap_name}_dend_row_@{i}`: dendrogram for ith row slice.
+- `@{heatmap_name}_dend_column`: dendrogram on columns
 - `@{heatmap_name}_row_names_@{i}`: the viewport which contains row names.
 - `@{heatmap_name}_column_names`: the viewport which contains column names.
 - `heatmap_legend`: the viewport which contains all heatmap legends.
@@ -132,9 +132,10 @@ decorate_heatmap_body("ht1", {
     grid.lines(c(0.5, 0.5), c(0, 1), gp = gpar(lty = 2, lwd = 2))
 }, slice = 2)
 
-decorate_hclust("ht1", {
+suppressPackageStartupMessages(library(dendextend))
+decorate_dend("ht1", {
     tree = column_dend(ht_list)$ht1
-    ind = cutree(as.hclust(tree), k = 2)[order.dendrogram(tree)]
+    ind = cutree_1k.dendrogram(tree, k = 2)
 
     first_index = function(l) which(l)[1]
     last_index = function(l) { x = which(l); x[length(x)] }

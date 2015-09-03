@@ -15,5 +15,15 @@ decorate_column_title(...)
 
 }
 \details{
-This is a wrapper function which pre-defined \code{which} argument in \code{\link{decorate_title}}.
+This is a helper function which pre-defined \code{which} argument in \code{\link{decorate_title}}.
+}
+\value{
+The function returns no value.
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
+\examples{
+# No example for this function
+NULL
 }
