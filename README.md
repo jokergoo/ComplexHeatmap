@@ -82,7 +82,7 @@ From left to right, heatmaps are:
 7. distance from the DMR to the TSS of the corresponding gene.
 8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
 
-![example](https://cloud.githubusercontent.com/assets/449218/6862097/1bc46436-d443-11e4-91f5-431bc9210c80.png)
+![download](https://cloud.githubusercontent.com/assets/449218/9685180/dddf30c0-531c-11e5-805a-4cc5a36e9197.png)
 
 ## OncoPrint
 
@@ -95,3 +95,9 @@ With general functionality of **ComplexHeamtap**, you can add more heatmaps / ro
 oncoPrint to enphasize sub groups.
 
 ![oncoprint](https://cloud.githubusercontent.com/assets/449218/9370313/9c9b6b00-46cf-11e5-9740-c5c2a7a40eb5.png)
+
+## Interact with heatmaps
+
+You can use mouse to select a region on the heatmap, it will return row index and column index which correspond to the selected region.
+
+![download](https://cloud.githubusercontent.com/assets/449218/9685087/456d6276-531c-11e5-9837-2ba8a081ad50.gif)
