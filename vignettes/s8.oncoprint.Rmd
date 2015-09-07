@@ -51,20 +51,21 @@ mat = as.matrix(mat)
 mat
 ```
 
-In this case, we need to define a function to extract different alteration types and send the function
+In this case, we need to define a function to extract different alteration types and pass the function
 to `get_type` argument. The function should return a vector of alteration types.
 
-Since different alteration types may be drawn into one same grid in the heatmap, we need to define
-graphic function to add the graphics. Here if the graphics have no transparency, orders of how to add
+For one gene in one sample, since different alteration types may be drawn into one same grid in the heatmap, 
+we need to define how to add the graphics by self-defined functions.
+Here if the graphics have no transparency, orders of how to add
 graphics matters. In following example, snv are first drawn and then the indel. You can see rectangles
 for indels are actually smaller than that for snvs so that you can visualiza both snvs and indels if they
-are in a same grid.
+are in a same grid. Names in the list of functions should correspond to the alteration types (here, `snv` and `indel`).
 
 For the self-defined graphic function, there should be four arguments which are positions of the grids 
 on the heatmap (`x` and `y`), and widths and heights of the grids (`w` and `h`).
 
 Colors for different alterations are defined in `col`. It should be a named vector for which names correspond
-to alteration types.
+to alteration types. It is used to generate the barplots and the legends.
 
 
 ```{r}
@@ -77,7 +78,7 @@ oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 ```
 
 The second type of input data is a list of matrix for which each matrix contains binary value representing
-whether the alteration is absent or present. The list should have names and the name corresponds to the alteration
+whether the alteration is absent or present. The list should have names which correspond to the alteration
 types.
 
 ```{r}
@@ -88,8 +89,8 @@ colnames(mat_list$snv) = colnames(mat_list$indel) = c("s1", "s2", "s3")
 mat_list
 ```
 
-Same as the first example, but here we define `background` in `alter_fun_list` argument. This function defines
-how to add graphics when there is no alteration.
+Same as the first example, but here we also define `background` in `alter_fun_list` argument. This function defines
+how to add graphics when there is no alteration and it is always put as the first in the list.
 
 ```{r}
 oncoPrint(mat_list,
@@ -135,10 +136,11 @@ We can adjust the order of the matrix. Here cbioPortal also provides sample orde
 sample_order = scan(paste0(system.file("extdata", package = "ComplexHeatmap"), 
     "/sample_order.txt"), what = "character")
 mat = mat[, sample_order]
+mat[1:4, 1:4]
 ```
 
 There are three different alterations in `mat`: `HOMDEL`, `AMP` and `MUT`. We first 
-define how to add graphics to correspond to different alterations. 
+define how to add graphics which correspond to different alterations. 
 
 ```{r}
 alter_fun_list = list(
@@ -173,7 +175,7 @@ oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 		labels = c("Amplification", "Deep deletion", "Mutation")))
 ```
 
-By default, if one sample has no alteration, it will be removed from the heatmap. but you can set
+By default, if one sample has no alteration, it will be removed from the heatmap, but you can set
 `remove_empty_columns` to `FALSE` to keep it:
 
 ```{r, fig.width = 12, fig.height = 8}
@@ -199,4 +201,10 @@ ht_list = oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	split = sample(letters[1:2], nrow(mat), replace = TRUE)) +
 Heatmap(matrix(rnorm(nrow(mat)*10), ncol = 10), width = unit(4, "cm"))
 draw(ht_list, row_sub_title_side = "left")
+```
+
+## Session info
+
+```{r}
+sessionInfo()
 ```

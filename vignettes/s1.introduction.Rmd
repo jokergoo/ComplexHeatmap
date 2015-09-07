@@ -67,7 +67,7 @@ to get full use of the package.
 There are several vignettes in the package. Each vignette focuses on a specific topic. Following
 lists the general topics discussed in these vignettes:
 
-  1. [**Making a single Heatmap**](s2.single_heatmap.html)
+  1. [**Making a Single Heatmap**](s2.single_heatmap.html)
 
     This vignette introduces the basic configuration for making a single heatmap. Similar as other
     R functions/packages, the basic usage is quite similar, but there are several unique features
@@ -89,12 +89,12 @@ lists the general topics discussed in these vignettes:
       different levels that split the heatmap.
     - The heatmap body itself can be completely self-defined.
 
-  2. [**Making a list of heatmaps**](s3.a_list_of_heatmaps.html)
+  2. [**Making a List of Heatmaps**](s3.a_list_of_heatmaps.html)
 
     This vignette introduces how to concatenate a list of heatmaps and how adjustment is applied to keep
     the correspondence of the heatmaps.
 
-  3. [**Heatmap annotations**](s4.heatmap_annotation.html)
+  3. [**Heatmap Annotations**](s4.heatmap_annotation.html)
 
     This vignette introduces the concept of the heatmap annotation and demonstrate how to make simple annotations
     as well as complex annotations. Also, the vignette explains the difference between column annotations
@@ -105,7 +105,7 @@ lists the general topics discussed in these vignettes:
     This vignette introduces how to configurate the heatmap legend and annotation legend, also
     how to add self-defined legends.
 
-  5. [**Heatmap decoration**](s6.heatmap_decoration.html)
+  5. [**Heatmap Decoration**](s6.heatmap_decoration.html)
 
     This vignette introduces methods to add more self-defined graphics to the heatmaps after the heatmaps
     are generated.
