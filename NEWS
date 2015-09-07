@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.4.1
+
+* revised the vignettes
+
+===================================
+
 CHANGES in VERSION 1.4.0
 
 * returned value for `draw` method has been changes

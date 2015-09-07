@@ -67,15 +67,16 @@ draw(ht_list, heatmap_legend_side = "left", annotation_legend_side = "bottom")
 draw(ht_list, show_heatmap_legend = FALSE, show_annotation_legend = FALSE)
 ```
 
-You can choose to only show some of the heatmap legends by setting `show_heatmap_legend` to a logical value.
+You can choose to only show some of the heatmap legends by setting `show_heatmap_legend` to 
+a logical value when constructing single heatmaps.
 Also `HeatmapAnnotation()` (or the shortcut function `columnAnnotation()` and `rowAnnotation()`) provides
 `show_legend` argument to control visibility of annotation legends.
 
 ```{r legend_show_part, fig.width = 10}
 ha_column = HeatmapAnnotation(df = data.frame(type1 = c(rep("a", 5), rep("b", 5))), 
-    col = list(type = c("a" =  "red", "b" = "blue")), show_legend = FALSE)
-ha_row = rowAnnotation(df = data.frame(type2 = c(rep("A", 4), rep("B", 4))), 
-    col = list(type = c("A" =  "green", "B" = "orange")), show_legend = FALSE, width = unit(1, "cm"))
+    col = list(type1 = c("a" =  "red", "b" = "blue")), show_legend = FALSE)
+ha_row = rowAnnotation(df = data.frame(type2 = c(rep("A", 6), rep("B", 6))), 
+    col = list(type2 = c("A" =  "green", "B" = "orange")), show_legend = FALSE, width = unit(1, "cm"))
 
 ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", top_annotation = ha_column)
 ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", show_heatmap_legend = FALSE)
@@ -86,8 +87,8 @@ ht1 + ht2 + ha_row
 can be passed by `heatmap_legend_list` and `annotation_legend_list` as a list of `grob` objects.
 
 **grid** package provides `legendGrob()` to construct a legend grob with certain style but
-styles are still limited. You can construct a legend grob totally from ground by `frameGrob()`
-and `packGrob()` but it is too high level for most of the users.
+styles are still limited. For advanced users, they can construct a legend grob totally from ground by `frameGrob()`
+and `packGrob()`.
 
 ```{r self_defined_annotation_legend, fig.width = 10}
 ha = HeatmapAnnotation(points = anno_points(rnorm(10)))

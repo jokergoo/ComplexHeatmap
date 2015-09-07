@@ -1,9 +1,9 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{9. Examples of Making Complex Heatmaps}
+%\VignetteIndexEntry{9. More Examples}
 -->
 
-Examples of Making Complex Heatmaps
+More Examples of Making Complex Heatmaps
 ========================================
 
 **Author**: Zuguang Gu ( z.gu@dkfz.de )
@@ -31,8 +31,13 @@ options(width = 100)
 
 ### Add more information for gene expression matrix
 
-In gene expression matrix, rows correspond to genes. More information about genes can be attached after the expression
-heatmap such as gene length and type of genes.
+Heatmaps are very popular to visualize gene expression matrix. 
+Rows in the matrix correspond to genes and more information on these genes can be attached after the expression
+heatmap.
+
+In following example, the big heatmap visualize relative expression for genes, then the next is the absolute expression.
+Also gene length and gene type (i.e. protein coding or lincRNA) are visualized.
+
 
 ```{r expression_example, fig.width = 10, fig.height = 8}
 library(ComplexHeatmap)
@@ -40,23 +45,26 @@ library(circlize)
 
 expr = readRDS(paste0(system.file(package = "ComplexHeatmap"), "/extdata/gene_expression.rds"))
 mat = as.matrix(expr[, grep("cell", colnames(expr))])
+base_mean = rowMeans(mat)
+mat_scaled = t(apply(mat, 1, scale))
 
 type = gsub("s\\d+_", "", colnames(mat))
 ha = HeatmapAnnotation(df = data.frame(type = type))
 
-Heatmap(mat, name = "expression", km = 5, top_annotation = ha, 
-    top_annotation_height = unit(4, "mm"), show_row_names = FALSE, 
-    show_column_names = FALSE) +
-Heatmap(expr$length, name = "length", col = colorRamp2(c(0, 100000), c("white", "orange")),
+Heatmap(mat_scaled, name = "expression", km = 5, col = colorRamp2(c(-2, 0, 2), c("green", "white", "red")),
+    top_annotation = ha, top_annotation_height = unit(4, "mm"), 
+    show_row_names = FALSE, show_column_names = FALSE) +
+Heatmap(base_mean, name = "base_mean", show_row_names = FALSE, width = unit(5, "mm")) +
+Heatmap(expr$length, name = "length", col = colorRamp2(c(0, 1000000), c("white", "orange")),
+    heatmap_legend_param = list(at = c(0, 200000, 400000, 60000, 800000, 1000000), 
+                                labels = c("0kb", "200kb", "400kb", "600kb", "800kb", "1mb")),
     width = unit(5, "mm")) +
-Heatmap(expr$type, name = "type", width = unit(5, "mm")) +
-Heatmap(expr$chr, name = "chr", col = rand_color(length(unique(expr$chr))), 
-    width = unit(5, "mm"))
+Heatmap(expr$type, name = "type", width = unit(5, "mm"))
 ```
 
 ### Visualize genomic regions and other correspondance
 
-Following examples visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 
+Following example visualizes correlation between methylation and expression, as well as other annotation information (data are randomly generated). In the heatmap, each row corresponds to a differentially methylated regions (DMRs). 
 From left to right, heatmaps are:
 
 1. methylation for each DMR (by rows) in samples.
@@ -69,7 +77,7 @@ From left to right, heatmaps are:
 8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
 
 
-```{r, fig.width = 10, fig.height = 8}
+```{r, fig.width = 10, fig.height = 8, echo = FALSE}
 library(circlize)
 library(RColorBrewer)
 
@@ -81,18 +89,19 @@ ha = HeatmapAnnotation(df = data.frame(type = c(rep("Tumor", 10), rep("Control",
 ha2 = HeatmapAnnotation(df = data.frame(type = c(rep("Tumor", 10), rep("Control", 10))), 
     col = list(type = c("Tumor" = "red", "Control" = "blue")), show_legend = FALSE)
 
-# to make column order of expression matrix is the same as methylation matrix
+# column order of the methylation matrix which will be assigned to the expressio matrix
 column_tree = hclust(dist(t(meth)))
 
 ht_list = 
     Heatmap(meth, name = "methylation", col = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")),
         cluster_columns = column_tree, top_annotation = ha, column_names_gp = gpar(fontsize = 8), km = 5, 
-        column_title = "Methylation", column_title_gp = gpar(fontsize = 10), row_title_gp = gpar(fontsize = 10)) +
+        column_title = "Methylation", column_title_gp = gpar(fontsize = 10), 
+        row_title_gp = gpar(fontsize = 10)) +
     Heatmap(direction, name = "direction", col = c("hyper" = "red", "hypo" = "blue"), 
         column_names_gp = gpar(fontsize = 8)) +
     Heatmap(expr[, column_tree$order], name = "expression", col = colorRamp2(c(-2, 0, 2), c("green", "white", "red")),
-        cluster_columns = FALSE, top_annotation = ha2, column_names_gp = gpar(fontsize = 8), column_title = "Expression",
-        column_title_gp = gpar(fontsize = 10)) +
+        cluster_columns = FALSE, top_annotation = ha2, column_names_gp = gpar(fontsize = 8), 
+        column_title = "Expression", column_title_gp = gpar(fontsize = 10)) +
     Heatmap(cor_pvalue, name = "-log10(cor_p)", col = colorRamp2(c(0, 2, 4), c("white", "white", "red")), 
         column_names_gp = gpar(fontsize = 8)) +
     Heatmap(gene_type, name = "gene type", col = brewer.pal(length(unique(gene_type)), "Set1"), 
@@ -149,7 +158,8 @@ Compare to the native `heatmap()`, `Heatmap()` can give more accurate interpolat
 for colors for continous values.
 
 ```{r}
-Heatmap(mat, col = topo.colors(50), row_dend_width = unit(2, "cm"), 
+Heatmap(mat, col = topo.colors(50), color_space = "sRGB",
+    row_dend_width = unit(2, "cm"), 
     column_dend_height = unit(2, "cm"), row_dend_reorder = TRUE,
     column_dend_reorder = TRUE)
 ```
@@ -189,7 +199,7 @@ decorate_heatmap_body("cases", {
 There is no space allocated for annotation name, but when the annotation name is too long,
 you can add paddings of the whole plot to give empty spaces for the annotation names.
 
-```{r, fig.width = 10}
+```{r, fig.width = 7}
 ha = HeatmapAnnotation(df = data.frame(a_long_long_long_annotation_name = runif(10)),
     show_legend = FALSE)
 ht = Heatmap(matrix(rnorm(100), 10), name = "foo", top_annotation = ha)
@@ -200,4 +210,11 @@ draw(ht, padding = padding)
 decorate_annotation("a_long_long_long_annotation_name", {
     grid.text("a_long_long_long_annotation_name", 0, 0.5, just = "right")
 })
+```
+
+
+## Session info
+
+```{r}
+sessionInfo()
 ```

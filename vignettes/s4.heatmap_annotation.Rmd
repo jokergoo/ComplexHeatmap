@@ -113,7 +113,7 @@ Heatmap(mat, top_annotation = ha1, bottom_annotation = ha2)
 Besides simple annotations, there are complex annotations. The complex annotations are always
 represented as self-defined graphic functions. Actually, for each column annotation, there will be a viewport
 created waiting for graphics. The annotation function here defines how to put the graphics to
-this viewport. The only argument of the function is an index of column which is adjusted by column clustering.
+this viewport. The only argument of the function is an index of column which is already adjusted by column clustering.
 
 In following example, an annotation of points is created. Please note how we define `xscale` so that positions
 of points correspond to middle points of the columns if the annotation is added to the heatmap.
@@ -122,16 +122,22 @@ of points correspond to middle points of the columns if the annotation is added 
 value = rnorm(10)
 column_anno = function(index) {
     n = length(index)
+    # since middle of columns are in 1, 2, ..., n and each column has width 1
+    # then the most left should be 1 - 0.5 and the most right should be n + 0.5
     pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = range(value)))
+    # since order of columns will be adjusted by clustering, here we also 
+    # need to change the order by `[index]`
     grid.points(index, value[index], pch = 16, default.unit = "native")
-    upViewport() # this is very important in order not to mess up the layout
+    # this is very important in order not to mess up the layout
+    upViewport() 
 }
 ha = HeatmapAnnotation(points = column_anno)  # here the name is arbitrary
 ha
 draw(ha, 1:10)
 ```
 
-There are several annotation generators such as `anno_points()` or `anno_barplot()`
+Above code is only for demonstration. You don't realy need to define a points annotation,
+there are already several annotation generators provided in the package such as `anno_points()` or `anno_barplot()`
 which generate such complex annotation function:
 
 - `anno_points()`
@@ -162,7 +168,7 @@ ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
 draw(ha, 1:10)
 ```
 
-You can combine more than one annotations into the object.
+You can mix simple annotaitons and complex annotations:
 
 ```{r heatmap_annotation_mixed_with_complex, fig.width = 7, fig.height = 2}
 ha = HeatmapAnnotation(df = df, 
@@ -174,6 +180,7 @@ draw(ha, 1:10)
 ```
 
 For some of the `anno_*` functions, graphic parameters can be set by `gp` argument.
+Also note how we specify `baseline` in `anno_barplot()`.
 
 ```{r heatmap_annotation_anno_gp, fig.width = 7, fig.height = 3}
 ha = HeatmapAnnotation(barplot1 = anno_barplot(value, baseline = 0, gp = gpar(fill = ifelse(value > 0, "red", "green"))),
@@ -184,11 +191,10 @@ draw(ha, 1:10)
 ```
 
 If there are more than one annotations, you can control height of each annotation by `annotation_height`.
-The value of `annotation_height` can either be numeric values or `unit` objects. But when you specify the 
-height to the `unit` objects, you should make sure the sum of heights does not exceed the height of the 
-annotations shown in the heatmap.
+The value of `annotation_height` can either be numeric values or `unit` objects.
 
 ```{r, fig.width = 7, fig.height = 3}
+# set annotation height as relative values
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(mat),
     col = list(type = c("a" = "red", "b" = "blue"),
                age = colorRamp2(c(0, 20), c("white", "red"))),
@@ -197,6 +203,7 @@ draw(ha, 1:10)
 ```
 
 ```{r, fig.width = 7, fig.height = 3}
+# set annotation height as absolute units
 ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxplot(mat),
     col = list(type = c("a" = "red", "b" = "blue"),
                age = colorRamp2(c(0, 20), c("white", "red"))),
@@ -205,11 +212,13 @@ ha = HeatmapAnnotation(df = df, points = anno_points(value), boxplot = anno_boxp
 draw(ha, 1:10)
 ```
 
-With the annotation, you can assign in to the heatmap either by `top_annotation` or `bottom_annotation`.
-Also you can control the size of total column annotations by `top_annotation_height` and `bottom_annotation_height`.
-If the annotation has proper size, it would be helpful to add axis on it. `anno_points()`, `anno_barplot()` 
-and `anno_boxplot()` support axes. Please note we didn't allocate space for axes particularly, 
-we only assume there are empty spaces for showing axes.
+With the annotation constructed, you can assign to the heatmap either by `top_annotation` or `bottom_annotation`.
+Also you can control the size of total column annotations by `top_annotation_height` and `bottom_annotation_height`
+if the height of the annotations are relative values.
+
+If the annotation has proper size (high enough), it would be helpful to add axis on it. `anno_points()`, `anno_barplot()` 
+and `anno_boxplot()` support axes. Please note we didn't pre-allocate space for axes particularly, 
+we only assume there are already empty spaces for showing axes.
 
 ```{r add_annotation}
 ha = HeatmapAnnotation(df = df, points = anno_points(value),
@@ -232,13 +241,13 @@ Heatmap(mat, name = "foo", top_annotation = ha)
 You can suppress some of the annotation legend by specifying `show_legend` to `FALSE` when creating the `HeatmapAnnotation` object.
 
 ```{r annotation_show}
-ha = HeatmapAnnotation(df = df, show_legend = FALSE,
+ha = HeatmapAnnotation(df = df, show_legend = c(FALSE, TRUE),
     col = list(type = c("a" = "red", "b" = "blue"),
                age = colorRamp2(c(0, 20), c("white", "red"))))
 Heatmap(mat, name = "foo", top_annotation = ha)
 ```
 
-More types of annotations which show data distribution in corresponding rows and columns are supported
+More types of annotations which show data distribution in corresponding columns are supported
 by `anno_histogram()` and `anno_density()`.
 
 ```{r annotation_more, fig.height = 10, fig.width = 7}
@@ -253,7 +262,7 @@ Text is also one of the annotaiton graphics. `anno_text()` supports adding text 
 function, it is easy to simulate column names with rotations. 
 Note you need to calcualte the space for the text annotations by hand and the package doesn't garentee
 that all the rotated text are shown in the plot (In following figure, if row names and legend are not drawn,
-'C10C10C10' will show completely).
+'C10C10C10' will show completely, but there are some tricks which can be found in the [**Examples**](s9.examples.html) vignette).
 
 ```{r rotated_column_names}
 long_cn = do.call("paste0", rep(list(colnames(mat)), 3))  # just to construct long text
@@ -273,7 +282,7 @@ ha = HeatmapAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")),
 draw(ha, 1:12)
 ```
 
-There is a shortcut function `rowAnnotation()` which is same as `HeatmapAnnotation(..., which = "row")`.
+There is a helper function `rowAnnotation()` which is same as `HeatmapAnnotation(..., which = "row")`.
 
 ```{r, eval = FALSE}
 ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")), width = unit(1, "cm"))
@@ -310,8 +319,10 @@ draw(ha_combined, 1:12)
 Essentially, row annotations and column annotations are identical graphics, but in practice,
 there is some difference. In **ComplexHeatmap** package, row annotations have the same place as the heatmap
 while column annotations are just like accessory components of heatmaps. The idea here is that row annotations
-can be shared by all the heatmaps in the list. For row annotations, similar
+can be corresponded to all the heatmaps in the list while column annotations can only be corresponded to its own heatmap. 
+For row annotations, similar
 as heatmaps, you can append the row annotations to heatmap or heatmap list or even row annotation object itself.
+The order of elements in row annotations will be adjusted by the clustering of heatmaps.
 
 ```{r heatmap_list_with_row_annotation, fig.width = 9}
 ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")),
@@ -344,7 +355,7 @@ Since only row clustering and row titles for the main heatmap are kept, they can
 of the plot by setting `row_hclust_side` and `row_sub_title_side`:
 
 ```{r heatmap_list_hclust_title_side}
-draw(ha + ht1, row_hclust_side = "left", row_sub_title_side = "right")
+draw(ha + ht1, row_dend_side = "left", row_sub_title_side = "right")
 ```
 
 ### Self define row annotations
@@ -359,6 +370,7 @@ row_anno = function(index) {
     n = length(index)
     pushViewport(viewport(xscale = range(value), yscale = c(0.5, n + 0.5)))
     grid.rect()
+    # recall row order will be adjusted, here we specify `value[index]`
     grid.points(value[index], seq_along(index), pch = 16, default.unit = "native")
     upViewport()
 }
