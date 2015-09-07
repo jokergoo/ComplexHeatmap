@@ -31,7 +31,7 @@ options(width = 100)
 
 A list of heatmaps can improve visualization of the correspondence between multiple data sources.
 In this vignette, we will discuss configurations for making a list of heatmaps and you can
-see more real-world examples in the [**Examples**](s7.examples.html) vignette.
+see more real-world examples in the [**Examples**](s9.examples.html) vignette.
 
 ## Heatmap concatenation
 
@@ -157,11 +157,19 @@ ht1 + ht2
 `ht_global_opt()` can set graphic parameters for dimension names and titles as global settings.
 
 ```{r, fig.width = 10}
-ht_global_opt(heatmap_row_names_gp = gpar(fontface = "italic"), heatmap_column_names_gp = gpar(fontsize = 14))
+ht_global_opt(heatmap_row_names_gp = gpar(fontface = "italic"), 
+	          heatmap_column_names_gp = gpar(fontsize = 14))
 ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1")
 ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
 ht1 + ht2
 ht_global_opt(RESET = TRUE)
+```
+
+Following are global settings supported by `ht_global_opt()`. By this function, you can also control settings
+for the legends.
+
+```{r}
+names(ht_global_opt())
 ```
 
 ## Retrieve orders and dendrograms

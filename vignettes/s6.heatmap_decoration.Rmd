@@ -115,7 +115,8 @@ The components (viewports) that have names are:
 
 ## decorate_* functions
 
-You can easily go to these component and add graphics by `decorate_*` family functions.
+Basically, you can go to these components by `seekViewport()`, but to hide the details that is too low-level,
+**ComplexHeatmap** package provides `decorate_*` family functions which makes it easy to add graphics into different components.
 
 Following code add annotation names, mark one grid in the heatmap and seperate the first column clusters with two rectangles.
 
@@ -163,7 +164,8 @@ in the heatmap list by its name, actually it is not difficult to add annotation 
 
 Following code add annotation names on the both sides of the column annotations. The drawback is
 since there is no specific component designed for annotation names, if the annotation name is too long,
-it will be exceeding the figure region.
+it will be exceeding the figure region (but this problem can be solved by some tricks, see the 
+[**Examples**](s9.examples.html) vignette).
 
 ```{r annotation_title}
 df = data.frame(type1 = c(rep("a", 5), rep("b", 5)),
