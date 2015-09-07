@@ -216,9 +216,9 @@ of the dendrograms and size of the dendrograms.
 
 ```{r cluster_basic}
 Heatmap(mat, name = "foo", cluster_rows = FALSE)
-Heatmap(mat, name = "foo", show_column_hclust = FALSE)
-Heatmap(mat, name = "foo", row_hclust_side = "right")
-Heatmap(mat, name = "foo", column_hclust_height = unit(2, "cm"))
+Heatmap(mat, name = "foo", show_column_dend = FALSE)
+Heatmap(mat, name = "foo", row_dend_side = "right")
+Heatmap(mat, name = "foo", column_dend_height = unit(2, "cm"))
 ```
 
 There are three ways to specify distance metric for clustering:
@@ -294,7 +294,7 @@ Heatmap(mat, name = "foo", cluster_rows = as.dendrogram(diana(mat)),
 
 In the native `heatmap()` function, dendrograms on row and on column are reordered to let features with larger different
 separated more from each other, but according to my experience, the default reordering can not always give nice visualization.
-So the reordering for the dendrograms are turned off for `Heatmap()` function. 
+So by default the reordering for the dendrograms are turned off for `Heatmap()` function. 
 
 Besides the default reordering method, you can first generate a dendrogram and apply other reordering
 method and then send the reordered dendrogram to `cluster_rows` argument. 
@@ -304,17 +304,17 @@ Compare following three plots:
 ```{r cluster_dendsort, fig.width = 14}
 pushViewport(viewport(layout = grid.layout(nr = 1, nc = 3)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
-draw(Heatmap(mat, name = "foo", row_hclust_reorder = FALSE, column_title = "no reordering"), newpage = FALSE)
+draw(Heatmap(mat, name = "foo", row_dend_reorder = FALSE, column_title = "no reordering"), newpage = FALSE)
 upViewport()
 
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
-draw(Heatmap(mat, name = "foo", row_hclust_reorder = TRUE, column_title = "default reordering"), newpage = FALSE)
+draw(Heatmap(mat, name = "foo", row_dend_reorder = TRUE, column_title = "applied reordering"), newpage = FALSE)
 upViewport()
 
 library(dendsort)
 dend = dendsort(hclust(dist(mat)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 3))
-draw(Heatmap(mat, name = "foo", cluster_rows = dend, row_hclust_reorder = FALSE, 
+draw(Heatmap(mat, name = "foo", cluster_rows = dend, row_dend_reorder = FALSE, 
     column_title = "reordering by dendsort"), newpage = FALSE)
 upViewport(2)
 ```
@@ -341,25 +341,25 @@ Heatmap(mat, name = "foo", cluster_rows = function(m) as.dendrogram(diana(m)),
 
 Clustering can help to adjust order in rows and in columns. But you can still set the order manually by `row_order`
 and `column_order`. Note you need to turn off clustering
-if you want to set order manually. `row_order` and `column_order` can also be set according to matrix row names and column names.
+if you want to set order manually. `row_order` and `column_order` can also be set according to matrix row names and column names if they exist.
 
 ```{r manual_order}
 Heatmap(mat, name = "foo", cluster_rows = FALSE, cluster_columns = FALSE, 
     row_order = 12:1, column_order = 10:1)
 ```
 
-Note `row_reorder` and `row_order` are different. `row_reorder` is applied on the dendrogram. Because for any node in the
+Note `row_dend_reorder` and `row_order` are different. `row_dend_reorder` is applied on the dendrogram. Because for any node in the
 dendrogram, rotating two leaves gives an identical dendrogram. Thus, reordering the dendrogram by automatically rotating sub-dendrogram
 at every node will help to separate elements with more difference to be farther from each other. While `row_order` is
-applied on the matrix and dendrograms should be suppressed.
+applied on the matrix and dendrograms are suppressed.
 
 ## Dimension names
 
 Side, visibility and graphic parameters for dimension names can be set as follows.
 
 ```{r dimension_name}
-Heatmap(mat, name = "foo", row_names_side = "left", row_hclust_side = "right", 
-    column_names_side = "top", column_hclust_side = "bottom")
+Heatmap(mat, name = "foo", row_names_side = "left", row_dend_side = "right", 
+    column_names_side = "top", column_dend_side = "bottom")
 Heatmap(mat, name = "foo", show_row_names = FALSE)
 Heatmap(mat, name = "foo", row_names_gp = gpar(fontsize = 20))
 Heatmap(mat, name = "foo", row_names_gp = gpar(col = c(rep("red", 4), rep("blue", 8))))
@@ -376,7 +376,7 @@ example in the [**Heatmap Annotation**](s4.heatmap_annotation.html) vignette).
 
 A heatmap can be split by rows. This will enhance the visualization of group separation in the heatmap.
 The `km` argument with a value larger than 1 means applying a k-means clustering on rows and clustering
-is applied on every k-means clusters.
+is applied on every k-means cluster.
 
 ```{r k_means}
 Heatmap(mat, name = "foo", km = 2)
@@ -420,7 +420,8 @@ Heatmap(mat, name = "foo", split = paste0("pam", pa$clustering), gap = unit(5, "
 Character matrix can only be split by `split` argument.
 
 ```{r split_discrete_matrix}
-Heatmap(discrete_mat, name = "foo", split = rep(letters[1:2], each = 5))
+Heatmap(discrete_mat, name = "foo", col = 1:4,
+    split = rep(letters[1:2], each = 5))
 ```
 
 When split is applied on rows, graphic parameters for row title and row names can be specified as same

@@ -29,9 +29,9 @@ options(markdown.HTML.stylesheet = "custom.css")
 options(width = 100)
 ```
 
-The annotation graphics actually are quite general. The only common characteristic for column annotation
-is that they are aligned to the columns of the heatmap. Here there is a `HeatmapAnnotation` class which is used to 
-define annotations on columns.
+The annotation graphics actually are quite general. The only common characteristic for annotations
+is that they are aligned to the columns or rows of the heatmap. Here there is a `HeatmapAnnotation` class which is used to 
+define annotations on columns or rows.
 
 ## Column annotation
 
