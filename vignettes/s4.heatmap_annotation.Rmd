@@ -1,9 +1,9 @@
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{4. Making Complex Heatmaps}
+%\VignetteIndexEntry{4. Heatmap Annotations}
 -->
 
-Making Complex Heatmaps
+Heatmap Annotations
 ========================================
 
 **Author**: Zuguang Gu ( z.gu@dkfz.de )
