@@ -155,14 +155,16 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 				gp = subset_gp(gp, k)
 			}
 
-			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
-			if(border) grid.rect()
 			if(baseline == "min") baseline = data_scale[1]
 			else if(baseline == "max") baseline = data_scale[2]
 			if(axis_direction == "reverse") {
 				x = data_scale[2] - x + data_scale[1]
 				baseline = data_scale[2] - baseline + data_scale[1]
 			}
+			if(baseline < data_scale[1]) data_scale[1] = baseline
+			if(baseline > data_scale[2]) data_scale[2] = baseline
+			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
+			if(border) grid.rect()
 			width = x[index] - baseline
 			grid.rect(x = width/2+baseline, y = n - seq_along(index) + 1, width = abs(width), height = 1*factor, default.units = "native", gp = gp)
 			if(axis) {
@@ -190,10 +192,12 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 
 			gp = subset_gp(gp, index)
 			
-			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
-			if(border) grid.rect()
 			if(baseline == "min") baseline = data_scale[1]
 			else if(baseline == "max") baseline = data_scale[2]
+			if(baseline < data_scale[1]) data_scale[1] = baseline
+			if(baseline > data_scale[2]) data_scale[2] = baseline
+			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
+			if(border) grid.rect()
 			height = x[index] - baseline
 			grid.rect(x = seq_along(index), y = height/2 + baseline, height = abs(height), width = 1*factor, default.units = "native", gp = gp)
 			if(axis) {
