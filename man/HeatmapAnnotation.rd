@@ -9,7 +9,7 @@ Constructor method for HeatmapAnnotation class
 \usage{
 HeatmapAnnotation(df, name, col,
     annotation_legend_param = list(),
-    show_legend = rep(TRUE, n_anno),
+    show_legend = TRUE,
     ...,
     which = c("column", "row"),
     annotation_height = 1,
