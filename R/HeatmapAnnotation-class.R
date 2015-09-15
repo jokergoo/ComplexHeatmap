@@ -67,7 +67,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #
 HeatmapAnnotation = function(df, name, col, 
 	annotation_legend_param = list(), 
-	show_legend = rep(TRUE, n_anno), 
+	show_legend = TRUE, 
 	..., 
 	which = c("column", "row"), 
 	annotation_height = 1, 
@@ -91,15 +91,19 @@ HeatmapAnnotation = function(df, name, col,
 	n_anno = 0
 
     arg_list = as.list(match.call())[-1]
-    arg_list = lapply(arg_list, function(lang) eval(lang, envir = parent.frame()))
     called_args = names(arg_list)
     anno_args = setdiff(called_args, c("name", "col", "annotation_legend_param", "show_legend", "which", 
     	                             "annotation_height", "annotation_width", "height", "width", "gp", "gap"))
     if(any(anno_args == "")) stop("annotations should have names.")
     if(any(duplicated(anno_args))) stop("names of annotations should be unique.")
-    anno_arg_list = arg_list[anno_args]
-    n_simple_anno = {if("df" %in% anno_args) ncol(df) else 0} + sum(sapply(anno_arg_list, is.atomic))
-    simple_anno_name = c({if("df" %in% anno_args) colnames(df) else NULL}, anno_args[sapply(anno_arg_list, is.atomic)])
+    anno_arg_list = list(...)
+    if(length(anno_arg_list)) {
+	    n_simple_anno = {if("df" %in% anno_args) ncol(df) else 0} + sum(sapply(anno_arg_list, is.atomic))
+	    simple_anno_name = c({if("df" %in% anno_args) colnames(df) else NULL}, anno_args[sapply(anno_arg_list, is.atomic)])
+	} else {
+		n_simple_anno = {if("df" %in% anno_args) ncol(df) else 0}
+	    simple_anno_name = {if("df" %in% anno_args) colnames(df) else NULL}
+	}
 
     if(any(duplicated(simple_anno_name))) stop("names of simple annotations should be unique.")
 
@@ -109,7 +113,6 @@ HeatmapAnnotation = function(df, name, col,
 	}
 
 	# normalize `heatmap_legend_param`
-
 	if(length(annotation_legend_param) == 0) {
 		annotation_legend_param = rep.list(NULL, n_simple_anno)
 	} else if(inherits(annotation_legend_param, "list")) {
@@ -125,7 +128,7 @@ HeatmapAnnotation = function(df, name, col,
 			} else {
 				annotation_legend_param = annotation_legend_param[ intersect(simple_anno_name, names(annotation_legend_param)) ]
 			}
-			lp = rep.list(NULL, n_anno)
+			lp = rep.list(NULL, n_simple_anno)
 
 			names(lp) = simple_anno_name
 			for(i in seq_along(lp)) {
@@ -168,23 +171,23 @@ HeatmapAnnotation = function(df, name, col,
 		    }
 		    i_simple = i_simple + n_anno
 		} else {
-			if(inherits(arg_list[[ag]], "function")) {
-				anno_list = c(anno_list, list(SingleAnnotation(name = ag, fun = arg_list[[ag]], which = which)))
-			} else if(is.atomic(arg_list[[ag]])) {
+			if(inherits(anno_arg_list[[ag]], "function")) {
+				anno_list = c(anno_list, list(SingleAnnotation(name = ag, fun = anno_arg_list[[ag]], which = which)))
+			} else if(is.atomic(anno_arg_list[[ag]])) {
 
 			    if(is.null(simple_length)) {
-			    	simple_length = length(arg_list[[ag]])
-			    } else if(length(arg_list[[ag]]) != simple_length) {
+			    	simple_length = length(anno_arg_list[[ag]])
+			    } else if(length(anno_arg_list[[ag]]) != simple_length) {
 			    	stop("length of simple annotations differ.")
 			    }
 
 				if(missing(col)) {
-			        anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = arg_list[[ag]], which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]])))
+			        anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]])))
 			    } else {
 			        if(is.null(col[[ ag ]])) { # if the color is not provided
-			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = arg_list[[ag]], which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]])))
+			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]])))
 			        } else {
-			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = arg_list[[ag]], col = col[[ ag ]], which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]])))
+			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], col = col[[ ag ]], which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]])))
 			        }
 			    }
 			    i_simple = i_simple + 1

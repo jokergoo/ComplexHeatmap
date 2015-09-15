@@ -1,5 +1,6 @@
 CHANGES in VERSION 1.4.2
 
+* order of annotations can be adjusted arbitrarily
 * anno_barplot: scales are adjusted according to the baseline
 
 ===================================
