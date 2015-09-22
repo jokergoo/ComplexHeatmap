@@ -1,3 +1,11 @@
+CHANGES in VERSION 1.4.3
+
+* `anno_boxplot`: outliers can correctly plotted
+* add a new function `enhanced_basicplot`
+* fix a bug that order of annotation height is reversed
+
+===================================
+
 CHANGES in VERSION 1.4.2
 
 * order of annotations can be adjusted arbitrarily

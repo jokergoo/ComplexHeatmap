@@ -229,6 +229,8 @@ HeatmapAnnotation = function(df, name, col,
 		anno_size = anno_size/sum(anno_size)*(unit(1, "npc") - sum(.Object@gap))
 	}
 
+	if(which == "column") anno_size = anno_size[rev(seq_len(n_anno))]
+
     .Object@anno_list = anno_list
     .Object@anno_size = anno_size
     .Object@which = which
