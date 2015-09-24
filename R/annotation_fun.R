@@ -9,6 +9,7 @@
 # -gp graphic parameters.
 # -pch point type.
 # -size point size.
+# -lim data ranges.
 # -axis whether add axis.
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
 #            If it is placed as row annotation, value can only be "bottom" or "top".
@@ -23,12 +24,13 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16, 
-	size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
+	size = unit(2, "mm"), lim = NULL, axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...) {
 
 	x = x
 	which = match.arg(which)[1]
 	data_scale = range(x)
+	if(!is.null(lim)) data_scale = lim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
 
@@ -107,6 +109,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 # -border whether show border of the annotation compoment
 # -bar_width relative width of the bars, should less than one
 # -gp graphic parameters.
+# -lim data ranges.
 # -axis whether add axis
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
 #            If it is placed as row annotation, value can only be "bottom" or "top".
@@ -121,7 +124,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_barplot = function(x, baseline = "min", which = c("column", "row"), border = TRUE, bar_width = 0.6,
-	gp = gpar(fill = "#CCCCCC"), axis = FALSE, axis_side = NULL, 
+	gp = gpar(fill = "#CCCCCC"), lim = NULL, axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...) {
 
 	x = x
@@ -129,6 +132,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 
 	factor = bar_width
 	data_scale = range(x)
+	if(!is.null(lim)) data_scale = lim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
 
@@ -220,6 +224,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 # -which is the annotation a column annotation or a row annotation?
 # -border whether show border of the annotation compoment
 # -gp graphic parameters
+# -lim data ranges.
 # -pch point type
 # -size point size
 # -axis whether add axis
@@ -235,7 +240,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
-	gp = gpar(fill = "#CCCCCC"), 
+	gp = gpar(fill = "#CCCCCC"), lim = NULL,
 	pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse")) {
 
@@ -244,6 +249,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 	factor = 0.6
 	data_scale = range(x)
+	if(!is.null(lim)) data_scale = lim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
 
@@ -297,7 +303,9 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 				          boxplot_stats[2, ], n - seq_along(index) + 1, default.units = "native", gp = gp)
 			grid.segments(boxplot_stats[1, ], n - seq_along(index) + 1 - 0.5*factor, 
 				          boxplot_stats[1, ], n - seq_along(index) + 1 + 0.5*factor, default.units = "native", gp = gp)
-			grid.points(x = boxplot_stats[3, ], y = n - seq_along(index) + 1, default.units = "native", gp = gp, pch = pch, size = size)
+			grid.segments(boxplot_stats[3, ], n - seq_along(index) + 1 - 0.5*factor, 
+				          boxplot_stats[3, ], n - seq_along(index) + 1 + 0.5*factor, 
+				default.units = "native", gp = gp)
 			if(is.matrix(x)) {
 				for(i in seq_len(nrow(x))) {
 					l1 = x[i,] > boxplot_stats[5,i]
@@ -358,7 +366,9 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 				          seq_along(index), boxplot_stats[2, ], default.units = "native", gp = gp)
 			grid.segments(seq_along(index) - 0.5*factor, boxplot_stats[1, ],
 				          seq_along(index) + 0.5*factor, boxplot_stats[1, ], default.units = "native", gp = gp)
-			grid.points(x = seq_along(index), y = boxplot_stats[3, ], default.units = "native", gp = gp, pch = pch, size = size)
+			grid.segments(seq_along(index) - 0.5*factor, boxplot_stats[3, ],
+				          seq_along(index) + 0.5*factor, boxplot_stats[3, ], 
+				default.units = "native", gp = gp)
 			if(is.matrix(x)) {
 				for(i in seq_len(ncol(x))) {
 					l1 = x[,i] > boxplot_stats[5,i]
