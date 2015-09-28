@@ -123,6 +123,9 @@ SingleAnnotation = function(name, value, col, fun,
 	    if(is.logical(value)) {
 	    	value = as.character(value)
 	    }
+	    if(is.factor(value)) {
+                value = as.vector(value)
+            }
 	}
 
     if(missing(fun)) {
