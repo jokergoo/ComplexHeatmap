@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.4.4
+
+* NULL can be added to the heatmap list
+
+==================================
+
 CHANGES in VERSION 1.4.3
 
 * `anno_boxplot`: outliers can correctly plotted
