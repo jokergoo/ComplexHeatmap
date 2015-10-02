@@ -63,9 +63,11 @@ AdditiveUnit = function(...) {
     	}
     }
     if(is.null(x)) {
-        y
+        ht_list = new("HeatmapList")
+        add_heatmap(ht_list, y)
     } else if(is.null(y)) {
-        x
+        ht_list = new("HeatmapList")
+        add_heatmap(ht_list, x)
     } else {
         add_heatmap(x, y)
     }
