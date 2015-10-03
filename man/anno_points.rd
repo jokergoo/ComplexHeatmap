@@ -8,7 +8,7 @@ Using points as annotation
 }
 \usage{
 anno_points(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16,
-    size = unit(2, "mm"), axis = FALSE, axis_side = NULL,
+    size = unit(2, "mm"), lim = NULL, axis = FALSE, axis_side = NULL,
     axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...)
 }
 \arguments{
@@ -19,6 +19,7 @@ anno_points(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16,
   \item{gp}{graphic parameters.}
   \item{pch}{point type.}
   \item{size}{point size.}
+  \item{lim}{data ranges.}
   \item{axis}{whether add axis.}
   \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right".If it is placed as row annotation, value can only be "bottom" or "top".}
   \item{axis_gp}{graphic parameters for axis}

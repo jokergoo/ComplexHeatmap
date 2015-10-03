@@ -62,5 +62,13 @@ AdditiveUnit = function(...) {
             stop("You should specify `which` to `row` or use `rowAnnotation()` directly if you want to add row annotations.")
     	}
     }
-    add_heatmap(x, y)
+    if(is.null(x)) {
+        ht_list = new("HeatmapList")
+        add_heatmap(ht_list, y)
+    } else if(is.null(y)) {
+        ht_list = new("HeatmapList")
+        add_heatmap(ht_list, x)
+    } else {
+        add_heatmap(x, y)
+    }
 }
