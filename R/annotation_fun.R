@@ -47,7 +47,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		}
 	}
 	axis_direction = match.arg(axis_direction)[1]
-	switch(which,
+	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
 			
@@ -97,6 +97,9 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 			}
 			upViewport()
 		})
+	attr(f, "which") = which
+	attr(f, "fun") = "anno_points"
+	return(f)
 }
 
 # == title
@@ -149,7 +152,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 		}
 	}
 	axis_direction = match.arg(axis_direction)[1]
-	switch(which,
+	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
 			
@@ -213,6 +216,9 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 			}
 			upViewport()
 		})
+	attr(f, "which") = which
+	attr(f, "fun") = "anno_barplot"
+	return(f)
 }
 
 # == title
@@ -266,7 +272,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		}
 	}
 	axis_direction = match.arg(axis_direction)[1]
-	switch(which,
+	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 
 			if(is.matrix(x)) {
@@ -393,6 +399,9 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			}
 			upViewport()
 		})
+	attr(f, "which") = which
+	attr(f, "fun") = "anno_boxplot"
+	return(f)
 }
 
 # == title
@@ -417,7 +426,7 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 
 	gp = check_gp(gp)
 
-	switch(which,
+	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
@@ -486,6 +495,9 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 				upViewport()
 			}
 		})
+	attr(f, "which") = which
+	attr(f, "fun") = "anno_histogram"
+	return(f)
 }
 
 # == title
@@ -513,7 +525,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 
 	gp = check_gp(gp)
 
-	switch(which,
+	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
@@ -619,6 +631,9 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				upViewport()
 			}
 		})
+	attr(f, "which") = which
+	attr(f, "fun") = "anno_density"
+	return(f)
 }
 
 # == title
@@ -647,7 +662,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 	which = match.arg(which)[1]
 	gp = check_gp(gp)
 
-	switch(which,
+	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
 			
@@ -667,6 +682,9 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 			grid.text(x[index], unit(seq_along(index), "native"), offset, gp = gp, just = just, rot = rot)
 			upViewport()
 		})
+	attr(f, "which") = which
+	attr(f, "fun") = "anno_text"
+	return(f)
 }
 
 # == title

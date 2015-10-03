@@ -164,6 +164,13 @@ SingleAnnotation = function(name, value, col, fun,
 
 		.Object@show_legend = show_legend
     } else {
+    	f_which = attr(fun, "which")
+    	if(!is.null(f_which)) {
+    		fun_name = attr(fun, "fun")
+    		if(f_which != which) {
+    			stop(paste0("You are putting ", fun_name, "() as ", which, " annotations, you need to set 'which' argument to '", which, "' as well,\nor use the helper function ", which, "_", fun_name, "()."))
+    		}
+    	}
     	.Object@fun = fun
     	.Object@show_legend = FALSE
     }

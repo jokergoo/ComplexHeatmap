@@ -1,6 +1,7 @@
 CHANGES in VERSION 1.4.4
 
 * NULL can be added to the heatmap list
+* give message if users mess up with row and column annotations
 
 ==================================
 
