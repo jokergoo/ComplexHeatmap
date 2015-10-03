@@ -8,7 +8,7 @@ Using boxplot as annotation
 }
 \usage{
 anno_boxplot(x, which = c("column", "row"), border = TRUE,
-    gp = gpar(fill = "#CCCCCC"),
+    gp = gpar(fill = "#CCCCCC"), lim = NULL,
     pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL,
     axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"))
 }
@@ -18,6 +18,7 @@ anno_boxplot(x, which = c("column", "row"), border = TRUE,
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{border}{whether show border of the annotation compoment}
   \item{gp}{graphic parameters}
+  \item{lim}{data ranges.}
   \item{pch}{point type}
   \item{size}{point size}
   \item{axis}{whether add axis}

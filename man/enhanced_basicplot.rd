@@ -7,7 +7,7 @@ Enhanced version of basic barplot and boxplot
 Enhanced version of basic barplot and boxplot
 }
 \usage{
-enhanced_basicplot(data, ...,
+enhanced_basicplot(data, ..., ylim = NULL,
     ylab = deparse(substitute(data)), title = NULL, title_gp = gpar(fontsize = 14),
     type = c("boxplot", "barplot"), width = 0.8, gp = gpar(),
     pch = 1, size = unit(2, "mm"), axis_gp = gpar(fontsize = 8),
@@ -17,6 +17,7 @@ enhanced_basicplot(data, ...,
 
   \item{data}{a matrix, a list or a simple numeric vector. If your data is a data frameplease convert it to a matrix in the first place.}
   \item{...}{pass to \code{\link{Heatmap}}}
+  \item{ylim}{ranges on y axis}
   \item{ylab}{label on y axis}
   \item{title}{title of the plot}
   \item{title_gp}{graphic parameters for the title}

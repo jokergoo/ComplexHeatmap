@@ -77,6 +77,15 @@ ht_list + ht1
 ht_list + ht_list
 ```
 
+`NULL` can be added to the heatmap list. It would be convinient when users want to construct a heatmap list through a `for` loop.
+
+```{r, eval = FALSE}
+ht_list = NULL
+for(s in sth) {
+    ht_list = ht_list + Heatmap(...)
+}
+```
+
 ## Titles
 
 A heatmap list also has titles which are independent to the heatmap titles.

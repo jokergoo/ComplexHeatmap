@@ -7,6 +7,7 @@
 # -data a matrix, a list or a simple numeric vector. If your data is a data frame
 #       please convert it to a matrix in the first place.
 # -... pass to `Heatmap`
+# -ylim ranges on y axis
 # -ylab label on y axis
 # -title title of the plot
 # -title_gp graphic parameters for the title
@@ -37,7 +38,7 @@
 # enhanced_basicplot(mat, top_annotation = ha)
 # enhanced_basicplot(mat, type = "barplot", top_annotation = ha)
 #
-enhanced_basicplot = function(data, ...,
+enhanced_basicplot = function(data, ..., ylim = NULL,
     ylab = deparse(substitute(data)), title = NULL, title_gp = gpar(fontsize = 14),
     type = c("boxplot", "barplot"), width = 0.8, gp = gpar(), 
     pch = 1, size = unit(2, "mm"), axis_gp = gpar(fontsize = 8),
@@ -85,6 +86,11 @@ enhanced_basicplot = function(data, ...,
     } else if(is.atomic(data)) {
         ymin = 0
         ymax = max(data)
+    }
+
+    if(!is.null(ylim)) {
+        ymin = ylim[1]
+        ymax = ylim[2]
     }
 
     single_barplot = function(x, h, gp) {
