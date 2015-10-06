@@ -65,6 +65,13 @@ enhanced_basicplot = function(data, ..., ylim = NULL,
     }
 
     mat_foo = matrix("", nrow = 2, ncol = n)
+    if(is.matrix(data)) {
+        colnames(mat_foo) = colnames(data)
+    } else if(is.list(data)) {
+        colnames(mat_foo) = names(data)
+    } else if(is.atomic(data)) {
+        colnames(mat_foo) = names(data)
+    }
         
     ht = Heatmap(mat_foo, name = "main", cluster_rows = FALSE, cluster_columns = FALSE,
                 rect_gp = gpar(type = "none"), show_heatmap_legend = FALSE, ...)
