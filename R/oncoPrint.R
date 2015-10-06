@@ -10,6 +10,10 @@
 # -alter_fun_list a list of functions which define how to add graphics for different alterations.
 #                 The names of the list should cover all alteration types.
 # -col a vector of color for which names correspond to alteration types.
+# -row_order order of genes. By default it is sorted by frequency of alterations decreasingly.
+#                            Set it to ``NULL`` if you don't want to set the order
+# -column_order order of samples. By default the order is calculated by the 'memo sort' method which can visualize
+#                                 the mutual exclusivity across genes.
 # -show_column_names whether show column names
 # -pct_gp graphic paramters for percent row annotation
 # -axis_gp graphic paramters for axes
@@ -23,6 +27,9 @@
 # == details
 # The function returns a normal heatmap list and you can add more heatmaps/row annotations to it.
 #
+# The 'memo sort' method is from https://gist.github.com/armish/564a65ab874a770e2c26 . Thanks to
+# B. Arman Aksoy for contributing the code.
+#
 # For more explanation, please go to the vignette.
 #
 # == value
@@ -33,6 +40,8 @@
 #
 oncoPrint = function(mat, get_type = function(x) x,
 	alter_fun_list, col, 
+	row_order = oncoprint_row_order(),
+	column_order = oncoprint_column_order(),
 	show_column_names = FALSE, 
 	pct_gp = gpar(), 
 	axis_gp = gpar(fontsize = 8), 
@@ -83,9 +92,39 @@ oncoPrint = function(mat, get_type = function(x) x,
 		arr[, , i] = mat_list[[i]]
 	}
 
+	oncoprint_row_order = function() {
+		order(rowSums(count_matrix), decreasing = TRUE)
+	}
+
+	oncoprint_column_order = function() {
+		scoreCol = function(x) {
+			score = 0
+			for(i in 1:length(x)) {
+				if(x[i]) {
+					score = score + 2^(length(x)-i)
+				}
+			}
+			return(score)
+		}
+		scores = apply(count_matrix[row_order, ], 2, scoreCol)
+		order(scores, decreasing=TRUE)
+	}
+
+	count_matrix = apply(arr, c(1, 2), sum)
+	if(is.null(row_order)) row_order = seq_len(nrow(count_matrix))
+	row_order = row_order
+	if(is.character(column_order)) {
+		column_order = structure(seq_len(dim(arr)[2]), names = dimnames(arr)[[2]])[column_order]
+	}
+
 	if(remove_empty_columns) {
 		l = rowSums(apply(arr, c(2, 3), sum)) > 0
 		arr = arr[, l, , drop = FALSE]
+		count_matrix = count_matrix[, l, drop = FALSE]
+		column_order = column_order
+		if(length(column_order) > ncol(count_matrix)) {
+			column_order = order(column_order[l])
+		}
 	}
 
 	# validate alter_fun_list
@@ -170,9 +209,10 @@ oncoPrint = function(mat, get_type = function(x) x,
 	pheudo = c(all_type, rep(NA, nrow(arr)*ncol(arr) - length(all_type)))
 	dim(pheudo) = dim(arr[, , 1])
 	dimnames(pheudo) = dimnames(arr[, , 1])
+	
 	if(show_column_barplot) {
 		ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
-			cluster_rows = FALSE, cluster_columns = FALSE,
+			cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
 			cell_fun = function(j, i, x, y, width, height, fill) {
 				z = arr[i, j, ]
 				add_oncoprint("background", x, y, width, height)
@@ -183,7 +223,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 			top_annotation = ha_column_bar, ...)
 	} else {
 		ht = Heatmap(pheudo, rect_gp = gpar(type = "none"), 
-			cluster_rows = FALSE, cluster_columns = FALSE,
+			cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
 			cell_fun = function(j, i, x, y, width, height, fill) {
 				z = arr[i, j, ]
 				add_oncoprint("background", x, y, width, height)
