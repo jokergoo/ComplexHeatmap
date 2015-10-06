@@ -128,15 +128,7 @@ rownames(mat) = mat[, 1]
 mat = mat[, -1]
 mat=  mat[, -ncol(mat)]
 mat = t(as.matrix(mat))
-```
-
-We can adjust the order of the matrix. Here cbioPortal also provides sample orders:
-
-```{r}
-sample_order = scan(paste0(system.file("extdata", package = "ComplexHeatmap"), 
-    "/sample_order.txt"), what = "character")
-mat = mat[, sample_order]
-mat[1:4, 1:4]
+mat[1:3, 1:3]
 ```
 
 There are three different alterations in `mat`: `HOMDEL`, `AMP` and `MUT`. We first 
@@ -170,6 +162,27 @@ Make the oncoPrint and adjust heatmap components such as the title and the legen
 ```{r, fig.width = 12, fig.height = 8}
 oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	alter_fun_list = alter_fun_list, col = col, 
+	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
+	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
+		labels = c("Amplification", "Deep deletion", "Mutation")))
+```
+
+As you see, the genes and samples are sorted automatically. Rows are sorted based on the frequency
+of the alterations in all samples and columns are sorted to visualize the mutual exclusivity across genes
+based on the "memo sort" method which is
+kindly provided by [B. Arman Aksoy](https://gist.github.com/armish/564a65ab874a770e2c26). If you want
+to turn off the default sorting, set `row_order` or `column_order` to `NULL`.
+
+As the normal `Heatmap()` function, `row_order` or `column_order` can be assigned with a vector of 
+orders (either numeric or character). Following the order of samples are gathered from cBio as well.
+You can see the difference for the sample order between 'memo sort' and the method used by cBio.
+
+```{r, fig.width = 12, fig.height = 8}
+sample_order = scan(paste0(system.file("extdata", package = "ComplexHeatmap"), 
+    "/sample_order.txt"), what = "character")
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+	alter_fun_list = alter_fun_list, col = col, 
+	row_order = NULL, column_order = sample_order,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
 		labels = c("Amplification", "Deep deletion", "Mutation")))
