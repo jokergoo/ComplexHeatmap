@@ -30,6 +30,9 @@
 # The 'memo sort' method is from https://gist.github.com/armish/564a65ab874a770e2c26 . Thanks to
 # B. Arman Aksoy for contributing the code.
 #
+# The function would be a little bit slow if you plot it in an interactive device because all alterations
+# are added through a foo loop.
+#
 # For more explanation, please go to the vignette.
 #
 # == value
@@ -101,7 +104,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 			score = 0
 			for(i in 1:length(x)) {
 				if(x[i]) {
-					score = score + 2^(length(x)-i)
+					score = score + 2^(length(x)-i*1/x[i])
 				}
 			}
 			return(score)
@@ -116,15 +119,12 @@ oncoPrint = function(mat, get_type = function(x) x,
 	if(is.character(column_order)) {
 		column_order = structure(seq_len(dim(arr)[2]), names = dimnames(arr)[[2]])[column_order]
 	}
-
+	column_order = column_order
+	names(column_order) = as.character(column_order)
 	if(remove_empty_columns) {
 		l = rowSums(apply(arr, c(2, 3), sum)) > 0
 		arr = arr[, l, , drop = FALSE]
-		count_matrix = count_matrix[, l, drop = FALSE]
-		column_order = column_order
-		if(length(column_order) > ncol(count_matrix)) {
-			column_order = order(column_order[l])
-		}
+		column_order = structure(seq_len(sum(l)), names = which(l))[as.character(intersect(column_order, which(l)))]
 	}
 
 	# validate alter_fun_list

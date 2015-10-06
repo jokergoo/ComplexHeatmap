@@ -128,7 +128,7 @@ rownames(mat) = mat[, 1]
 mat = mat[, -1]
 mat=  mat[, -ncol(mat)]
 mat = t(as.matrix(mat))
-head(mat)
+mat[1:3, 1:3]
 ```
 
 There are three different alterations in `mat`: `HOMDEL`, `AMP` and `MUT`. We first 
