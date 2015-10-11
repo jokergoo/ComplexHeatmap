@@ -83,9 +83,19 @@ types.
 
 ```{r}
 mat_list = list(snv = matrix(c(1, 0, 1, 1, 1, 0, 0, 1, 1), nrow = 3),
-	            indel = matrix(c(1, 0, 0, 0, 1, 0, 1, 0, 1), nrow = 3))
+	            indel = matrix(c(1, 0, 0, 0, 1, 0, 1, 0, 0), nrow = 3))
 rownames(mat_list$snv) = rownames(mat_list$indel) = c("g1", "g2", "g3")
 colnames(mat_list$snv) = colnames(mat_list$indel) = c("s1", "s2", "s3")
+mat_list
+```
+
+`oncoPrint()` expects all matrix in `mat_list` having same row names and column names. Users can use `unify_mat_list()`
+to adjust the matrix list.
+
+```{r}
+mat_list$indel = mat_list$indel[1:2, 1:2]
+mat_list
+mat_list = unify_mat_list(mat_list)
 mat_list
 ```
 
@@ -99,6 +109,13 @@ oncoPrint(mat_list,
 		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)),
 		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
 	), col = c(snv = "red", indel = "blue"))
+```
+
+If types of alterations is less than two and the purpose is only to have a quick look at the data, there are default
+graphics added:
+
+```{r}
+oncoPrint(mat_list)
 ```
 
 Now we make an oncoPrint with a real-world data. The data is retrieved from [cBioPortal](http://www.cbioportal.org/). 
@@ -173,6 +190,19 @@ based on the "memo sort" method which is
 kindly provided by [B. Arman Aksoy](https://gist.github.com/armish/564a65ab874a770e2c26). If you want
 to turn off the default sorting, set `row_order` or `column_order` to `NULL`.
 
+
+By default, if one sample has no alteration, it will still remain in the heatmap, but you can set
+`remove_empty_columns` to `TRUE` to remove it:
+
+```{r, fig.width = 12, fig.height = 8}
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+	alter_fun_list = alter_fun_list, col = col, 
+	remove_empty_columns = TRUE,
+	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
+	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
+		labels = c("Amplification", "Deep deletion", "Mutation")))
+```
+
 As the normal `Heatmap()` function, `row_order` or `column_order` can be assigned with a vector of 
 orders (either numeric or character). Following the order of samples are gathered from cBio as well.
 You can see the difference for the sample order between 'memo sort' and the method used by cBio.
@@ -183,18 +213,7 @@ sample_order = scan(paste0(system.file("extdata", package = "ComplexHeatmap"),
 oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	alter_fun_list = alter_fun_list, col = col, 
 	row_order = NULL, column_order = sample_order,
-	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
-	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
-		labels = c("Amplification", "Deep deletion", "Mutation")))
-```
-
-By default, if one sample has no alteration, it will be removed from the heatmap, but you can set
-`remove_empty_columns` to `FALSE` to keep it:
-
-```{r, fig.width = 12, fig.height = 8}
-oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
-	alter_fun_list = alter_fun_list, col = col, 
-	remove_empty_columns = FALSE,
+	remove_empty_columns = TRUE,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
 		labels = c("Amplification", "Deep deletion", "Mutation")))
@@ -208,6 +227,7 @@ Following example splits the heatmap into two halves and add a new heatmap to th
 ```{r, fig.width = 12, fig.height = 8}
 ht_list = oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	alter_fun_list = alter_fun_list, col = col, 
+	remove_empty_columns = TRUE,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
 		labels = c("Amplification", "Deep deletion", "Mutation")),

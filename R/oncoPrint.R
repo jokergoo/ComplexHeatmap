@@ -5,6 +5,7 @@
 # == param
 # -mat a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary
 #      value representing the alteration is present or absent. When it is a list, the names represent alteration types.
+#      You can use `unify_mat_list` to make all matrix having same row names and column names.
 # -get_type If different alterations are encoded in the matrix, this self-defined function
 #           determines how to extract them. Only work when ``mat`` is a matrix.
 # -alter_fun_list a list of functions which define how to add graphics for different alterations.
@@ -22,6 +23,7 @@
 # -show_column_barplot whether show barplot annotation on columns
 # -column_barplot_height height of barplot annotatioin on columns. it should be a `grid::unit` object.
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
+# -heatmap_legend_param pass to `Heatmap`
 # -... pass to `Heatmap`
 #
 # == details
@@ -52,7 +54,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 	row_barplot_width = unit(2, "cm"),
 	show_column_barplot = TRUE, 
 	column_barplot_height = unit(2, "cm"),
-	remove_empty_columns = TRUE,
+	remove_empty_columns = FALSE,
+	heatmap_legend_param = list(title = "Alterations"),
 	...) {
 	
 	# convert mat to mat_list
@@ -87,6 +90,21 @@ oncoPrint = function(mat, get_type = function(x) x,
 		}
 	} else {
 		stop("Incorrect type of 'mat'")
+	}
+
+	if(missing(alter_fun_list) && missing(col)) {
+		if(length(mat_list) == 1) {
+			alter_fun_list = list(function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)))
+			col = "red"
+		} else if(length(mat_list) == 2) {
+			alter_fun_list = list(
+		        function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)),
+		        function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
+		    )
+		    col = c("red", "blue")
+		}
+		names(alter_fun_list) = names(mat_list)
+		names(col) = names(mat_list)
 	}
 
 	# type as the third dimension
@@ -220,7 +238,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 					add_oncoprint(type, x, y, width, height)
 				}
 			}, show_column_names = show_column_names,
-			top_annotation = ha_column_bar, ...)
+			top_annotation = ha_column_bar, 
+			heatmap_legend_param = heatmap_legend_param, ...)
 	} else {
 		ht = Heatmap(pheudo, rect_gp = gpar(type = "none"), 
 			cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
@@ -242,3 +261,32 @@ oncoPrint = function(mat, get_type = function(x) x,
 	return(ht_list)
 
 }
+
+# == title
+# Unify a list of matrix 
+#
+# == param
+# -mat_list a list of matrix, all of them should have dimension names
+# -default default values for the newly added rows and columns
+#
+# == details
+# All matrix will be unified to have same row names and column names
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+unify_mat_list = function(mat_list, default = 0) {
+	common_rn = unique(unlist(lapply(mat_list, rownames)))
+	common_cn = unique(unlist(lapply(mat_list, colnames)))
+
+	mat_list2 = lapply(seq_along(mat_list), function(i) {
+		mat = matrix(default, nrow = length(common_rn), ncol = length(common_cn))
+		dimnames(mat) = list(common_rn, common_cn)
+		mat[rownames(mat_list[[i]]), colnames(mat_list[[i]])] = mat_list[[i]]
+		mat
+	})
+	names(mat_list2) = names(mat_list)
+	return(mat_list2)
+}
+
+
