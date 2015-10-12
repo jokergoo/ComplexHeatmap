@@ -47,6 +47,18 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		}
 	}
 	axis_direction = match.arg(axis_direction)[1]
+
+	# get rid of lazy loading
+	border = border
+	gp = gp
+	pch = pch
+	size = size
+	lim = lim
+	axis = axis
+	axis_side = axis_side
+	axis_gp = axis_gp
+	axis_direction = axis_direction
+
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
@@ -152,6 +164,16 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 		}
 	}
 	axis_direction = match.arg(axis_direction)[1]
+
+	baseline = baseline
+	border = border
+	bar_width = bar_width
+	gp = gp
+	lim = lim
+	axis = axis
+	axis_size = axis_side
+	axis_gp = axis_gp
+
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 			n = length(index)
@@ -272,6 +294,16 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		}
 	}
 	axis_direction = match.arg(axis_direction)[1]
+
+	border = border
+	gp = gp
+	lim = lim
+	pch = pch
+	size = size
+	axis = axis
+	axis_side = axis_side
+	axis_gp = axis_gp
+
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
 
@@ -661,6 +693,10 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 	x = x
 	which = match.arg(which)[1]
 	gp = check_gp(gp)
+
+	rot = rot
+	just = just
+	offset = offset
 
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL) {
