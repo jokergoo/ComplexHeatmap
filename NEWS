@@ -2,6 +2,7 @@ CHANGES in VERSION 1.5.1
 
 * `oncoPrint`: there are default graphics if type of alterations is 
   less than two.
+* `anno_*`: get rid of lazy loading
 
 =================================
 
