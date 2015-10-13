@@ -149,7 +149,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	if(is.null(alter_fun_list$background)) alter_fun_list$background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
 	sdf = setdiff(all_type, names(alter_fun_list))
 	if(length(sdf) > 0) {
-		stop(paste0("You should define shape function for:", paste(sdf, collapse = ", ")))
+		stop(paste0("You should define shape function for: ", paste(sdf, collapse = ", ")))
 	}
 
 	all_type = names(alter_fun_list)
