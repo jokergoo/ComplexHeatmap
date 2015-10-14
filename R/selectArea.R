@@ -142,7 +142,7 @@ selectArea = function(mark = FALSE) {
 	}
 
 	cat("\nTwo clicks should be in one same heatmap (or slice) region.\n\n")
-	select(mark = mark)
+	selectArea(mark = mark)
 
 }
 
