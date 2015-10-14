@@ -1,17 +1,17 @@
-\name{select}
-\alias{select}
+\name{selectArea}
+\alias{selectArea}
 \title{
-Select a region in the heatmap
+Select an area in the heatmap
 }
 \description{
-Select a region in the heatmap
+Select an area in the heatmap
 }
 \usage{
-select(mark = FALSE)
+selectArea(mark = FALSE)
 }
 \arguments{
 
-  \item{mark}{whether mark the selected region as a rectangle}
+  \item{mark}{whether mark the selected area as a rectangle}
 
 }
 \details{

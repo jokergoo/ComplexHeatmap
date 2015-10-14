@@ -29,7 +29,7 @@ options(width = 100)
 ```
 
 If the heatmap is plotted in the interactive graphic device, users can use mouse
-to select a sub-region in the heatmap and retrieve index for rows and columns in that selected region.
+to select a sub-area in the heatmap and retrieve index for rows and columns in that selected area.
 Since heatmaps are always used to visualize patterns that are clustered together, 
 this feature can greatly give convinience to extract the sub-matrix that users are interested in.
 
