@@ -100,4 +100,4 @@ oncoPrint to enphasize sub groups.
 
 You can use mouse to select a region on the heatmap, it will return row index and column index which correspond to the selected region.
 
-![download](https://cloud.githubusercontent.com/assets/449218/9685087/456d6276-531c-11e5-9837-2ba8a081ad50.gif)
+![select_region](https://cloud.githubusercontent.com/assets/449218/10479344/2981c27a-7264-11e5-9868-7400c5dc620d.gif)
