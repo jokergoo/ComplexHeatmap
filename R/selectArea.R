@@ -1,9 +1,9 @@
 
 # == title
-# Select a region in the heatmap
+# Select an area in the heatmap
 #
 # == param
-# -mark whether mark the selected region as a rectangle
+# -mark whether mark the selected area as a rectangle
 #
 # == details
 # Users can use mouse to click two positions on the heatmap, the function
@@ -21,7 +21,7 @@
 # # No example for this function
 # NULL
 # 
-select = function(mark = FALSE) {
+selectArea = function(mark = FALSE) {
 
 	if(!interactive()) {
 		stop("`select()` can only be used under interactive mode.")
@@ -142,7 +142,7 @@ select = function(mark = FALSE) {
 	}
 
 	cat("\nTwo clicks should be in one same heatmap (or slice) region.\n\n")
-	select(mark = mark)
+	selectArea(mark = mark)
 
 }
 

@@ -85,7 +85,7 @@ export(rowAnnotation)
 export(columnAnnotation)
 export(decorate_row_names)
 export(anno_text)
-export(select)
+export(selectArea)
 export(anno_density)
 
 import(grid)
