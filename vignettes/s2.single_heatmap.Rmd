@@ -539,7 +539,7 @@ type = gsub("(B|W).*", "\\1", step)
 row = gsub("(B|W)\\[(.).\\]", "\\2", step)
 column = gsub("(B|W)\\[.(.)\\]", "\\2", step)
 
-mat = matrix("", nrow = 19, ncol = 19)
+mat = matrix(nrow = 19, ncol = 19)
 rownames(mat) = letters[1:19]
 colnames(mat) = letters[1:19]
 for(i in seq_along(row)) {
@@ -548,7 +548,7 @@ for(i in seq_along(row)) {
 mat
 ```
 
-Black and white stones are filled based on the values in the matrix:
+Black and white stones are put based on the values in the matrix:
 
 ```{r, fig.width = 8, fig.height = 8}
 Heatmap(mat, name = "go", rect_gp = gpar(type = "none"),
@@ -574,7 +574,8 @@ Heatmap(mat, name = "go", rect_gp = gpar(type = "none"),
         }
                 
         r = min(unit.c(w, h))*0.45
-        if(mat[i, j] == "W") {
+        if(is.na(mat[i, j]) {
+        } else if(mat[i, j] == "W") {
             grid.circle(x, y, r, gp = gpar(fill = "white", col = "white"))
         } else if(mat[i, j] == "B") {
             grid.circle(x, y, r, gp = gpar(fill = "black", col = "black"))
