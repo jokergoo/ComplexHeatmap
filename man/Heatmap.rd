@@ -76,7 +76,7 @@ Heatmap(matrix, col, name,
   \item{na_col}{color for \code{NA} values.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
   \item{color_space}{the color space in which colors are interpolated. Only used if \code{matrix} is numeric and \code{col} is a vector of colors. Pass to \code{\link[circlize]{colorRamp2}}.}
-  \item{cell_fun}{self-defined function to add graphics on each cell. Seven parameters will be passed into this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are row index,column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport,the width and height of the cell and the filled color. }
+  \item{cell_fun}{self-defined function to add graphics on each cell. Seven parameters will be passed into this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are row index,column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport,the width and height of the cell and the filled color. \code{x}, \code{y}, \code{width} and \code{height} are all \code{\link[grid]{unit}} objects.}
   \item{row_title}{title on row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap?}
   \item{row_title_gp}{graphic parameters for drawing text.}
