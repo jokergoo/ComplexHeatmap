@@ -574,7 +574,7 @@ Heatmap(mat, name = "go", rect_gp = gpar(type = "none"),
         }
                 
         r = min(unit.c(w, h))*0.45
-        if(is.na(mat[i, j]) {
+        if(is.na(mat[i, j])) {
         } else if(mat[i, j] == "W") {
             grid.circle(x, y, r, gp = gpar(fill = "white", col = "white"))
         } else if(mat[i, j] == "B") {
