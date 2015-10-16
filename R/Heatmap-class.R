@@ -122,7 +122,7 @@ Heatmap = setClass("Heatmap",
 # -cell_fun self-defined function to add graphics on each cell. Seven parameters will be passed into 
 #           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height``, ``fill`` which are row index,
 #           column index in ``matrix``, coordinate of the middle points in the heatmap body viewport,
-#           the width and height of the cell and the filled color. 
+#           the width and height of the cell and the filled color. ``x``, ``y``, ``width`` and ``height`` are all `grid::unit` objects.
 # -row_title title on row.
 # -row_title_side will the title be put on the left or right of the heatmap?
 # -row_title_gp graphic parameters for drawing text.
@@ -1248,7 +1248,7 @@ setMethod(f = "draw_heatmap_body",
     cell_fun = object@matrix_param$cell_fun
     for(i in row_order) {
         for(j in column_order) {
-            cell_fun(j, i, x[which(column_order == j)], y[which(row_order == i)], unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[which(row_order == i), which(column_order == j)])
+            cell_fun(j, i, unit(x[which(column_order == j)], "npc"), unit(y[which(row_order == i)], "npc"), unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[which(row_order == i), which(column_order == j)])
         }
     }
 
