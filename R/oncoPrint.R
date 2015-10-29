@@ -14,7 +14,7 @@
 # -row_order order of genes. By default it is sorted by frequency of alterations decreasingly.
 #                            Set it to ``NULL`` if you don't want to set the order
 # -column_order order of samples. By default the order is calculated by the 'memo sort' method which can visualize
-#                                 the mutual exclusivity across genes.
+#                                 the mutual exclusivity across genes. Set it to ``NULL`` if you don't want to set the order
 # -show_column_names whether show column names
 # -pct_gp graphic paramters for percent row annotation
 # -axis_gp graphic paramters for axes
@@ -133,6 +133,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 
 	count_matrix = apply(arr, c(1, 2), sum)
 	if(is.null(row_order)) row_order = seq_len(nrow(count_matrix))
+	if(is.null(column_order)) column_order = seq_len(ncol(count_matrix))
 	row_order = row_order
 	if(is.character(column_order)) {
 		column_order = structure(seq_len(dim(arr)[2]), names = dimnames(arr)[[2]])[column_order]
