@@ -127,7 +127,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 			}
 			return(score)
 		}
-		scores = apply(count_matrix[row_order, ], 2, scoreCol)
+		scores = apply(count_matrix[row_order, ,drop = FALSE], 2, scoreCol)
 		order(scores, decreasing=TRUE)
 	}
 
