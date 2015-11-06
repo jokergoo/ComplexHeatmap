@@ -242,7 +242,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 			top_annotation = ha_column_bar, 
 			heatmap_legend_param = heatmap_legend_param, ...)
 	} else {
-		ht = Heatmap(pheudo, rect_gp = gpar(type = "none"), 
+		ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
 			cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
 			cell_fun = function(j, i, x, y, width, height, fill) {
 				z = arr[i, j, ]
@@ -250,7 +250,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 				for(type in all_type[z]) {
 					add_oncoprint(type, x, y, width, height)
 				}
-			}, show_column_names = show_column_names, ...)
+			}, show_column_names = show_column_names, 
+			heatmap_legend_param = heatmap_legend_param, ...)
 	}
 
 	if(show_row_barplot) {
