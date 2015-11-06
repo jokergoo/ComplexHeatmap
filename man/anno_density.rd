@@ -12,7 +12,7 @@ anno_density(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
 }
 \arguments{
 
-  \item{x}{a matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for densityis calculated by columns, if \code{which} is \code{row}, the calculation is by rows.}
+  \item{x}{a matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for density is calculated by columns, if \code{which} is \code{row}, the calculation is by rows.}
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{gp}{graphic parameters. Note it is ignored if \code{type} equals to \code{heatmap}.}
   \item{type}{which type of graphics is used to represent density distribution.}

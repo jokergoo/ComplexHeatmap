@@ -10,13 +10,13 @@ Quickly visualize a data frame
 plotDataFrame(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
     show_column_names = TRUE, group = NULL, group_names = names(group),
     main_heatmap = NULL, km = 1, split = NULL, cluster_rows = TRUE,
-    cluster_columns = TRUE, ...)
+    cluster_columns = TRUE, row_order = NULL, ...)
 }
 \arguments{
 
   \item{df}{a data frame.}
-  \item{overlap}{how to group numeric columns. If the overlapping rate between the ranges in thecurrent column and previous numeric column is larger than this value, the two columnsare treated as under same measurement and should be grouped.}
-  \item{nlevel}{If the number of levels of a character column is larger than this value, the column willbe excluded, because it doesn't make any sense to visualize a character vector or matrixthat contains huge number of unique elements through a heatmap.}
+  \item{overlap}{how to group numeric columns. If the overlapping rate between the ranges in the current column and previous numeric column is larger than this value, the two columns are treated as under same measurement and should be grouped.}
+  \item{nlevel}{If the number of levels of a character column is larger than this value, the column will be excluded, because it doesn't make any sense to visualize a character vector or matrix that contains huge number of unique elements through a heatmap.}
   \item{show_row_names}{whether show row names after the last heatmap if there are row names.}
   \item{show_column_names}{whether show column names for all heatmaps.}
   \item{group}{a list of index that defines the groupping.}
@@ -26,6 +26,7 @@ plotDataFrame(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
   \item{split}{one or multiple variables that split the rows.}
   \item{cluster_rows}{whether perform clustering on rows of the main heatmap.}
   \item{cluster_columns}{whether perform clustering on columns for all heatmaps.}
+  \item{row_order}{order of rows, remember to turn off \code{\link{cluster_rows}}}
   \item{...}{pass to \code{\link{draw,HeatmapList-method}} or \code{\link{make_layout,HeatmapList-method}}}
 
 }

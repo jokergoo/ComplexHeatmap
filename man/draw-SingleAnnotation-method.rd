@@ -13,7 +13,7 @@ Draw the single annotation
 
   \item{object}{a \code{\link{SingleAnnotation-class}} object.}
   \item{index}{a vector of orders}
-  \item{k}{if row annotation is splitted, the value identifies which row slice. It is only used for the naems of the viewportwhich contains the annotation graphics.}
+  \item{k}{if row annotation is splitted, the value identifies which row slice. It is only used for the naems of the viewport which contains the annotation graphics.}
   \item{n}{total number of row slices}
 
 }

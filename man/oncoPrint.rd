@@ -24,12 +24,12 @@ oncoPrint(mat, get_type = function(x) x,
 }
 \arguments{
 
-  \item{mat}{a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binaryvalue representing the alteration is present or absent. When it is a list, the names represent alteration types.You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
-  \item{get_type}{If different alterations are encoded in the matrix, this self-defined functiondetermines how to extract them. Only work when \code{mat} is a matrix.}
-  \item{alter_fun_list}{a list of functions which define how to add graphics for different alterations.The names of the list should cover all alteration types.}
+  \item{mat}{a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary value representing the alteration is present or absent. When it is a list, the names represent alteration types. You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
+  \item{get_type}{If different alterations are encoded in the matrix, this self-defined function determines how to extract them. Only work when \code{mat} is a matrix.}
+  \item{alter_fun_list}{a list of functions which define how to add graphics for different alterations. The names of the list should cover all alteration types.}
   \item{col}{a vector of color for which names correspond to alteration types.}
-  \item{row_order}{order of genes. By default it is sorted by frequency of alterations decreasingly.Set it to \code{NULL} if you don't want to set the order}
-  \item{column_order}{order of samples. By default the order is calculated by the 'memo sort' method which can visualizethe mutual exclusivity across genes.}
+  \item{row_order}{order of genes. By default it is sorted by frequency of alterations decreasingly. Set it to \code{NULL} if you don't want to set the order}
+  \item{column_order}{order of samples. By default the order is calculated by the 'memo sort' method which can visualize the mutual exclusivity across genes. Set it to \code{NULL} if you don't want to set the order}
   \item{show_column_names}{whether show column names}
   \item{pct_gp}{graphic paramters for percent row annotation}
   \item{axis_gp}{graphic paramters for axes}

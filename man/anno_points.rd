@@ -21,7 +21,7 @@ anno_points(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16,
   \item{size}{point size.}
   \item{lim}{data ranges.}
   \item{axis}{whether add axis.}
-  \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right".If it is placed as row annotation, value can only be "bottom" or "top".}
+  \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right". If it is placed as row annotation, value can only be "bottom" or "top".}
   \item{axis_gp}{graphic parameters for axis}
   \item{axis_direction}{if the annotation is row annotation, should the axis be from left to right (default) or follow the reversed direction?}
   \item{...}{for future use.}
