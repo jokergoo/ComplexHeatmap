@@ -19,7 +19,7 @@
 # -split one or multiple variables that split the rows.
 # -cluster_rows whether perform clustering on rows of the main heatmap.
 # -cluster_columns whether perform clustering on columns for all heatmaps.
-# -row_order order of rows, remember to turn off `cluster_rows`
+# -row_order order of rows, remember to turn off ``cluster_rows``
 # -... pass to `draw,HeatmapList-method` or `make_layout,HeatmapList-method`
 #
 # == details

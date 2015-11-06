@@ -26,7 +26,7 @@ plotDataFrame(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
   \item{split}{one or multiple variables that split the rows.}
   \item{cluster_rows}{whether perform clustering on rows of the main heatmap.}
   \item{cluster_columns}{whether perform clustering on columns for all heatmaps.}
-  \item{row_order}{order of rows, remember to turn off \code{\link{cluster_rows}}}
+  \item{row_order}{order of rows, remember to turn off \code{cluster_rows}}
   \item{...}{pass to \code{\link{draw,HeatmapList-method}} or \code{\link{make_layout,HeatmapList-method}}}
 
 }
