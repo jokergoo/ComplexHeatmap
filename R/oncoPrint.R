@@ -226,8 +226,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 	#####################################################################
 	# the main matrix
 	pheudo = c(all_type, rep(NA, nrow(arr)*ncol(arr) - length(all_type)))
-	dim(pheudo) = dim(arr[, , 1])
-	dimnames(pheudo) = dimnames(arr[, , 1])
+	dim(pheudo) = dim(arr)[1:2]
+	dimnames(pheudo) = dimnames(arr)[1:2]
 	
 	if(show_column_barplot) {
 		ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
