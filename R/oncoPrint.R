@@ -20,11 +20,10 @@
 # -axis_gp graphic paramters for axes
 # -show_row_barplot whether show barplot annotation on rows
 # -row_barplot_width width of barplot annotation on rows. It should be a `grid::unit` object
-# -show_column_barplot whether show barplot annotation on columns
-# -column_barplot_height height of barplot annotatioin on columns. it should be a `grid::unit` object.
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -heatmap_legend_param pass to `Heatmap`
-# -... pass to `Heatmap`
+# -top_annotation by default the top annotation contains barplots representing frequency of mutations in every sample.
+# -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
 # == details
 # The function returns a normal heatmap list and you can add more heatmaps/row annotations to it.
@@ -47,16 +46,20 @@ oncoPrint = function(mat, get_type = function(x) x,
 	alter_fun_list, col, 
 	row_order = oncoprint_row_order(),
 	column_order = oncoprint_column_order(),
-	show_column_names = FALSE, 
+	show_column_names = FALSE,
 	pct_gp = gpar(), 
 	axis_gp = gpar(fontsize = 8), 
 	show_row_barplot = TRUE, 
 	row_barplot_width = unit(2, "cm"),
-	show_column_barplot = TRUE, 
-	column_barplot_height = unit(2, "cm"),
 	remove_empty_columns = FALSE,
 	heatmap_legend_param = list(title = "Alterations"),
+	top_annotation = HeatmapAnnotation(column_bar = anno_column_bar, 
+		annotation_height = unit(2, "cm")),
 	...) {
+
+	if(names(list(...)) %in% c("show_column_barplot", "column_barplot_height")) {
+		stop("`show_column_barplot` and `column_barplot_height` is deprecated, please configure `top_annotation` directly.")
+	}
 	
 	# convert mat to mat_list
 	if(inherits(mat, "matrix")) {
@@ -221,7 +224,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 		upViewport()
 	}
 
-	ha_column_bar = HeatmapAnnotation(column_bar = anno_column_bar, which = "column", height = column_barplot_height)
+	top_annotation = top_annotation
 
 	#####################################################################
 	# the main matrix
@@ -229,30 +232,17 @@ oncoPrint = function(mat, get_type = function(x) x,
 	dim(pheudo) = dim(arr)[1:2]
 	dimnames(pheudo) = dimnames(arr)[1:2]
 	
-	if(show_column_barplot) {
-		ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
-			cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
-			cell_fun = function(j, i, x, y, width, height, fill) {
-				z = arr[i, j, ]
-				add_oncoprint("background", x, y, width, height)
-				for(type in all_type[z]) {
-					add_oncoprint(type, x, y, width, height)
-				}
-			}, show_column_names = show_column_names,
-			top_annotation = ha_column_bar, 
-			heatmap_legend_param = heatmap_legend_param, ...)
-	} else {
-		ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
-			cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
-			cell_fun = function(j, i, x, y, width, height, fill) {
-				z = arr[i, j, ]
-				add_oncoprint("background", x, y, width, height)
-				for(type in all_type[z]) {
-					add_oncoprint(type, x, y, width, height)
-				}
-			}, show_column_names = show_column_names, 
-			heatmap_legend_param = heatmap_legend_param, ...)
-	}
+	ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
+		cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
+		cell_fun = function(j, i, x, y, width, height, fill) {
+			z = arr[i, j, ]
+			add_oncoprint("background", x, y, width, height)
+			for(type in all_type[z]) {
+				add_oncoprint(type, x, y, width, height)
+			}
+		}, show_column_names = show_column_names,
+		top_annotation = top_annotation, 
+		heatmap_legend_param = heatmap_legend_param, ...)
 
 	if(show_row_barplot) {
 		ht_list = ha_pct + ht + ha_row_bar

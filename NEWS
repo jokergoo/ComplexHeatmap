@@ -3,6 +3,7 @@ CHANGES in VERSION 1.7.1
 * `x` and `y` are `unit` object now in `cell_fun`
 * add an example to visualize GO game
 * transparency is kept when making discreate color mappings
+* `oncoPrint()`: barplots on top now are controlled by `top_annotation` argument
 
 ================================
 
