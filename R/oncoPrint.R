@@ -23,6 +23,7 @@
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -heatmap_legend_param pass to `Heatmap`
 # -top_annotation by default the top annotation contains barplots representing frequency of mutations in every sample.
+# -top_annotation_height height of the top annotation, should be a `grid::unit` object.
 # -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
 # == details
@@ -53,12 +54,14 @@ oncoPrint = function(mat, get_type = function(x) x,
 	row_barplot_width = unit(2, "cm"),
 	remove_empty_columns = FALSE,
 	heatmap_legend_param = list(title = "Alterations"),
-	top_annotation = HeatmapAnnotation(column_bar = anno_column_bar, 
-		annotation_height = unit(2, "cm")),
+	top_annotation = HeatmapAnnotation(column_bar = anno_column_bar),
+	top_annotation_height = unit(2, "cm"),
 	...) {
 
-	if(names(list(...)) %in% c("show_column_barplot", "column_barplot_height")) {
-		stop("`show_column_barplot` and `column_barplot_height` is deprecated, please configure `top_annotation` directly.")
+	if(length(names(list(...))) > 0) {
+		if(names(list(...)) %in% c("show_column_barplot", "column_barplot_height")) {
+			stop("`show_column_barplot` and `column_barplot_height` is deprecated, please configure `top_annotation` directly.")
+		}
 	}
 	
 	# convert mat to mat_list
