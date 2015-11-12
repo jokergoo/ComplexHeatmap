@@ -19,6 +19,7 @@
 # -split one or multiple variables that split the rows.
 # -cluster_rows whether perform clustering on rows of the main heatmap.
 # -cluster_columns whether perform clustering on columns for all heatmaps.
+# -row_order order of rows, remember to turn off ``cluster_rows``
 # -... pass to `draw,HeatmapList-method` or `make_layout,HeatmapList-method`
 #
 # == details
@@ -38,10 +39,10 @@
 plotDataFrame = function(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE, 
 	show_column_names = TRUE, group = NULL, group_names = names(group), 
 	main_heatmap = NULL, km = 1, split = NULL, cluster_rows = TRUE, 
-	cluster_columns = TRUE, ...) {
+	cluster_columns = TRUE, row_order = NULL, ...) {
 
 	if(is.matrix(df)) {
-		ht_list = Heatmap(df, show_row_names = show_row_names, show_column_names = show_column_names)
+		ht_list = Heatmap(df, show_row_names = show_row_names, show_column_names = show_column_names, row_order = row_order)
 	} else if(is.data.frame(df)) {
 		
 		nc = ncol(df)
@@ -129,15 +130,15 @@ plotDataFrame = function(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
 			
 			if(i == 1) {
 				if(i == i_max) {
-					ht_list = Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = show_row_names, show_column_names = show_column_names, km = km2, split = split2)
+					ht_list = Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = show_row_names, show_column_names = show_column_names, km = km2, split = split2, row_order = row_order)
 				} else {
-					ht_list = Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = FALSE, show_column_names = show_column_names, km = km2, split = split2)
+					ht_list = Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = FALSE, show_column_names = show_column_names, km = km2, split = split2, row_order = row_order)
 				}
 			} else {
 				if(i == i_max) {
-					ht_list = ht_list + Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = show_row_names, show_column_names = show_column_names, km = km2, split = split2)	
+					ht_list = ht_list + Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = show_row_names, show_column_names = show_column_names, km = km2, split = split2, row_order = row_order)	
 				} else {
-					ht_list = ht_list + Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = FALSE, show_column_names = show_column_names, km = km2, split = split2)
+					ht_list = ht_list + Heatmap(df[, ci, drop = FALSE], name = group_names[i], column_title = column_title, cluster_rows = cluster_rows, cluster_columns = cluster_columns, show_row_names = FALSE, show_column_names = show_column_names, km = km2, split = split2, row_order = row_order)
 				}
 			}
 			

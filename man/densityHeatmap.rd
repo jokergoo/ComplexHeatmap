@@ -19,7 +19,7 @@ densityHeatmap(data,
   \item{data}{a matrix or a list. If it is a matrix, density will be calculated by columns.}
   \item{col}{a list of colors that density values are scaled to.}
   \item{color_space}{the color space in which colors are interpolated. Pass to \code{\link[circlize]{colorRamp2}}.}
-  \item{anno}{annotation for the matrix columns or the list. The value should be a vector or a data frame. It can also be a \code{\link{HeatmapAnnotation-class}} object.}
+  \item{anno}{annotation for the matrix columns or the list. The value should be a vector or a data frame.  It can also be a \code{\link{HeatmapAnnotation-class}} object.}
   \item{ylab}{label on y-axis in the plot}
   \item{title}{title of the plot}
 

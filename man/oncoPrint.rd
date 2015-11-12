@@ -16,30 +16,30 @@ oncoPrint(mat, get_type = function(x) x,
     axis_gp = gpar(fontsize = 8),
     show_row_barplot = TRUE,
     row_barplot_width = unit(2, "cm"),
-    show_column_barplot = TRUE,
-    column_barplot_height = unit(2, "cm"),
     remove_empty_columns = FALSE,
     heatmap_legend_param = list(title = "Alterations"),
+    top_annotation = HeatmapAnnotation(column_bar = anno_column_bar),
+    top_annotation_height = unit(2, "cm"),
     ...)
 }
 \arguments{
 
-  \item{mat}{a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binaryvalue representing the alteration is present or absent. When it is a list, the names represent alteration types.You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
-  \item{get_type}{If different alterations are encoded in the matrix, this self-defined functiondetermines how to extract them. Only work when \code{mat} is a matrix.}
-  \item{alter_fun_list}{a list of functions which define how to add graphics for different alterations.The names of the list should cover all alteration types.}
+  \item{mat}{a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary value representing the alteration is present or absent. When it is a list, the names represent alteration types. You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
+  \item{get_type}{If different alterations are encoded in the matrix, this self-defined function determines how to extract them. Only work when \code{mat} is a matrix.}
+  \item{alter_fun_list}{a list of functions which define how to add graphics for different alterations. The names of the list should cover all alteration types.}
   \item{col}{a vector of color for which names correspond to alteration types.}
-  \item{row_order}{order of genes. By default it is sorted by frequency of alterations decreasingly.Set it to \code{NULL} if you don't want to set the order}
-  \item{column_order}{order of samples. By default the order is calculated by the 'memo sort' method which can visualizethe mutual exclusivity across genes.}
+  \item{row_order}{order of genes. By default it is sorted by frequency of alterations decreasingly. Set it to \code{NULL} if you don't want to set the order}
+  \item{column_order}{order of samples. By default the order is calculated by the 'memo sort' method which can visualize the mutual exclusivity across genes. Set it to \code{NULL} if you don't want to set the order}
   \item{show_column_names}{whether show column names}
   \item{pct_gp}{graphic paramters for percent row annotation}
   \item{axis_gp}{graphic paramters for axes}
   \item{show_row_barplot}{whether show barplot annotation on rows}
   \item{row_barplot_width}{width of barplot annotation on rows. It should be a \code{\link[grid]{unit}} object}
-  \item{show_column_barplot}{whether show barplot annotation on columns}
-  \item{column_barplot_height}{height of barplot annotatioin on columns. it should be a \code{\link[grid]{unit}} object.}
   \item{remove_empty_columns}{if there is no alteration in that sample, whether remove it on the heatmap}
   \item{heatmap_legend_param}{pass to \code{\link{Heatmap}}}
-  \item{...}{pass to \code{\link{Heatmap}}}
+  \item{top_annotation}{by default the top annotation contains barplots representing frequency of mutations in every sample.}
+  \item{top_annotation_height}{height of the top annotation, should be a \code{\link[grid]{unit}} object.}
+  \item{...}{pass to \code{\link{Heatmap}}, so can set \code{bottom_annotation} here.}
 
 }
 \details{

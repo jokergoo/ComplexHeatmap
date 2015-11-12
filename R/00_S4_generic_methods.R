@@ -25,9 +25,9 @@ setGeneric('prepare', function(object, ...) standardGeneric('prepare'))
 
 setGeneric('draw_annotation', function(object, ...) standardGeneric('draw_annotation'))
 
-setGeneric('draw_dimnames', function(object, ...) standardGeneric('draw_dimnames'))
-
 setGeneric('get_color_mapping_param_list', function(object, ...) standardGeneric('get_color_mapping_param_list'))
+
+setGeneric('draw_dimnames', function(object, ...) standardGeneric('draw_dimnames'))
 
 setGeneric('color_mapping_legend', function(object, ...) standardGeneric('color_mapping_legend'))
 

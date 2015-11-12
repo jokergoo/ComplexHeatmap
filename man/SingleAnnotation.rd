@@ -17,8 +17,8 @@ SingleAnnotation(name, value, col, fun,
 
   \item{name}{name for this annotation. If it is not specified, an internal name is assigned to it.}
   \item{value}{A vector of discrete or continuous annotation.}
-  \item{col}{colors corresponding to \code{value}. If the mapping is discrete mapping, the value of \code{col}should be a vector; If the mapping is continuous mapping, the value of \code{col} should be a color mapping function. }
-  \item{fun}{a self-defined function to add annotation graphics. The argument of this function should only be a vector of index that corresponds to rows or columns.}
+  \item{col}{colors corresponding to \code{value}. If the mapping is discrete mapping, the value of \code{col} should be a vector; If the mapping is continuous mapping, the value of \code{col} should be  a color mapping function. }
+  \item{fun}{a self-defined function to add annotation graphics. The argument of this function should only  be a vector of index that corresponds to rows or columns.}
   \item{which}{is the annotation a row annotation or a column annotation?}
   \item{show_legend}{if it is a simple annotation, whether show legend when making the complete heatmap.}
   \item{gp}{Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.}

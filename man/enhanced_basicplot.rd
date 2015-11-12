@@ -15,7 +15,7 @@ enhanced_basicplot(data, ..., ylim = NULL,
 }
 \arguments{
 
-  \item{data}{a matrix, a list or a simple numeric vector. If your data is a data frameplease convert it to a matrix in the first place.}
+  \item{data}{a matrix, a list or a simple numeric vector. If your data is a data frame please convert it to a matrix in the first place.}
   \item{...}{pass to \code{\link{Heatmap}}}
   \item{ylim}{ranges on y axis}
   \item{ylab}{label on y axis}

@@ -74,7 +74,8 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 		if(length(colors) != length(levels)) {
 			stop("length of colors and length of levels should be the same.\n")
 		}
-		colors = rgb(t(col2rgb(colors)), maxColorValue = 255)
+		colors = t(col2rgb(colors, alpha = TRUE))
+		colors = rgb(colors[, 1:3, drop = FALSE], alpha = colors[, 4], maxColorValue = 255)
 		.Object@colors = colors
 		if(is.numeric(levels)) {
 			.Object@levels = as.character(levels)
