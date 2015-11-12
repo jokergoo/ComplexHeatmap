@@ -17,7 +17,7 @@ anno_text(x, which = c("column", "row"), gp = gpar(), rot = 0,
   \item{gp}{graphic parameters.}
   \item{rot}{rotation of text}
   \item{just}{justification of text, pass to \code{\link[grid]{grid.text}}}
-  \item{offset}{if it is a row annotation, \code{offset} corresponds to the x-coordinates of text.and if it is a column annotation, \code{offset} corresponds to the y-coordinates of text.The value should be a \code{\link[grid]{unit}} object.}
+  \item{offset}{if it is a row annotation, \code{offset} corresponds to the x-coordinates of text. and if it is a column annotation, \code{offset} corresponds to the y-coordinates of text. The value should be a \code{\link[grid]{unit}} object.}
 
 }
 \value{

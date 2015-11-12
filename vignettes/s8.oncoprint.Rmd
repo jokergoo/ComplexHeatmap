@@ -232,7 +232,7 @@ ht_list = oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
 		labels = c("Amplification", "Deep deletion", "Mutation")),
 	split = sample(letters[1:2], nrow(mat), replace = TRUE)) +
-Heatmap(matrix(rnorm(nrow(mat)*10), ncol = 10), width = unit(4, "cm"))
+Heatmap(matrix(rnorm(nrow(mat)*10), ncol = 10), name = "expr", width = unit(4, "cm"))
 draw(ht_list, row_sub_title_side = "left")
 ```
 

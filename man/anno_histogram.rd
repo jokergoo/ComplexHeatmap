@@ -11,7 +11,7 @@ anno_histogram(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...)
 }
 \arguments{
 
-  \item{x}{a matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for histogramis calculated by columns, if \code{which} is \code{row}, the calculation is by rows.}
+  \item{x}{a matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for histogram is calculated by columns, if \code{which} is \code{row}, the calculation is by rows.}
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{gp}{graphic parameters}
   \item{...}{pass to \code{\link[graphics]{hist}}}
