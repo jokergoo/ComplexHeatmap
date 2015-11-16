@@ -153,7 +153,14 @@ decorate_dimnames("ht2", {
 decorate_title("ht1", {
     grid.rect(gp = gpar(fill = "#00FF0040"))
 }, which = "row", slice = 1)
+
+decorate_annotation("points", {
+    grid.lines(c(0, 1), unit(c(0, 0), "native"), gp = gpar(col = "red"))
+})
 ```
+
+For annotations which are created by `anno_points()`, `anno_barplot()` and `anno_boxplot()`, "native" unit
+can be used in the decoration code.
 
 ## Add annotation names
 

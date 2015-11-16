@@ -33,12 +33,14 @@ SingleAnnotation = setClass("SingleAnnotation",
 		color_mapping_param = "ANY", # a list or NULL, it contains parameters for color_mapping_legend
 		fun = "function",
 		show_legend = "logical",
-		which = "character"
+		which = "character",
+		name_to_data_vp = "logical"
 	),
 	prototype = list(
 		color_mapping = NULL,
 		fun = function(index) NULL,
-		show_legend= TRUE
+		show_legend= TRUE,
+		name_to_data_vp = FALSE
 	)
 )
 
@@ -173,14 +175,23 @@ SingleAnnotation = function(name, value, col, fun,
     	}
     	.Object@fun = fun
     	.Object@show_legend = FALSE
+
+    	anno_fun = attr(fun, "fun")
+    	if(!is.null(anno_fun)) {
+    		if(anno_fun %in% c("anno_points", "anno_barplot", "anno_boxplot")) {
+    			.Object@name_to_data_vp = TRUE
+    		}
+    	}
     }
 
     if(which == "row") {
     	if(length(formals(.Object@fun)) == 1) {
-    		formals(.Object@fun) = alist(index = , k = NULL, N = NULL)
+    		formals(.Object@fun) = alist(index = , k = NULL, N = NULL, vp_name = NULL)
     	} else if(length(formals(.Object@fun)) == 2) {  # assume index and k are specified
-    		formals(.Object@fun) = alist(index = , k = , N = NULL)
+    		formals(.Object@fun) = alist(index = , k = , N = NULL, vp_name = NULL)
     	}
+    } else {
+    	formals(.Object@fun) = alist(index = , vp_name = NULL)
     }
 
     return(.Object)
@@ -211,12 +222,23 @@ setMethod(f = "draw",
 	signature = "SingleAnnotation",
 	definition = function(object, index, k = NULL, n = NULL) {
 
-	if(is.null(k)) {
-		pushViewport(viewport(name = paste("annotation", object@name, sep = "_")))
-		object@fun(index)
+	# names should be passed to the data viewport
+	if(object@name_to_data_vp) {
+		if(is.null(k)) {
+			pushViewport(viewport())
+			object@fun(index, vp_name = paste("annotation", object@name, sep = "_"))
+		} else {
+			pushViewport(viewport())
+			object@fun(index, k, n, vp_name = paste("annotation", object@name, k, sep = "_"))
+		}
 	} else {
-		pushViewport(viewport(name = paste("annotation", object@name, k, sep = "_")))
-		object@fun(index, k, n)
+		if(is.null(k)) {
+			pushViewport(viewport(name = paste("annotation", object@name, sep = "_")))
+			object@fun(index)
+		} else {
+			pushViewport(viewport(name = paste("annotation", object@name, k, sep = "_")))
+			object@fun(index, k, n)
+		}
 	}
 	upViewport()
 

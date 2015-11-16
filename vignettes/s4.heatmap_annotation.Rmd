@@ -426,11 +426,34 @@ In this case, only one heatmap is allowed.
 ```{r zero_row_heatmap, fig.height = 2}
 ha = HeatmapAnnotation(df = data.frame(value = runif(10), type = rep(letters[1:2], 5)),
     barplot = anno_barplot(runif(10)),
-    points = anno_points(runif(10)),
-    height = unit(3, "cm"))
+    points = anno_points(runif(10)))
 zero_row_mat = matrix(nrow = 0, ncol = 10)
 colnames(zero_row_mat) = letters[1:10]
 Heatmap(zero_row_mat, top_annotation = ha, column_title = "only annotations")
+```
+
+This feature is very useful if you want to compare multiple metrics. Axes and labels in following plot
+are added by [heatmap decoration](s6.heatmap_decoration.html). Also notice how we adjust 
+paddings of the plotting regions to give enough space for hte axis labels. 
+
+```{r, fig.height = 5}
+ha = HeatmapAnnotation(df = data.frame(value = runif(10), type = rep(letters[1:2], 5)),
+    barplot = anno_barplot(runif(10), axis = TRUE),
+    points = anno_points(runif(10), axis = TRUE),
+    annotation_height = unit(c(0.5, 0.5, 4, 4), "cm"))
+zero_row_mat = matrix(nrow = 0, ncol = 10)
+colnames(zero_row_mat) = letters[1:10]
+ht = Heatmap(zero_row_mat, top_annotation = ha, column_title = "only annotations")
+draw(ht, padding = unit(c(2, 20, 2, 2), "mm"))
+decorate_annotation("value", {grid.text("value", unit(-2, "mm"), just = "right")})
+decorate_annotation("type", {grid.text("type", unit(-2, "mm"), just = "right")})
+decorate_annotation("barplot", {
+    grid.text("barplot", unit(-10, "mm"), just = "bottom", rot = 90)
+    grid.lines(c(0, 1), unit(c(0.2, 0.2), "native"), gp = gpar(lty = 2, col = "blue"))
+})
+decorate_annotation("points", {
+    grid.text("points", unit(-10, "mm"), just = "bottom", rot = 90)
+})
 ```
 
 ### Heatmap with zero column
