@@ -1,7 +1,13 @@
+CHANGES in VERSION 1.7.3
+
+* `oncoPrint()`: add `barplot_ignore` option to remove alterations
+  that are not put on the barplot.
+
 CHANGES in VERSION 1.7.2
 
 * for `anno_points()`, `anno_barplot()`, `anno_boxplot()`, the name is assigned
   to the viewport with data ranges
+* oncoPrint(): top_annotation is assigned with correct height
 
 ===============================
 
