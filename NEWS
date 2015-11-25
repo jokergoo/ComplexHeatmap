@@ -2,6 +2,7 @@ CHANGES in VERSION 1.7.3
 
 * `oncoPrint()`: add `barplot_ignore` option to remove alterations
   that are not put on the barplot.
+* `oncoPrint()`: delete extra alter_fun if they are not in the matrix
 
 CHANGES in VERSION 1.7.2
 
