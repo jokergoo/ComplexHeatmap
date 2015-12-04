@@ -1,8 +1,18 @@
+CHANEGS in VERSION 1.7.4
+
+* width of the heatmap body are calculated correctly if it is set as a fixed unit
+* there is no dendrogram is nrows in a row-slice is 1
+* add `anno_link()` annotation function
+
+===============================
+
 CHANGES in VERSION 1.7.3
 
 * `oncoPrint()`: add `barplot_ignore` option to remove alterations
   that are not put on the barplot.
 * `oncoPrint()`: delete extra alter_fun if they are not in the matrix
+
+================================
 
 CHANGES in VERSION 1.7.2
 

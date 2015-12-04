@@ -1310,6 +1310,9 @@ setMethod(f = "draw_dend",
 
     dend = as.dendrogram(hc)
     n = length(labels(dend))
+    if(nnodes(dend) <= 1) {
+        return(invisible(NULL))
+    }
 
     dend_padding = unit(1, "mm")
     pushViewport(viewport(name = paste(object@name, which, "cluster", k, sep = "_"), ...))
@@ -1555,7 +1558,7 @@ setMethod(f = "component_width",
                 if(!is.unit(object@heatmap_param$width)) {
                     unit(1, "null")
                 } else {
-                    object@heatmap_param$width - sum(component_width(object, c(1:3, 5:7)))
+                    object@heatmap_param$width
                 }
             }
         } else if(k == 5) {
@@ -1699,7 +1702,6 @@ setMethod(f = "draw",
             pushViewport(viewport(layout = layout))
             ht_layout_index = object@layout$layout_index
             ht_graphic_fun_list = object@layout$graphic_fun_list
-            
             for(j in seq_len(nrow(ht_layout_index))) {
                 if(ht_layout_index[j, 1] == 5 && ht_layout_index[j, 2] == 4) {
                     pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2], name = paste(object@name, "heatmap_body_wrap", sep = "_")))
