@@ -5,6 +5,7 @@ CHANEGS in VERSION 1.7.4
 * add `anno_link()` annotation function
 * bottom annotations are attached to the bottom edge of the heatmap 
   if there are additional blank space
+* colors for NA can be set by "_NA_" in annotations
 
 ===============================
 

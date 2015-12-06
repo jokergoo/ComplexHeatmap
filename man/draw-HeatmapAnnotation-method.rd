@@ -7,7 +7,7 @@ Draw the heatmap annotations
 Draw the heatmap annotations
 }
 \usage{
-\S4method{draw}{HeatmapAnnotation}(object, index, k = NULL, n = NULL, ...)
+\S4method{draw}{HeatmapAnnotation}(object, index, k = NULL, n = NULL, align_to = "bottom", ...)
 }
 \arguments{
 
@@ -15,6 +15,7 @@ Draw the heatmap annotations
   \item{index}{a vector of order.}
   \item{k}{if row annotation is splitted, the value identifies which row slice.}
   \item{n}{total number of row slices.}
+  \item{align_to}{if the allocated space is more than than the column annotation itself, should the viewport be aligned to the top or bottom?}
   \item{...}{pass to \code{\link[grid]{viewport}} which contains all annotations.}
 
 }
