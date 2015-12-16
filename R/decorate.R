@@ -43,9 +43,15 @@
 #
 decorate_heatmap_body = function(heatmap, code, slice = 1) {
 
-	vp_name = paste0(heatmap, "_heatmap_body_", slice)
+	if(is.null(slice)) {
+		vp_name = paste0(heatmap, "_heatmap_body_", 1)
+		seekViewport(vp_name)
+		upViewport()
+	} else {
+		vp_name = paste0(heatmap, "_heatmap_body_", slice)
+		seekViewport(vp_name)
+	}
 
-	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
 
@@ -94,7 +100,14 @@ decorate_dend = function(heatmap, code, slice = 1, which = c("column", "row")) {
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_dend_", which)
 	} else if(which == "row") {
-		vp_name = paste0(heatmap, "_dend_", which, "_", slice)
+		if(is.null(slice)) {
+			vp_name = paste0(heatmap, "_dend_", which, "_", 1)
+			seekViewport(vp_name)
+			upViewport()
+		} else {
+			vp_name = paste0(heatmap, "_dend_", which, "_", slice)
+			seekViewport(vp_name)
+		}
 	}
 
 	seekViewport(vp_name)
@@ -197,7 +210,14 @@ decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_", which, "_names")
 	} else if(which == "row") {
-		vp_name = paste0(heatmap, "_", which, "_names_", slice)
+		if(is.null(slice)) {
+			vp_name = paste0(heatmap, "_", which, "_names_", 1)
+			seekViewport(vp_name)
+			upViewport()
+		} else {
+			vp_name = paste0(heatmap, "_", which, "_names_", slice)
+			seekViewport(vp_name)
+		}
 	}
 
 	seekViewport(vp_name)
@@ -287,7 +307,14 @@ decorate_title = function(heatmap, code, slice = 1, which = c("column", "row")) 
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_", which, "_title")
 	} else if(which == "row") {
-		vp_name = paste0(heatmap, "_", which, "_title_", slice)
+		if(is.null(slice)) {
+			vp_name = paste0(heatmap, "_", which, "_title_", 1)
+			seekViewport(vp_name)
+			upViewport()
+		} else {
+			vp_name = paste0(heatmap, "_", which, "_title_", slice)
+			seekViewport(vp_name)
+		}
 	}
 
 	seekViewport(vp_name)
@@ -376,9 +403,9 @@ decorate_column_title = function(...) {
 #     grid.rect(gp = gpar(fill = "#FF000080"))
 # }, slice = 2)
 #
-decorate_annotation = function(annotation, code, slice = NULL) {
+decorate_annotation = function(annotation, code, slice) {
 
-	if(is.null(slice)) {
+	if(missing(slice)) {
 		vp_name = paste0("annotation_", annotation)
 		o = try(seekViewport(vp_name), silent = TRUE)
 		if(inherits(o, "try-error")) {
@@ -391,8 +418,14 @@ decorate_annotation = function(annotation, code, slice = NULL) {
 		}
 		seekViewport(vp_name)
 	} else {
-		vp_name = paste0("annotation_", annotation, "_", slice)
-		seekViewport(vp_name)
+		if(is.null(slice)) {
+			vp_name = paste0("annotation_", annotation, "_", 1)
+			seekViewport(vp_name)
+			upViewport()
+		} else {
+			vp_name = paste0("annotation_", annotation, "_", slice)
+			seekViewport(vp_name)
+		}
 	}
 
 	e = new.env(parent = parent.frame())

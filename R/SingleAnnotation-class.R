@@ -55,6 +55,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 #      a color mapping function. 
 # -fun a self-defined function to add annotation graphics. The argument of this function should only 
 #      be a vector of index that corresponds to rows or columns.
+# -na_col color for ``NA`` values in simple annotations.
 # -which is the annotation a row annotation or a column annotation?
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
 # -gp Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.
@@ -84,6 +85,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 SingleAnnotation = function(name, value, col, fun, 
+	na_col = "grey",
 	which = c("column", "row"), 
 	show_legend = TRUE, 
 	gp = gpar(col = NA), 
@@ -138,12 +140,10 @@ SingleAnnotation = function(name, value, col, fun,
     		if("_NA_" %in% names(col)) {
     			na_col = col["_NA_"]
     			col = col[names(col) != "_NA_"]
-    		} else {
-    			na_col = "#FFFFFF"
     		}
             color_mapping = ColorMapping(name = name, colors = col, na_col = na_col)
         } else if(is.function(col)) {
-            color_mapping = ColorMapping(name = name, col_fun = col)
+            color_mapping = ColorMapping(name = name, col_fun = col, na_col = na_col)
         }
 
         .Object@color_mapping = color_mapping

@@ -7,7 +7,7 @@ Decorate the heatmap annotation
 Decorate the heatmap annotation
 }
 \usage{
-decorate_annotation(annotation, code, slice = NULL)
+decorate_annotation(annotation, code, slice)
 }
 \arguments{
 

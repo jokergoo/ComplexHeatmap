@@ -18,8 +18,8 @@ oncoPrint(mat, get_type = function(x) x,
     row_barplot_width = unit(2, "cm"),
     remove_empty_columns = FALSE,
     heatmap_legend_param = list(title = "Alterations"),
-    top_annotation = HeatmapAnnotation(column_bar = anno_column_bar),
-    top_annotation_height = unit(2, "cm"),
+    top_annotation = HeatmapAnnotation(column_bar = anno_column_bar,
+    annotation_height = unit(2, "cm")),
     barplot_ignore = NULL,
     ...)
 }
@@ -39,7 +39,6 @@ oncoPrint(mat, get_type = function(x) x,
   \item{remove_empty_columns}{if there is no alteration in that sample, whether remove it on the heatmap}
   \item{heatmap_legend_param}{pass to \code{\link{Heatmap}}}
   \item{top_annotation}{by default the top annotation contains barplots representing frequency of mutations in every sample.}
-  \item{top_annotation_height}{height of the top annotation, should be a \code{\link[grid]{unit}} object.}
   \item{barplot_ignore}{alterations that you don't want to put on the barplots.}
   \item{...}{pass to \code{\link{Heatmap}}, so can set \code{bottom_annotation} here.}
 

@@ -531,7 +531,7 @@ upViewport(2)
 
 ## Mark some of the rows/columns
 
-From version 1.7.4, a new annotation function `anno_link()` was added which connects labels and subset of the rows
+From version 1.8.0, a new annotation function `anno_link()` was added which connects labels and subset of the rows
 by links. It is helpful when there are many rows/columns and we want to mark some of the rows (e.g. in a gene expression
 matrix, we want to mark some important genes of interest.)
 
