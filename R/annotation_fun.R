@@ -9,7 +9,7 @@
 # -gp graphic parameters.
 # -pch point type.
 # -size point size.
-# -lim data ranges.
+# -ylim data ranges.
 # -axis whether add axis.
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
 #            If it is placed as row annotation, value can only be "bottom" or "top".
@@ -24,13 +24,13 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16, 
-	size = unit(2, "mm"), lim = NULL, axis = FALSE, axis_side = NULL, 
+	size = unit(2, "mm"), ylim = NULL, axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...) {
 
 	x = x
 	which = match.arg(which)[1]
 	data_scale = range(x)
-	if(!is.null(lim)) data_scale = lim
+	if(!is.null(ylim)) data_scale = ylim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
 
@@ -53,14 +53,14 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 	gp = gp
 	pch = pch
 	size = size
-	lim = lim
+	ylim = ylim
 	axis = axis
 	axis_side = axis_side
 	axis_gp = axis_gp
 	axis_direction = axis_direction
 
 	f = switch(which,
-		row = function(index, k = NULL, N = NULL) {
+		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			n = length(index)
 			
 			if(is.null(k)) {
@@ -69,7 +69,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 				gp = subset_gp(gp, k)
 			}
 
-			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
+			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5), name = vp_name))
 			if(border) grid.rect()
 			if(axis_direction == "reverse") x = data_scale[2] - x + data_scale[1]
 			grid.points(x[index], n - seq_along(index) + 1, gp = gp, default.units = "native", pch = pch, size = size)
@@ -93,11 +93,11 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 			}
 			upViewport()
 		},
-		column = function(index) {
+		column = function(index, vp_name = NULL) {
 			n = length(index)
 			gp = subset_gp(gp, index)
 
-			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
+			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale, name = vp_name))
 			if(border) grid.rect()
 			grid.points(seq_along(index), x[index], gp = gp, default.units = "native", pch = pch, size = size)
 			if(axis) {
@@ -124,7 +124,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 # -border whether show border of the annotation compoment
 # -bar_width relative width of the bars, should less than one
 # -gp graphic parameters.
-# -lim data ranges.
+# -ylim data ranges.
 # -axis whether add axis
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
 #            If it is placed as row annotation, value can only be "bottom" or "top".
@@ -139,7 +139,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_barplot = function(x, baseline = "min", which = c("column", "row"), border = TRUE, bar_width = 0.6,
-	gp = gpar(fill = "#CCCCCC"), lim = NULL, axis = FALSE, axis_side = NULL, 
+	gp = gpar(fill = "#CCCCCC"), ylim = NULL, axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...) {
 
 	x = x
@@ -147,7 +147,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 
 	factor = bar_width
 	data_scale = range(x)
-	if(!is.null(lim)) data_scale = lim
+	if(!is.null(ylim)) data_scale = ylim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
 
@@ -169,13 +169,13 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 	border = border
 	bar_width = bar_width
 	gp = gp
-	lim = lim
+	ylim = ylim
 	axis = axis
 	axis_size = axis_side
 	axis_gp = axis_gp
 
 	f = switch(which,
-		row = function(index, k = NULL, N = NULL) {
+		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			n = length(index)
 			
 			if(is.null(k)) {
@@ -192,7 +192,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 			}
 			if(baseline < data_scale[1]) data_scale[1] = baseline
 			if(baseline > data_scale[2]) data_scale[2] = baseline
-			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
+			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5), name = vp_name))
 			if(border) grid.rect()
 			width = x[index] - baseline
 			grid.rect(x = width/2+baseline, y = n - seq_along(index) + 1, width = abs(width), height = 1*factor, default.units = "native", gp = gp)
@@ -216,7 +216,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 			}
 			upViewport()
 		},
-		column = function(index) {
+		column = function(index, vp_name = NULL) {
 			n = length(index)
 
 			gp = subset_gp(gp, index)
@@ -225,7 +225,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 			else if(baseline == "max") baseline = data_scale[2]
 			if(baseline < data_scale[1]) data_scale[1] = baseline
 			if(baseline > data_scale[2]) data_scale[2] = baseline
-			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
+			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale, name = vp_name))
 			if(border) grid.rect()
 			height = x[index] - baseline
 			grid.rect(x = seq_along(index), y = height/2 + baseline, height = abs(height), width = 1*factor, default.units = "native", gp = gp)
@@ -252,7 +252,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 # -which is the annotation a column annotation or a row annotation?
 # -border whether show border of the annotation compoment
 # -gp graphic parameters
-# -lim data ranges.
+# -ylim data ranges.
 # -pch point type
 # -size point size
 # -axis whether add axis
@@ -268,7 +268,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
-	gp = gpar(fill = "#CCCCCC"), lim = NULL,
+	gp = gpar(fill = "#CCCCCC"), ylim = NULL,
 	pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse")) {
 
@@ -277,7 +277,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 	factor = 0.6
 	data_scale = range(x)
-	if(!is.null(lim)) data_scale = lim
+	if(!is.null(ylim)) data_scale = ylim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
 
@@ -297,7 +297,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 	border = border
 	gp = gp
-	lim = lim
+	ylim = ylim
 	pch = pch
 	size = size
 	axis = axis
@@ -305,7 +305,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 	axis_gp = axis_gp
 
 	f = switch(which,
-		row = function(index, k = NULL, N = NULL) {
+		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 
 			if(is.matrix(x)) {
 				if(axis_direction == "reverse") x = data_scale[2] - x + data_scale[1]
@@ -326,7 +326,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			if(n != ncol(boxplot_stats)) {
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
-			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
+			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5), name = vp_name))
 			if(border) grid.rect()
 			
 			grid.rect(x = boxplot_stats[2, ], y = n - seq_along(index) + 1,  
@@ -377,7 +377,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			}
 			upViewport()
 		},
-		column = function(index) {
+		column = function(index, vp_name = NULL) {
 			if(is.matrix(x)) {
 				x = x[, index, drop = FALSE]
 				boxplot_stats = boxplot(x, plot = FALSE)$stats
@@ -391,7 +391,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			if(n != ncol(boxplot_stats)) {
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
-			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
+			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale, name = vp_name))
 			if(border) grid.rect()
 			grid.rect(x = seq_along(index), y = boxplot_stats[2, ], 
 				height = boxplot_stats[4, ] - boxplot_stats[2, ], width = 1*factor, just = "bottom", 
@@ -459,7 +459,7 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 	gp = check_gp(gp)
 
 	f = switch(which,
-		row = function(index, k = NULL, N = NULL) {
+		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
 				x_range =range(x)
@@ -495,7 +495,7 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 				upViewport()
 			}
 		},
-		column = function(index) {
+		column = function(index, vp_name = NULL) {
 			if(is.matrix(x)) {
 				x = x[, index, drop = FALSE]
 				x_range = range(x)
@@ -558,7 +558,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	gp = check_gp(gp)
 
 	f = switch(which,
-		row = function(index, k = NULL, N = NULL) {
+		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
 				density_stats = apply(x, 1, density, ...)
@@ -612,7 +612,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				upViewport()
 			}
 		},
-		column = function(index) {
+		column = function(index, vp_name = NULL) {
 			if(is.matrix(x)) {
 				x = x[, index, drop = FALSE]
 				density_stats = apply(x, 2, density, ...)
@@ -699,7 +699,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 	offset = offset
 
 	f = switch(which,
-		row = function(index, k = NULL, N = NULL) {
+		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			n = length(index)
 			
 			if(is.null(k)) {
@@ -711,7 +711,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 			grid.text(x[index], offset, unit(n - seq_along(index) + 1, "native"), gp = gp, just = just, rot = rot)
 			upViewport()
 		},
-		column = function(index) {
+		column = function(index, vp_name = NULL) {
 			n = length(index)
 			gp = subset_gp(gp, index)
 			pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))

@@ -12,7 +12,8 @@ densityHeatmap(data,
     color_space = "LAB",
     anno = NULL,
     ylab = deparse(substitute(data)),
-    title = paste0("Density heatmap of ", deparse(substitute(data))))
+    title = paste0("Density heatmap of ", deparse(substitute(data))),
+    ...)
 }
 \arguments{
 
@@ -22,6 +23,7 @@ densityHeatmap(data,
   \item{anno}{annotation for the matrix columns or the list. The value should be a vector or a data frame.  It can also be a \code{\link{HeatmapAnnotation-class}} object.}
   \item{ylab}{label on y-axis in the plot}
   \item{title}{title of the plot}
+  \item{...}{pass to \code{\link{draw,HeatmapList-method}}}
 
 }
 \details{
@@ -41,8 +43,10 @@ matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]
 densityHeatmap(matrix)
 densityHeatmap(matrix, anno = rep(c("A", "B"), each = 5))
 densityHeatmap(matrix, col = c("white", "red"), anno = rep(c("A", "B"), each = 5))
+
 ha = HeatmapAnnotation(points = anno_points(runif(10)))
 densityHeatmap(matrix, anno = ha)
+
 lt = list(rnorm(10), rnorm(10))
 densityHeatmap(lt)
 }

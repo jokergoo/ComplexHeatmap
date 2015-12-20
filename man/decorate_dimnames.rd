@@ -43,6 +43,7 @@ mat = matrix(rnorm(100), 10)
 rownames(mat) = letters[1:10]
 colnames(mat) = LETTERS[1:10]
 Heatmap(mat, name = "mat", km = 2)
+
 decorate_dimnames("mat", {
     grid.rect(gp = gpar(fill = "#FF000080"))
 }, which = "row", slice = 2)

@@ -8,7 +8,7 @@ Using barplot as annotation
 }
 \usage{
 anno_barplot(x, baseline = "min", which = c("column", "row"), border = TRUE, bar_width = 0.6,
-    gp = gpar(fill = "#CCCCCC"), lim = NULL, axis = FALSE, axis_side = NULL,
+    gp = gpar(fill = "#CCCCCC"), ylim = NULL, axis = FALSE, axis_side = NULL,
     axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...)
 }
 \arguments{
@@ -19,7 +19,7 @@ anno_barplot(x, baseline = "min", which = c("column", "row"), border = TRUE, bar
   \item{border}{whether show border of the annotation compoment}
   \item{bar_width}{relative width of the bars, should less than one}
   \item{gp}{graphic parameters.}
-  \item{lim}{data ranges.}
+  \item{ylim}{data ranges.}
   \item{axis}{whether add axis}
   \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right". If it is placed as row annotation, value can only be "bottom" or "top".}
   \item{axis_gp}{graphic parameters for axis}

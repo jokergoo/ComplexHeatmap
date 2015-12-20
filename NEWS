@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.7.2
+
+* for `anno_points()`, `anno_barplot()`, `anno_boxplot()`, the name is assigned
+  to the viewport with data ranges
+
+===============================
+
 CHANGES in VERSION 1.7.1
 
 * `x` and `y` are `unit` object now in `cell_fun`
