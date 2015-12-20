@@ -17,8 +17,13 @@ Get row order from a heatmap list
 \value{
 A list contains row orders which correspond to the original matrix
 }
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
 \examples{
-# There is no example
-NULL
-
+mat = matrix(rnorm(100), 10)
+ht_list = Heatmap(mat) + Heatmap(mat)
+row_order(ht_list)
+ht = Heatmap(mat, km = 2) + Heatmap(mat)
+row_order(ht_list)
 }

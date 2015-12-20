@@ -48,13 +48,14 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Constructor method for SingleAnnotation class
 #
 # == param
-# -name name for this annotation. If it is not specified, an internal name is assigned to it.
+# -name name for this annotation. If it is not specified, an internal name is assigned.
 # -value A vector of discrete or continuous annotation.
 # -col colors corresponding to ``value``. If the mapping is discrete mapping, the value of ``col``
 #      should be a vector; If the mapping is continuous mapping, the value of ``col`` should be 
 #      a color mapping function. 
 # -fun a self-defined function to add annotation graphics. The argument of this function should only 
 #      be a vector of index that corresponds to rows or columns.
+# -na_col color for ``NA`` values in simple annotations.
 # -which is the annotation a row annotation or a column annotation?
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
 # -gp Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.
@@ -77,6 +78,10 @@ SingleAnnotation = setClass("SingleAnnotation",
 # One thing that users should be careful is the difference of coordinates when the annotation is a row
 # annotation or a column annotation. 
 #
+# == seealso
+# There are following built-in annotation functions that can be used to generate complex annotations: 
+# `anno_points`, `anno_barplot`, `anno_histogram`, `anno_boxplot`, `anno_density`, `anno_text` and `anno_link`.
+# 
 # == value
 # A `SingleAnnotation-class` object.
 #
@@ -84,6 +89,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 SingleAnnotation = function(name, value, col, fun, 
+	na_col = "grey",
 	which = c("column", "row"), 
 	show_legend = TRUE, 
 	gp = gpar(col = NA), 
@@ -138,12 +144,15 @@ SingleAnnotation = function(name, value, col, fun,
     		if("_NA_" %in% names(col)) {
     			na_col = col["_NA_"]
     			col = col[names(col) != "_NA_"]
+<<<<<<< HEAD
     		} else {
     			na_col = "#FFFFFF"
+=======
+>>>>>>> master
     		}
             color_mapping = ColorMapping(name = name, colors = col, na_col = na_col)
         } else if(is.function(col)) {
-            color_mapping = ColorMapping(name = name, col_fun = col)
+            color_mapping = ColorMapping(name = name, col_fun = col, na_col = na_col)
         }
 
         .Object@color_mapping = color_mapping

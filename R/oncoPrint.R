@@ -23,7 +23,10 @@
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -heatmap_legend_param pass to `Heatmap`
 # -top_annotation by default the top annotation contains barplots representing frequency of mutations in every sample.
+<<<<<<< HEAD
 # -top_annotation_height height of the top annotation, should be a `grid::unit` object.
+=======
+>>>>>>> master
 # -barplot_ignore alterations that you don't want to put on the barplots.
 # -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
@@ -55,8 +58,13 @@ oncoPrint = function(mat, get_type = function(x) x,
 	row_barplot_width = unit(2, "cm"),
 	remove_empty_columns = FALSE,
 	heatmap_legend_param = list(title = "Alterations"),
+<<<<<<< HEAD
 	top_annotation = HeatmapAnnotation(column_bar = anno_column_bar),
 	top_annotation_height = unit(2, "cm"),
+=======
+	top_annotation = HeatmapAnnotation(column_bar = anno_column_bar, 
+		annotation_height = unit(2, "cm")),
+>>>>>>> master
 	barplot_ignore = NULL,
 	...) {
 
@@ -81,8 +89,12 @@ oncoPrint = function(mat, get_type = function(x) x,
 		})
 	} else if(inherits(mat, "list")) {
 		mat_list = mat
+
 		all_type = names(mat_list)
 		mat_list = lapply(mat_list, function(x) {
+				if(!is.matrix(x)) {
+					stop("Expect a list of matrix (not data frames).")
+				}
 				oattr = attributes(x)
 				x = as.logical(x)
 				attributes(x) = oattr
@@ -250,7 +262,11 @@ oncoPrint = function(mat, get_type = function(x) x,
 				add_oncoprint(type, x, y, width, height)
 			}
 		}, show_column_names = show_column_names,
+<<<<<<< HEAD
 		top_annotation = top_annotation, top_annotation_height = top_annotation_height,
+=======
+		top_annotation = top_annotation,
+>>>>>>> master
 		heatmap_legend_param = heatmap_legend_param, ...)
 
 	if(show_row_barplot) {
@@ -272,6 +288,9 @@ oncoPrint = function(mat, get_type = function(x) x,
 #
 # == details
 # All matrix will be unified to have same row names and column names
+#
+# == value
+# A list of matrix
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

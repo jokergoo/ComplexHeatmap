@@ -14,8 +14,8 @@ grid.dendrogram(dend, facing = c("bottom", "top", "left", "right"),
 
   \item{dend}{a \code{\link[stats]{dendrogram}} object.}
   \item{facing}{facing of the dendrogram.}
-  \item{max_height}{maximum height of the dendrogram. It is useful to make dendrograms comparable if you want to plot more than one dendrograms.}
-  \item{order}{should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)?}
+  \item{max_height}{maximum height of the dendrogram. It is useful to make dendrograms comparable if you want to plot more than one dendrograms. Height for each dendrogram can be obtained by \code{attr(dend, "height")}.}
+  \item{order}{should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)? It may matters for the dendrograms putting on left and right.}
   \item{...}{pass to \code{\link[grid]{viewport}} which contains the dendrogram.}
 
 }

@@ -102,6 +102,8 @@ plotDataFrame = function(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
 
 		if(is.null(main_heatmap)) {
 			main_heatmap = which.max(sapply(group, length))
+		} else if(!is.numeric(main_heatmap) && !is.null(group_names)) {
+			main_heatmap = which(group_names == main_heatmap)[1]
 		}
 
 		i_max = max(unlist(group))

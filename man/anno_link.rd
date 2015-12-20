@@ -27,6 +27,9 @@ Sometimes there are many rows or columns in the heatmap and we want to mark some
 This annotation function is used to mark these rows and connect labels and corresponding rows
 with links.
 }
+\value{
+A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
+}
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }

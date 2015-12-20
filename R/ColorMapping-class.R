@@ -110,7 +110,9 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 	}
 
 	.Object@name = name
-	.Object@na_col = na_col
+	na_col = t(col2rgb(na_col, alpha = TRUE))
+	na_col = rgb(na_col[, 1:3, drop = FALSE], alpha = na_col[, 4], maxColorValue = 255)
+	.Object@na_col = na_col[1]
 
 	return(.Object)
 }

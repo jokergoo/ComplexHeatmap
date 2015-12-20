@@ -33,8 +33,11 @@ colnames(mat) = letters[1:10]
 
 d2 = dist2(mat)
 d2 = dist2(mat, pairwise_fun = function(x, y) 1 - cor(x, y))
+# distance only calculated within 10 and 90 quantile of each vector
 d2 = dist2(mat, pairwise_fun = function(x, y) {
-    l = is.na(x) & is.na(y)
+	q1 = quantile(x, c(0.1, 0.9))
+	q2 = quantile(y, c(0.1, 0.9))
+    l = x > q1[1] & x < q1[2] & y > q2[1] & y < q2[2]
     sqrt(sum((x[l] - y[l])^2))
 })
 

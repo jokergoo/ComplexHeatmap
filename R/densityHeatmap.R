@@ -104,5 +104,5 @@ densityHeatmap = function(data,
 		upViewport()
 	})
 
-	return(invisible(ht_list))
+	return(invisible(NULL))
 }

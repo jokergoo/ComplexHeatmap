@@ -82,8 +82,10 @@ default_col = function(x, main_matrix = FALSE) {
 # -dend a `stats::dendrogram` object.
 # -facing facing of the dendrogram.
 # -max_height maximum height of the dendrogram. It is useful to make dendrograms comparable
-#             if you want to plot more than one dendrograms.
+#             if you want to plot more than one dendrograms. Height for each dendrogram can be obtained by
+#             ``attr(dend, "height")``.
 # -order should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)?
+#        It may matters for the dendrograms putting on left and right.
 # -... pass to `grid::viewport` which contains the dendrogram.
 #
 # == details
@@ -466,14 +468,21 @@ list_component = function() {
 # -text a vector of text
 # -... pass to `grid::textGrob`
 #
+# == details
+# Simply calculate maximum width of a list of `grid::textGrob` objects.
+#
 # == value
 # A `grid::unit` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
+# == seealso
+# `max_text_width` is always used to calculate the size of viewport when there is text annotation (`anno_text`)
+#
 # == example
-# max_text_width(letters, gp = gpar(fontsize = 10))
+# x = c("a", "bb", "ccc")
+# max_text_width(x, gp = gpar(fontsize = 10))
 #
 max_text_width = function(text, ...) {
     max(do.call("unit.c", lapply(text, function(x) grobWidth(textGrob(x, ...)))))
@@ -486,14 +495,21 @@ max_text_width = function(text, ...) {
 # -text a vector of text
 # -... pass to `grid::textGrob`
 #
+# == details
+# Simply calculate maximum height of a list of `grid::textGrob` objects.
+#
 # == value
 # A `grid::unit` object.
+#
+# == seealso
+# `max_text_height` is always used to calculate the size of viewport when there is text annotation (`anno_text`)
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
 # == example
-# max_text_height(letters, gp = gpar(fontsize = 10))
+# x = c("a", "b\nb", "c\nc\nc")
+# max_text_height(x, gp = gpar(fontsize = 10))
 #
 max_text_height = function(text, ...) {
     max(do.call("unit.c", lapply(text, function(x) grobHeight(textGrob(x, ...)))))

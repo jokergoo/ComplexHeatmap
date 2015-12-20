@@ -12,7 +12,7 @@ AdditiveUnit = setClass("AdditiveUnit")
 # Constructor method for AdditiveUnit class
 #
 # == param
-# -... arguments.
+# -... black hole arguments.
 #
 # == details
 # This method is not used in the package.
