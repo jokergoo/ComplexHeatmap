@@ -132,7 +132,9 @@ HeatmapAnnotation = function(df, name, col,
 
 			names(lp) = simple_anno_name
 			for(i in seq_along(lp)) {
-				lp[[i]] = annotation_legend_param[[i]]
+				if(names(lp)[i] %in% names(annotation_legend_param)) {
+					lp[[i]] = annotation_legend_param[[names(lp)[i]]]
+				}
 			}
 			annotation_legend_param = lp
 		} else {
