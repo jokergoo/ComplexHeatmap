@@ -161,7 +161,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 		stop(paste0("You should define shape function for: ", paste(sdf, collapse = ", ")))
 	}
 
-	all_type = names(alter_fun_list)
+	all_type = intersect(all_type, names(alter_fun_list))
 	all_type = setdiff(all_type, "background")
 
 	arr = arr[, , all_type, drop = FALSE]
