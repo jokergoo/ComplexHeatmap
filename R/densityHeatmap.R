@@ -10,6 +10,7 @@
 #       It can also be a `HeatmapAnnotation-class` object.
 # -ylab label on y-axis in the plot
 # -title title of the plot
+# -... pass to `draw,HeatmapList-method`
 #
 # == details
 # To visualize data distribution in a matrix or in a list, sometimes we use boxplot or beanplot.
@@ -40,7 +41,8 @@ densityHeatmap = function(data,
 	color_space = "LAB", 
 	anno = NULL, 
 	ylab = deparse(substitute(data)), 
-	title = paste0("Density heatmap of ", deparse(substitute(data)))) {
+	title = paste0("Density heatmap of ", deparse(substitute(data))),
+	...) {
 
 	if(is.matrix(data)) {
 		density_list = apply(data, 2, density)
@@ -85,7 +87,7 @@ densityHeatmap = function(data,
 	ht_list = rowAnnotation(axis = function(index) NULL, width = grobHeight(textGrob(ylab))*2 + max(grobWidth(textGrob(bb))) + unit(6, "mm")) + 
 		ht + rowAnnotation(quantile = function(index) NULL, width = grobWidth(textGrob("100%")))
 
-	ht_list = draw(ht_list, column_title = title)
+	ht_list = draw(ht_list, column_title = title, ...)
 
 	decorate_annotation("axis", {
 		grid.text(ylab, x = grobHeight(textGrob(ylab)), rot = 90)
