@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-CHANEGS in VERSION 1.7.4
-=======
-CHANEGS in VERSION 1.8.0
->>>>>>> master
+CHANEGS in VERSION 1.9.0
 
 * width of the heatmap body are calculated correctly if it is set as a fixed unit
 * there is no dendrogram is nrows in a row-slice is 1
@@ -10,12 +6,9 @@ CHANEGS in VERSION 1.8.0
 * bottom annotations are attached to the bottom edge of the heatmap 
   if there are additional blank space
 * colors for NA can be set by "_NA_" in annotations
-<<<<<<< HEAD
-=======
 * `row_dend_reorder` and `column_dend_reorder` are set to `TRUE` by default again -_-!!
 * optimize the way to specify na_col in heatmap annotations
 * correct wrong viewport names in decorate_* functions
->>>>>>> master
 
 ===============================
 

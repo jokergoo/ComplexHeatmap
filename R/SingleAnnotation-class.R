@@ -144,11 +144,8 @@ SingleAnnotation = function(name, value, col, fun,
     		if("_NA_" %in% names(col)) {
     			na_col = col["_NA_"]
     			col = col[names(col) != "_NA_"]
-<<<<<<< HEAD
     		} else {
     			na_col = "#FFFFFF"
-=======
->>>>>>> master
     		}
             color_mapping = ColorMapping(name = name, colors = col, na_col = na_col)
         } else if(is.function(col)) {
