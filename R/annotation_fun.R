@@ -970,6 +970,9 @@ column_anno_text = function(...) {
 # This annotation function is used to mark these rows and connect labels and corresponding rows
 # with links.
 #
+# == value
+# A graphic function which can be set in `HeatmapAnnotation` constructor method.
+#
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
