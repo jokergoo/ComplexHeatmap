@@ -236,6 +236,19 @@ Heatmap(matrix(rnorm(nrow(mat)*10), ncol = 10), name = "expr", width = unit(4, "
 draw(ht_list, row_sub_title_side = "left")
 ```
 
+In some scenarios, you don't want to show some of the alterations on the barplots, you can set it by `barplot_ignore` argument.
+
+`````{r, fig.width = 12, fig.height = 8}
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+	alter_fun_list = alter_fun_list, col = col, 
+	remove_empty_columns = TRUE,
+	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
+	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
+		labels = c("Amplification", "Deep deletion", "Mutation")),
+	barplot_ignore = "AMP")
+```
+
+
 ## Session info
 
 ```{r}

@@ -24,6 +24,7 @@
 # -heatmap_legend_param pass to `Heatmap`
 # -top_annotation by default the top annotation contains barplots representing frequency of mutations in every sample.
 # -top_annotation_height height of the top annotation, should be a `grid::unit` object.
+# -barplot_ignore alterations that you don't want to put on the barplots.
 # -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
 # == details
@@ -56,6 +57,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	heatmap_legend_param = list(title = "Alterations"),
 	top_annotation = HeatmapAnnotation(column_bar = anno_column_bar),
 	top_annotation_height = unit(2, "cm"),
+	barplot_ignore = NULL,
 	...) {
 
 	if(length(names(list(...))) > 0) {
@@ -184,6 +186,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 	anno_row_bar = function(index, k = NULL, N = NULL) {
 		n = length(index)
 		count = apply(arr, c(1, 3), sum)[index, , drop = FALSE]
+		all_type = all_type[!(colnames(count) %in% barplot_ignore)]
+		count = count[, setdiff(colnames(count), barplot_ignore), drop = FALSE]
 		max_count = max(rowSums(count))
 		pushViewport(viewport(xscale = c(0, max_count*1.1), yscale = c(0.5, n + 0.5)))
 		for(i in seq_len(nrow(count))) {
@@ -211,6 +215,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 	anno_column_bar = function(index) {
 		n = length(index)
 		count = apply(arr, c(2, 3), sum)[index, , drop = FALSE]
+		all_type = all_type[!(colnames(count) %in% barplot_ignore)]
+		count = count[, setdiff(colnames(count), barplot_ignore), drop = FALSE]
 		max_count = max(rowSums(count))
 		pushViewport(viewport(yscale = c(0, max_count*1.1), xscale = c(0.5, n + 0.5)))
 		for(i in seq_len(nrow(count))) {
