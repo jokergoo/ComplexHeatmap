@@ -134,7 +134,6 @@ SingleAnnotation = function(name, value, col, fun,
     	if(missing(col)) {
     		col = default_col(value)
     	}
-
     	if(is.atomic(col)) {
     		if("_NA_" %in% names(col)) {
     			na_col = col["_NA_"]
@@ -157,16 +156,16 @@ SingleAnnotation = function(name, value, col, fun,
 	        	n = length(index)
 				x = (seq_len(n) - 0.5) / n
 				fill = map_to_colors(color_mapping, value[index])
-				l = which(!is.na(value[index]))
-				grid.rect(x[l], y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill[l]), gp)))
+				#l = which(!is.na(value[index]))
+				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
 			}
 		} else {
 			.Object@fun = function(index, k = NULL, N = NULL) {
 				n = length(index)
 				y = (n - seq_len(n) + 0.5) / n
 				fill = map_to_colors(color_mapping, value[index])
-				l = which(!is.na(value[index]))
-				grid.rect(x = 0.5, y[l], height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill[l]), gp)))
+				#l = which(!is.na(value[index]))
+				grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
 			}
 		}
 
