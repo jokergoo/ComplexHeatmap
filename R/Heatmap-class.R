@@ -1519,7 +1519,7 @@ setMethod(f = "draw_annotation",
     if(which == "top") {
         draw(annotation, index = object@column_order, y = padding, height = unit(1, "npc") - padding, just = "bottom")
     } else {
-        draw(annotation, index = object@column_order, y = unit(0, "mm"), height = unit(1, "npc") - padding, just = "bottom")
+        draw(annotation, index = object@column_order, y = unit(0, "mm"), height = unit(1, "npc") - padding, just = "bottom", align_to = "top")
     }
 })
 

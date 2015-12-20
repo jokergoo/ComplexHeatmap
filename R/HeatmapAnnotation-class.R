@@ -364,6 +364,8 @@ setMethod(f = "get_color_mapping_param_list",
 # -index a vector of order.
 # -k if row annotation is splitted, the value identifies which row slice.
 # -n total number of row slices.
+# -align_to if the allocated space is more than than the column annotation itself, should
+#     the viewport be aligned to the top or bottom?
 # -... pass to `grid::viewport` which contains all annotations.
 #
 # == details
@@ -377,7 +379,7 @@ setMethod(f = "get_color_mapping_param_list",
 #
 setMethod(f = "draw",
 	signature = "HeatmapAnnotation",
-	definition = function(object, index, k = NULL, n = NULL, ...) {
+	definition = function(object, index, k = NULL, n = NULL, align_to = "bottom", ...) {
 
 	which = object@which
 	n_anno = length(object@anno_list)
@@ -387,7 +389,11 @@ setMethod(f = "draw",
 	pushViewport(viewport(...))
 	for(i in seq_len(n_anno)) {
 		if(which == "column") {
-			pushViewport(viewport(y = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], height = anno_size[i], just = c("center", "top")))
+			if(align_to == "bottom") {
+				pushViewport(viewport(y = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], height = anno_size[i], just = c("center", "top")))
+			} else {
+				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno + 1 - i]), height = anno_size[i], just = c("center", "bottom")))
+			}
 		} else {
 			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
 		}

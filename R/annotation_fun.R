@@ -29,7 +29,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 
 	x = x
 	which = match.arg(which)[1]
-	data_scale = range(x)
+	data_scale = range(x, na.rm = TRUE)
 	if(!is.null(ylim)) data_scale = ylim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
@@ -146,7 +146,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 	which = match.arg(which)[1]
 
 	factor = bar_width
-	data_scale = range(x)
+	data_scale = range(x, na.rm = TRUE)
 	if(!is.null(ylim)) data_scale = ylim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
@@ -276,7 +276,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 	which = match.arg(which)[1]
 
 	factor = 0.6
-	data_scale = range(x)
+	data_scale = range(x, na.rm = TRUE)
 	if(!is.null(ylim)) data_scale = ylim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
@@ -462,19 +462,19 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			if(is.matrix(x)) {
 				x = x[index, , drop = FALSE]
-				x_range =range(x)
+				x_range =range(x, na.rm = TRUE)
 				histogram_stats = apply(x, 1, hist, plot = FALSE, breaks = seq(x_range[1], x_range[2], length = 11), ...)
 				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
 				histogram_counts = lapply(histogram_stats, function(x) x$counts)
 			} else {
 				x = x[index]
-				x_range =range(unlist(x))
+				x_range =range(unlist(x), na.rm = TRUE)
 				histogram_stats = lapply(x, hist, plot = FALSE, breaks = seq(x_range[1], x_range[2], length = 11), ...)
 				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
 				histogram_counts = lapply(histogram_stats, function(x) x$counts)
 			}
 
-			xscale = range(unlist(histogram_breaks))
+			xscale = range(unlist(histogram_breaks), na.rm = TRUE)
 			xscale = xscale + c(-0.05, 0.05)*(xscale[2] - xscale[1])
 			yscale = c(0, max(unlist(histogram_counts)))
 			yscale[2] = yscale[2]*1.05
@@ -498,19 +498,19 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 		column = function(index, vp_name = NULL) {
 			if(is.matrix(x)) {
 				x = x[, index, drop = FALSE]
-				x_range = range(x)
+				x_range = range(x, na.rm = TRUE)
 				histogram_stats = apply(x, 2, hist, plot = FALSE, breaks = seq(x_range[1], x_range[2], length = 11), ...)
 				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
 				histogram_counts = lapply(histogram_stats, function(x) x$counts)
 			} else {
 				x = x[index]
-				x_range = range(unlist(x))
+				x_range = range(unlist(x), na.rm = TRUE)
 				histogram_stats = lapply(x, hist, plot = FALSE, breaks = seq(x_range[1], x_range[2], length =11), ...)
 				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
 				histogram_counts = lapply(histogram_stats, function(x) x$counts)
 			}
 
-			yscale = range(unlist(histogram_breaks))
+			yscale = range(unlist(histogram_breaks), na.rm = TRUE)
 			yscale = yscale + c(-0.05, 0.05)*(yscale[2] - yscale[1])
 			xscale = c(0, max(unlist(histogram_counts)))
 			xscale[2] = xscale[2]*1.05
@@ -573,7 +573,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			min_density_x = min(unlist(density_x))
 			max_density_x = max(unlist(density_x))
 			
-			xscale = range(unlist(density_x))
+			xscale = range(unlist(density_x), na.rm = TRUE)
 			xscale = xscale + c(-0.05, 0.05)*(xscale[2] - xscale[1])
 			if(type == "lines") {
 				yscale = c(0, max(unlist(density_y)))
@@ -582,7 +582,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				yscale = max(unlist(density_y))
 				yscale = c(-yscale*1.05, yscale*1.05)
 			} else if(type == "heatmap") {
-				xscale = range(unlist(density_x))
+				xscale = range(unlist(density_x), na.rm = TRUE)
 				yscale = c(0, 1)
 				min_y = min(unlist(density_y))
 				max_y = max(unlist(density_y))
@@ -627,7 +627,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			min_density_x = min(unlist(density_x))
 			max_density_x = max(unlist(density_x))
 			
-			yscale = range(unlist(density_x))
+			yscale = range(unlist(density_x), na.rm = TRUE)
 			yscale = yscale + c(-0.05, 0.05)*(yscale[2] - yscale[1])
 			if(type == "lines") {
 				xscale = c(0, max(unlist(density_y)))
@@ -636,7 +636,7 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				xscale = max(unlist(density_y))
 				xscale = c(-xscale*1.05, xscale*1.05)
 			} else if(type == "heatmap") {
-				yscale = range(unlist(density_x))
+				yscale = range(unlist(density_x), na.rm = TRUE)
 				xscale = c(0, 1)
 				min_y = min(unlist(density_y))
 				max_y = max(unlist(density_y))

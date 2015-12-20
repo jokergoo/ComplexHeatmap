@@ -3,6 +3,8 @@ CHANEGS in VERSION 1.7.4
 * width of the heatmap body are calculated correctly if it is set as a fixed unit
 * there is no dendrogram is nrows in a row-slice is 1
 * add `anno_link()` annotation function
+* bottom annotations are attached to the bottom edge of the heatmap 
+  if there are additional blank space
 
 ===============================
 
