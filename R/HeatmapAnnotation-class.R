@@ -182,7 +182,6 @@ HeatmapAnnotation = function(df, name, col,
 			    } else if(length(anno_arg_list[[ag]]) != simple_length) {
 			    	stop("length of simple annotations differ.")
 			    }
-
 				if(missing(col)) {
 			        anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]])))
 			    } else {
