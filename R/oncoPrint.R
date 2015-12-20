@@ -59,7 +59,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	...) {
 
 	if(length(names(list(...))) > 0) {
-		if(names(list(...)) %in% c("show_column_barplot", "column_barplot_height")) {
+		if(any(names(list(...)) %in% c("show_column_barplot", "column_barplot_height"))) {
 			stop("`show_column_barplot` and `column_barplot_height` is deprecated, please configure `top_annotation` directly.")
 		}
 	}
@@ -244,7 +244,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 				add_oncoprint(type, x, y, width, height)
 			}
 		}, show_column_names = show_column_names,
-		top_annotation = top_annotation, 
+		top_annotation = top_annotation, top_annotation_height = top_annotation_height,
 		heatmap_legend_param = heatmap_legend_param, ...)
 
 	if(show_row_barplot) {
