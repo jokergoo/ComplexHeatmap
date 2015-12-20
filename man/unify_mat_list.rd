@@ -18,6 +18,9 @@ unify_mat_list(mat_list, default = 0)
 \details{
 All matrix will be unified to have same row names and column names
 }
+\value{
+A list of matrix
+}
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }

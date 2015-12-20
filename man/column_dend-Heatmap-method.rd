@@ -17,8 +17,13 @@ Get column dendrograms from a heatmap
 \value{
 A dendrogram object
 }
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
 \examples{
-# There is no example
-NULL
-
+mat = matrix(rnorm(100), 10)
+ht = Heatmap(mat)
+column_dend(ht)
+ht = Heatmap(mat, km = 2)
+column_dend(ht)
 }

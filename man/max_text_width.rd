@@ -15,12 +15,19 @@ max_text_width(text, ...)
   \item{...}{pass to \code{\link[grid]{textGrob}}}
 
 }
+\details{
+Simply calculate maximum width of a list of \code{\link[grid]{textGrob}} objects.
+}
 \value{
 A \code{\link[grid]{unit}} object.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\seealso{
+\code{\link{max_text_width}} is always used to calculate the size of viewport when there is text annotation (\code{\link{anno_text}})
+}
 \examples{
-max_text_width(letters, gp = gpar(fontsize = 10))
+x = c("a", "bb", "ccc")
+max_text_width(x, gp = gpar(fontsize = 10))
 }

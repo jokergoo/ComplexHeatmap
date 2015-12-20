@@ -76,6 +76,20 @@ ha
 draw(ha, 1:10)
 ```
 
+Color for `NA` can be set by `na_col`:
+
+```{r, fig.width = 7, fig.height = 1}
+df2 = data.frame(type = c(rep("a", 5), rep("b", 5)),
+                age = sample(1:20, 10))
+df2$type[5] = NA
+df2$age[5] = NA
+ha = HeatmapAnnotation(df = df2, 
+  col = list(type = c("a" =  "red", "b" = "blue"),
+             age = colorRamp2(c(0, 20), c("white", "red"))),
+  na_col = "grey")
+draw(ha, 1:10)
+```
+
 Put more than one annotations by a data frame.
 
 ```{r heatmap_annotation_mixed, fig.width = 7, fig.height = 1}
@@ -531,7 +545,7 @@ upViewport(2)
 
 ## Mark some of the rows/columns
 
-From version 1.7.4, a new annotation function `anno_link()` was added which connects labels and subset of the rows
+From version 1.8.0, a new annotation function `anno_link()` was added which connects labels and subset of the rows
 by links. It is helpful when there are many rows/columns and we want to mark some of the rows (e.g. in a gene expression
 matrix, we want to mark some important genes of interest.)
 

@@ -7,7 +7,7 @@ Constructor method for HeatmapAnnotation class
 Constructor method for HeatmapAnnotation class
 }
 \usage{
-HeatmapAnnotation(df, name, col,
+HeatmapAnnotation(df, name, col, na_col = "grey",
     annotation_legend_param = list(),
     show_legend = TRUE,
     ...,
@@ -24,6 +24,7 @@ HeatmapAnnotation(df, name, col,
   \item{df}{a data frame. Each column will be treated as a simple annotation. The data frame must have column names.}
   \item{name}{name of the heatmap annotation, optional.}
   \item{col}{a list of colors which contains color mapping to columns in \code{df}. See \code{\link{SingleAnnotation}} for how to set colors.}
+  \item{na_col}{color for \code{NA} values in simple annotations.}
   \item{annotation_legend_param}{a list which contains parameters for annotation legends}
   \item{show_legend}{whether show legend for each column in \code{df}.}
   \item{...}{functions which define complex annotations. Values should be named arguments.}
