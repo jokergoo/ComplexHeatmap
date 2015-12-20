@@ -529,6 +529,23 @@ draw(ht_list, column_title = "reverse axis direction", newpage = FALSE)
 upViewport(2)
 ```
 
+## Mark some of the rows/columns
+
+From version 1.7.4, a new annotation function `anno_link()` was added which connects labels and subset of the rows
+by links. It is helpful when there are many rows/columns and we want to mark some of the rows (e.g. in a gene expression
+matrix, we want to mark some important genes of interest.)
+
+```{r}
+mat = matrix(rnorm(10000), nr = 1000)
+labels = sample(letters, 20, replace = TRUE)
+Heatmap(mat, show_row_dend = FALSE, show_column_dend = FALSE) + 
+rowAnnotation(link = row_anno_link(at = sample(1000, 20), labels = labels),
+  width = unit(1, "cm") + max_text_width(labels))
+# here unit(1, "cm") is width of segments
+```
+
+There are also two shortcut functions: `row_anno_link()` and `column_anno_link()`.
+
 ## Session info
 
 ```{r}
