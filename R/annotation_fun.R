@@ -951,3 +951,161 @@ column_anno_text = function(...) {
 	anno_text(..., which = "column")
 }
 
+# == title
+# Link annotation with labels
+#
+# == param
+# -at numeric index in the original matrix
+# -labels corresponding labels
+# -which column annotaiton or row annotation
+# -side side of the labels. If it is a column annotation, permitted values are "top" and "bottom";
+#       If it is a row annotation, permitted values are "left" and "right".
+# -lines_gp graphic settings for the segments
+# -labels_gp graphic settings for the labels
+# -padding padding between labels if they are attached to each other
+# -link_width, width of the segments.
+#
+# == details
+# Sometimes there are many rows or columns in the heatmap and we want to mark some of the rows.
+# This annotation function is used to mark these rows and connect labels and corresponding rows
+# with links.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
+	lines_gp = gpar(), labels_gp = gpar(), padding = 0.25, link_width = NULL) {
+
+	at = at
+	if(!is.numeric(at)) {
+		stop("`at` should be numeric index.")
+	}
+	labels = labels
+	which = match.arg(which)[1]
+	lines_gp = check_gp(lines_gp)
+	labels_gp = check_gp(labels_gp)
+	padding = padding
+
+	od = order(at)
+	at = at[od]
+	labels = labels[od]
+
+	f = switch(which,
+		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
+			n = length(index)
+			l = which(at %in% index)
+			at = at[l]
+			labels = labels[l]
+			int = intersect(index, at)
+			int = structure(seq_along(int), names = int)
+			labels = rev(labels[int[as.character(intersect(at, index))]])
+			
+			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
+			if(length(labels)) {
+				text_height = convertHeight(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
+				i2 = rev(which(index %in% at))
+				h1 = n-i2+1 - text_height*0.5
+				h2 = n-i2+1 + text_height*0.5
+				pos = rev(smartAlign(h1, h2, c(0.5, n+0.5)))
+				h = (pos[, 1] + pos[, 2])/2
+
+				if(is.null(link_width)) {
+					if(convertWidth(unit(1, "npc") - max_text_width(labels, gp = labels_gp), "mm", valueOnly = TRUE) < 0) {
+						link_width = unit(0.5, "npc")
+					} else {
+						link_width = unit(1, "npc") - max_text_width(labels, gp = labels_gp)
+					}
+				}
+				n2 = length(labels)
+				if(side == "right") {
+					grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "left")
+					link_width = link_width - unit(1, "mm")
+					grid.segments(unit(rep(0, n2), "npc"), n-i2+1, rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = lines_gp)
+					grid.segments(rep(link_width*(1/3), n2), n-i2+1, rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
+					grid.segments(rep(link_width*(2/3), n2), h, rep(link_width, n2), h, default.units = "native", gp = lines_gp)
+				} else {
+					grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
+					link_width = link_width - unit(1, "mm")
+					grid.segments(unit(rep(1, n2), "npc"), n-i2+1, unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = lines_gp)
+					grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
+					grid.segments(unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = lines_gp)
+				}
+			}
+			upViewport()
+		},
+		column = function(index, vp_name = NULL) {
+			n = length(index)
+			int = intersect(index, at)
+			int = structure(seq_along(int), names = int)
+			labels = rev(labels[int[as.character(intersect(at, index))]])
+			pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
+			text_height = convertWidth(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
+			i2 = which(index %in% at)
+			h1 = i2 - text_height*0.5
+			h2 = i2 + text_height*0.5
+			pos = smartAlign(h1, h2, c(0.5, n+0.5))
+			h = (pos[, 1] + pos[, 2])/2
+			if(is.null(link_width)) {
+				if(convertHeight(unit(1, "npc") - max_text_width(labels, gp = labels_gp), "mm", valueOnly = TRUE) < 0) {
+					link_width = unit(0.5, "npc")
+				} else {
+					link_width = unit(1, "npc") - max_text_width(labels, gp = labels_gp)
+				}
+			}
+			n2 = length(labels)
+			if(side == "top") {
+				grid.text(labels, h, rep(link_width, n2), default.units = "native", gp = labels_gp, rot = 90, just = "left")
+				link_width = link_width - unit(1, "mm")
+				grid.segments(i2, unit(rep(0, n2), "npc"), i2, rep(link_width*(1/3), n2), default.units = "native", gp = lines_gp)
+				grid.segments(i2, rep(link_width*(1/3), n2), h, rep(link_width*(2/3), n2), default.units = "native", gp = lines_gp)
+				grid.segments(h, rep(link_width*(2/3), n2), h, rep(link_width, n), default.units = "native", gp = lines_gp)
+			} else {
+				grid.text(labels, h, rep(link_width, n2), default.units = "native", gp = labels_gp, rot = 90, just = "right")
+				link_width = link_width - unit(1, "mm")
+				grid.segments(i2, unit(rep(1, n2), "npc"), i2, unit(1, "npc")-rep(link_width*(1/3), n2), default.units = "native", gp = lines_gp)
+				grid.segments(i2, unit(1, "npc")-rep(link_width*(1/3), n2), h, unit(1, "npc")-rep(link_width*(2/3), n2), default.units = "native", gp = lines_gp)
+				grid.segments(h, unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), default.units = "native", gp = lines_gp)
+			}
+			upViewport()
+		})
+	attr(f, "which") = which
+	attr(f, "fun") = "anno_link"
+	return(f)
+}
+
+# == title
+# Column annotation which is represented as links
+#
+# == param
+# -... pass to `anno_link`
+#
+# == details
+# A wrapper of `anno_link` with pre-defined ``which`` to ``row``.
+#
+# == value
+# See help page of `anno_link`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+row_anno_link = function(...) {
+	anno_link(..., which = "row")
+}
+
+# == title
+# Column annotation which is represented as links
+#
+# == param
+# -... pass to `anno_link`
+#
+# == details
+# A wrapper of `anno_link` with pre-defined ``which`` to ``column``.
+#
+# == value
+# See help page of `anno_link`
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+column_anno_link = function(...) {
+	anno_link(..., which = "column")
+}
