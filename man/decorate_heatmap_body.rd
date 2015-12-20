@@ -11,9 +11,9 @@ decorate_heatmap_body(heatmap, code, slice = 1)
 }
 \arguments{
 
-  \item{heatmap}{name of the heatmap}
+  \item{heatmap}{name of the heatmap which is set as \code{name} option in \code{\link{Heatmap}} function}
   \item{code}{code that adds graphics in the selected heatmap body}
-  \item{slice}{index of row slices in the heatmap}
+  \item{slice}{index of row slices in the heatmap if it is split by rows}
 
 }
 \details{

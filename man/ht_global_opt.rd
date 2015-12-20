@@ -1,10 +1,10 @@
 \name{ht_global_opt}
 \alias{ht_global_opt}
 \title{
-Global options for heatmaps
+Global graphic options for heatmaps
 }
 \description{
-Global options for heatmaps
+Global graphic options for heatmaps
 }
 \usage{
 ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)
@@ -18,8 +18,8 @@ ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL)
 }
 \details{
 You can set some parameters for all heatmaps/annotations simultaneously by this global function.
-Pleast note you should better to put it in the first beginning of your heatmap code and reset
-all option values to get avoid of affecting next heatmap plotting.
+Pleast note you should put it before your heatmap code and reset
+all option values after drawing the heatmaps to get rid of affecting next heatmap plotting.
 
 There are following parameters:
 

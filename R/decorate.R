@@ -2,9 +2,9 @@
 # Decorate the heatmap body
 #
 # == param
-# -heatmap name of the heatmap
+# -heatmap name of the heatmap which is set as ``name`` option in `Heatmap` function
 # -code code that adds graphics in the selected heatmap body
-# -slice index of row slices in the heatmap
+# -slice index of row slices in the heatmap if it is split by rows
 #
 # == details
 # There is a viewport for each row slice in each heatmap.

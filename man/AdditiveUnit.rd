@@ -11,7 +11,7 @@ AdditiveUnit(...)
 }
 \arguments{
 
-  \item{...}{arguments.}
+  \item{...}{black hole arguments.}
 
 }
 \details{

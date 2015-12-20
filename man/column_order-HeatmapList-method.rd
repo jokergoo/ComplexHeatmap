@@ -17,8 +17,13 @@ Get column order from a heatmap list
 \value{
 A list contains column orders which correspond every matrix
 }
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
 \examples{
-# There is no example
-NULL
-
+mat = matrix(rnorm(100), 10)
+ht_list = Heatmap(mat) + Heatmap(mat)
+column_order(ht_list)
+ht = Heatmap(mat, km = 2) + Heatmap(mat)
+column_order(ht_list)
 }

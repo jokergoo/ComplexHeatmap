@@ -16,7 +16,7 @@ SingleAnnotation(name, value, col, fun,
 }
 \arguments{
 
-  \item{name}{name for this annotation. If it is not specified, an internal name is assigned to it.}
+  \item{name}{name for this annotation. If it is not specified, an internal name is assigned.}
   \item{value}{A vector of discrete or continuous annotation.}
   \item{col}{colors corresponding to \code{value}. If the mapping is discrete mapping, the value of \code{col} should be a vector; If the mapping is continuous mapping, the value of \code{col} should be  a color mapping function. }
   \item{fun}{a self-defined function to add annotation graphics. The argument of this function should only  be a vector of index that corresponds to rows or columns.}
@@ -43,6 +43,10 @@ and \code{fun} will be applied on each of the row slices.
 
 One thing that users should be careful is the difference of coordinates when the annotation is a row
 annotation or a column annotation.
+}
+\seealso{
+There are following built-in annotation functions that can be used to generate complex annotations: 
+\code{\link{anno_points}}, \code{\link{anno_barplot}}, \code{\link{anno_histogram}}, \code{\link{anno_boxplot}}, \code{\link{anno_density}}, \code{\link{anno_text}} and \code{\link{anno_link}}.
 }
 \value{
 A \code{\link{SingleAnnotation-class}} object.

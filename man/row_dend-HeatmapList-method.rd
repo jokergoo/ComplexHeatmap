@@ -17,8 +17,13 @@ Get row dendrograms from a heatmap list
 \value{
 A list of dendrograms for which each dendrogram corresponds to a row slice
 }
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
 \examples{
-# There is no example
-NULL
-
+mat = matrix(rnorm(100), 10)
+ht_list = Heatmap(mat) + Heatmap(mat)
+row_dend(ht_list)
+ht_list = Heatmap(mat, km = 2) + Heatmap(mat)
+row_dend(ht_list)
 }

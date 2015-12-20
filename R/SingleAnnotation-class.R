@@ -48,7 +48,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Constructor method for SingleAnnotation class
 #
 # == param
-# -name name for this annotation. If it is not specified, an internal name is assigned to it.
+# -name name for this annotation. If it is not specified, an internal name is assigned.
 # -value A vector of discrete or continuous annotation.
 # -col colors corresponding to ``value``. If the mapping is discrete mapping, the value of ``col``
 #      should be a vector; If the mapping is continuous mapping, the value of ``col`` should be 
@@ -78,6 +78,10 @@ SingleAnnotation = setClass("SingleAnnotation",
 # One thing that users should be careful is the difference of coordinates when the annotation is a row
 # annotation or a column annotation. 
 #
+# == seealso
+# There are following built-in annotation functions that can be used to generate complex annotations: 
+# `anno_points`, `anno_barplot`, `anno_histogram`, `anno_boxplot`, `anno_density`, `anno_text` and `anno_link`.
+# 
 # == value
 # A `SingleAnnotation-class` object.
 #
