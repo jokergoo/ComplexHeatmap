@@ -1,4 +1,4 @@
-CHANEGS in VERSION 1.9.0
+CHANEGS in VERSION 1.9.1
 
 * width of the heatmap body are calculated correctly if it is set as a fixed unit
 * there is no dendrogram is nrows in a row-slice is 1
