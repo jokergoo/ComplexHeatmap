@@ -67,6 +67,8 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
 				gp = subset_gp(gp, index)
+			} else if(max(sapply(gp, length)) == length(x)) {
+				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
 			}
@@ -179,10 +181,11 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			n = length(index)
-			
 			if(is.null(k)) {
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
+				gp = subset_gp(gp, index)
+			} else if(max(sapply(gp, length)) == length(x)) {
 				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
@@ -312,10 +315,12 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 
 			if(is.matrix(x)) {
+				n_all = nrow(x)
 				if(axis_direction == "reverse") x = data_scale[2] - x + data_scale[1]
 				x = x[index, , drop = FALSE]
 				boxplot_stats = boxplot(t(x), plot = FALSE)$stats
 			} else {
+				n_all = length(x)
 				if(axis_direction == "reverse") x = lapply(x, function(y) data_scale[2] - y + data_scale[1])
 				x = x[index]
 				boxplot_stats = boxplot(x, plot = FALSE)$stats
@@ -326,9 +331,13 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
 				gp = subset_gp(gp, index)
+			} else if(max(sapply(gp, length)) == n_all) {
+				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
 			}
+
+			gp = recycle_gp(gp, length(index))
 			if(n != ncol(boxplot_stats)) {
 				stop(paste0("Length of index should be ", ncol(boxplot_stats)))
 			}
@@ -467,12 +476,14 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			if(is.matrix(x)) {
+				n_all = nrow(x)
 				x = x[index, , drop = FALSE]
 				x_range =range(x, na.rm = TRUE)
 				histogram_stats = apply(x, 1, hist, plot = FALSE, breaks = seq(x_range[1], x_range[2], length = 11), ...)
 				histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
 				histogram_counts = lapply(histogram_stats, function(x) x$counts)
 			} else {
+				n_all = length(x)
 				x = x[index]
 				x_range =range(unlist(x), na.rm = TRUE)
 				histogram_stats = lapply(x, hist, plot = FALSE, breaks = seq(x_range[1], x_range[2], length = 11), ...)
@@ -490,16 +501,19 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
 				gp = subset_gp(gp, index)
+			} else if(max(sapply(gp, length)) == n_all) {
+				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
 			}
+			gp = recycle_gp(gp, length(index))
 			if(n != length(histogram_counts)) {
 				stop(paste0("Length of index should be ", length(histogram_counts)))
 			}
 			for(i in seq_len(n)) {
 				n_breaks = length(histogram_breaks[[i]])
 				pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), height = unit(1/n, "npc"), just = c("left", "bottom"), xscale = xscale, yscale = yscale))
-				grid.rect(x = histogram_breaks[[i]][-1], y = 0, width = histogram_breaks[[i]][-1] - histogram_breaks[[i]][-n_breaks], height = histogram_counts[[i]], just = c("right", "bottom"), default.units = "native", gp = subset_gp(gp, index[i]))	
+				grid.rect(x = histogram_breaks[[i]][-1], y = 0, width = histogram_breaks[[i]][-1] - histogram_breaks[[i]][-n_breaks], height = histogram_counts[[i]], just = c("right", "bottom"), default.units = "native", gp = subset_gp(gp, i))	
 				upViewport()
 			}
 		},
@@ -568,11 +582,13 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			if(is.matrix(x)) {
+				n_all = nrow(x)
 				x = x[index, , drop = FALSE]
 				density_stats = apply(x, 1, density, ...)
 				density_x = lapply(density_stats, function(x) x$x)
 				density_y = lapply(density_stats, function(x) x$y)
 			} else {
+				n_all = length(x)
 				x = x[index]
 				density_stats = lapply(x, density, ...)
 				density_x = lapply(density_stats, function(x) x$x)
@@ -601,18 +617,21 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
 				gp = subset_gp(gp, index)
+			} else if(max(sapply(gp, length)) == n_all) {
+				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
 			}
+			gp = recycle_gp(gp, length(index))
 			if(n != length(density_x)) {
 				stop(paste0("Length of index should be ", length(density_x)))
 			}
 			for(i in seq_len(n)) {
 				pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), just = c("left", "bottom"), height = unit(1/n, "npc"), xscale = xscale, yscale = yscale))
 				if(type == "lines") {
-					grid.polygon(x = density_x[[i]], y = density_y[[i]], default.units = "native", gp = subset_gp(gp, index[i]))
+					grid.polygon(x = density_x[[i]], y = density_y[[i]], default.units = "native", gp = subset_gp(gp, i))
 				} else if(type == "violin") {
-					grid.polygon(x = c(density_x[[i]], rev(density_x[[i]])), y = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", gp = subset_gp(gp, index[i]))
+					grid.polygon(x = c(density_x[[i]], rev(density_x[[i]])), y = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", gp = subset_gp(gp, i))
 				} else if(type == "heatmap") {
 					n_breaks = length(density_x[[i]])
 					grid.rect(x = density_x[[i]][-1], y = 0, width = density_x[[i]][-1] - density_x[[i]][-n_breaks], height = 1, just = c("right", "bottom"), default.units = "native", gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), col = NA))
@@ -715,6 +734,8 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 			if(is.null(k)) {
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
+				gp = subset_gp(gp, index)
+			} else if(max(sapply(gp, length)) == length(x)) {
 				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
