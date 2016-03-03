@@ -264,6 +264,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 # -border whether show border of the annotation compoment
 # -gp graphic parameters
 # -ylim data ranges.
+# -outline whether draw outliers
 # -pch point type
 # -size point size
 # -axis whether add axis
@@ -279,7 +280,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
-	gp = gpar(fill = "#CCCCCC"), ylim = NULL,
+	gp = gpar(fill = "#CCCCCC"), ylim = NULL, outline = TRUE,
 	pch = 16, size = unit(2, "mm"), axis = FALSE, axis_side = NULL, 
 	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse")) {
 
@@ -365,19 +366,21 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			grid.segments(boxplot_stats[3, ], n - seq_along(index) + 1 - 0.5*factor, 
 				          boxplot_stats[3, ], n - seq_along(index) + 1 + 0.5*factor, 
 				default.units = "native", gp = gp)
-			if(is.matrix(x)) {
-				for(i in seq_len(nrow(x))) {
-					l1 = x[i,] > boxplot_stats[5,i]
-					if(sum(l1)) grid.points(y = rep(i, sum(l1)), x = x[i,][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
-					l2 = x[i,] < boxplot_stats[1,i]
-					if(sum(l2)) grid.points(y = rep(i, sum(l2)), x = x[i,][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
-				}
-			} else {
-				for(i in seq_along(x)) {
-					l1 = x[[i]] > boxplot_stats[5,i]
-					if(sum(l1)) grid.points(y = rep(i, sum(l1)), x = x[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
-					l2 = x[[i]] < boxplot_stats[1,i]
-					if(sum(l2)) grid.points(y = rep(i, sum(l2)), x = x[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+			if(outline) {
+				if(is.matrix(x)) {
+					for(i in seq_len(nrow(x))) {
+						l1 = x[i,] > boxplot_stats[5,i]
+						if(sum(l1)) grid.points(y = rep(i, sum(l1)), x = x[i,][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						l2 = x[i,] < boxplot_stats[1,i]
+						if(sum(l2)) grid.points(y = rep(i, sum(l2)), x = x[i,][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+					}
+				} else {
+					for(i in seq_along(x)) {
+						l1 = x[[i]] > boxplot_stats[5,i]
+						if(sum(l1)) grid.points(y = rep(i, sum(l1)), x = x[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						l2 = x[[i]] < boxplot_stats[1,i]
+						if(sum(l2)) grid.points(y = rep(i, sum(l2)), x = x[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+					}
 				}
 			}
 			at = grid.pretty(data_scale)
@@ -428,19 +431,21 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			grid.segments(seq_along(index) - 0.5*factor, boxplot_stats[3, ],
 				          seq_along(index) + 0.5*factor, boxplot_stats[3, ], 
 				default.units = "native", gp = gp)
-			if(is.matrix(x)) {
-				for(i in seq_len(ncol(x))) {
-					l1 = x[,i] > boxplot_stats[5,i]
-					if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = x[,i][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
-					l2 = x[,i] < boxplot_stats[1,i]
-					if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = x[,i][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
-				}
-			} else {
-				for(i in seq_along(x)) {
-					l1 = x[[i]] > boxplot_stats[5,i]
-					if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = x[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
-					l2 = x[[i]] < boxplot_stats[1,i]
-					if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = x[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+			if(outline) {
+				if(is.matrix(x)) {
+					for(i in seq_len(ncol(x))) {
+						l1 = x[,i] > boxplot_stats[5,i]
+						if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = x[,i][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						l2 = x[,i] < boxplot_stats[1,i]
+						if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = x[,i][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+					}
+				} else {
+					for(i in seq_along(x)) {
+						l1 = x[[i]] > boxplot_stats[5,i]
+						if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = x[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						l2 = x[[i]] < boxplot_stats[1,i]
+						if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = x[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+					}
 				}
 			}
 			if(axis) {
