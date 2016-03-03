@@ -54,9 +54,11 @@ selectArea = function(mark = FALSE) {
 		pos1$y = tmp
 	}
 
-	# grid.rect( (0.5*pos1$x + 0.5*pos2$x), (0.5*pos1$y + 0.5*pos2$y),
-	# 	abs_width(pos2$x - pos1$x), abs_height(pos2$y - pos1$y), gp = gpar(col = "orange") )
+	grid.rect( (0.5*pos1$x + 0.5*pos2$x), (0.5*pos1$y + 0.5*pos2$y),
+		abs_width(pos2$x - pos1$x), abs_height(pos2$y - pos1$y), gp = gpar(col = "orange") )
 
+	# calcualte each heatmap's position under main_heatmap_list viewport
+	vp_cumsum = unit(0, "mm")
 	for(i in seq_along(.LAST_HT_LIST$object@ht_list)) {
 		if(inherits(.LAST_HT_LIST$object@ht_list[[i]], "Heatmap")) {
 			ht = .LAST_HT_LIST$object@ht_list[[i]]
@@ -67,7 +69,7 @@ selectArea = function(mark = FALSE) {
 			seekViewport("main_heatmap_list")
 			pos1_cp = list()
 			pos2_cp = list()
-
+browser()
 			# relative to current heatmap body
 			pos1_cp$x = pos1$x - convertWidth(vp$x, "mm") - sum(component_width(ht, 1:3))
 			pos1_cp$y = pos1$y - convertHeight(vp$y, "mm") - sum(component_height(ht, 6:9))

@@ -235,6 +235,7 @@ setMethod(f = "make_layout",
     }
 
     nr = nrow(object@ht_list[[i_main]]@matrix)
+    object@ht_list_param$main_heatmap = i_main
 
     if(n > 1) {
         if(length(gap) == 1) {
@@ -372,6 +373,15 @@ setMethod(f = "make_layout",
         object@ht_list[[n]]@row_title_param = ht_main@row_title_param
         object@ht_list[[n]]@row_title_param$side = "right"
         object@ht_list[[n]]@row_title_just = get_text_just(ht_main@row_title_rot, "right")
+    }
+
+    # gap 
+    for(i in seq_len(n)) {
+        if(inherits(object@ht_list[[i]], "Heatmap")) {
+            object@ht_list[[i]]@matrix_param$gap = ht_main@matrix_param$gap
+        } else {
+            object@ht_list[[i]]@gap = ht_main@matrix_param$gap
+        }
     }
 
     for(i in seq_len(n)) {
@@ -872,8 +882,8 @@ setMethod(f = "draw_heatmap_list",
     pushViewport(viewport(name = "main_heatmap_list"))
     
     x = unit(0, "npc")
-    kk = which(sapply(object@ht_list, inherits, "Heatmap"))[1]
-    htkk = object@ht_list[[kk]]
+    i_main = object@ht_list_param$main_heatmap
+    htkk = object@ht_list[[i_main]]
     slice_gap = htkk@matrix_param$gap
     n_slice = length(htkk@row_order_list)
     snr = sapply(htkk@row_order_list, length)
