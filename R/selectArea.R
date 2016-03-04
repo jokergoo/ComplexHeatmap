@@ -21,10 +21,10 @@
 # # No example for this function
 # NULL
 # 
-selectArea = function(mark = FALSE) {
+selectArea = function(mark = TRUE) {
 
 	if(!interactive()) {
-		stop("`select()` can only be used under interactive mode.")
+		stop("`selectArea()` can only be used under interactive mode.")
 	}
 
 	x = dev.cur()
@@ -54,8 +54,8 @@ selectArea = function(mark = FALSE) {
 		pos1$y = tmp
 	}
 
-	grid.rect( (0.5*pos1$x + 0.5*pos2$x), (0.5*pos1$y + 0.5*pos2$y),
-		abs_width(pos2$x - pos1$x), abs_height(pos2$y - pos1$y), gp = gpar(col = "orange") )
+	# grid.rect( (0.5*pos1$x + 0.5*pos2$x), (0.5*pos1$y + 0.5*pos2$y),
+	# 	abs_width(pos2$x - pos1$x), abs_height(pos2$y - pos1$y), gp = gpar(col = "orange") )
 
 	# calcualte each heatmap's position under main_heatmap_list viewport
 	vp_cumsum = unit(0, "mm")
@@ -69,7 +69,7 @@ selectArea = function(mark = FALSE) {
 			seekViewport("main_heatmap_list")
 			pos1_cp = list()
 			pos2_cp = list()
-browser()
+
 			# relative to current heatmap body
 			pos1_cp$x = pos1$x - convertWidth(vp$x, "mm") - sum(component_width(ht, 1:3))
 			pos1_cp$y = pos1$y - convertHeight(vp$y, "mm") - sum(component_height(ht, 6:9))
