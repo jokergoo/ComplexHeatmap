@@ -23,7 +23,7 @@ This function contructs the name of the viewport,
 goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
 to that viewport.
 
-Since you know the number of leaves in the dendrogram, it is
+If you know the number of leaves in the dendrogram, it is
 simple to calculate the position of every leave in the dendrogram.
 E.g., for the column dendrogram, the i^th leave is located at:
 

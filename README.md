@@ -90,7 +90,7 @@ to specific target regions.
 There are several vignettes in the package. Each vignette focuses on a specific topic. Following
 lists the general topics discussed in these vignettes:
 
-  1. [**Making a Single Heatmap**](http://http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s2.single_heatmap.html)
+  1. [**Making a Single Heatmap**](http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s2.single_heatmap.html)
 
     This vignette introduces the basic configuration for making a single heatmap. Similar as other
     R functions/packages, the basic usage is quite similar, but there are several unique features
@@ -112,36 +112,36 @@ lists the general topics discussed in these vignettes:
       different levels that split the heatmap.
     - The heatmap body itself can be completely self-defined.
 
-  2. [**Making a List of Heatmaps**](http://http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s3.a_list_of_heatmaps.html)
+  2. [**Making a List of Heatmaps**](http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s3.a_list_of_heatmaps.html)
 
     This vignette introduces how to concatenate a list of heatmaps and how adjustment is applied to keep
     the correspondence of the heatmaps.
 
-  3. [**Heatmap Annotations**](http://http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s4.heatmap_annotation.html)
+  3. [**Heatmap Annotations**](http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s4.heatmap_annotation.html)
 
     This vignette introduces the concept of the heatmap annotation and demonstrate how to make simple annotations
     as well as complex annotations. Also, the vignette explains the difference between column annotations
     and row annotations.
 
-  4. [**Heatmap and Annotation Legends**](http://http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s5.legend.html)
+  4. [**Heatmap and Annotation Legends**](http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s5.legend.html)
 
     This vignette introduces how to configurate the heatmap legend and annotation legend, also
     how to add self-defined legends.
 
-  5. [**Heatmap Decoration**](http://http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s6.heatmap_decoration.html)
+  5. [**Heatmap Decoration**](http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s6.heatmap_decoration.html)
 
     This vignette introduces methods to add more self-defined graphics to the heatmaps after the heatmaps
     are generated.
 
-  6. [**Interactive with Heatmaps**](http://http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s7.interactive.html)
+  6. [**Interactive with Heatmaps**](http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s7.interactive.html)
 
     How to select a region in the heatmap to retrieve the sub-matrix.
   
-  7. [**OncoPrint**](http://http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s8.oncoprint.html)
+  7. [**OncoPrint**](http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s8.oncoprint.html)
 
     How to make an oncoPrint.
 
-  8. [**Examples**](http://http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s9.examples.html)
+  8. [**Examples**](http://www.bioconductor.org/packages/devel/bioc/vignettes/ComplexHeatmap/inst/doc/s9.examples.html)
 
     More simulated and real-world examples are shown in this vignette.
     

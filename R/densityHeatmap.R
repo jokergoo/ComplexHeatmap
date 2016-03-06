@@ -4,14 +4,14 @@
 #
 # == param
 # -data  a matrix or a list. If it is a matrix, density will be calculated by columns.
-# -col a list of colors that density values are scaled to.
+# -col a list of colors that density values are mapped to.
 # -color_space the color space in which colors are interpolated. Pass to `circlize::colorRamp2`.
-# -anno annotation for the matrix columns or the list. The value should be a vector or a data frame. 
-#       It can also be a `HeatmapAnnotation-class` object.
+# -anno annotation for the matrix columns or the list. The value should be a vector or a data frame 
+#       and colors for annotations are randomly assigned. If you want to customize the annotation colors,
+#       use a `HeatmapAnnotation-class` object directly.
 # -ylab label on y-axis in the plot
 # -title title of the plot
-# -range ranges on the y-axis. The lower bound is the maximul value between ``range[[1]]`` and minimal value
-#        in the data and the upper bound is the minimal value between ``range[[2]]`` and maximul value in the data.
+# -range ranges on the y-axis. By default the range is between 1th quantile and 99th quantile of the data.
 # -... pass to `draw,HeatmapList-method`
 #
 # == details
@@ -32,7 +32,8 @@
 # densityHeatmap(matrix, anno = rep(c("A", "B"), each = 5))
 # densityHeatmap(matrix, col = c("white", "red"), anno = rep(c("A", "B"), each = 5))
 #
-# ha = HeatmapAnnotation(points = anno_points(runif(10)))
+# ha = HeatmapAnnotation(points = anno_points(runif(10)),
+#     anno = rep(c("A", "B"), each = 5), col = list(anno = c("A" = "red", "B" = "blue")))
 # densityHeatmap(matrix, anno = ha)
 #
 # lt = list(rnorm(10), rnorm(10))
@@ -60,8 +61,8 @@ densityHeatmap = function(data,
 	n = length(density_list)
 	nm = names(density_list)
 
-	max_x = max(unlist(lapply(density_list, function(x) x$x)))
-	min_x = min(unlist(lapply(density_list, function(x) x$x)))
+	max_x = quantile(unlist(lapply(density_list, function(x) x$x)), 0.99)
+	min_x = quantile(unlist(lapply(density_list, function(x) x$x)), 0.01)
 
 	max_x = min(max_x, range[2])
 	min_x = max(min_x, range[1])

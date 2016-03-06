@@ -44,7 +44,11 @@
 # The `HeatmapList-class` provides following methods:
 #
 # - `draw,HeatmapList-method`: draw the list of heatmaps and row annotations.
-# - `add_heatmap,HeatmapList-method` add heatmaps to the list of heatmaps.
+# - `add_heatmap,HeatmapList-method`: add heatmaps to the list of heatmaps.
+# - `row_order,HeatmapList-method`: get order of rows
+# - `column_order,HeatmapList-method`: get order of columns
+# - `row_dend,HeatmapList-method`: get row dendrograms
+# - `column_dend,HeatmapList-method`: get column dendrograms
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
