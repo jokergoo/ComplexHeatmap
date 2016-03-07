@@ -72,8 +72,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 	}
 	
 	# convert mat to mat_list
-	if(inherits(mat, "matrix")) {
-
+	if(inherits(mat, "matrix") || inherits(mat, "data.frame")) {
+		if(inherits(mat, "data.frame")) mat = as.matrix(mat)
 		all_type = unique(unlist(lapply(mat, get_type)))
 		all_type = all_type[!is.na(all_type)]
 		all_type = all_type[grepl("\\S", all_type)]
