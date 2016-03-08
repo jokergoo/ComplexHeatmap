@@ -12,7 +12,7 @@ oncoPrint(mat, get_type = function(x) x,
     row_order = oncoprint_row_order(),
     column_order = oncoprint_column_order(),
     show_column_names = FALSE,
-    pct_gp = gpar(), pct_digits = 0,
+    show_pct = TRUE, pct_gp = gpar(), pct_digits = 0,
     axis_gp = gpar(fontsize = 8),
     show_row_barplot = TRUE,
     row_barplot_width = unit(2, "cm"),
@@ -33,6 +33,7 @@ oncoPrint(mat, get_type = function(x) x,
   \item{row_order}{order of genes. By default it is sorted by frequency of alterations decreasingly. Set it to \code{NULL} if you don't want to set the order}
   \item{column_order}{order of samples. By default the order is calculated by the 'memo sort' method which can visualize the mutual exclusivity across genes. Set it to \code{NULL} if you don't want to set the order}
   \item{show_column_names}{whether show column names}
+  \item{show_pct}{whether show percent values on the left of the oncoprint}
   \item{pct_gp}{graphic paramters for percent row annotation}
   \item{pct_digits}{digits for percent values}
   \item{axis_gp}{graphic paramters for axes}

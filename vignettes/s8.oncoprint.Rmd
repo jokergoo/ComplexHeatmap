@@ -140,7 +140,9 @@ oncoPrint(mat_list,
     alter_fun = function(x, y, w, h, v) {
 		n = sum(v)
 		h = h*0.9
-		if(n) grid.rect(x, y - h*0.5 + 1:n/n*h, w*0.9, 1/n*h, gp = gpar(fill = col[which(v)], col = NA), just = "top")
+		# use `names(which(v))` to correctly map between `v` and `col`
+		if(n) grid.rect(x, y - h*0.5 + 1:n/n*h, w*0.9, 1/n*h, 
+			gp = gpar(fill = col[names(which(v))], col = NA), just = "top")
     }, col = col)
 ```
 
