@@ -14,6 +14,7 @@ densityHeatmap(data,
     ylab = deparse(substitute(data)),
     title = paste0("Density heatmap of ", deparse(substitute(data))),
     range = c(-Inf, Inf),
+    column_order = NULL,
     ...)
 }
 \arguments{
@@ -25,6 +26,7 @@ densityHeatmap(data,
   \item{ylab}{label on y-axis in the plot}
   \item{title}{title of the plot}
   \item{range}{ranges on the y-axis. By default the range is between 1th quantile and 99th quantile of the data.}
+  \item{column_order}{order of columns}
   \item{...}{pass to \code{\link{draw,HeatmapList-method}}}
 
 }
