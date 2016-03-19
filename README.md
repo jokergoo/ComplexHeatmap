@@ -1,14 +1,13 @@
-[![Build Status](https://travis-ci.org/jokergoo/ComplexHeatmap.svg)](https://travis-ci.org/jokergoo/ComplexHeatmap)
+[![Build Status](https://travis-ci.org/jokergoo/ComplexHeatmap.svg)](https://travis-ci.org/jokergoo/ComplexHeatmap) [![codecov](https://img.shields.io/codecov/c/github/jokergoo/ComplexHeatmap.svg)](https://codecov.io/github/jokergoo/ComplexHeatmap) [![bioc](http://www.bioconductor.org/shields/downloads/ComplexHeatmap.svg)](http://bioconductor.org/packages/stats/bioc/ComplexHeatmap.html) ![bioc](http://www.bioconductor.org/shields/years-in-bioc/ComplexHeatmap.svg)
 
-Make Complex Heatmaps
-=========================
+## Make Complex Heatmaps
 
 Complex heatmaps are efficient to visualize associations 
 between different sources of data sets and reveal potential structures. 
 Here the **ComplexHeatmap** package provides a highly flexible way to arrange 
 multiple heatmaps and supports self-defined annotation graphics.
 
-## General design
+### General design
 
 Generally, a heatmap list contains several heatmaps and row annotations.
 
@@ -179,3 +178,7 @@ oncoPrint to enphasize sub groups.
 You can use mouse to select a region on the heatmap, it will return row index and column index which correspond to the selected region.
 
 <p><img src="https://cloud.githubusercontent.com/assets/449218/10479344/2981c27a-7264-11e5-9868-7400c5dc620d.gif", width="600"></p>
+
+### License
+
+GPL (>= 2)
