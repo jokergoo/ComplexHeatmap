@@ -8,6 +8,7 @@
 # -RESET reset all the option values
 # -READ.ONLY ``TRUE`` means only to return read-only values, ``FALSE`` means only to return non-read-only
 #          values, ``NULL`` means to return both.
+# -LOCAL switch local mode
 #
 # == details
 # You can set some parameters for all heatmaps/annotations simultaneously by this global function.
@@ -52,7 +53,7 @@
 # # no example for this function
 # NULL
 #
-ht_global_opt = function(..., RESET = FALSE, READ.ONLY = NULL) {}
+ht_global_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE) {}
 ht_global_opt = setGlobalOptions(
 	heatmap_row_names_gp = list(
 		.value = NULL,
