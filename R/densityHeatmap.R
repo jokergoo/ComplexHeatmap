@@ -12,6 +12,7 @@
 # -ylab label on y-axis in the plot
 # -title title of the plot
 # -range ranges on the y-axis. By default the range is between 1th quantile and 99th quantile of the data.
+# -column_order order of columns
 # -... pass to `draw,HeatmapList-method`
 #
 # == details
@@ -46,6 +47,7 @@ densityHeatmap = function(data,
 	ylab = deparse(substitute(data)), 
 	title = paste0("Density heatmap of ", deparse(substitute(data))),
 	range = c(-Inf, Inf),
+	column_order = NULL,
 	...) {
 
 	if(is.matrix(data)) {
@@ -81,13 +83,13 @@ densityHeatmap = function(data,
 	col = colorRamp2(seq(0, max(mat, na.rm = TRUE), length = length(col)), col, space = color_space)
 
 	if(is.null(anno)) {
-		ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
+		ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, cluster_columns = FALSE, column_order = column_order)
 	} else if(inherits(anno, "HeatmapAnnotation")) {
-		ht = Heatmap(mat, col = col, top_annotation = anno, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
+		ht = Heatmap(mat, col = col, top_annotation = anno, name = "density", cluster_rows = FALSE, cluster_columns = FALSE, column_order = column_order)
 	} else {
 		if(!is.data.frame(anno)) anno = data.frame(anno = anno)
 		ha = HeatmapAnnotation(df = anno)
-		ht = Heatmap(mat, col = col, top_annotation = ha, name = "density", cluster_rows = FALSE, cluster_columns = FALSE)
+		ht = Heatmap(mat, col = col, top_annotation = ha, name = "density", cluster_rows = FALSE, cluster_columns = FALSE, column_order = column_order)
 	}
 
 	bb = grid.pretty(c(min_x, max_x))
