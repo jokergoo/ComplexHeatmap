@@ -44,7 +44,7 @@ densityHeatmap = function(data,
 	anno = NULL, 
 	ylab = deparse(substitute(data)), 
 	title = paste0("Density heatmap of ", deparse(substitute(data))),
-	range = c(-Inf, Inf)
+	range = c(-Inf, Inf),
 	...) {
 
 	if(is.matrix(data)) {
