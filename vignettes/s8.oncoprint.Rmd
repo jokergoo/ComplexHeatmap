@@ -70,11 +70,12 @@ to alteration types. It is used to generate the barplots and the legends.
 
 ```{r}
 library(ComplexHeatmap)
+col = c(snv = "red", indel = "blue")
 oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
-	alter_fun_list = list(
-		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)),
-		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
-	), col = c(snv = "red", indel = "blue"))
+	alter_fun = list(
+		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = col["snv"], col = NA)),
+		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = col["indel"], col = NA))
+	), col = col)
 ```
 
 The second type of input data is a list of matrix for which each matrix contains binary value representing
@@ -104,11 +105,11 @@ how to add graphics when there is no alteration and it is always put as the firs
 
 ```{r}
 oncoPrint(mat_list,
-	alter_fun_list = list(
+	alter_fun = list(
 		background = function(x, y, w, h) NULL,
-		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)),
-		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
-	), col = c(snv = "red", indel = "blue"))
+		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = col["snv"], col = NA)),
+		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = col["indel"], col = NA))
+	), col = col)
 ```
 
 If types of alterations is less than two and the purpose is only to have a quick look at the data, there are default
@@ -116,6 +117,31 @@ graphics added:
 
 ```{r}
 oncoPrint(mat_list)
+```
+
+In above examples, `alter_fun` is a list of functons which add graphics layer by layer. Graphics
+can also be added in a grid-by-grid style by specifying `alter_fun` as a single function. The difference
+from the function list is now `alter_fun` should accept a fifth argument which is a logical vector. 
+This logical vector shows whether different alterations exist for current gene in current sample.
+
+```{r}
+oncoPrint(mat_list,
+	alter_fun = function(x, y, w, h, v) {
+		if(v["snv"]) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = col["snv"], col = NA))
+		if(v["indel"]) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = col["indel"], col = NA))
+	}, col = col)
+```
+
+If `alter_fun` is set as a single function, customization can be more flexible. In following example,
+rectangles always fill the whole grid.
+
+```{r}
+oncoPrint(mat_list,
+    alter_fun = function(x, y, w, h, v) {
+		n = sum(v)
+		h = h*0.9
+		if(n) grid.rect(x, y - h*0.5 + 1:n/n*h, w*0.9, 1/n*h, gp = gpar(fill = col[which(v)], col = NA), just = "top")
+    }, col = col)
 ```
 
 Now we make an oncoPrint with a real-world data. The data is retrieved from [cBioPortal](http://www.cbioportal.org/). 
@@ -152,7 +178,7 @@ There are three different alterations in `mat`: `HOMDEL`, `AMP` and `MUT`. We fi
 define how to add graphics which correspond to different alterations. 
 
 ```{r}
-alter_fun_list = list(
+alter_fun = list(
 	background = function(x, y, w, h) {
 		grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "#CCCCCC", col = NA))
 	},
@@ -178,7 +204,7 @@ Make the oncoPrint and adjust heatmap components such as the title and the legen
 
 ```{r, fig.width = 12, fig.height = 8}
 oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
-	alter_fun_list = alter_fun_list, col = col, 
+	alter_fun = alter_fun, col = col, 
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
 		labels = c("Amplification", "Deep deletion", "Mutation")))
@@ -196,7 +222,7 @@ By default, if one sample has no alteration, it will still remain in the heatmap
 
 ```{r, fig.width = 12, fig.height = 8}
 oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
-	alter_fun_list = alter_fun_list, col = col, 
+	alter_fun = alter_fun, col = col, 
 	remove_empty_columns = TRUE,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
@@ -211,7 +237,7 @@ You can see the difference for the sample order between 'memo sort' and the meth
 sample_order = scan(paste0(system.file("extdata", package = "ComplexHeatmap"), 
     "/sample_order.txt"), what = "character")
 oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
-	alter_fun_list = alter_fun_list, col = col, 
+	alter_fun = alter_fun, col = col, 
 	row_order = NULL, column_order = sample_order,
 	remove_empty_columns = TRUE,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
@@ -226,7 +252,7 @@ Following example splits the heatmap into two halves and add a new heatmap to th
 
 ```{r, fig.width = 12, fig.height = 8}
 ht_list = oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
-	alter_fun_list = alter_fun_list, col = col, 
+	alter_fun = alter_fun, col = col, 
 	remove_empty_columns = TRUE,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
@@ -240,7 +266,7 @@ In some scenarios, you don't want to show some of the alterations on the barplot
 
 `````{r, fig.width = 12, fig.height = 8}
 oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
-	alter_fun_list = alter_fun_list, col = col, 
+	alter_fun = alter_fun, col = col, 
 	remove_empty_columns = TRUE,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 

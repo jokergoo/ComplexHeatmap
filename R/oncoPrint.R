@@ -8,8 +8,9 @@
 #      You can use `unify_mat_list` to make all matrix having same row names and column names.
 # -get_type If different alterations are encoded in the matrix, this self-defined function
 #           determines how to extract them. Only work when ``mat`` is a matrix.
-# -alter_fun_list a list of functions which define how to add graphics for different alterations.
-#                 The names of the list should cover all alteration types.
+# -alter_fun a single function or a list of functions which define how to add graphics for different alterations.
+#                 If it is a list, the names of the list should cover all alteration types.
+# -alter_fun_list deprecated, use ``alter_run`` instead.
 # -col a vector of color for which names correspond to alteration types.
 # -row_order order of genes. By default it is sorted by frequency of alterations decreasingly.
 #                            Set it to ``NULL`` if you don't want to set the order
@@ -17,6 +18,7 @@
 #                                 the mutual exclusivity across genes. Set it to ``NULL`` if you don't want to set the order
 # -show_column_names whether show column names
 # -pct_gp graphic paramters for percent row annotation
+# -pct_digits digits for percent values
 # -axis_gp graphic paramters for axes
 # -show_row_barplot whether show barplot annotation on rows
 # -row_barplot_width width of barplot annotation on rows. It should be a `grid::unit` object
@@ -44,11 +46,11 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 oncoPrint = function(mat, get_type = function(x) x,
-	alter_fun_list, col, 
+	alter_fun = alter_fun_list, alter_fun_list = NULL, col, 
 	row_order = oncoprint_row_order(),
 	column_order = oncoprint_column_order(),
 	show_column_names = FALSE,
-	pct_gp = gpar(), 
+	pct_gp = gpar(), pct_digits = 0,
 	axis_gp = gpar(fontsize = 8), 
 	show_row_barplot = TRUE, 
 	row_barplot_width = unit(2, "cm"),
@@ -63,6 +65,10 @@ oncoPrint = function(mat, get_type = function(x) x,
 		if(any(names(list(...)) %in% c("show_column_barplot", "column_barplot_height"))) {
 			stop("`show_column_barplot` and `column_barplot_height` is deprecated, please configure `top_annotation` directly.")
 		}
+	}
+
+	if(!is.null(alter_fun_list)) {
+		warning("`alter_fun_list` is deprecated, please `alter_fun` instead.")
 	}
 	
 	# convert mat to mat_list
@@ -103,19 +109,42 @@ oncoPrint = function(mat, get_type = function(x) x,
 		stop("Incorrect type of 'mat'")
 	}
 
-	if(missing(alter_fun_list) && missing(col)) {
+	if(missing(alter_fun) && missing(col)) {
 		if(length(mat_list) == 1) {
-			alter_fun_list = list(function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)))
+			af = function(x, y, w, h, v) {
+				grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
+				if(v[1]) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA))
+			}
 			col = "red"
 		} else if(length(mat_list) == 2) {
-			alter_fun_list = list(
-		        function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA)),
-		        function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
-		    )
+			af = function(x, y, w, h, v) {
+				grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
+				if(v[1]) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA))
+		        if(v[2]) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
+		    }
 		    col = c("red", "blue")
+		} else {
+			stop("`alter_fun` should be specified.")
 		}
-		names(alter_fun_list) = names(mat_list)
 		names(col) = names(mat_list)
+	} else if(is.list(alter_fun)) {
+
+		# validate the list first
+		if(is.null(alter_fun$background)) alter_fun$background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
+		sdf = setdiff(all_type, names(alter_fun))
+		if(length(sdf) > 0) {
+			stop(paste0("You should define shape function for: ", paste(sdf, collapse = ", ")))
+		}
+
+		af = function(x, y, w, h, v) {
+			if(!is.null(alter_fun$background)) alter_fun$background(x, y, w, h)
+			alter_fun = alter_fun[names(alter_fun) != "background"]
+			for(nm in names(alter_fun)) {
+				if(v[nm]) alter_fun[[nm]](x, y, w, h)
+			}
+		}
+	} else {
+		af = alter_fun
 	}
 
 	# type as the third dimension
@@ -157,31 +186,15 @@ oncoPrint = function(mat, get_type = function(x) x,
 		column_order = structure(seq_len(sum(l)), names = which(l))[as.character(intersect(column_order, which(l)))]
 	}
 
-	# validate alter_fun_list
-	if(is.null(alter_fun_list$background)) alter_fun_list$background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
-	sdf = setdiff(all_type, names(alter_fun_list))
-	if(length(sdf) > 0) {
-		stop(paste0("You should define shape function for: ", paste(sdf, collapse = ", ")))
-	}
-
-	all_type = intersect(all_type, names(alter_fun_list))
-	all_type = setdiff(all_type, "background")
-
-	arr = arr[, , all_type, drop = FALSE]
-
 	# validate col
 	sdf = setdiff(all_type, names(col))
 	if(length(sdf) > 0) {
 		stop(paste0("You should define colors for:", paste(sdf, collapse = ", ")))
 	}
 
-	add_oncoprint = function(type, x, y, width, height) {
-		alter_fun_list[[type]](x, y, width, height)
-	}
-
 	# for each gene, percent of samples that have alterations
 	pct = rowSums(apply(arr, 1:2, any)) / ncol(mat_list[[1]])
-	pct = paste0(round(pct * 100), "%")
+	pct = paste0(round(pct * 100, digits = pct_digits), "%")
 	ha_pct = rowAnnotation(pct = row_anno_text(pct, just = "right", offset = unit(1, "npc"), gp = pct_gp), width = grobWidth(textGrob("100%", gp = pct_gp)))
 
 	#####################################################################
@@ -244,14 +257,17 @@ oncoPrint = function(mat, get_type = function(x) x,
 	dim(pheudo) = dim(arr)[1:2]
 	dimnames(pheudo) = dimnames(arr)[1:2]
 	
+	if(length(list(...))) {
+		if(names(list(...)) %in% c("rect_gp", "cluster_rows", "cluster_columns", "cell_fun")) {
+			stop("'rect_gp', 'cluster_rows', 'cluster_columns', 'cell_fun' are not allowed to use in `oncoPrint()`.")
+		}
+	}
+
 	ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
 		cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
 		cell_fun = function(j, i, x, y, width, height, fill) {
 			z = arr[i, j, ]
-			add_oncoprint("background", x, y, width, height)
-			for(type in all_type[z]) {
-				add_oncoprint(type, x, y, width, height)
-			}
+			af(x, y, width, height, z)
 		}, show_column_names = show_column_names,
 		top_annotation = top_annotation,
 		heatmap_legend_param = heatmap_legend_param, ...)
