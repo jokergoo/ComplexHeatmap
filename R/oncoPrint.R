@@ -17,6 +17,7 @@
 # -column_order order of samples. By default the order is calculated by the 'memo sort' method which can visualize
 #                                 the mutual exclusivity across genes. Set it to ``NULL`` if you don't want to set the order
 # -show_column_names whether show column names
+# -show_pct whether show percent values on the left of the oncoprint
 # -pct_gp graphic paramters for percent row annotation
 # -pct_digits digits for percent values
 # -axis_gp graphic paramters for axes
@@ -50,7 +51,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	row_order = oncoprint_row_order(),
 	column_order = oncoprint_column_order(),
 	show_column_names = FALSE,
-	pct_gp = gpar(), pct_digits = 0,
+	show_pct = TRUE, pct_gp = gpar(), pct_digits = 0,
 	axis_gp = gpar(fontsize = 8), 
 	show_row_barplot = TRUE, 
 	row_barplot_width = unit(2, "cm"),
@@ -72,6 +73,9 @@ oncoPrint = function(mat, get_type = function(x) x,
 	}
 	
 	# convert mat to mat_list
+	if(inherits(mat, "data.frame")) {
+		mat = as.matrix(mat)
+	}
 	if(inherits(mat, "matrix")) {
 
 		all_type = unique(unlist(lapply(mat, get_type)))
@@ -84,6 +88,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 			dimnames(m) = dimnames(mat)
 			m
 		})
+		names(mat_list) = all_type
 	} else if(inherits(mat, "list")) {
 		mat_list = mat
 
@@ -195,7 +200,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	# for each gene, percent of samples that have alterations
 	pct = rowSums(apply(arr, 1:2, any)) / ncol(mat_list[[1]])
 	pct = paste0(round(pct * 100, digits = pct_digits), "%")
-	ha_pct = rowAnnotation(pct = row_anno_text(pct, just = "right", offset = unit(1, "npc"), gp = pct_gp), width = grobWidth(textGrob("100%", gp = pct_gp)))
+	ha_pct = rowAnnotation(pct = row_anno_text(pct, just = "right", offset = unit(1, "npc"), gp = pct_gp), width = max_text_width(pct, gp = pct_gp))
 
 	#####################################################################
 	# row annotation which is a barplot
@@ -272,10 +277,14 @@ oncoPrint = function(mat, get_type = function(x) x,
 		top_annotation = top_annotation,
 		heatmap_legend_param = heatmap_legend_param, ...)
 
-	if(show_row_barplot) {
-		ht_list = ha_pct + ht + ha_row_bar
-	} else {
+	if(show_pct) {
 		ht_list = ha_pct + ht
+	} else {
+		ht_list = ht
+	}
+
+	if(show_row_barplot) {
+		ht_list = ht_list + ha_row_bar
 	}
 
 	return(ht_list)
