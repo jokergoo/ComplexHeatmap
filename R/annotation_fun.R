@@ -67,6 +67,8 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
 				gp = subset_gp(gp, index)
+			} else if(length(gp) == 0) {
+				gp = subset_gp(gp, index)
 			} else if(max(sapply(gp, length)) == length(x)) {
 				gp = subset_gp(gp, index)
 			} else {
@@ -184,6 +186,8 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 			if(is.null(k)) {
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
+				gp = subset_gp(gp, index)
+			} else if(length(gp) == 0) {
 				gp = subset_gp(gp, index)
 			} else if(max(sapply(gp, length)) == length(x)) {
 				gp = subset_gp(gp, index)
@@ -330,6 +334,8 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 			if(is.null(k)) {
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
+				gp = subset_gp(gp, index)
+			} else if(length(gp) == 0) {
 				gp = subset_gp(gp, index)
 			} else if(max(sapply(gp, length)) == n_all) {
 				gp = subset_gp(gp, index)
@@ -501,6 +507,8 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
 				gp = subset_gp(gp, index)
+			} else if(length(gp) == 0) {
+				gp = subset_gp(gp, index)
 			} else if(max(sapply(gp, length)) == n_all) {
 				gp = subset_gp(gp, index)
 			} else {
@@ -617,6 +625,8 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
 				gp = subset_gp(gp, index)
+			} else if(length(gp) == 0) {
+				gp = subset_gp(gp, index)
 			} else if(max(sapply(gp, length)) == n_all) {
 				gp = subset_gp(gp, index)
 			} else {
@@ -730,10 +740,11 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			n = length(index)
-			
 			if(is.null(k)) {
 				gp = subset_gp(gp, index)
 			} else if(N == 1) {
+				gp = subset_gp(gp, index)
+			} else if(length(gp) == 0) {
 				gp = subset_gp(gp, index)
 			} else if(max(sapply(gp, length)) == length(x)) {
 				gp = subset_gp(gp, index)
