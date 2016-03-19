@@ -3,6 +3,7 @@ CHANEGS in VERSION 1.9.3
 * graphic parameters are correctly recycled in row annotations
 * if there is only one row after splitting, there will be no dendrogram
 * add `range` option in `densityHeatmap()`
+* add `outline` option in `anno_boxplot()`
 
 ==============================
 
