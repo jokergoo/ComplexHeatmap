@@ -258,7 +258,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	dimnames(pheudo) = dimnames(arr)[1:2]
 	
 	if(length(list(...))) {
-		if(names(list(...)) %in% c("rect_gp", "cluster_rows", "cluster_columns", "cell_fun")) {
+		if(any(names(list(...)) %in% c("rect_gp", "cluster_rows", "cluster_columns", "cell_fun"))) {
 			stop("'rect_gp', 'cluster_rows', 'cluster_columns', 'cell_fun' are not allowed to use in `oncoPrint()`.")
 		}
 	}

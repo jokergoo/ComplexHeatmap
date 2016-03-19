@@ -27,7 +27,7 @@ HeatmapAnnotation(df, name, col, na_col = "grey",
   \item{na_col}{color for \code{NA} values in simple annotations.}
   \item{annotation_legend_param}{a list which contains parameters for annotation legends}
   \item{show_legend}{whether show legend for each column in \code{df}.}
-  \item{...}{functions which define complex annotations. Values should be named arguments.}
+  \item{...}{functions which define complex annotations or vectors of simple annotation. Values should be named arguments.}
   \item{which}{are the annotations row annotations or column annotations?}
   \item{annotation_height}{height of each annotation if annotations are column annotations.}
   \item{annotation_width}{width of each annotation if annotations are row annotations.}
@@ -55,6 +55,8 @@ df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
 ha = HeatmapAnnotation(df = df)
 
 ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
+ha = HeatmapAnnotation(type = c("a", "a", "a", "b", "b", "b"), 
+    col = list(type = c("a" =  "red", "b" = "blue")))
 
 ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), 
     which = "row")

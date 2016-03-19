@@ -23,7 +23,7 @@ This function contructs the name of the viewport,
 goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
 to that viewport.
 
-Since you know the dimensions of the matrix, it is
+If you know the dimensions of the matrix, it is
 simple to calculate the position of every row name or column name in the heatmap.
 E.g., for the column column, the i^th name is located at:
 
