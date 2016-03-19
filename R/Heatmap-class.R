@@ -849,7 +849,7 @@ setMethod(f = "make_row_cluster",
                     #}
                 }
             } else {
-                row_dend_list[[i]] = NULL
+                #row_dend_list[[i]] = NULL
                 row_order_list[[i]] = row_order_list[[i]][1]
             }
         }
@@ -1289,7 +1289,7 @@ setMethod(f = "draw_dend",
     which = c("row", "column"), k = 1, max_height = NULL, ...) {
 
     which = match.arg(which)[1]
-
+    
     side = switch(which,
         "row" = object@row_dend_param$side,
         "column" = object@column_dend_param$side)
