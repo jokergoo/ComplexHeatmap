@@ -10,6 +10,8 @@
 #       It can also be a `HeatmapAnnotation-class` object.
 # -ylab label on y-axis in the plot
 # -title title of the plot
+# -range ranges on the y-axis. The lower bound is the maximul value between ``range[[1]]`` and minimal value
+#        in the data and the upper bound is the minimal value between ``range[[2]]`` and maximul value in the data.
 # -... pass to `draw,HeatmapList-method`
 #
 # == details
@@ -42,6 +44,7 @@ densityHeatmap = function(data,
 	anno = NULL, 
 	ylab = deparse(substitute(data)), 
 	title = paste0("Density heatmap of ", deparse(substitute(data))),
+	range = c(-Inf, Inf)
 	...) {
 
 	if(is.matrix(data)) {
@@ -59,6 +62,9 @@ densityHeatmap = function(data,
 
 	max_x = max(unlist(lapply(density_list, function(x) x$x)))
 	min_x = min(unlist(lapply(density_list, function(x) x$x)))
+
+	max_x = min(max_x, range[2])
+	min_x = max(min_x, range[1])
 	
 	x = seq(min_x, max_x, length = 500)
 
