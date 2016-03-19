@@ -140,16 +140,24 @@ oncoPrint = function(mat, get_type = function(x) x,
 			stop(paste0("You should define shape function for: ", paste(sdf, collapse = ", ")))
 		}
 
+		alter_fun = alter_fun[unique(c("background", intersect(names(alter_fun), all_type)))]
+
 		af = function(x, y, w, h, v) {
 			if(!is.null(alter_fun$background)) alter_fun$background(x, y, w, h)
+
 			alter_fun = alter_fun[names(alter_fun) != "background"]
-			for(nm in names(alter_fun)) {
-				if(v[nm]) alter_fun[[nm]](x, y, w, h)
+
+			if(sum(v)) {
+				for(nm in names(alter_fun)) {
+					if(v[nm]) alter_fun[[nm]](x, y, w, h)
+				}
 			}
 		}
 	} else {
 		af = alter_fun
 	}
+
+	col = col[intersect(names(col), all_type)]
 
 	# type as the third dimension
 	arr = array(FALSE, dim = c(dim(mat_list[[1]]), length(all_type)), dimnames = c(dimnames(mat_list[[1]]), list(all_type)))
