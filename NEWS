@@ -1,3 +1,9 @@
+CHANEGS in VERSION 1.9.2
+
+* imporved example of `anno_link()`
+
+==============================
+
 CHANEGS in VERSION 1.9.1
 
 * width of the heatmap body are calculated correctly if it is set as a fixed unit

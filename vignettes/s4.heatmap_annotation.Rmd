@@ -551,9 +551,11 @@ matrix, we want to mark some important genes of interest.)
 
 ```{r}
 mat = matrix(rnorm(10000), nr = 1000)
-labels = sample(letters, 20, replace = TRUE)
-Heatmap(mat, show_row_dend = FALSE, show_column_dend = FALSE) + 
-rowAnnotation(link = row_anno_link(at = sample(1000, 20), labels = labels),
+rownames(mat) = sprintf("%.2f", rowMeans(mat))
+subset = sample(1000, 20)
+labels = rownames(mat)[subset]
+Heatmap(mat, show_row_names = FALSE, show_row_dend = FALSE, show_column_dend = FALSE) + 
+rowAnnotation(link = row_anno_link(at = subset, labels = labels),
   width = unit(1, "cm") + max_text_width(labels))
 # here unit(1, "cm") is width of segments
 ```
