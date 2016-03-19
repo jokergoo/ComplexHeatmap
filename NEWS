@@ -1,21 +1,21 @@
-CHANEGS in VERSION 1.9.3
+CHANGES in VERSION 1.9.3
 
 * graphic parameters are correctly recycled in row annotations
 * if there is only one row after splitting, there will be no dendrogram
 * add `range` option in `densityHeatmap()`
 * when `gap` is set for the main heatmap, other heatmps also adjust their `gap` values to it
 * fixed a bug that when rownames/colnames are not complete, dendrograms are corrupted
-* `alter_fun` now support adding graphics grid by grid
+* `alter_fun` now supports adding graphics grid by grid
 
 ==============================
 
-CHANEGS in VERSION 1.9.2
+CHANGES in VERSION 1.9.2
 
 * imporved example of `anno_link()`
 
 ==============================
 
-CHANEGS in VERSION 1.9.1
+CHANGES in VERSION 1.9.1
 
 * width of the heatmap body are calculated correctly if it is set as a fixed unit
 * there is no dendrogram is nrows in a row-slice is 1

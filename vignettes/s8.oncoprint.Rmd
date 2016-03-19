@@ -100,7 +100,7 @@ mat_list = unify_mat_list(mat_list)
 mat_list
 ```
 
-Same as the first example, but here we also define `background` in `alter_fun_list` argument. This function defines
+Same as the first example, but here we also define `background` in `alter_fun` argument. This function defines
 how to add graphics when there is no alteration and it is always put as the first in the list.
 
 ```{r}
@@ -133,7 +133,7 @@ oncoPrint(mat_list,
 ```
 
 If `alter_fun` is set as a single function, customization can be more flexible. In following example,
-rectangles always fill the whole grid.
+rectangles always fill the whole grid evenly.
 
 ```{r}
 oncoPrint(mat_list,
@@ -273,6 +273,10 @@ oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 		labels = c("Amplification", "Deep deletion", "Mutation")),
 	barplot_ignore = "AMP")
 ```
+
+If you make the plot in an interactive device (e.g. `X11` or Rstudio IDE), the generation of the plot
+may be very slow. In this case, we suggest users to directly save the plot to a separate file 
+(e.g. using `png()` or `pdf()`) and then visualize the plot afterwards.
 
 
 ## Session info

@@ -12,7 +12,7 @@
 # goes to the viewport by `grid::seekViewport` and applies code
 # to that viewport.
 #
-# Since you know the number of rows and columns for that row slice, it is
+# If you know the number of rows and columns for that row slice, it is
 # simple to calculate the position of every small grid in the row slice.
 # E.g., the position for the grid in i^th row and j^th column is:
 #
@@ -73,7 +73,7 @@ decorate_heatmap_body = function(heatmap, code, slice = 1) {
 # goes to the viewport by `grid::seekViewport` and applies code
 # to that viewport.
 #
-# Since you know the number of leaves in the dendrogram, it is
+# If you know the number of leaves in the dendrogram, it is
 # simple to calculate the position of every leave in the dendrogram.
 # E.g., for the column dendrogram, the i^th leave is located at:
 #
@@ -179,7 +179,7 @@ decorate_row_dend = function(...) {
 # goes to the viewport by `grid::seekViewport` and applies code
 # to that viewport.
 #
-# Since you know the dimensions of the matrix, it is
+# If you know the dimensions of the matrix, it is
 # simple to calculate the position of every row name or column name in the heatmap.
 # E.g., for the column column, the i^th name is located at:
 #

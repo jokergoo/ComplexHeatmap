@@ -34,7 +34,10 @@ A graphic function which can be set in \code{\link{HeatmapAnnotation}} construct
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# There is no example
-NULL
+mat = matrix(rnorm(10000), nr = 1000)
+labels = sample(letters, 20, replace = TRUE)
+Heatmap(mat, show_row_dend = FALSE, show_column_dend = FALSE) + 
+rowAnnotation(link = row_anno_link(at = sample(1000, 20), labels = labels),
+    width = unit(1, "cm") + max_text_width(labels))
 
 }

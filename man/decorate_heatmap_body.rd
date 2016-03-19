@@ -22,7 +22,7 @@ This function contructs the name of the viewport,
 goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
 to that viewport.
 
-Since you know the number of rows and columns for that row slice, it is
+If you know the number of rows and columns for that row slice, it is
 simple to calculate the position of every small grid in the row slice.
 E.g., the position for the grid in i^th row and j^th column is:
 

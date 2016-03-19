@@ -18,7 +18,7 @@ selectArea(mark = TRUE)
 Users can use mouse to click two positions on the heatmap, the function
 will return the row index and column index for the selected region in the selected matrix.
 
-Of cource this function only works under interactive graphical environment.
+This function only works under interactive graphical environment.
 }
 \value{
 A list containing row index and column index corresponding to the selected region.

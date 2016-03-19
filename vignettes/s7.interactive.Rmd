@@ -33,4 +33,4 @@ to select a sub-area in the heatmap and retrieve index for rows and columns in t
 Since heatmaps are always used to visualize patterns that are clustered together, 
 this feature can greatly give convinience to extract the sub-matrix that users are interested in.
 
-<p><img src="select_region.gif" /></p>
+<p><img src="select_region.gif" width="600" /></p>

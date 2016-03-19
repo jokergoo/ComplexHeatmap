@@ -44,7 +44,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -na_col color for ``NA`` values in simple annotations.
 # -annotation_legend_param a list which contains parameters for annotation legends
 # -show_legend whether show legend for each column in ``df``.
-# -... functions which define complex annotations. Values should be named arguments.
+# -... functions which define complex annotations or vectors of simple annotation. Values should be named arguments.
 # -which are the annotations row annotations or column annotations?
 # -annotation_height height of each annotation if annotations are column annotations.
 # -annotation_width width of each annotation if annotations are row annotations.

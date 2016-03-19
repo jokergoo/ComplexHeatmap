@@ -56,6 +56,10 @@
 # - `Heatmap`: constructor method.
 # - `draw,Heatmap-method`: draw a single heatmap.
 # - `add_heatmap,Heatmap-method` append heatmaps and row annotations to a list of heatmaps.
+# - `row_order,HeatmapList-method`: get order of rows
+# - `column_order,HeatmapList-method`: get order of columns
+# - `row_dend,HeatmapList-method`: get row dendrograms
+# - `column_dend,HeatmapList-method`: get column dendrograms
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
