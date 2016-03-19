@@ -119,6 +119,8 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
             leaf
         }
     }
+
+    labels(dend) = paste0("leaf_", seq_len(nnodes(dend)))
     
     draw.d = function(dend, max_height, facing = "bottom", order = "normal", max_width = 0, env = NULL) {
         leaf = attr(dend, "leaf")
@@ -248,7 +250,7 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
             grid.segments(env$x0, env$y0, env$x1, env$y1, default.units = "native", gp = gpar(col = env$col, lty = env$lty, lwd = env$lwd))
         }
     }
-    
+
     labels = as.character(labels(dend))
     x = seq_along(labels) - 0.5 # leaves are places at x = 0.5, 1.5, ..., n - 0.5
 
