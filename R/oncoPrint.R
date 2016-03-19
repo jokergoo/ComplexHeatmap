@@ -279,6 +279,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 		cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
 		cell_fun = function(j, i, x, y, width, height, fill) {
 			z = arr[i, j, ]
+			names(z) = dimnames(arr)[[3]]
 			af(x, y, width, height, z)
 		}, show_column_names = show_column_names,
 		top_annotation = top_annotation,
