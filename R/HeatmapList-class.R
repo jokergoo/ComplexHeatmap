@@ -235,7 +235,6 @@ setMethod(f = "make_layout",
     }
 
     nr = nrow(object@ht_list[[i_main]]@matrix)
-    object@ht_list_param$main_heatmap = i_main
 
     if(n > 1) {
         if(length(gap) == 1) {
@@ -307,7 +306,8 @@ setMethod(f = "make_layout",
         gap = gap[seq_len(n-1)]
     }
     object@ht_list_param$gap = gap
-
+    object@ht_list_param$main_heatmap = i_main
+    
     n = length(object@ht_list)
 
     ## orders of other heatmaps should be changed
@@ -379,8 +379,6 @@ setMethod(f = "make_layout",
     for(i in seq_len(n)) {
         if(inherits(object@ht_list[[i]], "Heatmap")) {
             object@ht_list[[i]]@matrix_param$gap = ht_main@matrix_param$gap
-        } else {
-            object@ht_list[[i]]@gap = ht_main@matrix_param$gap
         }
     }
 

@@ -8,11 +8,11 @@ Make oncoPrint
 }
 \usage{
 oncoPrint(mat, get_type = function(x) x,
-    alter_fun_list, col,
+    alter_fun = alter_fun_list, alter_fun_list = NULL, col,
     row_order = oncoprint_row_order(),
     column_order = oncoprint_column_order(),
     show_column_names = FALSE,
-    pct_gp = gpar(),
+    pct_gp = gpar(), pct_digits = 0,
     axis_gp = gpar(fontsize = 8),
     show_row_barplot = TRUE,
     row_barplot_width = unit(2, "cm"),
@@ -27,12 +27,14 @@ oncoPrint(mat, get_type = function(x) x,
 
   \item{mat}{a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary value representing the alteration is present or absent. When it is a list, the names represent alteration types. You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
   \item{get_type}{If different alterations are encoded in the matrix, this self-defined function determines how to extract them. Only work when \code{mat} is a matrix.}
-  \item{alter_fun_list}{a list of functions which define how to add graphics for different alterations. The names of the list should cover all alteration types.}
+  \item{alter_fun}{a single function or a list of functions which define how to add graphics for different alterations. If it is a list, the names of the list should cover all alteration types.}
+  \item{alter_fun_list}{deprecated, use \code{alter_run} instead.}
   \item{col}{a vector of color for which names correspond to alteration types.}
   \item{row_order}{order of genes. By default it is sorted by frequency of alterations decreasingly. Set it to \code{NULL} if you don't want to set the order}
   \item{column_order}{order of samples. By default the order is calculated by the 'memo sort' method which can visualize the mutual exclusivity across genes. Set it to \code{NULL} if you don't want to set the order}
   \item{show_column_names}{whether show column names}
   \item{pct_gp}{graphic paramters for percent row annotation}
+  \item{pct_digits}{digits for percent values}
   \item{axis_gp}{graphic paramters for axes}
   \item{show_row_barplot}{whether show barplot annotation on rows}
   \item{row_barplot_width}{width of barplot annotation on rows. It should be a \code{\link[grid]{unit}} object}

@@ -7,7 +7,7 @@ Select an area in the heatmap
 Select an area in the heatmap
 }
 \usage{
-selectArea(mark = FALSE)
+selectArea(mark = TRUE)
 }
 \arguments{
 
