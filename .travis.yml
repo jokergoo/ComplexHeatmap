@@ -19,6 +19,7 @@ bioc_packages:
 - HilbertVis
 
 r_github_packages:
+- jokergoo/GlobalOptions
 - jokergoo/circlize
 - jokergoo/HilbertCurve
 - jimhester/covr
