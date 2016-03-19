@@ -65,6 +65,8 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 			
 			if(is.null(k)) {
 				gp = subset_gp(gp, index)
+			} else if(N == 1) {
+				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
 			}
@@ -179,6 +181,8 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 			n = length(index)
 			
 			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else if(N == 1) {
 				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
@@ -319,6 +323,8 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 			n = length(index)
 			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else if(N == 1) {
 				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
@@ -482,6 +488,8 @@ anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCC
 			n = length(index)
 			if(is.null(k)) {
 				gp = subset_gp(gp, index)
+			} else if(N == 1) {
+				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
 			}
@@ -590,6 +598,8 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 			}
 			n = length(index)
 			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else if(N == 1) {
 				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
@@ -703,6 +713,8 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(), rot = 0,
 			n = length(index)
 			
 			if(is.null(k)) {
+				gp = subset_gp(gp, index)
+			} else if(N == 1) {
 				gp = subset_gp(gp, index)
 			} else {
 				gp = subset_gp(gp, k)
