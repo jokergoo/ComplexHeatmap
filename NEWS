@@ -7,6 +7,7 @@ CHANGES in VERSION 1.9.3
 * fixed a bug that when rownames/colnames are not complete, dendrograms are corrupted
 * `alter_fun` now supports adding graphics grid by grid
 * add `show_pct` option in `oncoPrint()`
+* add `column_order` in `densityHeatmap()`
 
 ==============================
 
