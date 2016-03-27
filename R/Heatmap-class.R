@@ -285,7 +285,7 @@ Heatmap = function(matrix, col, name,
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name, color_bar = "discrete"),
     use_raster = FALSE, 
-    raster_device = c("png", "jpeg", "tiff"),
+    raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 1,
     raster_device_param = list()) {
 
@@ -1263,7 +1263,10 @@ setMethod(f = "draw_heatmap_body",
         device_info = switch(raster_device,
             png = c("grDevices", "png", "readPNG"),
             jpeg = c("grDevices", "jpeg", "readJPEG"),
-            tiff = c("grDevices", "tiff", "readTIFF")
+            tiff = c("grDevices", "tiff", "readTIFF"),
+            CairoPNG = c("Cairo", "png", "readPNG"),
+            CairoJPEG = c("Cairo", "jpeg", "readJPEG"),
+            CairoTIFF = c("Cairo", "tiff", "readTIFF")
         )
         if(!requireNamespace(device_info[1])) {
             stop(paste0("Need ", device_info[1], " package to output image."))
@@ -1276,7 +1279,8 @@ setMethod(f = "draw_heatmap_body",
         heatmap_height = convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)
         temp_image = tempfile(pattern = paste0("heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".", device_info[2]))
         #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
-        do.call(raster_device, c(list(filename = temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality), raster_device_param))
+        device_fun = getFromNamespace(raster_device, ns = device_info[1])
+        do.call("device_fun", c(list(filename = temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality), raster_device_param))
     }
 
     if(any(names(gp) %in% c("type"))) {
