@@ -591,7 +591,7 @@ Heatmap(mat, name = "go", rect_gp = gpar(type = "none"),
 
 ## Set heatmap body as raster image
 
-Saving plots in PDF format is kind of best parctice to preserve the quanlity. However,
+Saving plots in PDF format is kind of best parctice to preserve the quality. However,
 when there are too many rows (say, > 10000), the output PDF file size would be huge and it takes
 time and memory to read the plot. On the other hand, details of the huge matrix will not be seen
 in limited size of PDF file. Rendering heatmaps as raster images will effectively reduce
