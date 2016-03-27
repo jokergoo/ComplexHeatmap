@@ -200,6 +200,10 @@ Heatmap = setClass("Heatmap",
 #        is appended to a list of heatmaps.
 # -show_heatmap_legend whether show heatmap legend?
 # -heatmap_legend_param a list contains parameters for the heatmap legend. See `color_mapping_legend,ColorMapping-method` for all available parameters.
+# -use_raster whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge.
+# -raster_device graphic device which is used to generate the raster image
+# -raster_quality a value set to larger than 1 will improve the quality of the raster image.
+# -raster_device_param a list of further parameters for the selected graphic device
 #
 # == details
 # The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -279,7 +283,11 @@ Heatmap = function(matrix, col, name,
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, 
     show_heatmap_legend = TRUE,
-    heatmap_legend_param = list(title = name, color_bar = "discrete")) {
+    heatmap_legend_param = list(title = name, color_bar = "discrete"),
+    use_raster = FALSE, 
+    raster_device = c("png", "jpeg", "tiff"),
+    raster_quality = 1,
+    raster_device_param = list()) {
 
     # re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
@@ -322,6 +330,10 @@ Heatmap = function(matrix, col, name,
 
     .Object@heatmap_param$width = width
     .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
+    .Object@heatmap_param$use_raster = use_raster
+    .Object@heatmap_param$raster_device = match.arg(raster_device)[1]
+    .Object@heatmap_param$raster_quality = raster_quality
+    .Object@heatmap_param$raster_device_param = raster_device_param
 
     if(is.data.frame(matrix)) {
         matrix = as.matrix(matrix)
@@ -1229,6 +1241,11 @@ setMethod(f = "draw_heatmap_body",
     column_order = object@column_order
 
     gp = object@matrix_param$gp
+    use_raster = object@heatmap_param$use_raster
+    raster_device = object@heatmap_param$raster_device
+    raster_quality = object@heatmap_param$raster_quality
+    raster_device_param = object@heatmap_param$raster_device_param
+    if(length(raster_device_param) == 0) raster_device_param = list()
 
     pushViewport(viewport(name = paste(object@name, "heatmap_body", k, sep = "_"), ...))
 
@@ -1240,6 +1257,28 @@ setMethod(f = "draw_heatmap_body",
     x = (seq_len(nc) - 0.5) / nc
     y = (rev(seq_len(nr)) - 0.5) / nr
     expand_index = expand.grid(seq_len(nr), seq_len(nc))
+    
+    if(use_raster) {
+        # write the image into a temporary file and read it back
+        device_info = switch(raster_device,
+            png = c("grDevices", "png", "readPNG"),
+            jpeg = c("grDevices", "jpeg", "readJPEG"),
+            tiff = c("grDevices", "tiff", "readTIFF")
+        )
+        if(!requireNamespace(device_info[1])) {
+            stop(paste0("Need ", device_info[1], " package to output image."))
+        }
+        if(!requireNamespace(device_info[2])) {
+            stop(paste0("Need ", device_info[2], " package to read image."))
+        }
+        # can we get the size of the heatmap body?
+        heatmap_width = convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE)
+        heatmap_height = convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)
+        temp_image = tempfile(pattern = paste0("heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".", device_info[2]))
+        #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
+        do.call(raster_device, c(list(filename = temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality), raster_device_param))
+    }
+
     if(any(names(gp) %in% c("type"))) {
         if(gp$type == "none") {
         } else {
@@ -1254,6 +1293,14 @@ setMethod(f = "draw_heatmap_body",
         for(j in column_order) {
             cell_fun(j, i, unit(x[which(column_order == j)], "npc"), unit(y[which(row_order == i)], "npc"), unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[which(row_order == i), which(column_order == j)])
         }
+    }
+
+    if(use_raster) {
+        dev.off()
+        image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
+        image = as.raster(image)
+        grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+        file.remove(temp_image)
     }
 
     upViewport()

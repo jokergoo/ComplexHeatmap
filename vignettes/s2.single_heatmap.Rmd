@@ -589,6 +589,18 @@ Heatmap(mat, name = "go", rect_gp = gpar(type = "none"),
 )
 ```
 
+## Set heatmap body as raster image
+
+Saving plots in PDF format is kind of best parctice to preserve the quanlity. However,
+when there are too many rows (say, > 10000), the output PDF file size would be huge and it takes
+time and memory to read the plot. On the other hand, details of the huge matrix will not be seen
+in limited size of PDF file. Rendering heatmaps as raster images will effectively reduce
+the file size. In `Heatmap()` function, there are three options which controls how to generate
+the raster image: `use_raster`, `raster_device`, `raster_quality`, `raster_device_param`. 
+
+You can choose graphic device (`png`, `jpeg` and `tiff`) by `raster_device`, control the quality of the raster image by `raster_quality`,
+and pass further parameters for a specific device by `raster_device_param`.
+
 ## Session info
 
 ```{r}
