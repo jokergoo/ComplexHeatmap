@@ -9,7 +9,7 @@ Depends: R (>= 3.1.2), grid, graphics, stats, grDevices
 Imports: methods, circlize (>= 0.3.4), GetoptLong, colorspace,
     RColorBrewer, dendextend (>= 1.0.1), GlobalOptions (>= 0.0.9)
 Suggests: testthat (>= 0.3), knitr, markdown, cluster, MASS, pvclust, 
-    dendsort, HilbertCurve
+    dendsort, HilbertCurve, Cairo, png, jpeg, tiff
 VignetteBuilder: knitr
 Description: Complex heatmaps are efficient to visualize associations 
     between different sources of data sets and reveal potential structures. 
