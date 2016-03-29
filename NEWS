@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.9.4
+
+* heatmap bodied can be set as raster images if number of rows are too huge
+
+==============================
+
 CHANGES in VERSION 1.9.3
 
 * graphic parameters are correctly recycled in row annotations

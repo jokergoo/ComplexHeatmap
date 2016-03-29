@@ -66,7 +66,11 @@ Heatmap(matrix, col, name,
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL,
     show_heatmap_legend = TRUE,
-    heatmap_legend_param = list(title = name, color_bar = "discrete"))
+    heatmap_legend_param = list(title = name, color_bar = "discrete"),
+    use_raster = FALSE,
+    raster_device = c("png", "jpeg", "tiff"),
+    raster_quality = 1,
+    raster_device_param = list())
 }
 \arguments{
 
@@ -132,6 +136,10 @@ Heatmap(matrix, col, name,
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmap is appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
   \item{heatmap_legend_param}{a list contains parameters for the heatmap legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
+  \item{use_raster}{whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge.}
+  \item{raster_device}{graphic device which is used to generate the raster image}
+  \item{raster_quality}{a value set to larger than 1 will improve the quality of the raster image.}
+  \item{raster_device_param}{a list of further parameters for the selected graphic device}
 
 }
 \details{

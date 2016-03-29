@@ -11,7 +11,7 @@ Get row dendrograms from a heatmap
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList}} object}
+  \item{object}{a \code{\link{Heatmap-class}} object}
 
 }
 \value{
