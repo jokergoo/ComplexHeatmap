@@ -175,7 +175,7 @@ setMethod(f = "row_dend",
 # Get row dendrograms from a heatmap
 #
 # == param
-# -object a `HeatmapList` object
+# -object a `Heatmap-class` object
 # 
 # == value
 # A list of dendrograms for which each dendrogram corresponds to a row slice
