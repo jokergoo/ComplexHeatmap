@@ -118,7 +118,7 @@ ht_global_opt(heatmap_legend_title_gp = gpar(fontsize = 8, fontface = "bold"),
               heatmap_legend_labels_gp = gpar(fontsize = 8))
 draw(ht_list, newpage = FALSE, column_title = "Correspondence between methylation, expression and other genomic features", 
     column_title_gp = gpar(fontsize = 12, fontface = "bold"), heatmap_legend_side = "bottom")
-ht_global_opt(RESET = TRUE)
+invisible(ht_global_opt(RESET = TRUE))
 ```
 
 

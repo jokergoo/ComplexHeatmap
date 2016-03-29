@@ -367,7 +367,8 @@ The order of elements in row annotations will be adjusted by the clustering of h
 ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")),
     width = unit(1, "cm"))
 ht1 = Heatmap(mat, name = "ht1")
-ht1 + ha + ht1
+ht1 = Heatmap(mat, name = "ht2")
+ht1 + ha + ht2
 ```
 
 If `km` or `split` is set in the main heatmap, the row annotations are
