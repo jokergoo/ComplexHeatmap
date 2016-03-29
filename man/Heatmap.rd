@@ -68,7 +68,7 @@ Heatmap(matrix, col, name,
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name, color_bar = "discrete"),
     use_raster = FALSE,
-    raster_device = c("png", "jpeg", "tiff"),
+    raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 1,
     raster_device_param = list())
 }
