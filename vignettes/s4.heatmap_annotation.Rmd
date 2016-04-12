@@ -544,6 +544,32 @@ draw(ht_list, column_title = "reverse axis direction", newpage = FALSE)
 upViewport(2)
 ```
 
+## Adjust positions of column names
+
+In the layout of the heatmap components, column names are put directly below the heatmap body. This will cause
+problems when annotations are put at the bottom of the heatmap as well:
+
+```{r}
+ha = HeatmapAnnotation(type = df$type,
+    col = list(type = c("a" = "red", "b" = "blue")))
+Heatmap(mat, bottom_annotation = ha)
+```
+
+To solve this problem, we can replace column names with text annotations, which is, we suppress columns
+when making the heamtap and create a text annotation which is formed by column names.
+
+```{r}
+ha = HeatmapAnnotation(type = df$type, 
+    colname = anno_text(colnames(mat), rot = 90, just = "right", offset = unit(1, "npc") - unit(2, "mm")),
+    col = list(type = c("a" = "red", "b" = "blue")),
+    annotation_height = unit.c(unit(5, "mm"), max_text_width(colnames(mat)) + unit(2, "mm")))
+Heatmap(mat, show_column_names = FALSE, bottom_annotation = ha)
+```
+
+When add a text annotation, the maximum width of the text should be calculated and set as the height of the 
+text annotation viewport so that all text can be completely shown in the plot. Sometimes, you also need to 
+set `rot`, `just` and `offset` to align the text to the correct anchor positions.
+
 ## Mark some of the rows/columns
 
 From version 1.8.0, a new annotation function `anno_link()` was added which connects labels and subset of the rows
