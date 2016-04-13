@@ -274,7 +274,7 @@ setMethod(f = "color_mapping_legend",
 		stop("Length of 'at' should be same as length of 'labels'.")
 	}
 	# if it is character color mapping, remove items in `at` which are not in the available optinos
-	if(is.character(at)) {
+	if(color_bar == "discrete" && is.character(at)) {
 		l = which(at %in% object@levels)
 		at = at[l]
 		labels = labels[l]
