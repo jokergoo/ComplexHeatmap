@@ -273,6 +273,12 @@ setMethod(f = "color_mapping_legend",
 	if(length(at) != length(labels)) {
 		stop("Length of 'at' should be same as length of 'labels'.")
 	}
+	# if it is character color mapping, remove items in `at` which are not in the available optinos
+	if(color_bar == "discrete" && is.character(at)) {
+		l = which(at %in% object@levels)
+		at = at[l]
+		labels = labels[l]
+	}
 	n_labels = length(labels)
 	labels_max_width = max(do.call("unit.c", lapply(labels, function(x) {
 			grobWidth(textGrob(x, gp = labels_gp))
