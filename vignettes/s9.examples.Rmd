@@ -77,7 +77,7 @@ From left to right, heatmaps are:
 8. overlapping between DMRs and enhancers (Color shows how much the DMR is covered by the enhancers).
 
 
-```{r, fig.width = 10, fig.height = 8, echo = FALSE}
+```{r, fig.width = 10, fig.height = 8, echo = FALSE, results = "hide"}
 library(circlize)
 library(RColorBrewer)
 

@@ -4,6 +4,8 @@ CHANGES in VERSION 1.9.5
   of column names when there are bottom annotations.
 * fixed a bug that character NA values can not to assigned with na_col
 * extra character 'at' and 'labels' in legends will be removed automatically
+* all arguments which are passed to `make_layout()` are all explicitly put
+  in `draw()` instead of using ...
 
 =============================
 
