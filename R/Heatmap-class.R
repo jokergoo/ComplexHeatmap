@@ -1277,6 +1277,9 @@ setMethod(f = "draw_heatmap_body",
         # can we get the size of the heatmap body?
         heatmap_width = convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE)
         heatmap_height = convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)
+        if(heatmap_width <= 0 || heatmap_height <= 0) {
+            stop("The width or height of the raster image is zero, maybe you forget to turn off the previous graphic device or it was corrupted. Run `dev.off()` to close it.")
+        }
         temp_image = tempfile(pattern = paste0("heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".", device_info[2]))
         #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
