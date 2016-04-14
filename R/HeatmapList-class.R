@@ -591,6 +591,22 @@ setMethod(f = "make_layout",
 # -object a `HeatmapList-class` object
 # -padding padding of the plot. Elements correspond to bottom, left, top, right paddings.
 # -newpage whether create a new page for the graphics.
+# -row_title title on the row.
+# -row_title_side will the title be put on the left or right of the heatmap.
+# -row_title_gp graphic parameters for drawing text.
+# -column_title title on the column.
+# -column_title_side will the title be put on the top or bottom of the heatmap.
+# -column_title_gp graphic parameters for drawing text.
+# -heatmap_legend_side side of the heatmap legend.
+# -show_heatmap_legend whether show heatmap legend.
+# -heatmap_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
+# -annotation_legend_side side of annotation legend.
+# -show_annotation_legend whether show annotation legend.
+# -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
+# -gap gap between heatmaps, should be a `grid::unit` object.
+# -main_heatmap name or index for the main heatmap
+# -row_dend_side if auto adjust, where to put the row dendrograms for the main heatmap
+# -row_sub_title_side if auto adjust, where to put sub row titles for the main heatmap
 # -... pass to `make_layout,HeatmapList-method`
 #
 # == detail
@@ -610,7 +626,22 @@ setMethod(f = "draw",
     definition = function(object, 
         padding = unit(c(2, 2, 2, 2), "mm"), 
         newpage = TRUE,
-        ...) {
+        row_title = character(0), 
+        row_title_side = c("left", "right"), 
+        row_title_gp = gpar(fontsize = 14),
+        column_title = character(0), 
+        column_title_side = c("top", "bottom"), 
+        column_title_gp = gpar(fontsize = 14), 
+        heatmap_legend_side = c("right", "left", "bottom", "top"), 
+        show_heatmap_legend = TRUE, 
+        heatmap_legend_list = list(),
+        annotation_legend_side = c("right", "left", "bottom", "top"), 
+        show_annotation_legend = TRUE, 
+        annotation_legend_list = list(),
+        gap = unit(3, "mm"), 
+        main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
+        row_dend_side = c("original", "left", "right"),
+        row_sub_title_side = c("original", "left", "right"), ...) {
 
     l = sapply(object@ht_list, inherits, "Heatmap")
     if(! any(l)) {
@@ -624,7 +655,12 @@ setMethod(f = "draw",
         grid.newpage()
     }
     
-    object = make_layout(object, ...)
+    object = make_layout(object, row_title = row_title, row_title_gp = row_title_gp, row_title_side = row_title_side,
+        column_title = column_title, column_title_side = column_title_side, column_title_gp = column_title_gp,
+        heatmap_legend_side = heatmap_legend_side, show_heatmap_legend = show_heatmap_legend, heatmap_legend_list = heatmap_legend_list,
+        annotation_legend_side = annotation_legend_side, show_annotation_legend = show_annotation_legend,
+        annotation_legend_list = annotation_legend_list, gap = gap, main_heatmap = main_heatmap, row_dend_side = row_dend_side,
+        row_sub_title_side = row_sub_title_side, ...)
 
     if(length(padding) == 1) {
         padding = rep(padding, 4)
