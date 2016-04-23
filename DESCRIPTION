@@ -1,13 +1,13 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Making Complex Heatmaps
-Version: 1.9.5
+Version: 1.9.6
 Date: 2016-4-12
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.2), grid, graphics, stats, grDevices
 Imports: methods, circlize (>= 0.3.4), GetoptLong, colorspace,
-    RColorBrewer, dendextend (>= 1.0.1), GlobalOptions (>= 0.0.9)
+    RColorBrewer, dendextend (>= 1.0.1), GlobalOptions (>= 0.0.10)
 Suggests: testthat (>= 0.3), knitr, markdown, cluster, MASS, pvclust, 
     dendsort, HilbertCurve, Cairo, png, jpeg, tiff
 VignetteBuilder: knitr
