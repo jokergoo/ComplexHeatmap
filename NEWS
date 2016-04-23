@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.9.6
+
+* `color_mapping_legend()`, there are ticks on continuous color bar
+
+=============================
+
 CHANGES in VERSION 1.9.5
 
 * add a section in the vignette to show how to adjust positions

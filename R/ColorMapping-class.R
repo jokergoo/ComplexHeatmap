@@ -333,7 +333,10 @@ setMethod(f = "color_mapping_legend",
 		y2 = y2[-length(y2)] * unit(1, "npc")
 		gf = packGrob(gf, row = 2, col = 1, grob = rectGrob(x2, rev(y2), width = grid_width, height = (unit(1, "npc"))*(1/length(colors)), just = c("left", "top"),
 				gp = gpar(col = rev(colors), fill = rev(colors))), height = (2*n_labels-1)*labels_height, force.height = TRUE)
-		
+		gf = packGrob(gf, row = 2, col = 1, grob = segmentsGrob(unit(0, "npc"), y, unit(0.8, "mm"), y, gp = gpar(col = "white")), 
+			    height = (2*n_labels-1)*labels_height, force.height = TRUE)
+		gf = packGrob(gf, row = 2, col = 1, grob = segmentsGrob(unit(1, "npc"), y, unit(1, "npc") - unit(0.8, "mm"), y, gp = gpar(col = "white")), 
+			    height = (2*n_labels-1)*labels_height, force.height = TRUE)
 	}
 	
 
