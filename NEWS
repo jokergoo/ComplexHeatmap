@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.9.7
+
+* add `Legend()` function which is more flexible to generate
+  different types of legends.
+
+============================
+
 CHANGES in VERSION 1.9.6
 
 * `color_mapping_legend()`, there are ticks on continuous color bar
