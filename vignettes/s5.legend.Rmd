@@ -29,6 +29,12 @@ options(markdown.HTML.stylesheet = "custom.css")
 options(width = 100)
 ```
 
+The legends for heatmaps are composed with a color bar, labels and titles. **ComplexHeatmap** automatically generates legends
+according to the input matrix and annotations, while also provide flexibility to customize and add new legends.
+
+
+## Basic settings
+
 Legends for all heatmaps and row annotations are drawn together and legends for all column annotations are drawn together. 
 The legends for heatmaps and legends for annotations are put in independent viewports.
 
@@ -83,25 +89,15 @@ ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", show_heatmap_legend
 ht1 + ht2 + ha_row
 ```
 
-**ComplexHeatmap** only generates legends for heatmaps and simple annotations. Self-defined legends
-can be passed by `heatmap_legend_list` and `annotation_legend_list` as a list of `grob` objects.
+## Customization of legends
 
-**grid** package provides `legendGrob()` to construct a legend grob with certain style but
-styles are still limited. For advanced users, they can construct a legend grob totally from ground by `frameGrob()`
-and `packGrob()`.
-
-```{r self_defined_annotation_legend, fig.width = 10}
-ha = HeatmapAnnotation(points = anno_points(rnorm(10)))
-ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", top_annotation = ha, show_heatmap_legend = FALSE)
-lgd = legendGrob(c("dots"), pch = 16)
-draw(ht1 + ht2, annotation_legend_list = list(lgd))
-```
-
-Parameters for making the legend can be set by `heatmap_legend_param` (for heatmap) or `annotation_legend_param` (for annotations).
+Legend itself can be flexibly customized. Parameters for making the legend can be set by `heatmap_legend_param` 
+(for heatmap) or `annotation_legend_param` (for annotations).
 The parameters that can be set are as follows:
 
 - `title`: title of the legend
 - `title_gp`: graphic parameters for the legend title
+- `title_position`: position of title relative to the legend, possible values are `topcenter`, `topleft`, `leftcenter`, `lefttop`.
 - `color_bar`: style of the color bar, i.e. continuous or discrete
 - `grid_height`: height of the small grid in the color bar, only works for discrete color bar
 - `grid_width`: width of the color bar
@@ -109,6 +105,12 @@ The parameters that can be set are as follows:
 - `at`: break values shown on the legend
 - `labels`: labels which correspond to the breaks values
 - `labels_gp`: graphic parameters for legend labels
+- `nrow` and `ncol`: if there are too many legends, they can be put into an array. These two parameters controls number of rows or columns
+- `legend_direction`: when `color_bar` is set to `continuous`, it controls the direction of the legend, possible values are `vertical` and `horizontal`
+- `legend_width` and `legend_height`: when `color_bar` is `continuous`, the width or height of the legend
+
+
+Following example changes the default graphic parameters for labels and titles:
 
 ```{r heatmap_list_advanced, fig.width = 10}
 df = data.frame(type = c(rep("a", 5), rep("b", 5)))
@@ -122,7 +124,7 @@ ht1 + ht2
 ```
 
 You can specify break values and break labels (both for character values and numeric values) by `at` and `labels` 
-in corresponding `heatmap_legend_param` and `annotation_legend_param`.
+in corresponding `heatmap_legend_param` and `annotation_legend_param`. Note `at` can also be character break values.
 
 ```{r self_define_heatmap_legend, fig.width = 10}
 ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")),
@@ -133,14 +135,34 @@ ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", top_annotation = ha
 ht1 + ht2
 ```
 
-If you don't like the default discrete color bar for legends, you can specify `color_bar` to `continuous`.
+If you have many levels in your annotation or matrix, you can put all levels into an array by specifying
+`nrow` or `ncol`:
+
+```{r, fig.width = 6}
+ha_chr = rowAnnotation(chr = sample(paste0("chr", 1:20), nrow(mat), replace = TRUE),
+    annotation_legend_param = list(chr = list(ncol = 2, title = "chromosome", title_position = "topcenter")),
+    width = unit(5, "mm"))
+ht1 = Heatmap(mat, name = "ht1")
+ht1 + ha_chr
+```
+
+If you don't like the default discrete color bar for continuous values, you can specify `color_bar` to `continuous`.
 For the simple annotation which contains continuous values, `color_bar` can also be set to `continuous`.
 
 ```{r}
 ha = HeatmapAnnotation(df = data.frame(value = runif(10)), 
     col = list(value = colorRamp2(c(0, 1), c("white", "blue"))), 
-    annotation_legend_param = list(color_bar = "continuous"))
+    annotation_legend_param = list(color_bar = "continuous", at = c(0, 0.5, 1), 
+        labels = c("low", "median", "high"), legend_height = unit(4, "cm")))
 Heatmap(mat, name = "ht1", top_annotation = ha, heatmap_legend_param = list(color_bar = "continuous"))
+```
+
+Some users prefer to put the legend at the bottom of heatmaps.
+
+```{r}
+ht = Heatmap(mat, name = "ht1", heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal",
+    legend_width = unit(5, "cm"), title_position = "lefttop"))
+draw(ht, heatmap_legend_side = "bottom")
 ```
 
 If you want to change default settings for all heatmaps/annotations, you can set it globally by `ht_global_opt()`.
@@ -154,6 +176,34 @@ ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", top_annotation = ha
 ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", heatmap_legend_param = list(title_gp = gpar(fontsize = 8)))
 ht1 + ht2
 ht_global_opt(RESET = TRUE)
+```
+
+## Add new legends
+
+**ComplexHeatmap** only generates legends for heatmaps and simple annotations. Self-defined legends
+can be passed by `heatmap_legend_list` and `annotation_legend_list` as a list of `grob` objects.
+
+**grid** package provides `legendGrob()` to construct a legend grob with certain style but
+styles are still limited. For advanced users, they can construct a legend grob totally from ground by `frameGrob()`
+and `placeGrob()`.
+
+```{r self_defined_annotation_legend, fig.width = 10}
+ha = HeatmapAnnotation(points = anno_points(rnorm(10)))
+ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", top_annotation = ha, show_heatmap_legend = FALSE)
+lgd = legendGrob(c("dots"), pch = 16)
+draw(ht1 + ht2, annotation_legend_list = list(lgd))
+```
+
+From version 1.9.7, **ComplexHeatmap** package provides a `Legend()` function which can produce legends in `grob` formats
+(actually all legends in the package are implemented by `Legend()` function).
+In following example, we have several column annotations which contains points and we also want to show legends
+for these non-heatmap graphics.
+
+```{r}
+ha = HeatmapAnnotation(points = anno_points(rnorm(10), gp = gpar(col = rep(2:3, each = 5))))
+ht = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", top_annotation = ha)
+lgd = Legend(at = c("class1", "class2"), title = "points", type = "points", legend_gp = gpar(col = 2:3))
+draw(ht, annotation_legend_list = list(lgd))
 ```
 
 ## Session info

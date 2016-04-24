@@ -6,7 +6,6 @@ sudo: required
 warnings_are_errors: true
 
 r-packages:
-- GetoptLong
 - colorspace
 - RColorBrewer
 - testthat
@@ -21,6 +20,7 @@ bioc_packages:
 r_github_packages:
 - jokergoo/GlobalOptions
 - jokergoo/circlize
+- jokergoo/GetoptLong
 - jokergoo/HilbertCurve
 - jimhester/covr
 
