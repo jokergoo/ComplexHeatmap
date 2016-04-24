@@ -1,11 +1,134 @@
 
+# == title
+# Making legend grobs
+#
+# == param
+# -at breaks, can be wither numeric or character
+# -labels labels corresponding to ``at``
+# -nrow if there are too many legends, they can be positioned in an array, this controls number of rows
+# -ncol if there are too many legends, they can be positioned in an array, this controls number of columns.
+#       At a same time only one of ``nrow`` and ``ncol`` can be specified.
+# -col_fun a color mapping function which is used to make a continuous color bar
+# -grid_height height of legend grid
+# -grid_width width of legend grid
+# -gap when legends are put in multiple columns, this is the gap between neighbouring columns, measured as a `grid::unit` object
+# -labels_gp graphic parameters for labels
+# -border color of legend borders, also for the ticks in the continuous legend
+# -background background colors
+# -type type of legends, can be ``grid``, ``points`` and ``lines``
+# -legend_gp graphic parameters for the legend
+# -pch type of points
+# -size size of points
+# -legend_height height of the whole legend, used when ``col_fun`` is specified and ``direction`` is set to ``vertical``
+# -legend_width width of the whole legend, used when ``col_fun`` is specified  and ``direction`` is set to ``horizontal``
+# -direction direction of the continuous legend
+# -title title of the legend
+# -title_gp graphic parameters of title
+# -title_position position of title according to the legend
+#
+# == value
+# A `grid::grob` object
+#
+Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
+	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
+	labels_gp = gpar(fontsize = 10),
+	border = NULL, background = "#EEEEEE",
+	type = "grid", legend_gp = gpar(), 
+	pch = 16, size = unit(2, "mm"),
+	legend_height = NULL, legend_width = NULL,
+	direction = c("vertical", "horizontal"),
+	title = "", title_gp = gpar(fontsize = 10, fontface = "bold"), 
+	title_position = c("topleft", "topcenter", "leftcenter", "lefttop")) {
 
+	if(missing(col_fun)) {
+		if(is.null(border)) border = "white"
+		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,
+			grid_height = grid_height, grid_width = grid_width, gap = gap, labels_gp = labels_gp,
+			border = border, background = background, type = type, legend_gp = legend_gp,
+			pch = pch, size = size)
+	} else {
+		direction = match.arg(direction)[1]
+		if(direction == "vertical") {
+			legend_body = vertical_continuous_legend_body(at = at, labels = labels, col_fun = col_fun,
+				grid_height = grid_height, grid_width = grid_width, legend_height = legend_height,
+				labels_gp = labels_gp, border = border)
+		} else {
+			legend_body = horizontal_continuous_legend_body(at = at, labels = labels, col_fun = col_fun,
+				grid_height = grid_height, grid_width = grid_width, legend_width = legend_width,
+				labels_gp = labels_gp, border = border)
+		}
+	}
+	if(missing(title)) {
+		return(legend_body)
+	}
+	if(is.null(title)) {
+		return(legend_body)
+	}
+	if(title == "") {
+		return(legend_body)
+	}
 
-Legend = function(...) {
-	legend_body
+	title_grob = textGrob(title, gp = title_gp)
+	title_height = grobHeight(title_grob)
+	title_width = grobWidth(title_grob)
+
+	legend_width = grobWidth(legend_body)
+	legend_height = grobHeight(legend_body)
+
+	title_position = match.arg(title_position)[1]
+	if(title_position %in% c("topleft", "topcenter")) {
+		if(convertWidth(title_width, "mm", valueOnly = TRUE) > convertWidth(legend_width, "mm", valueOnly = TRUE) && title_position == "topleft") {
+			total_width = title_width
+			empty_width = total_width - legend_width
+			gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 2, 
+				widths = unit.c(legend_width, empty_width),
+				heights = unit.c(title_height + unit(1.5, "mm"), legend_height)))
+
+			gf = placeGrob(gf, row = 1, col = 1:2, grob = textGrob(title, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), gp = title_gp))
+			gf = placeGrob(gf, row = 2, col = 1, grob = legend_body)
+		} else {
+			total_width = max(unit.c(title_width, legend_width))
+			gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 1, 
+				widths = total_width,
+				heights = unit.c(title_height + unit(1.5, "mm"), legend_height)))
+			
+			if(title_position == "topleft") {
+				gf = placeGrob(gf, row = 1, col = 1, grob = textGrob(title, unit(0, "npc"), unit(1, "npc"), just = c("left", "top"), gp = title_gp))
+				gf = placeGrob(gf, row = 2, col = 1, grob = legend_body)
+			} else {
+				gf = placeGrob(gf, row = 1, col = 1, grob = textGrob(title, unit(0.5, "npc"), unit(1, "npc"), just = c("top"), gp = title_gp))
+				gf = placeGrob(gf, row = 2, col = 1, grob = legend_body)
+			}
+		}
+	} else if(title_position %in% c("leftcenter", "lefttop")) {
+		if(convertWidth(title_height, "mm", valueOnly = TRUE) > convertWidth(legend_height, "mm", valueOnly = TRUE) && title_position == "lefttop") {
+			total_height = title_height
+			empty_height = total_height - legend_height
+			gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 2, 
+				widths = unit.c(title_width + unit(1.5, "mm"), legend_width),
+				heights = unit.c(legend_height, empty_height)))
+
+			gf = placeGrob(gf, row = 1:2, col = 1, grob = textGrob(title, unit(1, "npc") - unit(1.5, "mm"), unit(1, "npc"), just = c("right", "top"), gp = title_gp))
+			gf = placeGrob(gf, row = 1, col = 1, grob = legend_body)
+		} else {
+			total_height = max(unit.c(title_height, legend_height))
+			gf = frameGrob(layout = grid.layout(nrow = 1, ncol = 2, 
+				widths = unit.c(title_width + unit(1.5, "mm"), legend_width),
+				heights = total_height))
+			
+			if(title_position == "lefttop") {
+				gf = placeGrob(gf, row = 1, col = 1, grob = textGrob(title, unit(1, "npc") - unit(1.5, "mm"), unit(1, "npc"), just = c("right", "top"), gp = title_gp))
+				gf = placeGrob(gf, row = 1, col = 2, grob = legend_body)
+			} else {
+				gf = placeGrob(gf, row = 1, col = 1, grob = textGrob(title, unit(1, "npc") - unit(1.5, "mm"), unit(0.5, "npc"), just = c("right"), gp = title_gp))
+				gf = placeGrob(gf, row = 1, col = 2, grob = legend_body)
+			}
+		}
+	}
+	return(gf)
 }
 
-discrete_legend_body = function(at, labels = at, nrow, ncol = 1, gp = gpar(),
+discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
 	labels_gp = gpar(fontsize = 10),
 	border = "white", background = "#EEEEEE",
@@ -13,10 +136,7 @@ discrete_legend_body = function(at, labels = at, nrow, ncol = 1, gp = gpar(),
 	pch = 16, size = unit(2, "mm")) {
 
 	n_labels = length(labels)
-	if(missing(nrow) && missing(ncol)) {
-		nrow = n_labels
-		ncol = 1
-	} else if(missing(nrow)) {
+	if(is.null(nrow)) {
 		nrow = ceiling(n_labels / ncol)
 	} else {
 		ncol = ceiling(n_labels / nrow)
@@ -29,7 +149,7 @@ discrete_legend_body = function(at, labels = at, nrow, ncol = 1, gp = gpar(),
 		index = seq(nrow*(i-1)+1, min(c(nrow*i, n_labels)))
 		if(i == 1) {
 			labels_max_width = max(do.call("unit.c", lapply(labels[index], function(x) {
-					g = grobWidth(textGrob(x, gp = gp))
+					g = grobWidth(textGrob(x, gp = labels_gp))
 					if(i < ncol) {
 						g = g + gap
 					}
@@ -37,7 +157,7 @@ discrete_legend_body = function(at, labels = at, nrow, ncol = 1, gp = gpar(),
 				})))
 		} else {
 			labels_max_width = unit.c(labels_max_width, max(do.call("unit.c", lapply(labels[index], function(x) {
-					g = grobWidth(textGrob(x, gp = gp))
+					g = grobWidth(textGrob(x, gp = labels_gp))
 					if(i < ncol) {
 						g = g + gap
 					}
@@ -63,8 +183,8 @@ discrete_legend_body = function(at, labels = at, nrow, ncol = 1, gp = gpar(),
 		y = unit(1, "npc") - y
 
 		# labels
-		gf = packGrob(gf, row = 1, col = 2*i, grob = textGrob(labels[index], x, y - grid_height*0.5, 
-	 		just = c("left", "center"), gp = labels_gp), width = labels_max_width[i], force.width = TRUE)
+		gf = placeGrob(gf, row = 1, col = 2*i, grob = textGrob(labels[index], x, y - grid_height*0.5, 
+	 		just = c("left", "center"), gp = labels_gp))
 
 		# grid
 		sgd = subset_gp(legend_gp, index)
@@ -76,16 +196,16 @@ discrete_legend_body = function(at, labels = at, nrow, ncol = 1, gp = gpar(),
 		}
 		sgd2$col = border
 
-		gf = packGrob(gf, row = 1, col = 2*i-1, grob = rectGrob(x, y, width = grid_width, height = grid_height, just = c("left", "top"),
+		gf = placeGrob(gf, row = 1, col = 2*i-1, grob = rectGrob(x, y, width = grid_width, height = grid_height, just = c("left", "top"),
 				gp = sgd2))
 		
 		if(any(c("points", "p") %in% type)) {
 			if(length(pch) == 1) pch = rep(pch, n_labels)
 			if(length(size) == 1) size = rep(size, n_labels)
-			gf = packGrob(gf, row = 1, col = 2*i-1, grob = pointsGrob(x+grid_width*0.5, y-grid_height*0.5, pch = pch[index], size = size[index], gp = subset_gp(legend_gp, index)))
+			gf = placeGrob(gf, row = 1, col = 2*i-1, grob = pointsGrob(x+grid_width*0.5, y-grid_height*0.5, pch = pch[index], size = size[index], gp = subset_gp(legend_gp, index)))
 		}
 		if(any(c("lines", "l") %in% type)) {
-			gf = packGrob(gf, row = 1, col = 2*i-1, grob = segmentsGrob(x+unit(0.5, "mm"), y-grid_height*0.5, x+grid_width - unit(0.5, "mm"), y-grid_height*0.5, gp = subset_gp(legend_gp, index)))
+			gf = placeGrob(gf, row = 1, col = 2*i-1, grob = segmentsGrob(x+unit(0.5, "mm"), y-grid_height*0.5, x+grid_width - unit(0.5, "mm"), y-grid_height*0.5, gp = subset_gp(legend_gp, index)))
 		}
 	}
 	return(gf)
@@ -93,9 +213,9 @@ discrete_legend_body = function(at, labels = at, nrow, ncol = 1, gp = gpar(),
 
 vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
-	legend_height = min_legend_height,
+	legend_height = NULL,
 	labels_gp = gpar(fontsize = 10),
-	border = "white") {
+	border = NULL) {
 
 	od = order(at)
 	at = at[od]
@@ -109,6 +229,7 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	labels_padding_left = unit(1, "mm")
 	
 	min_legend_height = length(at)*(grid_height)
+	if(is.null(legend_height)) legend_height = min_legend_height
 	if(convertHeight(legend_height, "mm", valueOnly = TRUE) < convertHeight(min_legend_height, "mm", valueOnly = TRUE)) {
 		legend_height = min_legend_height
 	}
@@ -126,8 +247,7 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	ymin = offset
 	ymax = unit(1, "npc")-offset
 	y = (at - at[1])/(at[k] - at[1])*(ymax - ymin) + ymin
-	gf = packGrob(gf, row = 1, col = 2, grob = textGrob(labels, x, y, just = c("left", "center"), gp = labels_gp), 
-		width = labels_max_width, force.width = TRUE, height = legend_height, force.height = TRUE)
+	gf = placeGrob(gf, row = 1, col = 2, grob = textGrob(labels, x, y, just = c("left", "center"), gp = labels_gp))
 
 	at2 = unlist(lapply(seq_len(n_labels - 1), function(i) {
 		x = seq(at[i], at[i+1], length = round((at[i+1]-at[i])/(at[k]-at[1])*100))
@@ -138,15 +258,13 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	x2 = unit(rep(0, length(colors)), "npc")
 	y2 = seq(0, 1, length = length(colors)+1)
 	y2 = y2[-length(y2)] * unit(1, "npc")
-	gf = packGrob(gf, row = 1, col = 1, grob = rectGrob(x2, rev(y2), width = grid_width, height = (unit(1, "npc"))*(1/length(colors)), just = c("left", "center"),
-			gp = gpar(col = rev(colors), fill = rev(colors))), height = legend_height, force.height = TRUE)
-	gf = packGrob(gf, row = 1, col = 1, grob = segmentsGrob(unit(0, "npc"), y, unit(0.8, "mm"), y, gp = gpar(col = border)), 
-		    height = legend_height, force.height = TRUE)
-	gf = packGrob(gf, row = 1, col = 1, grob = segmentsGrob(grid_width, y, grid_width - unit(0.8, "mm"), y, gp = gpar(col = border)), 
-		    height = legend_height, force.height = TRUE)
-	if(!missing(border)) {
-		gf = packGrob(gf, row = 1, col = 1, grob = rectGrob(width = grid_width, height = legend_height, x = unit(0, "npc"), just = "left", gp = gpar(col = border, fill = NA)), 
-		    height = legend_height, force.height = TRUE)
+	gf = placeGrob(gf, row = 1, col = 1, grob = rectGrob(x2, rev(y2), width = grid_width, height = (unit(1, "npc"))*(1/length(colors)), just = c("left", "center"),
+			gp = gpar(col = rev(colors), fill = rev(colors))))
+	gf = placeGrob(gf, row = 1, col = 1, grob = segmentsGrob(unit(0, "npc"), y, unit(0.8, "mm"), y, gp = gpar(col = ifelse(is.null(border), "white", border))))
+	gf = placeGrob(gf, row = 1, col = 1, grob = segmentsGrob(grid_width, y, grid_width - unit(0.8, "mm"), y, gp = gpar(col = ifelse(is.null(border), "white", border))))
+	
+	if(!is.null(border)) {
+		gf = placeGrob(gf, row = 1, col = 1, grob = rectGrob(width = grid_width, height = legend_height, x = unit(0, "npc"), just = "left", gp = gpar(col = border, fill = NA)))
 	}
 
 	return(gf)
@@ -155,13 +273,9 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 
 horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
-	legend_width = min_legend_width,
+	legend_width = NULL,
 	labels_gp = gpar(fontsize = 10),
-	border = "white") {
-
-	if(missing(at)) {
-		at = attr(col_fun, "breaks")
-	}
+	border = NULL) {
 
 	od = order(at)
 	at = at[od]
@@ -179,6 +293,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	labels_padding_top = unit(1, "mm")
 	
 	min_legend_width = sum(labels_width)*1.5
+	if(is.null(legend_width)) legend_width = min_legend_width
 	# if(convertWidth(legend_width, "mm", valueOnly = TRUE) < convertWidth(min_legend_width, "mm", valueOnly = TRUE)) {
 	# 	legend_width = min_legend_width
 	# }
@@ -192,8 +307,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	xmin = offset
 	xmax = unit(1, "npc")-offset
 	x = (at - at[1])/(at[k] - at[1])*(xmax - xmin)+ xmin
-	gf = packGrob(gf, row = 2, col = 1, grob = textGrob(labels, x, unit(0, "npc"), just = "bottom", gp = labels_gp), 
-		width = legend_width, force.width = TRUE, height = labels_max_height, force.height = TRUE)
+	gf = placeGrob(gf, row = 2, col = 1, grob = textGrob(labels, x, unit(0, "npc"), just = "bottom", gp = labels_gp))
 
 	at2 = unlist(lapply(seq_len(n_labels - 1), function(i) {
 		x = seq(at[i], at[i+1], length = round((at[i+1]-at[i])/(at[k]-at[1])*100))
@@ -204,16 +318,13 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	y2 = unit(rep(1, length(colors)), "npc")
 	x2 = seq(0, 1, length = length(colors)+1)
 	x2 = x2[-length(x2)] * unit(1, "npc")
-	gf = packGrob(gf, row = 1, col = 1, grob = rectGrob(x2, y2, height = grid_height, width = (unit(1, "npc"))*(1/length(colors)), just = "top",
-			gp = gpar(col = colors, fill = colors)), height = grid_height + labels_padding_top, width = legend_width, force.height = TRUE)
-	gf = packGrob(gf, row = 1, col = 1, grob = segmentsGrob(x, labels_padding_top, x, labels_padding_top + unit(0.8, "mm"), gp = gpar(col = border)), 
-			height = grid_height + labels_padding_top, width = legend_width, force.width = TRUE)
-	gf = packGrob(gf, row = 1, col = 1, grob = segmentsGrob(x, grid_height + labels_padding_top - unit(0.8, "mm"), x, grid_height + labels_padding_top, gp = gpar(col = border)), 
-		    height = grid_height + labels_padding_top, width = legend_width, force.width = TRUE)
+	gf = placeGrob(gf, row = 1, col = 1, grob = rectGrob(x2, y2, height = grid_height, width = (unit(1, "npc"))*(1/length(colors)), just = "top",
+			gp = gpar(col = colors, fill = colors)))
+	gf = placeGrob(gf, row = 1, col = 1, grob = segmentsGrob(x, labels_padding_top, x, labels_padding_top + unit(0.8, "mm"), gp = gpar(col = ifelse(is.null(border), "white", border))))
+	gf = placeGrob(gf, row = 1, col = 1, grob = segmentsGrob(x, grid_height + labels_padding_top - unit(0.8, "mm"), x, grid_height + labels_padding_top, gp = gpar(col = ifelse(is.null(border), "white", border))))
 
-	if(!missing(border)) {
-		gf = packGrob(gf, row = 1, col = 1, grob = rectGrob(width = legend_width, height = grid_height, y = unit(1, "npc"), just = "top", gp = gpar(col = border, fill = NA)), 
-		    height = grid_height + labels_padding_top, width = legend_width, force.width = TRUE)
+	if(!is.null(border)) {
+		gf = placeGrob(gf, row = 1, col = 1, grob = rectGrob(width = legend_width, height = grid_height, y = unit(1, "npc"), just = "top", gp = gpar(col = border, fill = NA)))
 	}
 
 	return(gf)
