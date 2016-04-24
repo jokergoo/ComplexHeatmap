@@ -235,16 +235,20 @@ As the normal `Heatmap()` function, `row_order` or `column_order` can be assigne
 orders (either numeric or character). Following the order of samples are gathered from cBio as well.
 You can see the difference for the sample order between 'memo sort' and the method used by cBio.
 
+Also notice how we move the legend to the bottom of the oncoPrint.
+
 ```{r, fig.width = 12, fig.height = 8}
 sample_order = scan(paste0(system.file("extdata", package = "ComplexHeatmap"), 
     "/sample_order.txt"), what = "character")
-oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+ht = oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	alter_fun = alter_fun, col = col, 
 	row_order = NULL, column_order = sample_order,
 	remove_empty_columns = TRUE,
 	column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
-		labels = c("Amplification", "Deep deletion", "Mutation")))
+		labels = c("Amplification", "Deep deletion", "Mutation"),
+		nrow = 1, title_position = "leftcenter"))
+draw(ht, heatmap_legend_side = "bottom")
 ```
 
 `oncoPrint()` actually returns a `HeatmapList` object, so you can add more Heatmaps or row annotations
