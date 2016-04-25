@@ -30,11 +30,13 @@ There are following parameters:
   \item{heatmap_row_title_gp}{set \code{row_title_gp} in \code{\link{Heatmap}}.}
   \item{heatmap_column_title_gp}{set \code{column_title_gp} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_title_gp}{set \code{title_gp} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
+  \item{heatmap_legend_title_position}{set \code{title_position} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_labels_gp}{set \code{labels_gp} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_grid_width}{set \code{grid_width} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_grid_height}{set \code{grid_height} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_grid_border}{set \code{grid_border} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
   \item{heatmap_legend_title_gp}{set \code{title_gp} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
+  \item{heatmap_legend_title_position}{set \code{title_position} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
   \item{heatmap_legend_labels_gp}{set \code{labels_gp} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
   \item{heatmap_legend_grid_width}{set \code{grid_width} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
   \item{heatmap_legend_grid_height}{set \code{grid_height} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
