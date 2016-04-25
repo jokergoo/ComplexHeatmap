@@ -22,11 +22,13 @@
 # -heatmap_row_title_gp set ``row_title_gp`` in `Heatmap`.
 # -heatmap_column_title_gp set ``column_title_gp`` in `Heatmap`.
 # -heatmap_legend_title_gp set ``title_gp`` element in ``heatmap_legend_param`` in `Heatmap`.
+# -heatmap_legend_title_position set ``title_position`` element in ``heatmap_legend_param`` in `Heatmap`.
 # -heatmap_legend_labels_gp set ``labels_gp`` element in ``heatmap_legend_param`` in `Heatmap`.
 # -heatmap_legend_grid_width set ``grid_width`` element in ``heatmap_legend_param`` in `Heatmap`.
 # -heatmap_legend_grid_height set ``grid_height`` element in ``heatmap_legend_param`` in `Heatmap`.
 # -heatmap_legend_grid_border set ``grid_border`` element in ``heatmap_legend_param`` in `Heatmap`.
 # -heatmap_legend_title_gp set ``title_gp`` element in ``legend_param`` in `SingleAnnotation`.
+# -heatmap_legend_title_position set ``title_position`` element in ``legend_param`` in `SingleAnnotation`.
 # -heatmap_legend_labels_gp set ``labels_gp`` element in ``legend_param`` in `SingleAnnotation`.
 # -heatmap_legend_grid_width set ``grid_width`` element in ``legend_param`` in `SingleAnnotation`.
 # -heatmap_legend_grid_height set ``grid_height`` element in ``legend_param`` in `SingleAnnotation`.
