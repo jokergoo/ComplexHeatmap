@@ -313,13 +313,13 @@ Heatmap = function(matrix, col, name,
     }
    
     if("heatmap_legend_param" %in% called_args) {
-        for(opt_name in setdiff(c("title_gp", "labels_gp", "grid_width", "grid_height", "grid_border"), names(heatmap_legend_param))) {
+        for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border"), names(heatmap_legend_param))) {
             opt_name2 = paste0("heatmap_legend_", opt_name)
             if(!is.null(ht_global_opt(opt_name2)))
                 heatmap_legend_param[[opt_name]] = ht_global_opt(opt_name2)
         }
     } else {
-        for(opt_name in c("title_gp", "labels_gp", "grid_width", "grid_height", "grid_border")) {
+        for(opt_name in c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border")) {
             opt_name2 = paste0("heatmap_legend_", opt_name)
             if(!is.null(ht_global_opt(opt_name2)))
                 heatmap_legend_param[[opt_name]] = ht_global_opt(opt_name2)
