@@ -323,17 +323,17 @@ get_dist = function(matrix, method) {
             stop("Since your distance method is a funciton, it can only accept one or two arguments.")
         }
     } else if(method %in% c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")) {
-        if(any(is.na(matrix))) {
-            dst = get_dist(matrix, function(x, y) {
-                l = is.na(x) | is.na(y)
-                x = x[!l]
-                y = y[!l]
-                as.vector(dist(rbind(x, y), method = method))
-            })
-            warning("NA exists in the matrix, calculating distance by removing NA values.")
-        } else {
+        # if(any(is.na(matrix))) {
+        #     dst = get_dist(matrix, function(x, y) {
+        #         l = is.na(x) | is.na(y)
+        #         x = x[!l]
+        #         y = y[!l]
+        #         as.vector(dist(rbind(x, y), method = method))
+        #     })
+        #     warning("NA exists in the matrix, calculating distance by removing NA values.")
+        # } else {
             dst = dist(matrix, method = method)
-        }
+        # }
     } else if(method %in% c("pearson", "spearman", "kendall")) {
         if(any(is.na(matrix))) {
             dst = get_dist(matrix, function(x, y) {
