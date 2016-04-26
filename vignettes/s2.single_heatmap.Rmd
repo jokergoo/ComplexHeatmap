@@ -109,12 +109,13 @@ by default clustering is applied on both dimensions while
 for character matrix, clustering is suppressed.
 
 ``NA`` is allowed in the heatmap. You can control the color of `NA` by `na_col` argument. 
-The matrix which contains `NA` can also be clustered by `Heatmap()` but giving warning messages.
+The matrix which contains `NA` can also be clustered by `Heatmap()` (since `dist()` accepts `NA` values)
+and clustering a matrix with `NA` values by "pearson", "spearman" or "kendall" method gives warning messages.
 
 ```{r na_value}
 mat_with_na = mat
 mat_with_na[sample(c(TRUE, FALSE), nrow(mat)*ncol(mat), replace = TRUE, prob = c(1, 9))] = NA
-Heatmap(mat_with_na, na_col = "orange")
+Heatmap(mat_with_na, na_col = "orange", clustering_distance_rows = "pearson")
 ```
 
 Color space is important for interpolating colors. By default, colors are linearly interpolated in [LAB color space](https://en.wikipedia.org/wiki/Lab_color_space), but you can select the color space in `colorRamp2()` function. Compare following two plots
