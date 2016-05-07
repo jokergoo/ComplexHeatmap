@@ -193,6 +193,16 @@ setMethod(f = "add_heatmap",
 # -row_dend_side if auto adjust, where to put the row dendrograms for the main heatmap
 # -row_hclust_side deprecated, use ``row_dend_side`` instead
 # -row_sub_title_side if auto adjust, where to put sub row titles for the main heatmap
+# -cluster_rows same setting as in `Heatmap`, if it is specified, ``cluster_rows`` in main heatmap is ignored.
+# -clustering_distance_rows same setting as in `Heatmap`, if it is specified, ``clustering_distance_rows`` in main heatmap is ignored.
+# -clustering_method_rows same setting as in `Heatmap`, if it is specified, ``clustering_method_rows`` in main heatmap is ignored.
+# -row_dend_width same setting as in `Heatmap`, if it is specified, ``row_dend_width`` in main heatmap is ignored.
+# -show_row_dend same setting as in `Heatmap`, if it is specified, ``show_row_dend`` in main heatmap is ignored.
+# -row_dend_reorder same setting as in `Heatmap`, if it is specified, ``row_dend_reorder`` in main heatmap is ignored.
+# -row_dend_gp same setting as in `Heatmap`, if it is specified, ``row_dend_gp`` in main heatmap is ignored.
+# -row_order same setting as in `Heatmap`, if it is specified, ``row_order`` in main heatmap is ignored.
+# -km same setting as in `Heatmap`, if it is specified, ``km`` in main heatmap is ignored.
+# -split same setting as in `Heatmap`, if it is specified, ``split`` in main heatmap is ignored.
 #
 # == detail
 # It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
@@ -225,7 +235,17 @@ setMethod(f = "make_layout",
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_dend_side = c("original", "left", "right"),
     row_hclust_side = row_dend_side,
-    row_sub_title_side = c("original", "left", "right")) {
+    row_sub_title_side = c("original", "left", "right"),
+    cluster_rows = NULL,
+    clustering_distance_rows = NULL,
+    clustering_method_rows = NULL,
+    row_dend_width = NULL, 
+    show_row_dend = NULL, 
+    row_dend_reorder = NULL,
+    row_dend_gp = NULL,
+    row_order = NULL,
+    km = NULL,
+    split = NULL) {
 
     if(object@layout$initialized) {
         return(object)
@@ -273,6 +293,70 @@ setMethod(f = "make_layout",
             } else if(ncol(object@ht_list[[i]]@matrix) == 0) {
                 gap[i] = unit(0, "mm")
             }
+        }
+    }
+
+    if(!is.null(split)) {
+        object@ht_list[[i_main]]@matrix_param$split = split
+    }
+    if(!is.null(km)) {
+        object@ht_list[[i_main]]@matrix_param$km = km
+    }
+
+    if(!is.null(cluster_rows)) {
+
+        if(is.null(show_row_dend) && identical(cluster_rows, TRUE)) {
+            show_row_dend = TRUE
+        }
+
+        if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
+            object@ht_list[[i_main]]@row_dend_param$obj = cluster_rows
+            object@ht_list[[i_main]]@row_dend_param$cluster = TRUE
+        } else if(inherits(cluster_rows, "function")) {
+            object@ht_list[[i_main]]@row_dend_param$fun = cluster_rows
+            object@ht_list[[i_main]]@row_dend_param$cluster = TRUE
+        } else {
+            object@ht_list[[i_main]]@row_dend_param$cluster = cluster_rows
+            if(!cluster_rows) {
+                row_dend_width = unit(0, "mm")
+                show_row_dend = FALSE
+            } else {
+                row_dend_width = unit(10, "mm")
+            }
+        }
+    }
+
+    if(!is.null(show_row_dend)) {
+        if(!show_row_dend) {
+            row_dend_width = unit(0, "mm")
+        }
+    }
+    if(!is.null(clustering_distance_rows)) {
+        object@ht_list[[i_main]]@row_dend_param$distance = clustering_distance_rows
+    }
+    if(!is.null(clustering_method_rows)) {
+        object@ht_list[[i_main]]@row_dend_param$method = clustering_method_rows
+    }
+    if(!is.null(row_dend_width)) {
+        object@ht_list[[i_main]]@row_dend_param$width = row_dend_width + unit(1, "mm")  # append the gap
+    }
+    if(!is.null(show_row_dend)) {
+        object@ht_list[[i_main]]@row_dend_param$show = show_row_dend
+    }
+    if(!is.null(row_dend_gp)) {
+        object@ht_list[[i_main]]@row_dend_param$gp = check_gp(row_dend_gp)
+    }
+    if(!is.null(row_dend_reorder)) {
+        object@ht_list[[i_main]]@row_dend_param$reorder = row_dend_reorder
+    }
+    if(!is.null(row_order)) {
+        if(is.null(row_order)) {
+            object@ht_list[[i_main]]@row_order = seq_len(nrow(object@ht_list[[i_main]]@matrix))
+        }  else {
+            if(is.character(row_order)) {
+                row_order = structure(seq_len(nrow(object@ht_list[[i_main]]@matrix)), names = rownames(object@ht_list[[i_main]]@matrix))[row_order]
+            }
+            object@ht_list[[i_main]]@row_order = row_order
         }
     }
 

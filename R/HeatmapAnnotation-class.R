@@ -262,11 +262,12 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 #
 # == param
 # -... pass to `HeatmapAnnotation`
+# -width default width of the row annotations
 #
 # == details
 # The function is identical to 
 #
-#     HeatmapAnnotation(..., which = "row")
+#     HeatmapAnnotation(..., which = "row", width = width)
 #
 # == value
 # A `HeatmapAnnotation-class` object.
@@ -274,8 +275,8 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-rowAnnotation = function(...) {
-	HeatmapAnnotation(..., which = "row")
+rowAnnotation = function(..., width = unit(1, "cm")) {
+	HeatmapAnnotation(..., which = "row", width = width)
 }
 
 # == title

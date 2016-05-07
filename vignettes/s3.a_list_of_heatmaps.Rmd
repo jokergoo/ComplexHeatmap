@@ -211,6 +211,26 @@ column_dend(ht_list)
 Row annotations can also be reordered and split according to the main heatmap, 
 please see [**Heatmap Annotation**](s4.heatmap_annotation.html) for more explanations.
 
+## Modify row orders/clustering in main heatmap
+
+From version 1.11.1, settings for row order/clustering for the main heatmap can be directly set
+in `draw()` method. This makes it convinient to switch main heatmaps without modifying settings in individual
+heatmaps. Actually settings specified in `draw()` will overwrite corresponding settings in the main heatmap.
+
+```{r, fig.width = 8}
+mat1 = matrix(rnorm(80, 2), 8, 10)
+mat1 = rbind(mat1, matrix(rnorm(40, -2), 4, 10))
+mat2 = mat1[sample(1:nrow(mat1)), ]
+
+split = sample(c("a", "b"), nrow(mat1), replace = TRUE)
+ht_list = Heatmap(mat1, name = "mat1", cluster_rows = FALSE, column_title = "mat1") + 
+          Heatmap(mat2, name = "mat2", cluster_rows = FALSE, column_title = "mat2")
+draw(ht_list, main_heatmap = "mat1", split = split)
+draw(ht_list, main_heatmap = "mat2", km = 2, cluster_rows = TRUE)
+draw(ht_list, cluster_rows = TRUE, main_heatmap = "mat1", show_row_dend =TRUE)
+draw(ht_list, cluster_rows = TRUE, main_heatmap = "mat2", show_row_dend =TRUE)
+```
+
 ## Session info
 
 ```{r}

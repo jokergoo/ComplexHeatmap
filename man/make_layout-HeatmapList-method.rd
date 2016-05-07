@@ -23,7 +23,17 @@ Make layout for the complete plot
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_dend_side = c("original", "left", "right"),
     row_hclust_side = row_dend_side,
-    row_sub_title_side = c("original", "left", "right"))
+    row_sub_title_side = c("original", "left", "right"),
+    cluster_rows = NULL,
+    clustering_distance_rows = NULL,
+    clustering_method_rows = NULL,
+    row_dend_width = NULL,
+    show_row_dend = NULL,
+    row_dend_reorder = NULL,
+    row_dend_gp = NULL,
+    row_order = NULL,
+    km = NULL,
+    split = NULL)
 }
 \arguments{
 
@@ -45,6 +55,16 @@ Make layout for the complete plot
   \item{row_dend_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
   \item{row_hclust_side}{deprecated, use \code{row_dend_side} instead}
   \item{row_sub_title_side}{if auto adjust, where to put sub row titles for the main heatmap}
+  \item{cluster_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{cluster_rows} in main heatmap is ignored.}
+  \item{clustering_distance_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{clustering_distance_rows} in main heatmap is ignored.}
+  \item{clustering_method_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{clustering_method_rows} in main heatmap is ignored.}
+  \item{row_dend_width}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_dend_width} in main heatmap is ignored.}
+  \item{show_row_dend}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{show_row_dend} in main heatmap is ignored.}
+  \item{row_dend_reorder}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_dend_reorder} in main heatmap is ignored.}
+  \item{row_dend_gp}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_dend_gp} in main heatmap is ignored.}
+  \item{row_order}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_order} in main heatmap is ignored.}
+  \item{km}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{km} in main heatmap is ignored.}
+  \item{split}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{split} in main heatmap is ignored.}
 
 }
 \details{
