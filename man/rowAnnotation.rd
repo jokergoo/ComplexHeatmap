@@ -7,18 +7,19 @@ Construct row annotations
 Construct row annotations
 }
 \usage{
-rowAnnotation(...)
+rowAnnotation(..., width = unit(1, "cm"))
 }
 \arguments{
 
   \item{...}{pass to \code{\link{HeatmapAnnotation}}}
+  \item{width}{default width of the row annotations}
 
 }
 \details{
 The function is identical to
 
   \preformatted{
-    HeatmapAnnotation(..., which = "row")  }
+    HeatmapAnnotation(..., which = "row", width = width)  }
 }
 \value{
 A \code{\link{HeatmapAnnotation-class}} object.

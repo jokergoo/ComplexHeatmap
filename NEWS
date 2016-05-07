@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.11.1
+
+* `draw,HeatmapList-method` can control row order and clustering of the main heatmap
+
+=============================
+
 CHANGES in VERSION 1.9.7
 
 * add `Legend()` function which is more flexible to generate
