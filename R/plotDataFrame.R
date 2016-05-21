@@ -58,13 +58,13 @@ plotDataFrame = function(df, overlap = 0.25, nlevel = 30, show_row_names = TRUE,
 				if(is.numeric(df[[i]])) {
 					if(is.null(current_range)) {
 						# if previous column are character/factor
-						current_range = quantile(df[[i]], c(0.1, 0.9))
+						current_range = quantile(df[[i]], c(0.1, 0.9), na.rm = TRUE)
 						current_group = current_group + 1
 						group[[ current_group ]] = i
 
 					} else {
 						# if previous columns are numeric
-						range2 = range(df[[i]], c(0.1, 0.9))
+						range2 = range(df[[i]], c(0.1, 0.9), na.rm = TRUE)
 						intersected_range = c(max(current_range[1], range2[1]), min(current_range[2], range2[2]))
 
 						l = df[[i]] >= intersected_range[1] & df[[i]] <= intersected_range[2]

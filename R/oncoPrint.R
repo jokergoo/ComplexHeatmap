@@ -26,7 +26,8 @@
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -heatmap_legend_param pass to `Heatmap`
 # -top_annotation by default the top annotation contains barplots representing frequency of mutations in every sample.
-# -barplot_ignore alterations that you don't want to put on the barplots.
+# -barplot_ignore specific alterations that you don't want to put on the barplots. If you want to really suppress the top barplot
+#        set ``top_annotation`` to ``NULL``.
 # -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
 # == details

@@ -7,6 +7,10 @@ between different sources of data sets and reveal potential structures.
 Here the **ComplexHeatmap** package provides a highly flexible way to arrange 
 multiple heatmaps and supports self-defined annotation graphics.
 
+### Citation
+
+Zuguang Gu, Roland Eils and Matthias Schlesner, [Complex heatmaps reveal patterns and correlations in multidimensional genomic data](http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract), Bioinformatics, 2016
+
 ### General design
 
 Generally, a heatmap list contains several heatmaps and row annotations.

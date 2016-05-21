@@ -1,0 +1,18 @@
+citHeader("The methods within the code package can be cited as:")
+
+citEntry(
+   entry="article",
+   title = "Complex heatmaps reveal patterns and correlations in multidimensional genomic data",
+   author = personList(as.person("Zuguang Gu"),
+                       as.person("Roland Eils"),
+                       as.person("Matthias Schlesner")),
+   journal = "Bioinformatics",
+   year = 2016,
+   textVersion = "Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics."
+)
+
+citFooter("This free open-source software implements academic
+research by the authors and co-workers. If you use it,
+please support the project by citing the appropriate
+journal articles.")
+
