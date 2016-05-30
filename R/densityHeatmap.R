@@ -24,7 +24,6 @@
 # -show_column_names pass to `Heatmap`
 # -column_names_max_height pass to `Heatmap`
 # -column_names_gp pass to `Heatmap`
-# -column_order pass to `Heatmap`
 # -column_order order of columns
 # -... pass to `draw,HeatmapList-method`
 #

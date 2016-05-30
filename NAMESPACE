@@ -95,6 +95,7 @@ export(anno_density)
 
 
 
+
 import(grDevices)
 import(graphics)
 import(grid)
@@ -115,6 +116,8 @@ importFrom("dendextend", nnodes)
 importFrom("methods", setClass)
 importFrom("methods", setGeneric)
 importFrom("methods", setMethod)
+importFrom("methods", "new", "show")
+importFrom("utils", "getFromNamespace")
 
 
 

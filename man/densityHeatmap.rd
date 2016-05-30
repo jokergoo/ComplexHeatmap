@@ -50,7 +50,6 @@ densityHeatmap(data,
   \item{show_column_names}{pass to \code{\link{Heatmap}}}
   \item{column_names_max_height}{pass to \code{\link{Heatmap}}}
   \item{column_names_gp}{pass to \code{\link{Heatmap}}}
-  \item{column_order}{pass to \code{\link{Heatmap}}}
   \item{column_order}{order of columns}
   \item{...}{pass to \code{\link{draw,HeatmapList-method}}}
 
