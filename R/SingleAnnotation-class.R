@@ -34,12 +34,13 @@ SingleAnnotation = setClass("SingleAnnotation",
 		fun = "function",
 		show_legend = "logical",
 		which = "character",
-		name_to_data_vp = "logical"
+		name_to_data_vp = "logical",
+		name_param = "list"
 	),
 	prototype = list(
 		color_mapping = NULL,
 		fun = function(index) NULL,
-		show_legend= TRUE,
+		show_legend = TRUE,
 		name_to_data_vp = FALSE
 	)
 )
@@ -93,7 +94,12 @@ SingleAnnotation = function(name, value, col, fun,
 	which = c("column", "row"), 
 	show_legend = TRUE, 
 	gp = gpar(col = NA), 
-	legend_param = list()) {
+	legend_param = list(),
+	show_name = TRUE, 
+	name_gp = gpar(fontsize = 12),
+	name_offset = unit(2, "mm"),
+	name_rot = 0,
+	name_side = ifelse(which == "column", "right", "bottom")) {
 
 	# re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
@@ -121,6 +127,11 @@ SingleAnnotation = function(name, value, col, fun,
         increase_annotation_index()
     }
     .Object@name = name
+    .Object@name_param = list(show = show_name,
+    	                      gp = check_gp(name_gp),
+    	                      offset = name_offset,
+    	                      rot = name_rot,
+    	                      side = name_side)
 
     gp = check_gp(gp)
     if(!is.null(gp$fill)) {
@@ -132,8 +143,8 @@ SingleAnnotation = function(name, value, col, fun,
 	    	value = as.character(value)
 	    }
 	    if(is.factor(value)) {
-                value = as.vector(value)
-            }
+            value = as.vector(value)
+        }
 	}
 
     if(missing(fun)) {
