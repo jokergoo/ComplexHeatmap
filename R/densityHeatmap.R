@@ -12,6 +12,18 @@
 # -ylab label on y-axis in the plot
 # -title title of the plot
 # -range ranges on the y-axis. By default the range is between 1th quantile and 99th quantile of the data.
+# -cluster_columns whether cluster columns (here cluster by density distributions)
+# -clustering_distance_columns pass to `Heatmap`
+# -clustering_method_columns pass to `Heatmap`
+# -column_dend_side pass to `Heatmap`
+# -column_dend_height pass to `Heatmap`
+# -show_column_dend pass to `Heatmap`
+# -column_dend_gp pass to `Heatmap`
+# -column_dend_reorder pass to `Heatmap`
+# -column_names_side pass to `Heatmap`
+# -show_column_names pass to `Heatmap`
+# -column_names_max_height pass to `Heatmap`
+# -column_names_gp pass to `Heatmap`
 # -column_order order of columns
 # -... pass to `draw,HeatmapList-method`
 #
@@ -47,6 +59,18 @@ densityHeatmap = function(data,
 	ylab = deparse(substitute(data)), 
 	title = paste0("Density heatmap of ", deparse(substitute(data))),
 	range = c(-Inf, Inf),
+	cluster_columns = FALSE,
+	clustering_distance_columns = "euclidean",
+	clustering_method_columns = "complete",
+	column_dend_side = "top",
+	column_dend_height = unit(10, "mm"),
+	show_column_dend = FALSE,
+	column_dend_gp = gpar(),
+	column_dend_reorder = TRUE,
+	column_names_side = c("bottom", "top"),
+	show_column_names = TRUE,
+	column_names_max_height = unit(4, "cm"),
+	column_names_gp = gpar(fontsize = 12),
 	column_order = NULL,
 	...) {
 
@@ -83,13 +107,52 @@ densityHeatmap = function(data,
 	col = colorRamp2(seq(0, max(mat, na.rm = TRUE), length = length(col)), col, space = color_space)
 
 	if(is.null(anno)) {
-		ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, cluster_columns = FALSE, column_order = column_order)
+		ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, 
+			cluster_columns = cluster_columns,
+			clustering_distance_columns = clustering_distance_columns,
+			clustering_method_columns = clustering_method_columns,
+			column_dend_side = column_dend_side,
+			column_dend_height = column_dend_height,
+			show_column_dend = show_column_dend,
+			column_dend_gp = column_dend_gp,
+			column_dend_reorder = column_dend_reorder,
+			column_names_side = column_names_side,
+			show_column_names = show_column_names,
+			column_names_max_height = column_names_max_height,
+			column_names_gp = column_names_gp,
+			column_order = column_order)
 	} else if(inherits(anno, "HeatmapAnnotation")) {
-		ht = Heatmap(mat, col = col, top_annotation = anno, name = "density", cluster_rows = FALSE, cluster_columns = FALSE, column_order = column_order)
+		ht = Heatmap(mat, col = col, top_annotation = anno, name = "density", cluster_rows = FALSE,
+			cluster_columns = cluster_columns,
+			clustering_distance_columns = clustering_distance_columns,
+			clustering_method_columns = clustering_method_columns,
+			column_dend_side = column_dend_side,
+			column_dend_height = column_dend_height,
+			show_column_dend = show_column_dend,
+			column_dend_gp = column_dend_gp,
+			column_dend_reorder = column_dend_reorder,
+			column_names_side = column_names_side,
+			show_column_names = show_column_names,
+			column_names_max_height = column_names_max_height,
+			column_names_gp = column_names_gp,
+			column_order = column_order)
 	} else {
 		if(!is.data.frame(anno)) anno = data.frame(anno = anno)
 		ha = HeatmapAnnotation(df = anno)
-		ht = Heatmap(mat, col = col, top_annotation = ha, name = "density", cluster_rows = FALSE, cluster_columns = FALSE, column_order = column_order)
+		ht = Heatmap(mat, col = col, top_annotation = ha, name = "density", cluster_rows = FALSE, 
+			cluster_columns = cluster_columns,
+			clustering_distance_columns = clustering_distance_columns,
+			clustering_method_columns = clustering_method_columns,
+			column_dend_side = column_dend_side,
+			column_dend_height = column_dend_height,
+			show_column_dend = show_column_dend,
+			column_dend_gp = column_dend_gp,
+			column_dend_reorder = column_dend_reorder,
+			column_names_side = column_names_side,
+			show_column_names = show_column_names,
+			column_names_max_height = column_names_max_height,
+			column_names_gp = column_names_gp,
+			column_order = column_order)
 	}
 
 	bb = grid.pretty(c(min_x, max_x))

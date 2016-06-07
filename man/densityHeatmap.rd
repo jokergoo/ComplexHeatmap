@@ -14,6 +14,18 @@ densityHeatmap(data,
     ylab = deparse(substitute(data)),
     title = paste0("Density heatmap of ", deparse(substitute(data))),
     range = c(-Inf, Inf),
+    cluster_columns = FALSE,
+    clustering_distance_columns = "euclidean",
+    clustering_method_columns = "complete",
+    column_dend_side = "top",
+    column_dend_height = unit(10, "mm"),
+    show_column_dend = FALSE,
+    column_dend_gp = gpar(),
+    column_dend_reorder = TRUE,
+    column_names_side = c("bottom", "top"),
+    show_column_names = TRUE,
+    column_names_max_height = unit(4, "cm"),
+    column_names_gp = gpar(fontsize = 12),
     column_order = NULL,
     ...)
 }
@@ -26,6 +38,18 @@ densityHeatmap(data,
   \item{ylab}{label on y-axis in the plot}
   \item{title}{title of the plot}
   \item{range}{ranges on the y-axis. By default the range is between 1th quantile and 99th quantile of the data.}
+  \item{cluster_columns}{whether cluster columns (here cluster by density distributions)}
+  \item{clustering_distance_columns}{pass to \code{\link{Heatmap}}}
+  \item{clustering_method_columns}{pass to \code{\link{Heatmap}}}
+  \item{column_dend_side}{pass to \code{\link{Heatmap}}}
+  \item{column_dend_height}{pass to \code{\link{Heatmap}}}
+  \item{show_column_dend}{pass to \code{\link{Heatmap}}}
+  \item{column_dend_gp}{pass to \code{\link{Heatmap}}}
+  \item{column_dend_reorder}{pass to \code{\link{Heatmap}}}
+  \item{column_names_side}{pass to \code{\link{Heatmap}}}
+  \item{show_column_names}{pass to \code{\link{Heatmap}}}
+  \item{column_names_max_height}{pass to \code{\link{Heatmap}}}
+  \item{column_names_gp}{pass to \code{\link{Heatmap}}}
   \item{column_order}{order of columns}
   \item{...}{pass to \code{\link{draw,HeatmapList-method}}}
 

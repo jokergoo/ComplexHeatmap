@@ -110,6 +110,10 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
     if(is.null(max_height)) {
         max_height = attr(dend, "height")
     }
+    
+    if(max_height == 0) {
+    	return(invisible(NULL))
+    }
 
     is.leaf = function(object) {
         leaf = attr(object, "leaf")

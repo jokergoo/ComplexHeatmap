@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.11.2
+
+* `grid.dendrogram()`: do not draw dendrogram if the height is zero
+* `densityHeatmap()`: support clustering on columns and more controls on column settings
+
+=============================
+
 CHANGES in VERSION 1.11.1
 
 * `draw,HeatmapList-method` can control row order and clustering of the main heatmap

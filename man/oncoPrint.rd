@@ -42,7 +42,7 @@ oncoPrint(mat, get_type = function(x) x,
   \item{remove_empty_columns}{if there is no alteration in that sample, whether remove it on the heatmap}
   \item{heatmap_legend_param}{pass to \code{\link{Heatmap}}}
   \item{top_annotation}{by default the top annotation contains barplots representing frequency of mutations in every sample.}
-  \item{barplot_ignore}{alterations that you don't want to put on the barplots.}
+  \item{barplot_ignore}{specific alterations that you don't want to put on the barplots. If you want to really suppress the top barplot set \code{top_annotation} to \code{NULL}.}
   \item{...}{pass to \code{\link{Heatmap}}, so can set \code{bottom_annotation} here.}
 
 }
