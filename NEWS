@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.11.5
+
+* `gap` in `HeatmapAnnotation` has been adjusted
+
+=============================
+
 CHANGES in VERSION 1.11.2
 
 * `grid.dendrogram()`: do not draw dendrogram if the height is zero

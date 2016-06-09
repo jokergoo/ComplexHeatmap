@@ -199,14 +199,11 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 		}
 	}
 
-	if(which == "column") {
-		anno_list = rev(anno_list)
-	}
-
 	n_anno = length(anno_list)
 
 	if(is.null(gap)) gap = unit(0, "mm")
 
+	# the nth gap does not really matter
     if(length(gap) == 1) {
     	.Object@gap = rep(gap, n_anno)
     } else if(length(gap) == n_anno - 1) {
@@ -214,6 +211,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     } else if(length(gap) < n_anno - 1) {
     	stop("Length of `gap` is wrong.")
     } else {
+    	gap[n_anno] = unit(0, "mm")
     	.Object@gap = gap
     }
 
@@ -230,8 +228,6 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 	if(!is.unit(anno_size)) {
 		anno_size = anno_size/sum(anno_size)*(unit(1, "npc") - sum(.Object@gap))
 	}
-
-	if(which == "column") anno_size = anno_size[rev(seq_len(n_anno))]
 
 	names(anno_list) = sapply(anno_list, function(x) x@name)
     .Object@anno_list = anno_list
@@ -391,18 +387,30 @@ setMethod(f = "draw",
 	gap = object@gap
 
 	pushViewport(viewport(...))
-	for(i in seq_len(n_anno)) {
-		if(which == "column") {
-			if(align_to == "bottom") {
-				pushViewport(viewport(y = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], height = anno_size[i], just = c("center", "top")))
-			} else {
-				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno + 1 - i]), height = anno_size[i], just = c("center", "bottom")))
+	if(which == "column") {
+		if(align_to == "bottom") { # put on top of the heatmap
+			# start from the last annoation which is put on bottom
+			for(i in rev(seq_len(n_anno))) {
+				pushViewport(viewport(y = sum(anno_size[seq(n_anno - i + 1, n_anno))]) + sum(gap[seq(n_anno - i + 1, n_anno)]) + gap[n_anno], 
+					height = anno_size[i], just = c("center", "top"))
+				draw(object@anno_list[[i]], index, k, n)
+				upViewport()
 			}
-		} else {
-			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
+		} else { # put on bottom of the heatmap
+			# start for the first annotation which is put on the top
+			for(i in seq_len(n_anno)) {
+				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i]), 
+					height = anno_size[i], just = c("center", "bottom"))
+				draw(object@anno_list[[i]], index, k, n)
+				upViewport()
+			}
 		}
-		draw(object@anno_list[[i]], index, k, n)
-		upViewport()
+	} else if(which == "row") {
+		for(i in seq_len(n_anno)) {
+			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
+			draw(object@anno_list[[i]], index, k, n)
+			upViewport()
+		}
 	}
 	upViewport()
 })
