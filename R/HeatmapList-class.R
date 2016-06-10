@@ -1222,7 +1222,7 @@ setMethod(f = "draw_annotation_legend",
             pushViewport(viewport(name = "annotation_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
         }
     }
-    draw_legend(rev(ColorMappingList), rev(ColorMappingParamList), side = side, legend_list = legend_list, padding = padding, ...)
+    draw_legend(ColorMappingList, ColorMappingParamList, side = side, legend_list = legend_list, padding = padding, ...)
     upViewport()
 })
 

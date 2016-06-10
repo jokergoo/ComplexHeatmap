@@ -390,9 +390,9 @@ setMethod(f = "draw",
 	if(which == "column") {
 		if(align_to == "bottom") { # put on top of the heatmap
 			# start from the last annoation which is put on bottom
-			for(i in rev(seq_len(n_anno))) {
-				pushViewport(viewport(y = sum(anno_size[seq(n_anno - i + 1, n_anno))]) + sum(gap[seq(n_anno - i + 1, n_anno)]) + gap[n_anno], 
-					height = anno_size[i], just = c("center", "top"))
+			for(i in seq_len(n_anno)) {
+				pushViewport(viewport(y = sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno], 
+					height = anno_size[i], just = c("center", "top")))
 				draw(object@anno_list[[i]], index, k, n)
 				upViewport()
 			}
@@ -400,7 +400,7 @@ setMethod(f = "draw",
 			# start for the first annotation which is put on the top
 			for(i in seq_len(n_anno)) {
 				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i]), 
-					height = anno_size[i], just = c("center", "bottom"))
+					height = anno_size[i], just = c("center", "bottom")))
 				draw(object@anno_list[[i]], index, k, n)
 				upViewport()
 			}
