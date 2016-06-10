@@ -39,6 +39,7 @@ increase_color_mapping_index = function() {
     INDEX_ENV$I_COLOR_MAPPING = INDEX_ENV$I_COLOR_MAPPING + 1
 }
 
+hclust = stats::hclust
 
 # default colors for matrix or annotations
 # this function should be improved later

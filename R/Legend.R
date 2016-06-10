@@ -40,7 +40,7 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 	title = "", title_gp = gpar(fontsize = 10, fontface = "bold"), 
 	title_position = c("topleft", "topcenter", "leftcenter", "lefttop")) {
 
-	odevlist = dev.list()
+	# odevlist = dev.list()
 
 	if(missing(col_fun)) {
 		if(is.null(border)) border = "white"
@@ -128,9 +128,9 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 		}
 	}
 
-	for(i in seq_len(length(odevlist) - length(dev.list()))) {
-		dev.off()
-	}
+	# for(i in seq_len(length(odevlist) - length(dev.list()))) {
+	# 	dev.off()
+	# }
 
 	return(gf)
 }

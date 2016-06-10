@@ -98,7 +98,6 @@ SingleAnnotation = function(name, value, col, fun,
 	show_name = TRUE, 
 	name_gp = gpar(fontsize = 12),
 	name_offset = unit(2, "mm"),
-	name_rot = 0,
 	name_side = ifelse(which == "column", "right", "bottom")) {
 
 	# re-define some of the argument values according to global settings
@@ -127,11 +126,41 @@ SingleAnnotation = function(name, value, col, fun,
         increase_annotation_index()
     }
     .Object@name = name
+
+    name_rot = ifelse(which == "column", 0, 90)
+    if(which == "column") {
+    	if(!name_side %in% c("left", "right")) {
+    		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
+    	}
+    	if(name_side == "left") {
+    		name_x = unit(0, "npc") - name_offset
+    		name_y = unit(0.5, "npc")
+    		name_just = "right"
+    	} else {
+    		name_x = unit(1, "npc") + name_offset
+    		name_y = unit(0.5, "npc")
+    		name_just = "left"
+    	}
+    } else if(which == "row") {
+    	if(!name_side %in% c("top", "bottom")) {
+    		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
+    	}
+    	if(name_side == "top") {
+    		name_x = unit(0.5, "npc")
+    		name_y = unit(1, "npc") + name_offset
+    		name_just = "left"
+    	} else {
+    		name_x = unit(0.5, "npc")
+    		name_y = unit(0, "npc") - name_offset
+    		name_just = "right"
+    	}
+    }
     .Object@name_param = list(show = show_name,
+    						  x = name_x,
+    						  y = name_y,
+    						  just = name_just,
     	                      gp = check_gp(name_gp),
-    	                      offset = name_offset,
-    	                      rot = name_rot,
-    	                      side = name_side)
+    	                      rot = name_rot)
 
     gp = check_gp(gp)
     if(!is.null(gp$fill)) {
@@ -259,6 +288,11 @@ setMethod(f = "draw",
 			pushViewport(viewport(name = paste("annotation", object@name, k, sep = "_")))
 			object@fun(index, k, n)
 		}
+	}
+	# add annotation name
+	if(object@name_param$show) {
+		grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+			rot = object@name_param$rot, gp = object@name_param$gp)
 	}
 	upViewport()
 
