@@ -109,11 +109,18 @@ ht_global_opt = setGlobalOptions(
 		.value = FALSE,
 		.filter = function(x) {
 				if(x) {
-					ComplexHeatmap:::hclust = fastcluster::hclust 
+					if(require(fastcluster)) {
+						assign("hclust", envir = topenv()) = getFromNamespace("hclust", "fastcluster")
+					} else {
+						stop("Cannot find fastcluster package.")
+					}
 				} else {
-					ComplexHeatmap:::hclust = stats::hclust
+					assign("hclust", envir = topenv()) = getFromNamespace("hclust", "stats")
 				}
 				x
 			}
 		)
 )
+
+hclust = getFromNamespace("hclust", "stats")
+

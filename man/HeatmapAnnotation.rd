@@ -17,7 +17,11 @@ HeatmapAnnotation(df, name, col, na_col = "grey",
     height = calc_anno_size(),
     width = calc_anno_size(),
     gp = gpar(col = NA),
-    gap = unit(0, "mm"))
+    gap = unit(0, "mm"),
+    show_annotation_name = FALSE,
+    annotation_name_gp = gpar(),
+    annotation_name_offset = unit(2, "mm"),
+    annotation_name_side = ifelse(which == "column", "right", "bottom"))
 }
 \arguments{
 
@@ -35,6 +39,10 @@ HeatmapAnnotation(df, name, col, na_col = "grey",
   \item{width}{width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.}
   \item{gp}{graphic parameters for simple annotations.}
   \item{gap}{gap between each annotation}
+  \item{show_annotation_name}{whether show annotation names. For column annotation, annotation names are drawn either on the left or the right, and for row annotations, names are draw either on top to at bottom. The value can be a vector.}
+  \item{annotation_name_gp}{graphic parameters for anntation names. Graphic paramters can be vectors.}
+  \item{annotation_name_offset}{offset to the annotations, \code{\link[grid]{unit}} object. The value can be a vector.}
+  \item{annotation_name_side}{side of the annotation names.}
 
 }
 \details{

@@ -61,6 +61,10 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
 # -gp Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.
 # -legend_param parameters for the legend. See `color_mapping_legend,ColorMapping-method` for options.
+# -show_name whether show annotation name
+# -name_gp graphic parameters for annotation name
+# -name_offset offset to the annotation, a `grid::unit` object
+# -name_side 'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations
 #
 # == details
 # The most simple annotation is one row or one column grids in which different colors

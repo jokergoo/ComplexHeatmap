@@ -41,6 +41,7 @@ There are following parameters:
   \item{heatmap_legend_grid_width}{set \code{grid_width} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
   \item{heatmap_legend_grid_height}{set \code{grid_height} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
   \item{heatmap_legend_grid_border}{set \code{grid_border} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
+  \item{fast_hclust}{whether use \code{\link[fastcluster]{hclust}} to speed up clustering?}
 }
 
 You can get or set option values by the traditional way (like \code{\link[base]{options}}) or by \code{$} operator:
