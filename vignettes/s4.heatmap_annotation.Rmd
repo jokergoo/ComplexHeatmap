@@ -45,7 +45,7 @@ color mapping functions, depending on whether the simple annotations are discret
 In the heatmap, simple annotations will be represented as rows of grids.
 
 There is a `draw()` method for the `HeatmapAnnotation` class. `draw()` is used internally and here
-we just use it for illustration.
+we just use it for demonstration.
 
 ```{r heatmap_annotation, fig.width = 7, fig.height = 0.5}
 library(ComplexHeatmap)
@@ -103,7 +103,7 @@ ha
 draw(ha, 1:10)
 ```
 
-Also individual annotations can be specified as vectors:
+Also individual annotations can be directly specified as vectors:
 
 ```{r heatmap_annotation_vector, fig.width = 7, fig.height = 1}
 ha = HeatmapAnnotation(type = c(rep("a", 5), rep("b", 5)),
@@ -367,7 +367,7 @@ The order of elements in row annotations will be adjusted by the clustering of h
 ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")),
     width = unit(1, "cm"))
 ht1 = Heatmap(mat, name = "ht1")
-ht1 = Heatmap(mat, name = "ht2")
+ht2 = Heatmap(mat, name = "ht2")
 ht1 + ha + ht2
 ```
 
@@ -378,7 +378,7 @@ splitted as well.
 ht1 = Heatmap(mat, name = "ht1", km = 2)
 ha = rowAnnotation(df = df, col = list(type = c("a" = "red", "b" = "blue")),
     boxplot = row_anno_boxplot(mat, axis = TRUE), 
-    width = unit(6, "cm"))
+    annotation_width = unit(c(1, 5), "cm"))
 ha + ht1
 ```
 
@@ -542,6 +542,43 @@ ha = rowAnnotation(boxplot = row_anno_boxplot(mat, axis = TRUE, axis_direction =
 ht_list = ha + Heatmap(mat)
 draw(ht_list, column_title = "reverse axis direction", newpage = FALSE)
 upViewport(2)
+```
+
+## Add annotation names
+
+From version 1.11.5, `HeatmapAnnotation()` supports adding annotation names directly to the annotations.
+However, due to the design of the package, sometimes the names will be positioned outside of the plot
+or overlap to other heatmap compoments, thus, by default it is turned off.
+
+```{r}
+df = data.frame(type = c(rep("a", 5), rep("b", 5)),
+                age = sample(1:20, 10))
+value = rnorm(10)
+ha = HeatmapAnnotation(df = df, points = anno_points(value, axis = TRUE),
+    col = list(type = c("a" = "red", "b" = "blue"),
+               age = colorRamp2(c(0, 20), c("white", "red"))),
+    annotation_height = unit(c(0.5, 0.5, 2), "cm"),
+    show_annotation_name = TRUE,
+    annotation_name_offset = unit(2, "mm"),
+    annotation_name_rot = c(0, 0, 90))
+Heatmap(mat, name = "foo", top_annotation = ha)
+```
+
+Or the row annotation names: Note we manually adjust `padding` to fully show the text of "points".
+
+```{r}
+df = data.frame(type = c(rep("a", 6), rep("b", 6)),
+                age = sample(1:20, 12))
+value = rnorm(12)
+ha = rowAnnotation(df = df, points = row_anno_points(value, axis = TRUE),
+    col = list(type = c("a" = "red", "b" = "blue"),
+               age = colorRamp2(c(0, 20), c("white", "red"))),
+    annotation_width = unit(c(0.5, 0.5, 2), "cm"),
+    show_annotation_name = c(TRUE, FALSE, TRUE),
+    annotation_name_offset = unit(c(2, 2, 8), "mm"),
+    annotation_name_rot = c(90, 90, 0))
+ht = Heatmap(mat, name = "foo") + ha
+draw(ht, padding = unit(c(4, 2, 2, 2), "mm"))
 ```
 
 ## Adjust positions of column names

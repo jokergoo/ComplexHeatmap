@@ -21,7 +21,8 @@ HeatmapAnnotation(df, name, col, na_col = "grey",
     show_annotation_name = FALSE,
     annotation_name_gp = gpar(),
     annotation_name_offset = unit(2, "mm"),
-    annotation_name_side = ifelse(which == "column", "right", "bottom"))
+    annotation_name_side = ifelse(which == "column", "right", "bottom"),
+    annotation_name_rot = ifelse(which == "column", 0, 90))
 }
 \arguments{
 
@@ -43,6 +44,7 @@ HeatmapAnnotation(df, name, col, na_col = "grey",
   \item{annotation_name_gp}{graphic parameters for anntation names. Graphic paramters can be vectors.}
   \item{annotation_name_offset}{offset to the annotations, \code{\link[grid]{unit}} object. The value can be a vector.}
   \item{annotation_name_side}{side of the annotation names.}
+  \item{annotation_name_rot}{rotation of the annotation names, can only take values in \code{c(00, 90, 180, 270)}. The value can be a vector.}
 
 }
 \details{

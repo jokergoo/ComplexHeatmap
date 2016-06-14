@@ -648,6 +648,12 @@ setMethod(f = "make_column_cluster",
     signature = "Heatmap",
     definition = function(object) {
     
+    if(ht_global_opt("fast_hclust")) {
+        hclust = fastcluster::hclust
+    } else {
+        hclust = stats::hclust
+    }
+    
     mat = object@matrix
     distance = object@column_dend_param$distance
     method = object@column_dend_param$method
@@ -729,6 +735,12 @@ setMethod(f = "make_column_cluster",
 setMethod(f = "make_row_cluster",
     signature = "Heatmap",
     definition = function(object) {
+
+    if(ht_global_opt("fast_hclust")) {
+        hclust = fastcluster::hclust
+    } else {
+        hclust = stats::hclust
+    }
 
     mat = object@matrix
     distance = object@row_dend_param$distance

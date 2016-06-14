@@ -13,10 +13,11 @@ SingleAnnotation(name, value, col, fun,
     show_legend = TRUE,
     gp = gpar(col = NA),
     legend_param = list(),
-    show_name = TRUE,
+    show_name = FALSE,
     name_gp = gpar(fontsize = 12),
     name_offset = unit(2, "mm"),
-    name_side = ifelse(which == "column", "right", "bottom"))
+    name_side = ifelse(which == "column", "right", "bottom"),
+    name_rot = ifelse(which == "column", 0, 90))
 }
 \arguments{
 
@@ -33,6 +34,7 @@ SingleAnnotation(name, value, col, fun,
   \item{name_gp}{graphic parameters for annotation name}
   \item{name_offset}{offset to the annotation, a \code{\link[grid]{unit}} object}
   \item{name_side}{'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations}
+  \item{name_rot}{rotation of the annotation name, can only take values in \code{c(00, 90, 180, 270)}.}
 
 }
 \details{

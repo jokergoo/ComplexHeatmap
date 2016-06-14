@@ -31,7 +31,8 @@ options(width = 100)
 
 A list of heatmaps can improve visualization of the correspondence between multiple data sources.
 In this vignette, we will discuss configurations for making a list of heatmaps and you can
-see more real-world examples in the [**Examples**](s9.examples.html) vignette.
+see more real-world examples in the [**Examples**](s9.examples.html) vignette as well as [in the 
+supplementaries](http://jokergoo.github.io/supplementary/ComplexHeatmap-supplementary1-4/index.html) of [the ComplexHeatmap paper](http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract).
 
 ## Heatmap concatenation
 
@@ -44,13 +45,18 @@ are to be combined, users can append one heatmap to the other by `+` operator.
 ```{r heatmap_list_default, fig.width = 10}
 library(ComplexHeatmap)
 
-mat = matrix(rnorm(80, 2), 8, 10)
-mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
-rownames(mat) = paste0("R", 1:12)
-colnames(mat) = paste0("C", 1:10)
+mat1 = matrix(rnorm(80, 2), 8, 10)
+mat1 = rbind(mat1, matrix(rnorm(40, -2), 4, 10))
+rownames(mat1) = paste0("R", 1:12)
+colnames(mat1) = paste0("C", 1:10)
 
-ht1 = Heatmap(mat, name = "ht1")
-ht2 = Heatmap(mat, name = "ht2")
+mat2 = matrix(rnorm(60, 2), 6, 10)
+mat2 = rbind(mat2, matrix(rnorm(60, -2), 6, 10))
+rownames(mat2) = paste0("R", 1:12)
+colnames(mat2) = paste0("C", 1:10)
+
+ht1 = Heatmap(mat1, name = "ht1")
+ht2 = Heatmap(mat2, name = "ht2")
 class(ht1)
 class(ht2)
 
@@ -61,7 +67,7 @@ Under default mode, dendrograms from the second heatmap will be removed and row 
 
 The returned value of addition of two heatmaps is a `HeatmapList` object. Directly calling `ht_list` object
 will call `draw()` method with default settings. With explicitly calling `draw()` method, you can have more controls
-on the legend and titles.
+e.g. on the legend and titles.
 
 ```{r}
 ht_list = ht1 + ht2
@@ -91,8 +97,8 @@ for(s in sth) {
 A heatmap list also has titles which are independent to the heatmap titles.
 
 ```{r heatmap_list_title, fig.width = 10}
-ht1 = Heatmap(mat, name = "ht1", row_title = "Heatmap 1", column_title = "Heatmap 1")
-ht2 = Heatmap(mat, name = "ht2", row_title = "Heatmap 2", column_title = "Heatmap 2")
+ht1 = Heatmap(mat1, name = "ht1", row_title = "Heatmap 1", column_title = "Heatmap 1")
+ht2 = Heatmap(mat2, name = "ht2", row_title = "Heatmap 2", column_title = "Heatmap 2")
 ht_list = ht1 + ht2
 
 draw(ht_list, row_title = "Two heatmaps, row title", row_title_gp = gpar(col = "red"),
@@ -113,8 +119,8 @@ draw(ht_list + ht_list, gap = unit(c(3, 6, 9, 0), "mm"))
 The width for some (not all) heatmaps can be set to a fixed width.
 
 ```{r heatmap_list_size, fig.width = 10, fig.keep = "all"}
-ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1")
-ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", width = unit(5, "cm"))
+ht1 = Heatmap(mat1, name = "ht1", column_title = "Heatmap 1")
+ht2 = Heatmap(mat2, name = "ht2", column_title = "Heatmap 2", width = unit(5, "cm"))
 ht1 + ht2
 ```
 
@@ -122,8 +128,8 @@ or the width can be set as relative values. Please not in this case, `width` for
 should be set (relative width and fixed width can be mixed).
 
 ```{r heatmap_list_relative_size, fig.width = 10, fig.keep = "all"}
-ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", width = 2)
-ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", width = 1)
+ht1 = Heatmap(mat1, name = "ht1", column_title = "Heatmap 1", width = 2)
+ht2 = Heatmap(mat2, name = "ht2", column_title = "Heatmap 2", width = 1)
 ht1 + ht2
 ```
 
@@ -141,8 +147,8 @@ The main heatmap can be specified by `main_heatmap` argument. The value can be a
 (of course, you need to set the heatmap name when you create the `Heatmap` object).
 
 ```{r heatmap_list_auto_adjust, fig.width = 10, fig.keep = "all"}
-ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", km = 2)
-ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
+ht1 = Heatmap(mat1, name = "ht1", column_title = "Heatmap 1", km = 2)
+ht2 = Heatmap(mat2, name = "ht2", column_title = "Heatmap 2")
 ht1 + ht2
 
 # note we changed the order of `ht1` and `ht2`
@@ -156,8 +162,8 @@ draw(ht2 + ht1, main_heatmap = "ht1")
 If there is no row clustering in the main heatmap, all other heatmaps have no row clustering neither.
 
 ```{r heatmap_list_auto_adjust_no_row_cluster, fig.width = 10}
-ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", cluster_rows = FALSE)
-ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
+ht1 = Heatmap(mat1, name = "ht1", column_title = "Heatmap 1", cluster_rows = FALSE)
+ht2 = Heatmap(mat2, name = "ht2", column_title = "Heatmap 2")
 ht1 + ht2
 ```
 
@@ -168,8 +174,8 @@ ht1 + ht2
 ```{r, fig.width = 10}
 ht_global_opt(heatmap_row_names_gp = gpar(fontface = "italic"), 
 	          heatmap_column_names_gp = gpar(fontsize = 14))
-ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1")
-ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2")
+ht1 = Heatmap(mat1, name = "ht1", column_title = "Heatmap 1")
+ht2 = Heatmap(mat2, name = "ht2", column_title = "Heatmap 2")
 ht1 + ht2
 ht_global_opt(RESET = TRUE)
 ```
@@ -208,7 +214,7 @@ column_dend(ht_list)
 
 ## Heatmap list with row annotations
 
-Row annotations can also be reordered and split according to the main heatmap, 
+Row annotations can be added to the heatmap list, 
 please see [**Heatmap Annotation**](s4.heatmap_annotation.html) for more explanations.
 
 ## Modify row orders/clustering in main heatmap
@@ -218,11 +224,7 @@ in `draw()` method. This makes it convinient to switch main heatmaps without mod
 heatmaps. Actually settings specified in `draw()` will overwrite corresponding settings in the main heatmap.
 
 ```{r, fig.width = 8}
-mat1 = matrix(rnorm(80, 2), 8, 10)
-mat1 = rbind(mat1, matrix(rnorm(40, -2), 4, 10))
-mat2 = mat1[sample(1:nrow(mat1)), ]
-
-split = sample(c("a", "b"), nrow(mat1), replace = TRUE)
+split = rep(c("a", "b"), each = 6)
 ht_list = Heatmap(mat1, name = "mat1", cluster_rows = FALSE, column_title = "mat1") + 
           Heatmap(mat2, name = "mat2", cluster_rows = FALSE, column_title = "mat2")
 draw(ht_list, main_heatmap = "mat1", split = split)

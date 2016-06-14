@@ -107,20 +107,7 @@ ht_global_opt = setGlobalOptions(
 		.value = NULL),
 	fast_hclust = list(
 		.value = FALSE,
-		.filter = function(x) {
-				if(x) {
-					if(require(fastcluster)) {
-						assign("hclust", envir = topenv()) = getFromNamespace("hclust", "fastcluster")
-					} else {
-						stop("Cannot find fastcluster package.")
-					}
-				} else {
-					assign("hclust", envir = topenv()) = getFromNamespace("hclust", "stats")
-				}
-				x
-			}
-		)
+		.class = "logical",
+		.length = 1
+	)
 )
-
-hclust = getFromNamespace("hclust", "stats")
-

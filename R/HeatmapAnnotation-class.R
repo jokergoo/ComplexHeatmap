@@ -57,6 +57,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -annotation_name_gp graphic parameters for anntation names. Graphic paramters can be vectors.
 # -annotation_name_offset offset to the annotations, `grid::unit` object. The value can be a vector.
 # -annotation_name_side side of the annotation names.
+# -annotation_name_rot rotation of the annotation names, can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
 #
 # == details
 # The simple annotations are defined by ``df`` and ``col`` arguments. Complex annotations are
@@ -85,7 +86,8 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 	show_annotation_name = FALSE,
 	annotation_name_gp = gpar(),
 	annotation_name_offset = unit(2, "mm"),
-	annotation_name_side = ifelse(which == "column", "right", "bottom")) {
+	annotation_name_side = ifelse(which == "column", "right", "bottom"),
+	annotation_name_rot = ifelse(which == "column", 0, 90)) {
 
 	.Object = new("HeatmapAnnotation")
 
@@ -104,7 +106,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     called_args = names(arg_list)
     anno_args = setdiff(called_args, c("name", "col", "na_col", "annotation_legend_param", "show_legend", "which", 
     	                             "annotation_height", "annotation_width", "height", "width", "gp", "gap",
-    	                             "show_annotation_name", "annotation_name_gp", "annotation_name_offset", "annotation_name_side"))
+    	                             "show_annotation_name", "annotation_name_gp", "annotation_name_offset", "annotation_name_side", "annotation_name_rot"))
     if(any(anno_args == "")) stop("annotations should have names.")
     if(any(duplicated(anno_args))) stop("names of annotations should be unique.")
     anno_arg_list = list(...)
@@ -170,6 +172,9 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     if(length(annotation_name_side) == 1) {
     	annotation_name_side = rep(annotation_name_side, n_total_anno)
     }
+    if(length(annotation_name_rot) == 1) {
+    	annotation_name_rot = rep(annotation_name_rot, n_total_anno)
+    }
     annotation_name_gp = recycle_gp(annotation_name_gp, n_total_anno)
 
 	i_simple = 0
@@ -195,7 +200,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 		        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, which = which, 
 		        		show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
 		        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno])))
+		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 		        }
 		    } else {
 		        for(i in seq_len(n_anno)) {
@@ -204,12 +209,12 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 		        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, which = which, 
 		        			show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
 		        			show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno])))
+		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 		        	} else {
 		        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, col = col[[ anno_name[i] ]], 
 		        			which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
 		        			show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno])))
+		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 		        	}
 		        }
 		    }
@@ -219,7 +224,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 			if(inherits(anno_arg_list[[ag]], "function")) {
 				anno_list = c(anno_list, list(SingleAnnotation(name = ag, fun = anno_arg_list[[ag]], which = which,
 					show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        	name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno])))
+		        	name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 			} else if(is.atomic(anno_arg_list[[ag]])) {
 
 			    if(is.null(simple_length)) {
@@ -231,18 +236,18 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 			        anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, 
 			        	show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
 			        	show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno])))
+		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 			    } else {
 			        if(is.null(col[[ ag ]])) { # if the color is not provided
 			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, 
 			        		show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
 			        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno])))
+		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 			        } else {
 			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, col = col[[ ag ]], 
 			        		which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
 			        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno])))
+		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 			        }
 			    }
 			    i_simple = i_simple + 1
@@ -311,12 +316,11 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 #
 # == param
 # -... pass to `HeatmapAnnotation`
-# -width default width of the row annotations
 #
 # == details
 # The function is identical to 
 #
-#     HeatmapAnnotation(..., which = "row", width = width)
+#     HeatmapAnnotation(..., which = "row")
 #
 # == value
 # A `HeatmapAnnotation-class` object.
@@ -324,8 +328,8 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-rowAnnotation = function(..., width = unit(1, "cm")) {
-	HeatmapAnnotation(..., which = "row", width = width)
+rowAnnotation = function(...) {
+	HeatmapAnnotation(..., which = "row")
 }
 
 # == title
