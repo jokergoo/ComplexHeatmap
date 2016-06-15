@@ -2,6 +2,7 @@ CHANGES in VERSION 1.11.5
 
 * `gap` in `HeatmapAnnotation` has been adjusted
 * annotations support drawing names of either sides
+* `densityHeatmap()`: quantile lines are also reordered
 
 =============================
 

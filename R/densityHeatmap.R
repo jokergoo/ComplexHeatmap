@@ -75,11 +75,21 @@ densityHeatmap = function(data,
 	...) {
 
 	if(is.matrix(data)) {
-		density_list = apply(data, 2, density, na.rm = TRUE)
-		quantile_list = apply(data, 2, quantile, na.rm = TRUE)
+		if(is.null(column_order)) {
+			density_list = apply(data, 2, density, na.rm = TRUE)
+			quantile_list = apply(data, 2, quantile, na.rm = TRUE)
+		} else {
+			density_list = apply(data[, column_order, drop = FALSE], 2, density, na.rm = TRUE)
+			quantile_list = apply(data[, column_order, drop = FALSE], 2, quantile, na.rm = TRUE)
+		}
 	} else if(is.data.frame(data) || is.list(data)) {
-		density_list = lapply(data, density, na.rm = TRUE)
-		quantile_list = sapply(data, quantile, na.rm = TRUE)
+		if(is.null(column_order)) {
+			density_list = lapply(data, density, na.rm = TRUE)
+			quantile_list = sapply(data, quantile, na.rm = TRUE)
+		} else {
+			density_list = lapply(data[column_order], density, na.rm = TRUE)
+			quantile_list = sapply(data[column_order], quantile, na.rm = TRUE)
+		}
 	} else {
 		stop("only matrix and list are allowed.")
 	}
