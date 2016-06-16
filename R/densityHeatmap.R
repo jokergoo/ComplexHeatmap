@@ -78,17 +78,21 @@ densityHeatmap = function(data,
 		if(is.null(column_order)) {
 			density_list = apply(data, 2, density, na.rm = TRUE)
 			quantile_list = apply(data, 2, quantile, na.rm = TRUE)
+			mean_value = apply(data, 2, mean, na.rm = TRUE)
 		} else {
 			density_list = apply(data[, column_order, drop = FALSE], 2, density, na.rm = TRUE)
 			quantile_list = apply(data[, column_order, drop = FALSE], 2, quantile, na.rm = TRUE)
+			mean_value = apply(data[, column_order, drop = FALSE], 2. mean, na.rm = TRUE)
 		}
 	} else if(is.data.frame(data) || is.list(data)) {
 		if(is.null(column_order)) {
 			density_list = lapply(data, density, na.rm = TRUE)
 			quantile_list = sapply(data, quantile, na.rm = TRUE)
+			mean_value = sapply(data, mean, na.rm = TRUE)
 		} else {
 			density_list = lapply(data[column_order], density, na.rm = TRUE)
 			quantile_list = sapply(data[column_order], quantile, na.rm = TRUE)
+			mean_value = sapply(data[column_order], mean, na.rm = TRUE)
 		}
 	} else {
 		stop("only matrix and list are allowed.")
@@ -183,6 +187,8 @@ densityHeatmap = function(data,
 			grid.lines(1:n, quantile_list[i, ], default.units = "native", gp = gpar(lty = 2))
 			grid.text(rownames(quantile_list)[i], unit(1, "npc")+unit(2, "mm"), quantile_list[i, n], default.units = "native", just = "left")
 		}
+		grid.lines(1:n, mean_value, default.units = "native", gp = gpar(lty = 2, col = "darkred"))
+		grid.text("mean", unit(1, "npc")+unit(2, "mm"), mean_value[n], default.units = "native", just = "left")
 		upViewport()
 	})
 
