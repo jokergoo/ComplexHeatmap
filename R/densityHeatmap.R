@@ -82,7 +82,7 @@ densityHeatmap = function(data,
 		} else {
 			density_list = apply(data[, column_order, drop = FALSE], 2, density, na.rm = TRUE)
 			quantile_list = apply(data[, column_order, drop = FALSE], 2, quantile, na.rm = TRUE)
-			mean_value = apply(data[, column_order, drop = FALSE], 2. mean, na.rm = TRUE)
+			mean_value = apply(data[, column_order, drop = FALSE], 2, mean, na.rm = TRUE)
 		}
 	} else if(is.data.frame(data) || is.list(data)) {
 		if(is.null(column_order)) {
