@@ -45,10 +45,10 @@ element would include multiple alterations in a form of a complex string. In fol
 
 ```{r}
 mat = read.table(textConnection(
-"	s1	s2	s3
-g1	snv;indel	snv	indel
-g2		snv;indel	snv
-g3	snv		indel;snv"), row.names = 1, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+",s1,s2,s3
+g1,snv;indel,snv,indel
+g2,,snv;indel,snv
+g3,snv,,indel;snv"), row.names = 1, header = TRUE, sep = ",", stringsAsFactors = FALSE)
 mat = as.matrix(mat)
 mat
 ```
@@ -99,10 +99,11 @@ mat_list
 to adjust the matrix list.
 
 ```{r}
-mat_list$indel = mat_list$indel[1:2, 1:2]
-mat_list
-mat_list = unify_mat_list(mat_list)
-mat_list
+mat_list2 = mat_list
+mat_list2$indel = mat_list2$indel[1:2, 1:2]
+mat_list2
+mat_list2 = unify_mat_list(mat_list2)
+mat_list2
 ```
 
 Pass `mat_list` to `oncoPrint()`:
