@@ -4,6 +4,8 @@ CHANGES in VERSION 1.11.5
 * annotations support drawing names of either sides
 * `densityHeatmap()`: quantile lines are also reordered
 * export `anno_oncoprint_barplot`
+* `Heatmap()`: if `col` is a unnamed vector and the number of colors is same as
+  unique itemes in `mat`, the name of `col` vector is set to `sort(unique(mat))
 
 =============================
 
