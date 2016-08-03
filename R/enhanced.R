@@ -66,7 +66,7 @@ enhanced_basicplot = function(data, ..., ylim = NULL,
         }
     }
 
-    mat_foo = matrix("", nrow = 2, ncol = n)
+    mat_foo = matrix("foo", nrow = 2, ncol = n)
     if(is.matrix(data)) {
         colnames(mat_foo) = colnames(data)
     } else if(is.list(data)) {
@@ -75,7 +75,7 @@ enhanced_basicplot = function(data, ..., ylim = NULL,
         colnames(mat_foo) = names(data)
     }
         
-    ht = Heatmap(mat_foo, name = "main", cluster_rows = FALSE, cluster_columns = FALSE,
+    ht = Heatmap(mat_foo, col = c("foo" = "white"), name = "main", cluster_rows = FALSE, cluster_columns = FALSE,
                 rect_gp = gpar(type = "none"), show_heatmap_legend = FALSE, ...)
 
     draw(ht, padding = padding, column_title = title, column_title_gp = title_gp,

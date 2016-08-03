@@ -162,6 +162,7 @@ densityHeatmap = function(data,
 		ht + rowAnnotation(quantile = function(index) NULL, width = grobWidth(textGrob("100%")))
 
 	ht_list = draw(ht_list, column_title = title, ...)
+	column_order = column_order(ht_list)$density
 
 	decorate_annotation("axis", {
 		grid.text(ylab, x = grobHeight(textGrob(ylab)), rot = 90)
@@ -171,6 +172,7 @@ densityHeatmap = function(data,
 		pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x)))
 		grid.rect(gp = gpar(fill = NA))
 		grid.yaxis()
+
 		for(i in seq_len(5)) {
 			grid.lines(1:n, quantile_list[i, column_order], default.units = "native", gp = gpar(lty = 2))
 			grid.text(rownames(quantile_list)[i], unit(1, "npc")+unit(2, "mm"), quantile_list[i, n], default.units = "native", just = "left")
