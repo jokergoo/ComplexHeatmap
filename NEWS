@@ -1,3 +1,8 @@
+CHANGES in VERSION 1.11.6
+
+===========================
+* simply bump the verison number
+
 CHANGES in VERSION 1.11.5
 
 * `gap` in `HeatmapAnnotation` has been adjusted
