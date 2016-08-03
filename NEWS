@@ -6,6 +6,9 @@ CHANGES in VERSION 1.11.5
 * export `anno_oncoprint_barplot`
 * `Heatmap()`: if `col` is a unnamed vector and the number of colors is same as
   unique itemes in `mat`, the name of `col` vector is set to `sort(unique(mat))
+* adjusted the order of annotation legends
+* discreat legend: if a level is not in the data while defined by `col`, it will
+  be removed.
 
 =============================
 

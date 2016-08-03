@@ -452,6 +452,7 @@ Heatmap = function(matrix, col, name,
                     stop("`col` should have names to map to values in `mat`.")
                 }
             } else {
+                col = col[intersect(c(names(col), "_NA_"), matrix)]
                 .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
             }
         }

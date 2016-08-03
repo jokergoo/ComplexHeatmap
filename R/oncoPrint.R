@@ -61,6 +61,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	top_annotation = HeatmapAnnotation(column_bar = anno_oncoprint_barplot(), 
 		annotation_height = unit(2, "cm")),
 	barplot_ignore = NULL,
+	min_genes = Inf,
 	...) {
 
 	if(length(names(list(...))) > 0) {

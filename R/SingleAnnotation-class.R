@@ -223,6 +223,7 @@ SingleAnnotation = function(name, value, col, fun,
     		col = default_col(value)
     	}
     	if(is.atomic(col)) {
+            col = col[intersect(c(names(col), "_NA_"), value)]
     		if("_NA_" %in% names(col)) {
     			na_col = col["_NA_"]
     			col = col[names(col) != "_NA_"]
