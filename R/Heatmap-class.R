@@ -987,7 +987,11 @@ setMethod(f = "make_layout",
 
     snr = sapply(object@row_order_list, length)
     if(sum(snr)) {
-        slice_height = (unit(1, "npc") - sum(gap[seq_len(n_slice-1)]))*(snr/sum(snr))
+        if(n_slice == 1) {
+            slice_height = unit(1, "npc")*(snr/sum(snr))
+            } else {
+                slice_height = (unit(1, "npc") - sum(gap[seq_len(n_slice-1)]))*(snr/sum(snr))
+            }  
         for(i in seq_len(n_slice)) {
             if(i == 1) {
                 slice_y = unit(1, "npc")
