@@ -1,7 +1,9 @@
 CHANGES in VERSION 1.11.6
 
-===========================
 * simply bump the verison number
+* `gap` in `Heatmap()` now can be a vector
+
+===========================
 
 CHANGES in VERSION 1.11.5
 
