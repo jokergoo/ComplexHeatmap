@@ -33,6 +33,7 @@
 # -heatmap_legend_grid_width set ``grid_width`` element in ``legend_param`` in `SingleAnnotation`.
 # -heatmap_legend_grid_height set ``grid_height`` element in ``legend_param`` in `SingleAnnotation`.
 # -heatmap_legend_grid_border set ``grid_border`` element in ``legend_param`` in `SingleAnnotation`.
+# -fast_hclust whether use `fastcluster::hclust` to speed up clustering?
 #
 # You can get or set option values by the traditional way (like `base::options`) or by ``$`` operator:
 #
@@ -103,5 +104,10 @@ ht_global_opt = setGlobalOptions(
 		.value = NULL,
 		.class = "unit"),
 	annotation_legend_grid_border = list(
-		.value = NULL)
+		.value = NULL),
+	fast_hclust = list(
+		.value = FALSE,
+		.class = "logical",
+		.length = 1
+	)
 )

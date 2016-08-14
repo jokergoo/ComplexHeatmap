@@ -119,7 +119,8 @@ ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue"))
                                                labels_gp = gpar(fontsize = 8))))
 ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", top_annotation = ha)
 ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", 
-    heatmap_legend_param = list(title = "Heatmap2", title_gp = gpar(fontsize = 8), labels_gp = gpar(fontsize = 14)))
+    heatmap_legend_param = list(title = "Heatmap2", title_gp = gpar(fontsize = 8), 
+        labels_gp = gpar(fontsize = 14)))
 ht1 + ht2
 ```
 
@@ -144,6 +145,16 @@ ha_chr = rowAnnotation(chr = sample(paste0("chr", 1:20), nrow(mat), replace = TR
     width = unit(5, "mm"))
 ht1 = Heatmap(mat, name = "ht1")
 ht1 + ha_chr
+```
+
+Or put at bottom of the heatmap:
+
+```{r, fig.width = 6}
+ha_chr = rowAnnotation(chr = sample(paste0("chr", 1:20), nrow(mat), replace = TRUE),
+    annotation_legend_param = list(chr = list(nrow = 2, title = "chr", title_position = "leftcenter")),
+    width = unit(5, "mm"))
+ht1 = Heatmap(mat, name = "ht1", show_heatmap_legend = FALSE)
+draw(ht1 + ha_chr, heatmap_legend_side = "bottom")
 ```
 
 If you don't like the default discrete color bar for continuous values, you can specify `color_bar` to `continuous`.
@@ -205,6 +216,8 @@ ht = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", top_annotation = ha)
 lgd = Legend(at = c("class1", "class2"), title = "points", type = "points", legend_gp = gpar(col = 2:3))
 draw(ht, annotation_legend_list = list(lgd))
 ```
+
+Also check [this blog link](http://zuguang.de/blog/html/dde69a9cf5a606a9486b19eb91ba6f4e.html) for more demonstrations.
 
 ## Session info
 

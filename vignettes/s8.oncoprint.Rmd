@@ -37,16 +37,18 @@ additional barplots at both sides of the heatmap which show numbers of different
 each sample and for each gene. Also with the functionality of **ComplexHeatmap**, you can control oncoPrint with
 more flexibilities.
 
+## General settings
+
 There are two different forms of input data. The first is represented as a matrix in which 
 element would include multiple alterations in a form of a complex string. In follow example,
 'g1' in 's1' has two types of alterations which are 'snv' and 'indel'.
 
 ```{r}
 mat = read.table(textConnection(
-"	s1	s2	s3
-g1	snv;indel	snv	indel
-g2		snv;indel	snv
-g3	snv		indel;snv"), row.names = 1, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+",s1,s2,s3
+g1,snv;indel,snv,indel
+g2,,snv;indel,snv
+g3,snv,,indel;snv"), row.names = 1, header = TRUE, sep = ",", stringsAsFactors = FALSE)
 mat = as.matrix(mat)
 mat
 ```
@@ -78,7 +80,10 @@ oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	), col = col)
 ```
 
-The second type of input data is a list of matrix for which each matrix contains binary value representing
+In above example, form of the string (e.g. `snv;indel`) correlates to how you define `get_type`. If the string
+has the form of `snv|indel|amp`, `get_type` should be defined as `function(x) strsplit(x, "|")[[1]]`.
+
+If you are pulzzed by how to generated the matrix, there is a second way. The second type of input data is a list of matrix for which each matrix contains binary value representing
 whether the alteration is absent or present. The list should have names which correspond to the alteration
 types.
 
@@ -94,35 +99,33 @@ mat_list
 to adjust the matrix list.
 
 ```{r}
-mat_list$indel = mat_list$indel[1:2, 1:2]
-mat_list
-mat_list = unify_mat_list(mat_list)
-mat_list
+mat_list2 = mat_list
+mat_list2$indel = mat_list2$indel[1:2, 1:2]
+mat_list2
+mat_list2 = unify_mat_list(mat_list2)
+mat_list2
 ```
 
-Same as the first example, but here we also define `background` in `alter_fun` argument. This function defines
-how to add graphics when there is no alteration and it is always put as the first in the list.
+Pass `mat_list` to `oncoPrint()`:
 
 ```{r}
 oncoPrint(mat_list,
 	alter_fun = list(
-		background = function(x, y, w, h) NULL,
 		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = col["snv"], col = NA)),
 		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = col["indel"], col = NA))
 	), col = col)
-```
-
-If types of alterations is less than two and the purpose is only to have a quick look at the data, there are default
-graphics added:
-
-```{r}
-oncoPrint(mat_list)
 ```
 
 In above examples, `alter_fun` is a list of functons which add graphics layer by layer. Graphics
 can also be added in a grid-by-grid style by specifying `alter_fun` as a single function. The difference
 from the function list is now `alter_fun` should accept a fifth argument which is a logical vector. 
 This logical vector shows whether different alterations exist for current gene in current sample.
+
+Let's assume in a grid there is only snv event, `v` for this grid is:
+
+```{r, echo = FALSE}
+print(c("snv" = TRUE, "indel" = FALSE))
+```
 
 ```{r}
 oncoPrint(mat_list,
@@ -145,6 +148,32 @@ oncoPrint(mat_list,
 			gp = gpar(fill = col[names(which(v))], col = NA), just = "top")
     }, col = col)
 ```
+
+If `alter_fun` is specified as a list, the order of the elements controls the order of adding graphics. 
+There is a special element named `background` which defines how to draw background and it should be always put
+as the first element in the `alter_fun` list. In following example, backgrond color is changed to light green with borders.
+
+```{r}
+oncoPrint(mat_list,
+	alter_fun = list(
+		background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#00FF0020")),
+		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = col["snv"], col = NA)),
+		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = col["indel"], col = NA))
+	), col = col)
+```
+
+Or just remove the background:
+
+```{r}
+oncoPrint(mat_list,
+	alter_fun = list(
+		background = NULL,
+		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = col["snv"], col = NA)),
+		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = col["indel"], col = NA))
+	), col = col)
+```
+
+## Apply to cBioPortal dataset
 
 Now we make an oncoPrint with a real-world data. The data is retrieved from [cBioPortal](http://www.cbioportal.org/). 
 Steps for getting the data are as follows:
@@ -264,7 +293,7 @@ ht_list = oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
 	heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
 		labels = c("Amplification", "Deep deletion", "Mutation")),
 	split = sample(letters[1:2], nrow(mat), replace = TRUE)) +
-Heatmap(matrix(rnorm(nrow(mat)*10), ncol = 10), name = "expr", width = unit(4, "cm"))
+Heatmap(matrix(rnorm(nrow(mat)*10), ncol = 10), name = "expr", show_column_dend = FALSE, width = unit(4, "cm"))
 draw(ht_list, row_sub_title_side = "left")
 ```
 

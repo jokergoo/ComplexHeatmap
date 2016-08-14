@@ -18,7 +18,7 @@ oncoPrint(mat, get_type = function(x) x,
     row_barplot_width = unit(2, "cm"),
     remove_empty_columns = FALSE,
     heatmap_legend_param = list(title = "Alterations"),
-    top_annotation = HeatmapAnnotation(column_bar = anno_column_bar,
+    top_annotation = HeatmapAnnotation(column_bar = anno_oncoprint_barplot(),
     annotation_height = unit(2, "cm")),
     barplot_ignore = NULL,
     ...)

@@ -1,3 +1,24 @@
+CHANGES in VERSION 1.11.6
+
+* simply bump the verison number
+* `gap` in `Heatmap()` now can be a vector
+
+===========================
+
+CHANGES in VERSION 1.11.5
+
+* `gap` in `HeatmapAnnotation` has been adjusted
+* annotations support drawing names of either sides
+* `densityHeatmap()`: quantile lines are also reordered
+* export `anno_oncoprint_barplot`
+* `Heatmap()`: if `col` is a unnamed vector and the number of colors is same as
+  unique itemes in `mat`, the name of `col` vector is set to `sort(unique(mat))
+* adjusted the order of annotation legends
+* discreat legend: if a level is not in the data while defined by `col`, it will
+  be removed.
+
+=============================
+
 CHANGES in VERSION 1.11.2
 
 * `grid.dendrogram()`: do not draw dendrogram if the height is zero

@@ -196,7 +196,7 @@ Heatmap(mat, name = "foo", column_title = "I am a big column title",
     column_title_gp = gpar(fontsize = 20, fontface = "bold"))
 ```
 
-Roatations for titles can be set by `row_title_rot` and `column_title_rot`, but only horizontal and vertical 
+Rotations for titles can be set by `row_title_rot` and `column_title_rot`, but only horizontal and vertical 
 rotations are allowed.
 
 ```{r title_rotation}
@@ -212,7 +212,7 @@ contains clustering, or directly by a clustering function. It is also possible t
 your dendrograms with different colors and styles for different branches for better revealing
 structures of your data.
 
-First there are general settings for the clustering, e.g. whether show dendrograms, side
+First there are general settings for the clustering, e.g. whether do or show dendrograms, side
 of the dendrograms and size of the dendrograms.
 
 ```{r cluster_basic}
@@ -263,6 +263,7 @@ If possible distance method provided, you can also cluster a character matrix.
 
 ```{r cluster_character_matrix}
 mat_letters = matrix(sample(letters[1:4], 100, replace = TRUE), 10)
+# distance in th ASCII table
 dist_letters = function(x, y) {
     x = strtoi(charToRaw(paste(x, collapse = "")), base = 16)
     y = strtoi(charToRaw(paste(y, collapse = "")), base = 16)
@@ -294,8 +295,7 @@ Heatmap(mat, name = "foo", cluster_rows = as.dendrogram(diana(mat)),
 ```
 
 In the native `heatmap()` function, dendrograms on row and on column are reordered to let features with larger different
-separated more from each other, but according to my experience, the default reordering can not always give nice visualization.
-So by default the reordering for the dendrograms are turned off for `Heatmap()` function. 
+separated more from each other, By default the reordering for the dendrograms are turned on by `Heatmap()` as well. 
 
 Besides the default reordering method, you can first generate a dendrogram and apply other reordering
 method and then send the reordered dendrogram to `cluster_rows` argument. 
@@ -338,6 +338,26 @@ while `m` is the transpose of `mat` when executing `cluster_columns`.
 ```{r cluster_function}
 Heatmap(mat, name = "foo", cluster_rows = function(m) as.dendrogram(diana(m)),
     cluster_columns = function(m) as.dendrogram(agnes(m)))
+```
+
+`fastcluster::hclust` implements a faster version of `hclust`. We can re-define `cluster_rows` and `cluster_columns`
+to use the faster version of `hclust`. But note `fastcluster::hclust` only speed up the calculation of the cluster while not the
+calculation of distance matrix.
+
+```{r}
+# code not run when building the vignette
+Heatmap(mat, name = "foo", cluster_rows = function(m) fastcluster::hclust(dist(m)),
+    cluster_columns = function(m) fastcluster::hclust(dist(m))) # for column cluster, m will be automatically transposed
+```
+
+To make it more convinient to use the faster version of `hclust` (assuming you have many heatmaps to be concatenated), it can
+be set as a global option:
+
+```{r}
+# code not run when building the vignette
+ht_global_opt(fast_hclust = TRUE)
+# now hclust from fastcluster package is used in all heatmaps
+Heatmap(mat, name = "foo")
 ```
 
 Clustering can help to adjust order in rows and in columns. But you can still set the order manually by `row_order`
@@ -438,6 +458,8 @@ and they want to split rows by splitting the dendrogram into k sub trees. In thi
 `split` can be specified as a single number:
 
 ```{r split_dendrogram}
+dend = hclust(dist(mat))
+dend = color_branches(dend, k = 2)
 Heatmap(mat, name = "foo", cluster_rows = dend, split = 2)
 ```
 
@@ -600,7 +622,7 @@ the file size. In `Heatmap()` function, there are four options which control how
 the raster image: `use_raster`, `raster_device`, `raster_quality`, `raster_device_param`. 
 
 You can choose graphic device (`png`, `jpeg` and `tiff`) by `raster_device`, control the quality of the raster image by `raster_quality`,
-and pass further parameters for a specific device by `raster_device_param`.
+and pass further parameters for a specific device by `raster_device_param`. [Check this web page for better demonstrations.](http://zuguang.de/blog/html/d3aa6e2b289514ecddded64a467d1961.html)
 
 ## Session info
 

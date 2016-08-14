@@ -64,7 +64,7 @@ to get full use of the package.
 
 ## Vignettes
 
-There are several vignettes in the package. Each vignette focuses on a specific topic. Following
+There are several vignettes in the package. Each vignette focuses on one specific topic. Following
 lists the general topics discussed in these vignettes:
 
   1. [**Making a Single Heatmap**](s2.single_heatmap.html)
@@ -72,13 +72,13 @@ lists the general topics discussed in these vignettes:
     This vignette introduces the basic configuration for making a single heatmap. Similar as other
     R functions/packages, the basic usage is quite similar, but there are several unique features
     for **ComplexHeamtap** package.
-    - Works both for numeric matrix and character matrix
+    - Works both for numeric matrix and character matrix.
     - For numeric matrix which contains continuous values, the package allows a color mapping function
       which can give more accurate colors and be robust to outliers.
     - Highly flexible for clustering. You can define the distance method for clustering by:
-          * a pre-defined distance such as "euclidean" or "pearson"
-          * a self-defined function which calculates distance from a matrix.
-          * a self-defined function which calculates distance from two vectors
+          * a pre-defined distance such as "euclidean" or "pearson",
+          * a self-defined function which calculates distance from a matrix,
+          * a self-defined function which calculates distance from two vectors.
         
         You can define the clustering method by:
           * a clustering function such as `diana()` from **cluster** package
@@ -96,7 +96,7 @@ lists the general topics discussed in these vignettes:
 
   3. [**Heatmap Annotations**](s4.heatmap_annotation.html)
 
-    This vignette introduces the concept of the heatmap annotation and demonstrate how to make simple annotations
+    This vignette introduces the concept of the heatmap annotation and demonstrates how to make simple annotations
     as well as complex annotations. Also, the vignette explains the difference between column annotations
     and row annotations.
 
@@ -121,4 +121,11 @@ lists the general topics discussed in these vignettes:
   8. [**Examples**](s9.examples.html)
 
     More simulated and real-world examples are shown in this vignette.
+
+In the supplementaries of [the ComplexHeatmap paper](http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract), there are four comprehensive examples which are applied
+on real-world high-throughput datasets. [The examples can be found here.](http://jokergoo.github.io/supplementary/ComplexHeatmap-supplementary1-4/index.html)
+
+Also [my blog](http://jokergoo.github.io/blog.html) has some examples and tips for making better complex heatmaps.
+
+
     

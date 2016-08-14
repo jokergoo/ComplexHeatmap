@@ -193,7 +193,8 @@ Heatmap = setClass("Heatmap",
 #     For each row-clusters, hierarchical clustering is still applied with parameters above.
 # -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
 #        indicating rows are to be split according to the split on the tree.
-# -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object.
+# -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object. If it is a vector, the order corresponds
+#   to top to bottom in the heatmap
 # -combined_name_fun if the heatmap is split by rows, how to make a combined row title for each slice?
 #                 The input parameter for this function is a vector which contains level names under each column in ``split``.
 # -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
@@ -442,7 +443,7 @@ Heatmap = function(matrix, col, name,
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(as.vector(matrix)))) {
-                    names(col) = unique(as.vector(matrix))
+                    names(col) = sort(unique(as.vector(matrix)))
                     .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
                 } else if(is.numeric(matrix)) {
                     col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
@@ -452,6 +453,7 @@ Heatmap = function(matrix, col, name,
                     stop("`col` should have names to map to values in `mat`.")
                 }
             } else {
+                col = col[intersect(c(names(col), "_NA_"), as.character(matrix))]
                 .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
             }
         }
@@ -648,6 +650,12 @@ setMethod(f = "make_column_cluster",
     signature = "Heatmap",
     definition = function(object) {
     
+    if(ht_global_opt("fast_hclust")) {
+        hclust = fastcluster::hclust
+    } else {
+        hclust = stats::hclust
+    }
+    
     mat = object@matrix
     distance = object@column_dend_param$distance
     method = object@column_dend_param$method
@@ -729,6 +737,12 @@ setMethod(f = "make_column_cluster",
 setMethod(f = "make_row_cluster",
     signature = "Heatmap",
     definition = function(object) {
+
+    if(ht_global_opt("fast_hclust")) {
+        hclust = fastcluster::hclust
+    } else {
+        hclust = stats::hclust
+    }
 
     mat = object@matrix
     distance = object@row_dend_param$distance
@@ -963,14 +977,26 @@ setMethod(f = "make_layout",
     # position of each row-slice
     gap = object@matrix_param$gap
     n_slice = length(object@row_order_list)
+    if(length(gap) == 1) {
+        gap = rep(gap, n_slice)
+    } else if(length(gap) == n_slice - 1) {
+        gap = unit.c(gap, unit(0, "mm"))
+    } else if(length(gap) != n_slice) {
+        stop("Length of `gap` should be 1 or number of row slices.")
+    }
+
     snr = sapply(object@row_order_list, length)
     if(sum(snr)) {
-        slice_height = (unit(1, "npc") - gap*(n_slice-1))*(snr/sum(snr))
+        if(n_slice == 1) {
+            slice_height = unit(1, "npc")*(snr/sum(snr))
+            } else {
+                slice_height = (unit(1, "npc") - sum(gap[seq_len(n_slice-1)]))*(snr/sum(snr))
+            }  
         for(i in seq_len(n_slice)) {
             if(i == 1) {
                 slice_y = unit(1, "npc")
             } else {
-                slice_y = unit.c(slice_y, unit(1, "npc") - sum(slice_height[seq_len(i-1)]) - gap*(i-1))
+                slice_y = unit.c(slice_y, unit(1, "npc") - sum(slice_height[seq_len(i-1)]) - sum(gap[seq_len(i-1)]))
             }
         }
 

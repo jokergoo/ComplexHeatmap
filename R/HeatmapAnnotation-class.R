@@ -52,6 +52,12 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -width width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.
 # -gp graphic parameters for simple annotations.
 # -gap gap between each annotation
+# -show_annotation_name whether show annotation names. For column annotation, annotation names are drawn either on the left
+#   or the right, and for row annotations, names are draw either on top to at bottom. The value can be a vector.
+# -annotation_name_gp graphic parameters for anntation names. Graphic paramters can be vectors.
+# -annotation_name_offset offset to the annotations, `grid::unit` object. The value can be a vector.
+# -annotation_name_side side of the annotation names.
+# -annotation_name_rot rotation of the annotation names, can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
 #
 # == details
 # The simple annotations are defined by ``df`` and ``col`` arguments. Complex annotations are
@@ -76,7 +82,12 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 	height = calc_anno_size(), 
 	width = calc_anno_size(), 
 	gp = gpar(col = NA),
-	gap = unit(0, "mm")) {
+	gap = unit(0, "mm"),
+	show_annotation_name = FALSE,
+	annotation_name_gp = gpar(),
+	annotation_name_offset = unit(2, "mm"),
+	annotation_name_side = ifelse(which == "column", "right", "bottom"),
+	annotation_name_rot = ifelse(which == "column", 0, 90)) {
 
 	.Object = new("HeatmapAnnotation")
 
@@ -94,7 +105,8 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     arg_list = as.list(match.call())[-1]
     called_args = names(arg_list)
     anno_args = setdiff(called_args, c("name", "col", "na_col", "annotation_legend_param", "show_legend", "which", 
-    	                             "annotation_height", "annotation_width", "height", "width", "gp", "gap"))
+    	                             "annotation_height", "annotation_width", "height", "width", "gp", "gap",
+    	                             "show_annotation_name", "annotation_name_gp", "annotation_name_offset", "annotation_name_side", "annotation_name_rot"))
     if(any(anno_args == "")) stop("annotations should have names.")
     if(any(duplicated(anno_args))) stop("names of annotations should be unique.")
     anno_arg_list = list(...)
@@ -143,7 +155,30 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 		}
 	}
 
+	n_total_anno = 0
+	for(ag in anno_args) {
+		if(ag == "df") {
+			n_total_anno = n_total_anno + ncol(df)
+		} else {
+			n_total_anno = n_total_anno + 1
+		}
+	}
+	if(length(show_annotation_name) == 1) {
+    	show_annotation_name = rep(show_annotation_name, n_total_anno)
+    }
+    if(length(annotation_name_offset) == 1) {
+    	annotation_name_offset = rep(annotation_name_offset, n_total_anno)
+    }
+    if(length(annotation_name_side) == 1) {
+    	annotation_name_side = rep(annotation_name_side, n_total_anno)
+    }
+    if(length(annotation_name_rot) == 1) {
+    	annotation_name_rot = rep(annotation_name_rot, n_total_anno)
+    }
+    annotation_name_gp = recycle_gp(annotation_name_gp, n_total_anno)
+
 	i_simple = 0
+	i_anno = 0
 	simple_length = NULL
     for(ag in anno_args) {
 		if(ag == "df") {
@@ -161,21 +196,35 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 
 		    if(missing(col)) {
 		        for(i in seq_len(n_anno)) {
-		        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]])))
+		        	i_anno = i_anno + 1
+		        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, which = which, 
+		        		show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
+		        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
+		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 		        }
 		    } else {
 		        for(i in seq_len(n_anno)) {
+		        	i_anno = i_anno + 1
 		        	if(is.null(col[[ anno_name[i] ]])) { # if the color is not provided
-		        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]])))
+		        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, which = which, 
+		        			show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
+		        			show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
+		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 		        	} else {
-		        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, col = col[[ anno_name[i] ]], which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]])))
+		        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, col = col[[ anno_name[i] ]], 
+		        			which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
+		        			show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
+		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 		        	}
 		        }
 		    }
 		    i_simple = i_simple + n_anno
 		} else {
+			i_anno = i_anno + 1
 			if(inherits(anno_arg_list[[ag]], "function")) {
-				anno_list = c(anno_list, list(SingleAnnotation(name = ag, fun = anno_arg_list[[ag]], which = which)))
+				anno_list = c(anno_list, list(SingleAnnotation(name = ag, fun = anno_arg_list[[ag]], which = which,
+					show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
+		        	name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 			} else if(is.atomic(anno_arg_list[[ag]])) {
 
 			    if(is.null(simple_length)) {
@@ -184,12 +233,21 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 			    	stop("length of simple annotations differ.")
 			    }
 				if(missing(col)) {
-			        anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]])))
+			        anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, 
+			        	show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
+			        	show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
+		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 			    } else {
 			        if(is.null(col[[ ag ]])) { # if the color is not provided
-			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]])))
+			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, 
+			        		show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
+			        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
+		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 			        } else {
-			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, col = col[[ ag ]], which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]])))
+			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, col = col[[ ag ]], 
+			        		which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
+			        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
+		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
 			        }
 			    }
 			    i_simple = i_simple + 1
@@ -199,21 +257,19 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 		}
 	}
 
-	if(which == "column") {
-		anno_list = rev(anno_list)
-	}
-
-	n_anno = length(anno_list)
+	n_total_anno = length(anno_list)
 
 	if(is.null(gap)) gap = unit(0, "mm")
 
+	# the nth gap does not really matter
     if(length(gap) == 1) {
-    	.Object@gap = rep(gap, n_anno)
-    } else if(length(gap) == n_anno - 1) {
+    	.Object@gap = rep(gap, n_total_anno)
+    } else if(length(gap) == n_total_anno - 1) {
     	.Object@gap = unit.c(gap, unit(0, "mm"))
-    } else if(length(gap) < n_anno - 1) {
+    } else if(length(gap) < n_total_anno - 1) {
     	stop("Length of `gap` is wrong.")
     } else {
+    	gap[n_total_anno] = unit(0, "mm")
     	.Object@gap = gap
     }
 
@@ -223,15 +279,13 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 
 	if(length(anno_size) == 1) {
 		if(!is.unit(anno_size)) {
-			anno_size = rep(anno_size, n_anno)
+			anno_size = rep(anno_size, n_total_anno)
 		}
 	}
 
 	if(!is.unit(anno_size)) {
 		anno_size = anno_size/sum(anno_size)*(unit(1, "npc") - sum(.Object@gap))
 	}
-
-	if(which == "column") anno_size = anno_size[rev(seq_len(n_anno))]
 
 	names(anno_list) = sapply(anno_list, function(x) x@name)
     .Object@anno_list = anno_list
@@ -262,12 +316,11 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 #
 # == param
 # -... pass to `HeatmapAnnotation`
-# -width default width of the row annotations
 #
 # == details
 # The function is identical to 
 #
-#     HeatmapAnnotation(..., which = "row", width = width)
+#     HeatmapAnnotation(..., which = "row")
 #
 # == value
 # A `HeatmapAnnotation-class` object.
@@ -275,8 +328,8 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-rowAnnotation = function(..., width = unit(1, "cm")) {
-	HeatmapAnnotation(..., which = "row", width = width)
+rowAnnotation = function(...) {
+	HeatmapAnnotation(..., which = "row")
 }
 
 # == title
@@ -391,18 +444,30 @@ setMethod(f = "draw",
 	gap = object@gap
 
 	pushViewport(viewport(...))
-	for(i in seq_len(n_anno)) {
-		if(which == "column") {
-			if(align_to == "bottom") {
-				pushViewport(viewport(y = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], height = anno_size[i], just = c("center", "top")))
-			} else {
-				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno + 1 - i]), height = anno_size[i], just = c("center", "bottom")))
+	if(which == "column") {
+		if(align_to == "bottom") { # put on top of the heatmap
+			# start from the last annoation which is put on bottom
+			for(i in seq_len(n_anno)) {
+				pushViewport(viewport(y = sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno], 
+					height = anno_size[i], just = c("center", "top")))
+				draw(object@anno_list[[i]], index, k, n)
+				upViewport()
 			}
-		} else {
-			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
+		} else { # put on bottom of the heatmap
+			# start for the first annotation which is put on the top
+			for(i in seq_len(n_anno)) {
+				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i]), 
+					height = anno_size[i], just = c("center", "bottom")))
+				draw(object@anno_list[[i]], index, k, n)
+				upViewport()
+			}
 		}
-		draw(object@anno_list[[i]], index, k, n)
-		upViewport()
+	} else if(which == "row") {
+		for(i in seq_len(n_anno)) {
+			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
+			draw(object@anno_list[[i]], index, k, n)
+			upViewport()
+		}
 	}
 	upViewport()
 })

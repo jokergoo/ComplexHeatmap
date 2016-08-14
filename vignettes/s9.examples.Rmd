@@ -28,6 +28,11 @@ options(markdown.HTML.stylesheet = "custom.css")
 options(width = 100)
 ```
 
+In the supplementaries of [the ComplexHeatmap paper](http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract), there are four comprehensive examples which are applied
+on real-world high-throughput datasets. [The examples can be found here.](http://jokergoo.github.io/supplementary/ComplexHeatmap-supplementary1-4/index.html)
+
+Also [my blog](http://jokergoo.github.io/blog.html) has some examples and tips for making better complex heatmaps.
+
 
 ### Add more information for gene expression matrix
 

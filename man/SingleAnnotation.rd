@@ -12,7 +12,12 @@ SingleAnnotation(name, value, col, fun,
     which = c("column", "row"),
     show_legend = TRUE,
     gp = gpar(col = NA),
-    legend_param = list())
+    legend_param = list(),
+    show_name = FALSE,
+    name_gp = gpar(fontsize = 12),
+    name_offset = unit(2, "mm"),
+    name_side = ifelse(which == "column", "right", "bottom"),
+    name_rot = ifelse(which == "column", 0, 90))
 }
 \arguments{
 
@@ -25,6 +30,11 @@ SingleAnnotation(name, value, col, fun,
   \item{show_legend}{if it is a simple annotation, whether show legend when making the complete heatmap.}
   \item{gp}{Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.}
   \item{legend_param}{parameters for the legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for options.}
+  \item{show_name}{whether show annotation name}
+  \item{name_gp}{graphic parameters for annotation name}
+  \item{name_offset}{offset to the annotation, a \code{\link[grid]{unit}} object}
+  \item{name_side}{'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations}
+  \item{name_rot}{rotation of the annotation name, can only take values in \code{c(00, 90, 180, 270)}.}
 
 }
 \details{

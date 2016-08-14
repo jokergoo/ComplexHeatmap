@@ -61,6 +61,11 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
 # -gp Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.
 # -legend_param parameters for the legend. See `color_mapping_legend,ColorMapping-method` for options.
+# -show_name whether show annotation name
+# -name_gp graphic parameters for annotation name
+# -name_offset offset to the annotation, a `grid::unit` object
+# -name_side 'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations
+# -name_rot rotation of the annotation name, can only take values in ``c(00, 90, 180, 270)``.
 #
 # == details
 # The most simple annotation is one row or one column grids in which different colors
@@ -95,11 +100,11 @@ SingleAnnotation = function(name, value, col, fun,
 	show_legend = TRUE, 
 	gp = gpar(col = NA), 
 	legend_param = list(),
-	show_name = TRUE, 
+	show_name = FALSE, 
 	name_gp = gpar(fontsize = 12),
 	name_offset = unit(2, "mm"),
-	name_rot = 0,
-	name_side = ifelse(which == "column", "right", "bottom")) {
+	name_side = ifelse(which == "column", "right", "bottom"),
+    name_rot = ifelse(which == "column", 0, 90)) {
 
 	# re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
@@ -127,11 +132,77 @@ SingleAnnotation = function(name, value, col, fun,
         increase_annotation_index()
     }
     .Object@name = name
+
+    if(!name_rot %in% c(0, 90, 180, 270)) {
+        stop("`name_rot` can only take values in c(0, 90, 180, 270)")
+    }
+
+    
+    if(which == "column") {
+    	if(!name_side %in% c("left", "right")) {
+    		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
+    	}
+    	if(name_side == "left") {
+    		name_x = unit(0, "npc") - name_offset
+    		name_y = unit(0.5, "npc")
+            if(name_rot == 0) {
+                name_just = "right"
+            } else if(name_rot == 90) {
+                name_just = "bottom"
+            } else if(name_rot == 180) {
+                name_just = "left"
+            } else {
+                name_just = "top"
+            }
+    	} else {
+    		name_x = unit(1, "npc") + name_offset
+    		name_y = unit(0.5, "npc")
+            if(name_rot == 0) {
+                name_just = "left"
+            } else if(name_rot == 90) {
+                name_just = "top"
+            } else if(name_rot == 180) {
+                name_just = "right"
+            } else {
+                name_just = "bottom"
+            }
+    	}
+    } else if(which == "row") {
+    	if(!name_side %in% c("top", "bottom")) {
+    		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
+    	}
+    	if(name_side == "top") {
+    		name_x = unit(0.5, "npc")
+    		name_y = unit(1, "npc") + name_offset
+            if(name_rot == 0) {
+                name_just = "bottom"
+            } else if(name_rot == 90) {
+                name_just = "left"
+            } else if(name_rot == 180) {
+                name_just = "top"
+            } else {
+                name_just = "right"
+            }
+    	} else {
+    		name_x = unit(0.5, "npc")
+    		name_y = unit(0, "npc") - name_offset
+            if(name_rot == 0) {
+                name_just = "top"
+            } else if(name_rot == 90) {
+                name_just = "right"
+            } else if(name_rot == 180) {
+                name_just = "bottom"
+            } else {
+                name_just = "left"
+            }
+    	}
+    }
     .Object@name_param = list(show = show_name,
+    						  x = name_x,
+    						  y = name_y,
+    						  just = name_just,
     	                      gp = check_gp(name_gp),
-    	                      offset = name_offset,
-    	                      rot = name_rot,
-    	                      side = name_side)
+    	                      rot = name_rot)
 
     gp = check_gp(gp)
     if(!is.null(gp$fill)) {
@@ -152,6 +223,7 @@ SingleAnnotation = function(name, value, col, fun,
     		col = default_col(value)
     	}
     	if(is.atomic(col)) {
+            col = col[intersect(c(names(col), "_NA_"), as.character(value))]
     		if("_NA_" %in% names(col)) {
     			na_col = col["_NA_"]
     			col = col[names(col) != "_NA_"]
@@ -259,6 +331,11 @@ setMethod(f = "draw",
 			pushViewport(viewport(name = paste("annotation", object@name, k, sep = "_")))
 			object@fun(index, k, n)
 		}
+	}
+	# add annotation name
+	if(object@name_param$show) {
+		grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+			rot = object@name_param$rot, gp = object@name_param$gp)
 	}
 	upViewport()
 

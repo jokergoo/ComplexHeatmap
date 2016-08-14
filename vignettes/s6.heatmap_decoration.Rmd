@@ -165,7 +165,8 @@ can be used in the decoration code.
 
 By default, annotation names are not plotted along with the heatmap annotations. The reason is
 if annotation names is plotted, they will located in the area of other heatmap components which
-would makes the adjustment of the heatmap layout difficult. But since you can go to any component 
+would makes the adjustment of the heatmap layout difficult. `HeatmapAnnotation()` provides a 
+not-so-perfect [solution](s4.heatmap_annotation.html#toc_11) for adding annotation names, however, since you can go to any component 
 in the heatmap list by its name, actually it is not difficult to add annotation names manually.
 
 Following code add annotation names on the both sides of the column annotations. The drawback is

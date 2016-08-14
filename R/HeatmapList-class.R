@@ -1195,11 +1195,11 @@ setMethod(f = "draw_annotation_legend",
         ht = object@ht_list[[i]]
         if(inherits(ht, "Heatmap")) {
             if(!is.null(ht@top_annotation)) {
-                ColorMappingList = c.list(get_color_mapping_list(ht@top_annotation), list = ColorMappingList)
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
                 ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_param_list(ht@top_annotation))
             }
             if(!is.null(ht@bottom_annotation)) {
-                ColorMappingList = c.list(get_color_mapping_list(ht@bottom_annotation), list = ColorMappingList)
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
                 ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_param_list(ht@bottom_annotation))
             }
         }
@@ -1222,7 +1222,8 @@ setMethod(f = "draw_annotation_legend",
             pushViewport(viewport(name = "annotation_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
         }
     }
-    draw_legend(rev(ColorMappingList), rev(ColorMappingParamList), side = side, legend_list = legend_list, padding = padding, ...)
+
+    draw_legend(ColorMappingList, ColorMappingParamList, side = side, legend_list = legend_list, padding = padding, ...)
     upViewport()
 })
 
@@ -1312,7 +1313,7 @@ setMethod(f = "annotation_legend_size",
         }
     }
 
-    size = draw_legend(rev(ColorMappingList), rev(ColorMappingParamList), side = side, plot = FALSE, legend_list = legend_list, padding = padding, ...)
+    size = draw_legend(ColorMappingList, ColorMappingParamList, side = side, plot = FALSE, legend_list = legend_list, padding = padding, ...)
     
     return(size)
 })

@@ -58,7 +58,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	row_barplot_width = unit(2, "cm"),
 	remove_empty_columns = FALSE,
 	heatmap_legend_param = list(title = "Alterations"),
-	top_annotation = HeatmapAnnotation(column_bar = anno_column_bar, 
+	top_annotation = HeatmapAnnotation(column_bar = anno_oncoprint_barplot(), 
 		annotation_height = unit(2, "cm")),
 	barplot_ignore = NULL,
 	...) {
@@ -286,6 +286,13 @@ oncoPrint = function(mat, get_type = function(x) x,
 		top_annotation = top_annotation,
 		heatmap_legend_param = heatmap_legend_param, ...)
 
+	ht@matrix_param$oncoprint = list()
+	ht@matrix_param$oncoprint$arr = arr
+	ht@matrix_param$oncoprint$barplot_ignore = barplot_ignore
+	ht@matrix_param$oncoprint$all_type = all_type
+	ht@matrix_param$oncoprint$axis_gp = axis_gp
+	ht@matrix_param$oncoprint$col = col
+
 	if(show_pct) {
 		ht_list = ha_pct + ht
 	} else {
@@ -328,6 +335,48 @@ unify_mat_list = function(mat_list, default = 0) {
 	})
 	names(mat_list2) = names(mat_list)
 	return(mat_list2)
+}
+
+
+
+# == title
+# Column barplot annotaiton for oncoPrint
+#
+# == details
+# This function is only used for column annotation
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+anno_oncoprint_barplot = function() {
+
+	function(index) {
+		object = get("object", envir = parent.frame(n = 5))
+		arr = object@matrix_param$oncoprint$arr
+		barplot_ignore = object@matrix_param$oncoprint$barplot_ignore
+		all_type = object@matrix_param$oncoprint$all_type
+		axis_gp = object@matrix_param$oncoprint$axis_gp
+		col = object@matrix_param$oncoprint$col
+
+		n = length(index)
+		count = apply(arr, c(2, 3), sum)[index, , drop = FALSE]
+		all_type = all_type[!(colnames(count) %in% barplot_ignore)]
+		count = count[, setdiff(colnames(count), barplot_ignore), drop = FALSE]
+		max_count = max(rowSums(count))
+		pushViewport(viewport(yscale = c(0, max_count*1.1), xscale = c(0.5, n + 0.5)))
+		for(i in seq_len(nrow(count))) {
+			if(any(count[i, ] > 0)) {
+				y = count[i, ]
+				y = y[y > 0]
+				y2 = cumsum(y)
+				type = all_type[count[i, ] > 0]
+				grid.rect(i, y2, height = y, width = 0.8, default.units = "native", just = "top", gp = gpar(col = NA, fill = col[type]))
+			}
+		}
+		breaks = grid.pretty(c(0, max_count))
+		grid.yaxis(at = breaks, label = breaks, gp = axis_gp)
+		upViewport()
+	}
 }
 
 
