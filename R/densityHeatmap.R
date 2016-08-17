@@ -178,7 +178,7 @@ densityHeatmap = function(data,
 			grid.text(rownames(quantile_list)[i], unit(1, "npc")+unit(2, "mm"), quantile_list[i, column_order[n]], default.units = "native", just = "left")
 		}
 		grid.lines(1:n, mean_value[column_order], default.units = "native", gp = gpar(lty = 2, col = "darkred"))
-		grid.text("mean", unit(1, "npc")+unit(2, "mm"), mean_value[n], default.units = "native", just = "left")
+		grid.text("mean", unit(1, "npc")+unit(2, "mm"), mean_value[column_order[n]], default.units = "native", just = "left")
 		upViewport()
 	})
 
