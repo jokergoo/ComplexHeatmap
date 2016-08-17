@@ -223,7 +223,7 @@ SingleAnnotation = function(name, value, col, fun,
     		col = default_col(value)
     	}
         if(is.null(names(col))) {
-            if(is.factor(vlaue)) {
+            if(is.factor(value)) {
                 names(col) = levels(value)
             } else {
                 names(col) = unique(value)
