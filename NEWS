@@ -2,6 +2,7 @@ CHANGES in VERSION 1.11.7
 
 * SingleAnnotation: if `col` is a vector with no names, it will be assigned
   as `level(value)` or `unique(value)`
+* HeatmapAnnotation: give warnings if color is defined while with no annotations
 
 ==========================
 

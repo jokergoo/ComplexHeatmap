@@ -180,6 +180,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 	i_simple = 0
 	i_anno = 0
 	simple_length = NULL
+	col_name_defined = NULL
     for(ag in anno_args) {
 		if(ag == "df") {
 			if(is.null(colnames(df))) {
@@ -215,6 +216,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 		        			which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
 		        			show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
 		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
+		        		col_name_defined = c(col_name_defined, anno_name[i])
 		        	}
 		        }
 		    }
@@ -248,6 +250,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 			        		which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
 			        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
 		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
+			        	col_name_defined = c(col_name_defined, ag)
 			        }
 			    }
 			    i_simple = i_simple + 1
@@ -255,6 +258,11 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 				stop("additional arguments should be annotation vectors or annotation functions.")
 			} 
 		}
+	}
+
+	unused_col_name = setdiff(names(col), col_name_defined)
+	if(length(unused_col_name)) {
+		warn(paste0("Following are defined in `col` while have no corresponding annotations:", paste(unused_col_name, collapse = ", ")))
 	}
 
 	n_total_anno = length(anno_list)
