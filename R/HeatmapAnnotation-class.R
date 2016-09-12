@@ -262,7 +262,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 
 	unused_col_name = setdiff(names(col), col_name_defined)
 	if(length(unused_col_name)) {
-		warn(paste0("Following are defined in `col` while have no corresponding annotations:", paste(unused_col_name, collapse = ", ")))
+		warning(paste0("Following are defined in `col` while have no corresponding annotations:\n", paste(unused_col_name, collapse = ", ")))
 	}
 
 	n_total_anno = length(anno_list)
