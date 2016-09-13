@@ -177,6 +177,20 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     }
     annotation_name_gp = recycle_gp(annotation_name_gp, n_total_anno)
 
+    if(!missing(col)) {
+    	if(is.null(names(col))) {
+    		stop("`col` should be a named list.")
+    	}
+    	if(any(is.na(names(col)))) {
+    		stop("`col` should be a named list.")
+    	}
+    	if(any(sapply(col, function(x) is.null(names(x))))) {
+    		stop("elements in `col` should be named vectors.")
+    	}
+    	if(any(sapply(col, function(x) any(is.na(names(x)))))) {
+    		stop("elements in `col` should be named vectors.")
+    	}
+    }
 	i_simple = 0
 	i_anno = 0
 	simple_length = NULL

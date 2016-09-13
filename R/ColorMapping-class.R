@@ -184,7 +184,7 @@ setMethod(f = "map_to_colors",
 
 		if(is.numeric(x)) x = as.character(x)
 		if(any(! x[!lna] %in% object@levels)) {
-			msg = paste0(object@name, ": cannot map some of the levels:\n", paste(setdiff(x[!lna], object@levels), sep = ", ", collapse = ", "))
+			msg = paste0(object@name, ": cannot map colors to some of the levels:\n", paste(setdiff(x[!lna], object@levels), sep = ", ", collapse = ", "))
 			stop(msg)
 		}
 		
