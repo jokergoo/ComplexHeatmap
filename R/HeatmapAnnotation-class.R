@@ -184,10 +184,10 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     	if(any(is.na(names(col)))) {
     		stop("`col` should be a named list.")
     	}
-    	if(any(sapply(col, function(x) is.null(names(x))))) {
+    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else is.null(names(x))))) {
     		stop("elements in `col` should be named vectors.")
     	}
-    	if(any(sapply(col, function(x) any(is.na(names(x)))))) {
+    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else any(is.na(names(x)))))) {
     		stop("elements in `col` should be named vectors.")
     	}
     }
