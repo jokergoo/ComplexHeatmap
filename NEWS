@@ -4,6 +4,7 @@ CHANGES in VERSION 1.11.7
   as `level(value)` or `unique(value)`
 * HeatmapAnnotation: give warnings if color is defined while with no annotations
 * HeatmapAnnotation: check `col`, if it is not valid, give warnings
+* catch error when making annotation graphics
 
 ==========================
 

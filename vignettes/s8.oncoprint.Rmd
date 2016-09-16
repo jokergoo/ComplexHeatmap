@@ -149,6 +149,39 @@ oncoPrint(mat_list,
     }, col = col)
 ```
 
+With a single function for `alter_fun`, you can define different graphics for different alterations.
+In following plot, you need to adjust the height of the whole plot to make sure the height for each cell
+is more than double of the width.
+
+```{r, width = 6, height = 7}
+snv_fun = function(x, y, w, h) {
+	grid.rect(x, y, w, h, gp = gpar(fill = col["snv"], col = NA))
+}
+
+indel_fun = function(x, y, r) {
+	grid.circle(x, y, r, gp = gpar(fill = col["indel"], col = NA))
+}
+
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+    alter_fun = function(x, y, w, h, v) {
+        n = sum(v)
+        w = convertWidth(w, "cm")*0.9
+        h = convertHeight(h, "cm")*0.9
+        l = min(unit.c(w, h))
+
+        grid.rect(x, y, w, h, gp = gpar(fill = "grey", col = NA))
+
+        if(n == 0) return(NULL)
+        if(n == 1) {
+        	if(names(which(v)) == "snv") snv_fun(x, y, l, l)
+        	if(names(which(v)) == "indel") indel_fun(x, y, l*0.5)
+        } else if(n == 2) {
+        	snv_fun(x, y-0.25*h, l, l)
+        	indel_fun(x, y+0.25*h, l*0.5)
+        }
+    }, col = col)
+```
+
 If `alter_fun` is specified as a list, the order of the elements controls the order of adding graphics. 
 There is a special element named `background` which defines how to draw background and it should be always put
 as the first element in the `alter_fun` list. In following example, backgrond color is changed to light green with borders.
@@ -171,6 +204,27 @@ oncoPrint(mat_list,
 		snv = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = col["snv"], col = NA)),
 		indel = function(x, y, w, h) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = col["indel"], col = NA))
 	), col = col)
+```
+
+You can customize the oncoprot by self-defining `alter_fun`. But be careful you must
+convert `w` and `h` to absolute units.
+
+```{r}
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+    alter_fun = list(
+        snv = function(x, y, w, h) {
+        	w = convertWidth(w, "cm")
+        	h = convertHeight(h, "cm")
+        	l = min(unit.c(w, h))
+        	grid.rect(x, y, l*0.9, l*0.9, gp = gpar(fill = col["snv"], col = NA))
+        },
+        indel = function(x, y, w, h) {
+        	w = convertWidth(w, "cm")
+        	h = convertHeight(h, "cm")
+        	r = min(unit.c(w, h))*0.5
+        	grid.circle(x, y, r*0.9, gp = gpar(fill = col["indel"], col = NA))
+        }
+    ), col = col)
 ```
 
 ## Apply to cBioPortal dataset
