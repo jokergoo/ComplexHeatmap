@@ -222,7 +222,15 @@ SingleAnnotation = function(name, value, col, fun,
     	if(missing(col)) {
     		col = default_col(value)
     	}
+        
     	if(is.atomic(col)) {
+    	    if(is.null(names(col))) {
+                if(is.factor(value)) {
+                    names(col) = levels(value)
+                } else {
+                    names(col) = unique(value)
+                }
+            }
             col = col[intersect(c(names(col), "_NA_"), as.character(value))]
     		if("_NA_" %in% names(col)) {
     			na_col = col["_NA_"]

@@ -7,7 +7,7 @@ cm = ColorMapping(name = "test",
 test_that("color mapping is discrete", {
 	expect_that(show(cm), prints_text("Discrete color mapping"))
 	expect_that(map_to_colors(cm, "a"), is_identical_to("#0000FFFF"))
-	expect_that(map_to_colors(cm, "d"), throws_error("cannot map some of the levels"))
+	expect_that(map_to_colors(cm, "d"), throws_error("cannot map colors to some of the levels"))
 	expect_that(map_to_colors(cm, c("a", "a", "b", "c")), is_identical_to(c("#0000FFFF", "#0000FFFF", "#FFFFFFFF", "#FF0000FF")))
 })
 
@@ -29,7 +29,7 @@ test_that("color mapping is discrete but with numeric levels", {
 	expect_that(show(cm), prints_text("Discrete color mapping"))
 	expect_that(map_to_colors(cm, 1), is_identical_to("#0000FFFF"))
 	expect_that(map_to_colors(cm, "1"), is_identical_to("#0000FFFF"))
-	expect_that(map_to_colors(cm, 5), throws_error("cannot map some of the levels"))
+	expect_that(map_to_colors(cm, 5), throws_error("cannot map colors to some of the levels"))
 	expect_that(map_to_colors(cm, c(1, 1, 2, 2)), is_identical_to(c("#0000FFFF", "#0000FFFF", "#FFFFFFFF", "#FFFFFFFF")))
 })
 

@@ -177,9 +177,24 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     }
     annotation_name_gp = recycle_gp(annotation_name_gp, n_total_anno)
 
+    if(!missing(col)) {
+    	if(is.null(names(col))) {
+    		stop("`col` should be a named list.")
+    	}
+    	if(any(is.na(names(col)))) {
+    		stop("`col` should be a named list.")
+    	}
+    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else is.null(names(x))))) {
+    		stop("elements in `col` should be named vectors.")
+    	}
+    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else any(is.na(names(x)))))) {
+    		stop("elements in `col` should be named vectors.")
+    	}
+    }
 	i_simple = 0
 	i_anno = 0
 	simple_length = NULL
+	col_name_defined = NULL
     for(ag in anno_args) {
 		if(ag == "df") {
 			if(is.null(colnames(df))) {
@@ -215,6 +230,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 		        			which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
 		        			show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
 		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
+		        		col_name_defined = c(col_name_defined, anno_name[i])
 		        	}
 		        }
 		    }
@@ -248,12 +264,20 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 			        		which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
 			        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
 		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
+			        	col_name_defined = c(col_name_defined, ag)
 			        }
 			    }
 			    i_simple = i_simple + 1
 			} else {
 				stop("additional arguments should be annotation vectors or annotation functions.")
 			} 
+		}
+	}
+	
+	if(!missing(col)) {
+		unused_col_name = setdiff(names(col), col_name_defined)
+		if(length(unused_col_name)) {
+			warning(paste0("Following are defined in `col` while have no corresponding annotations:\n", paste(unused_col_name, collapse = ", ")))
 		}
 	}
 
@@ -450,7 +474,11 @@ setMethod(f = "draw",
 			for(i in seq_len(n_anno)) {
 				pushViewport(viewport(y = sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno], 
 					height = anno_size[i], just = c("center", "top")))
-				draw(object@anno_list[[i]], index, k, n)
+				oe = try(draw(object@anno_list[[i]], index, k, n))
+				if(class(oe) == "try-error") {
+					cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
+					stop(oe)
+				}
 				upViewport()
 			}
 		} else { # put on bottom of the heatmap
@@ -458,14 +486,22 @@ setMethod(f = "draw",
 			for(i in seq_len(n_anno)) {
 				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i]), 
 					height = anno_size[i], just = c("center", "bottom")))
-				draw(object@anno_list[[i]], index, k, n)
+				oe = try(draw(object@anno_list[[i]], index, k, n))
+				if(class(oe) == "try-error") {
+					cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
+					stop(oe)
+				}
 				upViewport()
 			}
 		}
 	} else if(which == "row") {
 		for(i in seq_len(n_anno)) {
 			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
-			draw(object@anno_list[[i]], index, k, n)
+			oe = try(draw(object@anno_list[[i]], index, k, n))
+			if(class(oe) == "try-error") {
+				cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
+				stop(oe)
+			}
 			upViewport()
 		}
 	}
