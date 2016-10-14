@@ -124,12 +124,15 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 # Using barplot as annotation
 #
 # == param
-# -x a vector of numeric values.
-# -baseline baseline for bars. The value should be "min" or "max", or a numeric value.
+# -x a vector of numeric values. If the value is a matrix, columns of the matrix will be represented as
+#    stacked barplots. Note for stacked barplots, each row in the matrix should only contain values with same sign (either all positive or all negative).
+# -baseline baseline for bars. The value should be "min" or "max", or a numeric value. It is enforced to be zero
+#       for stacked barplots.
 # -which is the annotation a column annotation or a row annotation?
 # -border whether show border of the annotation compoment
 # -bar_width relative width of the bars, should less than one
-# -gp graphic parameters.
+# -gp graphic parameters. If it is the stacked barplots, the length of the graphic parameter should 
+#     be same as the number of stacks.
 # -ylim data ranges.
 # -axis whether add axis
 # -axis_side if it is placed as column annotation, value can only be "left" or "right".
@@ -150,9 +153,25 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 
 	x = x
 	which = match.arg(which)[1]
+	
+	if(inherits(x, "list")) x = do.call("rbind", x)
+	if(inherits(x, "data.frame")) x = as.matrix(x)
+	if(inherits(x, "matrix")) {
+		sg = apply(x, 1, function(xx) all(sign(xx) %in% c(1, 0)) || all(sign(xx) %in% c(-1, 0)))
+		if(!all(sg)) {
+			stop("Since `x` is a matrix, the sign of each row should be either all positive or all negative.")
+		}
+	}
+	if(is.null(dim(x))) x = matrix(x, ncol = 1)
+	if(ncol(x) > 1) {
+		baseline = 0
+		if(missing(gp)) {
+			gp = gpar(fill = grey(seq(0, 1, length = ncol(x)+2))[-c(1, ncol(x)+2)])
+		}
+	}
 
 	factor = bar_width
-	data_scale = range(x, na.rm = TRUE)
+	data_scale = range(rowSums(x, na.rm = TRUE), na.rm = TRUE)
 	if(!is.null(ylim)) data_scale = ylim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)
@@ -183,18 +202,7 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			n = length(index)
-			if(is.null(k)) {
-				gp = subset_gp(gp, index)
-			} else if(N == 1) {
-				gp = subset_gp(gp, index)
-			} else if(length(gp) == 0) {
-				gp = subset_gp(gp, index)
-			} else if(max(sapply(gp, length)) == length(x)) {
-				gp = subset_gp(gp, index)
-			} else {
-				gp = subset_gp(gp, k)
-			}
-
+			
 			if(baseline == "min") baseline = data_scale[1]
 			else if(baseline == "max") baseline = data_scale[2]
 			if(axis_direction == "reverse") {
@@ -205,8 +213,29 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 			if(baseline > data_scale[2]) data_scale[2] = baseline
 			pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5), name = vp_name))
 			if(border) grid.rect()
-			width = x[index] - baseline
-			grid.rect(x = width/2+baseline, y = n - seq_along(index) + 1, width = abs(width), height = 1*factor, default.units = "native", gp = gp)
+			if(ncol(x) == 1) {
+				if(is.null(k)) {
+					gp = subset_gp(gp, index)
+				} else if(N == 1) {
+					gp = subset_gp(gp, index)
+				} else if(length(gp) == 0) {
+					gp = subset_gp(gp, index)
+				} else if(max(sapply(gp, length)) == length(x)) {
+					gp = subset_gp(gp, index)
+				} else {
+					gp = subset_gp(gp, k)
+				}
+
+				width = x[index] - baseline
+				x_coor = width/2+baseline
+				grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*factor, default.units = "native", gp = gp)
+			} else {
+				for(i in seq_len(ncol(x))) {
+					width = x[index, i]
+					x_coor = rowSums(x[index, seq_len(i-1), drop = FALSE]) + width/2
+					grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*factor, default.units = "native", gp = subset_gp(gp, i))
+				}
+			}
 			if(axis) {
 				at = grid.pretty(data_scale)
 				label = at
@@ -230,16 +259,24 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 		column = function(index, vp_name = NULL) {
 			n = length(index)
 
-			gp = subset_gp(gp, index)
-			
 			if(baseline == "min") baseline = data_scale[1]
 			else if(baseline == "max") baseline = data_scale[2]
 			if(baseline < data_scale[1]) data_scale[1] = baseline
 			if(baseline > data_scale[2]) data_scale[2] = baseline
 			pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale, name = vp_name))
 			if(border) grid.rect()
-			height = x[index] - baseline
-			grid.rect(x = seq_along(index), y = height/2 + baseline, height = abs(height), width = 1*factor, default.units = "native", gp = gp)
+			if(ncol(x) == 1) {
+				gp = subset_gp(gp, index)
+				height = x[index, 1] - baseline
+				y_coor = height/2 + baseline
+				grid.rect(x = seq_along(index), y = y_coor, height = abs(height), width = 1*factor, default.units = "native", gp = gp)
+			} else {
+				for(i in seq_len(ncol(x))) {
+					height = x[index, i]
+					y_coor = rowSums(x[index, seq_len(i-1), drop = FALSE]) + height/2
+					grid.rect(x = seq_along(index), y = y_coor, height = abs(height), width = 1*factor, default.units = "native", gp = subset_gp(gp, i))
+				}
+			}
 			if(axis) {
 				if(axis_side == "left") {
 					grid.yaxis(gp = axis_gp)
@@ -248,7 +285,8 @@ anno_barplot = function(x, baseline = "min", which = c("column", "row"), border 
 				}
 			}
 			upViewport()
-		})
+		}
+	)
 	attr(f, "which") = which
 	attr(f, "fun") = "anno_barplot"
 	return(f)

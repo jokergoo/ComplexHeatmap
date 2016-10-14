@@ -544,6 +544,25 @@ draw(ht_list, column_title = "reverse axis direction", newpage = FALSE)
 upViewport(2)
 ```
 
+## Stacked barplots
+
+Barplot annotation can be stacked barplots if the input (let's say `x`) is a matrix with columns larger than one.
+In this case, if graphic parameters are specified as a vector, the length can only be one or
+the number of columns in `x`. Since barplots are stacked, each row can only have all positive values
+or all negative values.
+
+Note the drawback is there is no legend for the stacked barplots, you need to generate it manually (check [this section](s5.legend.html#toc_3))
+
+```{r}
+foo1 = matrix(abs(rnorm(20)), ncol = 2)
+foo1[1, ] = -foo1[1, ]
+column_ha = HeatmapAnnotation(foo1 = anno_barplot(foo1, axis = TRUE))
+foo2 = matrix(abs(rnorm(24)), ncol = 2)
+row_ha = rowAnnotation(foo2 = row_anno_barplot(foo2, axis = TRUE, axis_side = "top",
+    gp = gpar(fill = c("red", "blue"))), width = unit(2, "cm"))
+Heatmap(mat, top_annotation = column_ha, top_annotation_height = unit(2, "cm"), km = 2) + row_ha
+```
+
 ## Add annotation names
 
 From version 1.11.5, `HeatmapAnnotation()` supports adding annotation names directly to the annotations.

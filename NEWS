@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.11.8
+
+* `anno_barplot()`: accept a matrix as input to plot stacked barplots
+
+=========================
+
 CHANGES in VERSION 1.11.7
 
 * SingleAnnotation: if `col` is a vector with no names, it will be assigned

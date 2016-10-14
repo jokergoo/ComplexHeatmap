@@ -13,12 +13,12 @@ anno_barplot(x, baseline = "min", which = c("column", "row"), border = TRUE, bar
 }
 \arguments{
 
-  \item{x}{a vector of numeric values.}
-  \item{baseline}{baseline for bars. The value should be "min" or "max", or a numeric value.}
+  \item{x}{a vector of numeric values. If the value is a matrix, columns of the matrix will be represented as stacked barplots. Note for stacked barplots, each row in the matrix should only contain values with same sign (either all positive or all negative).}
+  \item{baseline}{baseline for bars. The value should be "min" or "max", or a numeric value. It is enforced to be zero for stacked barplots.}
   \item{which}{is the annotation a column annotation or a row annotation?}
   \item{border}{whether show border of the annotation compoment}
   \item{bar_width}{relative width of the bars, should less than one}
-  \item{gp}{graphic parameters.}
+  \item{gp}{graphic parameters. If it is the stacked barplots, the length of the graphic parameter should  be same as the number of stacks.}
   \item{ylim}{data ranges.}
   \item{axis}{whether add axis}
   \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right". If it is placed as row annotation, value can only be "bottom" or "top".}

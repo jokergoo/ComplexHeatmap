@@ -131,7 +131,7 @@ Heatmap(matrix, col, name,
   \item{bottom_annotation_height}{total height of the column annotations on the bottom.}
   \item{km}{do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering. For each row-clusters, hierarchical clustering is still applied with parameters above.}
   \item{split}{a vector or a data frame by which the rows are split. But if \code{cluster_rows} is a clustering object, \code{split} can be a single number indicating rows are to be split according to the split on the tree.}
-  \item{gap}{gap between row-slices if the heatmap is split by rows, should be \code{\link[grid]{unit}} object.}
+  \item{gap}{gap between row-slices if the heatmap is split by rows, should be \code{\link[grid]{unit}} object. If it is a vector, the order corresponds to top to bottom in the heatmap}
   \item{combined_name_fun}{if the heatmap is split by rows, how to make a combined row title for each slice? The input parameter for this function is a vector which contains level names under each column in \code{split}.}
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmap is appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
