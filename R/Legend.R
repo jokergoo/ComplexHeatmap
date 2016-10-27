@@ -41,7 +41,6 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 	title_position = c("topleft", "topcenter", "leftcenter", "lefttop")) {
 
 	# odevlist = dev.list()
-
 	if(missing(col_fun)) {
 		if(is.null(border)) border = "white"
 		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,
