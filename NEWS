@@ -2,6 +2,7 @@ CHANGES in VERSION 1.13.1
 
 * `Heatmap()`: add `km_title` to set the format of row title when `km` is set
 * `anno_link()`: add `extend` to extend the regions for the labels
+* `anno_boxplot()`: for row annotation, outliers are in the correct in y-axis
 
 ========================
 

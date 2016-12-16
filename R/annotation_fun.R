@@ -408,16 +408,16 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 				if(is.matrix(x)) {
 					for(i in seq_len(nrow(x))) {
 						l1 = x[i,] > boxplot_stats[5,i]
-						if(sum(l1)) grid.points(y = rep(i, sum(l1)), x = x[i,][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = x[i,][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
 						l2 = x[i,] < boxplot_stats[1,i]
-						if(sum(l2)) grid.points(y = rep(i, sum(l2)), x = x[i,][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = x[i,][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
 					}
 				} else {
 					for(i in seq_along(x)) {
 						l1 = x[[i]] > boxplot_stats[5,i]
-						if(sum(l1)) grid.points(y = rep(i, sum(l1)), x = x[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = x[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
 						l2 = x[[i]] < boxplot_stats[1,i]
-						if(sum(l2)) grid.points(y = rep(i, sum(l2)), x = x[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = x[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
 					}
 				}
 			}
