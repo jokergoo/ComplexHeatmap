@@ -4,6 +4,8 @@ CHANGES in VERSION 1.13.1
 * `anno_link()`: add `extend` to extend the regions for the labels
 * `anno_boxplot()`: for row annotation, outliers are in the correct in y-axis.
   Thanks @gtg602c for the fix
+* `HeatmapAnnotation()`: gaps are included in the size of the annotations
+
 ========================
 
 CHANGES in VERSION 1.11.8

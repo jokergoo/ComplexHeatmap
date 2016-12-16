@@ -48,7 +48,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -which are the annotations row annotations or column annotations?
 # -annotation_height height of each annotation if annotations are column annotations.
 # -annotation_width width of each annotation if annotations are row annotations.
-# -height not using currently.
+# -height height of the column annotations, basically it is identical to ``bottom_annotation_height`` or ``top_annotation_height``
+#        in `Heatmap` function.
 # -width width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.
 # -gp graphic parameters for simple annotations.
 # -gap gap between each annotation
@@ -316,7 +317,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     .Object@anno_size = anno_size
     .Object@which = which
 
-    calc_anno_size = function() sum(.Object@anno_size)
+    calc_anno_size = function() sum(.Object@anno_size) + sum(.Object@gap) - .Object@gap[n_total_anno]
 
     size = switch(which,
 		column = height,

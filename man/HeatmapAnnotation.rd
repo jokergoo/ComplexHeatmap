@@ -36,7 +36,7 @@ HeatmapAnnotation(df, name, col, na_col = "grey",
   \item{which}{are the annotations row annotations or column annotations?}
   \item{annotation_height}{height of each annotation if annotations are column annotations.}
   \item{annotation_width}{width of each annotation if annotations are row annotations.}
-  \item{height}{not using currently.}
+  \item{height}{height of the column annotations, basically it is identical to \code{bottom_annotation_height} or \code{top_annotation_height} in \code{\link{Heatmap}} function.}
   \item{width}{width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.}
   \item{gp}{graphic parameters for simple annotations.}
   \item{gap}{gap between each annotation}
