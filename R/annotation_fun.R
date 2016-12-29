@@ -1082,6 +1082,13 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 	at = at[od]
 	labels = labels[od]
 
+	lines_gp = recycle_gp(lines_gp, length(at))
+	labels_gp = recycle_gp(labels_gp, length(at))
+
+	lines_gp = subset_gp(lines_gp, od)
+	labels_gp = subset_gp(labels_gp, od)
+	labels2index = structure(1:length(at), names = labels)
+
 	if(length(extend) == 1) extend = rep(extend, 2)
 	if(length(extend) > 2) extend = extend[1:2]
 	if(!inherits(extend, "unit")) extend = unit(extend, "npc")
@@ -1095,6 +1102,9 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 			int = intersect(index, at)
 			int = structure(seq_along(int), names = int)
 			labels = rev(labels[int[as.character(intersect(at, index))]])
+
+			labels_gp = subset_gp(labels_gp, labels2index[labels])
+			lines_gp = subset_gp(lines_gp, labels2index[labels])
 			
 			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
 			if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
@@ -1135,6 +1145,10 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 			int = intersect(index, at)
 			int = structure(seq_along(int), names = int)
 			labels = rev(labels[int[as.character(intersect(at, index))]])
+
+			labels_gp = subset_gp(labels_gp, labels2index[labels])
+			lines_gp = subset_gp(lines_gp, labels2index[labels])
+
 			pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
 			if(inherits(extend, "unit")) extend = convertWidth(extend, "native", valueOnly = TRUE)
 			text_height = convertWidth(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
