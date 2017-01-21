@@ -6,6 +6,7 @@ CHANGES in VERSION 1.13.1
   Thanks @gtg602c for the fix
 * `HeatmapAnnotation()`: gaps are included in the size of the annotations
 * `anno_link()`: graphic parameters are correctly reordered
+* `densityHeatmap()`: viewport is created with `clip = TRUE`
 
 ========================
 

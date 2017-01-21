@@ -169,7 +169,7 @@ densityHeatmap = function(data,
 	}, slice = 1)
 
 	decorate_heatmap_body("density", {
-		pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x)))
+		pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = TRUE))
 		grid.rect(gp = gpar(fill = NA))
 		grid.yaxis()
 
