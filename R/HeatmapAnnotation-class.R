@@ -476,7 +476,7 @@ setMethod(f = "draw",
 				pushViewport(viewport(y = sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno], 
 					height = anno_size[i], just = c("center", "top")))
 				oe = try(draw(object@anno_list[[i]], index, k, n))
-				if("try-error" %in% class(oe)) {
+				if(inherits(oe, "try-error")) {
 					cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
 					stop(oe)
 				}
@@ -488,7 +488,7 @@ setMethod(f = "draw",
 				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i]), 
 					height = anno_size[i], just = c("center", "bottom")))
 				oe = try(draw(object@anno_list[[i]], index, k, n))
-				if("try-error" %in% class(oe)) {
+				if(inherits(oe, "try-error")) {
 					cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
 					stop(oe)
 				}
@@ -499,7 +499,7 @@ setMethod(f = "draw",
 		for(i in seq_len(n_anno)) {
 			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
 			oe = try(draw(object@anno_list[[i]], index, k, n))
-			if("try-error" %in% class(oe)) {
+			if(inherits(oe, "try-error")) {
 				cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
 				stop(oe)
 			}
