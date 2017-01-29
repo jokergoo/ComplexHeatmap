@@ -7,11 +7,12 @@ Decorate heatmap dendrogram on columns
 Decorate heatmap dendrogram on columns
 }
 \usage{
-decorate_column_dend(...)
+decorate_column_dend(..., envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
   \item{...}{pass to \code{\link{decorate_dend}}}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{

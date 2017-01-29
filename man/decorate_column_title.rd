@@ -7,11 +7,12 @@ Decorate heatmap column title
 Decorate heatmap column title
 }
 \usage{
-decorate_column_title(...)
+decorate_column_title(..., envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
   \item{...}{pass to \code{\link{decorate_title}}}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{

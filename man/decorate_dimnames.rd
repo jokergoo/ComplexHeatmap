@@ -7,7 +7,8 @@ Decorate the heatmap dimension names
 Decorate the heatmap dimension names
 }
 \usage{
-decorate_dimnames(heatmap, code, slice = 1, which = c("column", "row"))
+decorate_dimnames(heatmap, code, slice = 1, which = c("column", "row"),
+    envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
@@ -15,6 +16,7 @@ decorate_dimnames(heatmap, code, slice = 1, which = c("column", "row"))
   \item{code}{code that adds graphics in the selected heatmap body}
   \item{slice}{index of row slices in the heatmap}
   \item{which}{on rows or on columns?}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{

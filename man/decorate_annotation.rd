@@ -7,13 +7,14 @@ Decorate the heatmap annotation
 Decorate the heatmap annotation
 }
 \usage{
-decorate_annotation(annotation, code, slice)
+decorate_annotation(annotation, code, slice, envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
   \item{annotation}{name of the annotation}
   \item{code}{code that adds graphics in the selected heatmap body}
   \item{slice}{index of row slices in the heatmap}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{
