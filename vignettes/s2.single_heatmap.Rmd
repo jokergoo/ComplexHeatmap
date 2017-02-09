@@ -493,6 +493,14 @@ on every cell in the heatmap and provides following information on the 'current'
 - `height`: height of the cell.
 - `fill`: color of the cell.
 
+The most common use is to add numeric values to the heatmap:
+
+```{r}
+Heatmap(mat, name = "foo", cell_fun = function(j, i, x, y, width, height, fill) {
+    grid.text(sprintf("%.1f", mat[i, j]), x, y, gp = gpar(fontsize = 10))
+})
+```
+
 In following example, we make a heatmap which shows correlation matrix similar as the **corrplot** package:
 
 ```{r cell_fun, fig.width = 6.5, fig.height = 6}
