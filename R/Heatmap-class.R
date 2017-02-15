@@ -465,7 +465,7 @@ Heatmap = function(matrix, col, name,
     
     if(length(row_title) == 0) {
         row_title = character(0)
-    } else if(!inherits(row_title, "expression")) {
+    } else if(!inherits(row_title, c("expression", "call"))) {
             if(is.na(row_title)) {
             row_title = character(0)
         } else if(row_title == "") {
@@ -481,7 +481,7 @@ Heatmap = function(matrix, col, name,
 
     if(length(column_title) == 0) {
         column_title = character(0)
-    } else if(!inherits(column_title, "expression")) {
+    } else if(!inherits(column_title, c("expression", "call"))) {
             if(is.na(column_title)) {
             column_title = character(0)
         } else if(column_title == "") {

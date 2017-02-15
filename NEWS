@@ -8,6 +8,7 @@ CHANGES in VERSION 1.13.1
 * `anno_link()`: graphic parameters are correctly reordered
 * `densityHeatmap()`: viewport is created with `clip = TRUE`
 * `decorate_*()`: add `envir` option to control where to look for variables inside `code`
+* `Legend()`: title supports expression
 
 ========================
 
