@@ -7,11 +7,12 @@ Decorate heatmap column names
 Decorate heatmap column names
 }
 \usage{
-decorate_column_names(...)
+decorate_column_names(..., envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
   \item{...}{pass to \code{\link{decorate_dimnames}}}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{

@@ -7,11 +7,12 @@ Decorate heatmap row title
 Decorate heatmap row title
 }
 \usage{
-decorate_row_title(...)
+decorate_row_title(..., envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
   \item{...}{pass to \code{\link{decorate_title}}}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{

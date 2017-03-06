@@ -7,13 +7,14 @@ Decorate the heatmap body
 Decorate the heatmap body
 }
 \usage{
-decorate_heatmap_body(heatmap, code, slice = 1)
+decorate_heatmap_body(heatmap, code, slice = 1, envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
   \item{heatmap}{name of the heatmap which is set as \code{name} option in \code{\link{Heatmap}} function}
   \item{code}{code that adds graphics in the selected heatmap body}
   \item{slice}{index of row slices in the heatmap if it is split by rows}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{

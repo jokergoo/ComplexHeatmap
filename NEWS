@@ -1,3 +1,17 @@
+CHANGES in VERSION 1.13.1
+
+* `Heatmap()`: add `km_title` to set the format of row title when `km` is set
+* `anno_link()`: add `extend` to extend the regions for the labels
+* `anno_boxplot()`: for row annotation, outliers are in the correct in y-axis.
+  Thanks @gtg602c for the fix
+* `HeatmapAnnotation()`: gaps are included in the size of the annotations
+* `anno_link()`: graphic parameters are correctly reordered
+* `densityHeatmap()`: viewport is created with `clip = TRUE`
+* `decorate_*()`: add `envir` option to control where to look for variables inside `code`
+* `Legend()`: title supports expression
+
+========================
+
 CHANGES in VERSION 1.11.8
 
 * `anno_barplot()`: accept a matrix as input to plot stacked barplots

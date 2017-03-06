@@ -7,11 +7,12 @@ Decorate heatmap row names
 Decorate heatmap row names
 }
 \usage{
-decorate_row_names(...)
+decorate_row_names(..., envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
   \item{...}{pass to \code{\link{decorate_dimnames}}}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{

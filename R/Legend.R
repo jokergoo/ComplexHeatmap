@@ -41,7 +41,6 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 	title_position = c("topleft", "topcenter", "leftcenter", "lefttop")) {
 
 	# odevlist = dev.list()
-
 	if(missing(col_fun)) {
 		if(is.null(border)) border = "white"
 		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,
@@ -66,8 +65,10 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 	if(is.null(title)) {
 		return(legend_body)
 	}
-	if(title == "") {
-		return(legend_body)
+	if(!inherits(title, c("expression", "call"))) {
+		if(title == "") {
+			return(legend_body)
+		}
 	}
 
 	title_grob = textGrob(title, gp = title_gp)

@@ -408,16 +408,16 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 				if(is.matrix(x)) {
 					for(i in seq_len(nrow(x))) {
 						l1 = x[i,] > boxplot_stats[5,i]
-						if(sum(l1)) grid.points(y = rep(i, sum(l1)), x = x[i,][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = x[i,][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
 						l2 = x[i,] < boxplot_stats[1,i]
-						if(sum(l2)) grid.points(y = rep(i, sum(l2)), x = x[i,][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = x[i,][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
 					}
 				} else {
 					for(i in seq_along(x)) {
 						l1 = x[[i]] > boxplot_stats[5,i]
-						if(sum(l1)) grid.points(y = rep(i, sum(l1)), x = x[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = x[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
 						l2 = x[[i]] < boxplot_stats[1,i]
-						if(sum(l2)) grid.points(y = rep(i, sum(l2)), x = x[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
+						if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = x[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch, size = size)
 					}
 				}
 			}
@@ -1051,6 +1051,9 @@ column_anno_text = function(...) {
 # -labels_gp graphic settings for the labels
 # -padding padding between labels if they are attached to each other
 # -link_width, width of the segments.
+# -extend by default, the region for the labels has the same width (if it is a column annotation) or
+#         same height (if it is a row annotation) as the heatmap. The size can be extended by this options.
+#         The value can be a proportion number or  a `grid::unit` object. The length can be either one or two.
 #
 # == details
 # Sometimes there are many rows or columns in the heatmap and we want to mark some of the rows.
@@ -1063,7 +1066,7 @@ column_anno_text = function(...) {
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
-	lines_gp = gpar(), labels_gp = gpar(), padding = 0.25, link_width = NULL) {
+	lines_gp = gpar(), labels_gp = gpar(), padding = 0.25, link_width = NULL, extend = 0) {
 
 	at = at
 	if(!is.numeric(at)) {
@@ -1079,6 +1082,17 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 	at = at[od]
 	labels = labels[od]
 
+	lines_gp = recycle_gp(lines_gp, length(at))
+	labels_gp = recycle_gp(labels_gp, length(at))
+
+	lines_gp = subset_gp(lines_gp, od)
+	labels_gp = subset_gp(labels_gp, od)
+	labels2index = structure(1:length(at), names = labels)
+
+	if(length(extend) == 1) extend = rep(extend, 2)
+	if(length(extend) > 2) extend = extend[1:2]
+	if(!inherits(extend, "unit")) extend = unit(extend, "npc")
+
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			n = length(index)
@@ -1088,14 +1102,18 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 			int = intersect(index, at)
 			int = structure(seq_along(int), names = int)
 			labels = rev(labels[int[as.character(intersect(at, index))]])
+
+			labels_gp = subset_gp(labels_gp, labels2index[labels])
+			lines_gp = subset_gp(lines_gp, labels2index[labels])
 			
 			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
+			if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
 			if(length(labels)) {
 				text_height = convertHeight(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
 				i2 = rev(which(index %in% at))
 				h1 = n-i2+1 - text_height*0.5
 				h2 = n-i2+1 + text_height*0.5
-				pos = rev(smartAlign(h1, h2, c(0.5, n+0.5)))
+				pos = rev(smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2])))
 				h = (pos[, 1] + pos[, 2])/2
 
 				if(is.null(link_width)) {
@@ -1127,12 +1145,17 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 			int = intersect(index, at)
 			int = structure(seq_along(int), names = int)
 			labels = rev(labels[int[as.character(intersect(at, index))]])
+
+			labels_gp = subset_gp(labels_gp, labels2index[labels])
+			lines_gp = subset_gp(lines_gp, labels2index[labels])
+
 			pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
+			if(inherits(extend, "unit")) extend = convertWidth(extend, "native", valueOnly = TRUE)
 			text_height = convertWidth(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
 			i2 = which(index %in% at)
 			h1 = i2 - text_height*0.5
 			h2 = i2 + text_height*0.5
-			pos = smartAlign(h1, h2, c(0.5, n+0.5))
+			pos = smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2]))
 			h = (pos[, 1] + pos[, 2])/2
 			if(is.null(link_width)) {
 				if(convertHeight(unit(1, "npc") - max_text_width(labels, gp = labels_gp), "mm", valueOnly = TRUE) < 0) {

@@ -7,11 +7,12 @@ Decorate heatmap dendrogram on rows
 Decorate heatmap dendrogram on rows
 }
 \usage{
-decorate_row_dend(...)
+decorate_row_dend(..., envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
   \item{...}{pass to \code{\link{decorate_dend}}}
+  \item{envir}{where to look for variables inside \code{code}}
 
 }
 \details{

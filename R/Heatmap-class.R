@@ -191,6 +191,7 @@ Heatmap = setClass("Heatmap",
 # -bottom_annotation_height total height of the column annotations on the bottom.
 # -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering.
 #     For each row-clusters, hierarchical clustering is still applied with parameters above.
+# -km_title row title for each cluster when ``km`` is set. It must a text with format of "*\%i*" where "\%i" is replaced by the index of the cluster.
 # -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
 #        indicating rows are to be split according to the split on the tree.
 # -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object. If it is a vector, the order corresponds
@@ -279,6 +280,7 @@ Heatmap = function(matrix, col, name,
     bottom_annotation = new("HeatmapAnnotation"),
     bottom_annotation_height = bottom_annotation@size,
     km = 1, 
+    km_title = "cluster%i",
     split = NULL, 
     gap = unit(1, "mm"), 
     combined_name_fun = function(x) paste(x, collapse = "/"),
@@ -403,6 +405,7 @@ Heatmap = function(matrix, col, name,
     }
     .Object@matrix = matrix
     .Object@matrix_param$km = km
+    .Object@matrix_param$km_title = km_title
     .Object@matrix_param$gap = gap
     if(!is.null(split)) {
         if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
@@ -462,7 +465,7 @@ Heatmap = function(matrix, col, name,
     
     if(length(row_title) == 0) {
         row_title = character(0)
-    } else if(!inherits(row_title, "expression")) {
+    } else if(!inherits(row_title, c("expression", "call"))) {
             if(is.na(row_title)) {
             row_title = character(0)
         } else if(row_title == "") {
@@ -478,7 +481,7 @@ Heatmap = function(matrix, col, name,
 
     if(length(column_title) == 0) {
         column_title = character(0)
-    } else if(!inherits(column_title, "expression")) {
+    } else if(!inherits(column_title, c("expression", "call"))) {
             if(is.na(column_title)) {
             column_title = character(0)
         } else if(column_title == "") {
@@ -749,6 +752,7 @@ setMethod(f = "make_row_cluster",
     method = object@row_dend_param$method
     order = object@row_order  # pre-defined row order
     km = object@matrix_param$km
+    km_title = object@matrix_param$km_title
     split = object@matrix_param$split
     reorder = object@row_dend_param$reorder
 
@@ -808,6 +812,7 @@ setMethod(f = "make_row_cluster",
             cluster2[cluster == hc$order[i]] = i
         }
         cluster2 = factor(paste0("cluster", cluster2), levels = paste0("cluster", seq_along(hc$order)))
+        cluster2 = factor(sprintf(km_title, cluster2), levels = sprintf(km_title, seq_along(hc$order)))
 
         if(is.null(split)) {
             split = data.frame(cluster2)

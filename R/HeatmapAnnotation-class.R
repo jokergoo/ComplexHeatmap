@@ -48,7 +48,8 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -which are the annotations row annotations or column annotations?
 # -annotation_height height of each annotation if annotations are column annotations.
 # -annotation_width width of each annotation if annotations are row annotations.
-# -height not using currently.
+# -height height of the column annotations, basically it is identical to ``bottom_annotation_height`` or ``top_annotation_height``
+#        in `Heatmap` function.
 # -width width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.
 # -gp graphic parameters for simple annotations.
 # -gap gap between each annotation
@@ -316,7 +317,7 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     .Object@anno_size = anno_size
     .Object@which = which
 
-    calc_anno_size = function() sum(.Object@anno_size)
+    calc_anno_size = function() sum(.Object@anno_size) + sum(.Object@gap) - .Object@gap[n_total_anno]
 
     size = switch(which,
 		column = height,
@@ -475,7 +476,7 @@ setMethod(f = "draw",
 				pushViewport(viewport(y = sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno], 
 					height = anno_size[i], just = c("center", "top")))
 				oe = try(draw(object@anno_list[[i]], index, k, n))
-				if("try-error" %in% class(oe)) {
+				if(inherits(oe, "try-error")) {
 					cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
 					stop(oe)
 				}
@@ -487,7 +488,7 @@ setMethod(f = "draw",
 				pushViewport(viewport(y = unit(1, "npc") - (sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i]), 
 					height = anno_size[i], just = c("center", "bottom")))
 				oe = try(draw(object@anno_list[[i]], index, k, n))
-				if("try-error" %in% class(oe)) {
+				if(inherits(oe, "try-error")) {
 					cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
 					stop(oe)
 				}
@@ -498,7 +499,7 @@ setMethod(f = "draw",
 		for(i in seq_len(n_anno)) {
 			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
 			oe = try(draw(object@anno_list[[i]], index, k, n))
-			if("try-error" %in% class(oe)) {
+			if(inherits(oe, "try-error")) {
 				cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
 				stop(oe)
 			}
