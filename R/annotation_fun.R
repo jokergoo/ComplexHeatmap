@@ -324,7 +324,9 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 	x = x
 	which = match.arg(which)[1]
-
+	if(inherits(x, "data.frame")) {
+		warning("detect `x` is a data frame. If you want use it as a matrix, convert it explicitly to matrix.")
+	}
 	factor = 0.6
 	data_scale = range(x, na.rm = TRUE)
 	if(!is.null(ylim)) data_scale = ylim
@@ -519,7 +521,9 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 anno_histogram = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...) {
 	x = x
 	which = match.arg(which)[1]
-
+	if(inherits(x, "data.frame")) {
+		warning("detect `x` is a data frame. If you want use it as a matrix, convert it explicitly to matrix.")
+	}
 	gp = check_gp(gp)
 
 	f = switch(which,
@@ -627,7 +631,9 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	x = x
 	which = match.arg(which)[1]
 	type = match.arg(type)[1]
-
+	if(inherits(x, "data.frame")) {
+		warning("detect `x` is a data frame. If you want use it as a matrix, convert it explicitly to matrix.")
+	}
 	gp = check_gp(gp)
 
 	f = switch(which,
