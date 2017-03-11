@@ -7,7 +7,7 @@ Pack legends
 Pack legends
 }
 \usage{
-packLegend(..., gap = unit(2, "mm"), direction = c("vertical", "horizontal"))
+packLegend(..., gap = unit(4, "mm"), direction = c("vertical", "horizontal"))
 }
 \arguments{
 

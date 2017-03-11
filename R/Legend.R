@@ -355,7 +355,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # == author 
 # Zuguang Gu <z.gu@dkfz.de>
 #
-packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horizontal")) {
+packLegend = function(..., gap = unit(4, "mm"), direction = c("vertical", "horizontal")) {
 	legend_list = list(...)
 	direction = match.arg(direction)
 	if(length(gap) != 1) {
