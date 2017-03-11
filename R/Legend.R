@@ -346,7 +346,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 #
 # == param
 # -... objects returned by `Legend`
-# -gap gap between two legends. The value is a `grid.unit` object
+# -gap gap between two legends. The value is a `grid::unit` object
 # -direction how to arrange legends
 #
 # == value

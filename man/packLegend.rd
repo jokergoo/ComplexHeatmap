@@ -12,7 +12,7 @@ packLegend(..., gap = unit(2, "mm"), direction = c("vertical", "horizontal"))
 \arguments{
 
   \item{...}{objects returned by \code{\link{Legend}}}
-  \item{gap}{gap between two legends. The value is a \code{\link{grid.unit}} object}
+  \item{gap}{gap between two legends. The value is a \code{\link[grid]{unit}} object}
   \item{direction}{how to arrange legends}
 
 }
@@ -25,4 +25,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
+
 }
