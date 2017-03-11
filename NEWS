@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.13.2
+
+* add `packLegend()`
+
+========================
+
 CHANGES in VERSION 1.13.1
 
 * `Heatmap()`: add `km_title` to set the format of row title when `km` is set
