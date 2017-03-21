@@ -43,6 +43,9 @@ Legend(at, labels = at, nrow = NULL, ncol = 1, col_fun,
   \item{title_position}{position of title according to the legend}
 
 }
+\seealso{
+\code{\link{packLegend}} packs multiple legends into one \code{\link[grid]{grob}} object
+}
 \value{
 A \code{\link[grid]{grob}} object
 }

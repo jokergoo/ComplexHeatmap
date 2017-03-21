@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.13.2
+
+* add `packLegend()`
+
+========================
+
 CHANGES in VERSION 1.13.1
 
 * `Heatmap()`: add `km_title` to set the format of row title when `km` is set
@@ -9,6 +15,7 @@ CHANGES in VERSION 1.13.1
 * `densityHeatmap()`: viewport is created with `clip = TRUE`
 * `decorate_*()`: add `envir` option to control where to look for variables inside `code`
 * `Legend()`: title supports expression
+* `anno_*()`: if the input is a data frame, warn that users may convert it to matrix
 
 ========================
 

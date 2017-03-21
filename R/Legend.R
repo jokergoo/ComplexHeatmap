@@ -26,6 +26,9 @@
 # -title_gp graphic parameters of title
 # -title_position position of title according to the legend
 #
+# == seealso
+# `packLegend` packs multiple legends into one `grid::grob` object
+#
 # == value
 # A `grid::grob` object
 #
@@ -337,3 +340,72 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 
 	return(gf)
 }
+
+# == title
+# Pack legends
+#
+# == param
+# -... objects returned by `Legend`
+# -gap gap between two legends. The value is a `grid::unit` object
+# -direction how to arrange legends
+#
+# == value
+# A `grid::grob` object
+#
+# == author 
+# Zuguang Gu <z.gu@dkfz.de>
+#
+packLegend = function(..., gap = unit(4, "mm"), direction = c("vertical", "horizontal")) {
+	legend_list = list(...)
+	direction = match.arg(direction)
+	if(length(gap) != 1) {
+		stop("Length of `gap` must be one.")
+	}
+
+    n_lgd = length(legend_list)
+    if(direction == "vertical") {
+    	lgd_width = do.call("unit.c", lapply(legend_list, grobWidth))
+	    lgd_height = do.call("unit.c", lapply(legend_list, function(x) unit.c(gap, grobHeight(x))))
+	    lgd_height = lgd_height[-1]
+
+    	pack_width = max(lgd_width)
+    	legend_list = lapply(legend_list, replaceLegend, vp_width = pack_width)
+    	
+    	pk = frameGrob(layout = grid.layout(nrow = n_lgd*2 - 1, ncol = 1, 
+			widths = pack_width, heights = lgd_height))
+    	for(i in 1:n_lgd) {
+    		pk = placeGrob(pk, row = i*2 - 1, col = 1, grob = legend_list[[i]])
+    	}
+    } else {
+    	lgd_width = do.call("unit.c", lapply(legend_list, function(x) unit.c(gap, grobWidth(x))))
+	    lgd_height = do.call("unit.c", lapply(legend_list, grobHeight))
+	    lgd_width = lgd_width[-1]
+
+    	pack_height = max(lgd_height)
+    	legend_list = lapply(legend_list, replaceLegend, vp_height = pack_height)
+
+    	pk = frameGrob(layout = grid.layout(nrow = 1, ncol = n_lgd*2 - 1,
+			widths = lgd_width, heights = pack_height))
+    	for(i in 1:n_lgd) {
+    		pk = placeGrob(pk, row = 1, col = i*2 - 1, grob = legend_list[[i]])
+    	}
+    }
+    return(pk)
+}
+
+
+replaceLegend = function(legend, vp_width = NULL, vp_height = NULL) {
+	if(!is.null(vp_width)) {
+		legend_width = grobWidth(legend)
+		gf = frameGrob(layout = grid.layout(nrow = 1, ncol = 2, 
+			widths = unit.c(legend_width, vp_width - legend_width)))
+		gf = placeGrob(gf, row = 1, col = 1, grob = legend)
+	} else if(!is.null(vp_height)) {
+		legend_height = grobHeight(legend)
+		gf = frameGrob(layout = grid.layout(nrow = 2, ncol = 1, 
+			heights = unit.c(legend_height, vp_height - legend_height)))
+		gf = placeGrob(gf, row = 1, col = 1, grob = legend)
+	}
+	return(gf)
+}
+
