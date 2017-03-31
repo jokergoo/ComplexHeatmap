@@ -152,6 +152,10 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 	} else {
 		ncol = ceiling(n_labels / nrow)
 	}
+	if(length(at) == 1) {
+		nrow = 1
+		ncol = 1
+	}
 
 	labels_padding_left = unit(1, "mm")
 	
