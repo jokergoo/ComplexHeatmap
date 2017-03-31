@@ -245,7 +245,8 @@ setMethod(f = "make_layout",
     row_dend_gp = NULL,
     row_order = NULL,
     km = NULL,
-    split = NULL) {
+    split = NULL,
+    column_names_at_most_bottom = FALSE) {
 
     if(object@layout$initialized) {
         return(object)
@@ -359,6 +360,50 @@ setMethod(f = "make_layout",
             object@ht_list[[i_main]]@row_order = row_order
         }
     }
+
+    # # change column to text annotations
+    # if(column_names_at_most_bottom) {
+    #     for(i in seq_along(object@ht_list)) {
+    #         if(inherits(object@ht_list[[i]], "Heatmap")) {
+    #             ht = object@ht_list[[i]]
+    #             cn = colnames(ht@matrix)
+    #             if(!is.null(colnames(ht@matrix)) && ht@column_names_param$show) {
+    #                 column_names_gp = ht@column_names_param$gp
+    #                 column_names_max_height = ht@column_names_param$max_height
+    #                 bottom_annotation = ht@bottom_annotation
+    #                 bottom_annotation_height = ht@bottom_annotation_param$height
+
+    #                 if(is.null(bottom_annotation)) {
+    #                     bottom_annotation_height = min(unit.c(column_names_max_height, max_text_width(cn, gp = column_names_gp)))
+    #                     bottom_annotation = HeatmapAnnotation("_column_names" = anno_text(cn, gp = column_names_gp, rot = 90, offset = unit(1, "npc"), just = "right"),
+    #                         annotation_height = bottom_annotation_height)
+    #                 } else {
+    #                     anno_list = bottom_annotation@anno_list
+    #                     anno_size = bottom_annotation@anno_size
+    #                     gap = bottom_annotation@gap
+    #                     size = bottom_annotation@size
+    #                     anno_size = replace_npc(anno_size, size)
+    #                     anno_list = c(anno_list, list(SingleAnnotation(name = "_column_names", 
+    #                         fun = anno_text(cn, gp = column_names_gp, rot = 90, offset = unit(1, "npc"), just = "right"), which = "column",
+    #                         show_name = FALSE)))
+    #                     text_height = min(unit.c(column_names_max_height, max_text_width(cn, gp = column_names_gp)))
+    #                     anno_size = unit.c(anno_size, text_height)
+    #                     gap = unit.c(gap, unit(2, "mm"))
+    #                     size = size + text_height + unit(2, "mm")
+    #                     bottom_annotation@anno_list = anno_list
+    #                     bottom_annotation@anno_size = anno_size
+    #                     bottom_annotation@gap = gap
+    #                     bottom_annotation@size = size
+    #                     bottom_annotation_height = size
+    #                 }
+    #                 ht@bottom_annotation = bottom_annotation
+    #                 ht@bottom_annotation_param$height = bottom_annotation_height
+    #                 ht@column_names_param$show = FALSE
+    #                 object@ht_list[[i]] = ht
+    #             }
+    #         }
+    #     }
+    # }
 
     ######## auto adjust ##########
     ht_main = object@ht_list[[i_main]]
