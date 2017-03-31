@@ -1093,7 +1093,9 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 
 	lines_gp = subset_gp(lines_gp, od)
 	labels_gp = subset_gp(labels_gp, od)
-	labels2index = structure(1:length(at), names = labels)
+	labels2at = structure(at, names = labels)
+	labels2index = structure(seq_along(at), names = labels)
+	at2labels = structure(labels, names = at)
 
 	if(length(extend) == 1) extend = rep(extend, 2)
 	if(length(extend) > 2) extend = extend[1:2]
@@ -1102,16 +1104,14 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 	f = switch(which,
 		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
 			n = length(index)
-			l = which(at %in% index)
-			at = at[l]
-			labels = labels[l]
-			int = intersect(index, at)
-			int = structure(seq_along(int), names = int)
-			labels = rev(labels[int[as.character(intersect(at, index))]])
 
+			# adjust at and labels
+			at = intersect(index, at)
+			labels = rev(at2labels[as.character(at)])
+			
 			labels_gp = subset_gp(labels_gp, labels2index[labels])
 			lines_gp = subset_gp(lines_gp, labels2index[labels])
-			
+
 			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
 			if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
 			if(length(labels)) {
@@ -1148,10 +1148,11 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 		},
 		column = function(index, vp_name = NULL) {
 			n = length(index)
-			int = intersect(index, at)
-			int = structure(seq_along(int), names = int)
-			labels = rev(labels[int[as.character(intersect(at, index))]])
-
+			
+			# adjust at and labels
+			at = intersect(index, at)
+			labels = at2labels[as.character(at)]
+			
 			labels_gp = subset_gp(labels_gp, labels2index[labels])
 			lines_gp = subset_gp(lines_gp, labels2index[labels])
 
@@ -1178,7 +1179,7 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 				grid.segments(i2, rep(link_width*(1/3), n2), h, rep(link_width*(2/3), n2), default.units = "native", gp = lines_gp)
 				grid.segments(h, rep(link_width*(2/3), n2), h, rep(link_width, n), default.units = "native", gp = lines_gp)
 			} else {
-				grid.text(labels, h, rep(link_width, n2), default.units = "native", gp = labels_gp, rot = 90, just = "right")
+				grid.text(labels, h, rep(max_text_width(labels, gp = labels_gp), n2), default.units = "native", gp = labels_gp, rot = 90, just = "right")
 				link_width = link_width - unit(1, "mm")
 				grid.segments(i2, unit(rep(1, n2), "npc"), i2, unit(1, "npc")-rep(link_width*(1/3), n2), default.units = "native", gp = lines_gp)
 				grid.segments(i2, unit(1, "npc")-rep(link_width*(1/3), n2), h, unit(1, "npc")-rep(link_width*(2/3), n2), default.units = "native", gp = lines_gp)
