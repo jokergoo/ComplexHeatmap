@@ -245,8 +245,7 @@ setMethod(f = "make_layout",
     row_dend_gp = NULL,
     row_order = NULL,
     km = NULL,
-    split = NULL,
-    column_names_at_most_bottom = FALSE) {
+    split = NULL) {
 
     if(object@layout$initialized) {
         return(object)
