@@ -62,7 +62,7 @@ default_col = function(x, main_matrix = FALSE) {
         return(colors)
     } else if(is.numeric(x)) {
         if(main_matrix) {
-            if(length(unique(x) > 100)) {
+            if(length(unique(x)) > 100) {
                 col_fun = colorRamp2(seq(quantile(x, 0.01), quantile(x, 0.99), length = 3), c("blue", "#EEEEEE", "red"))
             } else {
                 col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
