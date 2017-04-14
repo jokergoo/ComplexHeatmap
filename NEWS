@@ -1,6 +1,7 @@
 CHANGES in VERSION 1.13.2
 
 * add `packLegend()`
+* Legend() supports to add txt labels on grids
 
 ========================
 

@@ -217,7 +217,11 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 		if(any(c("points", "p") %in% type)) {
 			if(length(pch) == 1) pch = rep(pch, n_labels)
 			if(length(size) == 1) size = rep(size, n_labels)
-			gf = placeGrob(gf, row = 1, col = 2*i-1, grob = pointsGrob(x+grid_width*0.5, y-grid_height*0.5, pch = pch[index], size = size[index], gp = subset_gp(legend_gp, index)))
+			if(inherits(pch, "character")) {
+				gf = placeGrob(gf, row = 1, col = 2*i-1, grob = textGrob(pch[index], x+grid_width*0.5, y-grid_height*0.5, gp = subset_gp(legend_gp, index)))
+			} else {
+				gf = placeGrob(gf, row = 1, col = 2*i-1, grob = pointsGrob(x+grid_width*0.5, y-grid_height*0.5, pch = pch[index], size = size[index], gp = subset_gp(legend_gp, index)))
+			}
 		}
 		if(any(c("lines", "l") %in% type)) {
 			gf = placeGrob(gf, row = 1, col = 2*i-1, grob = segmentsGrob(x+unit(0.5, "mm"), y-grid_height*0.5, x+grid_width - unit(0.5, "mm"), y-grid_height*0.5, gp = subset_gp(legend_gp, index)))
