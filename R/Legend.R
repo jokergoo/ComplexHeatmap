@@ -139,6 +139,7 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 	return(gf)
 }
 
+# grids are arranged by rows
 discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
 	labels_gp = gpar(fontsize = 10),

@@ -1,3 +1,11 @@
+CHANGES in VERSION 1.15.1
+
+* add `density_param` in `densityHeatmap()` function
+* annotations with duplicated names have no legends any more
+* re-implement `grid.xaxis()` to draw axis labels rotated 90 degrees
+
+========================
+
 CHANGES in VERSION 1.13.2
 
 * add `packLegend()`

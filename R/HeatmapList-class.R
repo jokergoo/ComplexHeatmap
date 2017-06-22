@@ -1369,6 +1369,12 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
 
     side = match.arg(side)[1]
 
+    # remove legends which are duplicated by testing the names
+    legend_names = sapply(ColorMappingList, function(x) x@name)
+    l = !duplicated(legend_names)
+    ColorMappingList = ColorMappingList[l]
+    ColorMappingParamList = ColorMappingParamList[l]
+
     n = length(ColorMappingList)
     if(n == 0 && length(legend_list) == 0) {
         return(unit(c(0, 0), "null"))

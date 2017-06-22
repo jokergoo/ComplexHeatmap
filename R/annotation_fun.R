@@ -1229,3 +1229,24 @@ row_anno_link = function(...) {
 column_anno_link = function(...) {
 	anno_link(..., which = "column")
 }
+
+
+grid.xaxis = function(main = TRUE, at = NULL, label = NULL, gp = gpar()) {
+	if(is.null(at)) {
+		at = grid.pretty(current.viewport()$xscale)
+		label = at
+	}
+	if(is.null(label)) {
+		label = at
+	}
+	n = length(at)
+	if(main) {
+		grid.lines(at[c(1, n)], unit(c(0, 0), "native"), gp = gp, default.units = "native")
+		grid.segments(at, unit(rep(-0.5, n), "lines"), at, unit(rep(0, n), "npc"), gp = gp, default.units = "native")
+		grid.text(label, at, unit(rep(-1, n), "lines"), rot = 90, just = "right", gp = gp, default.units = "native")
+	} else {
+		grid.lines(at[c(1, n)], unit(c(1, 1), "native"), gp = gp, default.units = "native")
+		grid.segments(at, unit(1, "npc") + unit(rep(0.5, n), "lines"), at, unit(rep(1, n), "npc"), gp = gp, default.units = "native")
+		grid.text(label, at, unit(1, "npc") + unit(rep(1, n), "lines"), rot = 90, just = "left", gp = gp, default.units = "native")
+	}
+}
