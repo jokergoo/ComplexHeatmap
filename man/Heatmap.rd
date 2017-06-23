@@ -11,7 +11,7 @@ Heatmap(matrix, col, name,
     na_col = "grey",
     color_space = "LAB",
     rect_gp = gpar(col = NA),
-    cell_fun = function(j, i, x, y, width, height, fill) NULL,
+    cell_fun = NULL,
     row_title = character(0),
     row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14),
@@ -138,7 +138,7 @@ Heatmap(matrix, col, name,
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmap is appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
   \item{heatmap_legend_param}{a list contains parameters for the heatmap legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
-  \item{use_raster}{whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge.}
+  \item{use_raster}{whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if \code{cell_fun} is set, \code{use_raster} is enforced to be \code{FALSE}.}
   \item{raster_device}{graphic device which is used to generate the raster image}
   \item{raster_quality}{a value set to larger than 1 will improve the quality of the raster image.}
   \item{raster_device_param}{a list of further parameters for the selected graphic device}

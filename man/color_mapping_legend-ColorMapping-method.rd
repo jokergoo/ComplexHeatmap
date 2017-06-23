@@ -16,7 +16,7 @@ Draw legend based on color mapping
     color_bar = c("discrete", "continuous"),
     grid_height = unit(4, "mm"),
     grid_width = unit(4, "mm"),
-    grid_border = NULL,
+    border = NULL,
     at = object@levels,
     labels = at,
     labels_gp = gpar(fontsize = 10),
@@ -36,7 +36,7 @@ Draw legend based on color mapping
   \item{color_bar}{if the mapping is continuous, whether show the legend as discrete color bar or continuous color bar}
   \item{grid_height}{height of each legend grid.}
   \item{grid_width}{width of each legend grid.}
-  \item{grid_border}{color for legend grid borders.}
+  \item{border}{color for legend grid borders.}
   \item{at}{break values of the legend}
   \item{labels}{labels corresponding to break values}
   \item{labels_gp}{graphcial parameters for legend labels}

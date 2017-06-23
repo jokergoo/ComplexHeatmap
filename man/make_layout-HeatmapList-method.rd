@@ -14,6 +14,7 @@ Make layout for the complete plot
     column_title_side = c("top", "bottom"),
     column_title_gp = gpar(fontsize = 14),
     heatmap_legend_side = c("right", "left", "bottom", "top"),
+    merge_legends = FALSE,
     show_heatmap_legend = TRUE,
     heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"),
@@ -45,6 +46,7 @@ Make layout for the complete plot
   \item{column_title_side}{will the title be put on the top or bottom of the heatmap.}
   \item{column_title_gp}{graphic parameters for drawing text.}
   \item{heatmap_legend_side}{side of the heatmap legend.}
+  \item{merge_legends}{whether put heatmap legends and annotation legends in a same column}
   \item{show_heatmap_legend}{whether show heatmap legend.}
   \item{heatmap_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
   \item{annotation_legend_side}{side of annotation legend.}

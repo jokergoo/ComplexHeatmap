@@ -202,7 +202,8 @@ Heatmap = setClass("Heatmap",
 #        is appended to a list of heatmaps.
 # -show_heatmap_legend whether show heatmap legend?
 # -heatmap_legend_param a list contains parameters for the heatmap legend. See `color_mapping_legend,ColorMapping-method` for all available parameters.
-# -use_raster whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge.
+# -use_raster whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if ``cell_fun``
+#       is set, ``use_raster`` is enforced to be ``FALSE``.
 # -raster_device graphic device which is used to generate the raster image
 # -raster_quality a value set to larger than 1 will improve the quality of the raster image.
 # -raster_device_param a list of further parameters for the selected graphic device
@@ -230,7 +231,7 @@ Heatmap = function(matrix, col, name,
     na_col = "grey", 
     color_space = "LAB",
     rect_gp = gpar(col = NA), 
-    cell_fun = function(j, i, x, y, width, height, fill) NULL,
+    cell_fun = NULL,
     row_title = character(0), 
     row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), 
@@ -1289,6 +1290,11 @@ setMethod(f = "draw_heatmap_body",
     y = (rev(seq_len(nr)) - 0.5) / nr
     expand_index = expand.grid(seq_len(nr), seq_len(nc))
     
+    cell_fun = object@matrix_param$cell_fun
+    if(!is.null(cell_fun)) {
+        use_raster = FALSE
+    }
+        
     if(use_raster) {
         # write the image into a temporary file and read it back
         device_info = switch(raster_device,
@@ -1314,36 +1320,67 @@ setMethod(f = "draw_heatmap_body",
         temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".", device_info[2]))
         #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
-        do.call("device_fun", c(list(filename = temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality), raster_device_param))
-    }
-
-    if(any(names(gp) %in% c("type"))) {
-        if(gp$type == "none") {
-        } else {
-            grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
-        }
-    } else {
-        grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
-    }
-
-    cell_fun = object@matrix_param$cell_fun
-    for(i in row_order) {
-        for(j in column_order) {
-            cell_fun(j, i, unit(x[which(column_order == j)], "npc"), unit(y[which(row_order == i)], "npc"), unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[which(row_order == i), which(column_order == j)])
-        }
-    }
-
-    if(use_raster) {
+        
+        ############################################
+        ## make the heatmap body in a another process
+        temp_R_data = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".RData"))
+        temp_R_file = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".R"))
+        save(device_fun, device_info, temp_image, heatmap_width, raster_quality, heatmap_height, raster_device_param,
+            gp, x, expand_index, nc, nr, col_matrix, row_order, column_order, y,
+            file = temp_R_data)
+        R_cmd = qq("
+        library(@{device_info[1]})
+        library(grid)
+        load('@{temp_R_data}')
+        do.call('device_fun', c(list(filename = temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality), raster_device_param))
+        grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
         dev.off()
+        q(save = 'no')
+        ", code.pattern = "@\\{CODE\\}")
+        writeLines(R_cmd, con = temp_R_file)
+        oe = try(system(qq("\"@{R_binary()}\" --vanilla < \"@{temp_R_file}\"", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE))
+        ############################################
+        file.remove(temp_image)
+        file.remove(temp_R_data)
+        file.remove(temp_R_file)
+        if(inherits(oe, "try-error")) {
+            stop(oe)
+        }
         image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
         image = as.raster(image)
         grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
-        file.remove(temp_image)
+
+    } else {
+        if(any(names(gp) %in% c("type"))) {
+            if(gp$type == "none") {
+            } else {
+                grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
+            }
+        } else {
+            grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
+        }
+
+        if(is.function(cell_fun)) {
+            for(i in row_order) {
+                for(j in column_order) {
+                    cell_fun(j, i, unit(x[which(column_order == j)], "npc"), unit(y[which(row_order == i)], "npc"), unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[which(row_order == i), which(column_order == j)])
+                }
+            }
+        }
     }
 
     upViewport()
 
 })
+
+is_windows = function() {
+    tolower(.Platform$OS.type) == "windows"
+}
+
+R_binary = function() {
+    R_exe = ifelse(is_windows(), "R.exe", "R")
+    return(file.path(R.home("bin"), R_exe))
+}
 
 # == title
 # Draw dendrogram on row or column

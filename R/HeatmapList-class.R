@@ -183,6 +183,7 @@ setMethod(f = "add_heatmap",
 # -column_title_side will the title be put on the top or bottom of the heatmap.
 # -column_title_gp graphic parameters for drawing text.
 # -heatmap_legend_side side of the heatmap legend.
+# -merge_legends whether put heatmap legends and annotation legends in a same column
 # -show_heatmap_legend whether show heatmap legend.
 # -heatmap_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 # -annotation_legend_side side of annotation legend.
@@ -226,6 +227,7 @@ setMethod(f = "make_layout",
     column_title_side = c("top", "bottom"), 
     column_title_gp = gpar(fontsize = 14), 
     heatmap_legend_side = c("right", "left", "bottom", "top"), 
+    merge_legends = FALSE,
     show_heatmap_legend = TRUE, 
     heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"), 
@@ -282,6 +284,8 @@ setMethod(f = "make_layout",
         }
     }
     object@ht_list_param$gap = gap
+
+    object@ht_list_param$merge_legends = merge_legends
 
     for(i in seq_len(n)) {
         # if the zero-column matrix is the first one
@@ -445,7 +449,8 @@ setMethod(f = "make_layout",
     }
     object@ht_list_param$gap = gap
     object@ht_list_param$main_heatmap = i_main
-    
+    object@ht_list_param$merge_legends = merge_legends
+
     n = length(object@ht_list)
 
     ## orders of other heatmaps should be changed
@@ -591,8 +596,14 @@ setMethod(f = "make_layout",
     for(i in seq_along(object@ht_list)) {
         ht = object@ht_list[[i]]
         if(inherits(ht, "Heatmap")) {
+            if(merge_legends && !is.null(ht@top_annotation)) {
+                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+            }
             if(ht@heatmap_param$show_heatmap_legend) {
                 ColorMappingList = c(ColorMappingList, ht@matrix_color_mapping)
+            }
+            if(merge_legends && !is.null(ht@bottom_annotation)) {
+                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
             }
         }
         if(inherits(ht, "HeatmapAnnotation")) {
@@ -641,16 +652,20 @@ setMethod(f = "make_layout",
     ## annotation legend to top, bottom, left and right
     # default values
     ColorMappingList = list()
-    for(i in seq_along(object@ht_list)) {
-        ht = object@ht_list[[i]]
-        if(inherits(ht, "Heatmap")) {
-            if(!is.null(ht@top_annotation)) {
-                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
-            }
-            if(!is.null(ht@bottom_annotation)) {
-                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+    if(!merge_legends) {
+        for(i in seq_along(object@ht_list)) {
+            ht = object@ht_list[[i]]
+            if(inherits(ht, "Heatmap")) {
+                if(!is.null(ht@top_annotation)) {
+                    ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+                }
             }
         }
+    } else {
+        annotation_legend_list = list()
     }
     if(length(ColorMappingList) == 0 && length(annotation_legend_list) == 0) {
         show_annotation_legend = FALSE
@@ -1173,10 +1188,19 @@ setMethod(f = "draw_heatmap_legend",
     ColorMappingList = list()
     ColorMappingParamList = list()
     for(i in seq_along(object@ht_list)) {
+        ht = object@ht_list[[i]]
         if(inherits(object@ht_list[[i]], "Heatmap")) {
+            if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_param_list(ht@top_annotation))
+            }
             if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
                 ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
                 ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_color_mapping_param)
+            }
+            if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_param_list(ht@bottom_annotation))
             }
         } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
             ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
@@ -1298,11 +1322,21 @@ setMethod(f = "heatmap_legend_size",
     ColorMappingList = list()
     ColorMappingParamList = list()
     for(i in seq_along(object@ht_list)) {
+        ht = object@ht_list[[i]]
         if(inherits(object@ht_list[[i]], "Heatmap")) {
+            if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_param_list(ht@top_annotation))
+            }
             if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
                 ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
                 ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_color_mapping_param)
             }
+            if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_param_list(ht@bottom_annotation))
+            }
+            
         } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
             ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
             ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_param_list(object@ht_list[[i]]))
@@ -1368,6 +1402,12 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
     gap = unit(2, "mm"), legend_list = list(), padding = unit(c(0, 0, 0, 0), "null"), ...) {
 
     side = match.arg(side)[1]
+
+    # remove legends which are duplicated by testing the names
+    legend_names = sapply(ColorMappingList, function(x) x@name)
+    l = !duplicated(legend_names)
+    ColorMappingList = ColorMappingList[l]
+    ColorMappingParamList = ColorMappingParamList[l]
 
     n = length(ColorMappingList)
     if(n == 0 && length(legend_list) == 0) {

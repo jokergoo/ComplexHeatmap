@@ -180,6 +180,7 @@ setMethod(f = "map_to_colors",
 	x2 = vector(length = length(x))
 
 	if(object@type == "discrete") {
+		x[grepl("^\\s*$", x)] = NA
 		lna = is.na(x)
 
 		if(is.numeric(x)) x = as.character(x)
@@ -214,7 +215,7 @@ setMethod(f = "map_to_colors",
 # -color_bar if the mapping is continuous, whether show the legend as discrete color bar or continuous color bar
 # -grid_height height of each legend grid.
 # -grid_width width of each legend grid.
-# -grid_border color for legend grid borders.
+# -border color for legend grid borders.
 # -at break values of the legend
 # -labels labels corresponding to break values
 # -labels_gp graphcial parameters for legend labels
@@ -247,7 +248,7 @@ setMethod(f = "color_mapping_legend",
 	color_bar = c("discrete", "continuous"),
 	grid_height = unit(4, "mm"),
 	grid_width = unit(4, "mm"),
-	grid_border = NULL,
+	border = NULL,
 	at = object@levels,
 	labels = at,
 	labels_gp = gpar(fontsize = 10),
@@ -290,13 +291,13 @@ setMethod(f = "color_mapping_legend",
 			labels = rev(labels)
 		}
 		gf = Legend(at = at, labels = labels, title = title, title_gp = title_gp, grid_height = grid_height,
-			grid_width = grid_width, border = grid_border, labels_gp = labels_gp, nrow = nrow, ncol = ncol,
+			grid_width = grid_width, border = border, labels_gp = labels_gp, nrow = nrow, ncol = ncol,
 			legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position)
 
 	} else {
 
 		gf = Legend(at = at, labels = labels, col_fun = object@col_fun, title = title, title_gp = title_gp, grid_height = grid_height,
-			grid_width = grid_width, border = grid_border, labels_gp = labels_gp, direction = legend_direction,
+			grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction,
 			legend_width = legend_width, legend_height = legend_height, title_position = title_position)
 
 	}

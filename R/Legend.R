@@ -139,6 +139,7 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 	return(gf)
 }
 
+# grids are arranged by rows
 discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
 	labels_gp = gpar(fontsize = 10),
@@ -156,14 +157,18 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 		nrow = 1
 		ncol = 1
 	}
+	ncol = ifelse(ncol > n_labels, n_labels, ncol)
+
+	labels_mat = matrix(c(labels, rep("", nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = TRUE)
+	index_mat = matrix(1:(nrow*ncol), nrow = nrow, ncol = ncol, byrow = TRUE)
+
 
 	labels_padding_left = unit(1, "mm")
 	
 	labels_max_width = NULL
 	for(i in 1:ncol) {
-		index = seq(nrow*(i-1)+1, min(c(nrow*i, n_labels)))
 		if(i == 1) {
-			labels_max_width = max(do.call("unit.c", lapply(labels[index], function(x) {
+			labels_max_width = max(do.call("unit.c", lapply(labels_mat[, i], function(x) {
 					g = grobWidth(textGrob(x, gp = labels_gp))
 					if(i < ncol) {
 						g = g + gap
@@ -171,7 +176,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 					g
 				})))
 		} else {
-			labels_max_width = unit.c(labels_max_width, max(do.call("unit.c", lapply(labels[index], function(x) {
+			labels_max_width = unit.c(labels_max_width, max(do.call("unit.c", lapply(labels_mat[, i], function(x) {
 					g = grobWidth(textGrob(x, gp = labels_gp))
 					if(i < ncol) {
 						g = g + gap
@@ -191,7 +196,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 
 	# legend grid
 	for(i in 1:ncol) {
-		index = seq(nrow*(i-1)+1, min(c(nrow*i, n_labels)))
+		index = index_mat[, i][labels_mat[, i] != ""]
 		ni = length(index)
 		x = unit(rep(0, ni), "npc")
 		y = (0:(ni-1))*(grid_height)
