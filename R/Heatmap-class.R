@@ -1317,14 +1317,16 @@ setMethod(f = "draw_heatmap_body",
         if(heatmap_width <= 0 || heatmap_height <= 0) {
             stop("The width or height of the raster image is zero, maybe you forget to turn off the previous graphic device or it was corrupted. Run `dev.off()` to close it.")
         }
-        temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".", device_info[2]))
+        tmp_dir = tempdir()
+        dir.create(tmp_dir, showWarnings = FALSE)
+        temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = tmp_dir, fileext = paste0(".", device_info[2]))
         #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
        
         ############################################
         ## make the heatmap body in a another process
-        temp_R_data = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".RData"))
-        temp_R_file = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".R"))
+        temp_R_data = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = tmp_dir, fileext = paste0(".RData"))
+        temp_R_file = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = tmp_dir, fileext = paste0(".R"))
         save(device_fun, device_info, temp_image, heatmap_width, raster_quality, heatmap_height, raster_device_param,
             gp, x, expand_index, nc, nr, col_matrix, row_order, column_order, y,
             file = temp_R_data)
@@ -1349,6 +1351,8 @@ setMethod(f = "draw_heatmap_body",
         image = as.raster(image)
         grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
         file.remove(temp_image)
+        file.remove(tmp_dir)
+
     } else {
         if(any(names(gp) %in% c("type"))) {
             if(gp$type == "none") {
