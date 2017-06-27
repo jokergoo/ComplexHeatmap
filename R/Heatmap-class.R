@@ -1320,7 +1320,7 @@ setMethod(f = "draw_heatmap_body",
         temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".", device_info[2]))
         #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
-        
+       
         ############################################
         ## make the heatmap body in a another process
         temp_R_data = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".RData"))
@@ -1340,7 +1340,6 @@ setMethod(f = "draw_heatmap_body",
         writeLines(R_cmd, con = temp_R_file)
         oe = try(system(qq("\"@{R_binary()}\" --vanilla < \"@{temp_R_file}\"", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE))
         ############################################
-        file.remove(temp_image)
         file.remove(temp_R_data)
         file.remove(temp_R_file)
         if(inherits(oe, "try-error")) {
@@ -1349,7 +1348,7 @@ setMethod(f = "draw_heatmap_body",
         image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
         image = as.raster(image)
         grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
-
+        file.remove(temp_image)
     } else {
         if(any(names(gp) %in% c("type"))) {
             if(gp$type == "none") {
