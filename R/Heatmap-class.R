@@ -270,11 +270,11 @@ Heatmap = function(matrix, col, name,
     column_order = NULL,
     row_names_side = c("right", "left"), 
     show_row_names = TRUE, 
-    row_names_max_width = unit(4, "cm"), 
+    row_names_max_width = default_row_names_max_width(), 
     row_names_gp = gpar(fontsize = 12), 
     column_names_side = c("bottom", "top"), 
     show_column_names = TRUE, 
-    column_names_max_height = unit(4, "cm"), 
+    column_names_max_height = default_column_names_max_height(), 
     column_names_gp = gpar(fontsize = 12),
     top_annotation = new("HeatmapAnnotation"),
     top_annotation_height = top_annotation@size,
@@ -501,6 +501,9 @@ Heatmap = function(matrix, col, name,
     .Object@row_names_param$side = match.arg(row_names_side)[1]
     .Object@row_names_param$show = show_row_names
     .Object@row_names_param$gp = check_gp(row_names_gp)
+    default_row_names_max_width = function() {
+        min(unit.c(unit(6, "cm")), max_text_width(rownames(matrix), gp = .Object@row_names_param$gp))
+    }
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
 
     if(is.null(colnames(matrix))) {
@@ -509,6 +512,9 @@ Heatmap = function(matrix, col, name,
     .Object@column_names_param$side = match.arg(column_names_side)[1]
     .Object@column_names_param$show = show_column_names
     .Object@column_names_param$gp = check_gp(column_names_gp)
+    default_column_names_max_height = function() {
+        min(unit.c(unit(6, "cm")), max_text_width(colnames(matrix), gp = .Object@column_names_param$gp))
+    }
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
 
     if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
@@ -1351,7 +1357,7 @@ setMethod(f = "draw_heatmap_body",
         image = as.raster(image)
         grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
         file.remove(temp_image)
-        file.remove(tmp_dir)
+        unlink(tmp_dir, TRUE, TRUE)
 
     } else {
         if(any(names(gp) %in% c("type"))) {

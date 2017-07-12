@@ -8,6 +8,7 @@ CHANGES in VERSION 1.15.1
 * raster image is generated in a independent R session
 * empty string in annotation or heatmap is mapped to NA
 * annotation and heatmap legends can be merged into one column. 
+* change the default value of `row_names_max_width` and `column_names_max_height`
 
 =======================
 
