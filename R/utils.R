@@ -492,6 +492,9 @@ list_component = function() {
 # max_text_width(x, gp = gpar(fontsize = 10))
 #
 max_text_width = function(text, ...) {
+    if(is.null(text)) {
+        return(unit(0, "mm"))
+    }
     max(do.call("unit.c", lapply(text, function(x) grobWidth(textGrob(x, ...)))))
 }
 
@@ -519,5 +522,8 @@ max_text_width = function(text, ...) {
 # max_text_height(x, gp = gpar(fontsize = 10))
 #
 max_text_height = function(text, ...) {
+    if(is.null(text)) {
+        return(unit(0, "mm"))
+    }
     max(do.call("unit.c", lapply(text, function(x) grobHeight(textGrob(x, ...)))))
 }
