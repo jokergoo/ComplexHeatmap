@@ -191,7 +191,7 @@ Heatmap = setClass("Heatmap",
 # -bottom_annotation_height total height of the column annotations on the bottom.
 # -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering.
 #     For each row-clusters, hierarchical clustering is still applied with parameters above.
-# -km_title row title for each cluster when ``km`` is set. It must a text with format of "*\%i*" where "\%i" is replaced by the index of the cluster.
+# -km_title row title for each cluster when ``km`` is set. It must a text with format of ".*\%i.*" where "\%i" is replaced by the index of the cluster.
 # -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
 #        indicating rows are to be split according to the split on the tree.
 # -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object. If it is a vector, the order corresponds
@@ -287,7 +287,7 @@ Heatmap = function(matrix, col, name,
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, 
     show_heatmap_legend = TRUE,
-    heatmap_legend_param = list(title = name, color_bar = "discrete"),
+    heatmap_legend_param = list(title = name),
     use_raster = FALSE, 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 1,
@@ -1445,7 +1445,7 @@ setMethod(f = "draw_dend",
 
     dend = as.dendrogram(hc)
     n = length(labels(dend))
-    if(nnodes(dend) <= 1) {
+    if(nobs(dend) <= 1) {
         return(invisible(NULL))
     }
 

@@ -2,10 +2,19 @@
 # environment that contains global variables
 INDEX_ENV = new.env()
 
+INDEX_ENV$I_FIGURE = 0
 INDEX_ENV$I_HEATMAP = 0
 INDEX_ENV$I_ANNOTATION = 0
 INDEX_ENV$I_ROW_ANNOTATION = 0
 INDEX_ENV$I_COLOR_MAPPING = 0
+
+get_figure_index = function() {
+    INDEX_ENV$I_FIGURE
+}
+
+increase_figure_index = function() {
+    INDEX_ENV$I_FIGURE = INDEX_ENV$I_FIGURE + 1
+}
 
 get_heatmap_index = function() {
 	INDEX_ENV$I_HEATMAP
@@ -124,8 +133,6 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
             leaf
         }
     }
-
-    labels(dend) = paste0("leaf_", seq_len(nnodes(dend)))
     
     draw.d = function(dend, max_height, facing = "bottom", order = "normal", max_width = 0, env = NULL) {
         leaf = attr(dend, "leaf")
@@ -276,6 +283,287 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
 }
 
 # == title
+# Adjust dendrogram based on width of leaves
+#
+# == param
+# -dend a `stats::dendrogram` object.
+# -width a vector of width. The order of width SHOULD be same as the order of original elements before clustering.
+# -offset offset to x = 0
+#
+# == details
+# In the standard `stats::dendrogram` object, leaves locate at x = 0.5, 1.5, ..., n - 0.5,
+# which means, the width of leaves are always 1 and the distance to neighbouring leaves is always 1 as well.
+# Here `adjust_dend_by_leaf_width` adjusts the dendrogram by setting different width for leaves so that leaves
+# have unequal distance to other leaves.
+#
+# The adjusted dendrogram can be sent to `grid.dendrogram2` to make the dendrogram.
+#
+# For each branch as well each leaf, a new attribute of ``x`` is added which is the position of the middle point or the leaf.
+# For each leaf, a new attribute of ``width`` is added which is the width of current leaf.
+#
+# == value
+# A `stats::dendrogram` object. The adjustment will not affect other standard dendrogram functions.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+# == example
+# m = matrix(rnorm(100), 10)
+# dend = as.dendrogram(hclust(dist(m)))
+# dend = adjust_dend_by_leaf_width(dend, width = 1:10)
+# require(dendextend)
+# get_leaves_attr(dend, "label")
+# get_leaves_attr(dend, "width")
+# get_leaves_attr(dend, "x")
+adjust_dend_by_leaf_width = function(dend, width = 1, offset = 0) {
+    n = nobs(dend)
+
+    if(length(width) == 1) {
+        width = rep(width, n)
+    }
+
+    if(identical(width, rep(1, n))) {
+        return(dend)
+    }
+
+    if(length(width) != n) {
+        stop("length of `width` should be same as `dend`.")
+    }
+
+    dend_order = order.dendrogram(dend)
+    leaves_pos = cumsum(width[dend_order]) - width[dend_order]/2 + offset
+    label2index = structure(dend_order, names = labels(dend))
+
+    env = new.env()
+    env$dend = dend
+
+    adj_dend = function(ind = NULL) {
+        if(is.null(ind)) {
+            d = env$dend
+        } else {
+            d = env$dend[[ind]]
+        }
+        
+        if(is.leaf(d)) {
+            i = which(labels(dend) == attr(d, "label"))
+            x = leaves_pos[i]
+            attr(env$dend[[ind]], "width") = width[dend_order[i]]
+        } else {
+            x = ( adj_dend(c(ind, 1)) + adj_dend(c(ind, 2)) )/2
+        }
+
+        if(is.null(ind)) {
+            attr(env$dend, "x") = x
+        } else {
+            attr(env$dend[[ind]], "x") = x
+        }
+        return(x)
+    }
+
+    adj_dend()
+    attr(env$dend, "width_adjusted") = TRUE
+    attr(env$dend, "offset") = offset
+
+    return(env$dend)
+}
+
+
+# == title
+# Draw dendrogram under grid system
+#
+# == param
+# -dend a `stats::dendrogram` object which has been adjusted by `adjust_dend_by_leaf_width`, or else
+#      it will be sent back to `grid.dendrogram`.
+# -facing same as in `grid.dendrogram`.
+# -max_height same as in `grid.dendrogram`.
+# -order same as in `grid.dendrogram`.
+# -... same as in `grid.dendrogram`.
+#
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
+# == example
+# m = matrix(rnorm(100), 10)
+# dend = as.dendrogram(hclust(dist(m)))
+# dend = adjust_dend_by_leaf_width(dend, width = 1:10)
+# grid.dendrogram2(dend)
+grid.dendrogram2 = function(dend, facing = c("bottom", "top", "left", "right"), 
+    max_height = NULL, order = c("normal", "reverse"), ...) {
+
+    if(is.null(attr(dend, "width_adjusted"))) {
+        grid.dendrogram(dend, facing = facing, max_height = max_height, order = order, ...)
+        return(invisible(NULL))
+    }
+    
+    facing = match.arg(facing)[1]
+
+    if(is.null(max_height)) {
+        max_height = attr(dend, "height")
+    }
+    
+    if(max_height == 0) {
+        return(invisible(NULL))
+    }
+
+    is.leaf = function(object) {
+        leaf = attr(object, "leaf")
+        if(is.null(leaf)) {
+            FALSE
+        } else {
+            leaf
+        }
+    }
+    
+    draw.d = function(dend, max_height, facing = "bottom", order = "normal", max_width = 0, env = NULL) {
+
+        d1 = dend[[1]]  # child tree 1
+        d2 = dend[[2]]  # child tree 2
+        height = attr(dend, "height")
+        
+        x1 = attr(d1, "x")
+        y1 = attr(d1, "height")
+        
+        x2 = attr(d2, "x")
+        y2 = attr(d2, "height")
+        midpoint = (x1 + x2)/2
+
+        # graphic parameters for current branch
+        edge_gp1 = as.list(attr(d1, "edgePar"))
+        edge_gp2 = as.list(attr(d2, "edgePar"))
+
+        if(is.null(env)) {
+            begin = TRUE
+            env = new.env()
+            n = nobs(dend)
+            env$x0 = NULL
+            env$y0 = NULL
+            env$x1 = NULL
+            env$y1 = NULL
+            env$col = NULL
+            env$lty = NULL
+            env$lwd = NULL
+        } else {
+            begin = FALSE
+        }
+
+        for(gp_name in c("col", "lwd", "lty")) {
+            if(is.null(edge_gp1[[gp_name]])) {
+                env[[gp_name]] = c(env[[gp_name]], rep(get.gpar(gp_name)[[gp_name]], 2))
+            } else {
+                env[[gp_name]] = c(env[[gp_name]], rep(edge_gp1[[gp_name]], 2))
+            }
+            if(is.null(edge_gp2[[gp_name]])) {
+                env[[gp_name]] = c(env[[gp_name]], rep(get.gpar(gp_name)[[gp_name]], 2))
+            } else {
+                env[[gp_name]] = c(env[[gp_name]], rep(edge_gp2[[gp_name]], 2))
+            }
+        }
+
+        # plot the connection line
+        if(order == "normal") {
+            if(facing == "bottom") {
+                # grid.lines(c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native", gp = edge_gp1)
+                # grid.lines(c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, c(x1, x1, x2, x2))
+                env$y0 = c(env$y0, c(y1, height, y2, height))
+                env$x1 = c(env$x1, c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+                env$y1 = c(env$y1, c(height, height, height, height))
+            } else if(facing == "top") {
+                # grid.lines(c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native", gp = edge_gp1)
+                # grid.lines(c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, c(x1, x1, x2, x2))
+                env$y0 = c(env$y0, max_height - c(y1, height, y2, height))
+                env$x1 = c(env$x1, c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+                env$y1 = c(env$y1, max_height - c(height, height, height, height))
+            } else if(facing == "right") {
+                # grid.lines(max_height - c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                # grid.lines(max_height - c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, max_height - c(y1, height, y2, height))
+                env$y0 = c(env$y0, c(x1, x1, x2, x2))
+                env$x1 = c(env$x1, max_height - c(height, height, height, height))
+                env$y1 = c(env$y1, c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+            } else if(facing == "left") {
+                # grid.lines(c(y1, height, height), c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                # grid.lines(c(y2, height, height), c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, c(y1, height, y2, height))
+                env$y0 = c(env$y0, c(x1, x1, x2, x2))
+                env$x1 = c(env$x1, c(height, height, height, height))
+                env$y1 = c(env$y1, c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+            }
+        } else {
+            if(facing == "bottom") {
+                # grid.lines(max_width - c(x1, x1, (x1+x2)/2), c(y1, height, height), default.units = "native", gp = edge_gp1)
+                # grid.lines(max_width - c(x2, x2, (x1+x2)/2), c(y2, height, height), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, max_width - c(x1, x1, x2, x2))
+                env$y0 = c(env$y0, c(y1, height, y2, height))
+                env$x1 = c(env$x1, max_width - c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+                env$y1 = c(env$y1, c(height, height, height, height))
+            } else if(facing == "top") {
+                # grid.lines(max_width - c(x1, x1, (x1+x2)/2), max_height - c(y1, height, height), default.units = "native", gp = edge_gp1)
+                # grid.lines(max_width - c(x2, x2, (x1+x2)/2), max_height - c(y2, height, height), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, max_width - c(x1, x1, x2, x2))
+                env$y0 = c(env$y0, max_height - c(y1, height, y2, height))
+                env$x1 = c(env$x1, max_width - c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+                env$y1 = c(env$y1, max_height - c(height, height, height, height))
+            } else if(facing == "right") {
+                # grid.lines(max_height - c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                # grid.lines(max_height - c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, max_height - c(y1, height, y2, height))
+                env$y0 = c(env$y0, max_width - c(x1, x1, x2, x2))
+                env$x1 = c(env$x1, max_height - c(height, height, height, height))
+                env$y1 = c(env$y1, max_width - c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+            } else if(facing == "left") {
+                # grid.lines(c(y1, height, height), max_width - c(x1, x1, (x1+x2)/2), default.units = "native", gp = edge_gp1)
+                # grid.lines(c(y2, height, height), max_width - c(x2, x2, (x1+x2)/2), default.units = "native", gp = edge_gp2)
+                env$x0 = c(env$x0, c(y1, height, y2, height))
+                env$y0 = c(env$y0, max_width - c(x1, x1, x2, x2))
+                env$x1 = c(env$x1, c(height, height, height, height))
+                env$y1 = c(env$y1, max_width - c(x1, (x1+x2)/2, x2, (x1+x2)/2))
+            }
+        }
+        # do it recursively
+        if(!is.leaf(d1)) {
+            draw.d(d1, max_height, facing, order, max_width, env = env)
+        } else {
+            grid.rect(x1, width = attr(d1, "width"), default.units = "native", gp = gpar(fill = rand_color(1, transparency = 0.5)))
+        }
+        if(!is.leaf(d2)) {
+            draw.d(d2, max_height, facing, order, max_width, env = env)
+        } else {
+            grid.rect(x2, width = attr(d2, "width"), default.units = "native", gp = gpar(fill = rand_color(1, transparency = 0.5)))
+        }
+
+        if(begin) {
+            grid.segments(env$x0, env$y0, env$x1, env$y1, default.units = "native", gp = gpar(col = env$col, lty = env$lty, lwd = env$lwd))
+        }
+    }
+
+    sum_width = sum(.get_leaves_width(dend))
+    order = match.arg(order)[1]
+    offset = attr(dend, "offset")
+    
+    if(facing %in% c("top", "bottom")) {
+        pushViewport(viewport(xscale = c(0, sum_width) + offset, yscale = c(0, max_height), ...))
+        draw.d(dend, max_height, facing, order, max_width = sum_width)
+        upViewport()
+    } else if(facing %in% c("right", "left")) {
+        pushViewport(viewport(yscale = c(0, sum_width) + offset, xscale = c(0, max_height), ...))
+        draw.d(dend, max_height, facing, order, max_width = sum_width)
+        upViewport()
+    }
+}
+
+.get_leaves_width = function(d, v = NULL) {
+    if(is.leaf(d)) {
+        v = c(v, attr(d, "width"))
+    } else {
+        v = .get_leaves_width(d[[1]], v)
+        v = .get_leaves_width(d[[2]], v)
+    }
+    return(v)
+}
+
+# == title
 # Calculate pairwise distance from a matrix
 #
 # == param
@@ -366,10 +654,19 @@ get_dend_order = function(x) {
 
 # can only cut dendrogram for which branches at every node are two
 cut_dendrogram = function(dend, k) {
-    h = sort(get_branches_heights(dend), decreasing = TRUE)
+    h = sort(dend_branches_heights(dend), decreasing = TRUE)
     height = (h[k-1] + h[k])/2
     trees = cut(dend, h = height)
     trees$lower
+}
+
+dend_branches_heights = function(d, v = NULL) {
+    if(!is.leaf(d)) {
+        v = c(v, attr(d, "height"))
+        v = dend_branches_heights(d[[1]], v)
+        v = dend_branches_heights(d[[2]], v)
+    }
+    return(v)
 }
 
 recycle_gp = function(gp, n = 1) {

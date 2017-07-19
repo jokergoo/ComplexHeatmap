@@ -5,10 +5,16 @@ CHANGES in VERSION 1.15.1
 * annotations with duplicated names have no legends any more
 * re-implement `grid.xaxis()` to draw axis labels rotated 90 degrees
 * grids in discrete legend are arranged by rows if ncol > 1
-* raster image is generated in a independent R session
+* raster image is generated in an independent R session
 * empty string in annotation or heatmap is mapped to NA
 * annotation and heatmap legends can be merged into one column. 
 * change the default value of `row_names_max_width` and `column_names_max_height`
+* default legend style for continuous values is changed to "continuous"
+* add `grid.dendrogram2()` which draws dendrograms with uneven position for leaves
+* move **dendextend** to Suggests field because it depends/imports rlang indirectly
+  which has a `print.frame()` function and it will affect to print a `frame` object
+  returned by `frameGrob()`.
+* `decorate_*()` functions return to the viewport where they are called.
 
 =======================
 

@@ -16,7 +16,6 @@
 #                            Set it to ``NULL`` if you don't want to set the order
 # -column_order order of samples. By default the order is calculated by the 'memo sort' method which can visualize
 #                                 the mutual exclusivity across genes. Set it to ``NULL`` if you don't want to set the order
-# -show_column_names whether show column names
 # -show_pct whether show percent values on the left of the oncoprint
 # -pct_gp graphic paramters for percent row annotation
 # -pct_digits digits for percent values
@@ -26,8 +25,31 @@
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -heatmap_legend_param pass to `Heatmap`
 # -top_annotation by default the top annotation contains barplots representing frequency of mutations in every sample.
+# -top_annotation_height total height of the column annotations on the top.
+# -bottom_annotation a `HeatmapAnnotation` object.
+# -bottom_annotation_height total height of the column annotations on the bottom.
 # -barplot_ignore specific alterations that you don't want to put on the barplots. If you want to really suppress the top barplot
 #        set ``top_annotation`` to ``NULL``.
+# -row_title title on row.
+# -row_title_side will the title be put on the left or right of the heatmap?
+# -row_title_gp graphic parameters for drawing text.
+# -row_title_rot rotation of row titles. Only 0, 90, 270 are allowed to set.
+# -column_title title on column.
+# -column_title_side will the title be put on the top or bottom of the heatmap?
+# -column_title_gp graphic parameters for drawing text.
+# -column_title_rot rotation of column titles. Only 0, 90, 270 are allowed to set.
+# -show_row_names whether show row names.
+# -row_names_gp graphic parameters for drawing text.
+# -show_column_names whether show column names.
+# -column_names_gp graphic parameters for drawing text.
+# -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
+#        indicating rows are to be split according to the split on the tree.
+# -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object. If it is a vector, the order corresponds
+#   to top to bottom in the heatmap
+# -combined_name_fun if the heatmap is split by rows, how to make a combined row title for each slice?
+#                 The input parameter for this function is a vector which contains level names under each column in ``split``.
+# -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
+#        is appended to a list of heatmaps.
 # -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
 # == details
@@ -51,8 +73,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	alter_fun = alter_fun_list, alter_fun_list = NULL, col, 
 	row_order = oncoprint_row_order(),
 	column_order = oncoprint_column_order(),
-	show_column_names = FALSE,
-	show_pct = TRUE, pct_gp = gpar(), pct_digits = 0,
+	show_pct = TRUE, pct_gp = row_names_gp, pct_digits = 0,
 	axis_gp = gpar(fontsize = 8), 
 	show_row_barplot = TRUE, 
 	row_barplot_width = unit(2, "cm"),
@@ -60,7 +81,26 @@ oncoPrint = function(mat, get_type = function(x) x,
 	heatmap_legend_param = list(title = "Alterations"),
 	top_annotation = HeatmapAnnotation(column_bar = anno_oncoprint_barplot(), 
 		annotation_height = unit(2, "cm")),
-	barplot_ignore = NULL,
+	top_annotation_height = top_annotation@size,
+	bottom_annotation = new("HeatmapAnnotation"),
+    bottom_annotation_height = bottom_annotation@size,
+    barplot_ignore = NULL,
+	row_title = character(0),
+    row_title_side = c("left", "right"),
+    row_title_gp = gpar(fontsize = 14),
+    row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
+    column_title = character(0),
+    column_title_side = c("top", "bottom"),
+    column_title_gp = gpar(fontsize = 14),
+    column_title_rot = 0,
+    show_row_names = TRUE,
+    row_names_gp = gpar(fontsize = 12),
+    show_column_names = FALSE,
+    column_names_gp = gpar(fontsize = 12),
+    split = NULL,
+    gap = unit(1, "mm"),
+    combined_name_fun = function(x) paste(x, collapse = "/"),
+    width = NULL,
 	...) {
 
 	if(length(names(list(...))) > 0) {
@@ -282,9 +322,29 @@ oncoPrint = function(mat, get_type = function(x) x,
 			z = arr[i, j, ]
 			names(z) = dimnames(arr)[[3]]
 			af(x, y, width, height, z)
-		}, show_column_names = show_column_names,
+		},
 		top_annotation = top_annotation,
-		heatmap_legend_param = heatmap_legend_param, ...)
+		top_annotation_height = top_annotation_height,
+		bottom_annotation = bottom_annotation,
+		bottom_annotation_height = bottom_annotation_height,
+		row_title = row_title,
+		row_title_side = row_title_side,
+		row_title_gp = row_names_gp,
+		row_title_rot = row_title_rot,
+		column_title = column_title,
+		column_title_side = column_title_side,
+		column_title_gp = column_title_gp,
+		column_title_rot = column_title_rot,
+		show_row_names = show_row_names,
+		row_names_gp = row_names_gp,
+		show_column_names = show_column_names,
+		column_names_gp = column_names_gp,
+		heatmap_legend_param = heatmap_legend_param, 
+		split = split,
+		gap = gap,
+		combined_name_fun = combined_name_fun,
+		width = width,
+		...)
 
 	ht@matrix_param$oncoprint = list()
 	ht@matrix_param$oncoprint$arr = arr

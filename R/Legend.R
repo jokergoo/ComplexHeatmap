@@ -135,7 +135,6 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 	# for(i in seq_len(length(odevlist) - length(dev.list()))) {
 	# 	dev.off()
 	# }
-
 	return(gf)
 }
 

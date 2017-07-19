@@ -13,7 +13,7 @@ Draw legend based on color mapping
     title = object@name,
     title_gp = gpar(fontsize = 10, fontface = "bold"),
     title_position = c("topleft", "topcenter", "leftcenter", "lefttop"),
-    color_bar = c("discrete", "continuous"),
+    color_bar = object@type,
     grid_height = unit(4, "mm"),
     grid_width = unit(4, "mm"),
     border = NULL,
@@ -33,7 +33,7 @@ Draw legend based on color mapping
   \item{title}{title of the legend, by default it is the name of the legend}
   \item{title_gp}{graphical parameters for legend title}
   \item{title_position}{position of the title}
-  \item{color_bar}{if the mapping is continuous, whether show the legend as discrete color bar or continuous color bar}
+  \item{color_bar}{a string of "continous" or "discrete". If the mapping is continuous, whether show the legend as discrete color bar or continuous color bar}
   \item{grid_height}{height of each legend grid.}
   \item{grid_width}{width of each legend grid.}
   \item{border}{color for legend grid borders.}
