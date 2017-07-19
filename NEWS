@@ -15,6 +15,7 @@ CHANGES in VERSION 1.15.1
   which has a `print.frame()` function and it will affect to print a `frame` object
   returned by `frameGrob()`.
 * `decorate_*()` functions return to the viewport where they are called.
+* fixed a bug that annotation names are drawn for all row slices.
 
 =======================
 

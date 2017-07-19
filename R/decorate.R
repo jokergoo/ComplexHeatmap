@@ -45,6 +45,9 @@
 decorate_heatmap_body = function(heatmap, code, slice = 1, envir = new.env(parent = parent.frame())) {
 
 	current_vp = current.viewport()$name
+	if(current_vp == "ROOT") {
+		current_vp = "global"
+	}
 	
 	if(is.null(slice)) {
 		vp_name = paste0(heatmap, "_heatmap_body_", 1)
@@ -101,7 +104,10 @@ decorate_dend = function(heatmap, code, slice = 1, which = c("column", "row"),
 	envir = new.env(parent = parent.frame())) {
 	
 	current_vp = current.viewport()$name
-	
+	if(current_vp == "ROOT") {
+		current_vp = "global"
+	}
+
 	which = match.arg(which)[1]
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_dend_", which)
@@ -217,7 +223,10 @@ decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"
 	envir = new.env(parent = parent.frame())) {
 	
 	current_vp = current.viewport()$name
-	
+	if(current_vp == "ROOT") {
+		current_vp = "global"
+	}
+
 	which = match.arg(which)[1]
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_", which, "_names")
@@ -319,7 +328,10 @@ decorate_title = function(heatmap, code, slice = 1, which = c("column", "row"),
 	envir = new.env(parent = parent.frame())) {
 	
 	current_vp = current.viewport()$name
-	
+	if(current_vp == "ROOT") {
+		current_vp = "global"
+	}
+
 	which = match.arg(which)[1]
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_", which, "_title")
@@ -425,6 +437,9 @@ decorate_column_title = function(..., envir = new.env(parent = parent.frame())) 
 decorate_annotation = function(annotation, code, slice, envir = new.env(parent = parent.frame())) {
 
 	current_vp = current.viewport()$name
+	if(current_vp == "ROOT") {
+		current_vp = "global"
+	}
 	
 	if(missing(slice)) {
 		vp_name = paste0("annotation_", annotation)

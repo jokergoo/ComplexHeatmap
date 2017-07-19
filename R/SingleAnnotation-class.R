@@ -241,7 +241,8 @@ SingleAnnotation = function(name, value, col, fun,
     						  y = name_y,
     						  just = name_just,
     	                      gp = check_gp(name_gp),
-    	                      rot = name_rot)
+    	                      rot = name_rot,
+                              side = name_side)
 
     gp = check_gp(gp)
     if(!is.null(gp$fill)) {
@@ -346,7 +347,7 @@ SingleAnnotation = function(name, value, col, fun,
 # == param
 # -object a `SingleAnnotation-class` object.
 # -index a vector of orders
-# -k if row annotation is splitted, the value identifies which row slice. It is only used for the naems of the viewport
+# -k if row annotation is splitted, the value identifies which row slice. It is only used for the names of the viewport
 #    which contains the annotation graphics.
 # -n total number of row slices
 #
@@ -385,18 +386,34 @@ setMethod(f = "draw",
 	}
 	# add annotation name
 	if(object@name_param$show) {
-        if(is_matrix_annotation(object)) {
-            if(!is.null(attr(object@is_anno_matrix, "column_names"))) {
-                anno_mat_column_names = attr(object@is_anno_matrix, "column_names")
-                grid.text(anno_mat_column_names, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
-                    rot = object@name_param$rot, gp = object@name_param$gp)
-            } else {
-                grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
-                    rot = object@name_param$rot, gp = object@name_param$gp)
+        draw_name = TRUE
+        if(object@which == "row") {
+            if(!is.null(k)) {
+                if(object@name_param$side == "bottom") {
+                    if(k != n) {
+                        draw_name = FALSE
+                    }
+                } else {
+                    if(k != 1) {
+                        draw_name = FALSE
+                    }
+                }
             }
-        } else {
-    		grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
-    			rot = object@name_param$rot, gp = object@name_param$gp)
+        }
+        if(draw_name) {
+            if(is_matrix_annotation(object)) {
+                if(!is.null(attr(object@is_anno_matrix, "column_names"))) {
+                    anno_mat_column_names = attr(object@is_anno_matrix, "column_names")
+                    grid.text(anno_mat_column_names, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+                        rot = object@name_param$rot, gp = object@name_param$gp)
+                } else {
+                    grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+                        rot = object@name_param$rot, gp = object@name_param$gp)
+                }
+            } else {
+        		grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+        			rot = object@name_param$rot, gp = object@name_param$gp)
+            }
         }
 	}
 	upViewport()
