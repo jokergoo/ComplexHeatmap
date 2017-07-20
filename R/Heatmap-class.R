@@ -1340,7 +1340,7 @@ setMethod(f = "draw_heatmap_body",
         library(@{device_info[1]})
         library(grid)
         load('@{temp_R_data}')
-        do.call('device_fun', c(list(filename = temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality), raster_device_param))
+        do.call('device_fun', c(list(filename = temp_image, width = max(c(heatmap_width*raster_quality, 1)), height = max(c(heatmap_height*raster_quality, 1)), raster_device_param))
         grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
         dev.off()
         q(save = 'no')
