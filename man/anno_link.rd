@@ -14,7 +14,7 @@ anno_link(at, labels, which = c("column", "row"), side = ifelse(which == "column
 
   \item{at}{numeric index in the original matrix}
   \item{labels}{corresponding labels}
-  \item{which}{column annotaiton or row annotation}
+  \item{which}{column annotation or row annotation}
   \item{side}{side of the labels. If it is a column annotation, permitted values are "top" and "bottom"; If it is a row annotation, permitted values are "left" and "right".}
   \item{lines_gp}{graphic settings for the segments}
   \item{labels_gp}{graphic settings for the labels}

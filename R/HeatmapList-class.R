@@ -154,7 +154,7 @@ setMethod(f = "add_heatmap",
     ht_name = names(object@ht_list)
     which_duplicated = duplicated(ht_name)
     if(any(which_duplicated)) {
-        warning(paste0("Heatmap/row annotaiton names are duplicated: ", paste(ht_name[which_duplicated], collapse = ", ")))
+        warning(paste0("Heatmap/row annotation names are duplicated: ", paste(ht_name[which_duplicated], collapse = ", ")))
     }
 
     l = which(sapply(object@ht_list, inherits, "Heatmap"))

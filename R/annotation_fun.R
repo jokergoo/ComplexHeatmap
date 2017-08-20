@@ -1050,7 +1050,7 @@ column_anno_text = function(...) {
 # == param
 # -at numeric index in the original matrix
 # -labels corresponding labels
-# -which column annotaiton or row annotation
+# -which column annotation or row annotation
 # -side side of the labels. If it is a column annotation, permitted values are "top" and "bottom";
 #       If it is a row annotation, permitted values are "left" and "right".
 # -lines_gp graphic settings for the segments

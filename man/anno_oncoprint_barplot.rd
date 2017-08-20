@@ -1,10 +1,10 @@
 \name{anno_oncoprint_barplot}
 \alias{anno_oncoprint_barplot}
 \title{
-Column barplot annotaiton for oncoPrint
+Column barplot annotation for oncoPrint
 }
 \description{
-Column barplot annotaiton for oncoPrint
+Column barplot annotation for oncoPrint
 }
 \usage{
 anno_oncoprint_barplot()

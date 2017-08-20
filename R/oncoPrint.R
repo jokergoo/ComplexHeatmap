@@ -400,7 +400,7 @@ unify_mat_list = function(mat_list, default = 0) {
 
 
 # == title
-# Column barplot annotaiton for oncoPrint
+# Column barplot annotation for oncoPrint
 #
 # == details
 # This function is only used for column annotation
