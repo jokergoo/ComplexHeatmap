@@ -161,6 +161,8 @@ setMethod(f = "add_heatmap",
     nr = sapply(object@ht_list[l], function(ht) nrow(ht@matrix))
 
     if(length(unique(nr)) > 1) {
+        cat("`nrow` of all heatmaps:\n")
+        print(nr)
         stop("`nrow` of all heatmaps should be the same.")
         for(i in l) {
             cat(object@ht_list[[i]]@name, ":", nrow(object@ht_list[[i]]@matrix), "\n")
