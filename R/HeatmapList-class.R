@@ -206,6 +206,7 @@ setMethod(f = "add_heatmap",
 # -row_order same setting as in `Heatmap`, if it is specified, ``row_order`` in main heatmap is ignored.
 # -km same setting as in `Heatmap`, if it is specified, ``km`` in main heatmap is ignored.
 # -split same setting as in `Heatmap`, if it is specified, ``split`` in main heatmap is ignored.
+# -combined_name_fun same setting as in `Heatmap`, if it is specified, ``combined_name_fun`` in main heatmap is ignored.
 #
 # == detail
 # It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
@@ -249,7 +250,8 @@ setMethod(f = "make_layout",
     row_dend_gp = NULL,
     row_order = NULL,
     km = NULL,
-    split = NULL) {
+    split = NULL,
+    combined_name_fun = NULL) {
 
     if(object@layout$initialized) {
         return(object)
@@ -307,6 +309,9 @@ setMethod(f = "make_layout",
     }
     if(!is.null(km)) {
         object@ht_list[[i_main]]@matrix_param$km = km
+    }
+    if(!missing(combined_name_fun)) {
+        object@ht_list[[i_main]]@matrix_param$combined_name_fun = combined_name_fun
     }
 
     if(!is.null(cluster_rows)) {

@@ -34,7 +34,8 @@ Make layout for the complete plot
     row_dend_gp = NULL,
     row_order = NULL,
     km = NULL,
-    split = NULL)
+    split = NULL,
+    combined_name_fun = NULL)
 }
 \arguments{
 
@@ -67,6 +68,7 @@ Make layout for the complete plot
   \item{row_order}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_order} in main heatmap is ignored.}
   \item{km}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{km} in main heatmap is ignored.}
   \item{split}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{split} in main heatmap is ignored.}
+  \item{combined_name_fun}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{combined_name_fun} in main heatmap is ignored.}
 
 }
 \details{
