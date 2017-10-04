@@ -1137,7 +1137,7 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 					grid.segments(rep(link_width*(1/3), n2), n-i2+1, rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
 					grid.segments(rep(link_width*(2/3), n2), h, rep(link_width, n2), h, default.units = "native", gp = lines_gp)
 				} else {
-					grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
+					grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
 					link_width = link_width - unit(1, "mm")
 					grid.segments(unit(rep(1, n2), "npc"), n-i2+1, unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = lines_gp)
 					grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
