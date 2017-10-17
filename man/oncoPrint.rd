@@ -11,12 +11,7 @@ oncoPrint(mat, get_type = function(x) x,
     alter_fun = alter_fun_list, alter_fun_list = NULL, col,
     row_order = oncoprint_row_order(),
     column_order = oncoprint_column_order(),
-<<<<<<< HEAD
     show_pct = TRUE, pct_gp = row_names_gp, pct_digits = 0,
-=======
-    show_column_names = FALSE,
-    show_pct = TRUE, pct_gp = gpar(), pct_digits = 0,
->>>>>>> bioc/master
     axis_gp = gpar(fontsize = 8),
     show_row_barplot = TRUE,
     row_barplot_width = unit(2, "cm"),
@@ -24,7 +19,6 @@ oncoPrint(mat, get_type = function(x) x,
     heatmap_legend_param = list(title = "Alterations"),
     top_annotation = HeatmapAnnotation(column_bar = anno_oncoprint_barplot(),
     annotation_height = unit(2, "cm")),
-<<<<<<< HEAD
     top_annotation_height = top_annotation@size,
     bottom_annotation = new("HeatmapAnnotation"),
     bottom_annotation_height = bottom_annotation@size,
@@ -45,9 +39,6 @@ oncoPrint(mat, get_type = function(x) x,
     gap = unit(1, "mm"),
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL,
-=======
-    barplot_ignore = NULL,
->>>>>>> bioc/master
     ...)
 }
 \arguments{
@@ -59,10 +50,6 @@ oncoPrint(mat, get_type = function(x) x,
   \item{col}{a vector of color for which names correspond to alteration types.}
   \item{row_order}{order of genes. By default it is sorted by frequency of alterations decreasingly. Set it to \code{NULL} if you don't want to set the order}
   \item{column_order}{order of samples. By default the order is calculated by the 'memo sort' method which can visualize the mutual exclusivity across genes. Set it to \code{NULL} if you don't want to set the order}
-<<<<<<< HEAD
-=======
-  \item{show_column_names}{whether show column names}
->>>>>>> bioc/master
   \item{show_pct}{whether show percent values on the left of the oncoprint}
   \item{pct_gp}{graphic paramters for percent row annotation}
   \item{pct_digits}{digits for percent values}
@@ -72,7 +59,6 @@ oncoPrint(mat, get_type = function(x) x,
   \item{remove_empty_columns}{if there is no alteration in that sample, whether remove it on the heatmap}
   \item{heatmap_legend_param}{pass to \code{\link{Heatmap}}}
   \item{top_annotation}{by default the top annotation contains barplots representing frequency of mutations in every sample.}
-<<<<<<< HEAD
   \item{top_annotation_height}{total height of the column annotations on the top.}
   \item{bottom_annotation}{a \code{\link{HeatmapAnnotation}} object.}
   \item{bottom_annotation_height}{total height of the column annotations on the bottom.}
@@ -93,9 +79,6 @@ oncoPrint(mat, get_type = function(x) x,
   \item{gap}{gap between row-slices if the heatmap is split by rows, should be \code{\link[grid]{unit}} object. If it is a vector, the order corresponds to top to bottom in the heatmap}
   \item{combined_name_fun}{if the heatmap is split by rows, how to make a combined row title for each slice? The input parameter for this function is a vector which contains level names under each column in \code{split}.}
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmap is appended to a list of heatmaps.}
-=======
-  \item{barplot_ignore}{specific alterations that you don't want to put on the barplots. If you want to really suppress the top barplot set \code{top_annotation} to \code{NULL}.}
->>>>>>> bioc/master
   \item{...}{pass to \code{\link{Heatmap}}, so can set \code{bottom_annotation} here.}
 
 }

@@ -14,10 +14,7 @@ Make layout for the complete plot
     column_title_side = c("top", "bottom"),
     column_title_gp = gpar(fontsize = 14),
     heatmap_legend_side = c("right", "left", "bottom", "top"),
-<<<<<<< HEAD
     merge_legends = FALSE,
-=======
->>>>>>> bioc/master
     show_heatmap_legend = TRUE,
     heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"),
@@ -37,12 +34,8 @@ Make layout for the complete plot
     row_dend_gp = NULL,
     row_order = NULL,
     km = NULL,
-<<<<<<< HEAD
     split = NULL,
     combined_name_fun = NULL)
-=======
-    split = NULL)
->>>>>>> bioc/master
 }
 \arguments{
 
@@ -54,10 +47,7 @@ Make layout for the complete plot
   \item{column_title_side}{will the title be put on the top or bottom of the heatmap.}
   \item{column_title_gp}{graphic parameters for drawing text.}
   \item{heatmap_legend_side}{side of the heatmap legend.}
-<<<<<<< HEAD
   \item{merge_legends}{whether put heatmap legends and annotation legends in a same column}
-=======
->>>>>>> bioc/master
   \item{show_heatmap_legend}{whether show heatmap legend.}
   \item{heatmap_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
   \item{annotation_legend_side}{side of annotation legend.}
@@ -78,10 +68,7 @@ Make layout for the complete plot
   \item{row_order}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_order} in main heatmap is ignored.}
   \item{km}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{km} in main heatmap is ignored.}
   \item{split}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{split} in main heatmap is ignored.}
-<<<<<<< HEAD
   \item{combined_name_fun}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{combined_name_fun} in main heatmap is ignored.}
-=======
->>>>>>> bioc/master
 
 }
 \details{

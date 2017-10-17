@@ -11,11 +11,7 @@ Heatmap(matrix, col, name,
     na_col = "grey",
     color_space = "LAB",
     rect_gp = gpar(col = NA),
-<<<<<<< HEAD
     cell_fun = NULL,
-=======
-    cell_fun = function(j, i, x, y, width, height, fill) NULL,
->>>>>>> bioc/master
     row_title = character(0),
     row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14),
@@ -54,19 +50,11 @@ Heatmap(matrix, col, name,
     column_order = NULL,
     row_names_side = c("right", "left"),
     show_row_names = TRUE,
-<<<<<<< HEAD
     row_names_max_width = default_row_names_max_width(),
     row_names_gp = gpar(fontsize = 12),
     column_names_side = c("bottom", "top"),
     show_column_names = TRUE,
     column_names_max_height = default_column_names_max_height(),
-=======
-    row_names_max_width = unit(4, "cm"),
-    row_names_gp = gpar(fontsize = 12),
-    column_names_side = c("bottom", "top"),
-    show_column_names = TRUE,
-    column_names_max_height = unit(4, "cm"),
->>>>>>> bioc/master
     column_names_gp = gpar(fontsize = 12),
     top_annotation = new("HeatmapAnnotation"),
     top_annotation_height = top_annotation@size,
@@ -79,11 +67,7 @@ Heatmap(matrix, col, name,
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL,
     show_heatmap_legend = TRUE,
-<<<<<<< HEAD
     heatmap_legend_param = list(title = name),
-=======
-    heatmap_legend_param = list(title = name, color_bar = "discrete"),
->>>>>>> bioc/master
     use_raster = FALSE,
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 1,
@@ -147,22 +131,14 @@ Heatmap(matrix, col, name,
   \item{bottom_annotation}{a \code{\link{HeatmapAnnotation}} object.}
   \item{bottom_annotation_height}{total height of the column annotations on the bottom.}
   \item{km}{do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering. For each row-clusters, hierarchical clustering is still applied with parameters above.}
-<<<<<<< HEAD
   \item{km_title}{row title for each cluster when \code{km} is set. It must a text with format of ".*\%i.*" where "\%i" is replaced by the index of the cluster.}
-=======
-  \item{km_title}{row title for each cluster when \code{km} is set. It must a text with format of "*\%i*" where "\%i" is replaced by the index of the cluster.}
->>>>>>> bioc/master
   \item{split}{a vector or a data frame by which the rows are split. But if \code{cluster_rows} is a clustering object, \code{split} can be a single number indicating rows are to be split according to the split on the tree.}
   \item{gap}{gap between row-slices if the heatmap is split by rows, should be \code{\link[grid]{unit}} object. If it is a vector, the order corresponds to top to bottom in the heatmap}
   \item{combined_name_fun}{if the heatmap is split by rows, how to make a combined row title for each slice? The input parameter for this function is a vector which contains level names under each column in \code{split}.}
   \item{width}{the width of the single heatmap, should be a fixed \code{\link[grid]{unit}} object. It is used for the layout when the heatmap is appended to a list of heatmaps.}
   \item{show_heatmap_legend}{whether show heatmap legend?}
   \item{heatmap_legend_param}{a list contains parameters for the heatmap legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
-<<<<<<< HEAD
   \item{use_raster}{whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if \code{cell_fun} is set, \code{use_raster} is enforced to be \code{FALSE}.}
-=======
-  \item{use_raster}{whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge.}
->>>>>>> bioc/master
   \item{raster_device}{graphic device which is used to generate the raster image}
   \item{raster_quality}{a value set to larger than 1 will improve the quality of the raster image.}
   \item{raster_device_param}{a list of further parameters for the selected graphic device}

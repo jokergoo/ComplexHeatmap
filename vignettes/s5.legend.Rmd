@@ -157,59 +157,36 @@ ht1 = Heatmap(mat, name = "ht1", show_heatmap_legend = FALSE)
 draw(ht1 + ha_chr, heatmap_legend_side = "bottom")
 ```
 
-<<<<<<< HEAD
 Discrete color bar for can be used for continuous values, if you specify `color_bar` to `discrete`.
 For the simple annotation which contains continuous values, `color_bar` can also be set to `discrete`.
-=======
-If you don't like the default discrete color bar for continuous values, you can specify `color_bar` to `continuous`.
-For the simple annotation which contains continuous values, `color_bar` can also be set to `continuous`.
->>>>>>> bioc/master
 
 ```{r}
 ha = HeatmapAnnotation(df = data.frame(value = runif(10)), 
     col = list(value = colorRamp2(c(0, 1), c("white", "blue"))), 
-<<<<<<< HEAD
     annotation_legend_param = list(color_bar = "discrete", at = c(0, 0.5, 1)))
 Heatmap(mat, name = "ht1", top_annotation = ha, heatmap_legend_param = list(color_bar = "discrete"))
-=======
-    annotation_legend_param = list(color_bar = "continuous", at = c(0, 0.5, 1), 
-        labels = c("low", "median", "high"), legend_height = unit(4, "cm")))
-Heatmap(mat, name = "ht1", top_annotation = ha, heatmap_legend_param = list(color_bar = "continuous"))
->>>>>>> bioc/master
 ```
 
 Some users prefer to put the legend at the bottom of heatmaps.
 
 ```{r}
-<<<<<<< HEAD
 ht = Heatmap(mat, name = "ht1", heatmap_legend_param = list(legend_direction = "horizontal",
-=======
-ht = Heatmap(mat, name = "ht1", heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal",
->>>>>>> bioc/master
     legend_width = unit(5, "cm"), title_position = "lefttop"))
 draw(ht, heatmap_legend_side = "bottom")
 ```
 
-<<<<<<< HEAD
 Similarly, the height of the legend can be adjusted by `legend_height` if the legend is vertical.
 
 ```{r}
 Heatmap(mat, name = "ht1", heatmap_legend_param = list(legend_height = unit(5, "cm")))
 ```
 
-=======
->>>>>>> bioc/master
 If you want to change default settings for all heatmaps/annotations, you can set it globally by `ht_global_opt()`.
 
 ```{r, fig.width = 10}
 ht_global_opt(heatmap_legend_title_gp = gpar(fontsize = 16), annotation_legend_labels_gp = gpar(fontface = "italic"))
 ha = HeatmapAnnotation(df = data.frame(value = runif(10)), 
-<<<<<<< HEAD
     col = list(value = colorRamp2(c(0, 1), c("white", "blue"))))
-=======
-    col = list(value = colorRamp2(c(0, 1), c("white", "blue"))), 
-    annotation_legend_param = list(color_bar = "continuous"))
->>>>>>> bioc/master
 ht1 = Heatmap(mat, name = "ht1", column_title = "Heatmap 1", top_annotation = ha)
 ht2 = Heatmap(mat, name = "ht2", column_title = "Heatmap 2", heatmap_legend_param = list(title_gp = gpar(fontsize = 8)))
 ht1 + ht2

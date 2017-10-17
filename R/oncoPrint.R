@@ -16,10 +16,6 @@
 #                            Set it to ``NULL`` if you don't want to set the order
 # -column_order order of samples. By default the order is calculated by the 'memo sort' method which can visualize
 #                                 the mutual exclusivity across genes. Set it to ``NULL`` if you don't want to set the order
-<<<<<<< HEAD
-=======
-# -show_column_names whether show column names
->>>>>>> bioc/master
 # -show_pct whether show percent values on the left of the oncoprint
 # -pct_gp graphic paramters for percent row annotation
 # -pct_digits digits for percent values
@@ -29,7 +25,6 @@
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -heatmap_legend_param pass to `Heatmap`
 # -top_annotation by default the top annotation contains barplots representing frequency of mutations in every sample.
-<<<<<<< HEAD
 # -top_annotation_height total height of the column annotations on the top.
 # -bottom_annotation a `HeatmapAnnotation` object.
 # -bottom_annotation_height total height of the column annotations on the bottom.
@@ -55,10 +50,6 @@
 #                 The input parameter for this function is a vector which contains level names under each column in ``split``.
 # -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
 #        is appended to a list of heatmaps.
-=======
-# -barplot_ignore specific alterations that you don't want to put on the barplots. If you want to really suppress the top barplot
-#        set ``top_annotation`` to ``NULL``.
->>>>>>> bioc/master
 # -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
 # == details
@@ -82,12 +73,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	alter_fun = alter_fun_list, alter_fun_list = NULL, col, 
 	row_order = oncoprint_row_order(),
 	column_order = oncoprint_column_order(),
-<<<<<<< HEAD
 	show_pct = TRUE, pct_gp = row_names_gp, pct_digits = 0,
-=======
-	show_column_names = FALSE,
-	show_pct = TRUE, pct_gp = gpar(), pct_digits = 0,
->>>>>>> bioc/master
 	axis_gp = gpar(fontsize = 8), 
 	show_row_barplot = TRUE, 
 	row_barplot_width = unit(2, "cm"),
@@ -95,7 +81,6 @@ oncoPrint = function(mat, get_type = function(x) x,
 	heatmap_legend_param = list(title = "Alterations"),
 	top_annotation = HeatmapAnnotation(column_bar = anno_oncoprint_barplot(), 
 		annotation_height = unit(2, "cm")),
-<<<<<<< HEAD
 	top_annotation_height = top_annotation@size,
 	bottom_annotation = new("HeatmapAnnotation"),
     bottom_annotation_height = bottom_annotation@size,
@@ -116,9 +101,6 @@ oncoPrint = function(mat, get_type = function(x) x,
     gap = unit(1, "mm"),
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL,
-=======
-	barplot_ignore = NULL,
->>>>>>> bioc/master
 	...) {
 
 	if(length(names(list(...))) > 0) {
@@ -340,7 +322,6 @@ oncoPrint = function(mat, get_type = function(x) x,
 			z = arr[i, j, ]
 			names(z) = dimnames(arr)[[3]]
 			af(x, y, width, height, z)
-<<<<<<< HEAD
 		},
 		top_annotation = top_annotation,
 		top_annotation_height = top_annotation_height,
@@ -364,11 +345,6 @@ oncoPrint = function(mat, get_type = function(x) x,
 		combined_name_fun = combined_name_fun,
 		width = width,
 		...)
-=======
-		}, show_column_names = show_column_names,
-		top_annotation = top_annotation,
-		heatmap_legend_param = heatmap_legend_param, ...)
->>>>>>> bioc/master
 
 	ht@matrix_param$oncoprint = list()
 	ht@matrix_param$oncoprint$arr = arr
@@ -424,11 +400,7 @@ unify_mat_list = function(mat_list, default = 0) {
 
 
 # == title
-<<<<<<< HEAD
 # Column barplot annotation for oncoPrint
-=======
-# Column barplot annotaiton for oncoPrint
->>>>>>> bioc/master
 #
 # == details
 # This function is only used for column annotation

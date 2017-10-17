@@ -6,11 +6,7 @@ draw(anno, c(1, 4, 3, 5, 2))
 dev.off()
 
 test_that("discrete color mapping", {
-<<<<<<< HEAD
 	expect_that(show(anno), prints_text("An annotation with discrete color mapping"))
-=======
-	expect_that(show(anno), prints_text("An annotaiton with discrete color mapping"))
->>>>>>> bioc/master
 })
 
 pdf(NULL)
@@ -23,11 +19,7 @@ draw(anno, 1:10)
 dev.off()
 
 test_that("continuous color mapping", {
-<<<<<<< HEAD
 	expect_that(show(anno), prints_text("An annotation with continuous color mapping"))
-=======
-	expect_that(show(anno), prints_text("An annotaiton with continuous color mapping"))
->>>>>>> bioc/master
 })
 
 pdf(NULL)

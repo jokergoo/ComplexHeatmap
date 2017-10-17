@@ -245,7 +245,6 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 			} else if(is.atomic(anno_arg_list[[ag]])) {
 
 			    if(is.null(simple_length)) {
-<<<<<<< HEAD
 			    	if(is.matrix(anno_arg_list[[ag]])) {
 			    		simple_length = nrow(anno_arg_list[[ag]])
 			    	} else {
@@ -261,11 +260,6 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 			    			stop("length of simple annotations differ.")
 			    		}
 			    	}
-=======
-			    	simple_length = length(anno_arg_list[[ag]])
-			    } else if(length(anno_arg_list[[ag]]) != simple_length) {
-			    	stop("length of simple annotations differ.")
->>>>>>> bioc/master
 			    }
 				if(missing(col)) {
 			        anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, 
@@ -322,7 +316,6 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 
 	if(length(anno_size) == 1) {
 		if(!is.unit(anno_size)) {
-<<<<<<< HEAD
 			anno_size = sapply(anno_list, function(x) {
 				if(is_simple_annotation(x)) {
 					return(1)
@@ -332,9 +325,6 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 					return(2)
 				}
 			})
-=======
-			anno_size = rep(anno_size, n_total_anno)
->>>>>>> bioc/master
 		}
 	}
 
