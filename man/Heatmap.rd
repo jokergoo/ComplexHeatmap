@@ -70,7 +70,7 @@ Heatmap(matrix, col, name,
     heatmap_legend_param = list(title = name),
     use_raster = FALSE,
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
-    raster_quality = 1,
+    raster_quality = 2,
     raster_device_param = list())
 }
 \arguments{
