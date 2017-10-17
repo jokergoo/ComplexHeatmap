@@ -1,6 +1,9 @@
 export('+.AdditiveUnit')
 export('grid.dendrogram')
+<<<<<<< HEAD
 export('grid.dendrogram2')
+=======
+>>>>>>> bioc/master
 export(AdditiveUnit)
 export(ColorMapping)
 export(Heatmap)
@@ -8,7 +11,10 @@ export(HeatmapAnnotation)
 export(HeatmapList)
 export(Legend)
 export(SingleAnnotation)
+<<<<<<< HEAD
 export(adjust_dend_by_leaf_width)
+=======
+>>>>>>> bioc/master
 export(anno_barplot)
 export(anno_boxplot)
 export(anno_density)
@@ -99,7 +105,10 @@ exportMethods(set_component_height)
 import(grDevices)
 import(graphics)
 import(grid)
+<<<<<<< HEAD
 import(methods)
+=======
+>>>>>>> bioc/master
 import(stats)
 importFrom("GetoptLong", qq)
 importFrom("GetoptLong", qq.options)
@@ -111,5 +120,15 @@ importFrom("circlize", rand_color)
 importFrom("circlize", smartAlign)
 importFrom("colorspace", diverge_hcl)
 importFrom("colorspace", rainbow_hcl)
+<<<<<<< HEAD
+=======
+importFrom("dendextend", "labels<-")
+importFrom("dendextend", get_branches_heights)
+importFrom("dendextend", nnodes)
+importFrom("methods", "new", "show")
+importFrom("methods", setClass)
+importFrom("methods", setGeneric)
+importFrom("methods", setMethod)
+>>>>>>> bioc/master
 importFrom("utils", "getFromNamespace")
 

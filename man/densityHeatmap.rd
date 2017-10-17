@@ -9,7 +9,10 @@ Use colors to represent density distribution
 \usage{
 densityHeatmap(data,
     col = rev(brewer.pal(11, "Spectral")),
+<<<<<<< HEAD
     density_param = list(na.rm = TRUE),
+=======
+>>>>>>> bioc/master
     color_space = "LAB",
     anno = NULL,
     ylab = deparse(substitute(data)),
@@ -34,7 +37,10 @@ densityHeatmap(data,
 
   \item{data}{a matrix or a list. If it is a matrix, density will be calculated by columns.}
   \item{col}{a list of colors that density values are mapped to.}
+<<<<<<< HEAD
   \item{density_param}{parameters send to \code{\link[stats]{density}}, \code{na.rm} is enforced to \code{TRUE}.}
+=======
+>>>>>>> bioc/master
   \item{color_space}{the color space in which colors are interpolated. Pass to \code{\link[circlize]{colorRamp2}}.}
   \item{anno}{annotation for the matrix columns or the list. The value should be a vector or a data frame  and colors for annotations are randomly assigned. If you want to customize the annotation colors, use a \code{\link{HeatmapAnnotation-class}} object directly.}
   \item{ylab}{label on y-axis in the plot}
@@ -61,9 +67,12 @@ To visualize data distribution in a matrix or in a list, sometimes we use boxplo
 Here we use colors to map the density values and visualize distribution of values
 in each column (or each vector in the list) through a heatmap. It is useful if you have huge number 
 of columns in \code{data} to visualize.
+<<<<<<< HEAD
 
 The density matrix is generated with 500 rows ranging between the maximun and minimal values in all densities.
 The density values in each row are linearly intepolated between the two density values at the two nearest bounds.
+=======
+>>>>>>> bioc/master
 }
 \value{
 No value is returned.

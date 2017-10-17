@@ -191,7 +191,11 @@ Heatmap = setClass("Heatmap",
 # -bottom_annotation_height total height of the column annotations on the bottom.
 # -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering.
 #     For each row-clusters, hierarchical clustering is still applied with parameters above.
+<<<<<<< HEAD
 # -km_title row title for each cluster when ``km`` is set. It must a text with format of ".*\%i.*" where "\%i" is replaced by the index of the cluster.
+=======
+# -km_title row title for each cluster when ``km`` is set. It must a text with format of "*\%i*" where "\%i" is replaced by the index of the cluster.
+>>>>>>> bioc/master
 # -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
 #        indicating rows are to be split according to the split on the tree.
 # -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object. If it is a vector, the order corresponds
@@ -202,8 +206,12 @@ Heatmap = setClass("Heatmap",
 #        is appended to a list of heatmaps.
 # -show_heatmap_legend whether show heatmap legend?
 # -heatmap_legend_param a list contains parameters for the heatmap legend. See `color_mapping_legend,ColorMapping-method` for all available parameters.
+<<<<<<< HEAD
 # -use_raster whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if ``cell_fun``
 #       is set, ``use_raster`` is enforced to be ``FALSE``.
+=======
+# -use_raster whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge.
+>>>>>>> bioc/master
 # -raster_device graphic device which is used to generate the raster image
 # -raster_quality a value set to larger than 1 will improve the quality of the raster image.
 # -raster_device_param a list of further parameters for the selected graphic device
@@ -231,7 +239,11 @@ Heatmap = function(matrix, col, name,
     na_col = "grey", 
     color_space = "LAB",
     rect_gp = gpar(col = NA), 
+<<<<<<< HEAD
     cell_fun = NULL,
+=======
+    cell_fun = function(j, i, x, y, width, height, fill) NULL,
+>>>>>>> bioc/master
     row_title = character(0), 
     row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), 
@@ -270,11 +282,19 @@ Heatmap = function(matrix, col, name,
     column_order = NULL,
     row_names_side = c("right", "left"), 
     show_row_names = TRUE, 
+<<<<<<< HEAD
     row_names_max_width = default_row_names_max_width(), 
     row_names_gp = gpar(fontsize = 12), 
     column_names_side = c("bottom", "top"), 
     show_column_names = TRUE, 
     column_names_max_height = default_column_names_max_height(), 
+=======
+    row_names_max_width = unit(4, "cm"), 
+    row_names_gp = gpar(fontsize = 12), 
+    column_names_side = c("bottom", "top"), 
+    show_column_names = TRUE, 
+    column_names_max_height = unit(4, "cm"), 
+>>>>>>> bioc/master
     column_names_gp = gpar(fontsize = 12),
     top_annotation = new("HeatmapAnnotation"),
     top_annotation_height = top_annotation@size,
@@ -287,10 +307,17 @@ Heatmap = function(matrix, col, name,
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, 
     show_heatmap_legend = TRUE,
+<<<<<<< HEAD
     heatmap_legend_param = list(title = name),
     use_raster = FALSE, 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
+=======
+    heatmap_legend_param = list(title = name, color_bar = "discrete"),
+    use_raster = FALSE, 
+    raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
+    raster_quality = 1,
+>>>>>>> bioc/master
     raster_device_param = list()) {
 
     # re-define some of the argument values according to global settings
@@ -501,9 +528,12 @@ Heatmap = function(matrix, col, name,
     .Object@row_names_param$side = match.arg(row_names_side)[1]
     .Object@row_names_param$show = show_row_names
     .Object@row_names_param$gp = check_gp(row_names_gp)
+<<<<<<< HEAD
     default_row_names_max_width = function() {
         min(unit.c(unit(6, "cm")), max_text_width(rownames(matrix), gp = .Object@row_names_param$gp))
     }
+=======
+>>>>>>> bioc/master
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
 
     if(is.null(colnames(matrix))) {
@@ -512,9 +542,12 @@ Heatmap = function(matrix, col, name,
     .Object@column_names_param$side = match.arg(column_names_side)[1]
     .Object@column_names_param$show = show_column_names
     .Object@column_names_param$gp = check_gp(column_names_gp)
+<<<<<<< HEAD
     default_column_names_max_height = function() {
         min(unit.c(unit(6, "cm")), max_text_width(colnames(matrix), gp = .Object@column_names_param$gp))
     }
+=======
+>>>>>>> bioc/master
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
 
     if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
@@ -1296,11 +1329,14 @@ setMethod(f = "draw_heatmap_body",
     y = (rev(seq_len(nr)) - 0.5) / nr
     expand_index = expand.grid(seq_len(nr), seq_len(nc))
     
+<<<<<<< HEAD
     cell_fun = object@matrix_param$cell_fun
     if(!is.null(cell_fun)) {
         use_raster = FALSE
     }
         
+=======
+>>>>>>> bioc/master
     if(use_raster) {
         # write the image into a temporary file and read it back
         device_info = switch(raster_device,
@@ -1323,6 +1359,7 @@ setMethod(f = "draw_heatmap_body",
         if(heatmap_width <= 0 || heatmap_height <= 0) {
             stop("The width or height of the raster image is zero, maybe you forget to turn off the previous graphic device or it was corrupted. Run `dev.off()` to close it.")
         }
+<<<<<<< HEAD
         tmp_dir = "."
         # dir.create(tmp_dir, showWarnings = FALSE)
         temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = tmp_dir, fileext = paste0(".", device_info[2]))
@@ -1378,10 +1415,43 @@ setMethod(f = "draw_heatmap_body",
         }
     }
 
+=======
+        temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = ".", fileext = paste0(".", device_info[2]))
+        #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
+        device_fun = getFromNamespace(raster_device, ns = device_info[1])
+        do.call("device_fun", c(list(filename = temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality), raster_device_param))
+    }
+
+    if(any(names(gp) %in% c("type"))) {
+        if(gp$type == "none") {
+        } else {
+            grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
+        }
+    } else {
+        grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, "npc"), height = unit(1/nr, "npc"), gp = do.call("gpar", c(list(fill = col_matrix), gp)))
+    }
+
+    cell_fun = object@matrix_param$cell_fun
+    for(i in row_order) {
+        for(j in column_order) {
+            cell_fun(j, i, unit(x[which(column_order == j)], "npc"), unit(y[which(row_order == i)], "npc"), unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[which(row_order == i), which(column_order == j)])
+        }
+    }
+
+    if(use_raster) {
+        dev.off()
+        image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
+        image = as.raster(image)
+        grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+        file.remove(temp_image)
+    }
+
+>>>>>>> bioc/master
     upViewport()
 
 })
 
+<<<<<<< HEAD
 is_windows = function() {
     tolower(.Platform$OS.type) == "windows"
 }
@@ -1391,6 +1461,8 @@ R_binary = function() {
     return(file.path(R.home("bin"), R_exe))
 }
 
+=======
+>>>>>>> bioc/master
 # == title
 # Draw dendrogram on row or column
 #
@@ -1445,7 +1517,11 @@ setMethod(f = "draw_dend",
 
     dend = as.dendrogram(hc)
     n = length(labels(dend))
+<<<<<<< HEAD
     if(nobs(dend) <= 1) {
+=======
+    if(nnodes(dend) <= 1) {
+>>>>>>> bioc/master
         return(invisible(NULL))
     }
 

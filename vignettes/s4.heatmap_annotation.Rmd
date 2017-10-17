@@ -194,7 +194,11 @@ ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
 draw(ha, 1:10)
 ```
 
+<<<<<<< HEAD
 You can mix simple annotations and complex annotations:
+=======
+You can mix simple annotaitons and complex annotations:
+>>>>>>> bioc/master
 
 ```{r heatmap_annotation_mixed_with_complex, fig.width = 7, fig.height = 2}
 ha = HeatmapAnnotation(df = df, 

@@ -1050,7 +1050,11 @@ column_anno_text = function(...) {
 # == param
 # -at numeric index in the original matrix
 # -labels corresponding labels
+<<<<<<< HEAD
 # -which column annotation or row annotation
+=======
+# -which column annotaiton or row annotation
+>>>>>>> bioc/master
 # -side side of the labels. If it is a column annotation, permitted values are "top" and "bottom";
 #       If it is a row annotation, permitted values are "left" and "right".
 # -lines_gp graphic settings for the segments
@@ -1137,7 +1141,11 @@ anno_link = function(at, labels, which = c("column", "row"), side = ifelse(which
 					grid.segments(rep(link_width*(1/3), n2), n-i2+1, rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
 					grid.segments(rep(link_width*(2/3), n2), h, rep(link_width, n2), h, default.units = "native", gp = lines_gp)
 				} else {
+<<<<<<< HEAD
 					grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
+=======
+					grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
+>>>>>>> bioc/master
 					link_width = link_width - unit(1, "mm")
 					grid.segments(unit(rep(1, n2), "npc"), n-i2+1, unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = lines_gp)
 					grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
@@ -1229,6 +1237,7 @@ row_anno_link = function(...) {
 column_anno_link = function(...) {
 	anno_link(..., which = "column")
 }
+<<<<<<< HEAD
 
 
 grid.xaxis = function(main = TRUE, at = NULL, label = NULL, gp = gpar()) {
@@ -1251,3 +1260,5 @@ grid.xaxis = function(main = TRUE, at = NULL, label = NULL, gp = gpar()) {
 		grid.text(label, at, unit(1, "npc") + unit(rep(1, n), "lines"), rot = 90, just = "left", gp = gp, default.units = "native")
 	}
 }
+=======
+>>>>>>> bioc/master

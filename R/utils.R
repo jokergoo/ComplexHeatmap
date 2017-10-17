@@ -2,12 +2,16 @@
 # environment that contains global variables
 INDEX_ENV = new.env()
 
+<<<<<<< HEAD
 INDEX_ENV$I_FIGURE = 0
+=======
+>>>>>>> bioc/master
 INDEX_ENV$I_HEATMAP = 0
 INDEX_ENV$I_ANNOTATION = 0
 INDEX_ENV$I_ROW_ANNOTATION = 0
 INDEX_ENV$I_COLOR_MAPPING = 0
 
+<<<<<<< HEAD
 get_figure_index = function() {
     INDEX_ENV$I_FIGURE
 }
@@ -16,6 +20,8 @@ increase_figure_index = function() {
     INDEX_ENV$I_FIGURE = INDEX_ENV$I_FIGURE + 1
 }
 
+=======
+>>>>>>> bioc/master
 get_heatmap_index = function() {
 	INDEX_ENV$I_HEATMAP
 }
@@ -66,8 +72,12 @@ default_col = function(x, main_matrix = FALSE) {
 
     if(is.character(x)) {  # discrete
         levels = unique(x)
+<<<<<<< HEAD
         #colors = hsv(runif(length(levels)), 1-runif(1)/2, 1-runif(1)/2)
         colors = rand_color(length(levels), luminosity = sample(c("bright", "light", "dark", "random"), 1))
+=======
+        colors = hsv(runif(length(levels)), 1-runif(1)/2, 1-runif(1)/2)
+>>>>>>> bioc/master
         names(colors) = levels
         return(colors)
     } else if(is.numeric(x)) {
@@ -78,8 +88,12 @@ default_col = function(x, main_matrix = FALSE) {
                 col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
             }
         } else {
+<<<<<<< HEAD
             #col_fun = colorRamp2(range(min(x), max(x)), c("white", hsv(runif(1), 1, 1)))
             col_fun = colorRamp2(range(min(x), max(x)), c("white", rand_color(1, luminosity = sample(c("bright", "dark"), 1))))
+=======
+            col_fun = colorRamp2(range(min(x), max(x)), c("white", hsv(runif(1), 1, 1)))
+>>>>>>> bioc/master
         }
         return(col_fun)
     }
@@ -133,6 +147,11 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
             leaf
         }
     }
+<<<<<<< HEAD
+=======
+
+    labels(dend) = paste0("leaf_", seq_len(nnodes(dend)))
+>>>>>>> bioc/master
     
     draw.d = function(dend, max_height, facing = "bottom", order = "normal", max_width = 0, env = NULL) {
         leaf = attr(dend, "leaf")
@@ -283,6 +302,7 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
 }
 
 # == title
+<<<<<<< HEAD
 # Adjust dendrogram based on width of leaves
 #
 # == param
@@ -564,6 +584,8 @@ grid.dendrogram2 = function(dend, facing = c("bottom", "top", "left", "right"),
 }
 
 # == title
+=======
+>>>>>>> bioc/master
 # Calculate pairwise distance from a matrix
 #
 # == param
@@ -654,12 +676,17 @@ get_dend_order = function(x) {
 
 # can only cut dendrogram for which branches at every node are two
 cut_dendrogram = function(dend, k) {
+<<<<<<< HEAD
     h = sort(dend_branches_heights(dend), decreasing = TRUE)
+=======
+    h = sort(get_branches_heights(dend), decreasing = TRUE)
+>>>>>>> bioc/master
     height = (h[k-1] + h[k])/2
     trees = cut(dend, h = height)
     trees$lower
 }
 
+<<<<<<< HEAD
 dend_branches_heights = function(d, v = NULL) {
     if(!is.leaf(d)) {
         v = c(v, attr(d, "height"))
@@ -669,6 +696,8 @@ dend_branches_heights = function(d, v = NULL) {
     return(v)
 }
 
+=======
+>>>>>>> bioc/master
 recycle_gp = function(gp, n = 1) {
     for(i in seq_along(gp)) {
         x = gp[[i]]
@@ -789,9 +818,12 @@ list_component = function() {
 # max_text_width(x, gp = gpar(fontsize = 10))
 #
 max_text_width = function(text, ...) {
+<<<<<<< HEAD
     if(is.null(text)) {
         return(unit(0, "mm"))
     }
+=======
+>>>>>>> bioc/master
     max(do.call("unit.c", lapply(text, function(x) grobWidth(textGrob(x, ...)))))
 }
 
@@ -819,8 +851,11 @@ max_text_width = function(text, ...) {
 # max_text_height(x, gp = gpar(fontsize = 10))
 #
 max_text_height = function(text, ...) {
+<<<<<<< HEAD
     if(is.null(text)) {
         return(unit(0, "mm"))
     }
+=======
+>>>>>>> bioc/master
     max(do.call("unit.c", lapply(text, function(x) grobHeight(textGrob(x, ...)))))
 }

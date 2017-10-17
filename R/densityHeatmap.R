@@ -5,7 +5,10 @@
 # == param
 # -data  a matrix or a list. If it is a matrix, density will be calculated by columns.
 # -col a list of colors that density values are mapped to.
+<<<<<<< HEAD
 # -density_param parameters send to `stats::density`, ``na.rm`` is enforced to ``TRUE``.
+=======
+>>>>>>> bioc/master
 # -color_space the color space in which colors are interpolated. Pass to `circlize::colorRamp2`.
 # -anno annotation for the matrix columns or the list. The value should be a vector or a data frame 
 #       and colors for annotations are randomly assigned. If you want to customize the annotation colors,
@@ -34,9 +37,12 @@
 # in each column (or each vector in the list) through a heatmap. It is useful if you have huge number 
 # of columns in ``data`` to visualize.
 #
+<<<<<<< HEAD
 # The density matrix is generated with 500 rows ranging between the maximun and minimal values in all densities.
 # The density values in each row are linearly intepolated between the two density values at the two nearest bounds.
 #
+=======
+>>>>>>> bioc/master
 # == value
 # No value is returned.
 #
@@ -58,7 +64,10 @@
 #
 densityHeatmap = function(data, 
 	col = rev(brewer.pal(11, "Spectral")),
+<<<<<<< HEAD
 	density_param = list(na.rm = TRUE),
+=======
+>>>>>>> bioc/master
 	color_space = "LAB", 
 	anno = NULL, 
 	ylab = deparse(substitute(data)), 
@@ -79,6 +88,7 @@ densityHeatmap = function(data,
 	column_order = NULL,
 	...) {
 
+<<<<<<< HEAD
 	density_param$na.rm = TRUE
 
 	if(is.matrix(data)) {
@@ -87,6 +97,14 @@ densityHeatmap = function(data,
 		mean_value = apply(data, 2, mean, na.rm = TRUE)
 	} else if(is.data.frame(data) || is.list(data)) {
 		density_list = lapply(data, function(x) do.call(density, c(list(x = x), density_param)))
+=======
+	if(is.matrix(data)) {
+		density_list = apply(data, 2, density, na.rm = TRUE)
+		quantile_list = apply(data, 2, quantile, na.rm = TRUE)
+		mean_value = apply(data, 2, mean, na.rm = TRUE)
+	} else if(is.data.frame(data) || is.list(data)) {
+		density_list = lapply(data, density, na.rm = TRUE)
+>>>>>>> bioc/master
 		quantile_list = sapply(data, quantile, na.rm = TRUE)
 		mean_value = sapply(data, mean, na.rm = TRUE)
 	} else {

@@ -35,8 +35,12 @@ SingleAnnotation = setClass("SingleAnnotation",
 		show_legend = "logical",
 		which = "character",
 		name_to_data_vp = "logical",
+<<<<<<< HEAD
 		name_param = "list",
         is_anno_matrix = "logical"
+=======
+		name_param = "list"
+>>>>>>> bioc/master
 	),
 	prototype = list(
 		color_mapping = NULL,
@@ -138,6 +142,7 @@ SingleAnnotation = function(name, value, col, fun,
         stop("`name_rot` can only take values in c(0, 90, 180, 270)")
     }
 
+<<<<<<< HEAD
     .Object@is_anno_matrix = FALSE
     use_mat_column_names = FALSE
     if(!missing(value)) {
@@ -156,11 +161,15 @@ SingleAnnotation = function(name, value, col, fun,
         }
     }
 
+=======
+    
+>>>>>>> bioc/master
     if(which == "column") {
     	if(!name_side %in% c("left", "right")) {
     		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
     	}
     	if(name_side == "left") {
+<<<<<<< HEAD
     		
             if(use_mat_column_names) {
                 name_x = unit(rep(0, use_mat_nc), "npc") - name_offset
@@ -169,6 +178,10 @@ SingleAnnotation = function(name, value, col, fun,
                 name_x = unit(0, "npc") - name_offset
                 name_y = unit(0.5, "npc")
             }
+=======
+    		name_x = unit(0, "npc") - name_offset
+    		name_y = unit(0.5, "npc")
+>>>>>>> bioc/master
             if(name_rot == 0) {
                 name_just = "right"
             } else if(name_rot == 90) {
@@ -179,6 +192,7 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "top"
             }
     	} else {
+<<<<<<< HEAD
             if(use_mat_column_names) {
                 name_x = unit(rep(1, use_mat_nc), "npc") + name_offset
                 name_y = unit((use_mat_nc - seq_len(use_mat_nc) + 0.5)/use_mat_nc, "npc")
@@ -186,6 +200,10 @@ SingleAnnotation = function(name, value, col, fun,
         		name_x = unit(1, "npc") + name_offset
         		name_y = unit(0.5, "npc")
             }
+=======
+    		name_x = unit(1, "npc") + name_offset
+    		name_y = unit(0.5, "npc")
+>>>>>>> bioc/master
             if(name_rot == 0) {
                 name_just = "left"
             } else if(name_rot == 90) {
@@ -201,6 +219,7 @@ SingleAnnotation = function(name, value, col, fun,
     		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
     	}
     	if(name_side == "top") {
+<<<<<<< HEAD
             if(use_mat_column_names) {
                 name_x = unit((seq_len(use_mat_nc) - 0.5)/use_mat_nc, "npc")
                 name_y = unit(rep(1, use_mat_nc), "npc") + name_offset
@@ -208,6 +227,10 @@ SingleAnnotation = function(name, value, col, fun,
         		name_x = unit(0.5, "npc")
         		name_y = unit(1, "npc") + name_offset
             }
+=======
+    		name_x = unit(0.5, "npc")
+    		name_y = unit(1, "npc") + name_offset
+>>>>>>> bioc/master
             if(name_rot == 0) {
                 name_just = "bottom"
             } else if(name_rot == 90) {
@@ -218,6 +241,7 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "right"
             }
     	} else {
+<<<<<<< HEAD
             if(use_mat_column_names) {
                 name_x = unit((seq_len(use_mat_nc) - 0.5)/use_mat_nc, "npc")
                 name_y = unit(rep(0, use_mat_nc), "npc") - name_offset
@@ -225,6 +249,10 @@ SingleAnnotation = function(name, value, col, fun,
         		name_x = unit(0.5, "npc")
         		name_y = unit(0, "npc") - name_offset
             }
+=======
+    		name_x = unit(0.5, "npc")
+    		name_y = unit(0, "npc") - name_offset
+>>>>>>> bioc/master
             if(name_rot == 0) {
                 name_just = "top"
             } else if(name_rot == 90) {
@@ -241,18 +269,38 @@ SingleAnnotation = function(name, value, col, fun,
     						  y = name_y,
     						  just = name_just,
     	                      gp = check_gp(name_gp),
+<<<<<<< HEAD
     	                      rot = name_rot,
                               side = name_side)
+=======
+    	                      rot = name_rot)
+>>>>>>> bioc/master
 
     gp = check_gp(gp)
     if(!is.null(gp$fill)) {
     	stop("You should not set `fill`.")
     }
 
+<<<<<<< HEAD
+=======
+    if(!missing(value)) {
+	    if(is.logical(value)) {
+	    	value = as.character(value)
+	    }
+	    if(is.factor(value)) {
+            value = as.vector(value)
+        }
+	}
+
+>>>>>>> bioc/master
     if(missing(fun)) {
     	if(missing(col)) {
     		col = default_col(value)
     	}
+<<<<<<< HEAD
+=======
+        
+>>>>>>> bioc/master
     	if(is.atomic(col)) {
     	    if(is.null(names(col))) {
                 if(is.factor(value)) {
@@ -280,6 +328,7 @@ SingleAnnotation = function(name, value, col, fun,
 	        .Object@fun = function(index) {
 	        	n = length(index)
 				x = (seq_len(n) - 0.5) / n
+<<<<<<< HEAD
                 if(is.matrix(value)) {
                     nc = ncol(value)
                     for(i in seq_len(nc)) {
@@ -290,11 +339,17 @@ SingleAnnotation = function(name, value, col, fun,
     				fill = map_to_colors(color_mapping, value[index])
     				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
                 }
+=======
+				fill = map_to_colors(color_mapping, value[index])
+				#l = which(!is.na(value[index]))
+				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+>>>>>>> bioc/master
 			}
 		} else {
 			.Object@fun = function(index, k = NULL, N = NULL) {
 				n = length(index)
 				y = (n - seq_len(n) + 0.5) / n
+<<<<<<< HEAD
                 if(is.matrix(value)) {
                     nc = ncol(value)
                     for(i in seq_len(nc)) {
@@ -305,6 +360,11 @@ SingleAnnotation = function(name, value, col, fun,
     				fill = map_to_colors(color_mapping, value[index])
     				grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
                 }
+=======
+				fill = map_to_colors(color_mapping, value[index])
+				#l = which(!is.na(value[index]))
+				grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+>>>>>>> bioc/master
 			}
 		}
 
@@ -347,7 +407,11 @@ SingleAnnotation = function(name, value, col, fun,
 # == param
 # -object a `SingleAnnotation-class` object.
 # -index a vector of orders
+<<<<<<< HEAD
 # -k if row annotation is splitted, the value identifies which row slice. It is only used for the names of the viewport
+=======
+# -k if row annotation is splitted, the value identifies which row slice. It is only used for the naems of the viewport
+>>>>>>> bioc/master
 #    which contains the annotation graphics.
 # -n total number of row slices
 #
@@ -386,6 +450,7 @@ setMethod(f = "draw",
 	}
 	# add annotation name
 	if(object@name_param$show) {
+<<<<<<< HEAD
         draw_name = TRUE
         if(object@which == "row") {
             if(!is.null(k)) {
@@ -415,6 +480,10 @@ setMethod(f = "draw",
         			rot = object@name_param$rot, gp = object@name_param$gp)
             }
         }
+=======
+		grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+			rot = object@name_param$rot, gp = object@name_param$gp)
+>>>>>>> bioc/master
 	}
 	upViewport()
 
@@ -435,7 +504,11 @@ setMethod(f = "draw",
 setMethod(f = "show",
 	signature = "SingleAnnotation",
 	definition = function(object) {
+<<<<<<< HEAD
 	if(is_fun_annotation(object)) {
+=======
+	if(is.null(object@color_mapping)) {
+>>>>>>> bioc/master
 		cat("An annotation with self-defined function\n")
 		cat("name:", object@name, "\n")
 		cat("position:", object@which, "\n")
@@ -444,6 +517,7 @@ setMethod(f = "show",
 		cat("name:", object@name, "\n")
 		cat("position:", object@which, "\n")
 		cat("show legend:", object@show_legend, "\n")
+<<<<<<< HEAD
         if(is_matrix_annotation(object)) {
             cat("a matrix with", attr(object@is_anno_matrix, "k"), "columns\n")
         }
@@ -462,3 +536,7 @@ is_matrix_annotation = function(single_anno) {
 is_fun_annotation = function(single_anno) {
     is.null(single_anno@color_mapping)
 }
+=======
+	}
+})
+>>>>>>> bioc/master

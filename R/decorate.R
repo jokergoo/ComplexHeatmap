@@ -44,11 +44,14 @@
 #
 decorate_heatmap_body = function(heatmap, code, slice = 1, envir = new.env(parent = parent.frame())) {
 
+<<<<<<< HEAD
 	current_vp = current.viewport()$name
 	if(current_vp == "ROOT") {
 		current_vp = "global"
 	}
 	
+=======
+>>>>>>> bioc/master
 	if(is.null(slice)) {
 		vp_name = paste0(heatmap, "_heatmap_body_", 1)
 		seekViewport(vp_name)
@@ -60,7 +63,11 @@ decorate_heatmap_body = function(heatmap, code, slice = 1, envir = new.env(paren
 
 	eval(substitute(code), envir = envir)
 
+<<<<<<< HEAD
 	seekViewport(current_vp)
+=======
+	seekViewport("global")
+>>>>>>> bioc/master
 }
 
 # == title
@@ -103,11 +110,14 @@ decorate_heatmap_body = function(heatmap, code, slice = 1, envir = new.env(paren
 decorate_dend = function(heatmap, code, slice = 1, which = c("column", "row"), 
 	envir = new.env(parent = parent.frame())) {
 	
+<<<<<<< HEAD
 	current_vp = current.viewport()$name
 	if(current_vp == "ROOT") {
 		current_vp = "global"
 	}
 
+=======
+>>>>>>> bioc/master
 	which = match.arg(which)[1]
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_dend_", which)
@@ -126,7 +136,11 @@ decorate_dend = function(heatmap, code, slice = 1, which = c("column", "row"),
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
 
+<<<<<<< HEAD
 	seekViewport(current_vp)
+=======
+	seekViewport("global")
+>>>>>>> bioc/master
 }
 
 # == title
@@ -222,11 +236,14 @@ decorate_row_dend = function(..., envir = new.env(parent = parent.frame())) {
 decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"), 
 	envir = new.env(parent = parent.frame())) {
 	
+<<<<<<< HEAD
 	current_vp = current.viewport()$name
 	if(current_vp == "ROOT") {
 		current_vp = "global"
 	}
 
+=======
+>>>>>>> bioc/master
 	which = match.arg(which)[1]
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_", which, "_names")
@@ -243,7 +260,11 @@ decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"
 
 	seekViewport(vp_name)
 	eval(substitute(code), envir = envir)
+<<<<<<< HEAD
 	seekViewport(current_vp)
+=======
+	seekViewport("global")
+>>>>>>> bioc/master
 }
 
 # == title
@@ -327,11 +348,14 @@ decorate_column_names = function(..., envir = new.env(parent = parent.frame())) 
 decorate_title = function(heatmap, code, slice = 1, which = c("column", "row"), 
 	envir = new.env(parent = parent.frame())) {
 	
+<<<<<<< HEAD
 	current_vp = current.viewport()$name
 	if(current_vp == "ROOT") {
 		current_vp = "global"
 	}
 
+=======
+>>>>>>> bioc/master
 	which = match.arg(which)[1]
 	if(which == "column") {
 		vp_name = paste0(heatmap, "_", which, "_title")
@@ -348,7 +372,11 @@ decorate_title = function(heatmap, code, slice = 1, which = c("column", "row"),
 
 	seekViewport(vp_name)
 	eval(substitute(code), envir = envir)
+<<<<<<< HEAD
 	seekViewport(current_vp)
+=======
+	seekViewport("global")
+>>>>>>> bioc/master
 }
 
 # == title
@@ -436,11 +464,14 @@ decorate_column_title = function(..., envir = new.env(parent = parent.frame())) 
 #
 decorate_annotation = function(annotation, code, slice, envir = new.env(parent = parent.frame())) {
 
+<<<<<<< HEAD
 	current_vp = current.viewport()$name
 	if(current_vp == "ROOT") {
 		current_vp = "global"
 	}
 	
+=======
+>>>>>>> bioc/master
 	if(missing(slice)) {
 		vp_name = paste0("annotation_", annotation)
 		o = try(seekViewport(vp_name), silent = TRUE)
@@ -465,6 +496,10 @@ decorate_annotation = function(annotation, code, slice, envir = new.env(parent =
 	}
 
 	eval(substitute(code), envir = envir)
+<<<<<<< HEAD
 	seekViewport(current_vp)
+=======
+	seekViewport("global")
+>>>>>>> bioc/master
 }
 

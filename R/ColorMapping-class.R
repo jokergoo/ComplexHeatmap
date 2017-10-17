@@ -180,7 +180,10 @@ setMethod(f = "map_to_colors",
 	x2 = vector(length = length(x))
 
 	if(object@type == "discrete") {
+<<<<<<< HEAD
 		x[grepl("^\\s*$", x)] = NA
+=======
+>>>>>>> bioc/master
 		lna = is.na(x)
 
 		if(is.numeric(x)) x = as.character(x)
@@ -212,10 +215,17 @@ setMethod(f = "map_to_colors",
 # -title title of the legend, by default it is the name of the legend
 # -title_gp graphical parameters for legend title
 # -title_position position of the title
+<<<<<<< HEAD
 # -color_bar a string of "continous" or "discrete". If the mapping is continuous, whether show the legend as discrete color bar or continuous color bar
 # -grid_height height of each legend grid.
 # -grid_width width of each legend grid.
 # -border color for legend grid borders.
+=======
+# -color_bar if the mapping is continuous, whether show the legend as discrete color bar or continuous color bar
+# -grid_height height of each legend grid.
+# -grid_width width of each legend grid.
+# -grid_border color for legend grid borders.
+>>>>>>> bioc/master
 # -at break values of the legend
 # -labels labels corresponding to break values
 # -labels_gp graphcial parameters for legend labels
@@ -245,10 +255,17 @@ setMethod(f = "color_mapping_legend",
 	title = object@name,
 	title_gp = gpar(fontsize = 10, fontface = "bold"),
 	title_position = c("topleft", "topcenter", "leftcenter", "lefttop"),
+<<<<<<< HEAD
 	color_bar = object@type,
 	grid_height = unit(4, "mm"),
 	grid_width = unit(4, "mm"),
 	border = NULL,
+=======
+	color_bar = c("discrete", "continuous"),
+	grid_height = unit(4, "mm"),
+	grid_width = unit(4, "mm"),
+	grid_border = NULL,
+>>>>>>> bioc/master
 	at = object@levels,
 	labels = at,
 	labels_gp = gpar(fontsize = 10),
@@ -268,10 +285,17 @@ setMethod(f = "color_mapping_legend",
 	title_gp = check_gp(title_gp)
 	labels_gp = check_gp(labels_gp)
 
+<<<<<<< HEAD
 	# color_bar = match.arg(color_bar)
 
 	if(object@type == "discrete" && color_bar == "continuous") {
 		stop("'color_bar' can only be set to 'discrete' only if the color mapping is discrete")
+=======
+	color_bar = match.arg(color_bar)
+
+	if(object@type == "discrete" && color_bar == "continuous") {
+		stop("'color_bar' can only be set to 'continuous' only if the color mapping is continuous")
+>>>>>>> bioc/master
 	}
 
 	# get labels
@@ -291,13 +315,21 @@ setMethod(f = "color_mapping_legend",
 			labels = rev(labels)
 		}
 		gf = Legend(at = at, labels = labels, title = title, title_gp = title_gp, grid_height = grid_height,
+<<<<<<< HEAD
 			grid_width = grid_width, border = border, labels_gp = labels_gp, nrow = nrow, ncol = ncol,
+=======
+			grid_width = grid_width, border = grid_border, labels_gp = labels_gp, nrow = nrow, ncol = ncol,
+>>>>>>> bioc/master
 			legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position)
 
 	} else {
 
 		gf = Legend(at = at, labels = labels, col_fun = object@col_fun, title = title, title_gp = title_gp, grid_height = grid_height,
+<<<<<<< HEAD
 			grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction,
+=======
+			grid_width = grid_width, border = grid_border, labels_gp = labels_gp, direction = legend_direction,
+>>>>>>> bioc/master
 			legend_width = legend_width, legend_height = legend_height, title_position = title_position)
 
 	}
