@@ -1356,7 +1356,6 @@ setMethod(f = "draw_heatmap_body",
         image = as.raster(image)
         grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
         file.remove(temp_image)
-        unlink(tmp_dir, TRUE, TRUE)
 
     } else {
         if(any(names(gp) %in% c("type"))) {
