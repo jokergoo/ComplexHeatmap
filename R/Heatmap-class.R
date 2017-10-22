@@ -1345,7 +1345,11 @@ setMethod(f = "draw_heatmap_body",
         q(save = 'no')
         ", code.pattern = "@\\{CODE\\}")
         writeLines(R_cmd, con = temp_R_file)
-        oe = try(system(qq("\'@{R_binary()}\' --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE))
+        if(grepl(" ", temp_R_file)) {
+            oe = try(system(qq("\'@{R_binary()}\' --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE))
+        } else {
+            oe = try(system(qq("\'@{R_binary()}\' --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE))
+        }
         ############################################
         file.remove(temp_R_data)
         file.remove(temp_R_file)
