@@ -1353,13 +1353,13 @@ setMethod(f = "draw_heatmap_body",
         ", code.pattern = "@\\{CODE\\}")
         writeLines(R_cmd, con = temp_R_file)
         if(grepl(" ", temp_R_file)) {
-            if(is_windows) {
+            if(is_windows()) {
                 oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE), silent = TRUE)
             } else {
                 oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE), silent = TRUE)
             }
         } else {
-            if(is_windows) {
+            if(is_windows()) {
                 oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE), silent = TRUE)
             } else {
                 oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE), silent = TRUE)
