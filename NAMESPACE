@@ -112,4 +112,5 @@ importFrom("circlize", smartAlign)
 importFrom("colorspace", diverge_hcl)
 importFrom("colorspace", rainbow_hcl)
 importFrom("utils", "getFromNamespace")
+importFrom("utils", "packageDescription")
 
