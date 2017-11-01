@@ -28,7 +28,7 @@ ColorMapping = setClass("ColorMapping",
 		col_fun = "function", # function to map values to colors
 		type    = "character",  # continuous or discrete
 		name    = "character",  # used to map to the dataset and taken as the title of the legend
-		na_col  = "character"	
+		na_col  = "character"
 	)
 )
 
@@ -38,7 +38,7 @@ ColorMapping = setClass("ColorMapping",
 # == param
 # -name name for this color mapping. The name is automatically generated if it is not specified.
 # -colors discrete colors.
-# -levels levels that correspond to ``colors``. If ``colors`` is name indexed, 
+# -levels levels that correspond to ``colors``. If ``colors`` is name indexed,
 #         ``levels`` can be ignored.
 # -col_fun color mapping function that maps continuous values to colors.
 # -breaks breaks for the continuous color mapping. If ``col_fun`` is
@@ -46,7 +46,7 @@ ColorMapping = setClass("ColorMapping",
 # -na_col colors for ``NA`` values.
 #
 # == detail
-# ``colors`` and ``levels`` are used for discrete color mapping, ``col_fun`` and 
+# ``colors`` and ``levels`` are used for discrete color mapping, ``col_fun`` and
 # ``breaks`` are used for continuous color mapping.
 #
 # == value
@@ -55,7 +55,7 @@ ColorMapping = setClass("ColorMapping",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-ColorMapping = function(name, colors = NULL, levels = NULL, 
+ColorMapping = function(name, colors = NULL, levels = NULL,
 	col_fun = NULL, breaks = NULL, na_col = "#FFFFFF") {
 
 	.Object = new("ColorMapping")
@@ -92,7 +92,7 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 				stop("You should provide breaks.\n")
 			}
 		}
-		
+
 		le1 = grid.pretty(range(breaks))
 		le2 = pretty(breaks, n = 3)
 		if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
@@ -100,7 +100,7 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 		} else {
 			le = le2
 		}
-		
+
 		.Object@colors = col_fun(le)
 		.Object@levels = le
 		.Object@col_fun = col_fun
@@ -174,7 +174,7 @@ setMethod(f = "show",
 setMethod(f = "map_to_colors",
 	signature = "ColorMapping",
 	definition = function(object, x) {
-	
+
 	if(is.factor(x)) x = as.vector(x)
 	original_attr = attributes(x)
 	x2 = vector(length = length(x))
@@ -188,7 +188,7 @@ setMethod(f = "map_to_colors",
 			msg = paste0(object@name, ": cannot map colors to some of the levels:\n", paste(setdiff(x[!lna], object@levels), sep = ", ", collapse = ", "))
 			stop(msg)
 		}
-		
+
 		x2[lna] = object@na_col
 		x2[!lna] = object@colors[ x[!lna] ]
 	} else {
@@ -241,7 +241,7 @@ setMethod(f = "map_to_colors",
 setMethod(f = "color_mapping_legend",
 	signature = "ColorMapping",
 	definition = function(object, ...,
-	plot = TRUE, 
+	plot = TRUE,
 	title = object@name,
 	title_gp = gpar(fontsize = 10, fontface = "bold"),
 	title_position = c("topleft", "topcenter", "leftcenter", "lefttop"),
@@ -291,7 +291,7 @@ setMethod(f = "color_mapping_legend",
 			labels = rev(labels)
 		}
 		gf = Legend(at = at, labels = labels, title = title, title_gp = title_gp, grid_height = grid_height,
-			grid_width = grid_width, border = border, labels_gp = labels_gp, nrow = nrow, ncol = ncol,
+			grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
 			legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position)
 
 	} else {
@@ -301,7 +301,7 @@ setMethod(f = "color_mapping_legend",
 			legend_width = legend_width, legend_height = legend_height, title_position = title_position)
 
 	}
-	
+
 	if(plot) {
 		pushViewport(viewport(..., width = grobWidth(gf), height = grobHeight(gf), name = paste0("legend_", object@name)))
 		grid.draw(gf)
