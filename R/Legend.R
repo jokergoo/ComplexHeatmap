@@ -21,7 +21,7 @@
 # -size size of points
 # -legend_height height of the whole legend, used when ``col_fun`` is specified and ``direction`` is set to ``vertical``
 # -legend_width width of the whole legend, used when ``col_fun`` is specified  and ``direction`` is set to ``horizontal``
-# -direction direction of the continuous legend
+# -direction direction of the continuous or discrete legend
 # -title title of the legend
 # -title_gp graphic parameters of title
 # -title_position position of title according to the legend

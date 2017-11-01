@@ -223,7 +223,7 @@ setMethod(f = "map_to_colors",
 # -ncol if there are too many legend grids, they can be put as an array, this controls number of columns
 # -legend_height height of the legend, only works when ``color_bar`` is ``continuous`` and ``direction`` is ``vertical``
 # -legend_width width of the legend, only works when ``color_bar`` is ``continuous`` and ``direction`` is ``horizontal``
-# -legend_direction when ``color_bar`` is ``continuous``, should the legend be vertical or horizontal?
+# -legend_direction when ``color_bar`` is ``continuous``, should the legend be vertical or horizontal? When ``color_bar`` is ``discrete``, should the items in the legend proceed vertically or horizontally?
 # -param will be parsed if the parameters are specified as a list
 # -... pass to `grid::viewport`.
 #
