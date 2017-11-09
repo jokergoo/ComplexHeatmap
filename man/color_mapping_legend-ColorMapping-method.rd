@@ -44,7 +44,7 @@ Draw legend based on color mapping
   \item{ncol}{if there are too many legend grids, they can be put as an array, this controls number of columns}
   \item{legend_height}{height of the legend, only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{vertical}}
   \item{legend_width}{width of the legend, only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{horizontal}}
-  \item{legend_direction}{when \code{color_bar} is \code{continuous}, should the legend be vertical or horizontal?}
+  \item{legend_direction}{when \code{color_bar} is \code{continuous}, should the legend be vertical or horizontal? When \code{color_bar} is \code{discrete}, should the items in the legend proceed vertically or horizontally?}
   \item{param}{will be parsed if the parameters are specified as a list}
   \item{...}{pass to \code{\link[grid]{viewport}}.}
 
