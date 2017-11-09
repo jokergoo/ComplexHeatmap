@@ -22,6 +22,7 @@ Draw legend based on color mapping
     labels_gp = gpar(fontsize = 10),
     nrow = NULL,
     ncol = 1,
+    by_row = FALSE,
     legend_height = NULL, legend_width = NULL,
     legend_direction = c("vertical", "horizontal"),
     param = NULL)
@@ -42,6 +43,7 @@ Draw legend based on color mapping
   \item{labels_gp}{graphcial parameters for legend labels}
   \item{nrow}{if there are too many legend grids, they can be put as an array, this controls number of rows}
   \item{ncol}{if there are too many legend grids, they can be put as an array, this controls number of columns}
+  \item{by_row}{when there are multiple columns for legends, whether to arrange them by rows.}
   \item{legend_height}{height of the legend, only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{vertical}}
   \item{legend_width}{width of the legend, only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{horizontal}}
   \item{legend_direction}{when \code{color_bar} is \code{continuous}, should the legend be vertical or horizontal? When \code{color_bar} is \code{discrete}, should the items in the legend proceed vertically or horizontally?}

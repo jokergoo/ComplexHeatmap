@@ -221,6 +221,7 @@ setMethod(f = "map_to_colors",
 # -labels_gp graphcial parameters for legend labels
 # -nrow if there are too many legend grids, they can be put as an array, this controls number of rows
 # -ncol if there are too many legend grids, they can be put as an array, this controls number of columns
+# -by_row when there are multiple columns for legends, whether to arrange them by rows.
 # -legend_height height of the legend, only works when ``color_bar`` is ``continuous`` and ``direction`` is ``vertical``
 # -legend_width width of the legend, only works when ``color_bar`` is ``continuous`` and ``direction`` is ``horizontal``
 # -legend_direction when ``color_bar`` is ``continuous``, should the legend be vertical or horizontal? When ``color_bar`` is ``discrete``, should the items in the legend proceed vertically or horizontally?
@@ -254,6 +255,7 @@ setMethod(f = "color_mapping_legend",
 	labels_gp = gpar(fontsize = 10),
 	nrow = NULL,
 	ncol = 1,
+	by_row = FALSE,
 	legend_height = NULL, legend_width = NULL,
 	legend_direction = c("vertical", "horizontal"),
 	param = NULL) {
@@ -292,13 +294,13 @@ setMethod(f = "color_mapping_legend",
 		}
 		gf = Legend(at = at, labels = labels, title = title, title_gp = title_gp, grid_height = grid_height,
 			grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
-			legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position)
+			legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position, by_row = by_row)
 
 	} else {
 
 		gf = Legend(at = at, labels = labels, col_fun = object@col_fun, title = title, title_gp = title_gp, grid_height = grid_height,
 			grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction,
-			legend_width = legend_width, legend_height = legend_height, title_position = title_position)
+			legend_width = legend_width, legend_height = legend_height, title_position = title_position, by_row = by_row)
 
 	}
 
