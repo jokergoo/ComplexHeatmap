@@ -9,6 +9,7 @@
 # -ncol if there are too many legends, they can be positioned in an array, this controls number of columns.
 #       At a same time only one of ``nrow`` and ``ncol`` can be specified.
 # -col_fun a color mapping function which is used to make a continuous color bar
+# -by_row when there are multiple columns for legends, whether to arrange them by rows.
 # -grid_height height of legend grid
 # -grid_width width of legend grid
 # -gap when legends are put in multiple columns, this is the gap between neighbouring columns, measured as a `grid::unit` object
@@ -32,7 +33,34 @@
 # == value
 # A `grid::grob` object
 #
-Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
+# == example
+# lgd = Legend(title = "discrete", at = 1:4, labels = letters[1:4], 
+# 	legend_gp = gpar(fill = 2:5))
+# grid.newpage()
+# grid.draw(lgd)
+#
+# require(circlize)
+# col_fun = colorRamp2(c(-1, 0, 1), c("blue", "white", "red"))
+# lgd = Legend(title = "continuous", at = seq(-1, 1, by = 0.5), col_fun = col_fun)
+# grid.newpage()
+# grid.draw(lgd)
+#
+# lgd = Legend(title = "continuous", at = seq(-1, 1, by = 0.5), col_fun = col_fun,
+# 	direction = "horizontal")
+# grid.newpage()
+# grid.draw(lgd)
+#
+# lgd = Legend(title = "discrete", at = 1:10, labels = letters[1:10], 
+# 	ncol = 4, by_row = TRUE, legend_gp = gpar(fill = rand_color(10)))
+# grid.newpage()
+# grid.draw(lgd)
+#
+# lgd = Legend(title = "lty", at = 1:3, labels = 1:3, type = "lines",
+# 	legend_gp = gpar(lty = 1:3))
+# grid.newpage()
+# grid.draw(lgd)
+#
+Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun, by_row = FALSE,
 	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
 	labels_gp = gpar(fontsize = 10),
 	border = NULL, background = "#EEEEEE",
@@ -50,7 +78,7 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,
 			grid_height = grid_height, grid_width = grid_width, gap = gap, labels_gp = labels_gp,
 			border = border, background = background, type = type, legend_gp = legend_gp,
-			pch = pch, size = size, direction = direction)
+			pch = pch, size = size, direction = direction, by_row = by_row)
 	} else {
 		if(direction == "vertical") {
 			legend_body = vertical_continuous_legend_body(at = at, labels = labels, col_fun = col_fun,
@@ -139,7 +167,7 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun,
 }
 
 # grids are arranged by rows or columns
-discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
+discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row = TRUE,
 	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
 	labels_gp = gpar(fontsize = 10),
 	border = "white", background = "#EEEEEE",
@@ -158,14 +186,8 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1,
 	}
 	ncol = ifelse(ncol > n_labels, n_labels, ncol)
 
-	if(direction == "horizontal"){
-		vert_order = TRUE
-	} else if(direction == "vertical"){
-		vert_order = FALSE
-	}
-
-	labels_mat = matrix(c(labels, rep("", nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = vert_order)
-	index_mat = matrix(1:(nrow*ncol), nrow = nrow, ncol = ncol, byrow = vert_order)
+	labels_mat = matrix(c(labels, rep("", nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = by_row)
+	index_mat = matrix(1:(nrow*ncol), nrow = nrow, ncol = ncol, byrow = by_row)
 
 
 	labels_padding_left = unit(1, "mm")
@@ -368,6 +390,22 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
+#
+# == example
+# lgd1 = Legend(title = "discrete", at = 1:4, labels = letters[1:4], 
+# 	legend_gp = gpar(fill = 2:5))
+#
+# require(circlize)
+# col_fun = colorRamp2(c(-1, 0, 1), c("blue", "white", "red"))
+# lgd2 = Legend(title = "continuous", at = seq(-1, 1, by = 0.5), col_fun = col_fun)
+#
+# pl = packLegend(lgd1, lgd2)
+# grid.newpage()
+# grid.draw(pl)
+#
+# pl = packLegend(lgd1, lgd2, direction = "horizontal")
+# grid.newpage()
+# grid.draw(pl)
 #
 packLegend = function(..., gap = unit(4, "mm"), direction = c("vertical", "horizontal")) {
 	legend_list = list(...)

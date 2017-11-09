@@ -23,7 +23,18 @@ A \code{\link[grid]{grob}} object
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# There is no example
-NULL
+lgd1 = Legend(title = "discrete", at = 1:4, labels = letters[1:4], 
+	legend_gp = gpar(fill = 2:5))
 
+require(circlize)
+col_fun = colorRamp2(c(-1, 0, 1), c("blue", "white", "red"))
+lgd2 = Legend(title = "continuous", at = seq(-1, 1, by = 0.5), col_fun = col_fun)
+
+pl = packLegend(lgd1, lgd2)
+grid.newpage()
+grid.draw(pl)
+
+pl = packLegend(lgd1, lgd2, direction = "horizontal")
+grid.newpage()
+grid.draw(pl)
 }
