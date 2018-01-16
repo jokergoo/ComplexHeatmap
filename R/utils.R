@@ -133,6 +133,26 @@ grid.dendrogram = function(dend, facing = c("bottom", "top", "left", "right"),
             leaf
         }
     }
+
+    n = nobs(dend)
+
+    .env = new.env()
+    .env$k = 0
+    modify_labels = function(de) {
+        for(i in seq_len(length(de))) {
+            d = de[[i]]
+            if(is.leaf(d)) {
+                .env$k = .env$k + 1
+                attr(d, "label") = paste0(attr(d, "label"), .env$k)
+                de[[i]] = d
+            } else {
+                de[[i]] = modify_labels(d)
+            }
+        }
+        return(de)
+    }
+
+    dend = modify_labels(dend)
     
     draw.d = function(dend, max_height, facing = "bottom", order = "normal", max_width = 0, env = NULL) {
         leaf = attr(dend, "leaf")

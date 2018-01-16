@@ -3,6 +3,8 @@ CHANGES in VERSIONS 1.17.1
 * `Legend()`: add `by_row` argument to control the arrangement of legends
   if they are put in more than one columns
 * `Legend()`: use `textGrob()` if the point symbol is text
+* `grid.dendrogram()`: fix a bug that the dendrogram is wrong when row/column
+  names have duplicated names.
 
 =======================
 
