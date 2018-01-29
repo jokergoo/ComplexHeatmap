@@ -328,7 +328,16 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		warning("detect `x` is a data frame. If you want use it as a matrix, convert it explicitly to matrix.")
 	}
 	factor = 0.6
-	data_scale = range(x, na.rm = TRUE)
+	if(outline) {
+		if(is.matrix(x)) {
+			boxplot_stats = boxplot(x, plot = FALSE)$stats
+		} else {
+			boxplot_stats = boxplot(x, plot = FALSE)$stats
+		}
+		data_scale = range(boxplot.stats)
+	} else {
+		data_scale = range(x, na.rm = TRUE)
+	}
 	if(!is.null(ylim)) data_scale = ylim
 	data_scale = data_scale + c(-0.05, 0.05)*(data_scale[2] - data_scale[1])
 	gp = check_gp(gp)

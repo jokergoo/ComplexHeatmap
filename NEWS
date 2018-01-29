@@ -5,6 +5,7 @@ CHANGES in VERSIONS 1.17.1
 * `Legend()`: use `textGrob()` if the point symbol is text
 * `grid.dendrogram()`: fix a bug that the dendrogram is wrong when row/column
   names have duplicated names.
+* `anno_boxplot()`: axis rescaled when outline = FALSE
 
 =======================
 
