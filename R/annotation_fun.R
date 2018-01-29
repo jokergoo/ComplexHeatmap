@@ -334,7 +334,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		} else {
 			boxplot_stats = boxplot(x, plot = FALSE)$stats
 		}
-		data_scale = range(boxplot.stats)
+		data_scale = range(boxplot_stats)
 	} else {
 		data_scale = range(x, na.rm = TRUE)
 	}
