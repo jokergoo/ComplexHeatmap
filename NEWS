@@ -6,6 +6,8 @@ CHANGES in VERSIONS 1.17.1
 * `grid.dendrogram()`: fix a bug that the dendrogram is wrong when row/column
   names have duplicated names.
 * `anno_boxplot()`: axis rescaled when outline = FALSE
+* `oncoPrint()`: rows are first ordered by total number of mutations and then
+  ordered by number of samples that have mutations
 
 =======================
 
