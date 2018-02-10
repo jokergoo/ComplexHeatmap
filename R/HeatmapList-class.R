@@ -1085,13 +1085,14 @@ setMethod(f = "draw_heatmap_list",
     htkk = object@ht_list[[i_main]]
     slice_gap = htkk@matrix_param$gap
     n_slice = length(htkk@row_order_list)
+    if(length(slice_gap) == 1) slice_gap = rep(slice_gap, n_slice)
     snr = sapply(htkk@row_order_list, length)
-    slice_height = (unit(1, "npc") - sum(max_component_height[c(1:4,6:9)]) - slice_gap*(n_slice-1))*(snr/sum(snr))
+    slice_height = (unit(1, "npc") - sum(max_component_height[c(1:4,6:9)]) - sum(slice_gap[seq_len(n_slice-1)]))*(snr/sum(snr))
     for(i in seq_len(n_slice)) {
         if(i == 1) {
             slice_y = unit(1, "npc") - sum(max_component_height[c(1:4)])
         } else {
-            slice_y = unit.c(slice_y, unit(1, "npc") - sum(max_component_height[c(1:4)]) - sum(slice_height[seq_len(i-1)]) - slice_gap*(i-1))
+            slice_y = unit.c(slice_y, unit(1, "npc") - sum(max_component_height[c(1:4)]) - sum(slice_height[seq_len(i-1)]) - sum(slice_gap[seq_len(i-1)]))
         }
     }
 
