@@ -192,6 +192,7 @@ setMethod(f = "add_heatmap",
 # -show_annotation_legend whether show annotation legend.
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 # -gap gap between heatmaps, should be a `grid::unit` object.
+# -row_gap gap between row clusters if rows are split
 # -main_heatmap name or index for the main heatmap
 # -row_dend_side if auto adjust, where to put the row dendrograms for the main heatmap
 # -row_hclust_side deprecated, use ``row_dend_side`` instead
@@ -237,6 +238,7 @@ setMethod(f = "make_layout",
     show_annotation_legend = TRUE, 
     annotation_legend_list = list(),
     gap = unit(3, "mm"), 
+    row_gap = NULL,
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_dend_side = c("original", "left", "right"),
     row_hclust_side = row_dend_side,
@@ -312,6 +314,9 @@ setMethod(f = "make_layout",
     }
     if(!missing(combined_name_fun)) {
         object@ht_list[[i_main]]@matrix_param$combined_name_fun = combined_name_fun
+    }
+    if(!is.null(row_gap)) {
+        object@ht_list[[i_main]]@matrix_param$gap = row_gap
     }
 
     if(!is.null(cluster_rows)) {

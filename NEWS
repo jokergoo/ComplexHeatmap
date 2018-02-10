@@ -9,6 +9,7 @@ CHANGES in VERSIONS 1.17.1
 * `oncoPrint()`: rows are first ordered by total number of mutations and then
   ordered by number of samples that have mutations
 * correctly reorder rows
+* add `row_gap` argument for list of heatmaps
 
 =======================
 
