@@ -192,6 +192,7 @@ setMethod(f = "add_heatmap",
 # -show_annotation_legend whether show annotation legend.
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
 # -gap gap between heatmaps, should be a `grid::unit` object.
+# -row_gap gap between row clusters if rows are split
 # -main_heatmap name or index for the main heatmap
 # -row_dend_side if auto adjust, where to put the row dendrograms for the main heatmap
 # -row_hclust_side deprecated, use ``row_dend_side`` instead
@@ -206,6 +207,7 @@ setMethod(f = "add_heatmap",
 # -row_order same setting as in `Heatmap`, if it is specified, ``row_order`` in main heatmap is ignored.
 # -km same setting as in `Heatmap`, if it is specified, ``km`` in main heatmap is ignored.
 # -split same setting as in `Heatmap`, if it is specified, ``split`` in main heatmap is ignored.
+# -combined_name_fun same setting as in `Heatmap`, if it is specified, ``combined_name_fun`` in main heatmap is ignored.
 #
 # == detail
 # It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
@@ -236,6 +238,7 @@ setMethod(f = "make_layout",
     show_annotation_legend = TRUE, 
     annotation_legend_list = list(),
     gap = unit(3, "mm"), 
+    row_gap = NULL,
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_dend_side = c("original", "left", "right"),
     row_hclust_side = row_dend_side,
@@ -249,7 +252,8 @@ setMethod(f = "make_layout",
     row_dend_gp = NULL,
     row_order = NULL,
     km = NULL,
-    split = NULL) {
+    split = NULL,
+    combined_name_fun = NULL) {
 
     if(object@layout$initialized) {
         return(object)
@@ -309,6 +313,12 @@ setMethod(f = "make_layout",
         object@ht_list[[i_main]]@matrix_param$km = km
     }
 
+    if(!missing(combined_name_fun)) {
+        object@ht_list[[i_main]]@matrix_param$combined_name_fun = combined_name_fun
+    }
+    if(!is.null(row_gap)) {
+        object@ht_list[[i_main]]@matrix_param$gap = row_gap
+    }
 
     if(!is.null(cluster_rows)) {
 
@@ -1076,13 +1086,18 @@ setMethod(f = "draw_heatmap_list",
     htkk = object@ht_list[[i_main]]
     slice_gap = htkk@matrix_param$gap
     n_slice = length(htkk@row_order_list)
+    if(length(slice_gap) == 1) slice_gap = rep(slice_gap, n_slice)
     snr = sapply(htkk@row_order_list, length)
-    slice_height = (unit(1, "npc") - sum(max_component_height[c(1:4,6:9)]) - slice_gap*(n_slice-1))*(snr/sum(snr))
+    if(n_slice > 1) {
+        slice_height = (unit(1, "npc") - sum(max_component_height[c(1:4,6:9)]) - sum(slice_gap[seq_len(n_slice-1)]))*(snr/sum(snr))
+    } else {
+        slice_height = (unit(1, "npc") - sum(max_component_height[c(1:4,6:9)]))*(snr/sum(snr))
+    }
     for(i in seq_len(n_slice)) {
         if(i == 1) {
             slice_y = unit(1, "npc") - sum(max_component_height[c(1:4)])
         } else {
-            slice_y = unit.c(slice_y, unit(1, "npc") - sum(max_component_height[c(1:4)]) - sum(slice_height[seq_len(i-1)]) - slice_gap*(i-1))
+            slice_y = unit.c(slice_y, unit(1, "npc") - sum(max_component_height[c(1:4)]) - sum(slice_height[seq_len(i-1)]) - sum(slice_gap[seq_len(i-1)]))
         }
     }
 

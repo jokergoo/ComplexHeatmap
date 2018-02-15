@@ -775,6 +775,11 @@ setMethod(f = "make_row_cluster",
             if(km > 1) {
                 stop("You can not make k-means clustering since you have already specified a clustering object.")
             }
+
+            if(inherits(object@row_dend_param$obj, "hclust")) {
+                object@row_dend_param$obj = as.dendrogram(object@row_dend_param$obj)
+            }
+
             if(is.null(split)) {
                 object@row_dend_list = list(object@row_dend_param$obj)
                 object@row_order_list = list(get_dend_order(object@row_dend_param$obj))
@@ -785,15 +790,47 @@ setMethod(f = "make_row_cluster",
                 if(split < 2) {
                     stop("Here `split` should be equal or larger than 2.")
                 }
-                if(inherits(object@row_dend_param$obj, "hclust")) {
-                    object@row_dend_param$obj = as.dendrogram(object@row_dend_param$obj)
-                }
+                
                 object@row_dend_list = cut_dendrogram(object@row_dend_param$obj, split)
                 sth = tapply(order.dendrogram(object@row_dend_param$obj), 
                     rep(seq_along(object@row_dend_list), times = sapply(object@row_dend_list, nobs)), 
                     function(x) x)
                 attributes(sth) = NULL
                 object@row_order_list = sth
+            }
+
+            if(identical(reorder, NULL)) {
+                if(is.numeric(mat)) {
+                    reorder = TRUE
+                } else {
+                    reorder = FALSE
+                }
+            }
+
+            do_reorder = TRUE
+            if(identical(reorder, NA) || identical(reorder, FALSE)) {
+                do_reorder = FALSE
+            }
+            if(identical(reorder, TRUE)) {
+                do_reorder = TRUE
+                reorder = -rowMeans(mat, na.rm = TRUE)
+            }
+
+            if(do_reorder) {
+
+                if(length(reorder) != nrow(mat)) {
+                    stop("weight of reordering should have same length as number of rows.\n")
+                }
+                row_order_list = object@row_order_list
+                row_dend_list = object@row_dend_list
+                o_row_order_list = row_order_list
+                for(i in seq_along(row_dend_list)) {
+                    if(length(row_order_list[[i]]) > 1) {
+                        sub_ind = which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])
+                        object@row_dend_list[[i]] = reorder(object@row_dend_list[[i]], reorder[sub_ind])
+                        object@row_order_list[[i]] = sub_ind[ order.dendrogram(object@row_dend_list[[i]]) ]
+                    }
+                }
             }
             return(object)
         }
@@ -927,8 +964,9 @@ setMethod(f = "make_row_cluster",
             }
             for(i in seq_along(row_dend_list)) {
                 if(length(row_order_list[[i]]) > 1) {
-                    object@row_dend_list[[i]] = reorder(object@row_dend_list[[i]], reorder[which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])])
-                    row_order_list[[i]] = o_row_order_list[[i]][ order.dendrogram(object@row_dend_list[[i]]) ]
+                    sub_ind = which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])
+                    object@row_dend_list[[i]] = reorder(object@row_dend_list[[i]], reorder[sub_ind])
+                    row_order_list[[i]] = sub_ind[ order.dendrogram(object@row_dend_list[[i]]) ]
                 }
             }
         }

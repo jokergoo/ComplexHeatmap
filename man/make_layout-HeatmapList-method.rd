@@ -21,6 +21,7 @@ Make layout for the complete plot
     show_annotation_legend = TRUE,
     annotation_legend_list = list(),
     gap = unit(3, "mm"),
+    row_gap = NULL,
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_dend_side = c("original", "left", "right"),
     row_hclust_side = row_dend_side,
@@ -54,6 +55,7 @@ Make layout for the complete plot
   \item{show_annotation_legend}{whether show annotation legend.}
   \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
   \item{gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
+  \item{row_gap}{gap between row clusters if rows are split}
   \item{main_heatmap}{name or index for the main heatmap}
   \item{row_dend_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
   \item{row_hclust_side}{deprecated, use \code{row_dend_side} instead}

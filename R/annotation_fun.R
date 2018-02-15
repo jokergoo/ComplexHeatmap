@@ -328,7 +328,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		warning("detect `x` is a data frame. If you want use it as a matrix, convert it explicitly to matrix.")
 	}
 	factor = 0.6
-	if(outline) {
+	if(!outline) {
 		if(is.matrix(x)) {
 			boxplot_stats = boxplot(x, plot = FALSE)$stats
 		} else {

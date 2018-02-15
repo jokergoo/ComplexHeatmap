@@ -207,7 +207,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 	}
 
 	oncoprint_row_order = function() {
-		order(rowSums(count_matrix), decreasing = TRUE)
+		order(rowSums(count_matrix), n_mut, decreasing = TRUE)
 	}
 
 	oncoprint_column_order = function() {
@@ -225,6 +225,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 	}
 
 	count_matrix = apply(arr, c(1, 2), sum)
+	n_mut = rowSums(apply(arr, 1:2, any))
+	
 	if(is.null(row_order)) row_order = seq_len(nrow(count_matrix))
 	if(is.null(column_order)) column_order = seq_len(ncol(count_matrix))
 	row_order = row_order
@@ -246,8 +248,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 	}
 
 	# for each gene, percent of samples that have alterations
-	pct = rowSums(apply(arr, 1:2, any)) / ncol(mat_list[[1]])
-	pct = paste0(round(pct * 100, digits = pct_digits), "%")
+	pct_num = rowSums(apply(arr, 1:2, any)) / ncol(mat_list[[1]])
+	pct = paste0(round(pct_num * 100, digits = pct_digits), "%")
 	ha_pct = rowAnnotation(pct = row_anno_text(pct, just = "right", offset = unit(1, "npc"), gp = pct_gp), width = max_text_width(pct, gp = pct_gp))
 
 	#####################################################################
