@@ -27,7 +27,7 @@ ColorMapping = setClass("ColorMapping",
 		levels  = "ANY", # levels which colors correspond to
 		col_fun = "function", # function to map values to colors
 		type    = "character",  # continuous or discrete
-		name    = "character",  # used to map to the dataset and taken as the title of the legend
+		name    = "ANY",  # used to map to the dataset and taken as the title of the legend
 		na_col  = "character"
 	)
 )
