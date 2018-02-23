@@ -135,13 +135,13 @@ setMethod(f = "add_heatmap",
     if(inherits(x, "Heatmap")) {
         ht_name = x@name
         x = list(x)
-        names(x) = rep(as.character(ht_name), length(x))
+        names(x) = paste(ht_name, collapse="")
         object@ht_list = c(object@ht_list, x)
     } else if(inherits(x, "HeatmapAnnotation")) {
         if(x@which == "row") {
             ht_name = x@name
             x = list(x)
-            names(x) = rep(as.character(ht_name), length(x))
+            names(x) = paste(ht_name, collapse="")
             object@ht_list = c(object@ht_list, x)
         } else {
             stop("You should specify `which` to `row` in you add a HeatmapAnnotation which shows row annotations.")
@@ -1108,7 +1108,7 @@ setMethod(f = "draw_heatmap_list",
             x = sum(heatmap_width[seq_len(i-1)]) + sum(gap[seq_len(i-1)])
         }
 
-        pushViewport(viewport(x = x, y = unit(0, "npc"), width = heatmap_width[i], just = c("left", "bottom"), name = paste0("heatmap_", object@ht_list[[i]]@name)))
+        pushViewport(viewport(x = x, y = unit(0, "npc"), width = heatmap_width[i], just = c("left", "bottom"), name = paste0("heatmap_", paste(sapply(object@ht_list[[i]]@name, paste, collapse=""), collapse=""))))
         if(inherits(ht, "Heatmap")) {
             draw(ht, internal = TRUE)
         } else if(inherits(ht, "HeatmapAnnotation")) {

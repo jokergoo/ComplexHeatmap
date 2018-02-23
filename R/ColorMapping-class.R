@@ -305,7 +305,7 @@ setMethod(f = "color_mapping_legend",
 	}
 
 	if(plot) {
-		pushViewport(viewport(..., width = grobWidth(gf), height = grobHeight(gf), name = paste0("legend_", object@name)))
+		pushViewport(viewport(..., width = grobWidth(gf), height = grobHeight(gf), name = paste0("legend_", paste(object@name, collapse=""))))
 		grid.draw(gf)
 		upViewport()
 	}

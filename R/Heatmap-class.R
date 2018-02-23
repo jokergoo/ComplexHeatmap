@@ -347,7 +347,7 @@ Heatmap = function(matrix, col, name,
             rn = names(matrix)
             matrix = matrix(matrix, ncol = 1)
             if(!is.null(rn)) rownames(matrix) = rn
-            if(!missing(name)) colnames(matrix) = name
+            if(!missing(name)) colnames(matrix) = paste(name, collapse="")
         } else {
             stop("If data is not a matrix, it should be a simple vector.")
         }
@@ -433,7 +433,7 @@ Heatmap = function(matrix, col, name,
     .Object@name = name
 
     if(ncol(matrix) == 1 && is.null(colnames(matrix))) {
-        colnames(matrix) = name
+        colnames(matrix) = paste(name, collapse="")
         .Object@matrix = matrix
     }
 
@@ -1323,7 +1323,7 @@ setMethod(f = "draw_heatmap_body",
     raster_device_param = object@heatmap_param$raster_device_param
     if(length(raster_device_param) == 0) raster_device_param = list()
 
-    pushViewport(viewport(name = paste(object@name, "heatmap_body", k, sep = "_"), ...))
+    pushViewport(viewport(name = paste(paste(object@name, collapse=""), "heatmap_body", k, sep = "_"), ...))
 
     mat = object@matrix[row_order, column_order, drop = FALSE]
     col_matrix = map_to_colors(object@matrix_color_mapping, mat)
@@ -1364,14 +1364,14 @@ setMethod(f = "draw_heatmap_body",
 
         temp_dir = tempdir()
                 # dir.create(tmp_dir, showWarnings = FALSE)
-        temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
+        temp_image = tempfile(pattern = paste0(".heatmap_body_", paste(object@name, collapse=""), "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
         #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
 
         ############################################
         ## make the heatmap body in a another process
-        temp_R_data = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".RData"))
-        temp_R_file = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".R"))
+        temp_R_data = tempfile(pattern = paste0(".heatmap_body_", paste(object@name, collapse=""), "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".RData"))
+        temp_R_file = tempfile(pattern = paste0(".heatmap_body_", paste(object@name, collapse=""), "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".R"))
         if(Sys.info()["sysname"] == "Windows") {
             temp_image = gsub("\\\\", "/", temp_image)
             temp_R_data = gsub("\\\\", "/", temp_R_data)
@@ -1505,16 +1505,16 @@ setMethod(f = "draw_dend",
     }
 
     dend_padding = unit(1, "mm")
-    pushViewport(viewport(name = paste(object@name, which, "cluster", k, sep = "_"), ...))
+    pushViewport(viewport(name = paste(paste(object@name, collapse=""), which, "cluster", k, sep = "_"), ...))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "dend_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = dend_padding, width = unit(1, "npc") - dend_padding*2, just = "left")
+        grid.dendrogram(dend, name = paste(paste(object@name, collapse=""), "dend_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = dend_padding, width = unit(1, "npc") - dend_padding*2, just = "left")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "dend_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "mm"), width = unit(1, "npc") - dend_padding*2, just = "left")
+        grid.dendrogram(dend, name = paste(paste(object@name, collapse=""), "dend_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "mm"), width = unit(1, "npc") - dend_padding*2, just = "left")
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "dend_column", sep = "_"), max_height = max_height, facing = "bottom", y = dend_padding, height = unit(1, "npc") - dend_padding*2, just = "bottom")
+        grid.dendrogram(dend, name = paste(paste(object@name, collapse=""), "dend_column", sep = "_"), max_height = max_height, facing = "bottom", y = dend_padding, height = unit(1, "npc") - dend_padding*2, just = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "dend_column", sep = "_"), max_height = max_height, facing = "top", y = dend_padding, height = unit(1, "npc") - dend_padding*2, just = "bottom")
+        grid.dendrogram(dend, name = paste(paste(object@name, collapse=""), "dend_column", sep = "_"), max_height = max_height, facing = "top", y = dend_padding, height = unit(1, "npc") - dend_padding*2, just = "bottom")
     }
 
     upViewport()
@@ -1570,7 +1570,7 @@ setMethod(f = "draw_dimnames",
     n = length(nm)
 
     if(which == "row") {
-        pushViewport(viewport(name = paste(object@name, "row_names", k, sep = "_"), ...))
+        pushViewport(viewport(name = paste(paste(object@name, collapse=""), "row_names", k, sep = "_"), ...))
         if(side == "left") {
             x = unit(1, "npc") - dimname_padding
             just = c("right", "center")
@@ -1581,7 +1581,7 @@ setMethod(f = "draw_dimnames",
         y = (rev(seq_len(n)) - 0.5) / n
         grid.text(nm, x, y, just = just, gp = gp)
     } else {
-        pushViewport(viewport(name = paste(object@name, "column_names", sep = "_"), ...))
+        pushViewport(viewport(name = paste(paste(object@name, collapse=""), "column_names", sep = "_"), ...))
         x = (seq_len(n) - 0.5) / n
         if(side == "top") {
             y = unit(0, "npc") + dimname_padding
@@ -1651,7 +1651,7 @@ setMethod(f = "draw_title",
 
     if(which == "row") {
 
-        pushViewport(viewport(name = paste(object@name, "row_title", k, sep = "_"), clip = FALSE, ...))
+        pushViewport(viewport(name = paste(paste(object@name, collapse=""), "row_title", k, sep = "_"), clip = FALSE, ...))
         if(side == "left") {
             grid.text(title, x = unit(1, "npc") - title_padding, rot = rot, just = just, gp = gp)
         } else {
@@ -1659,7 +1659,7 @@ setMethod(f = "draw_title",
         }
         upViewport()
     } else {
-        pushViewport(viewport(name = paste(object@name, "column_title", sep = "_"), clip = FALSE, ...))
+        pushViewport(viewport(name = paste(paste(object@name, collapse=""), "column_title", sep = "_"), clip = FALSE, ...))
         if(side == "top") {
             grid.text(title, y = title_padding, rot = rot, just = just, gp = gp)
         } else {
@@ -1894,7 +1894,7 @@ setMethod(f = "draw",
             ht_graphic_fun_list = object@layout$graphic_fun_list
             for(j in seq_len(nrow(ht_layout_index))) {
                 if(ht_layout_index[j, 1] == 5 && ht_layout_index[j, 2] == 4) {
-                    pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2], name = paste(object@name, "heatmap_body_wrap", sep = "_")))
+                    pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2], name = paste(paste(object@name, collapse=""), "heatmap_body_wrap", sep = "_")))
                 } else {
                     pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
                 }
