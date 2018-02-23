@@ -135,13 +135,13 @@ setMethod(f = "add_heatmap",
     if(inherits(x, "Heatmap")) {
         ht_name = x@name
         x = list(x)
-        names(x) = as.character(ht_name)
+        names(x) = rep(ht_name, length(x))
         object@ht_list = c(object@ht_list, x)
     } else if(inherits(x, "HeatmapAnnotation")) {
         if(x@which == "row") {
             ht_name = x@name
             x = list(x)
-            names(x) = as.character(ht_name)
+            names(x) = rep(ht_name, length(x))
             object@ht_list = c(object@ht_list, x)
         } else {
             stop("You should specify `which` to `row` in you add a HeatmapAnnotation which shows row annotations.")
