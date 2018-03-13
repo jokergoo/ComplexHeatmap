@@ -412,8 +412,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # grid.newpage()
 # grid.draw(pl)
 #
-packLegend = function(..., gap = unit(4, "mm"), direction = c("vertical", "horizontal"),
-	max_height = unit(10000, "cm"), max_width = unit(10000, "cm")) {
+packLegend = function(..., gap = unit(4, "mm"), direction = c("vertical", "horizontal")) {
 	legend_list = list(...)
 	direction = match.arg(direction)
 	if(length(gap) != 1) {
