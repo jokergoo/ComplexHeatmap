@@ -1037,7 +1037,7 @@ setMethod(f = "draw_heatmap_list",
         }
     }))
     
-    # number of columns in heatmap whic are not fixed width
+    # number of columns in heatmap which are not fixed width
     heatmap_ncol = sapply(object@ht_list, function(ht) {
         if(inherits(ht, "Heatmap")) {
             if(!is.unit(ht@heatmap_param$width)) {

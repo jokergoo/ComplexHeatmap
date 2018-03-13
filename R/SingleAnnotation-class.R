@@ -291,6 +291,8 @@ SingleAnnotation = function(name, value, col, fun,
     				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
                 }
 			}
+            attr(.Object@fun, "which") = "row"
+            attr(.Object@fun, "fun") = "anno_simple"
 		} else {
 			.Object@fun = function(index, k = NULL, N = NULL) {
 				n = length(index)
@@ -306,6 +308,8 @@ SingleAnnotation = function(name, value, col, fun,
     				grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
                 }
 			}
+            attr(.Object@fun, "which") = "column"
+            attr(.Object@fun, "fun") = "anno_simple"
 		}
 
 		.Object@show_legend = show_legend
