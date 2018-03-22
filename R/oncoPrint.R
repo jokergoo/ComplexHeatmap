@@ -156,13 +156,13 @@ oncoPrint = function(mat, get_type = function(x) x,
 
 	if(missing(alter_fun) && missing(col)) {
 		if(length(mat_list) == 1) {
-			af = function(x, y, w, h, v) {
+			af = function(x, y, w, h, v, j, i) {
 				grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
 				if(v[1]) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA))
 			}
 			col = "red"
 		} else if(length(mat_list) == 2) {
-			af = function(x, y, w, h, v) {
+			af = function(x, y, w, h, v, j, i) {
 				grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
 				if(v[1]) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA))
 		        if(v[2]) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
@@ -183,19 +183,33 @@ oncoPrint = function(mat, get_type = function(x) x,
 
 		alter_fun = alter_fun[unique(c("background", intersect(names(alter_fun), all_type)))]
 
-		af = function(x, y, w, h, v) {
+		af = function(x, y, w, h, v, j, i) {
 			if(!is.null(alter_fun$background)) alter_fun$background(x, y, w, h)
 
 			alter_fun = alter_fun[names(alter_fun) != "background"]
 
 			if(sum(v)) {
 				for(nm in names(alter_fun)) {
-					if(v[nm]) alter_fun[[nm]](x, y, w, h)
+					if(v[nm]) {
+						if(length(formals(alter_fun[[nm]])) == 6) {
+							alter_fun[[nm]](x, y, w, h, j, i)
+						} else {
+							alter_fun[[nm]](x, y, w, h)
+						}
+					}
 				}
 			}
 		}
 	} else {
-		af = alter_fun
+		if(length(formals(alter_fun)) == 7) {
+			af = function(x, y, w, h, v, j, i) {
+				alter_fun(x, y, w, h, v, j, i)
+			}
+		} else {
+			af = function(x, y, w, h, v, j, i) {
+				alter_fun(x, y, w, h, v)
+			}
+		}
 	}
 
 	col = col[intersect(names(col), all_type)]
@@ -323,7 +337,7 @@ oncoPrint = function(mat, get_type = function(x) x,
 		cell_fun = function(j, i, x, y, width, height, fill) {
 			z = arr[i, j, ]
 			names(z) = dimnames(arr)[[3]]
-			af(x, y, width, height, z)
+			af(x, y, width, height, z, j, i)
 		},
 		top_annotation = top_annotation,
 		top_annotation_height = top_annotation_height,
