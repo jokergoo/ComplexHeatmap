@@ -466,3 +466,50 @@ is_matrix_annotation = function(single_anno) {
 is_fun_annotation = function(single_anno) {
     is.null(single_anno@color_mapping)
 }
+
+
+## subset method for .SingleAnnotation-class
+## column annotation only allows column subsetting and row annotaiton only allows row subsetting
+
+"[.SingleAnnotation" = function(x, i, j) {
+
+    if(!missing(i) && !missing(j)) {
+        stop("Only subsetting on rows or columns.")
+    }
+    if(nargs() == 2) {
+        return(subset_SingleAnnotation(x, i))
+    }
+    if(nargs() == 3 && missing(i)) {
+        if(x@which == "column") {
+            return(subset_SingleAnnotation(x, j))
+        } else {
+            stop("Subsetting on columns is only allowed for column annotation.")
+        }
+    }
+    if(nargs() == 3 && missing(j)) {
+        if(x@which == "row") {
+            return(subset_SingleAnnotation(x, i))
+        } else {
+            stop("Subsetting on rows is only allowed for row annotation.")
+        }
+    }
+    if(nargs() == 1) {
+        return(x)
+    }
+    return(x)
+}
+
+subset_SingleAnnotation = function(object, i) {
+    fun = object@fun
+    e = environment(fun)
+    value = get("value", envir = e)
+    if(is.matrix(value)) {
+        value = value[, i, drop = FALSE]
+    } else if(is.list(value)) {
+        value = value[i]
+    } else {
+        value = value[i]
+    }
+    assign("value", value, envir = e)
+    return(object)
+}
