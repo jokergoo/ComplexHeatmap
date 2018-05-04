@@ -166,7 +166,7 @@ densityHeatmap = function(data,
 
 	bb = grid.pretty(c(min_x, max_x))
 	ht_list = rowAnnotation(axis = function(index) NULL, width = grobHeight(textGrob(ylab))*2 + max(grobWidth(textGrob(bb))) + unit(6, "mm")) + 
-		ht + rowAnnotation(quantile = function(index) NULL, width = grobWidth(textGrob("100%")))
+		ht + rowAnnotation(quantile = function(index) NULL, width = grobWidth(textGrob("100%")) + unit(6, "mm"))
 
 	ht_list = draw(ht_list, column_title = title, ...)
 	column_order = column_order(ht_list)$density
@@ -188,10 +188,24 @@ densityHeatmap = function(data,
 		grid.rect(gp = gpar(fill = NA))
 		grid.yaxis()
 
-		for(i in seq_len(5)) {
-			grid.text(rownames(quantile_list)[i], unit(1, "npc")+unit(2, "mm"), quantile_list[i, column_order[n]], default.units = "native", just = "left")
-		}
-		grid.text("mean", unit(1, "npc")+unit(2, "mm"), mean_value[column_order[n]], default.units = "native", just = "left")
+		labels = c(rownames(quantile_list), "mean")
+		y = c(quantile_list[, column_order[n]], mean_value[column_order[n]])
+		od = order(y)
+		y = y[od]
+		labels = labels[od]
+		text_height = convertHeight(grobHeight(textGrob(labels[1])) * (1 + 0.2), "native", valueOnly = TRUE)
+        h1 = y - text_height*0.5
+        h2 = y + text_height*0.5
+        pos = rev(smartAlign(h1, h2, c(min_x, max_x)))
+        h = (pos[, 1] + pos[, 2])/2
+        link_width = unit(6, "mm")
+        n2 = length(labels)
+        grid.text(labels, unit(1, "npc") + rep(link_width, n2), h, default.units = "native", just = "left")
+        link_width = link_width - unit(1, "mm")
+        grid.segments(unit(rep(1, n2), "npc"), y, unit(1, "npc") + rep(link_width * (1/3), n2), y, default.units = "native")
+        grid.segments(unit(1, "npc") + rep(link_width * (1/3), n2), y, unit(1, "npc") + rep(link_width * (2/3), n2), h, default.units = "native")
+        grid.segments(unit(1, "npc") + rep(link_width * (2/3), n2), h, unit(1, "npc") + rep(link_width, n2), h, default.units = "native")
+
 		upViewport()
 	})
 

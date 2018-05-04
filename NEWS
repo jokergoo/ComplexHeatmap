@@ -10,6 +10,7 @@ CHANGES in VERSIONS 1.17.1
   ordered by number of samples that have mutations
 * correctly reorder rows
 * add `row_gap` argument for list of heatmaps
+* `oncoPrint()`: add `j` and `i` as optional argument for `alter_fun`
 
 =======================
 

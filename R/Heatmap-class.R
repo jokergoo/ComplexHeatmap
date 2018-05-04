@@ -828,7 +828,8 @@ setMethod(f = "make_row_cluster",
                     if(length(row_order_list[[i]]) > 1) {
                         sub_ind = which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])
                         object@row_dend_list[[i]] = reorder(object@row_dend_list[[i]], reorder[sub_ind])
-                        object@row_order_list[[i]] = sub_ind[ order.dendrogram(object@row_dend_list[[i]]) ]
+                        # object@row_order_list[[i]] = sub_ind[ order(order.dendrogram(object@row_dend_list[[i]])) ]
+                        object@row_order_list[[i]] = order.dendrogram(object@row_dend_list[[i]])
                     }
                 }
             }
