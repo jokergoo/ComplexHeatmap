@@ -432,10 +432,10 @@ Heatmap = function(matrix, col, name,
     }
     .Object@name = name
 
-    if(ncol(matrix) == 1 && is.null(colnames(matrix))) {
-        colnames(matrix) = name
-        .Object@matrix = matrix
-    }
+    # if(ncol(matrix) == 1 && is.null(colnames(matrix))) {
+    #     colnames(matrix) = name
+    #     .Object@matrix = matrix
+    # }
 
     # color for main matrix
     if(ncol(matrix) > 0 && nrow(matrix) > 0) {

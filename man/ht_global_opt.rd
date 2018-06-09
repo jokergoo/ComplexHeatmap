@@ -7,7 +7,7 @@ Global graphic options for heatmaps
 Global graphic options for heatmaps
 }
 \usage{
-ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE)
+ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE)
 }
 \arguments{
 
@@ -15,7 +15,7 @@ ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE)
   \item{RESET}{reset all the option values}
   \item{READ.ONLY}{\code{TRUE} means only to return read-only values, \code{FALSE} means only to return non-read-only values, \code{NULL} means to return both.}
   \item{LOCAL}{switch local mode}
-
+  \item{ADD}{add new options}
 }
 \details{
 You can set some parameters for all heatmaps/annotations simultaneously by this global function.

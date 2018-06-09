@@ -2,12 +2,12 @@ Package: ComplexHeatmap
 Type: Package
 Title: Making Complex Heatmaps
 Version: 1.19.0
-Date: 2017-10-25
+Date: 2018-6-9
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.2), methods, grid, graphics, stats, grDevices
 Imports: circlize (>= 0.4.1), GetoptLong, colorspace,
-    RColorBrewer, GlobalOptions (>= 0.0.10)
+    RColorBrewer, GlobalOptions (>= 0.1.0)
 Suggests: testthat (>= 0.3), knitr, markdown, cluster, MASS, pvclust, 
     dendsort, HilbertCurve, Cairo, png, jpeg, tiff, fastcluster,
     dendextend (>= 1.0.1)
@@ -19,6 +19,6 @@ Description: Complex heatmaps are efficient to visualize associations
 biocViews: Software, Visualization, Sequencing
 URL: https://github.com/jokergoo/ComplexHeatmap
 License: MIT + file LICENSE
-Packaged: 2017-10-25 00:00:00 UTC; Administrator
+Packaged: 2018-6-9 00:00:00 UTC; Administrator
 Repository: Bioconductor
-Date/Publication: 2017-10-25 00:00:00
+Date/Publication: 2018-6-9 00:00:00

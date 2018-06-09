@@ -1,4 +1,10 @@
-CHANGES in VERSIONS 1.17.1
+CHANGES in VERSION 1.19.1
+
+* `Heatmap()`: no column name added if the input matrix is a one-column matrix.
+
+=======================
+
+CHANGES in VERSION 1.17.1
 
 * `Legend()`: add `by_row` argument to control the arrangement of legends
   if they are put in more than one columns
