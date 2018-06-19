@@ -1,7 +1,7 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Making Complex Heatmaps
-Version: 1.19.0
+Version: 1.19.1
 Date: 2018-6-9
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
@@ -21,4 +21,3 @@ URL: https://github.com/jokergoo/ComplexHeatmap
 License: MIT + file LICENSE
 Packaged: 2018-6-9 00:00:00 UTC; Administrator
 Repository: Bioconductor
-Date/Publication: 2018-6-9 00:00:00
