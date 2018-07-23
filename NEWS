@@ -1,6 +1,7 @@
 CHANGES in VERSION 1.19.1
 
 * `Heatmap()`: no column name added if the input matrix is a one-column matrix.
+* `oncoPrint()`: scales the the row annotations are now the same if rows are split.
 
 =======================
 

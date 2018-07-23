@@ -270,10 +270,11 @@ oncoPrint = function(mat, get_type = function(x) x,
 	# row annotation which is a barplot
 	anno_row_bar = function(index, k = NULL, N = NULL) {
 		n = length(index)
-		count = apply(arr, c(1, 3), sum)[index, , drop = FALSE]
+		count = apply(arr, c(1, 3), sum)[, , drop = FALSE]
 		all_type = all_type[!(colnames(count) %in% barplot_ignore)]
 		count = count[, setdiff(colnames(count), barplot_ignore), drop = FALSE]
 		max_count = max(rowSums(count))
+		count = count[index, , drop = FALSE]
 		pushViewport(viewport(xscale = c(0, max_count*1.1), yscale = c(0.5, n + 0.5)))
 		for(i in seq_len(nrow(count))) {
 			if(any(count[i, ] > 0)) {

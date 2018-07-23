@@ -71,6 +71,10 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun, by_row = FALS
 	title = "", title_gp = gpar(fontsize = 10, fontface = "bold"),
 	title_position = c("topleft", "topcenter", "leftcenter", "lefttop")) {
 
+	if(missing(at) && !missing(labels)) {
+		at = seq_along(labels)
+	}
+
 	# odevlist = dev.list()
 	direction = match.arg(direction)[1]
 	if(missing(col_fun)) {
