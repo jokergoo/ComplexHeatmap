@@ -314,6 +314,9 @@ SingleAnnotation = function(name, value, col, fun,
 
 		.Object@show_legend = show_legend
     } else {
+        .__under_SingleAnnotation__ = TRUE
+        fun_call = substitute(fun)
+        fun = eval(fun_call)
     	f_which = attr(fun, "which")
     	if(!is.null(f_which)) {
     		fun_name = attr(fun, "fun")
@@ -332,15 +335,13 @@ SingleAnnotation = function(name, value, col, fun,
     	}
     }
 
-    if(which == "row") {
+    ### !!!! it will remove all attributes of the function !!!!
     	if(length(formals(.Object@fun)) == 1) {
     		formals(.Object@fun) = alist(index = , k = NULL, N = NULL, vp_name = NULL)
     	} else if(length(formals(.Object@fun)) == 2) {  # assume index and k are specified
     		formals(.Object@fun) = alist(index = , k = , N = NULL, vp_name = NULL)
     	}
-    } else {
-    	formals(.Object@fun) = alist(index = , vp_name = NULL)
-    }
+
 
     return(.Object)
 }
@@ -368,24 +369,39 @@ SingleAnnotation = function(name, value, col, fun,
 #
 setMethod(f = "draw",
 	signature = "SingleAnnotation",
-	definition = function(object, index, k = NULL, n = NULL) {
+	definition = function(object, index, k = NULL, n = NULL, test = FALSE) {
 
+    if(test) {
+        grid.newpage()
+        pushViewport(viewport(width = 0.9, height = 0.9))
+    }
+
+    if(missing(index)) index = seq_len(attr(object@fun, "n"))
+
+    anno_height = attr(object@fun, "height")
+    anno_width = attr(object@fun, "width")
+    if(is.null(anno_height)) anno_height = unit(1, "npc")
+    if(is.null(anno_width)) anno_width = unit(1, "npc")
 	# names should be passed to the data viewport
 	if(object@name_to_data_vp) {
 		if(is.null(k)) {
-			pushViewport(viewport())
+			pushViewport(viewport(width = anno_width, height = anno_height))
+            if(test) grid.rect()
 			object@fun(index, vp_name = paste("annotation", object@name, sep = "_"))
 		} else {
-			pushViewport(viewport())
-			object@fun(index, k, n, vp_name = paste("annotation", object@name, k, sep = "_"))
+			pushViewport(viewport(width = anno_width, height = anno_height))
+			if(test) grid.rect()
+            object@fun(index, k, n, vp_name = paste("annotation", object@name, k, sep = "_"))
 		}
 	} else {
 		if(is.null(k)) {
-			pushViewport(viewport(name = paste("annotation", object@name, sep = "_")))
-			object@fun(index)
+			pushViewport(viewport(width = anno_width, height = anno_height, name = paste("annotation", object@name, sep = "_")))
+			if(test) grid.rect()
+            object@fun(index)
 		} else {
-			pushViewport(viewport(name = paste("annotation", object@name, k, sep = "_")))
-			object@fun(index, k, n)
+			pushViewport(viewport(width = anno_width, height = anno_height, name = paste("annotation", object@name, k, sep = "_")))
+			if(test) grid.rect()
+            object@fun(index, k, n)
 		}
 	}
 	# add annotation name
@@ -394,6 +410,18 @@ setMethod(f = "draw",
         if(object@which == "row") {
             if(!is.null(k)) {
                 if(object@name_param$side == "bottom") {
+                    if(k != n) {
+                        draw_name = FALSE
+                    }
+                } else {
+                    if(k != 1) {
+                        draw_name = FALSE
+                    }
+                }
+            }
+        } else if(object@which == "column") {
+            if(!is.null(k)) {
+                if(object@name_param$side == "right") {
                     if(k != n) {
                         draw_name = FALSE
                     }
@@ -422,6 +450,9 @@ setMethod(f = "draw",
 	}
 	upViewport()
 
+    if(test) {
+        upViewport()
+    }
 })
 
 # == title
@@ -440,16 +471,26 @@ setMethod(f = "show",
 	signature = "SingleAnnotation",
 	definition = function(object) {
 	if(is_fun_annotation(object)) {
-		cat("An annotation with self-defined function\n")
-		cat("name:", object@name, "\n")
-		cat("position:", object@which, "\n")
+        fun_name = attr(object@fun, "fun")
+        if(is.null(fun_name)) {
+            fun_name = "self-defined"
+        } else {
+            fun_name = paste0(fun_name, "()")
+        }
+		cat("A single annotation with", fun_name, "function\n")
+		cat("  name:", object@name, "\n")
+		cat("  position:", object@which, "\n")
+        cat("  no legend\n")
+        n = attr(object@fun, "n")
+        if(!is.null(n)) cat("  items:", n, "\n")  
 	} else {
-		cat("An annotation with", object@color_mapping@type, "color mapping\n")
-		cat("name:", object@name, "\n")
-		cat("position:", object@which, "\n")
-		cat("show legend:", object@show_legend, "\n")
+		cat("A single annotation with", object@color_mapping@type, "color mapping\n")
+		cat("  name:", object@name, "\n")
+		cat("  position:", object@which, "\n")
+		cat("  show legend:", object@show_legend, "\n")
+        cat("  items:", attr(object@fun, "n"), "\n")
         if(is_matrix_annotation(object)) {
-            cat("a matrix with", attr(object@is_anno_matrix, "k"), "columns\n")
+            cat("  a matrix with", attr(object@is_anno_matrix, "k"), "columns\n")
         }
 	}
 })
@@ -471,45 +512,52 @@ is_fun_annotation = function(single_anno) {
 ## subset method for .SingleAnnotation-class
 ## column annotation only allows column subsetting and row annotaiton only allows row subsetting
 
-"[.SingleAnnotation" = function(x, i, j) {
-
-    if(!missing(i) && !missing(j)) {
-        stop("Only subsetting on rows or columns.")
-    }
+"[.SingleAnnotation" = function(x, i) {
+    # only allow subsetting for anno_* functions defined in ComplexHeatmap
     if(nargs() == 2) {
         return(subset_SingleAnnotation(x, i))
-    }
-    if(nargs() == 3 && missing(i)) {
-        if(x@which == "column") {
-            return(subset_SingleAnnotation(x, j))
-        } else {
-            stop("Subsetting on columns is only allowed for column annotation.")
-        }
-    }
-    if(nargs() == 3 && missing(j)) {
-        if(x@which == "row") {
-            return(subset_SingleAnnotation(x, i))
-        } else {
-            stop("Subsetting on rows is only allowed for row annotation.")
-        }
-    }
-    if(nargs() == 1) {
+    } else if(nargs() == 1) {
         return(x)
     }
-    return(x)
 }
 
 subset_SingleAnnotation = function(object, i) {
     fun = object@fun
     e = environment(fun)
-    value = get("value", envir = e)
-    if(is.matrix(value)) {
-        value = value[, i, drop = FALSE]
-    } else if(is.list(value)) {
-        value = value[i]
-    } else {
-        value = value[i]
+    parent_variable = attr(fun, "parent_variable")
+    parent_variable_subsetable = attr(fun, "parent_variable_subsetable")
+
+    v_list = list()
+    for(ind in seq_along(parent_variable)) {
+        v = parent_variable[ind]
+        if(parent_variable_subsetable[ind]) {
+            if(v == "gp") {
+                var = subset_gp(get(v, envir = e), i)
+            } else {
+                var = get(v, envir = e)
+                if(is.matrix(var)) {
+                    var = var[i, , drop = FALSE]
+                } else if(is.list(var)) {
+                    var = var[i]
+                } else {
+                    var = var[i]
+                }
+            }
+        } else {
+            var = get(v, envir = e)
+        }
+        v_list[[v]] = var
     }
-    assign("value", value, envir = e)
+    attr(fun, "n") = length(i)
+
+    fun2 = local({
+        for(nm in names(v_list)) {
+            assign(nm, v_list[[nm]])
+        }
+        f2 = fun
+        environment(f2) = new.env()
+        f2
+    })
+    object@fun = fun2
     return(object)
 }

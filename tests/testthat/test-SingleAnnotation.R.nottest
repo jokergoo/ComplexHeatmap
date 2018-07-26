@@ -44,3 +44,76 @@ pdf(NULL)
 anno = SingleAnnotation(value = c("a", "a", "a", "b", "b", "b"), col = c("a" = "red", "b" = "blue"), which = "column")
 draw(anno, 1:5)
 dev.off()
+
+
+########## te
+
+
+image = sample(dir("~/Downloads/IcoMoon-Free-master/PNG/64px", full.names = TRUE), 10)
+anno = SingleAnnotation(fun = anno_image(image))
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_image(image, which = "row"), which = "row")
+draw(anno, test = TRUE)
+image = sample(dir("~/Downloads/IcoMoon-Free-master/SVG/", full.names = TRUE), 10)
+
+image = sample(dir("~/Downloads/IcoMoon-Free-master/PNG/64px", full.names = TRUE), 10)
+anno = SingleAnnotation(fun = anno_image(image))
+draw(anno, test = TRUE)
+
+anno = SingleAnnotation(fun = anno_simple(1:10))
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_simple(1:10), which = "row")
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_simple(c(1:5, 1:5)))
+anno2 = anno[1:5]
+draw(anno, test = TRUE)
+draw(anno2, test = TRUE)
+anno = SingleAnnotation(fun = anno_simple(1:10, pch = c(rep(17, 3), rep(11, 3), rep(NA, 4))))
+draw(anno, test = TRUE)
+
+anno = SingleAnnotation(fun = anno_points(runif(10)))
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_points(matrix(runif(20), nc = 2)), which = "row")
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_points(c(1:5, 1:5)))
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_points(cbind(c(1:5, 1:5), c(5:1, 5:1))))
+draw(anno, test = TRUE)
+
+anno = SingleAnnotation(fun = anno_text(month.name))
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_text(month.name), which = "row")
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_text(month.name, location = 0, rot = 45, just = "left"))
+draw(anno, test = TRUE)
+
+anno = SingleAnnotation(fun = anno_barplot(1:10))
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_barplot(matrix(nc = 2, c(1:10, 10:1))))
+draw(anno, test = TRUE)
+anno = SingleAnnotation(fun = anno_barplot(matrix(nc = 2, c(1:10, 10:1))), which = "row")
+draw(anno, test = TRUE)
+
+m = matrix(rnorm(100), 10)
+anno = SingleAnnotation(fun = anno_boxplot(m, height = unit(4, "cm")))
+draw(anno, test = TRUE)
+draw(anno[1:5], test = TRUE)
+
+m = matrix(rnorm(1000), nc = 10)
+anno = SingleAnnotation(fun = anno_histogram(m, height = unit(4, "cm")))
+draw(anno, test = TRUE)
+draw(anno[1:5], test = TRUE)
+
+anno = SingleAnnotation(fun = anno_density(m, height = unit(4, "cm")))
+draw(anno, test = TRUE)
+
+
+lt = apply(m, 2, function(x) data.frame(density(x)[c("x", "y")]))
+anno = SingleAnnotation(fun = anno_joyplot(lt, width = unit(4, "cm")), which = "row")
+
+lt = lapply(1:10, function(x) cumprod(1 + runif(1000, -x/100, x/100)) - 1)
+anno = SingleAnnotation(fun = anno_horizon(lt, width = unit(4, "cm")), which = "row")
+
+
+anno = SingleAnnotation(fun = anno_mark(at = c(3, 4, 5, 10), labels = c("333333", "444444", "555555", "tententen")))
+
