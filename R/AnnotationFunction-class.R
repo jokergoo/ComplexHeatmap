@@ -8,25 +8,137 @@ AnnotationFunction = setClass("AnnotationFunction",
 		var_env = "environment",
 		fun = "function",
 		subset_rule = "list",
-		data_scale = "list"
+		subsetable = "logical",
+		data_scale = "numeric",
+		extended = "ANY"
 	),
 	prototype = list(
+		fun_name = "",
 		width = unit(1, "npc"),
 		height = unit(1, "npc"),
 		subset_rule = list(),
-		data_scale = list(x = NULL, y = NULL),
-		n = 0
+		subsetable = FALSE,
+		data_scale = c(0, 1),
+		n = 0,
+		extended = unit(c(0, 0, 0, 0), "mm")
 	)
 )
+
+anno_width_and_height = function(which, width = NULL, height = NULL, 
+	default = unit(1, "cm")) {
+
+	if(which == "column") {
+		if(is.null(height)) {
+			height = default
+		} else {
+			if(!is_abs_unit(height)) {
+				stop("height can only be an absolute unit.")
+			}
+		}
+		if(is.null(width)) {
+			width = unit(1, "npc")
+		}
+	}
+	if(which == "row") {
+		if(is.null(width)) {
+			width = default
+		} else {
+			if(!is_abs_unit(width)) {
+				stop("width can only be an absolute unit.")
+			}
+		}
+		if(is.null(height)) {
+			height = unit(1, "npc")
+		}
+	}
+	return(list(height = height, width = width))
+}
+
+
+AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), 
+	var_imported = list(), n = 0, data_scale = c(0, 1), subset_rule = list(), 
+	subsetable = FALSE, width = NULL, height = NULL) {
+
+	which = match.arg(which)[1]
+
+	anno = new("AnnotationFunction")
+
+	anno@which = which
+	anno@fun_name = fun_name
+
+	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
+	anno@width = anno_size$width
+	anno@height = anno_size$height
+
+	anno@n = n
+	anno@data_scale = data_scale
+
+	anno@var_env = new.env()
+	if(is.character(var_imported)) {
+		for(nm in var_imported) {
+			anno@var_env[[nm]] = get(nm, envir = parent.frame())
+		}
+	} else if(inherits(var_imported, "list")) {
+		if(is.null(names(var_imported))) {
+			var_imported_nm = sapply(as.list(substitute(var_imported))[-1], as.character)
+			names(var_imported) = var_imported_nm
+		}
+
+		for(nm in names(var_imported)) {
+			anno@var_env[[nm]] = var_imported[[nm]]
+		}
+	} else {
+		stop_wrap("`var_import` needs to be a character vector which contains variable names or a list of variables")
+	}
+	
+	environment(fun) = anno@var_env
+	anno@fun = fun
+	
+	if(is.null(subset_rule)) {
+		for(nm in names(anno@var_env)) {
+			if(is.matrix(anno@var_env[[nm]])) {
+				anno@subset_rule[[nm]] = subset_matrix_by_row
+			} else if(inherits(anno@var_env[[nm]], "gpar")) {
+				anno@subset_rule[[nm]] = subset_gp
+			} else if(is.vector(anno@var_env[[nm]])) {
+				if(length(anno@var_env[[nm]]) > 1) {
+					anno@subset_rule[[nm]] = subset_vector
+				}
+			}
+		}
+	} else {
+		for(nm in names(subset_rule)) {
+			anno@subset_rule[[nm]] = subset_rule[[nm]]
+		}
+	}
+
+	if(missing(subsetable)) {
+		# is user defined subset rule
+		if(length(anno@subset_rule)) {
+			anno@subsetable = TRUE
+		}
+	} else {
+		anno@subsetable = subsetable
+	}
+
+	return(anno)
+}
 
 
 "[.AnnotationFunction" = function(x, i) {
 	if(nargs() == 1) {
 		return(x)
 	} else {
+		if(!x@subsetable) {
+			stop("This object is not subsetable.")
+		}
 		x = copy_all(x)
 		for(var in names(x@subset_rule)) {
-			x@var_env[[var]] = x@subset_rule[[var]](x@var_env[[var]], i)
+			oe = try(x@var_env[[var]] <- x@subset_rule[[var]](x@var_env[[var]], i), silent = TRUE)
+			if(inherits(oe, "try-error")) {
+				message(paste0("An error when subsetting ", var))
+				stop(oe)
+			}
 		}
 		if(is.logical(i)) {
 			x@n = sum(i)
@@ -48,7 +160,7 @@ setMethod(f = "draw",
 	}
 	if(test2) {
         grid.newpage()
-        pushViewport(viewport(width = 0.9, height = 0.9))
+        pushViewport(viewport(width = 0.8, height = 0.8))
     }
 
     if(missing(index)) index = seq_len(object@n)
@@ -61,7 +173,21 @@ setMethod(f = "draw",
 	object@fun(index)
 	if(test2) {
 		grid.text(test, y = unit(1, "npc") + unit(2, "mm"), just = "bottom")
-		grid.rect(gp = gpar(fill = "transparent", col = "red"))
+
+		if(!identical(unit(0, "mm"), object@extended[1])) {
+			grid.rect(y = 1, height = unit(1, "npc") + object@extended[1], just = "top",
+				gp = gpar(fill = "transparent", col = "red", lty = 2))
+		} else if(!identical(unit(0, "mm"), object@extended[[2]])) {
+			grid.rect(x = 1, width = unit(1, "npc") + object@extended[2], just = "right",
+				gp = gpar(fill = "transparent", col = "red", lty = 2))
+		} else if(!identical(unit(0, "mm"), object@extended[[3]])) {
+			grid.rect(y = 0, height = unit(1, "npc") + object@extended[3], just = "bottom",
+				gp = gpar(fill = "transparent", col = "red", lty = 2))
+		} else if(!identical(unit(0, "mm"), object@extended[[4]])) {
+			grid.rect(x = 0, width = unit(1, "npc") + object@extended[4], just = "left",
+				gp = gpar(fill = "transparent", col = "red", lty = 2))
+		}
+		
 	}
 	popViewport()
 
@@ -71,7 +197,6 @@ setMethod(f = "draw",
 	
 })
 
-setGeneric('copy_all', function(object, ...) standardGeneric('copy_all'))
 setMethod(f = "copy_all",
 	signature = "AnnotationFunction",
 	definition = function(object, i) {
@@ -88,54 +213,58 @@ setMethod(f = "show",
 	signature = "AnnotationFunction",
 	definition = function(object) {
 
-	cat("An AnnotationFunction object generated by ", object@fun_name, "()\n", sep = "")
+	cat("An AnnotationFunction object\n")
+	if(object@fun_name == "") {
+		cat("  function: user-defined\n")
+	} else {
+		cat("  function: ", object@fun_name, "()\n", sep = "")
+	}
 	cat("  position:", object@which, "\n")
 	cat("  items:", ifelse(object@n == 0, "unknown", object@n), "\n")
+	cat("  width:", as.character(object@width), "\n")
+	cat("  height:", as.character(object@height), "\n")
+	var_imported = names(anno@var_env)
+	if(length(var_imported)) {
+		cat("  imported variable:", paste(var_imported, collapse = ", "), "\n")
+		var_subsetable = names(anno@subset_rule)
+		if(length(var_subsetable)) {
+			cat("  subsetable variable:", paste(var_subsetable, collapse = ", "), "\n")
+		}
+	}
+	cat("  this object is", ifelse(object@subsetable, "\b", "not"), "subsetable\n")
+	dirt = c("bottom", "left", "top", "right")
+	for(i in 1:4) {
+		if(!identical(unit(0, "mm"), object@extended[i])) {
+			cat(" ", as.character(object@extended[i]), "extension on the", dirt[i], "\n")
+		}
+	}
+	
 })
 
 anno_empty = function(which = c("column", "row"), border = TRUE, width = NULL, height = NULL) {
 	
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(1, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(1, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
-
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_empty"
-	anno@width = width
-	anno@height = height
-
-	anno@var_env = new.env()
-	anno@var_env$border = border
-
+	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
+	
 	fun = function(index) {
 		if(border) grid.rect()
 	}
 
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
-
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_empty",
+		which = which,
+		var_import = list(border),
+		subset_rule = list(),
+		subsetable = TRUE,
+		height = anno_size$height,
+		width = anno_size$width
+	)
 	return(anno) 
 }
 
@@ -147,10 +276,10 @@ anno_simple = function(x, col, na_col = "grey",
 	pch = NULL, pt_size = unit(1, "snpc")*0.8, pt_gp = gpar(), 
 	width = NULL, height = NULL) {
 
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
 	if(is.data.frame(x)) x = as.matrix(x)
@@ -161,23 +290,9 @@ anno_simple = function(x, col, na_col = "grey",
 	}
 	input_is_matrix = is.matrix(x)
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(5, "mm")*ifelse(input_is_matrix, ncol(x), 1)
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(5, "mm")*ifelse(input_is_matrix, ncol(x), 1)
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
-
+	anno_size = anno_width_and_height(which, width, height, 
+		unit(5, "mm")*ifelse(input_is_matrix, ncol(x), 1))
+	
 	if(missing(col)) {
 		col = default_col(x)
 	}
@@ -188,7 +303,7 @@ anno_simple = function(x, col, na_col = "grey",
     } else if(inherits(col, "ColorMapping")) {
     	color_mapping = col
     } else {
-    	stop("`col` should be a named vector/a color mapping function/a ColorMapping object.")
+    	stop_wrap("`col` should be a named vector/a color mapping function/a ColorMapping object.")
     }
 
     value = x
@@ -224,10 +339,12 @@ anno_simple = function(x, col, na_col = "grey",
             nc = ncol(value)
             for(i in seq_len(nc)) {
                 fill = map_to_colors(color_mapping, value[index, i])
-                grid.rect(x = (i-0.5)/nc, y, height = 1/n, width = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
+                grid.rect(x = (i-0.5)/nc, y, height = 1/n, width = 1/nc, 
+                	gp = do.call("gpar", c(list(fill = fill), gp)))
                 if(!is.null(pch)) {
 					l = !is.na(pch[, i])
-					grid.points(x = rep((i-0.5)/nc, sum(l)), y = y[l], pch = pch[l, i], size = pt_size, gp = pt_gp)
+					grid.points(x = rep((i-0.5)/nc, sum(l)), y = y[l], pch = pch[l, i], 
+						size = pt_size, gp = pt_gp)
 				}
             }
         } else {
@@ -235,11 +352,13 @@ anno_simple = function(x, col, na_col = "grey",
 			grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
 			if(!is.null(pch)) {
 				l = !is.na(pch)
-				grid.points(x = rep(0.5, sum(l)), y = y[l], pch = pch[l], size = pt_size[l], gp = subset_gp(pt_gp, which(l)))
+				grid.points(x = rep(0.5, sum(l)), y = y[l], pch = pch[l], size = pt_size[l], 
+					gp = subset_gp(pt_gp, which(l)))
 			}
         }
         if(border) grid.rect(gp = gpar(fill = "transparent"))
 	}
+
 	column_fun = function(index) {
 		n = length(index)
 		x = (seq_len(n) - 0.5) / n
@@ -270,43 +389,39 @@ anno_simple = function(x, col, na_col = "grey",
 		fun = column_fun
 	}
 
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_simple"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = c(0.5, nc + 0.5))
-	} else {
-		anno@data_scale = list(x = c(0.5, nc + 0.5), y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_simple",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		data_scale = c(0.5, nc + 0.5),
+		var_import = list(value, gp, border, color_mapping, pt_gp, pt_size, pch)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$value = value
-	anno@var_env$gp = gp
-	anno@var_env$border = border
-	anno@var_env$color_mapping = color_mapping
-	anno@var_env$pt_size = pt_size
-	anno@var_env$pch = pch
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
 	anno@subset_rule = list()
 	if(input_is_matrix) {
 		anno@subset_rule$value = subset_matrix_by_row
-		anno@subset_rule$pch = subset_matrix_by_row
+		if(!is.null(pch)) {
+			anno@subset_rule$pch = subset_matrix_by_row
+		}
 	} else {
 		anno@subset_rule$value = subset_vector
-		anno@subset_rule$pch = subset_vector
+		if(!is.null(pch)) {
+			anno@subset_rule$pch = subset_vector
+			anno@subset_rule$pt_size = subset_vector
+			anno@subset_rule$pt_gp = subset_gp
+		}
 	}
+
+	anno@subsetable = TRUE
 
 	return(anno)      
 }
 
-anno_image = function(image, which = c("column", "row"), border = TRUE, gp = gpar(fill = NA, col = NA),
-	space = unit(1, "mm"), width = NULL, height = NULL) {
+anno_image = function(image, which = c("column", "row"), border = TRUE, 
+	gp = gpar(fill = NA, col = NA), space = unit(1, "mm"), width = NULL, height = NULL) {
 
 	allowed_image_type = c("png", "svg", "pdf", "eps", "jpeg", "jpg", "tiff")
 
@@ -372,30 +487,15 @@ anno_image = function(image, which = c("column", "row"), border = TRUE, gp = gpa
 		}
 	})
 
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
 	space = space[1]
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(1, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(1, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
+	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
 
 	gp = recycle_gp(gp, n_image)
 	
@@ -416,14 +516,17 @@ anno_image = function(image, which = c("column", "row"), border = TRUE, gp = gpa
 			if(image_class[ index[i] ] == "raster") {
 				grid.raster(image_list[[i]], x = (i-0.5)/n, width = width, height = height)
 			} else if(image_class[ index[i] ] == "grImport::Picture") {
-				getFromNamespace("grid.picture", ns = "grImport")(image_list[[i]], x = (i-0.5)/n, width = width, height = height)
+				grid.picture = getFromNamespace("grid.picture", ns = "grImport")
+				grid.picture(image_list[[i]], x = (i-0.5)/n, width = width, height = height)
 			} else if(image_class[ index[i] ] == "grImport2::Picture") {
-				getFromNamespace("grid.picture", ns = "grImport2")(image_list[[i]], x = (i-0.5)/n, width = width, height = height)
+				grid.picture = getFromNamespace("grid.picture", ns = "grImport2")
+				grid.picture(image_list[[i]], x = (i-0.5)/n, width = width, height = height)
 			}
 		}
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
-		upViewport()
+		popViewport()
 	}
+
 	row_fun = function(index) {
 		n = length(index)
 
@@ -441,13 +544,15 @@ anno_image = function(image, which = c("column", "row"), border = TRUE, gp = gpa
 			if(image_class[ index[i] ] == "raster") {
 				grid.raster(image_list[[i]], y = (n - i + 0.5)/n, width = width, height = height)
 			} else if(image_class[ index[i] ] == "grImport::Picture") {
-				getFromNamespace("grid.picture", ns = "grImport")(image_list[[i]], y = (n - i + 0.5)/n, width = width, height = height)
+				grid.picture = getFromNamespace("grid.picture", ns = "grImport")
+				grid.picture(image_list[[i]], y = (n - i + 0.5)/n, width = width, height = height)
 			} else if(image_class[ index[i] ] == "grImport2::Picture") {
-				getFromNamespace("grid.picture", ns = "grImport2")(image_list[[i]], y = (n - i + 0.5)/n, width = width, height = height)
+				grid.picture = getFromNamespace("grid.picture", ns = "grImport2")
+				grid.picture(image_list[[i]], y = (n - i + 0.5)/n, width = width, height = height)
 			}
 		}
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
-		upViewport()
+		popViewport()
 	}
 	
 	if(which == "row") {
@@ -456,38 +561,64 @@ anno_image = function(image, which = c("column", "row"), border = TRUE, gp = gpa
 		fun = column_fun
 	}
 
-	n = n_image
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_image"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = c(0.5, 1.5))
-	} else {
-		anno@data_scale = list(x = c(0.5, 1.5), y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_image",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n_image,
+		data_scale = c(0.5, 1.5),
+		var_import = list(gp, border, space, yx_asp, image_list, image_class)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$gp = gp
-	anno@var_env$border = border
-	anno@var_env$space = space
-	anno@var_env$yx_asp = yx_asp
-	anno@var_env$image_list = image_list
-	anno@var_env$image_class = image_class
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
 	anno@subset_rule$gp = subset_vector
 	anno@subset_rule$image_list = subset_vector
 	anno@subset_rule$image_class = subset_vector
 
+	anno@subsetable = TRUE
+
 	return(anno)   
 }
 
+default_axis_param = function(which) {
+	list(
+		at = NULL, 
+		labels = NULL, 
+		labels_rot = ifelse(which == "column", 0, 90), 
+		gp = gpar(fontsize = 8), 
+		side = ifelse(which == "column", "left", "bottom"), 
+		facing = "outside"
+	)
+}
+
+validate_axis_param = function(axis_param, which) {
+	dft = default_axis_param(which)
+	for(nm in names(axis_param)) {
+		dft[[nm]] = axis_param[[nm]]
+	}
+	return(dft)
+}
+
+construct_axis_grob = function(axis_param, which, data_scale) {
+	axis_param_default = default_axis_param(which)
+
+	for(nm in setdiff(names(axis_param_default), names(axis_param))) {
+		axis_param[[nm]] = axis_param_default[[nm]]
+	}
+	
+	if(is.null(axis_param$at)) {
+		at = pretty_breaks(data_scale)
+		axis_param$at = at
+		axis_param$labels = at
+	}
+	if(is.null(axis_param$labels)) {
+		axis_param$labels = axis_param$at
+	}
+	axis_grob = do.call(annotation_axis_grob, axis_param)
+	
+	return(axis_grob)
+}
 
 # == title
 # Using points as annotation
@@ -514,16 +645,14 @@ anno_image = function(image, which = c("column", "row"), border = TRUE, gp = gpa
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16, 
-	size = unit(2, "mm"), ylim = NULL, extend = 0.05, axis = TRUE, axis_side = NULL, 
-	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"),
+	size = unit(2, "mm"), ylim = NULL, extend = 0.05, axis = TRUE,
+	axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 
-	axis_direction = match.arg(axis_direction)[1]
-
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
 	if(is.data.frame(x)) x = as.matrix(x)
@@ -534,22 +663,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 	}
 	input_is_matrix = is.matrix(x)
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(1, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(1, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
+	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
 
 	if(is.matrix(x)) {
 		n = nrow(x)
@@ -572,54 +686,39 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 	}
 	
 	if(is.null(ylim)) {
-		data_scale = pretty_scale(range(x, na.rm = TRUE))
+		data_scale = range(x, na.rm = TRUE)
 	} else {
 		data_scale = ylim
 	}
 	data_scale = data_scale + c(-extend, extend)*(data_scale[2] - data_scale[1])
 
-	if(which == "column") {
-		if(is.null(axis_side)) axis_side = "left"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
-		}
-	}
-	if(which == "row") {
-		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "left" || axis_side == "right") {
-			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
-		}
-	}
-
 	value = x
+
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
 
 	row_fun = function(index) {
 		n = length(index)
 
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
-		if(axis_direction == "reverse") x = data_scale[2] - x + data_scale[1]
 		if(is.matrix(value)) {
 			for(i in seq_len(ncol(value))) {
-				grid.points(value[index, i], n - seq_along(index) + 1, gp = subset_gp(gp, i), default.units = "native", pch = pch[i], size = size[i])
+				grid.points(value[index, i], n - seq_along(index) + 1, gp = subset_gp(gp, i), 
+					default.units = "native", pch = pch[i], size = size[i])
 			}
 		} else {
-			grid.points(value[index], n - seq_along(index) + 1, gp = gp, default.units = "native", pch = pch[index], size = size[index])
+			grid.points(value[index], n - seq_along(index) + 1, gp = gp, default.units = "native", 
+				pch = pch[index], size = size[index])
 		}
-		if(axis) {
-			if(axis_side == "top") {
-				grid.xaxis(main = FALSE, gp = axis_gp, axis_direction = axis_direction)
-			} else if(axis_side == "bottom") {
-				grid.xaxis(gp = axis_gp, axis_direction = axis_direction)
-			}
-		}
+		if(axis) grid.draw(axis_grob)
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
-		upViewport()
+		popViewport()
 	}
+
 	column_fun = function(index) {
 		n = length(index)
 		
 		pushViewport(viewport(yscale = data_scale, xscale = c(0.5, n+0.5)))
-		if(axis_direction == "reverse") x = data_scale[2] - x + data_scale[1]
 		if(is.matrix(value)) {
 			for(i in seq_len(ncol(value))) {
 				grid.points(seq_along(index), value[index, i], gp = subset_gp(gp, i), default.units = "native", pch = pch[i], size = size[i])
@@ -627,15 +726,9 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		} else {
 			grid.points(seq_along(index), value[index], gp = gp, default.units = "native", pch = pch[index], size = size[index])
 		}
-		if(axis) {
-			if(axis_side == "right") {
-				grid.yaxis(main = FALSE, gp = axis_gp)
-			} else if(axis_side == "left") {
-				grid.yaxis(gp = axis_gp)
-			}
-		}
+		if(axis) grid.draw(axis_grob)
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
-		upViewport()
+		popViewport()
 	}
 
 	if(which == "row") {
@@ -644,34 +737,17 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		fun = column_fun
 	}
 
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_points"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = data_scale)
-	} else {
-		anno@data_scale = list(x = data_scale, y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_points",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		data_scale = data_scale,
+		var_import = list(value, gp, border, pch, size, axis, axis_param, axis_grob, data_scale)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$value = value
-	anno@var_env$gp = gp
-	anno@var_env$border = border
-	anno@var_env$pch = pch
-	anno@var_env$size = size
-	anno@var_env$axis = axis
-	anno@var_env$axis_side = axis_side
-	anno@var_env$axis_gp = axis_gp
-	anno@var_env$axis_direction = axis_direction
-	anno@var_env$data_scale = data_scale
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
 	anno@subset_rule$gp = subset_vector
 	if(input_is_matrix) {
 		anno@subset_rule$value = subset_matrix_by_row
@@ -681,8 +757,28 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		anno@subset_rule$size = subset_vector
 		anno@subset_rule$pch = subset_vector
 	}
-	
+
+	anno@subsetable = TRUE
+
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+		
 	return(anno) 
+}
+
+update_anno_extend = function(anno, axis_grob, axis_param) {
+	extended = anno@extended
+	if(axis_param$facing == "outside") {
+		if(axis_param$side == "left") {
+			extended[[2]] = convertWidth(grobWidth(axis_grob), "mm", valueOnly = TRUE)
+		} else if(axis_param$side == "right") {
+			extended[[4]] = convertWidth(grobWidth(axis_grob), "mm", valueOnly = TRUE)
+		} else if(axis_param$side == "top") {
+			extended[[3]] = convertHeight(grobHeight(axis_grob), "mm", valueOnly = TRUE)
+		} else if(axis_param$side == "bottom") {
+			extended[[1]] = convertHeight(grobHeight(axis_grob), "mm", valueOnly = TRUE)
+		}
+	}
+	return(extended)
 }
 
 # == title
@@ -713,8 +809,8 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6,
-	gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, axis = TRUE, axis_side = NULL, 
-	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"),
+	gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, axis = TRUE, 
+	axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 
 	if(inherits(x, "list")) x = do.call("cbind", x)
@@ -722,7 +818,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	if(inherits(x, "matrix")) {
 		sg = apply(x, 1, function(xx) all(sign(xx) %in% c(1, 0)) || all(sign(xx) %in% c(-1, 0)))
 		if(!all(sg)) {
-			stop("Since `x` is a matrix, the sign of each row should be either all positive or all negative.")
+			stop_wrap("Since `x` is a matrix, the sign of each row should be either all positive or all negative.")
 		}
 	}
 	# convert everything to matrix
@@ -752,43 +848,13 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		}
 	}
 
-	axis_direction = match.arg(axis_direction)[1]
-
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(1, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(1, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
-
-	if(which == "column") {
-		if(is.null(axis_side)) axis_side = "left"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
-		}
-	}
-	if(which == "row") {
-		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "left" || axis_side == "right") {
-			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
-		}
-	}
+	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
 
 	if(nc == 1) {
 		gp = recycle_gp(gp, nrow(x))
@@ -797,14 +863,12 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	}
 
 	value = x
-	
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
+
 	row_fun = function(index) {
 		n = length(index)
 		
-		if(axis_direction == "reverse") {
-			value = data_scale[2] - value + data_scale[1]
-			baseline = data_scale[2] - baseline + data_scale[1]
-		}
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 		if(ncol(value) == 1) {
 			width = value[index] - baseline
@@ -817,15 +881,9 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 				grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
 			}
 		}
-		if(axis) {
-			if(axis_side == "top") {
-				grid.xaxis(main = FALSE, gp = axis_gp, axis_direction = axis_direction)
-			} else if(axis_side == "bottom") {
-				grid.xaxis(gp = axis_gp, axis_direction = axis_direction)
-			}
-		}
+		if(axis) grid.draw(axis_grob)
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
-		upViewport()
+		popViewport()
 	}
 	column_fun = function(index) {
 		n = length(index)
@@ -842,15 +900,9 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 				grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
 			}
 		}
-		if(axis) {
-			if(axis_side == "right") {
-				grid.yaxis(main = FALSE, gp = axis_gp)
-			} else if(axis_side == "left") {
-				grid.yaxis(gp = axis_gp)
-			}
-		}
+		if(axis) grid.draw(axis_grob)
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
-		upViewport()
+		popViewport()
 	}
 	
 	if(which == "row") {
@@ -860,40 +912,26 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	}
 	n = nrow(value)
 
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_barplot"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = data_scale)
-	} else {
-		anno@data_scale = list(x = data_scale, y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_barplot",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		data_scale = data_scale,
+		var_import = list(value, gp, border, bar_width, baseline, axis, axis_param, axis_grob, data_scale)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$value = value
-	anno@var_env$gp = gp
-	anno@var_env$border = border
-	anno@var_env$bar_width = bar_width
-	anno@var_env$baseline = baseline
-	anno@var_env$axis = axis
-	anno@var_env$axis_side = axis_side
-	anno@var_env$axis_gp = axis_gp
-	anno@var_env$axis_direction = axis_direction
-	anno@var_env$data_scale = data_scale
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
 	anno@subset_rule$value = subset_matrix_by_row
-
 	if(ncol(value) == 1) {
 		anno@subset_rule$gp = subset_gp
 	}
-	
+		
+	anno@subsetable = TRUE
+
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+
 	return(anno) 
 }
 
@@ -924,47 +962,16 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 #
 anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 	gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, outline = TRUE, box_width = 0.6,
-	pch = 1, size = unit(2, "mm"), axis = TRUE, axis_side = NULL, 
-	axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"),
+	pch = 1, size = unit(2, "mm"), axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 
-	axis_direction = match.arg(axis_direction)[1]
-
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(1, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(1, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
-
-	if(which == "column") {
-		if(is.null(axis_side)) axis_side = "left"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
-		}
-	}
-	if(which == "row") {
-		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "left" || axis_side == "right") {
-			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
-		}
-	}
+	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
 
 	## convert matrix all to list (or data frame)
 	if(is.matrix(x)) {
@@ -994,10 +1001,12 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 	if(length(pch) == 1) pch = rep(pch, n)
 	if(length(size) == 1) size = rep(size, n)
 
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
+
 	row_fun = function(index) {
 
 		n_all = length(value)
-		if(axis_direction == "reverse") value = lapply(value, function(y) data_scale[2] - y + data_scale[1])
 		value = value[index]
 		boxplot_stats = boxplot(value, plot = FALSE)$stats
 		
@@ -1011,36 +1020,32 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 		grid.segments(boxplot_stats[5, ], n - seq_along(index) + 1 - 0.5*box_width, 
 			          boxplot_stats[5, ], n - seq_along(index) + 1 + 0.5*box_width, 
-			default.units = "native", gp = gp)
+			          default.units = "native", gp = gp)
 		grid.segments(boxplot_stats[5, ], n - seq_along(index) + 1,
 			          boxplot_stats[4, ], n - seq_along(index) + 1, 
-			default.units = "native", gp = gp)
+			          default.units = "native", gp = gp)
 		grid.segments(boxplot_stats[1, ], n - seq_along(index) + 1, 
 			          boxplot_stats[2, ], n - seq_along(index) + 1, 
-			default.units = "native", gp = gp)
+			          default.units = "native", gp = gp)
 		grid.segments(boxplot_stats[1, ], n - seq_along(index) + 1 - 0.5*box_width, 
 			          boxplot_stats[1, ], n - seq_along(index) + 1 + 0.5*box_width, 
-			default.units = "native", gp = gp)
+			          default.units = "native", gp = gp)
 		grid.segments(boxplot_stats[3, ], n - seq_along(index) + 1 - 0.5*box_width, 
 			          boxplot_stats[3, ], n - seq_along(index) + 1 + 0.5*box_width, 
-			default.units = "native", gp = gp)
+			          default.units = "native", gp = gp)
 		if(outline) {
 			for(i in seq_along(value)) {
 				l1 = value[[i]] > boxplot_stats[5,i]
-				if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = value[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+				if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = value[[i]][l1], 
+					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 				l2 = value[[i]] < boxplot_stats[1,i]
-				if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = value[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+				if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = value[[i]][l2], 
+					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 			}
 		}
-		if(axis) {
-			if(axis_side == "top") {
-				grid.xaxis(main = FALSE, gp = axis_gp, axis_direction = axis_direction)
-			} else if(axis_side == "bottom") {
-				grid.xaxis(gp = axis_gp, axis_direction = axis_direction)
-			}
-		}
+		if(axis) grid.draw(axis_grob)
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
-		upViewport()
+		popViewport()
 	}
 	column_fun = function(index) {
 		value = value[index]
@@ -1052,34 +1057,35 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		grid.rect(x = seq_along(index), y = boxplot_stats[2, ], 
 			height = boxplot_stats[4, ] - boxplot_stats[2, ], width = 1*box_width, just = "bottom", 
 			default.units = "native", gp = gp)
+		
 		grid.segments(seq_along(index) - 0.5*box_width, boxplot_stats[5, ],
-			          seq_along(index) + 0.5*box_width, boxplot_stats[5, ], default.units = "native", gp = gp)
+			          seq_along(index) + 0.5*box_width, boxplot_stats[5, ], 
+			          default.units = "native", gp = gp)
 		grid.segments(seq_along(index), boxplot_stats[5, ],
-			          seq_along(index), boxplot_stats[4, ], default.units = "native", gp = gp)
+			          seq_along(index), boxplot_stats[4, ], 
+			          default.units = "native", gp = gp)
 		grid.segments(seq_along(index), boxplot_stats[1, ],
-			          seq_along(index), boxplot_stats[2, ], default.units = "native", gp = gp)
+			          seq_along(index), boxplot_stats[2, ], 
+			          default.units = "native", gp = gp)
 		grid.segments(seq_along(index) - 0.5*box_width, boxplot_stats[1, ],
-			          seq_along(index) + 0.5*box_width, boxplot_stats[1, ], default.units = "native", gp = gp)
+			          seq_along(index) + 0.5*box_width, boxplot_stats[1, ], 
+			          default.units = "native", gp = gp)
 		grid.segments(seq_along(index) - 0.5*box_width, boxplot_stats[3, ],
 			          seq_along(index) + 0.5*box_width, boxplot_stats[3, ], 
-			default.units = "native", gp = gp)
+			          default.units = "native", gp = gp)
 		if(outline) {	
 			for(i in seq_along(value)) {
 				l1 = value[[i]] > boxplot_stats[5,i]
-				if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = value[[i]][l1], default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+				if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = value[[i]][l1], 
+					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 				l2 = value[[i]] < boxplot_stats[1,i]
-				if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = value[[i]][l2], default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+				if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = value[[i]][l2], 
+					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 			}
 		}
-		if(axis) {
-			if(axis_side == "right") {
-				grid.yaxis(main = FALSE, gp = axis_gp)
-			} else if(axis_side == "left") {
-				grid.yaxis(gp = axis_gp)
-			}
-		}
+		if(axis) grid.draw(axis_grob)
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
-		upViewport()
+		popViewport()
 	}
 	
 	if(which == "row") {
@@ -1088,41 +1094,26 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		fun = column_fun
 	}
 
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_boxplot"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = data_scale)
-	} else {
-		anno@data_scale = list(x = data_scale, y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_boxplot",
+		which = which,
+		n = n,
+		width = anno_size$width,
+		height = anno_size$height,
+		data_scale = data_scale,
+		var_import = list(value, gp, border, box_width, axis, axis_param, axis_grob, data_scale, pch, size, outline)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$value = value
-	anno@var_env$gp = gp
-	anno@var_env$border = border
-	anno@var_env$box_width = box_width
-	anno@var_env$axis = axis
-	anno@var_env$axis_side = axis_side
-	anno@var_env$axis_gp = axis_gp
-	anno@var_env$axis_direction = axis_direction
-	anno@var_env$data_scale = data_scale
-	anno@var_env$pch = pch
-	anno@var_env$size = size
-	anno@var_env$outline = outline
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
 	anno@subset_rule$value = subset_vector
 	anno@subset_rule$gp = subset_gp
 	anno@subset_rule$pch = subset_vector
 	anno@subset_rule$size = subset_vector
 	
+	anno@subsetable = TRUE
+
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+
 	return(anno) 
 }
 
@@ -1144,44 +1135,16 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 #
 anno_histogram = function(x, which = c("column", "row"), n_breaks = 11, 
 	border = FALSE, gp = gpar(fill = "#CCCCCC"), 
-	axis = TRUE, axis_side = NULL, axis_gp = gpar(fontsize = 8), 
+	axis = TRUE, axis_param = default_axis_param(which), 
 	width = NULL, height = NULL) {
 	
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(4, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(4, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
-
-	if(which == "column") {
-		if(is.null(axis_side)) axis_side = "left"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
-		}
-	}
-	if(which == "row") {
-		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "left" || axis_side == "right") {
-			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
-		}
-	}
+	anno_size = anno_width_and_height(which, width, height, unit(4, "cm"))
 
 	## convert matrix all to list (or data frame)
 	if(is.matrix(x)) {
@@ -1204,8 +1167,10 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 	xscale = xscale + c(0, 0.05)*(xscale[2] - xscale[1])
 	yscale = c(0, max(unlist(histogram_counts)))
 	yscale[2] = yscale[2]*1.05
-	
+
 	gp = recycle_gp(gp, n)
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
 
 	row_fun = function(index) {
 		
@@ -1213,7 +1178,9 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 		value = value[index]
 		
 		n = length(index)
-		
+		histogram_breaks = histogram_breaks[index]
+		histogram_counts = histogram_counts[index]
+
 		gp = subset_gp(gp, index)
 		for(i in seq_len(n)) {
 			n_breaks = length(histogram_breaks[[i]])
@@ -1222,13 +1189,7 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 			popViewport()
 		}
 		pushViewport(viewport(xscale = xscale))
-		if(axis) {
-			if(axis_side == "top") {
-				grid.xaxis(main = FALSE, gp = axis_gp)
-			} else if(axis_side == "bottom") {
-				grid.xaxis(gp = axis_gp)
-			}
-		}
+		if(axis) grid.draw(axis_grob)
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
 		popViewport()
 	}
@@ -1240,6 +1201,8 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 		foo = yscale
 		yscale = xscale
 		xscale = foo
+		histogram_breaks = histogram_breaks[index]
+		histogram_counts = histogram_counts[index]
 
 		n = length(index)
 		
@@ -1253,13 +1216,7 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 			popViewport()
 		}
 		pushViewport(viewport(yscale = yscale))
-		if(axis) {
-			if(axis_side == "right") {
-				grid.yaxis(main = FALSE, gp = axis_gp)
-			} else if(axis_side == "left") {
-				grid.yaxis(gp = axis_gp)
-			}
-		}
+		if(axis) grid.draw(axis_grob)
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
 		popViewport()
 	}
@@ -1270,39 +1227,27 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 		fun = column_fun
 	}
 
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_histogram"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = xscale)
-	} else {
-		anno@data_scale = list(x = xscale, y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_histogram",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		data_scale = xscale,
+		var_import = list(value, gp, border, axis, axis_param, axis_grob, xscale, yscale,
+			histogram_breaks, histogram_counts)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$value = value
-	anno@var_env$gp = gp
-	anno@var_env$border = border
-	anno@var_env$axis = axis
-	anno@var_env$axis_side = axis_side
-	anno@var_env$axis_gp = axis_gp
-	anno@var_env$xscale = xscale
-	anno@var_env$yscale = yscale
-	anno@var_env$histogram_breaks = histogram_breaks
-	anno@var_env$histogram_counts = histogram_counts
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
 	anno@subset_rule$value = subset_vector
 	anno@subset_rule$gp = subset_gp
 	anno@subset_rule$histogram_breaks = subset_vector
 	anno@subset_rule$histogram_counts = subset_vector
 	
+	anno@subsetable = TRUE
+
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+
 	return(anno) 
 }
 
@@ -1325,58 +1270,18 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 #
 anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
 	type = c("lines", "violin", "heatmap"), 
-	heatmap_color_schema = rev(brewer.pal(name = "RdYlBu", n = 11)), 
-	joyplot_scale = 1, border = FALSE,
-	axis = TRUE, axis_side = NULL, 
-	axis_gp = gpar(fontsize = 8),
+	heatmap_colors = rev(brewer.pal(name = "RdYlBu", n = 11)), 
+	joyplot_scale = 1, border = TRUE,
+	axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 	
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
-	}
-
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(4, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(4, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
-
-	if(which == "column") {
-		if(is.null(axis_side)) axis_side = "left"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
-		}
-	}
-	if(which == "row") {
-		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "left" || axis_side == "right") {
-			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
-		}
-	}
-
-	## convert matrix all to list (or data frame)
-	if(is.matrix(x)) {
-		if(which == "column") {
-			value = as.data.frame(x)
-		} else if(which == "row") {
-			value = as.data.frame(t(x))
-		}
 	} else {
-		value = x
+		which = .ENV$current_annotation_which
 	}
+
+	anno_size = anno_width_and_height(which, width, height, unit(4, "cm"))
 
 	## convert matrix all to list (or data frame)
 	if(is.matrix(x)) {
@@ -1393,126 +1298,187 @@ anno_density = function(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC
 	gp = recycle_gp(gp, n)
 	type = match.arg(type)[1]
 
-	f = switch(which,
-		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
-			
-			n_all = length(value)
-			value = value[index]
-			density_stats = lapply(value, density)
-			density_x = lapply(density_stats, function(x) x$x)
-			density_y = lapply(density_stats, function(x) x$y)
-			
-			min_density_x = min(unlist(density_x))
-			max_density_x = max(unlist(density_x))
-			
-			xscale = range(unlist(density_x), na.rm = TRUE)
-			xscale = xscale + c(0, 0.05)*(xscale[2] - xscale[1])
+	n_all = length(value)
+	density_stats = lapply(value, density)
+	density_x = lapply(density_stats, function(x) x$x)
+	density_y = lapply(density_stats, function(x) x$y)
+	
+	min_density_x = min(unlist(density_x))
+	max_density_x = max(unlist(density_x))
+	
+	xscale = range(unlist(density_x), na.rm = TRUE)
+	xscale = xscale + c(0, 0.05)*(xscale[2] - xscale[1])
+	if(type == "lines") {
+		yscale = c(0, max(unlist(density_y)))
+		yscale[2] = yscale[2]*1.05
+	} else if(type == "violin") {
+		yscale = max(unlist(density_y))
+		yscale = c(-yscale*1.05, yscale*1.05)
+	} else if(type == "heatmap") {
+		xscale = range(unlist(density_x), na.rm = TRUE)
+		yscale = c(0, 1)
+		min_y = min(unlist(density_y))
+		max_y = max(unlist(density_y))
+		col_fun = colorRamp2(seq(min_y, max_y, 
+			length = length(heatmap_colors)), heatmap_colors)
+	}
+
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
+
+	row_fun = function(index) {
+		
+		n = length(index)
+		value = value[index]
+		
+		gp = subset_gp(gp, index)
+		density_x = density_x[index]
+		density_y = density_y[index]
+
+		for(i in seq_len(n)) {
+			pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), 
+				just = c("left", "bottom"), height = unit(1/n, "npc"), xscale = xscale, 
+				yscale = yscale))
 			if(type == "lines") {
-				yscale = c(0, max(unlist(density_y)))
-				yscale[2] = yscale[2]*1.05
+				grid.polygon(x = density_x[[i]], y = density_y[[i]]*joyplot_scale, 
+					default.units = "native", gp = subset_gp(gp, i))
 			} else if(type == "violin") {
-				yscale = max(unlist(density_y))
-				yscale = c(-yscale*1.05, yscale*1.05)
+				grid.polygon(x = c(density_x[[i]], rev(density_x[[i]])), 
+					y = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", 
+					gp = subset_gp(gp, i))
+				box_stat = boxplot(value[[i]], plot = FALSE)$stat
+				grid.lines(box_stat[1:2, 1], c(0, 0), default.units = "native", 
+					gp = subset_gp(gp, i))
+				grid.lines(box_stat[4:5, 1], c(0, 0), default.units = "native", 
+					gp = subset_gp(gp, i))
+				grid.points(box_stat[3, 1], 0, default.units = "native", pch = 3, 
+					size = unit(1, "mm"), gp = subset_gp(gp, i))
 			} else if(type == "heatmap") {
-				xscale = range(unlist(density_x), na.rm = TRUE)
-				yscale = c(0, 1)
-				min_y = min(unlist(density_y))
-				max_y = max(unlist(density_y))
-				col_fun = colorRamp2(seq(min_y, max_y, length = length(heatmap_color_schema)), heatmap_color_schema)
+				n_breaks = length(density_x[[i]])
+				grid.rect(x = density_x[[i]][-1], y = 0, 
+					width = density_x[[i]][-1] - density_x[[i]][-n_breaks], height = 1, 
+					just = c("right", "bottom"), default.units = "native", 
+					gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), 
+						col = NA))
+				grid.rect(x = density_x[[i]][1], y = 0, width = density_x[[i]][1] - min_density_x, 
+					height = 1, just = c("right", "bottom"), default.units = "native", 
+					gp = gpar(fill = col_fun(0), col = NA))
+				grid.rect(x = density_x[[i]][n_breaks], y = 0, 
+					width = max_density_x - density_x[[i]][n_breaks], height = 1, 
+					just = c("left", "bottom"), default.units = "native", 
+					gp = gpar(fill = col_fun(0), col = NA))
 			}
-			n = length(index)
-			
-			gp = subset_gp(gp, index)
-
-			for(i in seq_len(n)) {
-				pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), just = c("left", "bottom"), height = unit(1/n, "npc"), xscale = xscale, yscale = yscale))
-				if(type == "lines") {
-					grid.polygon(x = density_x[[i]], y = density_y[[i]]*joyplot_scale, default.units = "native", gp = subset_gp(gp, i))
-				} else if(type == "violin") {
-					grid.polygon(x = c(density_x[[i]], rev(density_x[[i]])), y = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", gp = subset_gp(gp, i))
-				} else if(type == "heatmap") {
-					n_breaks = length(density_x[[i]])
-					grid.rect(x = density_x[[i]][-1], y = 0, width = density_x[[i]][-1] - density_x[[i]][-n_breaks], height = 1, just = c("right", "bottom"), default.units = "native", gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), col = NA))
-					grid.rect(x = density_x[[i]][1], y = 0, width = density_x[[i]][1] - min_density_x, height = 1, just = c("right", "bottom"), default.units = "native", gp = gpar(fill = col_fun(0), col = NA))
-					grid.rect(x = density_x[[i]][n_breaks], y = 0, width = max_density_x - density_x[[i]][n_breaks], height = 1, just = c("left", "bottom"), default.units = "native", gp = gpar(fill = col_fun(0), col = NA))
-				}
-				upViewport()
-			}
-			pushViewport(viewport(xscale = xscale))
-			if(axis) {
-				if(axis_side == "top") {
-					grid.xaxis(main = FALSE, gp = axis_gp)
-				} else if(axis_side == "bottom") {
-					grid.xaxis(gp = axis_gp)
-				}
-			}
-			if(border) grid.rect(gp = gpar(fill = "transparent"))
-			popViewport()
-		},
-		column = function(index, k = NULL, N = NULL, vp_name = NULL) {
-
-			n_all = length(value)
-			value = value[index]
-			density_stats = lapply(value, density)
-			density_x = lapply(density_stats, function(x) x$x)
-			density_y = lapply(density_stats, function(x) x$y)
-			
-			min_density_x = min(unlist(density_x))
-			max_density_x = max(unlist(density_x))
-			
-			yscale = range(unlist(density_x), na.rm = TRUE)
-			yscale = yscale + c(0, 0.05)*(yscale[2] - yscale[1])
-			if(type == "lines") {
-				xscale = c(0, max(unlist(density_y)))
-				xscale[2] = xscale[2]*1.05
-			} else if(type == "violin") {
-				xscale = max(unlist(density_y))
-				xscale = c(-xscale*1.05, xscale*1.05)
-			} else if(type == "heatmap") {
-				yscale = range(unlist(density_x), na.rm = TRUE)
-				xscale = c(0, 1)
-				min_y = min(unlist(density_y))
-				max_y = max(unlist(density_y))
-				col_fun = colorRamp2(seq(min_y, max_y, length = length(heatmap_color_schema)), heatmap_color_schema)
-			}
-
-			n = length(index)
-			gp = subset_gp(gp, index)
-
-			for(i in rev(seq_len(n))) {
-				pushViewport(viewport(y = unit(0, "npc"), x = unit(i/n, "npc"), width = unit(1/n, "npc"), just = c("right", "bottom"), xscale = xscale, yscale = yscale))
-				if(type == "lines") {
-					grid.polygon(y = density_x[[i]], x = density_y[[i]]*joyplot_scale, default.units = "native", gp = subset_gp(gp, index[i]))
-				} else if(type == "violin") {
-					grid.polygon(y = c(density_x[[i]], rev(density_x[[i]])), x = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", gp = subset_gp(gp, index[i]))
-				} else if(type == "heatmap") {
-					n_breaks = length(density_x[[i]])
-					grid.rect(y = density_x[[i]][-1], x = 0, height = density_x[[i]][-1] - density_x[[i]][-n_breaks], width = 1, just = c("left", "top"), default.units = "native", gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), col = NA))
-					grid.rect(y = density_x[[i]][1], x = 0, height = density_x[[i]][1] - min_density_x, width = 1, just = c("left", "top"), default.units = "native", gp = gpar(fill = col_fun(0), col = NA))
-					grid.rect(y = density_x[[i]][n_breaks], x = 0, height = max_density_x - density_x[[i]][n_breaks], width = 1, just = c("left", "bottom"), default.units = "native", gp = gpar(fill = col_fun(0), col = NA))
-				}
-				upViewport()
-			}
-			pushViewport(viewport(yscale = yscale))
-			if(axis) {
-				if(axis_side == "right") {
-					grid.yaxis(main = FALSE, gp = axis_gp)
-				} else if(axis_side == "left") {
-					grid.yaxis(gp = axis_gp)
-				}
-			}
-			if(border) grid.rect(gp = gpar(fill = "transparent"))
 			popViewport()
 		}
+		pushViewport(viewport(xscale = xscale))
+		if(axis) grid.draw(axis_grob)
+		if(border) grid.rect(gp = gpar(fill = "transparent"))
+		popViewport()
+	}
+	column_fun = function(index) {
+
+		n_all = length(value)
+		value = value[index]
+		
+		foo = yscale
+		yscale = xscale
+		xscale = foo
+
+		density_x = density_x[index]
+		density_y = density_y[index]
+		
+		yscale = range(unlist(density_x), na.rm = TRUE)
+		yscale = yscale + c(0, 0.05)*(yscale[2] - yscale[1])
+		if(type == "lines") {
+			xscale = c(0, max(unlist(density_y)))
+			xscale[2] = xscale[2]*1.05
+		} else if(type == "violin") {
+			xscale = max(unlist(density_y))
+			xscale = c(-xscale*1.05, xscale*1.05)
+		} else if(type == "heatmap") {
+			yscale = range(unlist(density_x), na.rm = TRUE)
+			xscale = c(0, 1)
+			min_y = min(unlist(density_y))
+			max_y = max(unlist(density_y))
+			col_fun = colorRamp2(seq(min_y, max_y, 
+				length = length(heatmap_colors)), heatmap_colors)
+		}
+
+		n = length(index)
+		gp = subset_gp(gp, index)
+
+		for(i in rev(seq_len(n))) {
+			pushViewport(viewport(y = unit(0, "npc"), x = unit(i/n, "npc"), width = unit(1/n, "npc"), 
+				just = c("right", "bottom"), xscale = xscale, yscale = yscale))
+			if(type == "lines") {
+				grid.polygon(y = density_x[[i]], x = density_y[[i]]*joyplot_scale, 
+					default.units = "native", gp = subset_gp(gp, index[i]))
+			} else if(type == "violin") {
+				grid.polygon(y = c(density_x[[i]], rev(density_x[[i]])), 
+					x = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", 
+					gp = subset_gp(gp, index[i]))
+				box_stat = boxplot(value[[i]], plot = FALSE)$stat
+				grid.lines(y = box_stat[1:2, 1], x = c(0, 0), default.units = "native", 
+					gp = subset_gp(gp, i))
+				grid.lines(y = box_stat[4:5, 1], x = c(0, 0), default.units = "native", 
+					gp = subset_gp(gp, i))
+				grid.points(y = box_stat[3, 1], x = 0, default.units = "native", pch = 3, 
+					size = unit(1, "mm"), gp = subset_gp(gp, i))	
+			} else if(type == "heatmap") {
+				n_breaks = length(density_x[[i]])
+				grid.rect(y = density_x[[i]][-1], x = 0, 
+					height = density_x[[i]][-1] - density_x[[i]][-n_breaks], width = 1, 
+					just = c("left", "top"), default.units = "native", 
+					gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), 
+						col = NA))
+				grid.rect(y = density_x[[i]][1], x = 0, height = density_x[[i]][1] - min_density_x, 
+					width = 1, just = c("left", "top"), default.units = "native", 
+					gp = gpar(fill = col_fun(0), col = NA))
+				grid.rect(y = density_x[[i]][n_breaks], x = 0, 
+					height = max_density_x - density_x[[i]][n_breaks], width = 1, 
+					just = c("left", "bottom"), default.units = "native", 
+					gp = gpar(fill = col_fun(0), col = NA))
+			}
+			popViewport()
+		}
+		pushViewport(viewport(yscale = yscale))
+		if(axis) grid.draw(axis_grob)
+		if(border) grid.rect(gp = gpar(fill = "transparent"))
+		popViewport()
+	}
+	
+	if(which == "row") {
+		fun = row_fun
+	} else if(which == "column") {
+		fun = column_fun
+	}
+
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_density",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		data_scale = xscale,
+		var_import = list(value, gp, border, type, axis, axis_param, axis_grob, xscale, yscale, density_x,
+			density_y, min_density_x, max_density_x, joyplot_scale)
 	)
-	attr(f, "which") = which
-	attr(f, "fun") = "anno_density"
-	attr(f, "width") = width
-	attr(f, "height") = height
-	attr(f, "n") = length(value)
-	attr(f, "parent_variable") = c("value", "gp", "border", "type", "axis", "axis_side", "axis_gp")
-	attr(f, "parent_variable_subsetable") = c(TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE)
-	return(f)
+
+	if(type == "heatmap") {
+		anno@var_env$col_fun = col_fun
+	}
+
+	anno@subset_rule$value = subset_vector
+	anno@subset_rule$gp = subset_gp
+	anno@subset_rule$density_x = subset_vector
+	anno@subset_rule$density_y = subset_vector
+	
+	anno@subsetable = TRUE
+
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+
+	return(anno)
 }
 
 # == title
@@ -1584,6 +1550,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 	if(which == "column") {
 		if(missing(height)) {
 			height = max_text_width(x, gp = gp)*abs(sin(rot/180*pi)) + grobHeight(textGrob("A", gp = gp))*abs(cos(rot/180*pi))
+			height = convertHeight(height, "mm")
 		}
 		if(missing(width)) {
 			width = unit(1, "npc")
@@ -1592,11 +1559,14 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 	if(which == "row") {
 		if(missing(width)) {
 			width = max_text_width(x, gp = gp)*cos(rot/180*pi) + grobHeight(textGrob("A", gp = gp))*sin(rot/180*pi)
+			width = convertWidth(width, "mm")
 		}
 		if(missing(height)) {
 			height = unit(1, "npc")
 		}
 	}
+
+	anno_size = list(width = width, height = height)
 
 	value = x
 
@@ -1615,75 +1585,36 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 		fun = column_fun
 	}
 
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_text"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = c(0.5, 1.5))
-	} else {
-		anno@data_scale = list(x = c(0.5, 1.5), y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_text",
+		which = which,
+		width = width,
+		height = height,
+		n = n,
+		var_import = list(value, gp, just, rot, location)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$value = value
-	anno@var_env$gp = gp
-	anno@var_env$just = just
-	anno@var_env$rot = rot
-	anno@var_env$location = location
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
 	anno@subset_rule$value = subset_vector
 	anno@subset_rule$gp = subset_gp
+
+	anno@subsetable = TRUE
 
 	return(anno)
 }
 
 anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000"),
 	scale = 2, transparency = 0.6,
-	axis = TRUE, axis_side = NULL, axis_gp = gpar(fontsize = 8),
+	axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 	
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(4, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(4, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
-
-	if(which == "column") {
-		if(is.null(axis_side)) axis_side = "left"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
-		}
-	}
-	if(which == "row") {
-		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "left" || axis_side == "right") {
-			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
-		}
-	}
+	anno_size = anno_width_and_height(which, width, height, unit(4, "cm"))
 
 	## convert matrix all to list (or data frame)
 	if(is.matrix(x) || is.data.frame(x)) {
@@ -1721,7 +1652,9 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 	} 
 	gp = recycle_gp(gp, n)
 	gp$fill = add_transparency(gp$fill, transparency)
-	
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
+
 	row_fun = function(index) {
 
 		n_all = length(value)
@@ -1731,7 +1664,9 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 		gp = subset_gp(gp, index)
 
 		for(i in seq_len(n)) {
-			pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), just = c("left", "bottom"), height = unit(1/n, "npc"), xscale = xscale, yscale = yscale))
+			pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), 
+				just = c("left", "bottom"), height = unit(1/n, "npc"), xscale = xscale, 
+				yscale = yscale))
 			
 			x0 = value[[i]][, 1]
 			y0 = value[[i]][, 2]*scale
@@ -1739,19 +1674,14 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 			y0 = c(0, y0, 0)
 			gppp = subset_gp(gp, i); gppp$col = NA
 			grid.polygon(x = x0, y = y0, default.units = "native", gp = gppp)
-			grid.lines(x = x0, y = y0, default.units = "native", gp = subset_gp(gp, i))
+			grid.lines(x = x0, y = y0, default.units = "native", 
+				gp = subset_gp(gp, i))
 			
-			upViewport()
+			popViewport()
 		}
 		pushViewport(viewport(xscale = xscale))
-		if(axis) {
-			if(axis_side == "top") {
-				grid.xaxis(main = FALSE, gp = axis_gp)
-			} else if(axis_side == "bottom") {
-				grid.xaxis(gp = axis_gp)
-			}
-		}
-		upViewport()
+		if(axis) grid.draw(axis_grob)
+		popViewport()
 	}
 	column_fun = function(index) {
 
@@ -1767,7 +1697,9 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 		gp = subset(gp, index)
 
 		for(i in seq_len(n)) {
-			pushViewport(viewport(y = unit(0, "npc"), x = unit(i/n, "npc"), width = unit(1/n, "npc"), just = c("right", "bottom"), xscale = xscale, yscale = yscale))
+			pushViewport(viewport(y = unit(0, "npc"), x = unit(i/n, "npc"), 
+				width = unit(1/n, "npc"), just = c("right", "bottom"), xscale = xscale, 
+				yscale = yscale))
 			
 			x0 = value[[i]][, 2]*scale
 			y0 = value[[i]][ ,1]
@@ -1775,19 +1707,14 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 			y0 = c(y0[1], y0, y0[length(y0)])
 			gppp = subset_gp(gp, i); gppp$col = NA
 			grid.polygon(y = y0, x = x0, default.units = "native", gp = gppp)
-			grid.lines(y = y0, x = x0, default.units = "native", gp = subset_gp(gp, i))
+			grid.lines(y = y0, x = x0, default.units = "native", 
+				gp = subset_gp(gp, i))
 			
-			upViewport()
+			popViewport()
 		}
 		pushViewport(viewport(yscale = yscale))
-		if(axis) {
-			if(axis_side == "right") {
-				grid.yaxis(main = FALSE, gp = axis_gp)
-			} else if(axis_side == "left") {
-				grid.yaxis(gp = axis_gp)
-			}
-		}
-		upViewport()
+		if(axis) grid.draw(axis_grob)
+		popViewport()
 	}
 	
 	if(which == "row") {
@@ -1796,79 +1723,42 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 		fun = column_fun
 	}
 
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_joyplot"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = xscale)
-	} else {
-		anno@data_scale = list(x = xscale, y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_joyplot",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		data_scale = xscale,
+		var_import = list(value, gp, axis, axis_param, axis_grob, scale, yscale, xscale)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$value = value
-	anno@var_env$gp = gp
-	anno@var_env$axis = axis
-	anno@var_env$axis_side = axis_side
-	anno@var_env$axis_gp = axis_gp
-	anno@var_env$scale = scale
-	anno@var_env$xscale = xscale
-	anno@var_env$yscale = yscale
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
 	anno@subset_rule$value = subset_vector
 	anno@subset_rule$gp = subset_gp
+
+	anno@subsetable = TRUE
+
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
 
 	return(anno)
 }
 
 
-anno_horizon = function(x, which = c("column", "row"), gp = gpar(pos_fill = "#D73027", neg_fill = "#313695"),
-	n_bins = 4, bin_size = NULL, negative_from_top = FALSE, normalize = TRUE, border = FALSE, gap = unit(0, "mm"),
-	axis = TRUE, axis_side = NULL, axis_gp = gpar(fontsize = 8),
+anno_horizon = function(x, which = c("column", "row"), 
+	gp = gpar(pos_fill = "#D73027", neg_fill = "#313695"),
+	n_slice = 4, slice_size = NULL, negative_from_top = FALSE, 
+	normalize = TRUE, border = FALSE, gap = unit(0, "mm"),
+	axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
-	
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
-	if(which == "column") {
-		if(missing(height)) {
-			height = unit(6, "cm")
-		}
-		if(missing(width)) {
-			width = unit(1, "npc")
-		}
-	}
-	if(which == "row") {
-		if(missing(width)) {
-			width = unit(6, "cm")
-		}
-		if(missing(height)) {
-			height = unit(1, "npc")
-		}
-	}
-
-	if(which == "column") {
-		if(is.null(axis_side)) axis_side = "left"
-		if(axis_side == "top" || axis_side == "bottom") {
-			stop("`axis_side` can only be 'left' and 'right' for column annotations")
-		}
-	}
-	if(which == "row") {
-		if(is.null(axis_side)) axis_side = "bottom"
-		if(axis_side == "left" || axis_side == "right") {
-			stop("`axis_side` can only be 'top' and 'bottom' for row annotations")
-		}
-	}
+	anno_size = anno_width_and_height(which, width, height, unit(4, "cm"))
 
 	## convert matrix all to list (or data frame)
 	if(is.matrix(x) || is.data.frame(x)) {
@@ -1892,6 +1782,9 @@ anno_horizon = function(x, which = c("column", "row"), gp = gpar(pos_fill = "#D7
 	} else {
 		stop("The input should be a list of two-column matrices or a matrix/data frame.")
 	}
+
+	if(is.null(gp$pos_fill)) gp$pos_fill = "#D73027"
+	if(is.null(gp$neg_fill)) gp$neg_fill = "#313695"
 
 	if("fill" %in% names(gp)) {
 		foo = unlist(lapply(value, function(x) x[, 2]))
@@ -1918,39 +1811,37 @@ anno_horizon = function(x, which = c("column", "row"), gp = gpar(pos_fill = "#D7
 	n = length(value)
 	xscale = range(lapply(value, function(x) x[, 1]), na.rm = TRUE)
 	yscale = range(lapply(value, function(x) abs(x[, 2])), na.rm = TRUE)
-		
+	
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
+
 	row_fun = function(index) {
 
 		n_all = length(value)
 		value = value[index]
 		
-		if(is.null(bin_size)) {
-			bin_size = yscale[2]/n_bins
+		if(is.null(slice_size)) {
+			slice_size = yscale[2]/n_slice
 		} 
-		n_bins = ceiling(yscale[2]/bin_size)
+		n_slice = ceiling(yscale[2]/slice_size)
 		
 		n = length(index)
 		
 		gp = subset_gp(gp, index)
 
 		for(i in seq_len(n)) {
-			pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), just = c("left", "bottom"), height = unit(1/n, "npc") - gap, xscale = xscale, yscale = yscale))
+			pushViewport(viewport(x = unit(0, "npc"), y = unit((n-i)/n, "npc"), just = c("left", "bottom"), 
+				height = unit(1/n, "npc") - gap))
 			sgp = subset_gp(gp, i)
-			
-			horizon_chart(value[[i]][, 1], value[[i]][, 2], n_bins = n_bins, bin_size = bin_size, negative_from_top = negative_from_top, pos_fill = sgp$pos_fill, neg_fill = sgp$neg_fill)
+			horizon_chart(value[[i]][, 1], value[[i]][, 2], n_slice = n_slice, slice_size = slice_size, 
+				negative_from_top = negative_from_top, pos_fill = sgp$pos_fill, neg_fill = sgp$neg_fill)
 			grid.rect(gp = gpar(fill = "transparent"))
 			
 			popViewport()
 		}
 		pushViewport(viewport(xscale = xscale))
-		if(axis) {
-			if(axis_side == "top") {
-				grid.xaxis(main = FALSE, gp = axis_gp)
-			} else if(axis_side == "bottom") {
-				grid.xaxis(gp = axis_gp)
-			}
-		}
-		upViewport()
+		if(axis) grid.draw(axis_grob)
+		popViewport()
 	}
 	column_fun = function(index) {
 
@@ -1962,87 +1853,80 @@ anno_horizon = function(x, which = c("column", "row"), gp = gpar(pos_fill = "#D7
 		fun = column_fun
 	}
 
-	anno = AnnotationFunction()
-	anno@which = which
-	anno@fun_name = "anno_horizon"
-	anno@width = width
-	anno@height = height
-	anno@n = n
-	if(which == "column") {
-		anno@data_scale = list(x = c(0.5, n + 0.5), y = xscale)
-	} else {
-		anno@data_scale = list(x = xscale, y = c(0.5, n + 0.5))
-	}
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_horizon",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		data_scale = xscale,
+		var_import = list(value, gp, border, axis, axis_param, axis_grob, n_slice, slice_size,
+			negative_from_top, xscale, yscale, gap)
+	)
 
-	anno@var_env = new.env()
-	anno@var_env$value = value
-	anno@var_env$gp = gp
-	anno@var_env$border = border
-	anno@var_env$axis = axis
-	anno@var_env$axis_side = axis_side
-	anno@var_env$axis_gp = axis_gp
-	anno@var_env$n_bins = n_bins
-	anno@var_env$bin_size = bin_size
-	anno@var_env$negative_from_top = negative_from_top
-	anno@var_env$xscale = xscale
-	anno@var_env$yscale = yscale
-
-	environment(fun) = anno@var_env
-	anno@fun = fun
-		
-	anno@subset_rule = list()
 	anno@subset_rule$value = subset_vector
 	anno@subset_rule$gp = subset_gp
+
+	anno@subsetable = TRUE
+
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
 
 	return(anno)
 }
 
-horizon_chart = function(x, y, n_bins = 4, bin_size, pos_fill = "#D73027", neg_fill = "#313695",
+horizon_chart = function(x, y, n_slice = 4, slice_size, pos_fill = "#D73027", neg_fill = "#313695",
 	negative_from_top = FALSE) {
 
-	if(missing(bin_size)) {
-		bin_size = max(abs(y))/n_bins
+	if(missing(slice_size)) {
+		slice_size = max(abs(y))/n_slice
 	}
-	n_bins = ceiling(max(abs(y))/bin_size)
+	n_slice = ceiling(max(abs(y))/slice_size)
 
-	pos_col_fun = colorRamp2(c(0, n_bins), c("white", pos_fill))
-	neg_col_fun = colorRamp2(c(0, n_bins), c("white", neg_fill))
-	pushViewport(viewport(xscale = range(x), yscale = c(0, bin_size)))
-	for(i in seq_len(n_bins)) {
-		l1 = y >= (i-1)*bin_size & y < i*bin_size
-		l2 = y < (i-1)*bin_size
-		l3 = y >= i*bin_size
+	if(n_slice == 0) {
+		return(invisible(NULL))
+	}
+
+	pos_col_fun = colorRamp2(c(0, n_slice), c("white", pos_fill))
+	neg_col_fun = colorRamp2(c(0, n_slice), c("white", neg_fill))
+	pushViewport(viewport(xscale = range(x), yscale = c(0, slice_size)))
+	for(i in seq_len(n_slice)) {
+		l1 = y >= (i-1)*slice_size & y < i*slice_size
+		l2 = y < (i-1)*slice_size
+		l3 = y >= i*slice_size
 		if(any(l1)) {
 			x2 = x
 			y2 = y
-			y2[l1] = y2[l1] - bin_size*(i-1)
-			y2[l3] = bin_size
+			y2[l1] = y2[l1] - slice_size*(i-1)
+			y2[l3] = slice_size
 			x2[l2] = NA
 			y2[l2] = NA
 
-			add_horizon_polygon(x2, y2, gp = gpar(fill = pos_col_fun(i), col = NA), default.units = "native")
+			add_horizon_polygon(x2, y2, gp = gpar(fill = pos_col_fun(i), col = NA), 
+				default.units = "native")
 		}
 	}
 	y = -y
-	for(i in seq_len(n_bins)) {
-		l1 = y >= (i-1)*bin_size & y < i*bin_size
-		l2 = y < (i-1)*bin_size
-		l3 = y >= i*bin_size
+	for(i in seq_len(n_slice)) {
+		l1 = y >= (i-1)*slice_size & y < i*slice_size
+		l2 = y < (i-1)*slice_size
+		l3 = y >= i*slice_size
 		if(any(l1)) {
 			x2 = x
 			y2 = y
-			y2[l1] = y2[l1] - bin_size*(i-1)
-			y2[l3] = bin_size
+			y2[l1] = y2[l1] - slice_size*(i-1)
+			y2[l3] = slice_size
 			x2[l2] = NA
 			y2[l2] = NA
-			add_horizon_polygon(x2, y2, bin_size = bin_size, from_top = negative_from_top, gp = gpar(fill = neg_col_fun(i), col = NA), default.units = "native")
+			add_horizon_polygon(x2, y2, slice_size = slice_size, from_top = negative_from_top, 
+				gp = gpar(fill = neg_col_fun(i), col = NA), default.units = "native")
 		}
 	}
 	popViewport()
 }
 
 # x and y may contain NA, split x and y by NA gaps, align the bottom to y = 0
-add_horizon_polygon = function(x, y, bin_size = NULL, from_top = FALSE, ...) {
+add_horizon_polygon = function(x, y, slice_size = NULL, from_top = FALSE, ...) {
 	ltx = split_vec_by_NA(x)
 	lty = split_vec_by_NA(y)
 
@@ -2051,7 +1935,7 @@ add_horizon_polygon = function(x, y, bin_size = NULL, from_top = FALSE, ...) {
 		y0 = lty[[i]]
 		if(from_top) {
 			x0 = c(x0[1], x0, x0[length(x0)])
-			y0 = c(bin_size, bin_size - y0, bin_size)
+			y0 = c(slice_size, slice_size - y0, slice_size)
 		} else {
 			x0 = c(x0[1], x0, x0[length(x0)])
 			y0 = c(0, y0, 0)
@@ -2060,6 +1944,7 @@ add_horizon_polygon = function(x, y, bin_size = NULL, from_top = FALSE, ...) {
 	}
 }
 
+# https://stat.ethz.ch/pipermail/r-help/2010-April/237031.html
 split_vec_by_NA = function(x) {
 	idx = 1 + cumsum(is.na(x))
 	not.na = !is.na(x)
@@ -2328,32 +2213,27 @@ column_anno_text = function(...) {
 anno_mark = function(at, labels, which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
 	lines_gp = gpar(), labels_gp = gpar(), padding = 0.25, link_width = NULL, extend = 0) {
 
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		which = get("which", envir = parent.frame())
-	} else {
+	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
 	}
 
-	at = at
 	if(!is.numeric(at)) {
-		stop("`at` should be numeric index corresponds to the matrix.")
+		stop(paste0("`at` should be numeric ", which, " index corresponding to the matrix."))
 	}
-	labels = labels
+	
+	n = length(at)
 
-	lines_gp = check_gp(lines_gp)
-	labels_gp = check_gp(labels_gp)
-	padding = padding
+	# od = order(at)
+	# at = at[od]
+	# labels = labels[od]
 
-	od = order(at)
-	at = at[od]
-	labels = labels[od]
+	lines_gp = recycle_gp(lines_gp, n)
+	labels_gp = recycle_gp(labels_gp, n)
 
-	lines_gp = recycle_gp(lines_gp, length(at))
-	labels_gp = recycle_gp(labels_gp, length(at))
-
-	lines_gp = subset_gp(lines_gp, od)
-	labels_gp = subset_gp(labels_gp, od)
-	labels2at = structure(at, names = labels)
+	# lines_gp = subset_gp(lines_gp, od)
+	# labels_gp = subset_gp(labels_gp, od)
 	labels2index = structure(seq_along(at), names = labels)
 	at2labels = structure(labels, names = at)
 
@@ -2363,102 +2243,110 @@ anno_mark = function(at, labels, which = c("column", "row"), side = ifelse(which
 
 	if(which == "column") {
 		if(missing(height)) {
-			height = max_text_width(labels, gp = labels_gp) + unit(1, "cm")
+			height = max_text_width(labels, gp = labels_gp) + unit(1, "mm")
+		}
+		if(missing(width)) {
+			width = unit(1, "npc")
 		}
 	}
 	if(which == "row") {
 		if(missing(width)) {
-			width = max_text_width(labels, gp = labels_gp) + unit(1, "cm")
+			width = max_text_width(labels, gp = labels_gp) + unit(1, "mm")
+		}
+		if(missing(height)) {
+			height = unit(1, "npc")
 		}
 	}
 
-	f = switch(which,
-		row = function(index, k = NULL, N = NULL, vp_name = NULL) {
-			n = length(index)
+	### recalculate at in the whole parent viewport
 
-			# adjust at and labels
-			at = intersect(index, at)
-			labels = rev(at2labels[as.character(at)])
-			
-			labels_gp = subset_gp(labels_gp, labels2index[labels])
-			lines_gp = subset_gp(lines_gp, labels2index[labels])
 
-			pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
-			if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
-			if(length(labels)) {
-				text_height = convertHeight(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
-				i2 = rev(which(index %in% at))
-				h1 = n-i2+1 - text_height*0.5
-				h2 = n-i2+1 + text_height*0.5
-				pos = rev(smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2])))
-				h = (pos[, 1] + pos[, 2])/2
+	row_fun = function(index) {
+		n = length(index)
 
-				if(is.null(link_width)) {
-					if(convertWidth(unit(1, "npc") - max_text_width(labels, gp = labels_gp), "mm", valueOnly = TRUE) < 0) {
-						link_width = unit(0.5, "npc")
-					} else {
-						link_width = unit(1, "npc") - max_text_width(labels, gp = labels_gp)
-					}
-				}
-				n2 = length(labels)
-				if(side == "right") {
-					grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "left")
-					link_width = link_width - unit(1, "mm")
-					grid.segments(unit(rep(0, n2), "npc"), n-i2+1, rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = lines_gp)
-					grid.segments(rep(link_width*(1/3), n2), n-i2+1, rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
-					grid.segments(rep(link_width*(2/3), n2), h, rep(link_width, n2), h, default.units = "native", gp = lines_gp)
-				} else {
-					grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
-					link_width = link_width - unit(1, "mm")
-					grid.segments(unit(rep(1, n2), "npc"), n-i2+1, unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = lines_gp)
-					grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
-					grid.segments(unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = lines_gp)
-				}
-			}
-			upViewport()
-		},
-		column = function(index, vp_name = NULL) {
-			n = length(index)
-			
-			# adjust at and labels
-			at = intersect(index, at)
-			labels = at2labels[as.character(at)]
-			
-			labels_gp = subset_gp(labels_gp, labels2index[labels])
-			lines_gp = subset_gp(lines_gp, labels2index[labels])
+		# adjust at and labels
+		at = intersect(index, at)
+		labels = rev(at2labels[as.character(at)])
+		
+		labels_gp = subset_gp(labels_gp, labels2index[labels])
+		lines_gp = subset_gp(lines_gp, labels2index[labels])
 
-			pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
-			if(inherits(extend, "unit")) extend = convertWidth(extend, "native", valueOnly = TRUE)
-			text_height = convertWidth(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
-			i2 = which(index %in% at)
-			h1 = i2 - text_height*0.5
-			h2 = i2 + text_height*0.5
-			pos = smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2]))
+		pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
+		if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
+		if(length(labels)) {
+			text_height = convertHeight(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
+			i2 = rev(which(index %in% at))
+			h1 = n-i2+1 - text_height*0.5
+			h2 = n-i2+1 + text_height*0.5
+			pos = rev(smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2])))
 			h = (pos[, 1] + pos[, 2])/2
+
 			if(is.null(link_width)) {
-				if(convertHeight(unit(1, "npc") - max_text_width(labels, gp = labels_gp), "mm", valueOnly = TRUE) < 0) {
+				if(convertWidth(unit(1, "npc") - max_text_width(labels, gp = labels_gp), "mm", valueOnly = TRUE) < 0) {
 					link_width = unit(0.5, "npc")
 				} else {
 					link_width = unit(1, "npc") - max_text_width(labels, gp = labels_gp)
 				}
 			}
 			n2 = length(labels)
-			if(side == "top") {
-				grid.text(labels, h, rep(link_width, n2), default.units = "native", gp = labels_gp, rot = 90, just = "left")
+			if(side == "right") {
+				grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "left")
 				link_width = link_width - unit(1, "mm")
-				grid.segments(i2, unit(rep(0, n2), "npc"), i2, rep(link_width*(1/3), n2), default.units = "native", gp = lines_gp)
-				grid.segments(i2, rep(link_width*(1/3), n2), h, rep(link_width*(2/3), n2), default.units = "native", gp = lines_gp)
-				grid.segments(h, rep(link_width*(2/3), n2), h, rep(link_width, n), default.units = "native", gp = lines_gp)
+				grid.segments(unit(rep(0, n2), "npc"), n-i2+1, rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = lines_gp)
+				grid.segments(rep(link_width*(1/3), n2), n-i2+1, rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
+				grid.segments(rep(link_width*(2/3), n2), h, rep(link_width, n2), h, default.units = "native", gp = lines_gp)
 			} else {
-				grid.text(labels, h, rep(max_text_width(labels, gp = labels_gp), n2), default.units = "native", gp = labels_gp, rot = 90, just = "right")
+				grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
 				link_width = link_width - unit(1, "mm")
-				grid.segments(i2, unit(rep(1, n2), "npc"), i2, unit(1, "npc")-rep(link_width*(1/3), n2), default.units = "native", gp = lines_gp)
-				grid.segments(i2, unit(1, "npc")-rep(link_width*(1/3), n2), h, unit(1, "npc")-rep(link_width*(2/3), n2), default.units = "native", gp = lines_gp)
-				grid.segments(h, unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), default.units = "native", gp = lines_gp)
+				grid.segments(unit(rep(1, n2), "npc"), n-i2+1, unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = lines_gp)
+				grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = lines_gp)
+				grid.segments(unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = lines_gp)
 			}
-			upViewport()
 		}
-	)
+		upViewport()
+	}
+	column_fun = function(index) {
+		n = length(index)
+		
+		# adjust at and labels
+		at = intersect(index, at)
+		labels = at2labels[as.character(at)]
+		
+		labels_gp = subset_gp(labels_gp, labels2index[labels])
+		lines_gp = subset_gp(lines_gp, labels2index[labels])
+
+		pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
+		if(inherits(extend, "unit")) extend = convertWidth(extend, "native", valueOnly = TRUE)
+		text_height = convertWidth(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
+		i2 = which(index %in% at)
+		h1 = i2 - text_height*0.5
+		h2 = i2 + text_height*0.5
+		pos = smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2]))
+		h = (pos[, 1] + pos[, 2])/2
+		if(is.null(link_width)) {
+			if(convertHeight(unit(1, "npc") - max_text_width(labels, gp = labels_gp), "mm", valueOnly = TRUE) < 0) {
+				link_width = unit(0.5, "npc")
+			} else {
+				link_width = unit(1, "npc") - max_text_width(labels, gp = labels_gp)
+			}
+		}
+		n2 = length(labels)
+		if(side == "top") {
+			grid.text(labels, h, rep(link_width, n2), default.units = "native", gp = labels_gp, rot = 90, just = "left")
+			link_width = link_width - unit(1, "mm")
+			grid.segments(i2, unit(rep(0, n2), "npc"), i2, rep(link_width*(1/3), n2), default.units = "native", gp = lines_gp)
+			grid.segments(i2, rep(link_width*(1/3), n2), h, rep(link_width*(2/3), n2), default.units = "native", gp = lines_gp)
+			grid.segments(h, rep(link_width*(2/3), n2), h, rep(link_width, n), default.units = "native", gp = lines_gp)
+		} else {
+			grid.text(labels, h, rep(max_text_width(labels, gp = labels_gp), n2), default.units = "native", gp = labels_gp, rot = 90, just = "right")
+			link_width = link_width - unit(1, "mm")
+			grid.segments(i2, unit(rep(1, n2), "npc"), i2, unit(1, "npc")-rep(link_width*(1/3), n2), default.units = "native", gp = lines_gp)
+			grid.segments(i2, unit(1, "npc")-rep(link_width*(1/3), n2), h, unit(1, "npc")-rep(link_width*(2/3), n2), default.units = "native", gp = lines_gp)
+			grid.segments(h, unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), default.units = "native", gp = lines_gp)
+		}
+		upViewport()
+	}
+	
 	attr(f, "which") = which
 	attr(f, "fun") = "anno_mark"
 	attr(f, "width") = width
@@ -2513,58 +2401,6 @@ column_anno_link = function(...) {
 }
 
 
-grid.xaxis = function(main = TRUE, at = NULL, label = NULL, gp = gpar(fontsize = 8), axis_direction = "normal") {
-	scale = current.viewport()$xscale
-		
-	if(is.null(at)) {
-		at = pretty(scale, n = 3)
-		at = at[at >= scale[1] & at <= scale[2]]
-		label = at
-	}
-	if(is.null(label)) {
-		label = at
-	}
-
-	if(axis_direction == "reverse") {
-		at = scale[2] - at + scale[1]
-	}
-
-	n = length(at)
-	if(main) {
-		grid.lines(at[c(1, n)], unit(c(0, 0), "npc"), gp = gp, default.units = "native")
-		grid.segments(at, unit(rep(-1, n), "mm"), at, unit(rep(0, n), "npc"), gp = gp, default.units = "native")
-		grid.text(label, at, unit(rep(-2, n), "mm"), rot = 90, just = "right", gp = gp, default.units = "native")
-	} else {
-		grid.lines(at[c(1, n)], unit(c(1, 1), "npc"), gp = gp, default.units = "native")
-		grid.segments(at, unit(1, "npc") + unit(rep(1, n), "mm"), at, unit(rep(1, n), "npc"), gp = gp, default.units = "native")
-		grid.text(label, at, unit(1, "npc") + unit(rep(2, n), "mm"), rot = 90, just = "left", gp = gp, default.units = "native")
-	}
-}
-
-grid.yaxis = function(main = TRUE, at = NULL, label = NULL, gp = gpar(fontsize = 8)) {
-	if(is.null(at)) {
-		scale = current.viewport()$yscale
-		at = pretty(scale, n = 3)
-		at = at[at >= scale[1] & at <= scale[2]]
-		label = at
-	}
-	if(is.null(label)) {
-		label = at
-	}
-
-	n = length(at)
-	if(main) {
-		grid.lines(y = at[c(1, n)], x = unit(c(0, 0), "npc"), gp = gp, default.units = "native")
-		grid.segments(y0 = at, x0 = unit(rep(-1, n), "mm"), y1 = at, x1 = unit(rep(0, n), "npc"), gp = gp, default.units = "native")
-		grid.text(label, y = at, x = unit(rep(-2, n), "mm"), just = "right", gp = gp, default.units = "native")
-	} else {
-		grid.lines(y = at[c(1, n)], x = unit(c(1, 1), "npc"), gp = gp, default.units = "native")
-		grid.segments(y0 = at, x0 = unit(1, "npc") + unit(rep(1, n), "mm"), y1 = at, x1 = unit(rep(1, n), "npc"), gp = gp, default.units = "native")
-		grid.text(label, y = at, x = unit(1, "npc") + unit(rep(2, n), "mm"), just = "left", gp = gp, default.units = "native")
-	}
-}
-
-
 normalize_graphic_param_to_mat = function(x, nc, nr, name) {
 	if(is.matrix(x)) {
 		if(nrow(x) == nr && ncol(x) == nc) {
@@ -2583,17 +2419,4 @@ normalize_graphic_param_to_mat = function(x, nc, nr, name) {
 			stop(paste0("Since ", name, " is a vector, it should have length of ", nc, " or ", nr, "."))
 		}
 	}
-}
-
-pretty_scale = function(x) {
-	breaks = grid.pretty(x)
-	w = breaks[2] - breaks[1]
-	lim = c(breaks[1], breaks[length(breaks)])
-	if(min(x) < lim[1]) {
-		lim[1] = lim[1] - w
-	}
-	if(max(x) > lim[2]) {
-		lim[2] = lim[2] + w
-	}
-	return(lim)
 }

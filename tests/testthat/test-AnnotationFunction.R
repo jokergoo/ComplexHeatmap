@@ -3,6 +3,26 @@ normalize_graphic_param_to_mat(1, nc = 2, nr = 4, "foo")
 normalize_graphic_param_to_mat(1:2, nc = 2, nr = 4, "foo")
 normalize_graphic_param_to_mat(1:4, nc = 2, nr = 4, "foo")
 
+### AnnotationFunction constructor #####
+fun = function(index) {
+	x = runif(10)
+	pushViewport(viewport(xscale = c(0.5, 10.5), yscale = c(0, 1)))
+	grid.points(index, x[index])
+	popViewport()
+}
+anno = AnnotationFunction(fun = fun)
+
+x = runif(10)
+fun = function(index) {
+	pushViewport(viewport(xscale = c(0.5, 10.5), yscale = c(0, 1)))
+	grid.points(index, x[index])
+	popViewport()
+}
+anno = AnnotationFunction(fun = fun, var_imported = "x")
+anno = AnnotationFunction(fun = fun, var_imported = list(x))
+
+
+devAskNewPage(ask = TRUE)
 
 ########### testing anno_simple ############
 anno = anno_simple(1:10)
@@ -107,7 +127,6 @@ anno = anno_text(month.name, location = 1, rot = 45, just = "right", gp = gpar(f
 draw(anno, test = "with rotations")
 
 
-
 ##### test anno_barplot #####
 anno = anno_barplot(1:10)
 draw(anno, test = "a vector")
@@ -171,7 +190,8 @@ anno = anno_horizon(lt, which = "row", negative_from_top = TRUE)
 draw(anno, test = "horizon chart + negative_from_top")
 anno = anno_horizon(lt, which = "row", gap = unit(1, "mm"))
 draw(anno, test = "horizon chart + gap")
-anno = anno_horizon(lt, which = "row", gp = gpar(pos_fill = rep(c("orange", "red"), 10)))
+anno = anno_horizon(lt, which = "row", gp = gpar(pos_fill = rep(c("orange", "red"), each = 10),
+	neg_fill = rep(c("darkgreen", "blue"), each = 10)))
 draw(anno, test = "horizon chart, col")
 
 ####### test anno_histogram ####
@@ -183,4 +203,15 @@ anno = anno_histogram(t(m), which = "row", gp = gpar(fill = 1:10))
 draw(anno, test = "row histogram with color")
 anno = anno_histogram(t(m), which = "row", n_breaks = 20)
 draw(anno, test = "row histogram with color")
+
+####### test anno_density ######
+anno = anno_density(t(m), which = "row")
+draw(anno, test = "normal density")
+draw(anno[1:5], test = "normal density, subset")
+anno = anno_density(t(m), which = "row", type = "violin")
+draw(anno, test = "violin")
+anno = anno_density(t(m), which = "row", type = "heatmap")
+draw(anno, test = "heatmap")
+anno = anno_density(t(m), which = "row", type = "heatmap", heatmap_colors = c("white", "orange"))
+draw(anno, test = "heatmap, colors")
 

@@ -75,6 +75,11 @@ Legend = function(at, labels = at, nrow = NULL, ncol = 1, col_fun, by_row = FALS
 		at = seq_along(labels)
 	}
 
+	if(!dev.interactive()) {
+		dev.null()
+		on.exit(dev.off())
+	}
+
 	# odevlist = dev.list()
 	direction = match.arg(direction)[1]
 	if(missing(col_fun)) {
@@ -421,6 +426,11 @@ packLegend = function(..., gap = unit(4, "mm"), direction = c("vertical", "horiz
 	direction = match.arg(direction)
 	if(length(gap) != 1) {
 		stop("Length of `gap` must be one.")
+	}
+
+	if(!dev.interactive()) {
+		dev.null()
+		on.exit(dev.off())
 	}
 
     n_lgd = length(legend_list)

@@ -52,3 +52,7 @@ setGeneric('draw_dend', function(object, ...) standardGeneric('draw_dend'))
 setGeneric('draw_heatmap_list', function(object, ...) standardGeneric('draw_heatmap_list'))
 
 setGeneric('row_dend', function(object, ...) standardGeneric('row_dend'))
+
+setGeneric('copy_all', function(object, ...) standardGeneric('copy_all'))
+setGeneric('resize', function(object, ...) standardGeneric('resize'))
+

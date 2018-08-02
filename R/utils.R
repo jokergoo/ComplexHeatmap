@@ -808,11 +808,14 @@ list_component = function() {
 # x = c("a", "bb", "ccc")
 # max_text_width(x, gp = gpar(fontsize = 10))
 #
-max_text_width = function(text, ...) {
+max_text_width = function(text, gp = gpar()) {
     if(is.null(text)) {
         return(unit(0, "mm"))
     }
-    max(do.call("unit.c", lapply(text, function(x) grobWidth(textGrob(x, ...)))))
+    n = length(text)
+    gp = recycle_gp(gp, n)
+
+    max(do.call("unit.c", lapply(seq_len(n), function(i) grobWidth(textGrob(text[i], gp = subset_gp(gp, i))))))
 }
 
 # == title
@@ -838,9 +841,35 @@ max_text_width = function(text, ...) {
 # x = c("a", "b\nb", "c\nc\nc")
 # max_text_height(x, gp = gpar(fontsize = 10))
 #
-max_text_height = function(text, ...) {
+max_text_height = function(text, gp = gpar()) {
     if(is.null(text)) {
         return(unit(0, "mm"))
     }
-    max(do.call("unit.c", lapply(text, function(x) grobHeight(textGrob(x, ...)))))
+    n = length(text)
+    gp = recycle_gp(gp, n)
+
+    max(do.call("unit.c", lapply(seq_len(n), function(i) grobHeight(textGrob(text[i], gp = subset_gp(gp, i))))))
 }
+
+dev.null = function(...) {
+    pdf(file = NULL, ...)
+}
+
+stop_wrap = function (...) {
+    x = paste0(...)
+    x = paste(strwrap(x), collapse = "\n")
+    stop(x)
+}
+
+warning_wrap = function (...) {
+    x = paste0(...)
+    x = paste(strwrap(x), collapse = "\n")
+    warning(x)
+}
+
+message_wrap = function (...) {
+    x = paste0(...)
+    x = paste(strwrap(x), collapse = "\n")
+    message(x)
+}
+

@@ -23,13 +23,17 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 		anno_size = "ANY",
 		which = "character",
 		size = "ANY",  # only for  consistent of Heatmap
-		gap = "ANY"
+		gap = "ANY",
+		subsetable = "logical",
+		extended = "ANY"
 	),
 	prototype = list(
 		anno_list = list(),
 		size = unit(0, "mm"),
-		which = "row",
-		gap = unit(0, "mm")
+		which = "column",
+		gap = unit(0, "mm"),
+		subsetable = FALSE,
+		extended = unit(c(0, 0, 0, 0), "mm")
 	),
     contains = "AdditiveUnit"
 )
@@ -73,28 +77,33 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-HeatmapAnnotation = function(df, name, col, na_col = "grey",
+HeatmapAnnotation = function(..., 
+	df, name, col, na_col = "grey",
 	annotation_legend_param = list(), 
 	show_legend = TRUE, 
-	..., 
 	which = c("column", "row"), 
-	annotation_height = 1, 
-	annotation_width = 1, 
-	height = calc_anno_size(), 
-	width = calc_anno_size(), 
+	annotation_height = NULL, 
+	annotation_width = NULL, 
+	height = NULL, 
+	width = NULL, 
 	gp = gpar(col = NA),
 	gap = unit(0, "mm"),
-	show_annotation_name = FALSE,
+	show_annotation_name = TRUE,
 	annotation_name_gp = gpar(),
 	annotation_name_offset = unit(2, "mm"),
 	annotation_name_side = ifelse(which == "column", "right", "bottom"),
 	annotation_name_rot = ifelse(which == "column", 0, 90)) {
 
+	which = match.arg(which)[1]
+	.ENV$current_annotation_which = which
+	on.exit(.ENV$current_annotation_which <- NULL)
+
+	fun_args = names(as.list(environment()))
+	
 	.Object = new("HeatmapAnnotation")
 
 	anno_list = list()
-	which = match.arg(which)[1]
-
+	
 	if(missing(name)) {
 		name = paste0("heatmap_annotation_", get_row_annotation_index())
 		increase_row_annotation_index()
@@ -103,24 +112,41 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 	.Object@name = name
 	n_anno = 0
 
-    arg_list = as.list(match.call())[-1]
+    arg_list = as.list(sys.call())[-1]
     called_args = names(arg_list)
-    anno_args = setdiff(called_args, c("name", "col", "na_col", "annotation_legend_param", "show_legend", "which", 
-    	                             "annotation_height", "annotation_width", "height", "width", "gp", "gap",
-    	                             "show_annotation_name", "annotation_name_gp", "annotation_name_offset", "annotation_name_side", "annotation_name_rot"))
+    anno_args = setdiff(called_args, fun_args)
     if(any(anno_args == "")) stop("annotations should have names.")
-    if(any(duplicated(anno_args))) stop("names of annotations should be unique.")
+
+    if("df" %in% called_args) {
+    	if(is.matrix(df)) {
+    		warning("`df` should be a data frame while not a matrix. Convert it to data frame.")
+    		df = as.data.frame(df)
+    	} else if(!is.data.frame(df)) {
+    		stop("`df` should be a data frame.")
+    	}
+    }
+
     anno_arg_list = list(...)
-    if(length(anno_arg_list)) {
-	    n_simple_anno = {if("df" %in% anno_args) ncol(df) else 0} + sum(sapply(anno_arg_list, is.atomic))
-	    simple_anno_name = c({if("df" %in% anno_args) colnames(df) else NULL}, anno_args[sapply(anno_arg_list, is.atomic)])
-	} else {
-		n_simple_anno = {if("df" %in% anno_args) ncol(df) else 0}
-	    simple_anno_name = {if("df" %in% anno_args) colnames(df) else NULL}
+	if("df" %in% called_args && length(anno_arg_list)) {
+		if(any(duplicated(c(names(df), names(anno_arg_list))))) {
+			stop("Annotation names are duplicated. Check the column names of `df`.")
+		}
 	}
 
-    if(any(duplicated(simple_anno_name))) stop("names of simple annotations should be unique.")
+	anno_value_list = list()
+	for(nm in called_args) {
+		if(nm %in% names(anno_arg_list)) {
+			anno_value_list[[nm]] = anno_arg_list[[nm]]
+		} else if(nm == "df") {
+			for(nm2 in colnames(df))
+			anno_value_list[[nm2]] = df[, nm2]
+		}
+	}
 
+    l_simple_anno = sapply(anno_value_list, is.atomic)
+    n_simple_anno = sum(l_simple_anno)
+    simple_anno_name = names(anno_value_list[l_simple_anno])
+	
     # normalize `show_legend`
     if(length(show_legend) == 1) {
 		show_legend = rep(show_legend, n_simple_anno)
@@ -156,14 +182,10 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 		}
 	}
 
-	n_total_anno = 0
-	for(ag in anno_args) {
-		if(ag == "df") {
-			n_total_anno = n_total_anno + ncol(df)
-		} else {
-			n_total_anno = n_total_anno + 1
-		}
-	}
+	is_name_offset_called = !missing(annotation_name_offset)
+    is_name_rot_called = !missing(annotation_name_rot)
+
+	n_total_anno = length(anno_value_list)
 	if(length(show_annotation_name) == 1) {
     	show_annotation_name = rep(show_annotation_name, n_total_anno)
     }
@@ -192,99 +214,68 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
     		stop("elements in `col` should be named vectors.")
     	}
     }
+
+    ### check the length of annotations
+    len = sapply(anno_value_list, function(x) {
+    	if(is.matrix(x)) {
+    		nrow(x)
+    	} else if(inherits(x, "AnnotationFunction")) {
+    		x@n
+    	} else if(is.atomic(x)) {
+    		length(x)
+    	} else {
+    		NA
+    	}
+    })
+
+    if(length(unique(len)) > 1) {
+    	stop("Length of annotations differs.")
+    }
+
 	i_simple = 0
 	i_anno = 0
 	simple_length = NULL
 	col_name_defined = NULL
-    for(ag in anno_args) {
-		if(ag == "df") {
-			if(is.null(colnames(df))) {
-		        stop("`df` should have column names.")
-		    }
-		    if(is.null(simple_length)) {
-		    	simple_length = nrow(df)
-		    } else if(nrow(df) != simple_length) {
-		    	stop("length of simple annotations differ.")
-		    }
+    for(ag in names(anno_value_list)) {
 
-		    anno_name = colnames(df)
-		    n_anno = ncol(df)
-
-		    if(missing(col)) {
-		        for(i in seq_len(n_anno)) {
-		        	i_anno = i_anno + 1
-		        	anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, which = which, 
-		        		show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
-		        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
-		        }
-		    } else {
-		        for(i in seq_len(n_anno)) {
-		        	i_anno = i_anno + 1
-		        	if(is.null(col[[ anno_name[i] ]])) { # if the color is not provided
-		        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, which = which, 
-		        			show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
-		        			show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
-		        	} else {
-		        		anno_list = c(anno_list, list(SingleAnnotation(name = anno_name[i], value = df[, i], na_col = na_col, col = col[[ anno_name[i] ]], 
-		        			which = which, show_legend = show_legend[i_simple + i], gp = gp, legend_param = annotation_legend_param[[i_simple + i]],
-		        			show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
-		        		col_name_defined = c(col_name_defined, anno_name[i])
-		        	}
-		        }
-		    }
-		    i_simple = i_simple + n_anno
-		} else {
-			i_anno = i_anno + 1
-			if(inherits(anno_arg_list[[ag]], "function")) {
-				anno_list = c(anno_list, list(SingleAnnotation(name = ag, fun = anno_arg_list[[ag]], which = which,
-					show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        	name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
-			} else if(is.atomic(anno_arg_list[[ag]])) {
-
-			    if(is.null(simple_length)) {
-			    	if(is.matrix(anno_arg_list[[ag]])) {
-			    		simple_length = nrow(anno_arg_list[[ag]])
-			    	} else {
-			    		simple_length = length(anno_arg_list[[ag]])
-			    	}
-			    } else{
-			    	if(is.matrix(anno_arg_list[[ag]])) {
-			    		if(nrow(anno_arg_list[[ag]]) != simple_length) {
-			    			stop("length of simple annotations differ.")
-			    		}
-			    	} else {
-			    		if(length(anno_arg_list[[ag]]) != simple_length) {
-			    			stop("length of simple annotations differ.")
-			    		}
-			    	}
-			    }
-				if(missing(col)) {
-			        anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, 
-			        	show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
-			        	show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
-			    } else {
-			        if(is.null(col[[ ag ]])) { # if the color is not provided
-			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, which = which, 
-			        		show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
-			        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        		name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
-			        } else {
-			        	anno_list = c(anno_list, list(SingleAnnotation(name = ag, value = anno_arg_list[[ag]], na_col = na_col, col = col[[ ag ]], 
-			        		which = which, show_legend = show_legend[i_simple + 1], gp = gp, legend_param = annotation_legend_param[[i_simple + 1]],
-			        		show_name = show_annotation_name[i_anno], name_gp = subset_gp(annotation_name_gp, i_anno), 
-		        			name_offset = annotation_name_offset[i_anno], name_side = annotation_name_side[i_anno], name_rot = annotation_name_rot[i_anno])))
-			        	col_name_defined = c(col_name_defined, ag)
-			        }
-			    }
-			    i_simple = i_simple + 1
-			} else {
-				stop("additional arguments should be annotation vectors or annotation functions.")
-			} 
+		i_anno = i_anno + 1
+		arg_list = list(name = ag, which = which,
+				show_name = show_annotation_name[i_anno], 
+				name_gp = subset_gp(annotation_name_gp, i_anno), 
+	        	name_offset = annotation_name_offset[i_anno], 
+	        	name_side = annotation_name_side[i_anno], 
+	        	name_rot = annotation_name_rot[i_anno])
+		if(!is_name_offset_called) {
+			arg_list$name_rot = NULL
 		}
+		if(!is_name_rot_called) {
+			arg_list$name_offset = NULL
+		}
+		if(inherits(anno_value_list[[ag]], c("function", "AnnotationFunction"))) {
+			arg_list$fun = fun = anno_value_list[[ag]]
+			anno_list[[ag]] = do.call(SingleAnnotation, arg_list)
+		} else if(is.atomic(anno_value_list[[ag]])) {
+			arg_list$show_legend = show_legend[i_simple + 1]
+			arg_list$gp = gp
+			arg_list$legend_param = annotation_legend_param[[i_simple + 1]]
+			arg_list$value = anno_value_list[[ag]]
+			arg_list$na_col = na_col
+			if(missing(col)) {
+				anno_list[[ag]] = do.call(SingleAnnotation, arg_list)
+		    } else {
+		        if(is.null(col[[ ag ]])) { # if the color is not provided
+		        	anno_list[[ag]] = do.call(SingleAnnotation, arg_list)
+		        } else {
+		        	anno_list$col = col[[ ag ]]
+		        	anno_list[[ag]] = do.call(SingleAnnotation, arg_list)
+		        	col_name_defined = c(col_name_defined, ag)
+		        }
+		    }
+		    i_simple = i_simple + 1
+		} else {
+			stop("Annotations should be vector/data frame/matrix/functions.")
+		} 
+		
 	}
 	
 	if(!missing(col)) {
@@ -300,61 +291,256 @@ HeatmapAnnotation = function(df, name, col, na_col = "grey",
 
 	# the nth gap does not really matter
     if(length(gap) == 1) {
-    	.Object@gap = rep(gap, n_total_anno)
+    	gap = rep(gap, n_total_anno)
     } else if(length(gap) == n_total_anno - 1) {
-    	.Object@gap = unit.c(gap, unit(0, "mm"))
+    	gap = unit.c(gap, unit(0, "mm"))
     } else if(length(gap) < n_total_anno - 1) {
     	stop("Length of `gap` is wrong.")
-    } else {
-    	gap[n_total_anno] = unit(0, "mm")
-    	.Object@gap = gap
+    } 
+
+    .Object@gap = gap
+
+    ### calualte the width/heigit of annotations
+    if(which == "column") {
+    	anno_size = lapply(anno_list, function(x) x@height)
+
+    	if(any(!sapply(anno_size, is_abs_unit))) {
+    		stop("Heights of annotations should be absolute units.")
+    	}
+    	anno_size = do.call("unit.c", anno_size)
+    	if(is.null(height)) {
+    		size = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	} else {
+    		if(!is_abs_unit(height)) {
+    			stop("`height` should be an absolute unit.")
+    		}
+    		size = height
+    		anno_size_in_numeric = convertHeight(anno_size, "mm", valueOnly = TRUE)
+    		gap_in_numeric = convertHeight(gap, "mm", valueOnly = TRUE)
+    		anno_size = anno_size_in_numeric/(sum(anno_size_in_numeric) + sum(gap) - gap[n_total_anno]) * height
+    	}
+    } else if(which == "row") {
+    	anno_size = lapply(anno_list, function(x) x@width)
+    	if(any(!sapply(anno_size, is_abs_unit))) {
+    		stop("Widths of annotations should be absolute units.")
+    	}
+    	anno_size = do.call("unit.c", anno_size)
+    	if(is.null(width)) {
+    		size = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	} else {
+    		if(!is_abs_unit(width)) {
+    			stop("`width` should be an absolute unit.")
+    		}
+    		size = width
+    		anno_size_in_numeric = convertWidth(anno_size, "mm", valueOnly = TRUE)
+    		gap_in_numeric = convertWidth(gap, "mm", valueOnly = TRUE)
+    		anno_size = anno_size_in_numeric/(sum(anno_size_in_numeric) + sum(gap) - gap[n_total_anno]) * width
+    	}
     }
-
-	anno_size = switch(which,
-		column = annotation_height,
-		row = annotation_width)
-
-	if(length(anno_size) == 1) {
-		if(!is.unit(anno_size)) {
-			anno_size = sapply(anno_list, function(x) {
-				if(is_simple_annotation(x)) {
-					return(1)
-				} else if(is_matrix_annotation(x)) {
-					return(attr(x@is_anno_matrix, "k"))
-				} else {
-					return(2)
-				}
-			})
-		}
-	}
-
-	if(!is.unit(anno_size)) {
-		anno_size = anno_size/sum(anno_size)*(unit(1, "npc") - sum(.Object@gap))
-	}
 
 	names(anno_list) = sapply(anno_list, function(x) x@name)
     .Object@anno_list = anno_list
     .Object@anno_size = anno_size
     .Object@which = which
-
-    calc_anno_size = function() sum(.Object@anno_size) + sum(.Object@gap) - .Object@gap[n_total_anno]
-
-    size = switch(which,
-		column = height,
-		row = width)
-
-    called_args = names(match.call()[-1])
-
-    if(!is_abs_unit(size)) {
-    	if(which == "row" && !("width" %in% called_args))
-    		size = unit(5*length(anno_list), "mm") + sum(gap)
-    	else if(which == "column" && !("height" %in% called_args))
-    		size = unit(5*length(anno_list), "mm") + sum(gap)	
-    }
     .Object@size = size
+
+    .Object@subsetable = all(sapply(anno_list, function(x) x@subsetable))
+    extended = unit(c(0, 0, 0, 0), "mm")
+    for(i in 1:4) {
+    	extended[[i]] = max(sapply(anno_list, function(anno) {
+    		anno@extended[[i]]
+    	}))
+    }
+    .Object@extended = extended
 
     return(.Object)
 }
+
+setMethod(f = "resize",
+	signature = "HeatmapAnnotation",
+	definition = function(object, annotation_height = NULL, annotation_width = NULL,
+		height = NULL, width = NULL, line_size = NULL) {
+
+	which = object@which
+	if(which == "column") {
+		if(is.null(height)) {
+			is_size_set = FALSE
+		} else {
+			if(!inherits(height, "unit")) {
+				stop("`height` should be a `unit` object")
+			}
+			if(!is_abs_unit(height)) {
+				stop("`height` should be an absolute unit.")
+			}
+			is_size_set = TRUE
+		}
+		if(is.null(annotation_height)) {
+			is_annotation_size_set = FALSE
+		} else {
+			is_annotation_size_set = TRUE
+			annotation_size_adjusted = annotation_height
+		}
+		size_adjusted = height
+		size_name = "height"
+	} else if(which == "row") {
+		if(is.null(width)) {
+			is_size_set = FALSE
+		} else {
+			if(!inherits(width, "unit")) {
+				stop("`width` should be a `unit` object")
+			}
+			if(!is_abs_unit(width)) {
+				stop("`width` should be an absolute unit.")
+			}
+			is_size_set = TRUE
+		}
+		if(is.null(annotation_width)) {
+			is_annotation_size_set = FALSE
+		} else {
+			is_annotation_size_set = TRUE
+			annotation_size_adjusted = annotation_width
+		}
+		size_adjusted = width
+		size_name = "width"
+	} 
+
+	if(which == "column") {
+		convertUnitFun = convertHeight
+	} else if(which == "row") {
+		convertUnitFun = convertWidth
+	}
+
+	anno_size = object@anno_size
+	size = object@size
+	gap = object@gap
+	gap = gap[-length(gap)]
+	n = length(object@anno_list)
+
+	# the basic rule is
+	# 1. if annotation_height is set, it needs to be a vector and height is disabled. If all
+	#    annotation_height are absolute units, height is ignored
+	# 2. if annotation height contains non-absolute units, height also need to be set and the
+	#    non-absolute unit should be set in a simple form such as 1:10 or unit(1, "null")
+	# 3. line_size is only used when annotation_height is NULL
+	# 4. if only height is set, non-simple annotation is adjusted while keep simple anntation unchanged
+	# 5. if only height is set and all annotations are simple annotations, all anntations are adjusted.
+	#      and line_size is disabled.
+
+	if(is_annotation_size_set) {
+		if(length(annotation_size_adjusted) == 1) {
+			annotation_size_adjusted = rep(1, n)
+		}
+		if(length(annotation_size_adjusted) != n) {
+			stop(paste0("Length of annotation_", size_name, " should be same as number of annotations.", sep = ""))
+		}
+
+		if(!inherits(annotation_size_adjusted, "unit")) {
+			annotation_size_adjusted = unit(annotation_size_adjusted, "null") 
+		}
+
+		l_rel_unit = !sapply(1:n, function(i) is_abs_unit(annotation_size_adjusted[i]))
+		if(any(l_rel_unit)) { # height/width must be set as an absolute unit
+			# height/width must be set
+			if(is_size_set) {
+				if(is_abs_unit(size_adjusted)) {
+					rel_num = sapply(which(l_rel_unit), function(i) {
+						if(identical(class(annotation_size_adjusted[i]), "unit")) {
+							if(attr(annotation_size_adjusted[i], "unit") != "null") {
+								stop("relative unit should be defined as `unit(..., 'null')")
+							}
+						} else {
+							stop("relative unit should be defined as `unit(..., 'null')")
+						}
+						annotation_size_adjusted[i][[1]]
+					})
+					rel_num = rel_num/sum(rel_num)
+					if(any(!l_rel_unit)) {
+						ts = size_adjusted - sum(gap) - sum(annotation_size_adjusted[!l_rel_unit])
+					} else {
+						ts = size_adjusted - sum(gap)
+					}
+					if(convertUnitFun(ts, "mm", valueOnly = TRUE) <= 0) {
+						stop(paste0(size_name, "is too small."))
+					}
+					ind = which(l_rel_unit)
+					for(i in seq_along(ind)) {
+						annotation_size_adjusted[ ind[i] ] = ts*rel_num[i]
+					}
+				} else {
+					stop(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set as an absolute unit."))
+				}
+			} else {
+				stop(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set."))
+			}
+		}
+	}
+
+	# from here `annotation_size_adjusted` contains absolute units if it is called.
+
+	gap = convertUnitFun(gap, "mm", valueOnly = TRUE)
+
+	if(is_size_set) {
+		size_adjusted = convertUnitFun(size_adjusted, "mm", valueOnly = TRUE)
+	}
+	if(is_annotation_size_set) {
+		annotation_size_adjusted = convertUnitFun(annotation_size_adjusted, "mm", valueOnly = TRUE)
+	}
+
+	if(is_annotation_size_set) {
+		# since annotation_size_adjusted has been recalculated, here we simply
+		# update the corresponding slots
+		object@size = unit(sum(annotation_size_adjusted) + sum(gap), "mm")
+		object@anno_size = unit(annotation_size_adjusted, "mm")
+	} else {
+		size = convertUnitFun(size, "mm", valueOnly = TRUE)
+		anno_size = convertUnitFun(anno_size, "mm", valueOnly = TRUE)
+	
+		l_simple_anno = sapply(seq_len(n), function(i) {
+			!is.null(object@anno_list[[i]]@color_mapping)
+		})
+
+		if(all(l_simple_anno)) {
+			anno_size2 = anno_size/sum(anno_size) * (size_adjusted - sum(gap))
+			size_adjusted = unit(size_adjusted, "mm")
+			anno_size2 = unit(anno_size2, "mm")
+		} else {
+
+			anno_size2 = anno_size
+			size_adjusted = convertUnitFun(size_adjusted, "mm", valueOnly = TRUE)
+			if(is.null(line_size)) {
+				line_size = 5
+			} else {
+				line_size = convertUnitFun(line_size, "mm", valueOnly = TRUE)
+			}
+
+			if(size_adjusted <= sum(gap)) {
+				stop(paste0(size_name, "you set is smaller than sum of gaps."))
+			}
+
+			## fix the size of simple annotation and zoom function annotations
+			ts = size_adjusted - sum(gap) - sum(anno_size[l_simple_anno]*line_size/5)
+			if(ts < 0) {
+				stop(paste0(size_name, "you set is too small."))
+			}
+			anno_size2[!l_simple_anno] = anno_size[!l_simple_anno]/sum(anno_size[!l_simple_anno]) * ts
+			anno_size2[l_simple_anno] = anno_size[l_simple_anno]*line_size/5
+
+			size_adjusted = unit(size_adjusted, "mm")
+			anno_size2 = unit(anno_size2, "mm")
+		}
+		object@size = size_adjusted
+		object@anno_size = anno_size2
+	}
+
+	for(i in seq_along(object@anno_list)) {
+		if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
+			slot(object@anno_list[[i]]@fun, size_name) = object@anno_size[i]
+		}
+		slot(object@anno_list[[i]], size_name) = object@anno_size[i]
+	}
+
+	return(object)
+})
 
 # == title
 # Construct row annotations
@@ -452,7 +638,7 @@ setMethod(f = "get_color_mapping_param_list",
 	color_mapping_param_list = list()
 	for(i in seq_along(object@anno_list)) {
 		if(object@anno_list[[i]]@show_legend) {
-			color_mapping_param_list = c.list(color_mapping_param_list, object@anno_list[[i]]@color_mapping_param)
+			color_mapping_param_list = c.list(color_mapping_param_list, object@anno_list[[i]]@legend_param)
 		}
 	}
 	return(color_mapping_param_list)
@@ -481,14 +667,41 @@ setMethod(f = "get_color_mapping_param_list",
 #
 setMethod(f = "draw",
 	signature = "HeatmapAnnotation",
-	definition = function(object, index, k = NULL, n = NULL, align_to = "bottom", ...) {
+	definition = function(object, index, k = 1, n = 1, align_to = "bottom", ..., 
+		test = FALSE) {
 
 	which = object@which
 	n_anno = length(object@anno_list)
 	anno_size = object@anno_size
 	gap = object@gap
 
-	pushViewport(viewport(...))
+	if(is.character(test)) {
+        test2 = TRUE
+    } else {
+        test2 = test
+    }
+
+    if(test2) {
+    	grid.newpage()
+    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(4, "cm"), height = object@size))
+    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(4, "cm"), width = object@size))
+    } else {
+		pushViewport(viewport(...))
+	}
+
+	if(missing(index)) {
+        n_anno = length(object@anno_list)
+		len = sapply(seq_len(n_anno), function(i) {
+			if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
+				object@anno_list[[i]]@fun@n
+			} else {
+				NA
+			}
+		})
+		len = len[!is.na(len)]
+		if(length(len)) index = seq_len(len[1])
+    }
+
 	if(which == "column") {
 		if(align_to == "bottom") { # put on top of the heatmap
 			# start from the last annoation which is put on bottom
@@ -526,6 +739,13 @@ setMethod(f = "draw",
 			upViewport()
 		}
 	}
+	if(test2) {
+        grid.text(test, y = unit(1, "npc") + unit(2, "mm"), just = "bottom")
+        grid.rect(unit(0, "npc") - object@extended[2], unit(0, "npc") - object@extended[1], 
+            width = unit(1, "npc") + object@extended[2] + object@extended[4],
+            height = unit(1, "npc") + object@extended[1] + object@extended[3],
+            just = c("left", "bottom"), gp = gpar(fill = "transparent", col = "red", lty = 2))
+    }
 	upViewport()
 })
 
@@ -548,15 +768,78 @@ setMethod(f = "show",
 	n = length(object@anno_list)
 
 	if(n == 1) {
-		cat("A HeatmapAnnotation object with 1 annotation.\n")
+		cat("A HeatmapAnnotation object with 1 annotation\n")
 	} else {
-		cat("A HeatmapAnnotation object with", length(object@anno_list), "annotations.\n")
+		cat("A HeatmapAnnotation object with", length(object@anno_list), "annotations\n")
 	}
+	cat("  name:", object@name, "\n")
+	cat("  position:", object@which, "\n")
+	n_anno = length(object@anno_list)
+	len = sapply(seq_len(n_anno), function(i) {
+		if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
+			object@anno_list[[i]]@fun@n
+		} else {
+			NA
+		}
+	})
+	len = len[!is.na(len)]
+	cat("  items:", ifelse(length(len), len[1], "unknown"), "\n")
+	cat("  ", ifelse(object@which == "column", "height", "width"), ": ", as.character(object@size), "\n", sep = "")
+    cat("  this object is", ifelse(object@subsetable, "\b", "not"), "subsetable\n")
+    dirt = c("bottom", "left", "top", "right")
+    for(i in 1:4) {
+        if(!identical(unit(0, "mm"), object@extended[i])) {
+            cat(" ", as.character(object@extended[i]), "extension on the", dirt[i], "\n")
+        }
+    }
 	cat("\n")
-	for(i in seq_along(object@anno_list)) {
-		show(object@anno_list[[i]])
-		cat("\n")
+	
+	lt = list()
+	lt$name = names(object@anno_list)
+	lt$annotation_type = sapply(seq_len(n_anno), function(i) {
+		if(!is.null(object@anno_list[[i]]@color_mapping)) {
+			if(object@anno_list[[i]]@is_anno_matrix) {
+				paste0(object@anno_list[[i]]@color_mapping@type, " matrix")
+			} else {
+				paste0(object@anno_list[[i]]@color_mapping@type, " vector")
+			}
+		} else if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
+			"AnnotationFunction"
+		} else if(inherits(object@anno_list[[i]]@fun, "function")) {
+			"function"
+		} else {
+			""
+		}
+	})
+	lt$color_mapping = sapply(seq_len(n_anno), function(i) {
+		ifelse(object@anno_list[[i]]@color_is_random, "random",
+			ifelse(is.null(object@anno_list[[i]]@color_mapping), "", "user-defined"))
+	})
+	size_name = ifelse(object@which == "column", "height", "width")
+
+	if(!dev.interactive()) {
+		dev.null()
+		on.exit(dev.off())
 	}
+	lt[[size_name]] = sapply(seq_len(n_anno), function(i) {
+		if(size_name == "height") {
+			u = object@anno_list[[i]]@height
+			if(is_abs_unit(u)) {
+				as.character(convertHeight(u, "mm"))
+			} else {
+				as.character(u)
+			}
+		} else if(size_name == "width") {
+			u = object@anno_list[[i]]@width
+			if(is_abs_unit(u)) {
+				as.character(convertWidth(u, "mm"))
+			} else {
+				as.character(u)
+			}
+		}
+	})
+	df = as.data.frame(lt)
+	print(df, row.names = FALSE)
 })
 
 
@@ -586,3 +869,126 @@ setMethod(f = "add_heatmap",
     return(ht_list)
 
 })
+
+c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
+	anno_list = list(...)
+	n = length(anno_list)
+	if(length(unique(sapply(anno_list, function(x) x@which))) != 1) {
+		stop("All annotations should be all row annotation or all column annotation.")
+	}
+	if(length(gap) == 1) gap = rep(gap, n)
+	x = anno_list[[1]]
+	if(n > 1) {
+		x@gap[length(x@gap)] = gap[1]
+	}
+	for(i in seq_along(anno_list)[-1]) {
+		y = anno_list[[i]]
+		y@gap[length(y@gap)] = gap[i]
+		x@anno_list = c(x@anno_list, y@anno_list)
+		x@anno_size = unit.c(x@anno_size, y@anno_size)
+		x@gap = unit.c(x@gap, y@gap)
+	}
+	x@gap[length(x@gap)] = unit(0, "mm")
+	x@size = sum(x@anno_size) + sum(x@gap) - x@gap[length(x@gap)]
+
+	nm = names(x)
+
+	ld = duplicated(nm)
+	if(any(ld)) {
+		dup = unique(nm[ld])
+		warning(paste0("Following annotation names are duplicated:\n  ", paste(dup, collapse = ", ")))
+		nm2 = nm
+		nm2[unlist(split(seq_along(nm), nm))] = unlist(lapply(split(nm, nm), seq_along))
+		l = nm %in% dup
+		nm[l] = paste0(nm[l], "_", nm2[l])
+		names(x) = nm
+	}
+
+	extended = unit(c(0, 0, 0, 0), "mm")
+    for(i in 1:4) {
+    	extended[[i]] = max(sapply(x@anno_list, function(anno) {
+    		anno@extended[[i]]
+    	}))
+    }
+    x@extended = extended
+
+	return(x)
+}
+
+names.HeatmapAnnotation = function(x) {
+	names(x@anno_list)
+}
+
+`names<-.HeatmapAnnotation` = function(x, value) {
+	if(length(value) != length(x@anno_list)) {
+		stop("Length of `value` should be same as number of annotations.")
+	}
+	if(any(duplicated(value))) {
+		stop("Annotation names should be unique.")
+	}
+	names(x@anno_list) = value
+	for(i in seq_along(value)) {
+		x@anno_list[[i]]@name =  value[i]
+	}
+	return(x)
+}
+
+
+# ha[1:2, c("foo", "bar")]
+"[.HeatmapAnnotation" = function(x, i, j) {
+	if(!missing(j)) {
+		if(is.character(j)) {
+			j = which(names(x@anno_list) %in% j)
+		}
+	}
+	
+    if(nargs() == 1) { # ha[]
+        return(x)
+    } else if(nargs() == 3 && missing(i)) {  # ha[, "foo"]
+        x2 = x
+        x2@anno_list = x@anno_list[j]
+        for(nm in names(x2@anno_list)) {
+        	x2@anno_list[[nm]] = copy_all(x2@anno_list[[nm]])
+        }
+        x2@anno_size = x@anno_size[j]
+        x2@gap = x@gap[j]
+        x2@gap[length(x2@gap)] = unit(0, "mm")
+
+        x2@size = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
+
+    } else if(nargs() == 3 && missing(j)) {  # ha[1:4, ]
+        x2 = x
+        for(nm in names(x2@anno_list)) {
+        	x2@anno_list[[nm]] = x2@anno_list[[nm]][i]
+        }
+
+    } else if(nargs() == 2) { # ha[1:4]
+    	x2 = x
+        for(nm in names(x2@anno_list)) {
+        	x2@anno_list[[nm]] = x2@anno_list[[nm]][i]
+        }
+
+    } else if (!missing(i) && !missing(j)) { # ha[1:4, "foo"]
+    	x2 = x
+        x2@anno_list = x@anno_list[j]
+        for(nm in names(x2@anno_list)) {
+        	x2@anno_list[[nm]] = x2@anno_list[[nm]][i]
+        }
+        x2@anno_size = x@anno_size[j]
+        x2@gap = x@gap[j]
+        x2@gap[length(x2@gap)] = unit(0, "mm")
+
+        x2@size = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
+
+    }
+    
+    extended = unit(c(0, 0, 0, 0), "mm")
+    for(i in 1:4) {
+    	extended[[i]] = max(sapply(x2@anno_list, function(anno) {
+    		anno@extended[[i]]
+    	}))
+    }
+    x2@extended = extended
+
+    return(x2)
+}

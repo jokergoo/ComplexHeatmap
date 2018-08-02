@@ -30,19 +30,27 @@ SingleAnnotation = setClass("SingleAnnotation",
 	slots = list(
 		name = "character",
 		color_mapping = "ANY",  # a ColorMapping object or NULL
-		color_mapping_param = "ANY", # a list or NULL, it contains parameters for color_mapping_legend
-		fun = "function",
+		legend_param = "ANY", # a list or NULL, it contains parameters for color_mapping_legend
+		fun = "ANY",
 		show_legend = "logical",
 		which = "character",
 		name_to_data_vp = "logical",
 		name_param = "list",
-        is_anno_matrix = "logical"
+        is_anno_matrix = "logical",
+        color_is_random = "logical",
+        width = "ANY",
+        height = "ANY",
+        extended = "ANY",
+        subsetable = "logical"
 	),
 	prototype = list(
 		color_mapping = NULL,
 		fun = function(index) NULL,
 		show_legend = TRUE,
-		name_to_data_vp = FALSE
+        color_is_random = FALSE,
+		name_to_data_vp = FALSE,
+        extended = unit(c(0, 0, 0, 0), "mm"),
+        subsetable = FALSE
 	)
 )
 
@@ -101,13 +109,18 @@ SingleAnnotation = function(name, value, col, fun,
 	show_legend = TRUE, 
 	gp = gpar(col = NA), 
 	legend_param = list(),
-	show_name = FALSE, 
+	show_name = TRUE, 
 	name_gp = gpar(fontsize = 12),
 	name_offset = unit(2, "mm"),
 	name_side = ifelse(which == "column", "right", "bottom"),
-    name_rot = ifelse(which == "column", 0, 90)) {
+    name_rot = ifelse(which == "column", 0, 90),
+    width = NULL, height = NULL) {
 
-	# re-define some of the argument values according to global settings
+	which = match.arg(which)[1]
+    .ENV$current_annotation_which = which
+    on.exit(.ENV$current_SingleAnnotation_which <- NULL)
+
+    # re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
     if("legend_param" %in% called_args) {
         for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border"), names(legend_param))) {
@@ -124,10 +137,8 @@ SingleAnnotation = function(name, value, col, fun,
     }
 
 	.Object = new("SingleAnnotation")
-
-	which = match.arg(which)[1]
 	.Object@which = which
-
+    
 	if(missing(name)) {
         name = paste0("anno", get_annotation_index() + 1)
         increase_annotation_index()
@@ -151,20 +162,42 @@ SingleAnnotation = function(name, value, col, fun,
             .Object@is_anno_matrix = TRUE
             attr(.Object@is_anno_matrix, "column_names") = colnames(value)
             attr(.Object@is_anno_matrix, "k") = ncol(value)
-            use_mat_column_names = TRUE
+            if(length(colnames(value))) {
+                use_mat_column_names = TRUE
+            }
             use_mat_nc = ncol(value)
         }
     }
 
+    is_name_offset_called = !missing(name_offset)
+    is_name_rot_called = !missing(name_rot)
+    anno_fun_extend = unit(c(0, 0, 0, 0), "mm")
+    if(!missing(fun)) {
+        if(inherits(fun, "AnnotationFunction")) {
+            anno_fun_extend = fun@extended
+        }
+    }
+
+    anno_name = name
     if(which == "column") {
     	if(!name_side %in% c("left", "right")) {
     		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
     	}
     	if(name_side == "left") {
-    		
+            if(anno_fun_extend[[2]] > 0) {
+                if(!is_name_offset_called) {
+                    name_offset = name_offset + anno_fun_extend[2]
+                }
+                if(!is_name_rot_called) {
+                    name_rot = 90
+                }
+            }
+
             if(use_mat_column_names) {
                 name_x = unit(rep(0, use_mat_nc), "npc") - name_offset
                 name_y = unit((use_mat_nc - seq_len(use_mat_nc) + 0.5)/use_mat_nc, "npc")
+
+                anno_name = colnames(value)
             } else {
                 name_x = unit(0, "npc") - name_offset
                 name_y = unit(0.5, "npc")
@@ -179,9 +212,20 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "top"
             }
     	} else {
+            if(anno_fun_extend[[4]] > 0) {
+                if(!is_name_offset_called) {
+                    name_offset = name_offset + anno_fun_extend[4]
+                }
+                if(!is_name_rot_called) {
+                    name_rot = 90
+                }
+            }
+
             if(use_mat_column_names) {
                 name_x = unit(rep(1, use_mat_nc), "npc") + name_offset
                 name_y = unit((use_mat_nc - seq_len(use_mat_nc) + 0.5)/use_mat_nc, "npc")
+
+                anno_name = colnames(value)
             } else {
         		name_x = unit(1, "npc") + name_offset
         		name_y = unit(0.5, "npc")
@@ -201,9 +245,20 @@ SingleAnnotation = function(name, value, col, fun,
     		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
     	}
     	if(name_side == "top") {
+            if(anno_fun_extend[[3]] > 0) {
+                if(!is_name_offset_called) {
+                    name_offset = name_offset + anno_fun_extend[3]
+                }
+                if(!is_name_rot_called) {
+                    name_rot = 0
+                }
+            }
+
             if(use_mat_column_names) {
                 name_x = unit((seq_len(use_mat_nc) - 0.5)/use_mat_nc, "npc")
                 name_y = unit(rep(1, use_mat_nc), "npc") + name_offset
+
+                anno_name = colnames(value)
             } else {
         		name_x = unit(0.5, "npc")
         		name_y = unit(1, "npc") + name_offset
@@ -218,9 +273,19 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "right"
             }
     	} else {
+            if(anno_fun_extend[[1]] > 0) {
+                if(!is_name_offset_called) {
+                    name_offset = name_offset + anno_fun_extend[1]
+                }
+                if(!is_name_rot_called) {
+                    name_rot = 0
+                }
+            }
             if(use_mat_column_names) {
                 name_x = unit((seq_len(use_mat_nc) - 0.5)/use_mat_nc, "npc")
                 name_y = unit(rep(0, use_mat_nc), "npc") - name_offset
+
+                anno_name = colnames(value)
             } else {
         		name_x = unit(0.5, "npc")
         		name_y = unit(0, "npc") - name_offset
@@ -236,13 +301,49 @@ SingleAnnotation = function(name, value, col, fun,
             }
     	}
     }
-    .Object@name_param = list(show = show_name,
-    						  x = name_x,
-    						  y = name_y,
-    						  just = name_just,
-    	                      gp = check_gp(name_gp),
-    	                      rot = name_rot,
-                              side = name_side)
+    name_param = list(show = show_name,
+                      label = anno_name,
+					  x = name_x,
+					  y = name_y,
+                      offset = name_offset,
+					  just = name_just,
+                      gp = check_gp(name_gp),
+                      rot = name_rot,
+                      side = name_side)
+
+    # get defaults for name settings
+    extended = unit(c(0, 0, 0, 0), "mm")
+    if(name_param$show) {
+        if(which == "column") {
+            if(name_param$rot == 0) {
+                text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm", valueOnly = TRUE)
+            } else {
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm", valueOnly = TRUE)
+            }
+            if(name_param$side == "left") {
+                extended[[2]] = text_width
+            } else if(name_param$side == "right") {
+                extended[[4]] = text_width
+            }
+        } else if(which == "row") {
+            if(name_param$rot == 0) {
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm", valueOnly = TRUE)
+            } else {
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm", valueOnly = TRUE)
+            }
+            if(name_param$side == "bottom") {
+                extended[[1]] = text_width
+            } else if(name_param$side == "top") {
+                extended[[3]] = text_width
+            }
+        }
+        for(i in 1:4) {
+            extended[[i]] = max(anno_fun_extend[[i]], extended[[i]])
+        }
+        .Object@extended = extended
+    }
+
+    .Object@name_param = name_param
 
     gp = check_gp(gp)
     if(!is.null(gp$fill)) {
@@ -250,8 +351,10 @@ SingleAnnotation = function(name, value, col, fun,
     }
 
     if(missing(fun)) {
+        color_is_random = FALSE
     	if(missing(col)) {
     		col = default_col(value)
+            color_is_random = TRUE
     	}
     	if(is.atomic(col)) {
     	    if(is.null(names(col))) {
@@ -272,76 +375,68 @@ SingleAnnotation = function(name, value, col, fun,
         }
 
         .Object@color_mapping = color_mapping
+        .Object@color_is_random = color_is_random
         if(is.null(legend_param)) legend_param = list()
-        .Object@color_mapping_param = legend_param
+        .Object@legend_param = legend_param
         value = value
 
-        if(which == "column") {
-	        .Object@fun = function(index) {
-	        	n = length(index)
-				x = (seq_len(n) - 0.5) / n
-                if(is.matrix(value)) {
-                    nc = ncol(value)
-                    for(i in seq_len(nc)) {
-                        fill = map_to_colors(color_mapping, value[index, i])
-                        grid.rect(x, y = (nc-i +0.5)/nc, width = 1/n, height = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
-                    }
-                } else {
-    				fill = map_to_colors(color_mapping, value[index])
-    				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
-                }
-			}
-            attr(.Object@fun, "which") = "row"
-            attr(.Object@fun, "fun") = "anno_simple"
-		} else {
-			.Object@fun = function(index, k = NULL, N = NULL) {
-				n = length(index)
-				y = (n - seq_len(n) + 0.5) / n
-                if(is.matrix(value)) {
-                    nc = ncol(value)
-                    for(i in seq_len(nc)) {
-                        fill = map_to_colors(color_mapping, value[index, i])
-                        grid.rect(x = (i-0.5)/nc, y, height = 1/n, width = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
-                    }
-                } else {
-    				fill = map_to_colors(color_mapping, value[index])
-    				grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
-                }
-			}
-            attr(.Object@fun, "which") = "column"
-            attr(.Object@fun, "fun") = "anno_simple"
-		}
-
+        .Object@fun = anno_simple(value, col = color_mapping, which = which, na_col = na_col, gp = gp)
+        if(missing(width)) {
+            .Object@width = .Object@fun@width
+        } else {
+            .Object@width = width
+        }
+        if(missing(height)) {
+            .Object@height = .Object@fun@height
+        } else {
+            .Object@height = height
+        }
+		
 		.Object@show_legend = show_legend
+        .Object@subsetable = TRUE
     } else {
-        .__under_SingleAnnotation__ = TRUE
-        fun_call = substitute(fun)
-        fun = eval(fun_call)
-    	f_which = attr(fun, "which")
-    	if(!is.null(f_which)) {
-    		fun_name = attr(fun, "fun")
-    		if(f_which != which) {
-    			stop(paste0("You are putting ", fun_name, "() as ", which, " annotations, you need to set 'which' argument to '", which, "' as well,\nor use the helper function ", which, "_", fun_name, "()."))
-    		}
-    	}
+        
+        if(inherits(fun, "AnnotationFunction")) {
+        	f_which = fun@which
+        	if(!is.null(f_which)) {
+        		fun_name = fun@fun_name
+        		if(f_which != which) {
+        			stop(paste0("You are putting ", fun_name, "() as ", which, " annotations, you need to set 'which' argument to '", which, "' as well,\nor use the helper function ", which, "_", fun_name, "()."))
+        		}
+        	}
+        } else {
+            if(length(formals(fun)) == 1) {
+                formals(fun) = alist(index = , k = 1, n = 1)
+            }
+        }
     	.Object@fun = fun
     	.Object@show_legend = FALSE
+        if(inherits(fun, "AnnotationFunction")) {
+            .Object@width = .Object@fun@width
+            .Object@height = .Object@fun@height
+            .Object@subsetable = TRUE
+        } else {
+            if(which == "column") {
+                if(missing(height)) {
+                    height = unit(1, "cm")
+                }
+                if(missing(width)) {
+                    width = unit(1, "npc")
+                }
+            }
+            if(which == "row") {
+                if(missing(width)) {
+                    width = unit(1, "cm")
+                }
+                if(missing(height)) {
+                    height = unit(1, "npc")
+                }
+            }
+            .Object@width = width
+            .Object@height = height
+        }
 
-    	anno_fun = attr(fun, "fun")
-    	if(!is.null(anno_fun)) {
-    		if(anno_fun %in% c("anno_points", "anno_barplot", "anno_boxplot")) {
-    			.Object@name_to_data_vp = TRUE
-    		}
-    	}
     }
-
-    ### !!!! it will remove all attributes of the function !!!!
-    	if(length(formals(.Object@fun)) == 1) {
-    		formals(.Object@fun) = alist(index = , k = NULL, N = NULL, vp_name = NULL)
-    	} else if(length(formals(.Object@fun)) == 2) {  # assume index and k are specified
-    		formals(.Object@fun) = alist(index = , k = , N = NULL, vp_name = NULL)
-    	}
-
 
     return(.Object)
 }
@@ -369,88 +464,120 @@ SingleAnnotation = function(name, value, col, fun,
 #
 setMethod(f = "draw",
 	signature = "SingleAnnotation",
-	definition = function(object, index, k = NULL, n = NULL, test = FALSE) {
+	definition = function(object, index, k = 1, n = 1, test = FALSE) {
 
-    if(test) {
+    if(is.character(test)) {
+        test2 = TRUE
+    } else {
+        test2 = test
+    }
+    ## it draws annotation names, create viewports with names
+    if(test2) {
         grid.newpage()
-        pushViewport(viewport(width = 0.9, height = 0.9))
+        pushViewport(viewport(width = unit(1, "npc") - unit(4, "cm"), 
+                              height = unit(1, "npc") - unit(4, "cm")))
     }
 
-    if(missing(index)) index = seq_len(attr(object@fun, "n"))
+    if(missing(index)) {
+        if(has_AnnotationFunction(object)) {
+            index = seq_len(object@fun@n)
+        }
+    }
 
-    anno_height = attr(object@fun, "height")
-    anno_width = attr(object@fun, "width")
-    if(is.null(anno_height)) anno_height = unit(1, "npc")
-    if(is.null(anno_width)) anno_width = unit(1, "npc")
+    anno_height = object@height
+    anno_width = object@width
+    
 	# names should be passed to the data viewport
-	if(object@name_to_data_vp) {
-		if(is.null(k)) {
-			pushViewport(viewport(width = anno_width, height = anno_height))
-            if(test) grid.rect()
-			object@fun(index, vp_name = paste("annotation", object@name, sep = "_"))
-		} else {
-			pushViewport(viewport(width = anno_width, height = anno_height))
-			if(test) grid.rect()
-            object@fun(index, k, n, vp_name = paste("annotation", object@name, k, sep = "_"))
-		}
-	} else {
-		if(is.null(k)) {
-			pushViewport(viewport(width = anno_width, height = anno_height, name = paste("annotation", object@name, sep = "_")))
-			if(test) grid.rect()
-            object@fun(index)
-		} else {
-			pushViewport(viewport(width = anno_width, height = anno_height, name = paste("annotation", object@name, k, sep = "_")))
-			if(test) grid.rect()
-            object@fun(index, k, n)
-		}
-	}
-	# add annotation name
-	if(object@name_param$show) {
-        draw_name = TRUE
-        if(object@which == "row") {
-            if(!is.null(k)) {
-                if(object@name_param$side == "bottom") {
-                    if(k != n) {
-                        draw_name = FALSE
+	if(has_AnnotationFunction(object)) {
+        data_scale = list(x = c(0.5, length(index) + 0.5), y = object@fun@data_scale)
+    } else {
+        data_scale = list(x = c(0, 1), y = c(0, 1))
+    }
+	pushViewport(viewport(width = anno_width, height = anno_height, 
+        name = paste("annotation", object@name, k, sep = "_"),
+        xscale = data_scale$x, yscale = data_scale$y))
+    if(has_AnnotationFunction(object)) {
+        fun = object@fun[index]
+        if(!is.null(fun@var_env$axis)) {
+            if(fun@var_env$axis && n > 1) {
+                if(object@which == "row") {
+                    if(k == n && fun@var_env$axis_param$side == "bottom") {
+                        fun@var_env$axis = TRUE
+                    } else if(k == 1 && fun@var_env$axis_param$side == "top") {
+                        fun@var_env$axis = TRUE
+                    } else {
+                        fun@var_env$axis = FALSE
                     }
-                } else {
-                    if(k != 1) {
-                        draw_name = FALSE
+                } else if(object@which == "column") {
+                    if(k == 1 && fun@var_env$axis_param$side == "left") {
+                        fun@var_env$axis = TRUE
+                    } else if(k == n && fun@var_env$axis_param$side == "right") {
+                        fun@var_env$axis = TRUE
+                    } else {
+                        fun@var_env$axis = FALSE
                     }
                 }
+            }
+        }
+        draw(fun)
+    } else {
+        object@fun(index, k, n)
+    }
+	
+	# add annotation name
+    draw_name = object@name_param$show
+	if(object@name_param$show && n > 1) {
+        if(object@which == "row") {
+            if(k == n && object@name_param$side == "bottom") {
+                draw_name = TRUE
+            } else if(k == 1 && object@name_param$side == "top") {
+                draw_name = TRUE
+            } else {
+                draw_name = FALSE
             }
         } else if(object@which == "column") {
-            if(!is.null(k)) {
-                if(object@name_param$side == "right") {
-                    if(k != n) {
-                        draw_name = FALSE
-                    }
-                } else {
-                    if(k != 1) {
-                        draw_name = FALSE
-                    }
-                }
-            }
-        }
-        if(draw_name) {
-            if(is_matrix_annotation(object)) {
-                if(!is.null(attr(object@is_anno_matrix, "column_names"))) {
-                    anno_mat_column_names = attr(object@is_anno_matrix, "column_names")
-                    grid.text(anno_mat_column_names, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
-                        rot = object@name_param$rot, gp = object@name_param$gp)
-                } else {
-                    grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
-                        rot = object@name_param$rot, gp = object@name_param$gp)
-                }
+            if(k == 1 && object@name_param$side == "left") {
+                draw_name = TRUE
+            } else if(k == n && object@name_param$side == "right") {
+                draw_name = TRUE
             } else {
-        		grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
-        			rot = object@name_param$rot, gp = object@name_param$gp)
+                draw_name = FALSE
             }
         }
-	}
+    }
+
+    if(draw_name) {
+        if(is_matrix_annotation(object)) {
+            if(!is.null(attr(object@is_anno_matrix, "column_names"))) {
+                anno_mat_column_names = attr(object@is_anno_matrix, "column_names")
+                grid.text(anno_mat_column_names, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+                    rot = object@name_param$rot, gp = object@name_param$gp)
+            } else {
+                if(object@which == "column") {
+                    grid.text(object@name, x = object@name_param$x[1], y = unit(0.5, "npc"), just = object@name_param$just, 
+                        rot = object@name_param$rot, gp = object@name_param$gp)
+                } else {
+                    grid.text(object@name, x = unit(0.5, "npc"), y = object@name_param$y[1], just = object@name_param$just, 
+                        rot = object@name_param$rot, gp = object@name_param$gp)
+                }
+            }
+        } else {
+    		grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+    			rot = object@name_param$rot, gp = object@name_param$gp)
+        }
+    }
+	
+    if(test2) {
+        grid.text(test, y = unit(1, "npc") + unit(2, "mm"), just = "bottom")
+        grid.rect(unit(0, "npc") - object@extended[2], unit(0, "npc") - object@extended[1], 
+            width = unit(1, "npc") + object@extended[2] + object@extended[4],
+            height = unit(1, "npc") + object@extended[1] + object@extended[3],
+            just = c("left", "bottom"), gp = gpar(fill = "transparent", col = "red", lty = 2))
+    }
+
 	upViewport()
 
-    if(test) {
+    if(test2) {
         upViewport()
     }
 })
@@ -470,29 +597,45 @@ setMethod(f = "draw",
 setMethod(f = "show",
 	signature = "SingleAnnotation",
 	definition = function(object) {
-	if(is_fun_annotation(object)) {
-        fun_name = attr(object@fun, "fun")
-        if(is.null(fun_name)) {
-            fun_name = "self-defined"
-        } else {
+	
+    if(is_fun_annotation(object)) {
+        if(has_AnnotationFunction(object)) {
+            fun_name = object@fun@fun_name
             fun_name = paste0(fun_name, "()")
+        } else {
+            fun_name = "self-defined"
         }
 		cat("A single annotation with", fun_name, "function\n")
 		cat("  name:", object@name, "\n")
 		cat("  position:", object@which, "\n")
         cat("  no legend\n")
-        n = attr(object@fun, "n")
-        if(!is.null(n)) cat("  items:", n, "\n")  
+        if(has_AnnotationFunction(object)) {
+            n = object@fun@n
+            if(!is.null(n)) cat("  items:", n, "\n")
+        }  
 	} else {
 		cat("A single annotation with", object@color_mapping@type, "color mapping\n")
 		cat("  name:", object@name, "\n")
 		cat("  position:", object@which, "\n")
 		cat("  show legend:", object@show_legend, "\n")
-        cat("  items:", attr(object@fun, "n"), "\n")
+        cat("  items:", object@fun@n, "\n")
         if(is_matrix_annotation(object)) {
             cat("  a matrix with", attr(object@is_anno_matrix, "k"), "columns\n")
         }
+        if(object@color_is_random) {
+            cat("  color is randomly generated\n")
+        }
 	}
+
+    cat("  width:", as.character(object@width), "\n")
+    cat("  height:", as.character(object@height), "\n")
+    cat("  this object is", ifelse(object@subsetable, "\b", "not"), "subsetable\n")
+    dirt = c("bottom", "left", "top", "right")
+    for(i in 1:4) {
+        if(!identical(unit(0, "mm"), object@extended[i])) {
+            cat(" ", as.character(object@extended[i]), "extension on the", dirt[i], "\n")
+        }
+    }
 })
 
 
@@ -508,6 +651,14 @@ is_fun_annotation = function(single_anno) {
     is.null(single_anno@color_mapping)
 }
 
+has_AnnotationFunction = function(single_anno) {
+    if(is.null(single_anno@fun)) {
+        FALSE
+    } else {
+        inherits(single_anno@fun, "AnnotationFunction")
+    }
+}
+
 
 ## subset method for .SingleAnnotation-class
 ## column annotation only allows column subsetting and row annotaiton only allows row subsetting
@@ -515,49 +666,30 @@ is_fun_annotation = function(single_anno) {
 "[.SingleAnnotation" = function(x, i) {
     # only allow subsetting for anno_* functions defined in ComplexHeatmap
     if(nargs() == 2) {
-        return(subset_SingleAnnotation(x, i))
+        x2 = x
+        if(inherits(x@fun, "AnnotationFunction")) {
+            if(x@fun@subsetable) {
+                x2@fun = x@fun[i]
+                return(x2)
+            }
+        }
+        stop("This SingleAnnotation object is not allowed for subsetting.")
+
     } else if(nargs() == 1) {
         return(x)
     }
 }
 
-subset_SingleAnnotation = function(object, i) {
-    fun = object@fun
-    e = environment(fun)
-    parent_variable = attr(fun, "parent_variable")
-    parent_variable_subsetable = attr(fun, "parent_variable_subsetable")
 
-    v_list = list()
-    for(ind in seq_along(parent_variable)) {
-        v = parent_variable[ind]
-        if(parent_variable_subsetable[ind]) {
-            if(v == "gp") {
-                var = subset_gp(get(v, envir = e), i)
-            } else {
-                var = get(v, envir = e)
-                if(is.matrix(var)) {
-                    var = var[i, , drop = FALSE]
-                } else if(is.list(var)) {
-                    var = var[i]
-                } else {
-                    var = var[i]
-                }
-            }
-        } else {
-            var = get(v, envir = e)
-        }
-        v_list[[v]] = var
+setMethod(f = "copy_all",
+    signature = "SingleAnnotation",
+    definition = function(object) {
+
+    x2 = object
+    if(inherits(object@fun, "AnnotationFunction")) {
+        x2@fun = object@fun[seq_len(object@fun@n)]
+        return(x2)
+    } else {
+        return(x2)
     }
-    attr(fun, "n") = length(i)
-
-    fun2 = local({
-        for(nm in names(v_list)) {
-            assign(nm, v_list[[nm]])
-        }
-        f2 = fun
-        environment(f2) = new.env()
-        f2
-    })
-    object@fun = fun2
-    return(object)
-}
+})

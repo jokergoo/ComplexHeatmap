@@ -112,3 +112,6 @@ ht_global_opt = setGlobalOptions(
 		.length = 1
 	)
 )
+
+.ENV = new.env()
+.ENV$current_annotation_which = NULL

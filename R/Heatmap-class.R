@@ -283,7 +283,11 @@ Heatmap = function(matrix, col, name,
     km = 1, 
     km_title = "cluster%i",
     split = NULL, 
-    gap = unit(1, "mm"), 
+    column_km = 1,
+    column_km_title = "cluster%i",
+    column_split = NULL,
+    gap = unit(1, "mm"),
+    column_gap = unit(2, "mm"),
     combined_name_fun = function(x) paste(x, collapse = "/"),
     width = NULL, 
     show_heatmap_legend = TRUE,
@@ -405,6 +409,7 @@ Heatmap = function(matrix, col, name,
         km = 1
     }
     .Object@matrix = matrix
+
     .Object@matrix_param$km = km
     .Object@matrix_param$km_title = km_title
     .Object@matrix_param$gap = gap
@@ -423,6 +428,26 @@ Heatmap = function(matrix, col, name,
         }
     }
     .Object@matrix_param$split = split
+
+
+    .Object@matrix_param$column_km = column_km
+    .Object@matrix_param$column_gap = column_gap
+    if(!is.null(column_split)) {
+        if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
+            .Object@matrix_param$column_split = column_split
+        } else {
+            if(identical(cluster_columns, TRUE) && is.numeric(column_split) && length(column_split) == 1) {
+
+            } else {
+                if(!is.data.frame(column_split)) column_split = data.frame(column_split)
+                if(nrow(column_split) != nrow(matrix)) {
+                    stop("Length or number of columns of `column_split` should be same as columns in `matrix`.")
+                }
+            }
+        }
+    }
+    .Object@matrix_param$column_split = column_split
+
     .Object@matrix_param$gp =check_gp(rect_gp)
     .Object@matrix_param$cell_fun = cell_fun
     

@@ -1,42 +1,51 @@
 
-pdf(NULL)
 
-df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
-ha = HeatmapAnnotation(df = df)
-draw(ha, 1:6)
-draw(ha, 6:1)
-
-ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")))
-draw(ha, 1:6)
-
-ha = HeatmapAnnotation(df = df, col = list(type = c("a" =  "red", "b" = "blue")), which = "row")
-draw(ha, 1:6)
+ha = HeatmapAnnotation(foo = 1:10)
+ha
 
 
-value = 1:6
-anno_points = function(index) {
-	n = length(index)
-	pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = range(value)))
-	grid.points(seq_along(index), value[index])
-	upViewport()
-}
-ha = HeatmapAnnotation(points = anno_points)
-draw(ha, 1:6)
+ha = HeatmapAnnotation(foo = cbind(1:10, 10:1))
+ha
+draw(ha, test = "matrix as column annotation")
 
-ha = HeatmapAnnotation(df = df, points = anno_points)
-draw(ha, 1:6)
+ha = HeatmapAnnotation(foo = 1:10, bar = sample(c("a", "b"), 10, replace = TRUE),
+	pt = anno_points(1:10), annotation_name_side = "left")
+draw(ha, test = "complex annotations")
 
-ha = HeatmapAnnotation(df = df, points = anno_points, which = "row")
-draw(ha, 1:6)
 
-ha = HeatmapAnnotation(points = anno_simple(1:6, type = "p"))
-draw(ha, 1:6)
+ha = HeatmapAnnotation(foo = 1:10, 
+	bar = cbind(1:10, 10:1),
+	pt = anno_points(1:10),
+	gap = unit(2, "mm"))
+draw(ha, test = "complex annotations")
 
-ha = HeatmapAnnotation(histogram = anno_simple(1:6, type = "histogram"))
-draw(ha, 1:6)
+ha2 = resize(ha, annotation_height = unit(1:3, "cm"))
+draw(ha2, test = "complex annotations")
+ha2 = resize(ha, annotation_height = 1, height = unit(6, "cm"))
+draw(ha2, test = "complex annotations")
+ha2 = resize(ha, annotation_height = 1:3, height = unit(6, "cm"))
+draw(ha2, test = "complex annotations")
+ha2 = resize(ha, annotation_height = unit(c(1, 2, 3), c("null", "null", "cm")), height = unit(6, "cm"))
+draw(ha2, test = "complex annotations")
+ha2 = resize(ha, annotation_height = unit(c(2, 2, 3), c("cm", "null", "cm")), height = unit(6, "cm"))
+draw(ha2, test = "complex annotations")
+ha2 = resize(ha, annotation_height = unit(c(2, 2, 3), c("cm", "cm", "cm")))
+draw(ha2, test = "complex annotations")
+ha2 = resize(ha[, 1:2], annotation_height = 1, height = unit(4, "cm"))
+draw(ha2, test = "complex annotations")
+ha2 = resize(ha[, 1:2], annotation_height = c(1, 4), height = unit(4, "cm"))
+draw(ha2, test = "complex annotations")
+ha2 = resize(ha[, 1:2], height = unit(6, "cm"))
+draw(ha2, test = "complex annotations")
 
-mat = matrix(rnorm(36), 6)
-ha = HeatmapAnnotation(boxplot = anno_boxplot(mat))
-draw(ha, 1:6)
 
-dev.off()
+
+ha2 = resize(ha, height = unit(6, "cm"))
+draw(ha2, test = "complex annotations")
+
+
+lt = lapply(1:10, function(x) cumprod(1 + runif(1000, -x/100, x/100)) - 1)
+ha = HeatmapAnnotation(foo = 1:10, bar = sample(c("a", "b"), 10, replace = TRUE),
+	anno = anno_horizon(lt), which = "row")
+draw(ha, test = "complex annotations on row")
+
