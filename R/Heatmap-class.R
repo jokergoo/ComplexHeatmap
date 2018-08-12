@@ -71,24 +71,23 @@ Heatmap = setClass("Heatmap",
         matrix = "matrix",  # one or more matrix which are spliced by rows
         matrix_param = "list",
         matrix_color_mapping = "ANY",
-        matrix_color_mapping_param = "ANY",
+        matrix_legend_param = "ANY",
 
         row_title = "ANY",
-        row_title_rot = "numeric",
-        row_title_just = "numeric",
         row_title_param = "list",
         column_title = "ANY",
         column_title_param = "list",
-        column_title_rot = "numeric",
-        column_title_just = "numeric",
 
         row_dend_list = "list", # one or more row clusters
+        row_dend_slice = "ANY",
         row_dend_param = "list", # parameters for row cluster
         row_order_list = "list",
         row_order = "numeric",
 
-        column_dend = "ANY",
+        column_dend_list = "list",
+        column_dend_slice = "ANY",
         column_dend_param = "list", # parameters for column cluster
+        column_order_list = "list",
         column_order = "numeric",
 
         row_names_param = "list",
@@ -96,7 +95,6 @@ Heatmap = setClass("Heatmap",
 
         top_annotation = "ANY", # NULL or a `HeatmapAnnotation` object
         top_annotation_param = "list",
-
         bottom_annotation = "ANY",
         bottom_annotation_param = "list",
 
@@ -231,7 +229,9 @@ Heatmap = function(matrix, col, name,
     na_col = "grey", 
     color_space = "LAB",
     rect_gp = gpar(col = NA), 
+    border = NA,
     cell_fun = NULL,
+
     row_title = character(0), 
     row_title_side = c("left", "right"), 
     row_title_gp = gpar(fontsize = 14), 
@@ -240,6 +240,7 @@ Heatmap = function(matrix, col, name,
     column_title_side = c("top", "bottom"), 
     column_title_gp = gpar(fontsize = 14), 
     column_title_rot = 0,
+
     cluster_rows = TRUE, 
     clustering_distance_rows = "euclidean",
     clustering_method_rows = "complete", 
@@ -248,11 +249,6 @@ Heatmap = function(matrix, col, name,
     show_row_dend = TRUE, 
     row_dend_reorder = TRUE,
     row_dend_gp = gpar(), 
-    row_hclust_side = row_dend_side,
-    row_hclust_width = row_dend_width, 
-    show_row_hclust = show_row_dend, 
-    row_hclust_reorder = row_dend_reorder,
-    row_hclust_gp = row_dend_gp, 
     cluster_columns = TRUE, 
     clustering_distance_columns = "euclidean", 
     clustering_method_columns = "complete",
@@ -261,89 +257,95 @@ Heatmap = function(matrix, col, name,
     show_column_dend = TRUE, 
     column_dend_gp = gpar(), 
     column_dend_reorder = TRUE,
-    column_hclust_side = column_dend_side, 
-    column_hclust_height = column_dend_height, 
-    show_column_hclust = show_column_dend, 
-    column_hclust_gp = column_dend_gp, 
-    column_hclust_reorder = column_dend_reorder,
+
     row_order = NULL, 
     column_order = NULL,
+
+    row_labels = rownames(matrix),
     row_names_side = c("right", "left"), 
     show_row_names = TRUE, 
-    row_names_max_width = default_row_names_max_width(), 
+    row_names_max_width = unit(6, "cm"), 
     row_names_gp = gpar(fontsize = 12), 
+    row_names_rot = 0,
+    column_labels = colnames(matrix),
     column_names_side = c("bottom", "top"), 
     show_column_names = TRUE, 
-    column_names_max_height = default_column_names_max_height(), 
+    column_names_max_height = unit(6, "cm"), 
     column_names_gp = gpar(fontsize = 12),
+    column_names_rot = 90,
+
     top_annotation = new("HeatmapAnnotation"),
     top_annotation_height = top_annotation@size,
     bottom_annotation = new("HeatmapAnnotation"),
     bottom_annotation_height = bottom_annotation@size,
+
     km = 1, 
-    km_title = "cluster%i",
     split = NULL, 
+    row_km = km,
+    row_split = split,
     column_km = 1,
-    column_km_title = "cluster%i",
     column_split = NULL,
     gap = unit(1, "mm"),
-    column_gap = unit(2, "mm"),
-    combined_name_fun = function(x) paste(x, collapse = "/"),
-    width = NULL, 
+    row_gap = unit(1, "mm"),
+    column_gap = unit(1, "mm"),
+
+    width = unit(1, "npc"),
+    heatmap_body_width = NULL,
+    height = unit(1, "npc"), 
+    heatmap_body_height = NULL,
+
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
-    use_raster = FALSE, 
+
+    use_raster = nrow(matrix) > 5000, 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
     raster_device_param = list()) {
 
+    verbose = ht_global_opt("verbose")
+
+    if(!dev.interactive()) {
+        pdf(file = NULL)
+        on.exit(dev.off())
+    }
+
+    .Object = new("Heatmap")
+    if(missing(name)) {
+        name = paste0("matrix_", get_heatmap_index() + 1)
+        increase_heatmap_index()
+    }
+    .Object@name = name
+
     # re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
-    e = environment()
     for(opt_name in c("row_names_gp", "column_names_gp", "row_title_gp", "column_title_gp")) {
         opt_name2 = paste0("heatmap_", opt_name)
         if(! opt_name %in% called_args) { # if this argument is not called
             if(!is.null(ht_global_opt(opt_name2))) {
-                assign(opt_name, ht_global_opt(opt_name2), envir = e)
+                if(verbose) qqcat("re-assign @{opt_name} with `ht_global_opt('@{opt_name2}'')`\n")
+                assign(opt_name, ht_global_opt(opt_name2))
             }
         }
     }
 
-    for(ca in called_args) {
-        if(ca %in% c("row_hclust_side", "row_hclust_width", "show_row_hclust", "row_hclust_reorder", "row_hclust_gp",
-                     "column_hclust_side", "column_hclust_height", "show_column_hclust", "column_hclust_gp", "column_hclust_reorder")) {
-            ca_new = gsub("hclust", "dend", ca)
-            if(!ca_new %in% called_args) {
-                assign(ca_new, get(ca))
-            }
-            warning(paste0("'", ca, "' is deprecated in the future, use '", ca_new, "' instead."))
-        }
-    }
-   
     if("heatmap_legend_param" %in% called_args) {
         for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border"), names(heatmap_legend_param))) {
             opt_name2 = paste0("heatmap_legend_", opt_name)
             if(!is.null(ht_global_opt(opt_name2)))
+                if(verbose) qqcat("re-assign heatmap_legend_param$@{opt_name} with `ht_global_opt('@{opt_name2}'')`\n")
                 heatmap_legend_param[[opt_name]] = ht_global_opt(opt_name2)
         }
     } else {
         for(opt_name in c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border")) {
             opt_name2 = paste0("heatmap_legend_", opt_name)
             if(!is.null(ht_global_opt(opt_name2)))
+                if(verbose) qqcat("re-assign heatmap_legend_param$@{opt_name} with `ht_global_opt('@{opt_name2}'')`\n")
                 heatmap_legend_param[[opt_name]] = ht_global_opt(opt_name2)
         }
     }
 
-    .Object = new("Heatmap")
-
-    .Object@heatmap_param$width = width
-    .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
-    .Object@heatmap_param$use_raster = use_raster
-    .Object@heatmap_param$raster_device = match.arg(raster_device)[1]
-    .Object@heatmap_param$raster_quality = raster_quality
-    .Object@heatmap_param$raster_device_param = raster_device_param
-
     if(is.data.frame(matrix)) {
+        if(verbose) qqcat("convert data frame to matrix\n")
         matrix = as.matrix(matrix)
     }
     if(!is.matrix(matrix)) {
@@ -352,20 +354,22 @@ Heatmap = function(matrix, col, name,
             matrix = matrix(matrix, ncol = 1)
             if(!is.null(rn)) rownames(matrix) = rn
             if(!missing(name)) colnames(matrix) = name
+            if(verbose) qqcat("convert simple vector to one-column matrix\n")
         } else {
             stop("If data is not a matrix, it should be a simple vector.")
         }
     }
 
-    if(is.null(width)) {
-        .Object@heatmap_param$width = ncol(matrix)
-    }
-
     if(ncol(matrix) == 0) {
         .Object@heatmap_param$show_heatmap_legend = FALSE
-        .Object@heatmap_param$width = unit(0, "mm")
     }
 
+    ### normalize km/split and row_km/row_split
+    if(missing(row_km)) row_km = km
+    if(missing(row_split)) row_split = split
+    if(missing(row_gap)) row_gap = gap
+
+    ####### zero and one column matrix ########
     if(ncol(matrix) == 0 || nrow(matrix) == 0) {
         if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
             cluster_columns = FALSE
@@ -375,21 +379,27 @@ Heatmap = function(matrix, col, name,
             cluster_rows = FALSE
             show_row_dend = FALSE
         }
-        km = 1
+        row_km = 1
+        column_km = 1
+        if(verbose) qqcat("zero row/column matrix, set cluster_columns/rows to FALSE\n")
     }
     if(ncol(matrix) == 1) {
         if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
             cluster_columns = FALSE
             show_column_dend = FALSE
         }
+        column_km = 1
+        if(verbose) qqcat("one-column matrix, set cluster_columns to FALSE\n")
     }
     if(nrow(matrix) == 1) {
         if(!inherits(cluster_rows, c("dendrogram", "hclust"))) {
             cluster_rows = FALSE
             show_row_dend = FALSE
         }
-        km = 1
+        row_km = 1
+        if(verbose) qqcat("one-row matrix, set cluster_rows to FALSE\n")
     }
+
     if(is.character(matrix)) {
         called_args = names(match.call()[-1])
         if("clustering_distance_rows" %in% called_args) {
@@ -399,6 +409,7 @@ Heatmap = function(matrix, col, name,
             show_row_dend = FALSE
         }
         row_dend_reorder = FALSE
+
         if("clustering_distance_columns" %in% called_args) {
         } else if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
         } else {
@@ -406,32 +417,34 @@ Heatmap = function(matrix, col, name,
             show_column_dend = FALSE
         }
         column_dend_reorder = FALSE
-        km = 1
+        row_km = 1
+        column_km = 1
+        if(verbose) qqcat("matrix is character. Do not cluster unless distance method is provided.\n")
     }
     .Object@matrix = matrix
 
-    .Object@matrix_param$km = km
-    .Object@matrix_param$km_title = km_title
-    .Object@matrix_param$gap = gap
-    if(!is.null(split)) {
+    .Object@matrix_param$row_km = row_km
+    .Object@matrix_param$row_gap = row_gap
+    .Object@matrix_param$column_km = column_km
+    .Object@matrix_param$column_gap = column_gap
+
+    ### check row_split and column_split ###
+    if(!is.null(row_split)) {
         if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
-            .Object@matrix_param$split = split
+            .Object@matrix_param$row_split = row_split
         } else {
-            if(identical(cluster_rows, TRUE) && is.numeric(split) && length(split) == 1) {
+            if(identical(cluster_rows, TRUE) && is.numeric(row_split) && length(row_split) == 1) {
 
             } else {
-                if(!is.data.frame(split)) split = data.frame(split)
-                if(nrow(split) != nrow(matrix)) {
-                    stop("Length or number of rows of `split` should be same as rows in `matrix`.")
+                if(!is.data.frame(row_split)) row_split = data.frame(row_split)
+                if(nrow(row_split) != nrow(matrix)) {
+                    stop("Length or number of rows of `row_split` should be same as rows in `matrix`.")
                 }
             }
         }
     }
-    .Object@matrix_param$split = split
+    .Object@matrix_param$row_split = row_split
 
-
-    .Object@matrix_param$column_km = column_km
-    .Object@matrix_param$column_gap = column_gap
     if(!is.null(column_split)) {
         if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
             .Object@matrix_param$column_split = column_split
@@ -440,7 +453,7 @@ Heatmap = function(matrix, col, name,
 
             } else {
                 if(!is.data.frame(column_split)) column_split = data.frame(column_split)
-                if(nrow(column_split) != nrow(matrix)) {
+                if(nrow(column_split) != ncol(matrix)) {
                     stop("Length or number of columns of `column_split` should be same as columns in `matrix`.")
                 }
             }
@@ -448,100 +461,132 @@ Heatmap = function(matrix, col, name,
     }
     .Object@matrix_param$column_split = column_split
 
-    .Object@matrix_param$gp =check_gp(rect_gp)
+
+    ### parameters for heatmap body ###
+    .Object@matrix_param$gp = check_gp(rect_gp)
+    if(identical(border, TRUE)) border = "black"
+    .Object@matrix_param$border = border
     .Object@matrix_param$cell_fun = cell_fun
     
-    if(missing(name)) {
-        name = paste0("matrix_", get_heatmap_index() + 1)
-        increase_heatmap_index()
+    if(!missing(heatmap_body_width)) {
+        if(is_abs_unit(heatmap_body_width)) {
+            width = unit(1, "npc") # since width is a relative unit and all components are absolute, it will be refit
+        }
     }
-    .Object@name = name
+    if(!missing(heatmap_body_height)) {
+        if(is_abs_unit(heatmap_body_height)) {
+            height = unit(1, "npc")
+        }
+    }
+    if(is.null(heatmap_body_width)) {
+        heatmap_body_width = unit(ncol(matrix), "null")
+    }
+    if(is.null(heatmap_body_height)) {
+        heatmap_body_height = unit(nrow(matrix), "null")
+    }
+    .Object@matrix_param$width = heatmap_body_width
+    .Object@matrix_param$height = heatmap_body_height
+    
 
-    # if(ncol(matrix) == 1 && is.null(colnames(matrix))) {
-    #     colnames(matrix) = name
-    #     .Object@matrix = matrix
-    # }
-
-    # color for main matrix
+    ### color for main matrix #########
     if(ncol(matrix) > 0 && nrow(matrix) > 0) {
         if(missing(col)) {
             col = default_col(matrix, main_matrix = TRUE)
+            if(verbose) qqcat("color is not specified, use randomly generated colors\n")
         }
         if(is.function(col)) {
             .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
+            if(verbose) qqcat("input color is a color mapping function\n")
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(as.vector(matrix)))) {
                     names(col) = sort(unique(as.vector(matrix)))
                     .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
+                    if(verbose) qqcat("input color is a vector with no names, treat it as discrete color mapping\n")
                 } else if(is.numeric(matrix)) {
                     col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
                                      col, space = color_space)
                     .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
+                    if(verbose) qqcat("input color is a vector with no names, treat it as continuous color mapping\n")
                 } else {
                     stop("`col` should have names to map to values in `mat`.")
                 }
             } else {
                 col = col[intersect(c(names(col), "_NA_"), as.character(matrix))]
                 .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
+                if(verbose) qqcat("input color is a named vector\n")
             }
         }
-        .Object@matrix_color_mapping_param = heatmap_legend_param
+        .Object@matrix_legend_param = heatmap_legend_param
     }
     
+    ##### titles, should also consider titles after row splitting #####
     if(length(row_title) == 0) {
-        row_title = character(0)
     } else if(!inherits(row_title, c("expression", "call"))) {
-            if(is.na(row_title)) {
+        if(is.na(row_title)) {
             row_title = character(0)
         } else if(row_title == "") {
             row_title = character(0)
         }
     }
     .Object@row_title = row_title
-    .Object@row_title_rot = row_title_rot %% 360
+    .Object@row_title_param$rot = row_title_rot %% 360
     .Object@row_title_param$side = match.arg(row_title_side)[1]
     .Object@row_title_param$gp = check_gp(row_title_gp)  # if the number of settings is same as number of row-splits, gp will be adjusted by `make_row_dend`
-    .Object@row_title_param$combined_name_fun = combined_name_fun
-    .Object@row_title_just = get_text_just(rot = row_title_rot, side = .Object@row_title_param$side)
+    .Object@row_title_param$just = get_text_just(rot = row_title_rot, side = .Object@row_title_param$side)
 
     if(length(column_title) == 0) {
-        column_title = character(0)
     } else if(!inherits(column_title, c("expression", "call"))) {
-            if(is.na(column_title)) {
+        if(is.na(column_title)) {
             column_title = character(0)
         } else if(column_title == "") {
             column_title = character(0)
         }
     }
     .Object@column_title = column_title
-    .Object@column_title_rot = column_title_rot %% 360
+    .Object@column_title_param$rot = column_title_rot %% 360
     .Object@column_title_param$side = match.arg(column_title_side)[1]
     .Object@column_title_param$gp = check_gp(column_title_gp)
-    .Object@column_title_just = get_text_just(rot = column_title_rot, side = .Object@column_title_param$side)
+    .Object@column_title_param$just = get_text_just(rot = column_title_rot, side = .Object@column_title_param$side)
 
+    ### row labels/column labels ###
     if(is.null(rownames(matrix))) {
         show_row_names = FALSE
     }
+    .Object@row_names_param$labels = row_labels
     .Object@row_names_param$side = match.arg(row_names_side)[1]
     .Object@row_names_param$show = show_row_names
     .Object@row_names_param$gp = check_gp(row_names_gp)
-    default_row_names_max_width = function() {
-        min(unit.c(unit(6, "cm")), max_text_width(rownames(matrix), gp = .Object@row_names_param$gp))
-    }
+    .Object@row_names_param$rot = row_names_rot
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
+    # we use anno_text to draw row/column names because it already takes care of text rotation
+    if(length(row_labels)) {
+        row_names_anno = anno_text(row_labels, which = "row", gp = row_names_gp, rot = row_names_rot,
+            location = ifelse(.Object@row_names_param$side == "left", 1, 0), 
+            just = ifelse(.Object@row_names_param$side == "left", "right", "left"))
+        .Object@row_names_param$anno = row_names_anno
+    }
 
     if(is.null(colnames(matrix))) {
         show_column_names = FALSE
     }
+    .Object@column_names_param$labels = column_labels
     .Object@column_names_param$side = match.arg(column_names_side)[1]
     .Object@column_names_param$show = show_column_names
     .Object@column_names_param$gp = check_gp(column_names_gp)
-    default_column_names_max_height = function() {
-        min(unit.c(unit(6, "cm")), max_text_width(colnames(matrix), gp = .Object@column_names_param$gp))
-    }
+    .Object@column_names_param$rot = column_names_rot
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
+    if(length(column_labels)) {
+        column_names_anno = anno_text(column_labels, which = "column", gp = column_names_gp, rot = column_names_rot,
+            location = ifelse(.Object@column_names_param$side == "top", 0, 1), 
+            just = ifelse(.Object@column_names_param$side == "top", "left", "right"))
+        .Object@column_names_param$anno = column_names_anno
+    }
 
+    #### dendrograms ########
+    if(missing(cluster_rows) && !missing(row_order)) {
+        cluster_rows = FALSE
+    }
     if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
         .Object@row_dend_param$obj = cluster_rows
         .Object@row_dend_param$cluster = TRUE
@@ -576,6 +621,9 @@ Heatmap = function(matrix, col, name,
         .Object@row_order = row_order
     }
 
+    if(missing(cluster_columns) && !missing(column_order)) {
+        cluster_columns = FALSE
+    }
     if(inherits(cluster_columns, "dendrogram") || inherits(cluster_columns, "hclust")) {
         .Object@column_dend_param$obj = cluster_columns
         .Object@column_dend_param$cluster = TRUE
@@ -592,7 +640,7 @@ Heatmap = function(matrix, col, name,
     if(!show_column_dend) {
         column_dend_height = unit(0, "mm")
     }
-    .Object@column_dend = NULL
+    .Object@column_dend_list = list()
     .Object@column_dend_param$distance = clustering_distance_columns
     .Object@column_dend_param$method = clustering_method_columns
     .Object@column_dend_param$side = match.arg(column_dend_side)[1]
@@ -609,6 +657,7 @@ Heatmap = function(matrix, col, name,
         .Object@column_order = column_order
     }
 
+    ######### annotations #############
     .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
     if(is.null(top_annotation)) {
         .Object@top_annotation_param$height = unit(0, "mm")    
@@ -638,116 +687,40 @@ Heatmap = function(matrix, col, name,
     }
 
     .Object@layout = list(
-        layout_column_title_top_height = unit(0, "mm"),
-        layout_column_dend_top_height = unit(0, "mm"),
-        layout_column_anno_top_height = unit(0, "mm"),
-        layout_column_names_top_height = unit(0, "mm"),
-        layout_column_title_bottom_height = unit(0, "mm"),
-        layout_column_dend_bottom_height = unit(0, "mm"),
-        layout_column_anno_bottom_height = unit(0, "mm"),
-        layout_column_names_bottom_height = unit(0, "mm"),
+        layout_size = list(
+            column_title_top_height = unit(0, "mm"),
+            column_dend_top_height = unit(0, "mm"),
+            column_anno_top_height = unit(0, "mm"),
+            column_names_top_height = unit(0, "mm"),
+            column_title_bottom_height = unit(0, "mm"),
+            column_dend_bottom_height = unit(0, "mm"),
+            column_anno_bottom_height = unit(0, "mm"),
+            column_names_bottom_height = unit(0, "mm"),
 
-        layout_row_title_left_width = unit(0, "mm"),
-        layout_row_dend_left_width = unit(0, "mm"),
-        layout_row_names_left_width = unit(0, "mm"),
-        layout_row_dend_right_width = unit(0, "mm"),
-        layout_row_names_right_width = unit(0, "mm"),
-        layout_row_title_right_width = unit(0, "mm"),
+            row_title_left_width = unit(0, "mm"),
+            row_dend_left_width = unit(0, "mm"),
+            row_names_left_width = unit(0, "mm"),
+            row_dend_right_width = unit(0, "mm"),
+            row_names_right_width = unit(0, "mm"),
+            row_title_right_width = unit(0, "mm")
+        ),
 
-        layout_heatmap_width = width, # for the layout of heatmap list
-
-        layout_index = matrix(nrow = 0, ncol = 2),
+        layout_index = data.frame(),
         graphic_fun_list = list()
     )
+
+    .Object@heatmap_param$width = width
+    .Object@heatmap_param$height = height
+    .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
+    .Object@heatmap_param$use_raster = use_raster
+    .Object@heatmap_param$raster_device = match.arg(raster_device)[1]
+    .Object@heatmap_param$raster_quality = raster_quality
+    .Object@heatmap_param$raster_device_param = raster_device_param
+    .Object@heatmap_param$verbose = verbose
 
     return(.Object)
 
 }
-
-# == title
-# Make cluster on columns
-#
-# == param
-# -object a `Heatmap-class` object.
-#
-# == details
-# The function will fill or adjust ``column_dend`` and ``column_order`` slots.
-#
-# This function is only for internal use.
-#
-# == value
-# A `Heatmap-class` object.
-#
-# == author
-# Zuguang Gu <z.gu@dkfz.de>
-#
-setMethod(f = "make_column_cluster",
-    signature = "Heatmap",
-    definition = function(object) {
-    
-    if(ht_global_opt("fast_hclust")) {
-        hclust = fastcluster::hclust
-    } else {
-        hclust = stats::hclust
-    }
-    
-    mat = object@matrix
-    distance = object@column_dend_param$distance
-    method = object@column_dend_param$method
-    order = object@column_order
-    reorder = object@column_dend_param$reorder
-
-    if(object@column_dend_param$cluster) {
-        if(!is.null(object@column_dend_param$obj)) {
-            object@column_dend = object@column_dend_param$obj
-        } else if(!is.null(object@column_dend_param$fun)) {
-            object@column_dend = object@column_dend_param$fun(t(mat))
-        } else {
-            object@column_dend = hclust(get_dist(t(mat), distance), method = method)
-        }
-        column_order = get_dend_order(object@column_dend)  # we don't need the pre-defined orders
-
-        if(inherits(object@column_dend, "hclust")) {
-            object@column_dend = as.dendrogram(object@column_dend)
-        }
-
-        if(identical(reorder, NULL)) {
-            if(is.numeric(mat)) {
-                reorder = TRUE
-            } else {
-                reorder = FALSE
-            }
-        }
-
-        do_reorder = TRUE
-        if(identical(reorder, NA) || identical(reorder, FALSE)) {
-            do_reorder = FALSE
-        }
-        if(identical(reorder, TRUE)) {
-            do_reorder = TRUE
-            reorder = colMeans(mat, na.rm = TRUE)
-        }
-
-        if(do_reorder) {
-            if(length(reorder) != ncol(mat)) {
-                stop("weight of reordering should have same length as number of columns.\n")
-            }
-            object@column_dend = reorder(object@column_dend, reorder)
-            column_order = order.dendrogram(object@column_dend)
-        }
-    } else {
-        column_order = order
-    }
-
-    # re-order
-    object@column_order = column_order
-
-    if(ncol(mat) != length(column_order)) {
-        stop("Number of columns in the matrix are not the same as the length of\nthe cluster or the column order.")
-    }
-
-    return(object)
-})
 
 
 # == title
@@ -773,57 +746,94 @@ setMethod(f = "make_row_cluster",
     signature = "Heatmap",
     definition = function(object) {
 
+    make_cluster(object, "row")
+})
+
+setMethod(f = "make_column_cluster",
+    signature = "Heatmap",
+    definition = function(object) {
+
+    make_cluster(object, "column")
+})
+
+make_cluster = function(object, which = c("row", "column")) {
+
+    which = match.arg(which)[1]
+
+    verbose = object@heatmap_param$verbose
+
     if(ht_global_opt("fast_hclust")) {
         hclust = fastcluster::hclust
+        if(verbose) qqcat("apply hclust by fastcluster::hclust\n")
     } else {
         hclust = stats::hclust
     }
 
     mat = object@matrix
-    distance = object@row_dend_param$distance
-    method = object@row_dend_param$method
-    order = object@row_order  # pre-defined row order
-    km = object@matrix_param$km
-    km_title = object@matrix_param$km_title
-    split = object@matrix_param$split
-    reorder = object@row_dend_param$reorder
+    distance = slot(object, paste0(which, "_dend_param"))$distance
+    method = slot(object, paste0(which, "_dend_param"))$method
+    order = slot(object, paste0(which, "_order"))  # pre-defined row order
+    km = getElement(object@matrix_param, paste0(which, "_km"))
+    split = getElement(object@matrix_param, paste0(which, "_split"))
+    reorder = slot(object, paste0(which, "_dend_param"))$reorder
+    cluster = slot(object, paste0(which, "_dend_param"))$cluster
+    gap = getElement(object@matrix_param, paste0(which, "_gap"))
 
-    if(object@row_dend_param$cluster) {
+    dend_param = slot(object, paste0(which, "_dend_param"))
+    dend_list = slot(object, paste0(which, "_dend_list"))
+    dend_slice = slot(object, paste0(which, "_dend_slice"))
+    order_list = slot(object, paste0(which, "_order_list"))
+    order = slot(object, paste0(which, "_order"))
+
+    names_param = slot(object, paste0(which, "_names_param"))
+
+    if(cluster) {
 
         if(is.numeric(split) && length(split) == 1) {
-            if(is.null(object@row_dend_param$obj)) {
-                object@row_dend_param$obj = hclust(get_dist(mat, distance), method = method)
+            if(is.null(dend_param$obj)) {
+                if(verbose) qqcat("split @{which}s by cutree, apply hclust on the entire @{which}s\n")
+                if(which == "row") {
+                    dend_param$obj = hclust(get_dist(mat, distance), method = method)
+                } else {
+                    dend_param$obj = hclust(get_dist(t(mat), distance), method = method)
+                }
             }
         }
 
-        if(!is.null(object@row_dend_param$obj)) {
+        if(!is.null(dend_param$obj)) {
             if(km > 1) {
-                stop("You can not make k-means clustering since you have already specified a clustering object.")
+                stop("You can not make k-means partition since you have already specified a clustering object.")
             }
 
-            if(inherits(object@row_dend_param$obj, "hclust")) {
-                object@row_dend_param$obj = as.dendrogram(object@row_dend_param$obj)
+            if(inherits(dend_param$obj, "hclust")) {
+                dend_param$obj = as.dendrogram(dend_param$obj)
+                if(verbose) qqcat("convert hclust object to dendrogram object\n")
             }
 
             if(is.null(split)) {
-                object@row_dend_list = list(object@row_dend_param$obj)
-                object@row_order_list = list(get_dend_order(object@row_dend_param$obj))
+                dend_list = list(dend_param$obj)
+                order_list = list(get_dend_order(dend_param$obj))
+                if(verbose) qqcat("since you provided a clustering object and @{which}_split is null, the entrie clustering object is taken as an one-element list.\n")
             } else {
                 if(length(split) > 1 || !is.numeric(split)) {
-                    stop("Since you specified a clustering object, you can only split rows by providing a number (number of row slices.")
+                    stop(qq("Since you specified a clustering object, you can only split @{which}s by providing a number (number of @{which} slices)."))
                 }
                 if(split < 2) {
                     stop("Here `split` should be equal or larger than 2.")
                 }
                 
-                object@row_dend_list = cut_dendrogram(object@row_dend_param$obj, split)
-                sth = tapply(order.dendrogram(object@row_dend_param$obj), 
-                    rep(seq_along(object@row_dend_list), times = sapply(object@row_dend_list, nobs)), 
+                ct = cut_dendrogram(dend_param$obj, split)
+                dend_list = ct$lower
+                dend_slice = ct$upper
+                sth = tapply(order.dendrogram(dend_param$obj), 
+                    rep(seq_along(dend_list), times = sapply(dend_list, nobs)), 
                     function(x) x)
                 attributes(sth) = NULL
-                object@row_order_list = sth
+                order_list = sth
+                if(verbose) qqcat("cut @{which} dendrogram into @{split} slices.\n")
             }
 
+            ### do reordering if specified
             if(identical(reorder, NULL)) {
                 if(is.numeric(mat)) {
                     reorder = TRUE
@@ -838,70 +848,141 @@ setMethod(f = "make_row_cluster",
             }
             if(identical(reorder, TRUE)) {
                 do_reorder = TRUE
-                reorder = -rowMeans(mat, na.rm = TRUE)
+                if(which == "row") {
+                    reorder = -rowMeans(mat, na.rm = TRUE)
+                } else {
+                    reorder = -colMeans(mat, na.rm = TRUE)
+                }
             }
 
             if(do_reorder) {
 
-                if(length(reorder) != nrow(mat)) {
-                    stop("weight of reordering should have same length as number of rows.\n")
+                if(which == "row") {
+                    if(length(reorder) != nrow(mat)) {
+                        stop("weight of reordering should have same length as number of rows.\n")
+                    }
+                } else {
+                    if(length(reorder) != ncol(mat)) {
+                        stop("weight of reordering should have same length as number of columns\n")
+                    }
                 }
-                row_order_list = object@row_order_list
-                row_dend_list = object@row_dend_list
-                o_row_order_list = row_order_list
-                for(i in seq_along(row_dend_list)) {
-                    if(length(row_order_list[[i]]) > 1) {
-                        sub_ind = which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])
-                        object@row_dend_list[[i]] = reorder(object@row_dend_list[[i]], reorder[sub_ind])
-                        # object@row_order_list[[i]] = sub_ind[ order(order.dendrogram(object@row_dend_list[[i]])) ]
-                        object@row_order_list[[i]] = order.dendrogram(object@row_dend_list[[i]])
+                
+                for(i in seq_along(dend_list)) {
+                    if(length(order_list[[i]]) > 1) {
+                        sub_ind = sort(order_list[[i]])
+                        dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind])
+                        # the order of object@row_dend_list[[i]] is the order corresponding to the big dendrogram
+                        order_list[[i]] = order.dendrogram(dend_list[[i]])
                     }
                 }
             }
+
+            dend_list = lapply(dend_list, adjust_dend_by_x)
+
+            slot(object, paste0(which, "_order")) = unlist(order_list)
+            slot(object, paste0(which, "_order_list")) = order_list
+            slot(object, paste0(which, "_dend_list")) = dend_list
+            slot(object, paste0(which, "_dend_param")) = dend_param
+            slot(object, paste0(which, "_dend_slice")) = dend_slice
+            split = data.frame(rep(seq_along(order_list), times = sapply(order_list, length)))
+            object@matrix_param[[ paste0(which, "_split") ]] = split
+
+            # adjust row_names_param$gp if the length of some elements is the same as row slices
+            for(i in seq_along(names_param$gp)) {
+                if(length(names_param$gp[[i]]) == length(order_list)) {
+                    gp_temp = NULL
+                    for(j in seq_along(order_list)) {
+                        gp_temp[ order_list[[j]] ] = names_param$gp[[i]][j]
+                    }
+                    names_param$gp[[i]] = gp_temp
+                }
+            }
+            if(!is.null(names_param$anno)) {
+                names_param$anno@var_env$gp = names_param$gp
+            }
+            slot(object, paste0(which, "_names_param")) = names_param
+
+            n_slice = length(order_list)
+            if(length(gap) == 1) {
+                gap = rep(gap, n_slice)
+            } else if(length(gap) == n_slice - 1) {
+                gap = unit.c(gap, unit(0, "mm"))
+            } else if(length(gap) != n_slice) {
+                stop(qq("Length of `gap` should be 1 or number of @{which} slices."))
+            }
+            object@matrix_param[[ paste0(which, "_gap") ]] = gap# adjust title
+            
+            title = slot(object, paste0(which, "_title"))
+            if(!is.null(split)) {
+                if(length(title) == 0 && !is.null(title)) { ## default title
+                    title = apply(unique(split), 1, paste, collapse = ",")
+                } else if(length(title) == 1) {
+                    if(grepl("%s", title)) {
+                        title = apply(unique(split), 1, function(x) {
+                            lt = lapply(x, function(x) x)
+                            lt$fmt = title
+                            do.call(sprintf, lt)
+                        })
+                    }
+                }
+            }
+            slot(object, paste0(which, "_title")) = title
+
             return(object)
         }
 
-        row_order = seq_len(nrow(mat))
     } else {
-        row_order = order
+        if(verbose) qqcat("no clustering is applied/exists on @{which}s\n")
     }
-
+    
+    if(verbose) qq("clustering object is not pre-defined, clustering is applied to each @{which} slice\n")
     # make k-means clustering to add a split column
     if(km > 1 && is.numeric(mat)) {
-        km.fit = kmeans(mat, centers = km)
-        cluster = km.fit$cluster
-        meanmat = lapply(unique(cluster), function(i) {
-            colMeans(mat[cluster == i, , drop = FALSE])
-        })
+        if(which == "row") {
+            km.fit = kmeans(mat, centers = km)
+            cl = km.fit$cluster
+            meanmat = lapply(unique(cl), function(i) {
+                colMeans(mat[cl == i, , drop = FALSE])
+            })
+        } else {
+            km.fit = kmeans(t(mat), centers = km)
+            cl = km.fit$cluster
+            meanmat = lapply(unique(cl), function(i) {
+                rowMeans(mat[, cl == i, drop = FALSE])
+            })
+        }
+        
         meanmat = as.matrix(as.data.frame(meanmat))
         hc = hclust(dist(t(meanmat)))
         weight = colMeans(meanmat)
         hc = as.hclust(reorder(as.dendrogram(hc), -weight))
-        cluster2 = numeric(length(cluster))
+        cl2 = numeric(length(cl))
         for(i in seq_along(hc$order)) {
-            cluster2[cluster == hc$order[i]] = i
+            cl2[cl == hc$order[i]] = i
         }
-        cluster2 = factor(paste0("cluster", cluster2), levels = paste0("cluster", seq_along(hc$order)))
-        cluster2 = factor(sprintf(km_title, cluster2), levels = sprintf(km_title, seq_along(hc$order)))
+        cl2 = factor(cl2, levels = seq_along(hc$order))
 
         if(is.null(split)) {
-            split = data.frame(cluster2)
+            split = data.frame(cl2)
         } else if(is.matrix(split)) {
             split = as.data.frame(split)
-            split = cbind(cluster2, split)
+            split = cbind(cl2, split)
         } else if(is.null(ncol(split))) {
-            split = data.frame(cluster2, split)
+            split = data.frame(cl2, split)
         } else {
-            split = cbind(cluster2, split)
+            split = cbind(cl2, split)
         }
+        if(verbose) qqcat("apply k-means (@{km} groups) on @{which}s, append to the `split` data frame\n")
             
     }
 
     # split the original order into a list according to split
-    row_order_list = list()
+    order_list = list()
     if(is.null(split)) {
-        row_order_list[[1]] = row_order
+        order_list[[1]] = order
     } else {
+
+        if(verbose) qqcat("process `split` data frame\n")
         if(is.null(ncol(split))) split = data.frame(split)
         if(is.matrix(split)) split = as.data.frame(split)
 
@@ -916,53 +997,58 @@ setMethod(f = "make_row_cluster",
             }
         }
 
-        split_name = NULL
-        combined_name_fun = object@row_title_param$combined_name_fun
-        if(!is.null(combined_name_fun)) {
-            split_name = apply(as.matrix(split), 1, combined_name_fun)
-        } else {
-            split_name = apply(as.matrix(split), 1, paste, collapse = "\n")
-        }
+        split_name = apply(as.matrix(split), 1, paste, collapse = "\n")
 
-        row_order2 = do.call("order", split)
-        row_level = unique(split_name[row_order2])
-        for(k in seq_along(row_level)) {
-            l = split_name == row_level[k]
-            row_order_list[[k]] = intersect(row_order, which(l))
+        order2 = do.call("order", split)
+        level = unique(split_name[order2])
+        for(k in seq_along(level)) {
+            l = split_name == level[k]
+            order_list[[k]] = intersect(order, which(l))
         }
-
-        object@row_order_list = row_order_list
-
-        if(!is.null(combined_name_fun)) {
-            object@row_title = row_level
-        }
+        names(order_list) = level
     }
-    o_row_order_list = row_order_list
+
     # make dend in each slice
-    if(object@row_dend_param$cluster) {
-        row_dend_list = rep(list(NULL), length(row_order_list))
-        for(i in seq_along(row_order_list)) {
-            submat = mat[ row_order_list[[i]], , drop = FALSE]
-            if(nrow(submat) > 1) {
-                if(!is.null(object@row_dend_param$fun)) {
-                    row_dend_list[[i]] = object@row_dend_param$fun(mat)
-                    row_order_list[[i]] = row_order_list[[i]][ get_dend_order(row_dend_list[[i]]) ]
+    if(cluster) {
+        if(verbose) qqcat("apply clustering on each @{cluster} slice (@{length(order_list)} slices)\n")
+        dend_list = rep(list(NULL), length(order_list))
+        for(i in seq_along(order_list)) {
+            if(which == "row") {
+                submat = mat[ order_list[[i]], , drop = FALSE]
+            } else {
+                submat = mat[, order_list[[i]], drop = FALSE]
+            }
+            nd = 0
+            if(which == "row") nd = nrow(submat) else nd = ncol(submat)
+            if(nd > 1) {
+                if(!is.null(dend_param$fun)) {
+                    if(which == "row") {
+                        dend_list[[i]] = dend_param$fun(submat)
+                    } else {
+                        dend_list[[i]] = dend_param$fun(t(submat))
+                    }
+                    order_list[[i]] = order_list[[i]][ get_dend_order(dend_list[[i]]) ]
                 } else {
-                    #if(is.numeric(mat)) {
-                        row_dend_list[[i]] = hclust(get_dist(submat, distance), method = method)
-                        row_order_list[[i]] = row_order_list[[i]][ get_dend_order(row_dend_list[[i]]) ]
+
+                        if(which == "row") {
+                            dend_list[[i]] = hclust(get_dist(submat, distance), method = method)
+                        } else {
+                            dend_list[[i]] = hclust(get_dist(t(submat), distance), method = method)
+                        }
+                        order_list[[i]] = order_list[[i]][ get_dend_order(dend_list[[i]]) ]
                     #}
                 }
             } else {
-                #row_dend_list[[i]] = NULL
-                row_order_list[[i]] = row_order_list[[i]][1]
+                # a dendrogram with one leaf
+                dend_list[[i]] = structure(1, members = 1, height = 0, leaf = TRUE, class = "dendrogram")
+                order_list[[i]] = order_list[[i]][1]
             }
         }
-        object@row_dend_list = row_dend_list
+        names(dend_list) = names(order_list)
 
-        for(i in seq_along(object@row_dend_list)) {
-            if(inherits(object@row_dend_list[[i]], "hclust")) {
-                object@row_dend_list[[i]] = as.dendrogram(object@row_dend_list[[i]])
+        for(i in seq_along(dend_list)) {
+            if(inherits(dend_list[[i]], "hclust")) {
+                dend_list[[i]] = as.dendrogram(dend_list[[i]])
             }
         }
 
@@ -980,47 +1066,108 @@ setMethod(f = "make_row_cluster",
         }
         if(identical(reorder, TRUE)) {
             do_reorder = TRUE
-            reorder = -rowMeans(mat, na.rm = TRUE)
+            if(which == "row") {
+                reorder = -rowMeans(mat, na.rm = TRUE)
+            } else {
+                reorder = -colMeans(mat, na.rm = TRUE)
+            }
         }
 
         if(do_reorder) {
 
-            if(length(reorder) != nrow(mat)) {
-                stop("weight of reordering should have same length as number of rows.\n")
-            }
-            for(i in seq_along(row_dend_list)) {
-                if(length(row_order_list[[i]]) > 1) {
-                    sub_ind = which(seq_len(nrow(mat)) %in% o_row_order_list[[i]])
-                    object@row_dend_list[[i]] = reorder(object@row_dend_list[[i]], reorder[sub_ind])
-                    row_order_list[[i]] = sub_ind[ order.dendrogram(object@row_dend_list[[i]]) ]
+            if(which == "row") {
+                if(length(reorder) != nrow(mat)) {
+                    stop("weight of reordering should have same length as number of rows\n")
+                }
+            } else {
+                if(length(reorder) != ncol(mat)) {
+                    stop("weight of reordering should have same length as number of columns\n")
                 }
             }
-        }
-    }
-
-    
-
-    object@row_order_list = row_order_list
-    object@matrix_param$split = split
-
-
-    if(nrow(mat) != length(unlist(row_order_list))) {
-        stop("Number of rows in the matrix are not the same as the length of\nthe cluster or the row orders.")
-    }
-
-    # adjust row_names_param$gp if the length of some elements is the same as row slices
-    for(i in seq_along(object@row_names_param$gp)) {
-        if(length(object@row_names_param$gp[[i]]) == length(object@row_order_list)) {
-            gp_temp = NULL
-            for(j in seq_along(object@row_order_list)) {
-                gp_temp[ object@row_order_list[[j]] ] = object@row_names_param$gp[[i]][j]
+            for(i in seq_along(dend_list)) {
+                if(length(order_list[[i]]) > 1) {
+                    sub_ind = sort(order_list[[i]])
+                    dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind])
+                    order_list[[i]] = sub_ind[ order.dendrogram(dend_list[[i]]) ]
+                }
             }
-            object@row_names_param$gp[[i]] = gp_temp
+            if(verbose) qqcat("reorder dendrograms in each @{which} slice\n")
+        }
+
+        if(length(order_list) > 1) {
+            if(which == "row") {
+                slice_mean = sapply(order_list, function(ind) colMeans(mat[ind, , drop = FALSE]))
+            } else {
+                slice_mean = sapply(order_list, function(ind) rowMeans(mat[, ind, drop = FALSE]))
+            }
+            dend_slice = as.dendrogram(hclust(dist(t(slice_mean))))
+            if(verbose) qqcat("perform clustering on mean of @{which} slices\n")
         }
     }
+
+    dend_list = lapply(dend_list, adjust_dend_by_x)
+
+    slot(object, paste0(which, "_order")) = unlist(order_list)
+    slot(object, paste0(which, "_order_list")) = order_list
+    slot(object, paste0(which, "_dend_list")) = dend_list
+    slot(object, paste0(which, "_dend_param")) = dend_param
+    slot(object, paste0(which, "_dend_slice")) = dend_slice
+    object@matrix_param[[ paste0(which, "_split") ]] = split
+
+    if(which == "row") {
+        if(nrow(mat) != length(order)) {
+            stop(qq("Number of rows in the matrix are not the same as the length of the cluster or the @{which} orders."))
+        }
+    } else {
+        if(ncol(mat) != length(order)) {
+            stop(qq("Number of columns in the matrix are not the same as the length of the cluster or the @{which} orders."))
+        }
+    }
+
+    # adjust names_param$gp if the length of some elements is the same as slices
+    for(i in seq_along(names_param$gp)) {
+        if(length(names_param$gp[[i]]) == length(order_list)) {
+            gp_temp = NULL
+            for(j in seq_along(order_list)) {
+                gp_temp[ order_list[[j]] ] = names_param$gp[[i]][j]
+            }
+            names_param$gp[[i]] = gp_temp   
+        }
+    }
+    if(!is.null(names_param$anno)) {
+        names_param$anno@var_env$gp = names_param$gp
+    }
+    slot(object, paste0(which, "_names_param")) = names_param
+
+    n_slice = length(order_list)
+    if(length(gap) == 1) {
+        gap = rep(gap, n_slice)
+    } else if(length(gap) == n_slice - 1) {
+        gap = unit.c(gap, unit(0, "mm"))
+    } else if(length(gap) != n_slice) {
+        stop(qq("Length of `gap` should be 1 or number of @{which} slices."))
+    }
+    object@matrix_param[[ paste0(which, "_gap") ]] = gap
+    
+    # adjust title
+    title = slot(object, paste0(which, "_title"))
+    if(!is.null(split)) {
+        if(length(title) == 0 && !is.null(title)) { ## default title
+            title = apply(unique(split), 1, paste, collapse = ",")
+        } else if(length(title) == 1) {
+            if(grepl("%s", title)) {
+                title = apply(unique(split), 1, function(x) {
+                    lt = lapply(x, function(x) x)
+                    lt$fmt = title
+                    do.call(sprintf, lt)
+                })
+            }
+        }
+    }
+    slot(object, paste0(which, "_title")) = title
     return(object)
 
-})
+}
 
 # == title
 # Make the layout of a single heatmap
@@ -1047,68 +1194,92 @@ setMethod(f = "make_layout",
     signature = "Heatmap",
     definition = function(object) {
 
-    # for components which are placed by rows, they will be splitted into parts
-    # and slice_y controls the y-coordinates of each part
-
     # position of each row-slice
-    gap = object@matrix_param$gap
-    n_slice = length(object@row_order_list)
-    if(length(gap) == 1) {
-        gap = rep(gap, n_slice)
-    } else if(length(gap) == n_slice - 1) {
-        gap = unit.c(gap, unit(0, "mm"))
-    } else if(length(gap) != n_slice) {
-        stop("Length of `gap` should be 1 or number of row slices.")
-    }
+    row_gap = object@matrix_param$row_gap
+    column_gap = object@matrix_param$column_gap
+    nr_slice = length(object@row_order_list)
+    nc_slice = length(object@column_order_list)
 
     snr = sapply(object@row_order_list, length)
-    if(sum(snr)) {
-        if(n_slice == 1) {
-            slice_height = unit(1, "npc")*(snr/sum(snr))
-            } else {
-                slice_height = (unit(1, "npc") - sum(gap[seq_len(n_slice-1)]))*(snr/sum(snr))
-            }  
-        for(i in seq_len(n_slice)) {
-            if(i == 1) {
-                slice_y = unit(1, "npc")
-            } else {
-                slice_y = unit.c(slice_y, unit(1, "npc") - sum(slice_height[seq_len(i-1)]) - sum(gap[seq_len(i-1)]))
-            }
+    snc = sapply(object@column_order_list, length)
+    if(nr_slice == 1) {
+        slice_height = unit(1, "npc")
+    } else {
+        slice_height = (unit(1, "npc") - sum(row_gap[seq_len(nr_slice-1)]))*(snr/sum(snr))
+    }
+    for(i in seq_len(nr_slice)) {
+        if(i == 1) {
+            slice_y = unit(1, "npc")
+        } else {
+            slice_y = unit.c(slice_y, unit(1, "npc") - sum(slice_height[seq_len(i-1)]) - sum(row_gap[seq_len(i-1)]))
         }
+    }
 
+    if(nc_slice == 1) {
+        slice_width = unit(1, "npc")
+    } else {
+        slice_width = (unit(1, "npc") - sum(column_gap[seq_len(nc_slice-1)]))*(snc/sum(snc))
+    }
+    for(i in seq_len(nc_slice)) {
+        if(i == 1) {
+            slice_x = unit(0, "npc")
+        } else {
+            slice_x = unit.c(slice_x, sum(slice_width[seq_len(i-1)]) + sum(column_gap[seq_len(i-1)]))
+        }
+    }
+    object@layout$slice = list(
+        x = slice_x, 
+        y = slice_y, 
+        width = slice_width, 
+        height = slice_height,
+        just = c("left", "top")
+    )
+
+    if(length(object@matrix)) {
+        
         ###########################################
         ## heatmap body
         object@layout$layout_index = rbind(c(5, 4))
         object@layout$graphic_fun_list = list(function(object) {
-            for(i in seq_len(n_slice)) {
-                draw_heatmap_body(object, k = i, y = slice_y[i], height = slice_height[i], just = c("center", "top"))
+            for(i in seq_len(nr_slice)) {
+                for(j in seq_len(nc_slice)) {
+                    draw_heatmap_body(object, kr = i, kc = j, x = slice_x[j], y = slice_y[i], width = slice_width[j], height = slice_height[i], just = c("left", "top"))
+                }
             }
         })
     }
 
-    title_padding = unit(2.5, "mm")
     ############################################
     ## title on top or bottom
     column_title = object@column_title
     column_title_side = object@column_title_param$side
     column_title_gp = object@column_title_param$gp
+    column_title_rot = object@column_title_param$rot
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
-            if(object@column_title_rot %in% c(0, 180)) {
-                object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+            if(column_title_rot %in% c(0, 180)) {
+                object@layout$layout_size$column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
             } else {
-                object@layout$layout_column_title_top_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+                object@layout$layout_size$column_title_top_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, c(1, 4))
         } else {
-            if(object@column_title_rot %in% c(0, 180)) {
-                object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+            if(column_title_rot %in% c(0, 180)) {
+                object@layout$layout_size$column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
             } else {
-                object@layout$layout_column_title_bottom_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + title_padding*2
+                object@layout$layout_size$column_title_bottom_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, c(9, 4))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "column"))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+            if(length(column_title) == 1 && nc_slice > 1) {
+                draw_title(object, k = 1, which = "column")
+            } else {
+                for(i in seq_len(nc_slice)) {
+                    draw_title(object, k = i, which = "column", x = slice_x[i], width = slice_width[i], just = "left")
+                }
+            }
+        })
     }
 
     ############################################
@@ -1116,25 +1287,30 @@ setMethod(f = "make_layout",
     row_title = object@row_title
     row_title_side = object@row_title_param$side
     row_title_gp = object@row_title_param$gp
+    row_title_rot = object@row_title_param$rot
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
-            if(object@row_title_rot %in% c(0, 180)) {
-                object@layout$layout_row_title_left_width = max_text_width(row_title, gp = row_title_gp) + title_padding*2
+            if(row_title_rot %in% c(0, 180)) {
+                object@layout$layout_size$row_title_left_width = max_text_width(row_title, gp = row_title_gp) + TITLE_PADDING*2
             } else {
-                object@layout$layout_row_title_left_width = max_text_height(row_title, gp = row_title_gp) + title_padding*2
+                object@layout$layout_size$row_title_left_width = max_text_height(row_title, gp = row_title_gp) + TITLE_PADDING*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 1))
         } else {
-            if(object@row_title_rot %in% c(0, 180)) {
-                object@layout$layout_row_title_right_width = max_text_width(row_title, gp = row_title_gp) + title_padding*2
+            if(row_title_rot %in% c(0, 180)) {
+                object@layout$layout_size$row_title_right_width = max_text_width(row_title, gp = row_title_gp) + TITLE_PADDING*2
             } else {
-                object@layout$layout_row_title_right_width = max_text_height(row_title, gp = row_title_gp) + title_padding*2
+                object@layout$layout_size$row_title_right_width = max_text_height(row_title, gp = row_title_gp) + TITLE_PADDING*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 7))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
-            for(i in seq_len(n_slice)) {
-                draw_title(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = c("center", "top"))
+            if(length(row_title) == 1 && nr_slice > 1) {
+                draw_title(object, k = 1, which = "row")
+            } else {
+                for(i in seq_len(nr_slice)) {
+                    draw_title(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = "top")
+                }
             }
         })
     }
@@ -1144,18 +1320,38 @@ setMethod(f = "make_layout",
     show_row_dend = object@row_dend_param$show
     row_dend_side = object@row_dend_param$side
     row_dend_width = object@row_dend_param$width
+    row_dend_slice = object@row_dend_slice
     if(show_row_dend) {
         if(row_dend_side == "left") {
-            object@layout$layout_row_dend_left_width = row_dend_width
+            object@layout$layout_size$row_dend_left_width = row_dend_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 2))
         } else {
-            object@layout$layout_row_dend_right_width = row_dend_width
+            object@layout$layout_size$row_dend_right_width = row_dend_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 6))
         }
-        #max_dend_height = max(sapply(object@row_dend_list, function(hc) attr(as.dendrogram(hc), "height")))
+        row_dend_max_height = dend_heights(row_dend_slice) + max(dend_heights(object@row_dend_list))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
-            for(i in seq_len(n_slice)) {
-                draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = c("center", "top"))
+            for(i in seq_len(nr_slice)) {
+                draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = "top",
+                    max_height = row_dend_max_height)
+            }
+
+            if(nr_slice > 1) {
+                pushViewport(viewport(xscale = c(0, row_dend_max_height), width = unit(1, "npc") - DENDROGRAM_PADDING*2))
+                p = sapply(object@row_dend_list, function(x) {
+                    attr(x, "x")/nobs(x)
+                })
+
+                nb = sapply(object@row_dend_list, nobs)
+
+                slice_leaf_pos = slice_y
+                for(i in seq_len(nr_slice)) {
+                    slice_leaf_pos[i] = slice_leaf_pos[i] - slice_height[i]*p[i]
+                }
+                row_dend_slice = merge(row_dend_slice, object@row_dend_list, only_parent = TRUE)
+                row_dend_slice = adjust_dend_by_x(row_dend_slice, x = slice_leaf_pos)
+                grid.dendrogram(row_dend_slice, facing = ifelse(row_dend_side == "left", "right", "left"))
+                popViewport()
             }
         })
     }
@@ -1165,42 +1361,61 @@ setMethod(f = "make_layout",
     show_column_dend = object@column_dend_param$show
     column_dend_side = object@column_dend_param$side
     column_dend_height = object@column_dend_param$height
+    column_dend_slice = object@column_dend_slice
     if(show_column_dend) {
         if(column_dend_side == "top") {
-            object@layout$layout_column_dend_top_height = column_dend_height
+            object@layout$layout_size$column_dend_top_height = column_dend_height
             object@layout$layout_index = rbind(object@layout$layout_index, c(2, 4))
         } else {
-            object@layout$layout_column_dend_bottom_height = column_dend_height
+            object@layout$layout_size$column_dend_bottom_height = column_dend_height
             object@layout$layout_index = rbind(object@layout$layout_index, c(8, 4))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dend(object, which = "column"))
-    }
-    
+        column_dend_max_height = dend_heights(column_dend_slice) + max(dend_heights(object@column_dend_list))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+            for(i in seq_len(nc_slice)) {
+                draw_dend(object, k = i, which = "column", x = slice_x[i], width = slice_width[i], just = "left",
+                    max_height = column_dend_max_height)
+            }
 
-    dimname_padding = unit(2, "mm")
+            if(nc_slice > 1) {
+                pushViewport(viewport(yscale = c(0, column_dend_max_height), height = unit(1, "npc") - DENDROGRAM_PADDING*2))
+                p = sapply(object@column_dend_list, function(x) {
+                    attr(x, "x")/nobs(x)
+                })
+
+                nb = sapply(object@column_dend_list, nobs)
+
+                slice_leaf_pos = slice_x
+                for(i in seq_len(nc_slice)) {
+                    slice_leaf_pos[i] = slice_leaf_pos[i] + slice_width[i]*p[i]
+                }
+                column_dend_slice = merge(column_dend_slice, object@column_dend_list, only_parent = TRUE)
+                column_dend_slice = adjust_dend_by_x(column_dend_slice, x = slice_leaf_pos)
+                grid.dendrogram(column_dend_slice, facing = ifelse(column_dend_side == "top", "bottom", "top"))
+                popViewport()
+            }
+        })
+    }
 
     #######################################
     ## row_names on left or right
     row_names_side = object@row_names_param$side
     show_row_names = object@row_names_param$show
-    row_names = rownames(object@matrix)
-    row_names_gp = object@row_names_param$gp;
+    row_names_anno = object@row_names_param$anno
     if(show_row_names) {
-        row_names_width = max(do.call("unit.c", lapply(seq_along(row_names), function(x) {
-            cgp = subset_gp(row_names_gp, x)
-            grobWidth(textGrob(row_names[x], gp = cgp))
-        }))) + dimname_padding
+        row_names_width = row_names_anno@width + DIMNAME_PADDING*2
         row_names_width = min(row_names_width, object@row_names_param$max_width)
         if(row_names_side == "left") {
-            object@layout$layout_row_names_left_width = row_names_width
+            object@layout$layout_size$row_names_left_width = row_names_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 3))
         } else {
-            object@layout$layout_row_names_right_width = row_names_width
+            object@layout$layout_size$row_names_right_width = row_names_width
             object@layout$layout_index = rbind(object@layout$layout_index, c(5, 5))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
-            for(i in seq_len(n_slice)) {
-                draw_dimnames(object, k = i, which = "row", x = unit(0, "npc"), y = slice_y[i], height = slice_height[i], just = c("left", "top"), dimname_padding = dimname_padding)
+            for(i in seq_len(nr_slice)) {
+                draw_dimnames(object, k = i, which = "row", y = slice_y[i], 
+                    height = slice_height[i], width = unit(1, "npc") - DIMNAME_PADDING*2, just = "top")
             }
         })
     }
@@ -1209,22 +1424,23 @@ setMethod(f = "make_layout",
     ## column_names on top or bottom
     column_names_side = object@column_names_param$side
     show_column_names = object@column_names_param$show
-    column_names = colnames(object@matrix)
-    column_names_gp = object@column_names_param$gp
+    column_names_anno = object@column_names_param$anno
     if(show_column_names) {
-        column_names_height = max(do.call("unit.c", lapply(seq_along(column_names), function(x) {
-            cgp = subset_gp(column_names_gp, x)
-            grobWidth(textGrob(column_names[x], gp = cgp))
-        }))) + dimname_padding
+        column_names_height = column_names_anno@height + DIMNAME_PADDING*2
         column_names_height = min(column_names_height, object@column_names_param$max_height)
         if(column_names_side == "top") {
-            object@layout$layout_column_names_top_height = column_names_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(4, 4))
+            object@layout$layout_size$column_names_top_height = column_names_height
+            object@layout$layout_index = rbind(object@layout$layout_index, c(3, 4))
         } else {
-            object@layout$layout_column_names_bottom_height = column_names_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
+            object@layout$layout_size$column_names_bottom_height = column_names_height
+            object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
         }
-        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_dimnames(object, which = "column", y = unit(1, "npc"), just = c("center", "top"), dimname_padding = dimname_padding))
+        object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+            for(i in seq_len(nc_slice)) {
+                draw_dimnames(object, k = i, which = "column", x = slice_x[i], 
+                    width = slice_width[i], height = unit(1, "npc") - DIMNAME_PADDING*2, just = "left")
+            }
+        })
     }
     
     ##########################################
@@ -1233,10 +1449,15 @@ setMethod(f = "make_layout",
     annotation_height = object@top_annotation_param$height
     if(!is.null(annotation)) {
         if(length(annotation@anno_list) > 0) {
-            object@layout$layout_column_anno_top_height = annotation_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(3, 4))
+            object@layout$layout_size$column_anno_top_height = annotation_height
+            object@layout$layout_index = rbind(object@layout$layout_index, c(4, 4))
             
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object, which = "top"))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+                for(i in seq_len(nc_slice)) {
+                    draw_annotation(object, k = i, which = "top", x = slice_x[i], 
+                        width = slice_width[i], height = unit(1, "npc"), just = "left")
+                }
+            }) 
         }
     }
 
@@ -1246,10 +1467,54 @@ setMethod(f = "make_layout",
     annotation_height = object@bottom_annotation_param$height
     if(!is.null(annotation)) {
         if(length(annotation@anno_list) > 0) {
-            object@layout$layout_column_anno_bottom_height = annotation_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation(object, which = "bottom"))
+            object@layout$layout_size$column_anno_bottom_height = annotation_height
+            object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+                for(i in seq_len(nc_slice)) {
+                    draw_annotation(object, k = i, which = "bottom", x = slice_x[i], 
+                        width = slice_width[i], height = unit(1, "npc"), just = "left")
+                }
+            })
         }
+    }
+
+    layout_size = object@layout$layout_size
+    if(is_abs_unit(object@heatmap_param$width)) {
+        # nothing needs to do here
+    } else if(is_abs_unit(object@matrix_param$width)) {  # e.g. unit(1, "npc")
+        object@heatmap_param$width = sum(
+            layout_size$row_title_left_width,
+            layout_size$row_dend_left_width,
+            layout_size$row_names_left_width,
+            layout_size$row_dend_right_width,
+            layout_size$row_names_right_width,
+            layout_size$row_title_right_width
+        ) + object@matrix_param$width
+        if(nr_slice > 1) {
+            object@heatmap_param$width = object@heatmap_param$width + sum(row_gap[seq_len(nr_slice-1)])
+        }
+    } else {
+        object@heatmap_param$width = unit(1, "npc")
+    }
+
+    if(is_abs_unit(object@heatmap_param$height)) {
+
+    } else if(is_abs_unit(object@matrix_param$height)) {
+        object@heatmap_param$height = sum(
+            layout_size$column_title_top_height,
+            layout_size$column_dend_top_height,
+            layout_size$column_anno_top_height,
+            layout_size$column_names_top_height,
+            layout_size$column_title_bottom_height,
+            layout_size$column_dend_bottom_height,
+            layout_size$column_anno_bottom_height,
+            layout_size$column_names_bottom_height
+        ) + object@matrix_param$height
+        if(nc_slice > 1) {
+            object@heatmap_param$height = object@heatmap_param$height + sum(column_gap[seq_len(nc_slice-1)])
+        }
+    } else {
+        object@heatmap_param$height = unit(1, "npc")
     }
 
     return(object)
@@ -1333,23 +1598,25 @@ setMethod(f = "add_heatmap",
 #
 setMethod(f = "draw_heatmap_body",
     signature = "Heatmap",
-    definition = function(object, k = 1, ...) {
+    definition = function(object, kr = 1, kc = 1, ...) {
 
     if(ncol(object@matrix) == 0) {
         return(invisible(NULL))
     }
 
-    row_order = object@row_order_list[[k]]
-    column_order = object@column_order
+    row_order = object@row_order_list[[kr]]
+    column_order = object@column_order_list[[kc]]
 
     gp = object@matrix_param$gp
+    border = object@matrix_param$border
+
     use_raster = object@heatmap_param$use_raster
     raster_device = object@heatmap_param$raster_device
     raster_quality = object@heatmap_param$raster_quality
     raster_device_param = object@heatmap_param$raster_device_param
     if(length(raster_device_param) == 0) raster_device_param = list()
 
-    pushViewport(viewport(name = paste(object@name, "heatmap_body", k, sep = "_"), ...))
+    pushViewport(viewport(name = paste(object@name, "heatmap_body", kr, kc, sep = "_"), ...))
 
     mat = object@matrix[row_order, column_order, drop = FALSE]
     col_matrix = map_to_colors(object@matrix_color_mapping, mat)
@@ -1376,7 +1643,7 @@ setMethod(f = "draw_heatmap_body",
             CairoTIFF = c("Cairo", "tiff", "readTIFF")
         )
         if(!requireNamespace(device_info[1])) {
-            stop(paste0("Need ", device_info[1], " package to output image."))
+            stop(paste0("Need ", device_info[1], " package to write image."))
         }
         if(!requireNamespace(device_info[2])) {
             stop(paste0("Need ", device_info[2], " package to read image."))
@@ -1390,51 +1657,55 @@ setMethod(f = "draw_heatmap_body",
         
         temp_dir = tempdir()
                 # dir.create(tmp_dir, showWarnings = FALSE)
-        temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
+        temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
         #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
-       
-        ############################################
-        ## make the heatmap body in a another process
-        temp_R_data = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".RData"))
-        temp_R_file = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", k, "_"), tmpdir = temp_dir, fileext = paste0(".R"))
-        if(Sys.info()["sysname"] == "Windows") {
-            temp_image = gsub("\\\\", "/", temp_image)
-            temp_R_data = gsub("\\\\", "/", temp_R_data)
-            temp_R_file = gsub("\\\\", "/", temp_R_file)
-        }
-        save(device_fun, device_info, temp_image, heatmap_width, raster_quality, heatmap_height, raster_device_param,
-            gp, x, expand_index, nc, nr, col_matrix, row_order, column_order, y,
-            file = temp_R_data)
-        R_cmd = qq("
-        library(@{device_info[1]})
-        library(grid)
-        load('@{temp_R_data}')
-        do.call('device_fun', c(list(filename = temp_image, width = max(c(heatmap_width*raster_quality, 1)), height = max(c(heatmap_height*raster_quality, 1))), raster_device_param))
+
+        do.call(device_fun, c(list(filename = temp_image, width = max(c(heatmap_width*raster_quality, 1)), height = max(c(heatmap_height*raster_quality, 1))), raster_device_param))
         grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
-        dev.off()
-        q(save = 'no')
-        ", code.pattern = "@\\{CODE\\}")
-        writeLines(R_cmd, con = temp_R_file)
-        if(grepl(" ", temp_R_file)) {
-            if(is_windows()) {
-                oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE), silent = TRUE)
-            } else {
-                oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE), silent = TRUE)
-            }
-        } else {
-            if(is_windows()) {
-                oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE), silent = TRUE)
-            } else {
-                oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE), silent = TRUE)
-            }
-        }
-        ############################################
-        file.remove(temp_R_data)
-        file.remove(temp_R_file)
-        if(inherits(oe, "try-error")) {
-            stop(oe)
-        }
+        dev.off2()
+        
+        # ############################################
+        # ## make the heatmap body in a another process
+        # temp_R_data = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".RData"))
+        # temp_R_file = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".R"))
+        # if(Sys.info()["sysname"] == "Windows") {
+        #     temp_image = gsub("\\\\", "/", temp_image)
+        #     temp_R_data = gsub("\\\\", "/", temp_R_data)
+        #     temp_R_file = gsub("\\\\", "/", temp_R_file)
+        # }
+        # save(device_fun, device_info, temp_image, heatmap_width, raster_quality, heatmap_height, raster_device_param,
+        #     gp, x, expand_index, nc, nr, col_matrix, row_order, column_order, y,
+        #     file = temp_R_data)
+        # R_cmd = qq("
+        # library(@{device_info[1]})
+        # library(grid)
+        # load('@{temp_R_data}')
+        # do.call('device_fun', c(list(filename = temp_image, width = max(c(heatmap_width*raster_quality, 1)), height = max(c(heatmap_height*raster_quality, 1))), raster_device_param))
+        # grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
+        # dev.off()
+        # q(save = 'no')
+        # ", code.pattern = "@\\{CODE\\}")
+        # writeLines(R_cmd, con = temp_R_file)
+        # if(grepl(" ", temp_R_file)) {
+        #     if(is_windows()) {
+        #         oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE), silent = TRUE)
+        #     } else {
+        #         oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE), silent = TRUE)
+        #     }
+        # } else {
+        #     if(is_windows()) {
+        #         oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE), silent = TRUE)
+        #     } else {
+        #         oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE), silent = TRUE)
+        #     }
+        # }
+        # ############################################
+        # file.remove(temp_R_data)
+        # file.remove(temp_R_file)
+        # if(inherits(oe, "try-error")) {
+        #     stop(oe)
+        # }
         image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
         image = as.raster(image)
         grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
@@ -1457,6 +1728,10 @@ setMethod(f = "draw_heatmap_body",
                 }
             }
         }
+    }
+
+    if(!identical(border, FALSE)) {
+        grid.rect(gp = gpar(fill = "transparent", col = border))
     }
 
     upViewport()
@@ -1502,7 +1777,7 @@ R_binary = function() {
 setMethod(f = "draw_dend",
     signature = "Heatmap",
     definition = function(object,
-    which = c("row", "column"), k = 1, max_height = NULL, ...) {
+    which = c("row", "column"), k = 1, max_height, ...) {
 
     which = match.arg(which)[1]
     
@@ -1510,39 +1785,55 @@ setMethod(f = "draw_dend",
         "row" = object@row_dend_param$side,
         "column" = object@column_dend_param$side)
     
-    hc = switch(which,
+    dend = switch(which,
         "row" = object@row_dend_list[[k]],
-        "column" = object@column_dend)
+        "column" = object@column_dend_list[[k]])
     
     gp = switch(which,
         "row" = object@row_dend_param$gp,
         "column" = object@column_dend_param$gp)
 
-    if(length(hc) == 0) {
+    if(length(dend) == 0) {
         return(invisible(NULL))
     }
 
-    if(is.null(hc)) return(invisible(NULL))
+    if(is.null(dend)) return(invisible(NULL))
 
-    dend = as.dendrogram(hc)
-    n = length(labels(dend))
     if(nobs(dend) <= 1) {
         return(invisible(NULL))
     }
 
+    if(missing(max_height)) max_height = dend_heights(dend)
+
     dend_padding = unit(1, "mm")
-    pushViewport(viewport(name = paste(object@name, which, "cluster", k, sep = "_"), ...))
+    if(side %in% c("left", "right")) {
+        xscale = c(0, max_height)
+        yscale = c(0, nobs(dend))
+        width = unit(1, "npc") - dend_padding*2
+        height = unit(1, "npc")
+        name = paste(object@name, "dend_row", k, sep = "_")
+    } else {
+        xscale = c(0, nobs(dend))
+        yscale = c(0, max_height)
+        height = unit(1, "npc") - dend_padding*2
+        width = unit(1, "npc")
+        name = paste(object@name, "dend_column", k, sep = "_")
+    }
+
+    pushViewport(viewport(...))
+    pushViewport(viewport(name = name, xscale = xscale, yscale = yscale, width = width, height = height))
 
     if(side == "left") {
-        grid.dendrogram(dend, name = paste(object@name, "dend_row", k, sep = "_"), max_height = max_height, facing = "right", order = "reverse", x = dend_padding, width = unit(1, "npc") - dend_padding*2, just = "left")
+        grid.dendrogram(dend, gp = gp, facing = "right", order = "reverse")
     } else if(side == "right") {
-        grid.dendrogram(dend, name = paste(object@name, "dend_row", k, sep = "_"), max_height = max_height, facing = "left", order = "reverse", x = unit(0, "mm"), width = unit(1, "npc") - dend_padding*2, just = "left")
+        grid.dendrogram(dend, gp = gp, facing = "left", order = "reverse")
     } else if(side == "top") {
-        grid.dendrogram(dend, name = paste(object@name, "dend_column", sep = "_"), max_height = max_height, facing = "bottom", y = dend_padding, height = unit(1, "npc") - dend_padding*2, just = "bottom")
+        grid.dendrogram(dend, gp = gp, facing = "bottom")
     } else if(side == "bottom") {
-        grid.dendrogram(dend, name = paste(object@name, "dend_column", sep = "_"), max_height = max_height, facing = "top", y = dend_padding, height = unit(1, "npc") - dend_padding*2, just = "bottom")
+        grid.dendrogram(dend, gp = gp, facing = "top")
     } 
 
+    upViewport()
     upViewport()
 
 })
@@ -1571,54 +1862,20 @@ setMethod(f = "draw_dend",
 setMethod(f = "draw_dimnames",
     signature = "Heatmap",
     definition = function(object,
-    which = c("row", "column"), k = 1, dimname_padding = unit(0, "mm"), ...) {
+    which = c("row", "column"), k = 1, ...) {
 
     which = match.arg(which)[1]
 
-    side = switch(which,
-        "row" = object@row_names_param$side,
-        "column" = object@column_names_param$side)
+    anno = switch(which,
+        "row" = object@row_names_param$anno,
+        "column" = object@column_names_param$anno)
 
-    nm = switch(which,
-        "row" = rownames(object@matrix)[ object@row_order_list[[k]] ],
-        "column" = colnames(object@matrix)[ object@column_order ]
-    )
+    ind = switch(which,
+        "row" = object@row_order_list[[k]],
+        "column" = object@column_order_list[[k]])
     
-    gp = switch(which,
-        "row" = subset_gp(object@row_names_param$gp, object@row_order_list[[k]]),
-        "column" = subset_gp(object@column_names_param$gp, object@column_order)
-    )
-
-    if(is.null(nm)) {
-        return(invisible(NULL))
-    }
-
-    n = length(nm)
-    
-    if(which == "row") {
-        pushViewport(viewport(name = paste(object@name, "row_names", k, sep = "_"), ...))
-        if(side == "left") {
-            x = unit(1, "npc") - dimname_padding
-            just = c("right", "center")
-        } else {
-            x = unit(0, "npc") + dimname_padding
-            just = c("left", "center")
-        }
-        y = (rev(seq_len(n)) - 0.5) / n
-        grid.text(nm, x, y, just = just, gp = gp)
-    } else {
-        pushViewport(viewport(name = paste(object@name, "column_names", sep = "_"), ...))
-        x = (seq_len(n) - 0.5) / n
-        if(side == "top") {
-            y = unit(0, "npc") + dimname_padding
-            just = c("left", "center")
-        } else {
-            y = unit(1, "npc") - dimname_padding
-            just = c("right", "center")
-        }
-        grid.text(nm, x, y, rot = 90, just = just, gp = gp)
-    }
-
+    pushViewport(viewport(name = paste(object@name, which, "names", k, sep = "_"), ...))
+    draw(anno, index = ind)
     upViewport()
 })
 
@@ -1663,33 +1920,37 @@ setMethod(f = "draw_title",
     
     title = switch(which,
         "row" = object@row_title[k],
-        "column" = object@column_title)
+        "column" = object@column_title[k])
 
     rot = switch(which,
-        "row" = object@row_title_rot,
-        "column" = object@column_title_rot)
+        "row" = object@row_title_param$rot,
+        "column" = object@column_title_param$rot)
 
     just = switch(which, 
-        "row" = object@row_title_just,
-        "column" = object@column_title_just)
-
-    title_padding = unit(2.5, "mm")
+        "row" = object@row_title_param$just,
+        "column" = object@column_title_param$just)
 
     if(which == "row") {
         
         pushViewport(viewport(name = paste(object@name, "row_title", k, sep = "_"), clip = FALSE, ...))
+        if("fill" %in% names(gp)) {
+            grid.rect(gp = gpar(fill = gp$fill))
+        }
         if(side == "left") {
-            grid.text(title, x = unit(1, "npc") - title_padding, rot = rot, just = just, gp = gp)
+            grid.text(title, x = unit(1, "npc") - TITLE_PADDING, rot = rot, just = just, gp = gp)
         } else {
-            grid.text(title, x = title_padding, rot = rot, just = just, gp = gp)
+            grid.text(title, x = TITLE_PADDING, rot = rot, just = just, gp = gp)
         }
         upViewport()
     } else {
-        pushViewport(viewport(name = paste(object@name, "column_title", sep = "_"), clip = FALSE, ...))
+        pushViewport(viewport(name = paste(object@name, "column_title", k, sep = "_"), clip = FALSE, ...))
+        if("fill" %in% names(gp)) {
+            grid.rect(gp = gpar(fill = gp$fill))
+        }
         if(side == "top") {
-            grid.text(title, y = title_padding, rot = rot, just = just, gp = gp)
+            grid.text(title, y = TITLE_PADDING, rot = rot, just = just, gp = gp)
         } else {
-            grid.text(title, y = unit(1, "npc") - title_padding, rot = rot, just = just, gp = gp)
+            grid.text(title, y = unit(1, "npc") - TITLE_PADDING, rot = rot, just = just, gp = gp)
         }
         upViewport()
     }
@@ -1718,7 +1979,7 @@ setMethod(f = "draw_title",
 #
 setMethod(f = "draw_annotation",
     signature = "Heatmap",
-    definition = function(object, which = c("top", "bottom")) {
+    definition = function(object, which = c("top", "bottom"), k = 1, ...) {
     
     which = match.arg(which)[1]
 
@@ -1731,12 +1992,12 @@ setMethod(f = "draw_annotation",
         return(invisible(NULL))
     }
 
-    padding = unit(1, "mm")
-    if(which == "top") {
-        draw(annotation, index = object@column_order, y = padding, height = unit(1, "npc") - padding, just = "bottom")
-    } else {
-        draw(annotation, index = object@column_order, y = unit(0, "mm"), height = unit(1, "npc") - padding, just = "bottom", align_to = "top")
-    }
+    index = object@column_order_list[[k]]
+    n = length(object@column_order_list)
+
+    pushViewport(viewport(...))
+    draw(annotation, index = index, k = k, n = n)
+    upViewport()
 })
 
 # == title
@@ -1760,29 +2021,26 @@ setMethod(f = "component_width",
     signature = "Heatmap",
     definition = function(object, k = 1:7) {
 
+    # this function is used for grid.layout, so null unit is allowed
     .single_unit = function(k) {
         if(k == 1) {
-            object@layout$layout_row_title_left_width
+            object@layout$layout_size$row_title_left_width
         } else if(k == 2) {
-            object@layout$layout_row_dend_left_width
+            object@layout$layout_size$row_dend_left_width
         } else if(k == 3) {
-            object@layout$layout_row_names_left_width
+            object@layout$layout_size$row_names_left_width
         } else if(k == 4) {
             if(ncol(object@matrix) == 0) {
                 unit(0, "mm")
             } else {
-                if(!is.unit(object@heatmap_param$width)) {
-                    unit(1, "null")
-                } else {
-                    object@heatmap_param$width
-                }
+                unit(1, "null")
             }
         } else if(k == 5) {
-            object@layout$layout_row_names_right_width
+            object@layout$layout_size$row_names_right_width
         } else if(k == 6) {
-            object@layout$layout_row_dend_right_width
+            object@layout$layout_size$row_dend_right_width
         } else if(k == 7) {
-            object@layout$layout_row_title_right_width
+            object@layout$layout_size$row_title_right_width
         } else {
             stop("wrong 'k'")
         }
@@ -1812,25 +2070,26 @@ setMethod(f = "component_height",
     signature = "Heatmap",
     definition = function(object, k = 1:9) {
 
+    # this function is used for grid.layout, so null unit is allowed
     .single_unit = function(k) {
         if(k == 1) {
-            object@layout$layout_column_title_top_height
+            object@layout$layout_size$column_title_top_height
         } else if(k == 2) {
-            object@layout$layout_column_dend_top_height
-        } else if(k == 3) {
-            object@layout$layout_column_anno_top_height
+            object@layout$layout_size$column_dend_top_height
         } else if(k == 4) {
-            object@layout$layout_column_names_top_height
+            object@layout$layout_size$column_anno_top_height
+        } else if(k == 3) {
+            object@layout$layout_size$column_names_top_height
         } else if(k == 5) {
             unit(1, "null")
-        } else if(k == 6) {
-            object@layout$layout_column_names_bottom_height
         } else if(k == 7) {
-            object@layout$layout_column_anno_bottom_height
+            object@layout$layout_size$column_names_bottom_height
+        } else if(k == 6) {
+            object@layout$layout_size$column_anno_bottom_height
         } else if(k == 8) {
-            object@layout$layout_column_dend_bottom_height
+            object@layout$layout_size$column_dend_bottom_height
         } else if(k == 9) {
-            object@layout$layout_column_title_bottom_height
+            object@layout$layout_size$column_title_bottom_height
         } else {
             stop("wrong 'k'")
         }
@@ -1838,6 +2097,18 @@ setMethod(f = "component_height",
 
     do.call("unit.c", lapply(k, function(i) .single_unit(i)))
 })
+
+has_component = function(object, which) {
+    m = object@layout$layout_index
+    switch(which,
+        "top_column_dend" = any(m[, 1] == 2 & m[,2] == 4),
+        "top_column_names" = any(m[, 1] == 3 & m[,2] == 4),
+        "top_annotation" = any(m[, 1] == 4 & m[,2] == 4),
+        "bottom_annotation" = any(m[, 1] == 6 & m[,2] == 4),
+        "bottom_column_names" = any(m[, 1] == 7 & m[,2] == 4),
+        "bottom_column_dend" = any(m[, 1] == 8 & m[,2] == 4)
+    )
+}
 
 # == title
 # Set height of each heatmap component
@@ -1862,21 +2133,21 @@ setMethod(f = "set_component_height",
     definition = function(object, k, v) {
 
     if(k == 1) {
-        object@layout$layout_column_title_top_height = v
+        object@layout$layout_size$column_title_top_height = v
     } else if(k == 2) {
-        object@layout$layout_column_dend_top_height = v
-    } else if(k == 3) {
-        object@layout$layout_column_anno_top_height = v
+        object@layout$layout_size$column_dend_top_height = v
     } else if(k == 4) {
-        object@layout$layout_column_names_top_height = v
-    } else if(k == 6) {
-        object@layout$layout_column_names_bottom_height = v
+        object@layout$layout_size$column_anno_top_height = v
+    } else if(k == 3) {
+        object@layout$layout_size$column_names_top_height = v
     } else if(k == 7) {
-        object@layout$layout_column_anno_bottom_height = v
+        object@layout$layout_size$column_names_bottom_height = v
+    } else if(k == 6) {
+        object@layout$layout_size$column_anno_bottom_height = v
     } else if(k == 8) {
-        object@layout$layout_column_dend_bottom_height = v
+        object@layout$layout_size$column_dend_bottom_height = v
     } else if(k == 9) {
-        object@layout$layout_column_title_bottom_height = v
+        object@layout$layout_size$column_title_bottom_height = v
     } else {
         stop("wrong 'k'")
     }
@@ -1910,7 +2181,19 @@ setMethod(f = "draw",
     if(test) {
         object = prepare(object)
         grid.newpage()
+        if(is_abs_unit(object@heatmap_param$width)) {
+            width = object@heatmap_param$width
+        } else {
+            width = 0.8
+        }
+        if(is_abs_unit(object@heatmap_param$height)) {
+            height = object@heatmap_param$height
+        } else {
+            height = 0.8
+        }
+        pushViewport(viewport(width = width, height = height))
         draw(object, internal = TRUE)
+        upViewport()
     } else {
         if(internal) {  # a heatmap without legend
             layout = grid.layout(nrow = 9, ncol = 7, widths = component_width(object, 1:7), 
@@ -1919,7 +2202,7 @@ setMethod(f = "draw",
             ht_layout_index = object@layout$layout_index
             ht_graphic_fun_list = object@layout$graphic_fun_list
             for(j in seq_len(nrow(ht_layout_index))) {
-                if(ht_layout_index[j, 1] == 5 && ht_layout_index[j, 2] == 4) {
+                if(5 %in% ht_layout_index[j, 1] == 5 && 4 %in% ht_layout_index[j, 2]) {
                     pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2], name = paste(object@name, "heatmap_body_wrap", sep = "_")))
                 } else {
                     pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
@@ -1930,7 +2213,7 @@ setMethod(f = "draw",
             upViewport()
         } else {
             if(ncol(object@matrix) == 0) {
-                stop("Single heatmap should contains a matrix with at least one column.\nZero-column matrix can only be appended to the heatmap list.")
+                stop("Single heatmap should contains a matrix with at least one column. Zero-column matrix can only be appended to the heatmap list.")
             }
             ht_list = new("HeatmapList")
             ht_list = add_heatmap(ht_list, object)
@@ -1968,7 +2251,7 @@ setMethod(f = "prepare",
     if(process_rows) {
         object = make_row_cluster(object)
     }
-    if(object@column_dend_param$cluster) object = make_column_cluster(object)
+    object = make_column_cluster(object)
 
     object = make_layout(object)
     return(object)

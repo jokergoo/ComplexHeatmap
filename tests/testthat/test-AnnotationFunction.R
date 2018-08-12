@@ -126,6 +126,14 @@ draw(anno, test = "with rotations")
 anno = anno_text(month.name, location = 1, rot = 45, just = "right", gp = gpar(fontsize = 1:12+4))
 draw(anno, test = "with rotations")
 
+devAskNewPage(ask = TRUE)
+for(rot in seq(0, 360, by = 45)) {
+	anno = anno_text(month.name, which = "row", location = 0, rot = rot, 
+		just = "left")
+	draw(anno, test = paste0("rot =", rot))
+}
+
+
 
 ##### test anno_barplot #####
 anno = anno_barplot(1:10)

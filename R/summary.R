@@ -11,7 +11,3 @@ summary.HeatmapList = function(object, ...) {
 summary_single_heatmap = function(ht) {
 	cat("name:", ht@name, "\n")
 }
-
-sumamry_row_annotation = function(ha) {
-
-}

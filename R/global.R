@@ -110,8 +110,23 @@ ht_global_opt = setGlobalOptions(
 		.value = FALSE,
 		.class = "logical",
 		.length = 1
-	)
+	),
+	verbose = list(
+		.value = FALSE,
+		.class = "logical",
+		.filter = function(x) {
+			if(is.null(x)) {
+				FALSE
+			} else if(is.na(x)) {
+				FALSE
+			}
+		},
+		.length = 1)
 )
 
 .ENV = new.env()
 .ENV$current_annotation_which = NULL
+
+DENDROGRAM_PADDING = unit(1, "mm")
+DIMNAME_PADDING = unit(1, "mm")
+TITLE_PADDING = unit(2.5, "mm")

@@ -25,7 +25,7 @@ setGeneric('prepare', function(object, ...) standardGeneric('prepare'))
 
 setGeneric('draw_annotation', function(object, ...) standardGeneric('draw_annotation'))
 
-setGeneric('get_color_mapping_param_list', function(object, ...) standardGeneric('get_color_mapping_param_list'))
+setGeneric('get_legend_param_list', function(object, ...) standardGeneric('get_legend_param_list'))
 
 setGeneric('draw_dimnames', function(object, ...) standardGeneric('draw_dimnames'))
 
@@ -55,4 +55,5 @@ setGeneric('row_dend', function(object, ...) standardGeneric('row_dend'))
 
 setGeneric('copy_all', function(object, ...) standardGeneric('copy_all'))
 setGeneric('resize', function(object, ...) standardGeneric('resize'))
+setGeneric('adjust_heatmap_list', function(object, ...) standardGeneric('adjust_heatmap_list'))
 

@@ -631,7 +631,7 @@ setMethod(f = "get_color_mapping_list",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-setMethod(f = "get_color_mapping_param_list",
+setMethod(f = "get_legend_param_list",
 	signature = "HeatmapAnnotation",
 	definition = function(object) {
 

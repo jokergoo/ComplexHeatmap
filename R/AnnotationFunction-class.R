@@ -223,10 +223,10 @@ setMethod(f = "show",
 	cat("  items:", ifelse(object@n == 0, "unknown", object@n), "\n")
 	cat("  width:", as.character(object@width), "\n")
 	cat("  height:", as.character(object@height), "\n")
-	var_imported = names(anno@var_env)
+	var_imported = names(object@var_env)
 	if(length(var_imported)) {
 		cat("  imported variable:", paste(var_imported, collapse = ", "), "\n")
-		var_subsetable = names(anno@subset_rule)
+		var_subsetable = names(object@subset_rule)
 		if(length(var_subsetable)) {
 			cat("  subsetable variable:", paste(var_subsetable, collapse = ", "), "\n")
 		}
@@ -442,19 +442,19 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 			if(!requireNamespace("png")) {
 				stop("Need png package to read png images.")
 			}
-			image_list[[i]] = getFromNamespace("readPNG", ns = "png")(image[i])
+			image_list[[i]] = png::readPNG(image[i])
 			image_class[i] = "raster"
 		} else if(image_type[i] %in% c("jpeg", "jpg")) {
 			if(!requireNamespace("jpeg")) {
 				stop("Need jpeg package to read jpeg/jpg images.")
 			}
-			image_list[[i]] = getFromNamespace("readJPEG", ns = "jpeg")(image[i])
+			image_list[[i]] = jpeg::readJPEG(image[i])
 			image_class[i] = "raster"
 		} else if(image_type[i] == "tiff") {
 			if(!requireNamespace("tiff")) {
 				stop("Need tiff package to read tiff images.")
 			}
-			image_list[[i]] = getFromNamespace("readTIFF", ns = "tiff")(image[i])
+			image_list[[i]] = tiff::readTIFF(image[i])
 			image_class[i] = "raster"
 		} else if(image_type[i] %in% c("pdf", "eps")) {
 			if(!requireNamespace("grImport")) {
@@ -462,7 +462,7 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 			}
 			temp_file = tempfile()
 			getFromNamespace("PostScriptTrace", ns = "grImport")(image[[i]], temp_file)
-			image_list[[i]] = getFromNamespace("readPicture", ns = "grImport")(temp_file)
+			image_list[[i]] = grImport::readPicture(temp_file)
 			file.remove(temp_file)
 			image_class[i] = "grImport::Picture"
 		} else if(image_type[i] == "svg") {
@@ -473,8 +473,8 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 				stop("Need rsvg package to convert svg images.")
 			}
 			temp_file = tempfile()
-			getFromNamespace("rsvg_svg", ns = "rsvg")(image[i], temp_file)
-			image_list[[i]] = getFromNamespace("readPicture", ns = "grImport2")(temp_file)
+			rsvg::rsvg_svg(image[i], temp_file)
+			image_list[[i]] = grImport2::readPicture(temp_file)
 			file.remove(temp_file)
 			image_class[i] = "grImport2::Picture"
 		}
@@ -779,6 +779,147 @@ update_anno_extend = function(anno, axis_grob, axis_param) {
 		}
 	}
 	return(extended)
+}
+
+anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), 
+	add_points = TRUE, pch = 16, size = unit(2, "mm"), pt_gp = gpar(), ylim = NULL, 
+	extend = 0.05, axis = TRUE, axis_param = default_axis_param(which),
+	width = NULL, height = NULL) {
+
+	if(is.null(.ENV$current_annotation_which)) {
+		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
+	}
+
+	if(is.data.frame(x)) x = as.matrix(x)
+	if(is.matrix(x)) {
+		if(ncol(x) == 1) {
+			x = x[, 1]
+		}
+	}
+	input_is_matrix = is.matrix(x)
+
+	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
+
+	if(is.matrix(x)) {
+		n = nrow(x)
+		nr = n
+		nc = ncol(x)
+	} else {
+		n = length(x)
+		nr = n
+		nc = 1
+	}
+
+	if(is.atomic(x)) {
+		gp = recycle_gp(gp, 1)
+		pt_gp = recycle_gp(pt_gp, n)
+		if(length(pch) == 1) pch = rep(pch, n)
+		if(length(size) == 1) size = rep(size, n)
+	} else if(input_is_matrix) {
+		gp = recycle_gp(gp, nc)
+		pt_gp = recycle_gp(pt_gp, nc)
+		if(length(pch) == 1) pch = rep(pch, nc)
+		if(length(size) == 1) size = rep(size, nc)
+	}
+	
+	if(is.null(ylim)) {
+		data_scale = range(x, na.rm = TRUE)
+	} else {
+		data_scale = ylim
+	}
+	data_scale = data_scale + c(-extend, extend)*(data_scale[2] - data_scale[1])
+
+	value = x
+
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
+
+	row_fun = function(index) {
+		n = length(index)
+
+		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
+		if(is.matrix(value)) {
+			for(i in seq_len(ncol(value))) {
+				grid.lines(value[index, i], n - seq_along(index) + 1, gp = subset_gp(gp, i), 
+					default.units = "native")
+				if(add_points) {
+					grid.points(value[index, i], n - seq_along(index) + 1, gp = subset_gp(pt_gp, i), 
+						default.units = "native", pch = pch[i], size = size[i])
+				}
+			}
+		} else {
+			grid.lines(value[index, i], n - seq_along(index) + 1, gp = gp, 
+				default.units = "native")
+			if(add_points) {
+				grid.points(value[index], n - seq_along(index) + 1, gp = gp, default.units = "native", 
+					pch = pch[index], size = size[index])
+			}
+		}
+		if(axis) grid.draw(axis_grob)
+		if(border) grid.rect(gp = gpar(fill = "transparent"))
+		popViewport()
+	}
+
+	column_fun = function(index) {
+		n = length(index)
+		
+		pushViewport(viewport(yscale = data_scale, xscale = c(0.5, n+0.5)))
+		if(is.matrix(value)) {
+			for(i in seq_len(ncol(value))) {
+				grid.lines(seq_along(index), value[index, i], gp = subset_gp(gp, i), 
+					default.units = "native")
+				if(add_points) {
+					grid.points(seq_along(index), value[index, i], gp = subset_gp(pt_gp, i), 
+						default.units = "native", pch = pch[i], size = size[i])
+				}
+			}
+		} else {
+			grid.lines(seq_along(index), value[index], gp = gp, default.units = "native")
+			if(add_points) {
+				grid.points(seq_along(index), value[index], gp = pt_gp, default.units = "native", 
+					pch = pch[index], size = size[index])
+			}
+		}
+		if(axis) grid.draw(axis_grob)
+		if(border) grid.rect(gp = gpar(fill = "transparent"))
+		popViewport()
+	}
+
+	if(which == "row") {
+		fun = row_fun
+	} else if(which == "column") {
+		fun = column_fun
+	}
+
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_points",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		data_scale = data_scale,
+		var_import = list(value, gp, border, pch, size, pt_gp, axis, axis_param, axis_grob, data_scale, add_points)
+	)
+
+	anno@subset_rule$gp = subset_vector
+	if(input_is_matrix) {
+		anno@subset_rule$value = subset_matrix_by_row
+	} else {
+		anno@subset_rule$value = subset_vector
+		anno@subset_rule$gp = subset_gp
+		anno@subset_rule$pt_gp = subset_gp
+		anno@subset_rule$size = subset_vector
+		anno@subset_rule$pch = subset_vector
+	}
+
+	anno@subsetable = TRUE
+
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+		
+	return(anno) 
 }
 
 # == title
@@ -1526,7 +1667,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 		unit(ifelse(which == "column", 1, 0), "npc")
 	}
 
-	rot = rot[1]
+	rot = rot[1] %% 360
 	just = just[1]
 	if(!missing(offset)) {
 		warning("`offset` is deprecated, use `location` instead.")
