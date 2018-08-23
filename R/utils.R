@@ -383,16 +383,20 @@ add_vp_name = function(vpname) {
 }
 
 upViewport = function(...) {
-    grid.rect(gp = gpar(fill = "transparent", col = "black", lty = 3))
-    vpname = current.viewport()$name
-    add_vp_name(vpname)
+    if(ht_global_opt$show_vp_border) {
+        grid.rect(gp = gpar(fill = "transparent", col = "black", lty = 3))
+        vpname = current.viewport()$name
+        add_vp_name(vpname)
+    }
     grid::upViewport(...)
 }
 
 popViewport = function(...) {
-    grid.rect(gp = gpar(fill = "transparent", col = "black", lty = 3))
-    vpname = current.viewport()$name
-    add_vp_name(vpname)
+    if(ht_global_opt$show_vp_border) {
+        grid.rect(gp = gpar(fill = "transparent", col = "black", lty = 3))
+        vpname = current.viewport()$name
+        add_vp_name(vpname)
+    }
     grid::popViewport(...)
 }
 
@@ -404,3 +408,65 @@ dev.off2 = function () {
         dev.set(i1)
     dev.off(i2)
 }
+
+unit.c = function(...) {
+    lt = list(...)
+    lt = lt[!sapply(lt, is.null)]
+    do.call(grid::unit.c, lt)
+}
+
+cluster_within_group = function(mat, factor, only_order = FALSE) {
+
+    if (!is.factor(factor)) {
+        factor = factor(factor, levels = unique(factor))
+    }
+
+    dend_list = list()
+    order_list = list()
+    for(le in unique(levels(factor))) {
+        m = mat[, factor == le, drop = FALSE]
+        if (ncol(m) == 1) {
+            order_list[[le]] = which(factor == le)
+            dend_list[[le]] = structure(which(factor == le), class = "dendrogram", leaf = TRUE,
+                height = 0, label = 1, members = 1)
+        } else {
+            hc1 = hclust(dist(t(m)))
+            dend_list[[le]] = as.dendrogram(hc1)
+            order_list[[le]] = which(factor == le)[order.dendrogram(dend_list[[le]])]
+            order.dendrogram(dend_list[[le]]) = order_list[[le]]
+        }
+    }
+    if(only_order) {
+        return(unlist(order_list))
+    } else {
+        parent = as.dendrogram(hclust(dist(t(sapply(order_list, function(x) rowMeans(mat[, x, drop = FALSE]))))))
+        dend_list = lapply(dend_list, function(dend) dendrapply(dend, function(node) {
+            attr(node, "height") = 0
+            node
+        }))
+        dend = merge(parent, dend_list, reorder = TRUE)
+        return(dend)
+    }
+}
+
+
+normalize_graphic_param_to_mat = function(x, nc, nr, name) {
+    if(is.matrix(x)) {
+        if(nrow(x) == nr && ncol(x) == nc) {
+            return(x)
+        } else {
+            stop(paste0(name, "needs to be a matrix with ", nc, " columns and ", nr, " rows."))
+        }
+    } else {
+        if(length(x) == nc) {
+            return(matrix(rep(x, each = nr), nc = nc))
+        } else if(length(x) == nr) {
+            return(matrix(rep(x, times = nc), nc = nc))
+        } else if(length(x) == 1) {
+            return(matrix(x, nc = nc, nr = nr))
+        } else {
+            stop(paste0("Since ", name, " is a vector, it should have length of ", nc, " or ", nr, "."))
+        }
+    }
+}
+

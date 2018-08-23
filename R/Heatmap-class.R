@@ -274,10 +274,8 @@ Heatmap = function(matrix, col, name,
     column_names_gp = gpar(fontsize = 12),
     column_names_rot = 90,
 
-    top_annotation = new("HeatmapAnnotation"),
-    top_annotation_height = top_annotation@size,
-    bottom_annotation = new("HeatmapAnnotation"),
-    bottom_annotation_height = bottom_annotation@size,
+    top_annotation = NULL,
+    bottom_annotation = NULL,
 
     km = 1, 
     split = NULL, 
@@ -579,7 +577,10 @@ Heatmap = function(matrix, col, name,
     if(length(column_labels)) {
         column_names_anno = anno_text(column_labels, which = "column", gp = column_names_gp, rot = column_names_rot,
             location = ifelse(.Object@column_names_param$side == "top", 0, 1), 
-            just = ifelse(.Object@column_names_param$side == "top", "left", "right"))
+            just = ifelse(.Object@column_names_param$side == "top", 
+                     ifelse(.Object@column_names_param$rot >= 0, "left", "right"),
+                     ifelse(.Object@column_names_param$rot >= 0, "right", "left")
+                    ))
         .Object@column_names_param$anno = column_names_anno
     }
 
@@ -662,12 +663,18 @@ Heatmap = function(matrix, col, name,
     if(is.null(top_annotation)) {
         .Object@top_annotation_param$height = unit(0, "mm")    
     } else {
-        .Object@top_annotation_param$height = top_annotation_height + unit(1, "mm")  # append the gap
+        .Object@top_annotation_param$height = height(bottom_annotation) + COLUMN_ANNO_PADDING*2  # append the gap
     }
     if(!is.null(top_annotation)) {
-        if(length(top_annotation@anno_list) > 0) {
+        if(length(top_annotation) > 0) {
             if(!.Object@top_annotation@which == "column") {
                 stop("`which` in `top_annotation` should only be `column`.")
+            }
+        }
+        nb = nobs(top_annotation)
+        if(!is.na(nb)) {
+            if(nb != ncol(.Object@matrix)) {
+                stop("number of items in top anntotion should be same as number of columns of the matrix.")
             }
         }
     }
@@ -676,12 +683,18 @@ Heatmap = function(matrix, col, name,
     if(is.null(bottom_annotation)) {
         .Object@bottom_annotation_param$height = unit(0, "mm")
     } else {
-        .Object@bottom_annotation_param$height = bottom_annotation_height + unit(1, "mm")  # append the gap
+        .Object@bottom_annotation_param$height = height(bottom_annotation) + COLUMN_ANNO_PADDING*2  # append the gap
     }
     if(!is.null(bottom_annotation)) {
-        if(length(bottom_annotation@anno_list) > 0) {
+        if(length(bottom_annotation) > 0) {
             if(!.Object@bottom_annotation@which == "column") {
                 stop("`which` in `bottom_annotation` should only be `column`.")
+            }
+        }
+        nb = nobs(bottom_annotation)
+        if(!is.na(nb)) {
+            if(nb != ncol(.Object@matrix)) {
+                stop("number of items in bottom anntotion should be same as number of columns of the matrix.")
             }
         }
     }
@@ -884,50 +897,52 @@ make_cluster = function(object, which = c("row", "column")) {
             slot(object, paste0(which, "_dend_list")) = dend_list
             slot(object, paste0(which, "_dend_param")) = dend_param
             slot(object, paste0(which, "_dend_slice")) = dend_slice
-            split = data.frame(rep(seq_along(order_list), times = sapply(order_list, length)))
-            object@matrix_param[[ paste0(which, "_split") ]] = split
 
-            # adjust row_names_param$gp if the length of some elements is the same as row slices
-            for(i in seq_along(names_param$gp)) {
-                if(length(names_param$gp[[i]]) == length(order_list)) {
-                    gp_temp = NULL
-                    for(j in seq_along(order_list)) {
-                        gp_temp[ order_list[[j]] ] = names_param$gp[[i]][j]
-                    }
-                    names_param$gp[[i]] = gp_temp
-                }
-            }
-            if(!is.null(names_param$anno)) {
-                names_param$anno@var_env$gp = names_param$gp
-            }
-            slot(object, paste0(which, "_names_param")) = names_param
-
-            n_slice = length(order_list)
-            if(length(gap) == 1) {
-                gap = rep(gap, n_slice)
-            } else if(length(gap) == n_slice - 1) {
-                gap = unit.c(gap, unit(0, "mm"))
-            } else if(length(gap) != n_slice) {
-                stop(qq("Length of `gap` should be 1 or number of @{which} slices."))
-            }
-            object@matrix_param[[ paste0(which, "_gap") ]] = gap# adjust title
-            
-            title = slot(object, paste0(which, "_title"))
             if(!is.null(split)) {
-                if(length(title) == 0 && !is.null(title)) { ## default title
-                    title = apply(unique(split), 1, paste, collapse = ",")
-                } else if(length(title) == 1) {
-                    if(grepl("%s", title)) {
-                        title = apply(unique(split), 1, function(x) {
-                            lt = lapply(x, function(x) x)
-                            lt$fmt = title
-                            do.call(sprintf, lt)
-                        })
+                split = data.frame(rep(seq_along(order_list), times = sapply(order_list, length)))
+                object@matrix_param[[ paste0(which, "_split") ]] = split
+
+                # adjust row_names_param$gp if the length of some elements is the same as row slices
+                for(i in seq_along(names_param$gp)) {
+                    if(length(names_param$gp[[i]]) == length(order_list)) {
+                        gp_temp = NULL
+                        for(j in seq_along(order_list)) {
+                            gp_temp[ order_list[[j]] ] = names_param$gp[[i]][j]
+                        }
+                        names_param$gp[[i]] = gp_temp
                     }
                 }
-            }
-            slot(object, paste0(which, "_title")) = title
+                if(!is.null(names_param$anno)) {
+                    names_param$anno@var_env$gp = names_param$gp
+                }
+                slot(object, paste0(which, "_names_param")) = names_param
 
+                n_slice = length(order_list)
+                if(length(gap) == 1) {
+                    gap = rep(gap, n_slice)
+                } else if(length(gap) == n_slice - 1) {
+                    gap = unit.c(gap, unit(0, "mm"))
+                } else if(length(gap) != n_slice) {
+                    stop(qq("Length of `gap` should be 1 or number of @{which} slices."))
+                }
+                object@matrix_param[[ paste0(which, "_gap") ]] = gap# adjust title
+                
+                title = slot(object, paste0(which, "_title"))
+                if(!is.null(split)) {
+                    if(length(title) == 0 && !is.null(title)) { ## default title
+                        title = apply(unique(split), 1, paste, collapse = ",")
+                    } else if(length(title) == 1) {
+                        if(grepl("%s", title)) {
+                            title = apply(unique(split), 1, function(x) {
+                                lt = lapply(x, function(x) x)
+                                lt$fmt = title
+                                do.call(sprintf, lt)
+                            })
+                        }
+                    }
+                }
+                slot(object, paste0(which, "_title")) = title
+            }
             return(object)
         }
 
@@ -997,7 +1012,7 @@ make_cluster = function(object, which = c("row", "column")) {
             }
         }
 
-        split_name = apply(as.matrix(split), 1, paste, collapse = "\n")
+        split_name = apply(as.matrix(split), 1, paste, collapse = ",")
 
         order2 = do.call("order", split)
         level = unique(split_name[order2])
@@ -1010,7 +1025,7 @@ make_cluster = function(object, which = c("row", "column")) {
 
     # make dend in each slice
     if(cluster) {
-        if(verbose) qqcat("apply clustering on each @{cluster} slice (@{length(order_list)} slices)\n")
+        if(verbose) qqcat("apply clustering on each slice (@{length(order_list)} slices)\n")
         dend_list = rep(list(NULL), length(order_list))
         for(i in seq_along(order_list)) {
             if(which == "row") {
@@ -1153,10 +1168,10 @@ make_cluster = function(object, which = c("row", "column")) {
     title = slot(object, paste0(which, "_title"))
     if(!is.null(split)) {
         if(length(title) == 0 && !is.null(title)) { ## default title
-            title = apply(unique(split), 1, paste, collapse = ",")
+            title = names(order_list)
         } else if(length(title) == 1) {
             if(grepl("%s", title)) {
-                title = apply(unique(split), 1, function(x) {
+                title = apply(unique(split[order2, , drop = FALSE]), 1, function(x) {
                     lt = lapply(x, function(x) x)
                     lt$fmt = title
                     do.call(sprintf, lt)
@@ -1480,7 +1495,14 @@ setMethod(f = "make_layout",
 
     layout_size = object@layout$layout_size
     if(is_abs_unit(object@heatmap_param$width)) {
-        # nothing needs to do here
+        # recalcualte the width of heatmap body
+        object@matrix_param$width = object@heatmap_param$width -
+            sum(layout_size$row_title_left_width,
+                layout_size$row_dend_left_width,
+                layout_size$row_names_left_width,
+                layout_size$row_dend_right_width,
+                layout_size$row_names_right_width,
+                layout_size$row_title_right_width)   
     } else if(is_abs_unit(object@matrix_param$width)) {  # e.g. unit(1, "npc")
         object@heatmap_param$width = sum(
             layout_size$row_title_left_width,
@@ -1494,11 +1516,22 @@ setMethod(f = "make_layout",
             object@heatmap_param$width = object@heatmap_param$width + sum(row_gap[seq_len(nr_slice-1)])
         }
     } else {
+        if(!is.unit(object@heatmap_param$width)) {
+            warning("width of the heatmap can only be set as an absolute unit.")
+        }
         object@heatmap_param$width = unit(1, "npc")
     }
 
     if(is_abs_unit(object@heatmap_param$height)) {
-
+        object@matrix_param$height = object@heatmap_param$height - 
+            sum(layout_size$column_title_top_height,
+                layout_size$column_dend_top_height,
+                layout_size$column_anno_top_height,
+                layout_size$column_names_top_height,
+                layout_size$column_title_bottom_height,
+                layout_size$column_dend_bottom_height,
+                layout_size$column_anno_bottom_height,
+                layout_size$column_names_bottom_height)
     } else if(is_abs_unit(object@matrix_param$height)) {
         object@heatmap_param$height = sum(
             layout_size$column_title_top_height,
@@ -1517,6 +1550,9 @@ setMethod(f = "make_layout",
         object@heatmap_param$height = unit(1, "npc")
     }
 
+    object@heatmap_param$width_is_absolute_unit = is_abs_unit(object@heatmap_param$width) 
+    object@heatmap_param$height_is_absolute_unit = is_abs_unit(object@heatmap_param$height) 
+    
     return(object)
 })
 
@@ -1600,7 +1636,7 @@ setMethod(f = "draw_heatmap_body",
     signature = "Heatmap",
     definition = function(object, kr = 1, kc = 1, ...) {
 
-    if(ncol(object@matrix) == 0) {
+    if(ncol(object@matrix) == 0 || nrow(object@matrix) == 0) {
         return(invisible(NULL))
     }
 
@@ -1914,9 +1950,7 @@ setMethod(f = "draw_title",
         "row" = object@row_title_param$gp,
         "column" = object@column_title_param$gp)
     
-    if(which == "row") {
-        gp = subset_gp(gp, k)
-    }
+    gp = subset_gp(gp, k)
     
     title = switch(which,
         "row" = object@row_title[k],
@@ -2030,11 +2064,7 @@ setMethod(f = "component_width",
         } else if(k == 3) {
             object@layout$layout_size$row_names_left_width
         } else if(k == 4) {
-            if(ncol(object@matrix) == 0) {
-                unit(0, "mm")
-            } else {
-                unit(1, "null")
-            }
+            object@matrix_param$width
         } else if(k == 5) {
             object@layout$layout_size$row_names_right_width
         } else if(k == 6) {
@@ -2081,7 +2111,7 @@ setMethod(f = "component_height",
         } else if(k == 3) {
             object@layout$layout_size$column_names_top_height
         } else if(k == 5) {
-            unit(1, "null")
+            object@matrix_param$height
         } else if(k == 7) {
             object@layout$layout_size$column_names_bottom_height
         } else if(k == 6) {
@@ -2150,6 +2180,10 @@ setMethod(f = "set_component_height",
         object@layout$layout_size$column_title_bottom_height = v
     } else {
         stop("wrong 'k'")
+    }
+
+    if(is_abs_unit(object@matrix_param$height)) {
+        object@heatmap_param$height = sum(component_height(object, 1:9))
     }
 
     return(object)
@@ -2257,3 +2291,152 @@ setMethod(f = "prepare",
     return(object)
 
 })
+
+# ht[1:10, ]
+# ht[1:10]
+# ht[, 1:10]
+# ht[1:10, 1:10]
+"[.Heatmap" = function(x, i, j) {
+    if(nargs() == 2) {
+        subset_heatmap_by_row(x, i)
+    } else {
+        if(missing(i)) {
+            subset_heatmap_by_column(x, j)
+        } else if(missing(j)) {
+            subset_heatmap_by_row(x, i)
+        } else {
+            x = subset_heatmap_by_row(x, i)
+            subset_heatmap_by_column(x, j)
+        }
+    }
+}
+
+
+subset_heatmap_by_row = function(ht, ind) {
+    ht@row_order = intersect(ht@row_order, ind)
+    if(!is.null(ht@row_dend_param$obj)) {
+        stop("row dend is specified as a clustering object, cannot do subsetting.")
+    }
+    ht@matrix = ht@matrix[ind, , drop = FALSE]
+    if(!is.null(ht@row_names_param$labels)) {
+        ht@row_names_param$labels = ht@row_names_param$labels[ind]
+    }
+    ht@row_names_param$gp = subset_gp(ht@row_names_param$gp, ind)
+    return(ht)
+}
+
+subset_heatmap_by_column = function(ht, ind) {
+    ht@column_order = intersect(ht@column_order, ind)
+    if(!is.null(ht@column_dend_param$obj)) {
+        stop("column dend is specified as a clustering object, cannot do subsetting.")
+    }
+    ht@matrix = ht@matrix[, ind, drop = FALSE]
+    if(!is.null(ht@column_names_param$labels)) {
+        ht@column_names_param$labels = ht@column_names_param$labels[ind]
+    }
+    ht@column_names_param$gp = subset_gp(ht@column_names_param$gp, ind)
+    if(length(ht@top_annotation@anno_list)) {
+        ht@top_annotation = ht@top_annotation[ind]
+    }
+    if(length(ht@bottom_annotation@anno_list)) {
+        ht@bottom_annotation = ht@bottom_annotation[ind]
+    }
+    return(ht)
+}
+
+dim.Heatmap = function(x) {
+    dim(x@matrix)
+}
+
+length.Heatmap = function(x) {
+    nrow(x@matrix)
+}
+
+summary.Heatmap = function(object, ...) {
+    qqcat("a matrix with @{nrow(object@matrix)} rows and @{ncol(object@matrix)} columns\n")
+    qqcat("name: @{object@name}\n")
+    qqcat("color mapping is @{object@matrix_color_mapping@type}\n")
+    
+    if(length(object@column_title)) {
+        qqcat("has column title\n")
+    } else {
+        qqcat("has no column title\n")
+    }
+    if(length(object@row_title)) {
+        qqcat("has row title\n")
+    } else {
+        qqcat("has no row title\n")
+    }
+
+    if(length(object@column_names_param$labels)) {
+        qqcat("has column names\n")
+    } else {
+        qqcat("has no column name\n")
+    }
+    if(length(object@row_names_param$labels)) {
+        qqcat("has row names\n")
+    } else {
+        qqcat("has no row name\n")
+    }
+
+    if(!is.null(object@column_dend_param$obj)) {
+        qqcat("column clustering is provided as a clustering object\n")
+    } else {
+        if(object@column_dend_param$cluster) {
+            if(!is.null(object@column_dend_param$fun)) {
+                qqcat("column clustering is applied with user-defined function\n")
+            } else if(is.function(object@column_dend_param$distance)) {
+                qqcat("column clustering is applied with '@{object@column_dend_param$method}' method and user-defined distance function\n")
+            } else {
+                qqcat("column clustering is applied with '@{object@column_dend_param$method}' method and '@{object@column_dend_param$distance}' distance\n")
+            }
+        } else {
+            qqcat("no column clustering\n")
+        }
+    }
+    if(object@matrix_param$column_km > 1) {
+        qqcat("columns are split by k-means with @{object@matrix_param$column_km} groups\n")
+    }
+    if(!is.null(object@matrix_param$column_split)) {
+        qqcat("columns are split by a categorical data frame\n")
+    }
+    if(!is.null(object@row_dend_param$obj)) {
+        qqcat("row clustering is provided as a clustering object\n")
+    } else {
+        if(object@row_dend_param$cluster) {
+            if(!is.null(object@row_dend_param$fun)) {
+                qqcat("row clustering is applied with user-defined function\n")
+            } else if(is.function(object@row_dend_param$distance)) {
+                qqcat("row clustering is applied with '@{object@row_dend_param$method}' method and user-defined distance function\n")
+            } else {
+                qqcat("row clustering is applied with '@{object@row_dend_param$method}' method and '@{object@row_dend_param$distance}' distance\n")
+            }
+        } else {
+            qqcat("no row clustering\n")
+        }
+    }
+    if(object@matrix_param$row_km > 1) {
+        qqcat("rows are split by k-means with @{object@matrix_param$row_km} groups\n")
+    }
+    if(!is.null(object@matrix_param$row_split)) {
+        qqcat("rows are split by a categorical data frame\n")
+    }
+
+    if(length(object@top_annotation)) {
+        qqcat("has @{length(object@top_annotation)} top annotationa:\n")
+        qqcat("=======================================\n")
+        show(object@top_annotation)
+        qqcat("=======================================\n")
+    } else {
+        qqcat("has no top annotation\n")
+    }
+    if(length(object@bottom_annotation)) {
+        qqcat("has @{length(object@bottom_annotation)} bottom annotation:\n")
+        qqcat("=======================================\n")
+        show(object@bottom_annotation)
+        qqcat("=======================================\n")
+    } else {
+        qqcat("has no bottom annotation\n")
+    }
+}
+

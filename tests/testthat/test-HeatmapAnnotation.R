@@ -12,6 +12,12 @@ ha = HeatmapAnnotation(foo = 1:10, bar = sample(c("a", "b"), 10, replace = TRUE)
 	pt = anno_points(1:10), annotation_name_side = "left")
 draw(ha, test = "complex annotations")
 
+ha = HeatmapAnnotation(foo = 1:10, bar = sample(c("a", "b"), 10, replace = TRUE),
+	pt = anno_points(1:10), annotation_name_side = "left", height = unit(8, "cm"))
+draw(ha, test = "complex annotations")
+
+
+ha = HeatmapAnnotation(foo = 1:10, bar = sample(c("a", "b"), 10, replace = TRUE))
 
 ha = HeatmapAnnotation(foo = 1:10, 
 	bar = cbind(1:10, 10:1),

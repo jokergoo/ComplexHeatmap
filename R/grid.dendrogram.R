@@ -93,12 +93,6 @@ adjust_dend_by_x = function(dend, x = 1:nobs(dend)-0.5) {
     return(dend)
 }
 
-unit.c = function(...) {
-    lt = list(...)
-    lt = lt[!sapply(lt, is.null)]
-    do.call(grid::unit.c, lt)
-}
-
 # the direction of the dendrogram is facing bottom, 
 construct_dend_segments = function(dend, gp) {
 
@@ -263,7 +257,7 @@ grid.dendrogram = function(dend, ..., test = FALSE) {
     }
 }
 
-merge.dendrogram = function(x, y, only_parent = FALSE, ...) {
+merge.dendrogram = function(x, y, only_parent = FALSE, reorder = TRUE, ...) {
 
     parent = x
     children = y
@@ -349,16 +343,18 @@ merge.dendrogram = function(x, y, only_parent = FALSE, ...) {
     attr(dend, "members") = sum(children_members)
 
     # adjust order of leaves
-    od_parent = order.dendrogram(parent)
-    od_children = lapply(children, order.dendrogram)
+    if(reorder) {
+        od_parent = order.dendrogram(parent)
+        od_children = lapply(children, function(x) order.dendrogram(x))
 
-    s = 0
-    for(i in seq_along(od_parent)) {
-        od_children[[ od_parent[i] ]] = od_children[[ od_parent[i] ]] + s
-        s = s + length(od_children[[ od_parent[i] ]])
+        s = 0
+        for(i in seq_along(od_parent)) {
+            od_children[[ od_parent[i] ]] = od_children[[ od_parent[i] ]] + s
+            s = s + length(od_children[[ od_parent[i] ]])
+        }
+
+        order.dendrogram(dend) = unlist(od_children)
     }
-
-    order.dendrogram(dend) = unlist(od_children)
 
     attr(dend, "children_height") = children_height
     attr(dend, "parent_height") = parent_height

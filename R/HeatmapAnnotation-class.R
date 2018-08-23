@@ -22,14 +22,14 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 		anno_list = "list",  # a list of `SingleAnnotation` objects
 		anno_size = "ANY",
 		which = "character",
-		size = "ANY",  # only for  consistent of Heatmap
+		width = "ANY",  
+		height = "ANY",  
 		gap = "ANY",
 		subsetable = "logical",
 		extended = "ANY"
 	),
 	prototype = list(
 		anno_list = list(),
-		size = unit(0, "mm"),
 		which = "column",
 		gap = unit(0, "mm"),
 		subsetable = FALSE,
@@ -84,13 +84,13 @@ HeatmapAnnotation = function(...,
 	which = c("column", "row"), 
 	annotation_height = NULL, 
 	annotation_width = NULL, 
-	height = NULL, 
-	width = NULL, 
+	height = NULL,   # total height
+	width = NULL,    # total width
 	gp = gpar(col = NA),
 	gap = unit(0, "mm"),
 	show_annotation_name = TRUE,
 	annotation_name_gp = gpar(),
-	annotation_name_offset = unit(2, "mm"),
+	annotation_name_offset = unit(1, "mm"),
 	annotation_name_side = ifelse(which == "column", "right", "bottom"),
 	annotation_name_rot = ifelse(which == "column", 0, 90)) {
 
@@ -99,6 +99,8 @@ HeatmapAnnotation = function(...,
 	on.exit(.ENV$current_annotation_which <- NULL)
 
 	fun_args = names(as.list(environment()))
+
+	verbose = ht_global_opt$verbose
 	
 	.Object = new("HeatmapAnnotation")
 
@@ -112,11 +114,20 @@ HeatmapAnnotation = function(...,
 	.Object@name = name
 	n_anno = 0
 
-    arg_list = as.list(sys.call())[-1]
+	#### check system calls ####
+	sc = sys.calls()
+	for(i in seq_along(sc)) {
+		scl = as.list(sc[[i]])
+		if(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation")) {
+			arg_list = scl[-1]
+			break
+		}
+	}
     called_args = names(arg_list)
     anno_args = setdiff(called_args, fun_args)
     if(any(anno_args == "")) stop("annotations should have names.")
 
+    ##### pull all annotation to `anno_value_list`####
     if("df" %in% called_args) {
     	if(is.matrix(df)) {
     		warning("`df` should be a data frame while not a matrix. Convert it to data frame.")
@@ -146,13 +157,15 @@ HeatmapAnnotation = function(...,
     l_simple_anno = sapply(anno_value_list, is.atomic)
     n_simple_anno = sum(l_simple_anno)
     simple_anno_name = names(anno_value_list[l_simple_anno])
+
+    if(verbose) qqcat("in total there are @{length(anno_value_list)} annotations (@{n_simple_anno} simple annotations)\n")
 	
     # normalize `show_legend`
     if(length(show_legend) == 1) {
 		show_legend = rep(show_legend, n_simple_anno)
 	}
 
-	# normalize `heatmap_legend_param`
+	###### normalize `heatmap_legend_param` #######
 	if(length(annotation_legend_param) == 0) {
 		annotation_legend_param = rep.list(NULL, n_simple_anno)
 	} else if(inherits(annotation_legend_param, "list")) {
@@ -232,7 +245,7 @@ HeatmapAnnotation = function(...,
     	stop("Length of annotations differs.")
     }
 
-	i_simple = 0
+    i_simple = 0
 	i_anno = 0
 	simple_length = NULL
 	col_name_defined = NULL
@@ -301,48 +314,80 @@ HeatmapAnnotation = function(...,
     .Object@gap = gap
 
     ### calualte the width/heigit of annotations
+    global_height = NULL
+    global_width = NULL
     if(which == "column") {
-    	anno_size = lapply(anno_list, function(x) x@height)
+    	if(is.null(annotation_height)) {
+    		if(!is.null(height)) {
+    			global_height = height
+    		}
+    		anno_size = do.call("unit.c", lapply(anno_list, height))
+			height = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	} else {
+    		if(length(annotation_height) != n_total_anno) {
+    			stop(qq("Length of `annotation_height` should be @{n_total_anno}"))
+    		}
+    		if(!is.unit(annotation_height)) {
+    			stop("`annotation_height` should be unit object")
+    		}
+    		if(!all(sapply(seq_along(annotation_height), function(x) is_abs_unit(annotation_height[i])))) {
+    			stop("`annotation_height` should only contain absolute units")
+    		}
+    		anno_size = annotation_height
+    		height = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	}
 
-    	if(any(!sapply(anno_size, is_abs_unit))) {
-    		stop("Heights of annotations should be absolute units.")
-    	}
-    	anno_size = do.call("unit.c", anno_size)
-    	if(is.null(height)) {
-    		size = sum(anno_size) + sum(gap) - gap[n_total_anno]
-    	} else {
-    		if(!is_abs_unit(height)) {
-    			stop("`height` should be an absolute unit.")
-    		}
-    		size = height
-    		anno_size_in_numeric = convertHeight(anno_size, "mm", valueOnly = TRUE)
-    		gap_in_numeric = convertHeight(gap, "mm", valueOnly = TRUE)
-    		anno_size = anno_size_in_numeric/(sum(anno_size_in_numeric) + sum(gap) - gap[n_total_anno]) * height
-    	}
-    } else if(which == "row") {
-    	anno_size = lapply(anno_list, function(x) x@width)
-    	if(any(!sapply(anno_size, is_abs_unit))) {
-    		stop("Widths of annotations should be absolute units.")
-    	}
-    	anno_size = do.call("unit.c", anno_size)
+    	# for width, only look at `width`
     	if(is.null(width)) {
-    		size = sum(anno_size) + sum(gap) - gap[n_total_anno]
-    	} else {
-    		if(!is_abs_unit(width)) {
-    			stop("`width` should be an absolute unit.")
+    		width = unit(1, "npc")
+    	}
+    	for(i in 1:n_total_anno) {
+    		width(anno_list[[i]]) = width
+    	}
+    	
+    } else if(which == "row") {
+    	if(is.null(annotation_width)) {
+    		if(!is.null(width)) {
+    			global_width = width
     		}
-    		size = width
-    		anno_size_in_numeric = convertWidth(anno_size, "mm", valueOnly = TRUE)
-    		gap_in_numeric = convertWidth(gap, "mm", valueOnly = TRUE)
-    		anno_size = anno_size_in_numeric/(sum(anno_size_in_numeric) + sum(gap) - gap[n_total_anno]) * width
+    		anno_size = lapply(anno_list, width)
+			width = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	} else {
+    		if(length(annotation_width) != n_total_anno) {
+    			stop(qq("Length of `annotation_width` should be @{n_total_anno}"))
+    		}
+    		if(!is.unit(annotation_width)) {
+    			stop("`annotation_width` should be unit object")
+    		}
+    		if(!all(sapply(seq_along(annotation_width), function(x) is_abs_unit(annotation_width[i])))) {
+    			stop("`annotation_width` should only contain absolute units")
+    		}
+    		anno_size = annotation_width
+    		width = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	}
+
+    	if(is.null(height)) {
+    		height = unit(1, "npc")
+    	}
+    	for(i in 1:n_total_anno) {
+    		height(anno_list[[i]]) = height
     	}
     }
+
+    if(is_abs_unit(width)) {
+    	width = convertWidth(width, "mm")
+    }
+    if(is_abs_unit(height)) {
+    	height = convertWidth(height, "mm")
+    }
+    anno_size = convertWidth(anno_size, "mm")
 
 	names(anno_list) = sapply(anno_list, function(x) x@name)
     .Object@anno_list = anno_list
     .Object@anno_size = anno_size
     .Object@which = which
-    .Object@size = size
+    .Object@width = width
+    .Object@height = height
 
     .Object@subsetable = all(sapply(anno_list, function(x) x@subsetable))
     extended = unit(c(0, 0, 0, 0), "mm")
@@ -353,194 +398,16 @@ HeatmapAnnotation = function(...,
     }
     .Object@extended = extended
 
+    ### if global width or height was set, adjust it
+    if(!is.null(global_height)) {
+    	height(.Object) = global_height
+    }
+    if(!is.null(global_width)) {
+    	width(.Object) = global_width
+    }
+
     return(.Object)
 }
-
-setMethod(f = "resize",
-	signature = "HeatmapAnnotation",
-	definition = function(object, annotation_height = NULL, annotation_width = NULL,
-		height = NULL, width = NULL, line_size = NULL) {
-
-	which = object@which
-	if(which == "column") {
-		if(is.null(height)) {
-			is_size_set = FALSE
-		} else {
-			if(!inherits(height, "unit")) {
-				stop("`height` should be a `unit` object")
-			}
-			if(!is_abs_unit(height)) {
-				stop("`height` should be an absolute unit.")
-			}
-			is_size_set = TRUE
-		}
-		if(is.null(annotation_height)) {
-			is_annotation_size_set = FALSE
-		} else {
-			is_annotation_size_set = TRUE
-			annotation_size_adjusted = annotation_height
-		}
-		size_adjusted = height
-		size_name = "height"
-	} else if(which == "row") {
-		if(is.null(width)) {
-			is_size_set = FALSE
-		} else {
-			if(!inherits(width, "unit")) {
-				stop("`width` should be a `unit` object")
-			}
-			if(!is_abs_unit(width)) {
-				stop("`width` should be an absolute unit.")
-			}
-			is_size_set = TRUE
-		}
-		if(is.null(annotation_width)) {
-			is_annotation_size_set = FALSE
-		} else {
-			is_annotation_size_set = TRUE
-			annotation_size_adjusted = annotation_width
-		}
-		size_adjusted = width
-		size_name = "width"
-	} 
-
-	if(which == "column") {
-		convertUnitFun = convertHeight
-	} else if(which == "row") {
-		convertUnitFun = convertWidth
-	}
-
-	anno_size = object@anno_size
-	size = object@size
-	gap = object@gap
-	gap = gap[-length(gap)]
-	n = length(object@anno_list)
-
-	# the basic rule is
-	# 1. if annotation_height is set, it needs to be a vector and height is disabled. If all
-	#    annotation_height are absolute units, height is ignored
-	# 2. if annotation height contains non-absolute units, height also need to be set and the
-	#    non-absolute unit should be set in a simple form such as 1:10 or unit(1, "null")
-	# 3. line_size is only used when annotation_height is NULL
-	# 4. if only height is set, non-simple annotation is adjusted while keep simple anntation unchanged
-	# 5. if only height is set and all annotations are simple annotations, all anntations are adjusted.
-	#      and line_size is disabled.
-
-	if(is_annotation_size_set) {
-		if(length(annotation_size_adjusted) == 1) {
-			annotation_size_adjusted = rep(1, n)
-		}
-		if(length(annotation_size_adjusted) != n) {
-			stop(paste0("Length of annotation_", size_name, " should be same as number of annotations.", sep = ""))
-		}
-
-		if(!inherits(annotation_size_adjusted, "unit")) {
-			annotation_size_adjusted = unit(annotation_size_adjusted, "null") 
-		}
-
-		l_rel_unit = !sapply(1:n, function(i) is_abs_unit(annotation_size_adjusted[i]))
-		if(any(l_rel_unit)) { # height/width must be set as an absolute unit
-			# height/width must be set
-			if(is_size_set) {
-				if(is_abs_unit(size_adjusted)) {
-					rel_num = sapply(which(l_rel_unit), function(i) {
-						if(identical(class(annotation_size_adjusted[i]), "unit")) {
-							if(attr(annotation_size_adjusted[i], "unit") != "null") {
-								stop("relative unit should be defined as `unit(..., 'null')")
-							}
-						} else {
-							stop("relative unit should be defined as `unit(..., 'null')")
-						}
-						annotation_size_adjusted[i][[1]]
-					})
-					rel_num = rel_num/sum(rel_num)
-					if(any(!l_rel_unit)) {
-						ts = size_adjusted - sum(gap) - sum(annotation_size_adjusted[!l_rel_unit])
-					} else {
-						ts = size_adjusted - sum(gap)
-					}
-					if(convertUnitFun(ts, "mm", valueOnly = TRUE) <= 0) {
-						stop(paste0(size_name, "is too small."))
-					}
-					ind = which(l_rel_unit)
-					for(i in seq_along(ind)) {
-						annotation_size_adjusted[ ind[i] ] = ts*rel_num[i]
-					}
-				} else {
-					stop(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set as an absolute unit."))
-				}
-			} else {
-				stop(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set."))
-			}
-		}
-	}
-
-	# from here `annotation_size_adjusted` contains absolute units if it is called.
-
-	gap = convertUnitFun(gap, "mm", valueOnly = TRUE)
-
-	if(is_size_set) {
-		size_adjusted = convertUnitFun(size_adjusted, "mm", valueOnly = TRUE)
-	}
-	if(is_annotation_size_set) {
-		annotation_size_adjusted = convertUnitFun(annotation_size_adjusted, "mm", valueOnly = TRUE)
-	}
-
-	if(is_annotation_size_set) {
-		# since annotation_size_adjusted has been recalculated, here we simply
-		# update the corresponding slots
-		object@size = unit(sum(annotation_size_adjusted) + sum(gap), "mm")
-		object@anno_size = unit(annotation_size_adjusted, "mm")
-	} else {
-		size = convertUnitFun(size, "mm", valueOnly = TRUE)
-		anno_size = convertUnitFun(anno_size, "mm", valueOnly = TRUE)
-	
-		l_simple_anno = sapply(seq_len(n), function(i) {
-			!is.null(object@anno_list[[i]]@color_mapping)
-		})
-
-		if(all(l_simple_anno)) {
-			anno_size2 = anno_size/sum(anno_size) * (size_adjusted - sum(gap))
-			size_adjusted = unit(size_adjusted, "mm")
-			anno_size2 = unit(anno_size2, "mm")
-		} else {
-
-			anno_size2 = anno_size
-			size_adjusted = convertUnitFun(size_adjusted, "mm", valueOnly = TRUE)
-			if(is.null(line_size)) {
-				line_size = 5
-			} else {
-				line_size = convertUnitFun(line_size, "mm", valueOnly = TRUE)
-			}
-
-			if(size_adjusted <= sum(gap)) {
-				stop(paste0(size_name, "you set is smaller than sum of gaps."))
-			}
-
-			## fix the size of simple annotation and zoom function annotations
-			ts = size_adjusted - sum(gap) - sum(anno_size[l_simple_anno]*line_size/5)
-			if(ts < 0) {
-				stop(paste0(size_name, "you set is too small."))
-			}
-			anno_size2[!l_simple_anno] = anno_size[!l_simple_anno]/sum(anno_size[!l_simple_anno]) * ts
-			anno_size2[l_simple_anno] = anno_size[l_simple_anno]*line_size/5
-
-			size_adjusted = unit(size_adjusted, "mm")
-			anno_size2 = unit(anno_size2, "mm")
-		}
-		object@size = size_adjusted
-		object@anno_size = anno_size2
-	}
-
-	for(i in seq_along(object@anno_list)) {
-		if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
-			slot(object@anno_list[[i]]@fun, size_name) = object@anno_size[i]
-		}
-		slot(object@anno_list[[i]], size_name) = object@anno_size[i]
-	}
-
-	return(object)
-})
 
 # == title
 # Construct row annotations
@@ -683,8 +550,8 @@ setMethod(f = "draw",
 
     if(test2) {
     	grid.newpage()
-    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(4, "cm"), height = object@size))
-    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(4, "cm"), width = object@size))
+    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(4, "cm"), height = object@height))
+    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(4, "cm"), width = object@width))
     } else {
 		pushViewport(viewport(...))
 	}
@@ -784,7 +651,8 @@ setMethod(f = "show",
 	})
 	len = len[!is.na(len)]
 	cat("  items:", ifelse(length(len), len[1], "unknown"), "\n")
-	cat("  ", ifelse(object@which == "column", "height", "width"), ": ", as.character(object@size), "\n", sep = "")
+	cat("  width:", as.character(object@width), "\n")
+	cat("  height:", as.character(object@height), "\n")
     cat("  this object is", ifelse(object@subsetable, "\b", "not"), "subsetable\n")
     dirt = c("bottom", "left", "top", "right")
     for(i in 1:4) {
@@ -817,10 +685,6 @@ setMethod(f = "show",
 	})
 	size_name = ifelse(object@which == "column", "height", "width")
 
-	if(!dev.interactive()) {
-		dev.null()
-		on.exit(dev.off())
-	}
 	lt[[size_name]] = sapply(seq_len(n_anno), function(i) {
 		if(size_name == "height") {
 			u = object@anno_list[[i]]@height
@@ -842,6 +706,23 @@ setMethod(f = "show",
 	print(df, row.names = FALSE)
 })
 
+
+nobs.HeatmapAnnotation = function(object, ...) {
+	n_anno = length(object@anno_list)
+	len = sapply(seq_len(n_anno), function(i) {
+		if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
+			object@anno_list[[i]]@fun@n
+		} else {
+			NA
+		}
+	})
+	len = len[!is.na(len)]
+	if(length(len)) {
+		return(len[1])
+	} else {
+		NA
+	}
+}
 
 # == title
 # Add row annotations or heatmaps as a heatmap list
@@ -889,7 +770,11 @@ c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
 		x@gap = unit.c(x@gap, y@gap)
 	}
 	x@gap[length(x@gap)] = unit(0, "mm")
-	x@size = sum(x@anno_size) + sum(x@gap) - x@gap[length(x@gap)]
+	if(x@which == "column") {
+		x@height = convertHeight(sum(x@anno_size) + sum(x@gap) - x@gap[length(x@gap)], "mm")
+	} else {
+		x@width = convertWidth(sum(x@anno_size) + sum(x@gap) - x@gap[length(x@gap)], "mm")
+	}
 
 	nm = names(x)
 
@@ -992,3 +877,285 @@ names.HeatmapAnnotation = function(x) {
 
     return(x2)
 }
+
+length.HeatmapAnnotation = function(x) {
+	length(x@anno_list)
+}
+
+
+
+setMethod(f = "width",
+    signature = "HeatmapAnnotation",
+    definition = function(object) {
+    object@width
+})
+
+setReplaceMethod(f = "width",
+    signature = "HeatmapAnnotation",
+    definition = function(object, value, ...) {
+
+    if(object@which == "column") {
+    	object@width = value
+    	for(i in seq_along(object@anno_list)) {
+    		width(object@anno_list[[i]]) = value
+    	}
+    } else {
+    	object = resize(object, width = value)
+    }
+    object
+})
+
+
+
+setMethod(f = "height",
+    signature = "HeatmapAnnotation",
+    definition = function(object) {
+    object@height
+})
+
+setReplaceMethod(f = "height",
+    signature = "HeatmapAnnotation",
+    definition = function(object, value, ...) {
+
+    if(object@which == "row") {
+    	object@height = value
+    	for(i in seq_along(object@anno_list)) {
+    		height(object@anno_list[[i]]) = height
+    	}
+    } else {
+    	object = resize(object, height = value)
+    }
+    object
+})
+
+setMethod(f = "size",
+    signature = "HeatmapAnnotation",
+    definition = function(object) {
+    if(object@which == "row") {
+        object@width
+    } else {
+        object@height
+    }
+})
+
+setReplaceMethod(f = "size",
+    signature = "HeatmapAnnotation",
+    definition = function(object, value, ...) {
+    if(object@which == "row") {
+        width(object) = value
+    } else {
+        height(object) = value
+    }
+    object
+})
+
+## for some reasons, only set height for column annotation and width for row annotation
+setMethod(f = "resize",
+	signature = "HeatmapAnnotation",
+	definition = function(object, 
+	annotation_height = NULL, 
+	annotation_width = NULL,
+	height = NULL, 
+	width = NULL, 
+	anno_simple_row_size = ht_opt$anno_simple_row_size,
+	simple_anno_size_adjust = FALSE) {
+
+	if(object@which == "column") {
+		if(!missing(width) || !missing(annotation_width)) {
+			stop("Please use width() directly")
+		}
+	}
+	if(object@which == "colrowumn") {
+		if(!missing(height) || !missing(annotation_height)) {
+			stop("Please use height() directly")
+		}
+	}
+
+	if(!simple_anno_size_adjust) {
+		if(all(sapply(object@anno_list, is_simple_annotation))) {
+			return(object)
+		}
+	}
+
+	which = object@which
+	if(which == "column") {
+		if(is.null(height)) {
+			is_size_set = FALSE
+		} else {
+			if(!inherits(height, "unit")) {
+				stop("`height` should be a `unit` object")
+			}
+			if(!is_abs_unit(height)) {
+				stop("`height` should be an absolute unit.")
+			}
+			is_size_set = TRUE
+		}
+		if(is.null(annotation_height)) {
+			is_annotation_size_set = FALSE
+		} else {
+			is_annotation_size_set = TRUE
+			annotation_size_adjusted = annotation_height
+		}
+		size_adjusted = height
+		size_name = "height"
+	} else if(which == "row") {
+		if(is.null(width)) {
+			is_size_set = FALSE
+		} else {
+			if(!inherits(width, "unit")) {
+				stop("`width` should be a `unit` object")
+			}
+			if(!is_abs_unit(width)) {
+				stop("`width` should be an absolute unit.")
+			}
+			is_size_set = TRUE
+		}
+		if(is.null(annotation_width)) {
+			is_annotation_size_set = FALSE
+		} else {
+			is_annotation_size_set = TRUE
+			annotation_size_adjusted = annotation_width
+		}
+		size_adjusted = width
+		size_name = "width"
+	} 
+
+	if(which == "column") {
+		convertUnitFun = convertHeight
+	} else if(which == "row") {
+		convertUnitFun = convertWidth
+	}
+
+	anno_size = object@anno_size
+	size = slot(object, size_name)
+	gap = object@gap
+	gap = gap[-length(gap)]
+	n = length(object@anno_list)
+
+	# the basic rule is
+	# 1. if annotation_height is set, it needs to be a vector and height is disabled. If all
+	#    annotation_height are absolute units, height is ignored
+	# 2. if annotation height contains non-absolute units, height also need to be set and the
+	#    non-absolute unit should be set in a simple form such as 1:10 or unit(1, "null")
+	# 3. line_size is only used when annotation_height is NULL
+	# 4. if only height is set, non-simple annotation is adjusted while keep simple anntation unchanged
+	# 5. if only height is set and all annotations are simple annotations, all anntations are adjusted.
+	#      and line_size is disabled.
+
+	if(is_annotation_size_set) {
+		if(length(annotation_size_adjusted) == 1) {
+			annotation_size_adjusted = rep(1, n)
+		}
+		if(length(annotation_size_adjusted) != n) {
+			stop(paste0("Length of annotation_", size_name, " should be same as number of annotations.", sep = ""))
+		}
+
+		if(!inherits(annotation_size_adjusted, "unit")) {
+			annotation_size_adjusted = unit(annotation_size_adjusted, "null") 
+		}
+
+		l_rel_unit = !sapply(1:n, function(i) is_abs_unit(annotation_size_adjusted[i]))
+		if(any(l_rel_unit)) { # height/width must be set as an absolute unit
+			# height/width must be set
+			if(is_size_set) {
+				if(is_abs_unit(size_adjusted)) {
+					rel_num = sapply(which(l_rel_unit), function(i) {
+						if(identical(class(annotation_size_adjusted[i]), "unit")) {
+							if(attr(annotation_size_adjusted[i], "unit") != "null") {
+								stop("relative unit should be defined as `unit(..., 'null')")
+							}
+						} else {
+							stop("relative unit should be defined as `unit(..., 'null')")
+						}
+						annotation_size_adjusted[i][[1]]
+					})
+					rel_num = rel_num/sum(rel_num)
+					if(any(!l_rel_unit)) {
+						ts = size_adjusted - sum(gap) - sum(annotation_size_adjusted[!l_rel_unit])
+					} else {
+						ts = size_adjusted - sum(gap)
+					}
+					if(convertUnitFun(ts, "mm", valueOnly = TRUE) <= 0) {
+						stop(paste0(size_name, "is too small."))
+					}
+					ind = which(l_rel_unit)
+					for(i in seq_along(ind)) {
+						annotation_size_adjusted[ ind[i] ] = ts*rel_num[i]
+					}
+				} else {
+					stop(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set as an absolute unit."))
+				}
+			} else {
+				stop(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set."))
+			}
+		}
+	}
+
+	# from here `annotation_size_adjusted` contains absolute units if it is called.
+
+	gap = convertUnitFun(gap, "mm", valueOnly = TRUE)
+
+	if(is_size_set) {
+		size_adjusted = convertUnitFun(size_adjusted, "mm", valueOnly = TRUE)
+	}
+	if(is_annotation_size_set) {
+		annotation_size_adjusted = convertUnitFun(annotation_size_adjusted, "mm", valueOnly = TRUE)
+	}
+
+	if(is_annotation_size_set) {
+		# since annotation_size_adjusted has been recalculated, here we simply
+		# update the corresponding slots
+		slot(object, "size_name") = unit(sum(annotation_size_adjusted) + sum(gap), "mm")
+		object@anno_size = unit(annotation_size_adjusted, "mm")
+	} else {
+		size = convertUnitFun(size, "mm", valueOnly = TRUE)
+		anno_size = convertUnitFun(anno_size, "mm", valueOnly = TRUE)
+	
+		l_simple_anno = sapply(seq_len(n), function(i) {
+			!is.null(object@anno_list[[i]]@color_mapping)
+		})
+
+		if(all(l_simple_anno)) {
+			anno_size2 = anno_size/sum(anno_size) * (size_adjusted - sum(gap))
+			size_adjusted = unit(size_adjusted, "mm")
+			anno_size2 = unit(anno_size2, "mm")
+		} else {
+
+			anno_size2 = anno_size
+			# size_adjusted = convertUnitFun(size_adjusted, "mm", valueOnly = TRUE)
+			if(is.null(anno_simple_row_size)) {
+				anno_simple_row_size = 5
+			} else {
+				anno_simple_row_size = convertUnitFun(anno_simple_row_size, "mm", valueOnly = TRUE)
+			}
+
+			if(size_adjusted <= sum(gap)) {
+				stop(paste0(size_name, " you set is smaller than sum of gaps."))
+			}
+
+			## fix the size of simple annotation and zoom function annotations
+			ts = size_adjusted - sum(gap) - sum(anno_size[l_simple_anno]*anno_simple_row_size/5)
+			if(ts < 0) {
+				stop(paste0(size_name, " you set is too small."))
+			}
+			anno_size2[!l_simple_anno] = anno_size[!l_simple_anno]/sum(anno_size[!l_simple_anno]) * ts
+			anno_size2[l_simple_anno] = anno_size[l_simple_anno]*anno_simple_row_size/5
+
+			size_adjusted = unit(size_adjusted, "mm")
+			anno_size2 = unit(anno_size2, "mm")
+		}
+		slot(object, size_name) = size_adjusted
+		object@anno_size = anno_size2
+	}
+
+	for(i in seq_along(object@anno_list)) {
+		if(size_name == "width") {
+			width(object@anno_list[[i]]) = object@anno_size[i]
+		} else {
+			height(object@anno_list[[i]]) = object@anno_size[i]
+		}
+	}
+
+	return(object)
+})
+

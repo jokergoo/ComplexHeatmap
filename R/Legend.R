@@ -306,7 +306,7 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	offset = labels_height*0.5
 	k = length(at)
 	ymin = offset
-	ymax = unit(1, "npc")-offset
+	ymax = legend_height-offset
 	y = (at - at[1])/(at[k] - at[1])*(ymax - ymin) + ymin
 	gf = placeGrob(gf, row = 1, col = 2, grob = textGrob(labels, x, y, just = c("left", "center"), gp = labels_gp))
 
@@ -421,8 +421,14 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # grid.newpage()
 # grid.draw(pl)
 #
-packLegend = function(..., gap = unit(4, "mm"), direction = c("vertical", "horizontal")) {
-	legend_list = list(...)
+packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horizontal"),
+	max_width = NULL, max_height = NULL, list = NULL) {
+
+	if(!is.null(list)) {
+		legend_list = list
+	} else {
+		legend_list = list(...)
+	}
 	direction = match.arg(direction)
 	if(length(gap) != 1) {
 		stop("Length of `gap` must be one.")
@@ -435,33 +441,101 @@ packLegend = function(..., gap = unit(4, "mm"), direction = c("vertical", "horiz
 
     n_lgd = length(legend_list)
     if(direction == "vertical") {
-    	lgd_width = do.call("unit.c", lapply(legend_list, grobWidth))
-	    lgd_height = do.call("unit.c", lapply(legend_list, function(x) unit.c(gap, grobHeight(x))))
-	    lgd_height = lgd_height[-1]
+	    lgd_height = do.call("unit.c", lapply(legend_list, grobHeight))
 
-    	pack_width = max(lgd_width)
-    	legend_list = lapply(legend_list, replaceLegend, vp_width = pack_width)
+	    if(is.null(max_height)) {
+	    	ind_list = list(1:n_lgd)
+	    	nc = 1
+	    } else {
+	    	lgd_height_num = convertHeight(lgd_height, "mm", valueOnly = TRUE)
+	    	max_height_num = convertHeight(max_height, "mm", valueOnly = TRUE)
+	    	gap_num = convertHeight(gap, "mm", valueOnly = TRUE)
 
-    	pk = frameGrob(layout = grid.layout(nrow = n_lgd*2 - 1, ncol = 1,
-			widths = pack_width, heights = lgd_height))
-    	for(i in 1:n_lgd) {
-    		pk = placeGrob(pk, row = i*2 - 1, col = 1, grob = legend_list[[i]])
+	    	if(n_lgd == 1 && max_height_num < lgd_height_num) {
+	    		ind_list = list(1)
+	    		nc = 1
+	    	} else {
+		    	ind_list = split_by_max(lgd_height_num, max_height_num, gap_num)
+		    	nc = length(ind_list)
+		    }
+	    }
+
+    	pack_width = NULL
+    	pack_height = NULL
+    	for(i in 1:nc) {
+    		ind = ind_list[[i]]
+    		pack_width = unit.c(pack_width, max(do.call("unit.c", lapply(legend_list[ ind_list[[i]] ], grobWidth))), unit(2, "mm"))
+
+    		hu = do.call("unit.c", lapply(legend_list[ind], function(x) unit.c(grobHeight(x), gap)))
+    		hu = hu[-length(hu)]
+    		ph = sum(hu)
+    		pack_height[i] = convertHeight(ph, "mm", valueOnly = TRUE)
+    	}
+    	pack_width = pack_width[-length(pack_width)]
+    	pack_height = unit(max(pack_height), "mm")
+
+    	pk_all = frameGrob(layout = grid.layout(nrow = 1, ncol = nc*2-1, widths = pack_width, heights = pack_height))
+    	for(i in 1:nc) {
+    		ind = ind_list[[i]]
+    		ni = length(ind)
+    		height = do.call("unit.c", lapply(legend_list[ind], function(x) unit.c(grobHeight(x), gap)))
+    		height[ni*2] = pack_height - sum(height[-ni*2])
+    		pk = frameGrob(layout = grid.layout(nrow = ni*2, ncol = 1, widths = pack_width[i*2-1], heights = height))
+	    	for(j in 1:ni) {
+	    		legend_list[[ ind[j] ]] = replaceLegend(legend_list[[ ind[j] ]], vp_width = pack_width[i*2-1])
+	    		pk = placeGrob(pk, row = j*2 - 1, col = 1, grob = legend_list[[ ind[j] ]])
+	    	}
+	    	pk_all = placeGrob(pk_all, row = 1, col = i*2-1, grob = pk)
     	}
     } else {
-    	lgd_width = do.call("unit.c", lapply(legend_list, function(x) unit.c(gap, grobWidth(x))))
-	    lgd_height = do.call("unit.c", lapply(legend_list, grobHeight))
-	    lgd_width = lgd_width[-1]
+    	lgd_width = do.call("unit.c", lapply(legend_list, grobWidth))
 
-    	pack_height = max(lgd_height)
-    	legend_list = lapply(legend_list, replaceLegend, vp_height = pack_height)
+	    if(is.null(max_width)) {
+	    	ind_list = list(1:n_lgd)
+	    	nr = 1
+	    } else {
+	    	lgd_width_num = convertWidth(lgd_width, "mm", valueOnly = TRUE)
+	    	max_width_num = convertWidth(max_width, "mm", valueOnly = TRUE)
+	    	gap_num = convertWidth(gap, "mm", valueOnly = TRUE)
 
-    	pk = frameGrob(layout = grid.layout(nrow = 1, ncol = n_lgd*2 - 1,
-			widths = lgd_width, heights = pack_height))
-    	for(i in 1:n_lgd) {
-    		pk = placeGrob(pk, row = 1, col = i*2 - 1, grob = legend_list[[i]])
+	    	if(n_lgd == 1 && max_width_num < lgd_width_num) {
+	    		ind_list = list(1)
+	    		nr = 1
+	    	} else {
+		    	ind_list = split_by_max(lgd_width_num, max_width_num, gap_num)
+		    	nr = length(ind_list)
+		    }
+	    }
+
+    	pack_width = NULL
+    	pack_height = NULL
+    	for(i in 1:nr) {
+    		ind = ind_list[[i]]
+    		pack_height = unit.c(pack_height, max(do.call("unit.c", lapply(legend_list[ ind_list[[i]] ], grobHeight))), unit(2, "mm"))
+
+    		hu = do.call("unit.c", lapply(legend_list[ind], function(x) unit.c(grobWidth(x), gap)))
+    		hu = hu[-length(hu)]
+    		ph = sum(hu)
+    		pack_width[i] = convertWidth(ph, "mm", valueOnly = TRUE)
+    	}
+    	pack_height = pack_height[-length(pack_height)]
+    	pack_width = unit(max(pack_width), "mm")
+
+    	pk_all = frameGrob(layout = grid.layout(ncol = 1, nrow = nr*2-1, heights = pack_height, widths = pack_width))
+    	for(i in 1:nr) {
+    		ind = ind_list[[i]]
+    		ni = length(ind)
+    		width = do.call("unit.c", lapply(legend_list[ind], function(x) unit.c(grobWidth(x), gap)))
+    		width[ni*2] = pack_width - sum(width[-ni*2])
+    		pk = frameGrob(layout = grid.layout(ncol = ni*2, nrow = 1, heights = pack_height[i*2-1], widths = width))
+	    	for(j in 1:ni) {
+	    		legend_list[[ ind[j] ]] = replaceLegend(legend_list[[ ind[j] ]], vp_height = pack_height[i*2-1])
+	    		pk = placeGrob(pk, col = j*2 - 1, row = 1, grob = legend_list[[ ind[j] ]])
+	    	}
+	    	pk_all = placeGrob(pk_all, col = 1, row = i*2-1, grob = pk)
     	}
     }
-    return(pk)
+    return(pk_all)
 }
 
 
@@ -478,4 +552,18 @@ replaceLegend = function(legend, vp_width = NULL, vp_height = NULL) {
 		gf = placeGrob(gf, row = 1, col = 1, grob = legend)
 	}
 	return(gf)
+}
+
+# 
+split_by_max = function(x, max, gap = 0) {
+	x = x + gap
+	ind = seq_along(x)
+	ind_list = list()
+	while(length(x)) {
+		i = max(which(cumsum(x) < max))
+		ind_list = c(ind_list, list(ind[1:i]))
+		x = x[-(1:i)]
+		ind = ind[-(1:i)]
+	}
+	ind_list
 }

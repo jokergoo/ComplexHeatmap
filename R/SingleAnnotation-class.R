@@ -111,7 +111,7 @@ SingleAnnotation = function(name, value, col, fun,
 	legend_param = list(),
 	show_name = TRUE, 
 	name_gp = gpar(fontsize = 12),
-	name_offset = unit(2, "mm"),
+	name_offset = unit(1, "mm"),
 	name_side = ifelse(which == "column", "right", "bottom"),
     name_rot = ifelse(which == "column", 0, 90),
     width = NULL, height = NULL) {
@@ -119,6 +119,8 @@ SingleAnnotation = function(name, value, col, fun,
 	which = match.arg(which)[1]
     .ENV$current_annotation_which = which
     on.exit(.ENV$current_SingleAnnotation_which <- NULL)
+
+    verbose = ht_global_opt$verbose
 
     # re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
@@ -149,14 +151,19 @@ SingleAnnotation = function(name, value, col, fun,
         stop("`name_rot` can only take values in c(0, 90, 180, 270)")
     }
 
+    if(verbose) qqcat("create a SingleAnnotation with name '@{name}'\n")
+
     .Object@is_anno_matrix = FALSE
     use_mat_column_names = FALSE
     if(!missing(value)) {
+        if(verbose) qqcat("@{name}: annotation value is vector/matrix\n")
         if(is.logical(value)) {
             value = as.character(value)
+            if(verbose) qqcat("@{name}: annotation value is logical, convert to character\n")
         }
         if(is.factor(value)) {
             value = as.vector(value)
+            if(verbose) qqcat("@{name}: annotation value is factor, convert to character\n")
         }
         if(is.matrix(value)) {
             .Object@is_anno_matrix = TRUE
@@ -166,6 +173,7 @@ SingleAnnotation = function(name, value, col, fun,
                 use_mat_column_names = TRUE
             }
             use_mat_nc = ncol(value)
+            if(verbose) qqcat("@{name}: annotation value is a matrix\n")
         }
     }
 
@@ -175,14 +183,19 @@ SingleAnnotation = function(name, value, col, fun,
     if(!missing(fun)) {
         if(inherits(fun, "AnnotationFunction")) {
             anno_fun_extend = fun@extended
+            if(verbose) qqcat("@{name}: annotation is a AnnotationFunction object\n")
+        } else {
+            if(verbose) qqcat("@{name}: annotation is a user-defined function\n")
         }
     }
 
     anno_name = name
     if(which == "column") {
+        if(verbose) qqcat("@{name}: it is a column annotation\n")
     	if(!name_side %in% c("left", "right")) {
     		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
     	}
+        if(verbose) qqcat("@{name}: adjust positions of annotation names\n")
     	if(name_side == "left") {
             if(anno_fun_extend[[2]] > 0) {
                 if(!is_name_offset_called) {
@@ -241,9 +254,11 @@ SingleAnnotation = function(name, value, col, fun,
             }
     	}
     } else if(which == "row") {
+        if(verbose) qqcat("@{name}: it is a row annotation\n")
     	if(!name_side %in% c("top", "bottom")) {
     		stop("`name_side` should be 'left' or 'right' when it is a column annotation.")
     	}
+        if(verbose) qqcat("@{name}: adjust positions of annotation names\n")
     	if(name_side == "top") {
             if(anno_fun_extend[[3]] > 0) {
                 if(!is_name_offset_called) {
@@ -301,6 +316,7 @@ SingleAnnotation = function(name, value, col, fun,
             }
     	}
     }
+
     name_param = list(show = show_name,
                       label = anno_name,
 					  x = name_x,
@@ -312,6 +328,7 @@ SingleAnnotation = function(name, value, col, fun,
                       side = name_side)
 
     # get defaults for name settings
+    if(verbose) qqcat("@{name}: calcualte extensions caused by annotation name\n")
     extended = unit(c(0, 0, 0, 0), "mm")
     if(name_param$show) {
         if(which == "column") {
@@ -355,6 +372,7 @@ SingleAnnotation = function(name, value, col, fun,
     	if(missing(col)) {
     		col = default_col(value)
             color_is_random = TRUE
+            if(verbose) qqcat("@{name}: use randomly generated colors\n")
     	}
     	if(is.atomic(col)) {
     	    if(is.null(names(col))) {
@@ -363,6 +381,7 @@ SingleAnnotation = function(name, value, col, fun,
                 } else {
                     names(col) = unique(value)
                 }
+                if(verbose) qqcat("@{names}: add names for discrete color mapping\n")
             }
             col = col[intersect(c(names(col), "_NA_"), as.character(value))]
     		if("_NA_" %in% names(col)) {
@@ -380,16 +399,19 @@ SingleAnnotation = function(name, value, col, fun,
         .Object@legend_param = legend_param
         value = value
 
+        if(verbose) qqcat("@{name}: generate AnnotationFunction for simple annotation values by anno_simple()\n")
         .Object@fun = anno_simple(value, col = color_mapping, which = which, na_col = na_col, gp = gp)
         if(missing(width)) {
             .Object@width = .Object@fun@width
         } else {
             .Object@width = width
+            .Object@fun@width = width
         }
         if(missing(height)) {
             .Object@height = .Object@fun@height
         } else {
             .Object@height = height
+            .Object@fun@height = height
         }
 		
 		.Object@show_legend = show_legend
@@ -409,29 +431,25 @@ SingleAnnotation = function(name, value, col, fun,
                 formals(fun) = alist(index = , k = 1, n = 1)
             }
         }
+        if(verbose) qqcat("@{name}: calcualte width/height of SingleAnnotation based on the annotation function\n")
     	.Object@fun = fun
     	.Object@show_legend = FALSE
+
         if(inherits(fun, "AnnotationFunction")) {
-            .Object@width = .Object@fun@width
-            .Object@height = .Object@fun@height
-            .Object@subsetable = TRUE
+            if(is.null(width)) {
+                .Object@width = .Object@fun@width
+            } else {
+                .Object@width = width
+                .Object@fun@width = width
+            }
+            if(is.null(height)) {
+                .Object@height = .Object@fun@height
+            } else {
+                .Object@height = height
+                .Object@fun@height = height
+            }
+            .Object@subsetable = .Object@fun@subsetable
         } else {
-            if(which == "column") {
-                if(missing(height)) {
-                    height = unit(1, "cm")
-                }
-                if(missing(width)) {
-                    width = unit(1, "npc")
-                }
-            }
-            if(which == "row") {
-                if(missing(width)) {
-                    width = unit(1, "cm")
-                }
-                if(missing(height)) {
-                    height = unit(1, "npc")
-                }
-            }
             .Object@width = width
             .Object@height = height
         }
@@ -471,6 +489,9 @@ setMethod(f = "draw",
     } else {
         test2 = test
     }
+
+    verbose = ht_global_opt$verbose
+
     ## it draws annotation names, create viewports with names
     if(test2) {
         grid.newpage()
@@ -489,7 +510,11 @@ setMethod(f = "draw",
     
 	# names should be passed to the data viewport
 	if(has_AnnotationFunction(object)) {
-        data_scale = list(x = c(0.5, length(index) + 0.5), y = object@fun@data_scale)
+        if(object@which == "column") {
+            data_scale = list(x = c(0.5, length(index) + 0.5), y = object@fun@data_scale)
+        } else {
+            data_scale = list(y = c(0.5, length(index) + 0.5), x = object@fun@data_scale)
+        }
     } else {
         data_scale = list(x = c(0, 1), y = c(0, 1))
     }
@@ -497,7 +522,8 @@ setMethod(f = "draw",
         name = paste("annotation", object@name, k, sep = "_"),
         xscale = data_scale$x, yscale = data_scale$y))
     if(has_AnnotationFunction(object)) {
-        fun = object@fun[index]
+        fun = object@fun
+        if(verbose) qqcat("adjust annotation axis\n")
         if(!is.null(fun@var_env$axis)) {
             if(fun@var_env$axis && n > 1) {
                 if(object@which == "row") {
@@ -519,8 +545,9 @@ setMethod(f = "draw",
                 }
             }
         }
-        draw(fun)
+        draw(fun, index = index)
     } else {
+        if(verbose) qqcat("execute user-defined annotation function\n")
         object@fun(index, k, n)
     }
 	
@@ -547,6 +574,7 @@ setMethod(f = "draw",
     }
 
     if(draw_name) {
+        if(verbose) qqcat("draw annotation name\n")
         if(is_matrix_annotation(object)) {
             if(!is.null(attr(object@is_anno_matrix, "column_names"))) {
                 anno_mat_column_names = attr(object@is_anno_matrix, "column_names")
@@ -693,3 +721,63 @@ setMethod(f = "copy_all",
         return(x2)
     }
 })
+
+
+
+setMethod(f = "width",
+    signature = "SingleAnnotation",
+    definition = function(object) {
+    object@width
+})
+
+setReplaceMethod(f = "width",
+    signature = "SingleAnnotation",
+    definition = function(object, value, ...) {
+    object@width = value
+    width(object@fun) = value
+    object
+})
+
+setMethod(f = "height",
+    signature = "SingleAnnotation",
+    definition = function(object) {
+    object@height
+})
+
+setReplaceMethod(f = "height",
+    signature = "SingleAnnotation",
+    definition = function(object, value, ...) {
+    object@height = value
+    height(object@fun) = value
+    object
+})
+
+setMethod(f = "size",
+    signature = "SingleAnnotation",
+    definition = function(object) {
+    if(object@which == "row") {
+        object@width
+    } else {
+        object@height
+    }
+})
+
+setReplaceMethod(f = "size",
+    signature = "SingleAnnotation",
+    definition = function(object, value, ...) {
+    if(object@which == "row") {
+        width(object) = value
+    } else {
+        height(object) = value
+    }
+    object
+})
+
+nobs.SingleAnnotation = function(x) {
+    if(x@fun@n > 0) {
+        x@fun@n
+    } else {
+        NA
+    }
+}
+

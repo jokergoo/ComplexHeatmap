@@ -119,14 +119,27 @@ ht_global_opt = setGlobalOptions(
 				FALSE
 			} else if(is.na(x)) {
 				FALSE
+			} else {
+				x
 			}
 		},
-		.length = 1)
+		.length = 1),
+	show_vp_border = TRUE,
+	anno_simple_row_size = unit(5, "mm")
 )
+
+ht_opt = ht_global_opt
 
 .ENV = new.env()
 .ENV$current_annotation_which = NULL
+.ENV$row_order = NULL
+.ENV$row_pos = NULL
+
 
 DENDROGRAM_PADDING = unit(1, "mm")
 DIMNAME_PADDING = unit(1, "mm")
 TITLE_PADDING = unit(2.5, "mm")
+COLUMN_ANNO_PADDING = unit(1, "mm")
+
+
+

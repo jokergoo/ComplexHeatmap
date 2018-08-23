@@ -223,3 +223,14 @@ draw(anno, test = "heatmap")
 anno = anno_density(t(m), which = "row", type = "heatmap", heatmap_colors = c("white", "orange"))
 draw(anno, test = "heatmap, colors")
 
+
+###### anno_mark ###
+anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row")
+draw(anno, index = 1:100, test = "anno_mark")
+
+m = matrix(1:1000, byrow = TRUE, nr = 100)
+anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row")
+Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark = anno)
+Heatmap(m) + rowAnnotation(mark = anno)
+
+
