@@ -999,12 +999,12 @@ setMethod(f = "adjust_heatmap_list",
         if(has_component(object@ht_list[[i]], "top_annotation")) {
             if(verbose) qqcat("adjust height of top annotation of heamtap @{object@ht_list[[i]]@name}\n")
             object@ht_list[[i]]@top_annotation = resize(object@ht_list[[i]]@top_annotation, height = max_top_anno_height)
-            object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 4, object@ht_list[[i]]@top_annotation@size)
+            object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 4, object@ht_list[[i]]@top_annotation@height)
         }
         if(has_component(object@ht_list[[i]], "bottom_annotation")) {   
             if(verbose) qqcat("adjust height of bottom annotation of heamtap @{object@ht_list[[i]]@name}\n")
             object@ht_list[[i]]@bottom_annotation = resize(object@ht_list[[i]]@bottom_annotation, height = max_bottom_anno_height)
-            object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 6, object@ht_list[[i]]@bottom_annotation@size)
+            object@ht_list[[i]] = set_component_height(object@ht_list[[i]], k = 6, object@ht_list[[i]]@bottom_annotation@height)
         }
     }
 

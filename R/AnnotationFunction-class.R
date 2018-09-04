@@ -1,3 +1,11 @@
+
+# == title
+# AnnotationFunction class
+#
+# == details
+# THe AnnotationFunction class is a wrapper of user-defined annotation functions.
+# See `AnnotationFunction` constructor for details
+#
 AnnotationFunction = setClass("AnnotationFunction",
 	slots = list(
 		which = "character",
@@ -60,6 +68,27 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 }
 
 
+# == title
+# Constructor of AnnotationFunction class
+#
+# == param
+# -fun A function which defines how to draw annotation. See **Details** section.
+# -fun_name The name of the function. It is only used for `show,AnnotationFunction-method`.
+# -which Whether it is drawn as a column annotation or a row annotation?
+# -var_imported The name of the object or the objects themselves that the annotation function depends on. See **Details** section.
+# -n Number of observations in the annotation. It is not mandatory, but it is better to provide this information.
+# -data_scale The data scale on the data axis (y-axis for column annotation and x-axis for row annotation). It is only used
+#             when `decoration_annotation` is used with "native" unit coordinates.
+# -subset_rule The rule of subsetting variables in ``var_import``. It should be set when users want the final object to
+#              be subsetable. See **Details** section.
+# -subsetable Whether the object is subsetable?
+# -width The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation,
+#        the width must be an absolute unit.
+# -height The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation,
+#        the width must be an absolute unit.
+#
+# == details
+# The AnnotationFunction class is a wrapper of the function which draws heatmap annotation.
 AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), 
 	var_imported = list(), n = 0, data_scale = c(0, 1), subset_rule = list(), 
 	subsetable = FALSE, width = NULL, height = NULL) {
@@ -133,7 +162,20 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 	return(anno)
 }
 
-
+# == title
+# Subset an AnnotationFunction Object
+#
+# == param
+# -x An `AnnotationFunction-class` object.
+# -i Index
+#
+# == details
+# One good thing for designing the `AnnotationFunction-class` can be subsetted.
+#
+# == example
+# anno = anno_simple(1:10)
+# anno[1:5]
+# draw(anno[1:5], test = "subset of column annotation")
 "[.AnnotationFunction" = function(x, i) {
 	if(nargs() == 1) {
 		return(x)
@@ -158,6 +200,20 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 	}
 }
 
+# == title
+# Draw the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+# -index Index of observations.
+# -test Is it in test mode? The value can be logical or a text which is plotted as the title of plot.
+#
+# == detail
+# Normally it is called internally by the `SingleAnnotation` class.
+#
+# When ``test`` is set to ``TRUE``, the annotation graphic is directly drawn,
+# which is generally for testing purpose.
+# 
 setMethod(f = "draw",
 	signature = "AnnotationFunction",
 	definition = function(object, index, test = FALSE) {
@@ -209,9 +265,19 @@ setMethod(f = "draw",
 	
 })
 
+# == title
+# Copy the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+#
+# == detail
+# In `AnnotationFunction-class`, there is an environment which stores some external variables
+# for the annotation function. This `copy_all,AnnotationFunction-method` hard copy all the variables
+# in that environment to a new environment.
 setMethod(f = "copy_all",
 	signature = "AnnotationFunction",
-	definition = function(object, i) {
+	definition = function(object) {
 		object2 = object
 		object2@var_env = new.env()
 		for(var in names(object@var_env)) {
@@ -221,6 +287,12 @@ setMethod(f = "copy_all",
 		return(object2)
 })
 
+# == title
+# Print the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+#
 setMethod(f = "show",
 	signature = "AnnotationFunction",
 	definition = function(object) {
@@ -253,12 +325,26 @@ setMethod(f = "show",
 	
 })
 
+# == title
+# Width of the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+#
 setMethod(f = "width",
 	signature = "AnnotationFunction",
 	definition = function(object) {
 	object@width
 })
 
+# == title
+# Assign the Width of the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
 setReplaceMethod(f = "width",
 	signature = "AnnotationFunction",
 	definition = function(object, value, ...) {
@@ -266,12 +352,26 @@ setReplaceMethod(f = "width",
 	object
 })
 
+# == title
+# Height of the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+#
 setMethod(f = "height",
 	signature = "AnnotationFunction",
 	definition = function(object) {
 	object@height
 })
 
+# == title
+# Assign the Height of the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
 setReplaceMethod(f = "height",
 	signature = "AnnotationFunction",
 	definition = function(object, value, ...) {
@@ -279,6 +379,15 @@ setReplaceMethod(f = "height",
 	object
 })
 
+# == title
+# Size of the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+#
+# == detail
+# It returns the width if it is a row annotation and the height if it is a column annotation.
+#
 setMethod(f = "size",
 	signature = "AnnotationFunction",
 	definition = function(object) {
@@ -289,6 +398,17 @@ setMethod(f = "size",
 	}
 })
 
+# == title
+# Assign the Size of the AnnotationFunction object
+#
+# == param
+# -object The `AnnotationFunction-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
+# == detail
+# It assigns the width if it is a row annotation and the height if it is a column annotation.
+#
 setReplaceMethod(f = "size",
 	signature = "AnnotationFunction",
 	definition = function(object, value, ...) {
@@ -300,6 +420,14 @@ setReplaceMethod(f = "size",
 	object
 })
 
+# == title
+# Number of Observations
+#
+# == param
+# -x The `AnnotationFunction-class` object.
+#
+# == details
+# It returns the ``n`` slot in the object.
 nobs.AnnotationFunction = function(x) {
 	if(x@n > 0) {
 		x@n

@@ -663,7 +663,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(top_annotation)) {
         .Object@top_annotation_param$height = unit(0, "mm")    
     } else {
-        .Object@top_annotation_param$height = height(bottom_annotation) + COLUMN_ANNO_PADDING*2  # append the gap
+        .Object@top_annotation_param$height = height(top_annotation) + COLUMN_ANNO_PADDING*2  # append the gap
     }
     if(!is.null(top_annotation)) {
         if(length(top_annotation) > 0) {

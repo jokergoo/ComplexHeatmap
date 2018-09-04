@@ -711,7 +711,7 @@ nobs.HeatmapAnnotation = function(object, ...) {
 	n_anno = length(object@anno_list)
 	len = sapply(seq_len(n_anno), function(i) {
 		if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
-			object@anno_list[[i]]@fun@n
+			nobs(object@anno_list[[i]]@fun)
 		} else {
 			NA
 		}

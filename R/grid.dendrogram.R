@@ -1,32 +1,4 @@
 
-# == title
-# Draw dendrogram under grid system
-#
-# == param
-# -dend a `stats::dendrogram` object.
-# -facing facing of the dendrogram.
-# -max_height maximum height of the dendrogram. It is useful to make dendrograms comparable
-#             if you want to plot more than one dendrograms. Height for each dendrogram can be obtained by
-#             ``attr(dend, "height")``.
-# -order should leaves of dendrogram be put in the normal order (1, ..., n) or reverse order (n, ..., 1)?
-#        It may matters for the dendrograms putting on left and right.
-# -... pass to `grid::viewport` which contains the dendrogram.
-#
-# == details
-# The dendrogram can be renderred (e.g. by ``dendextend`` package).
-#
-# A viewport is created which contains the dendrogram.
-#
-# This function only plots the dendrogram without adding labels. The leaves of the dendrogram
-# locates at ``unit(c(0.5, 1.5, ...(n-0.5))/n, "npc")``.
-#
-# == value
-# No value is returned.
-#
-# == author
-# Zuguang Gu <z.gu@dkfz.de>
-#
-
 ############
 ## for these functions, plotting dendrogram does not reply on the midpoint attribute in the
 ## dendrogram object, the positions of all nodes are calculated and stored as x attribute
@@ -40,15 +12,34 @@ subset_dendrogram = function(x, ind) {
     }
 }
 
-adjust_dend_by_x = function(dend, x = 1:nobs(dend)-0.5) {
+# == title
+# Adjust the Positions of nodes/leaves in the Dendrogram
+#
+# == param
+# -dend A `dendrogram` object
+# -leaf_pos A vector of positions of leaves. The value can also be a `grid.unit` object.
+#
+# == detail
+# The positions of nodes stored as ``x`` attribute are recalculated based on the new positions of leaves.
+# 
+# By default, the position of leaves are at 0.5, 1.5, ..., n-0.5.
+#
+# == example
+# m = matrix(rnorm(100), 10)
+# dend = as.dendrogram(hclust(dist(m)))
+# dend = adjust_dend_by_x(dend, sort(runif(10)))
+# str(dend)
+# dend = adjust_dend_by_x(dend, unit(1:10, "cm"))
+# str(dend)
+adjust_dend_by_x = function(dend, leaf_pos = 1:nobs(dend)-0.5) {
     n = nobs(dend)
 
-    if(length(x) != n) {
-        stop("`x` should be a vector with same length as `dend`.")
+    if(length(leaf_pos) != n) {
+        stop("`leaf_pos` should be a vector with same length as `dend`.")
     }
 
     dend_order = order.dendrogram(dend)
-    leaves_pos = x
+    leaves_pos = leaf_pos
     od2index = NULL
     od2index[dend_order] = 1:n
 
@@ -190,6 +181,25 @@ construct_dend_segments = function(dend, gp) {
 
 }
 
+
+# == title
+# Grob for Dendrogram
+#
+# == param
+# -dend A `dendrogram` object.
+# -facing Facing of the dendrogram.
+# -order If it is set to ``reverse``, the first element is put on the right if the dendrogram
+#        is horizontal and it is put on the top if the dendrogram is vertical.
+# -gp Graphic parameters for the dendrogram segments. If any of ``col``, ``lwd`` or ``lty`` is set
+#     in the ``edgePar`` attribute of a node, the corresponding value defined in ``gp`` will be
+#     overwritten for this node, so ``gp`` is like a global graphic parameters for dendrogram segments.
+#
+# == details
+# If ``dend`` has not been processed by `adjust_dend_by_x`, internally `adjust_dend_by_x` is called
+# to add ``x`` attributes of each node/leaf.
+#
+# == value
+# A `grob` object which is generally contructed by `grid::segmentsGrob`.
 dendrogramGrob = function(dend, facing = c("bottom", "top", "left", "right"),
     order = c("normal", "reverse"), gp = gpar()) {
 
@@ -226,6 +236,38 @@ dendrogramGrob = function(dend, facing = c("bottom", "top", "left", "right"),
     }
 }
 
+# == title
+# Draw the Dendrogram
+#
+# == param
+# -dend A `dendrogram` object.
+# -... Pass to `dendrogramGrob`.
+# -test Is it in test mode? If it is in test mode, a viewport is created by calculating proper xlim and ylim.
+#
+# == detail
+# `grid.dendrogram` supports drawing dendrograms with self-defind leaf positions. The positions
+# of leaves can be defined by `adjust_dend_by_x`. Also the dendrogram can be customized by setting
+# the ``edgePar`` attribute for each node (basically for controlling the style of segments), e.g.
+# by `dendextend::color_branches`.
+# 
+# To draw the dendrogram, a viewport should be firstly created. `dend_xy` can be used to get the 
+# positions of leaves and height of the dendrogram.
+#
+# == example
+# m = matrix(rnorm(100), 10)
+# dend = as.dendrogram(hclust(dist(m)))
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 10.5), yscale = c(0, dend_heights(dend)), 
+#     width = 0.9, height = 0.9))
+# grid.dendrogram(dend)
+# popViewport()
+#
+# grid.dendrogram(dend, test = TRUE)
+#
+# require(dendextend2)
+# dend = color_branches(dend, k = 2)
+# dend = adjust_dend_by_x(dend, unit(sort(runif(10)*10), "cm"))
+# grid.dendrogram(dend, test = TRUE)
 grid.dendrogram = function(dend, ..., test = FALSE) {
     gb = dendrogramGrob(dend, ...)
     if(test) {
@@ -233,7 +275,7 @@ grid.dendrogram = function(dend, ..., test = FALSE) {
         ylim[1] = - 0.05*(ylim[2] - ylim[1])
         ylim[2] = ylim[2] + 0.05*ylim[2]
         grid.newpage()
-        if(is.unit(gb$x0[1])) {
+        if(is_abs_unit(gb$x0[1]) && !identical("native", attr(gb$x0[1], "unit"))) {
             width = max(unit.c(gb$x0, gb$x1))
             pushViewport(viewport(yscale = ylim, 
                 width = width*1.1, 
@@ -257,10 +299,42 @@ grid.dendrogram = function(dend, ..., test = FALSE) {
     }
 }
 
-merge.dendrogram = function(x, y, only_parent = FALSE, reorder = TRUE, ...) {
-
-    parent = x
-    children = y
+# == title
+# Merge Dendrograms
+# 
+# == param
+# -parent The parent dendrogram.
+# -children The children dendrograms. They are connected to the leaves of the parent dendrogram.
+#           So the length of ``children`` should be as same as the number of leaves of the parent dendrogram.
+# -only_parent Whether only returns the parent dendrogram where the height and node positions have
+#              been adjusted by children dendrograms.
+# -... Other arguments.
+#
+# == details
+# Do not retrieve the order of the merged dendrogram. It is not reliable.
+#
+# == example
+# m1 = matrix(rnorm(100), nr = 10)
+# m2 = matrix(rnorm(80), nr = 8)
+# m3 = matrix(rnorm(50), nr = 5)
+# dend1 = as.dendrogram(hclust(dist(m1)))
+# dend2 = as.dendrogram(hclust(dist(m2)))
+# dend3 = as.dendrogram(hclust(dist(m3)))
+# dend_p = as.dendrogram(hclust(dist(rbind(colMeans(m1), colMeans(m2), colMeans(m3)))))
+# dend_m = merge(dend_p, list(dend1, dend2, dend3))
+# grid.dendrogram(dend_m, test = TRUE)
+#
+# dend_m = merge(dend_p, list(dend1, dend2, dend3), only_parent = TRUE)
+# grid.dendrogram(dend_m, test = TRUE)
+#
+# require(dendextend)
+# dend1 = color_branches(dend1, k = 1, col = "red")
+# dend2 = color_branches(dend2, k = 1, col = "blue")
+# dend3 = color_branches(dend3, k = 1, col = "green")
+# dend_p = color_branches(dend_p, k = 1, col = "orange")
+# dend_m = merge(dend_p, list(dend1, dend2, dend3))
+# grid.dendrogram(dend_m, test = TRUE)
+merge.dendrogram = function(parent, children, only_parent = FALSE, ...) {
 
     n = nobs(parent)
     if(n != length(children)) {
@@ -343,19 +417,17 @@ merge.dendrogram = function(x, y, only_parent = FALSE, reorder = TRUE, ...) {
     attr(dend, "members") = sum(children_members)
 
     # adjust order of leaves
-    if(reorder) {
-        od_parent = order.dendrogram(parent)
-        od_children = lapply(children, function(x) order.dendrogram(x))
+    od_parent = order.dendrogram(parent)
+    od_children = lapply(children, function(x) rank(order.dendrogram(x)))
 
-        s = 0
-        for(i in seq_along(od_parent)) {
-            od_children[[ od_parent[i] ]] = od_children[[ od_parent[i] ]] + s
-            s = s + length(od_children[[ od_parent[i] ]])
-        }
-
-        order.dendrogram(dend) = unlist(od_children)
+    s = 0
+    for(i in seq_along(od_parent)) {
+        od_children[[ od_parent[i] ]] = od_children[[ od_parent[i] ]] + s
+        s = s + length(od_children[[ od_parent[i] ]])
     }
 
+    order.dendrogram(dend) = unlist(od_children)
+    
     attr(dend, "children_height") = children_height
     attr(dend, "parent_height") = parent_height
     attr(dend, "h_line") = h_line
@@ -372,12 +444,12 @@ get_branches_heights = function(dend) {
 }
 
 "order.dendrogram<-" = function(x, value) {
-    map = NULL
-    n = nobs(x)
-    map[ order.dendrogram(x) ] = seq_len(n)
+    env = new.env()
+    env$i = 0
     dendrapply(x, function(node) {
         if(is.leaf(node)) {
-            node[[1]] = value[ map[ node[[1]] ] ]
+            env$i = env$i + 1
+            node[[1]] = value[ env$i ]
         }
         return(node)
     })
@@ -414,4 +486,105 @@ dend_heights = function(x) {
     } else {
         sapply(x, function(y) attr(y, "height"))
     }
+}
+
+# == title
+# Coordinates of the Dendrogram
+#
+# == param
+# -dend a `dendrogram` object.
+#
+# == detail
+# ``dend`` will be processed by `adjust_dend_by_x` if it is processed yet.
+#
+# == value
+# A list of leave positions and dendrogram height.
+#
+# == example
+# m = matrix(rnorm(100), 10)
+# dend1 = as.dendrogram(hclust(dist(m)))
+# dend_xy(dend1)
+#
+# dend1 = adjust_dend_by_x(dend1, sort(runif(10)))
+# dend_xy(dend1)
+#
+# dend1 = adjust_dend_by_x(dend1, unit(1:10, "cm"))
+# dend_xy(dend1)
+dend_xy = function(dend) {
+    if(is.null(attr(dend, "x"))) {
+        dend = adjust_dend_by_x(dend)
+    }
+    env = new.env()
+    env$lt = list()
+    dendrapply(dend, function(d) {
+        if(is.leaf(d))
+            env$lt = c(env$lt, list(attr(d, "x")))
+    })
+    x = env$lt
+    if(inherits(x[[1]], "unit")) {
+        x = do.call("unit.c", x)
+    } else {
+        x = unlist(x)
+    }
+    return(list(x = x,
+                y = c(0, dend_heights(dend1))))
+}
+
+
+# == title
+# Cluster within and between Groups
+#
+# == param
+# -mat A matrix where clustering is applied on columns.
+# -factor A categorical vector.
+#
+# == details
+# The clustering is firstly applied in each group, then clustering is applied
+# to group means. The within-group dendrograms and between-group dendrogram
+# are finally connected by `merge.dendrogram`.
+#
+# In the final dendrogram, the within group dendrograms are enforced to be 
+# flat lines to emphasize that the within group dendrograms have no sense to 
+# compare to between-group dendrogram.
+#
+# == value
+# A `dendrogram` object. The order of columns can be retrieved by `order.dendrogram`.
+#
+# == example
+# m = matrix(rnorm(120), nc = 12)
+# colnames(m) = letters[1:12]
+# fa = rep(c("a", "b", "c"), times = c(2, 4, 6))
+# dend = cluster_within_group(m, fa)
+# grid.dendrogram(dend, test = TRUE)
+cluster_within_group = function(mat, factor) {
+
+    if (!is.factor(factor)) {
+        factor = factor(factor, levels = unique(factor))
+    }
+
+    dend_list = list()
+    order_list = list()
+    for(le in unique(levels(factor))) {
+        m = mat[, factor == le, drop = FALSE]
+        if (ncol(m) == 1) {
+            order_list[[le]] = which(factor == le)
+            dend_list[[le]] = structure(which(factor == le), class = "dendrogram", leaf = TRUE,
+                height = 0, label = 1, members = 1)
+        } else {
+            hc1 = hclust(dist(t(m)))
+            dend_list[[le]] = as.dendrogram(hc1)
+            order_list[[le]] = which(factor == le)[order.dendrogram(dend_list[[le]])]
+            order.dendrogram(dend_list[[le]]) = order_list[[le]]
+        }
+    }
+    
+    parent = as.dendrogram(hclust(dist(t(sapply(order_list, function(x) rowMeans(mat[, x, drop = FALSE]))))))
+    dend_list = lapply(dend_list, function(dend) dendrapply(dend, function(node) {
+        attr(node, "height") = 0
+        node
+    }))
+    dend = merge(parent, dend_list)
+    order.dendrogram(dend) = unlist(order_list)
+    return(dend)
+   
 }

@@ -1,7 +1,7 @@
 
 
 # == title 
-# Class for a single annotation
+# Class for a Single Annotation
 #
 # == details
 # A complex heatmap always has more than one annotations on rows and columns. Here

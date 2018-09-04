@@ -101,6 +101,10 @@ draw(anno[1:5], test = "png + gp")
 anno = anno_image(image1, space = unit(3, "mm"))
 draw(anno, test = "space")
 
+image1[1] = ""
+anno = anno_image(image1)
+draw(anno, test = "png")
+
 ######## test anno_points #####
 anno = anno_points(runif(10))
 draw(anno, test = "anno_points")
@@ -109,6 +113,15 @@ draw(anno, test = "matrix")
 anno = anno_points(c(1:5, 1:5))
 draw(anno, test = "anno_points")
 anno = anno_points(cbind(c(1:5, 1:5), c(5:1, 5:1)), gp = gpar(col = 2:3))
+draw(anno, test = "matrix")
+
+##### test anno_lines ###
+anno = anno_lines(runif(10))
+draw(anno, test = "anno_lines")
+anno = anno_lines(cbind(c(1:5, 1:5), c(5:1, 5:1)), gp = gpar(col = 2:3))
+draw(anno, test = "matrix")
+anno = anno_lines(cbind(c(1:5, 1:5), c(5:1, 5:1)), gp = gpar(col = 2:3),
+	add_points = TRUE, pt_gp = gpar(col = 5:6), pch = c(1, 16))
 draw(anno, test = "matrix")
 
 
