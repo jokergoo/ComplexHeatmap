@@ -1397,8 +1397,7 @@ setMethod(f = "make_layout",
         row_dend_max_height = dend_heights(row_dend_slice) + max(dend_heights(object@row_dend_list))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             for(i in seq_len(nr_slice)) {
-                draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = "top",
-                    max_height = row_dend_max_height)
+                draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = "top")
             }
 
             if(nr_slice > 1) {
@@ -1438,8 +1437,7 @@ setMethod(f = "make_layout",
         column_dend_max_height = dend_heights(column_dend_slice) + max(dend_heights(object@column_dend_list))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             for(i in seq_len(nc_slice)) {
-                draw_dend(object, k = i, which = "column", x = slice_x[i], width = slice_width[i], just = "left",
-                    max_height = column_dend_max_height)
+                draw_dend(object, k = i, which = "column", x = slice_x[i], width = slice_width[i], just = "left")
             }
 
             if(nc_slice > 1) {
@@ -2412,12 +2410,14 @@ setMethod(f = "draw",
 #
 setMethod(f = "prepare",
     signature = "Heatmap",
-    definition = function(object, process_rows = TRUE) {
+    definition = function(object, process_rows = TRUE, process_columns = TRUE) {
 
     if(process_rows) {
         object = make_row_cluster(object)
     }
-    object = make_column_cluster(object)
+    if(process_columns) {
+        object = make_column_cluster(object)
+    }
 
     object = make_layout(object)
     return(object)

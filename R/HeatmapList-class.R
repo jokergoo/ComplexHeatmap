@@ -269,12 +269,14 @@ setMethod(f = "make_layout",
     gap = unit(2, "mm"), 
     ht_gap = gap, 
 
+    main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
+    padding = NULL,
+
     row_dend_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right"),
-
-    padding = NULL,
+    column_dend_side = c("original", "top", "bottom"),
+    column_sub_title_side = c("original", "top", "bottom"),
     
-    main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     row_gap = NULL,
     cluster_rows = NULL,
     clustering_distance_rows = NULL,
@@ -288,7 +290,20 @@ setMethod(f = "make_layout",
     split = NULL,
     row_km = km,
     row_split = split,
-    heatmap_body_height = NULL) {
+    heatmap_body_height = NULL,
+
+    column_gap = NULL,
+    cluster_columns = NULL,
+    clustering_distance_columns = NULL,
+    clustering_method_columns = NULL,
+    column_dend_width = NULL, 
+    show_column_dend = NULL, 
+    column_dend_reorder = NULL,
+    column_dend_gp = NULL,
+    column_order = NULL,
+    column_km = km,
+    column_split = NULL,
+    heatmap_body_width = NULL) {
 
     verbose = ht_global_opt("verbose")
 
@@ -299,6 +314,7 @@ setMethod(f = "make_layout",
 
     n_ht = length(object@ht_list)
     i_main = main_heatmap[1]
+    direction = object@direction
 
     # i_main is aleays numeric index
     if(is.character(i_main)) {
@@ -312,6 +328,7 @@ setMethod(f = "make_layout",
     }
 
     nr = nrow(object@ht_list[[i_main]]@matrix)
+    nc = ncol(object@ht_list[[i_main]]@matrix)
 
     if(n_ht > 1) {
         if(length(ht_gap) == 1) {
@@ -331,135 +348,258 @@ setMethod(f = "make_layout",
     }
     object@ht_list_param$ht_gap = ht_gap
 
+    # adjust gaps if some heatmap has zero row/column
     for(i in seq_len(n_ht)) {
-        # if the zero-column matrix is the first one
         if(inherits(object@ht_list[[i]], "Heatmap")) {
-            if(i == 1 && ncol(object@ht_list[[1]]@matrix) == 0) {
-                ht_gap[1] = unit(0, "mm")
-                if(verbose) qqcat("The first heatmap has zero columns, set the first gap to unit(0, 'mm')\n")
-            } else if(i == n_ht && ncol(object@ht_list[[n_ht]]@matrix) == 0) {
-                ht_gap[n_ht - 1] = unit(0, "mm")
-                if(verbose) qqcat("The last heatmap has zero columns, set the last gap to unit(0, 'mm')\n")
-            } else if(ncol(object@ht_list[[i]]@matrix) == 0) {
-                ht_gap[i] = unit(0, "mm")
-                if(verbose) qqcat("The @{i}th heatmap has zero columns, set the @{i}th gap to unit(0, 'mm')\n")
+            if(direction == "horizontal") {
+                if(i == 1 && ncol(object@ht_list[[1]]@matrix) == 0) {
+                    ht_gap[1] = unit(0, "mm")
+                    if(verbose) qqcat("The first heatmap has zero column, set the first gap to unit(0, 'mm')\n")
+                } else if(i == n_ht && ncol(object@ht_list[[n_ht]]@matrix) == 0) {
+                    ht_gap[n_ht - 1] = unit(0, "mm")
+                    if(verbose) qqcat("The last heatmap has zero column, set the last gap to unit(0, 'mm')\n")
+                } else if(ncol(object@ht_list[[i]]@matrix) == 0) {
+                    ht_gap[i] = unit(0, "mm")
+                    if(verbose) qqcat("The @{i}th heatmap has zero column, set the @{i}th gap to unit(0, 'mm')\n")
+                }
+            } else {
+                if(i == 1 && nrow(object@ht_list[[1]]@matrix) == 0) {
+                    ht_gap[1] = unit(0, "mm")
+                    if(verbose) qqcat("The first heatmap has zero row, set the first gap to unit(0, 'mm')\n")
+                } else if(i == n_ht && nrow(object@ht_list[[n_ht]]@matrix) == 0) {
+                    ht_gap[n_ht - 1] = unit(0, "mm")
+                    if(verbose) qqcat("The last heatmap has zero row, set the last gap to unit(0, 'mm')\n")
+                } else if(nrow(object@ht_list[[i]]@matrix) == 0) {
+                    ht_gap[i] = unit(0, "mm")
+                    if(verbose) qqcat("The @{i}th heatmap has zero row, set the @{i}th gap to unit(0, 'mm')\n")
+                }
             }
         }
     }
 
     ### update some values for the main heatmap
-    if(!is.null(row_split)) {
-        object@ht_list[[i_main]]@matrix_param$row_split = row_split
-        if(verbose) qqcat("set row_split to main heatmap\n")
-    }
-    if(!is.null(row_km)) {
-        object@ht_list[[i_main]]@matrix_param$row_km = row_km
-        if(verbose) qqcat("set row_km to main heatmap\n")
-    }
-
-    if(!is.null(row_gap)) {
-        object@ht_list[[i_main]]@matrix_param$row_gap = row_gap
-        if(verbose) qqcat("set row_gap to main heatmap\n")
-    }
-
-    if(!is.null(cluster_rows)) {
-
-        if(is.null(show_row_dend) && identical(cluster_rows, TRUE)) {
-            show_row_dend = TRUE
+    if(direction == "horizontal") {
+        if(!is.null(row_split)) {
+            object@ht_list[[i_main]]@matrix_param$row_split = row_split
+            if(verbose) qqcat("set row_split to main heatmap\n")
+        }
+        if(!is.null(row_km)) {
+            object@ht_list[[i_main]]@matrix_param$row_km = row_km
+            if(verbose) qqcat("set row_km to main heatmap\n")
         }
 
-        if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
-            object@ht_list[[i_main]]@row_dend_param$obj = cluster_rows
-            object@ht_list[[i_main]]@row_dend_param$cluster = TRUE
-            if(verbose) qqcat("set cluster_rows to main heatmap\n")
-        } else if(inherits(cluster_rows, "function")) {
-            object@ht_list[[i_main]]@row_dend_param$fun = cluster_rows
-            object@ht_list[[i_main]]@row_dend_param$cluster = TRUE
-            if(verbose) qqcat("set cluster_rows to main heatmap\n")
-        } else {
-            object@ht_list[[i_main]]@row_dend_param$cluster = cluster_rows
-            if(verbose) qqcat("set cluster_rows to main heatmap\n")
-            if(!cluster_rows) {
-                row_dend_width = unit(0, "mm")
-                show_row_dend = FALSE
+        if(!is.null(row_gap)) {
+            object@ht_list[[i_main]]@matrix_param$row_gap = row_gap
+            if(verbose) qqcat("set row_gap to main heatmap\n")
+        }
+
+        if(!is.null(cluster_rows)) {
+
+            if(is.null(show_row_dend) && identical(cluster_rows, TRUE)) {
+                show_row_dend = TRUE
+            }
+
+            if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
+                object@ht_list[[i_main]]@row_dend_param$obj = cluster_rows
+                object@ht_list[[i_main]]@row_dend_param$cluster = TRUE
+                if(verbose) qqcat("set cluster_rows to main heatmap\n")
+            } else if(inherits(cluster_rows, "function")) {
+                object@ht_list[[i_main]]@row_dend_param$fun = cluster_rows
+                object@ht_list[[i_main]]@row_dend_param$cluster = TRUE
+                if(verbose) qqcat("set cluster_rows to main heatmap\n")
             } else {
-                row_dend_width = unit(10, "mm")
+                object@ht_list[[i_main]]@row_dend_param$cluster = cluster_rows
+                if(verbose) qqcat("set cluster_rows to main heatmap\n")
+                if(!cluster_rows) {
+                    row_dend_width = unit(0, "mm")
+                    show_row_dend = FALSE
+                } else {
+                    row_dend_width = unit(10, "mm")
+                }
             }
         }
-    }
 
-    if(!is.null(show_row_dend)) {
-        if(!show_row_dend) {
-            row_dend_width = unit(0, "mm")
+        if(!is.null(show_row_dend)) {
+            if(!show_row_dend) {
+                row_dend_width = unit(0, "mm")
+            }
         }
-    }
-    if(!is.null(clustering_distance_rows)) {
-        object@ht_list[[i_main]]@row_dend_param$distance = clustering_distance_rows
-        if(verbose) qqcat("set clustering_distance_rows to main heatmap\n")
-    }
-    if(!is.null(clustering_method_rows)) {
-        object@ht_list[[i_main]]@row_dend_param$method = clustering_method_rows
-        if(verbose) qqcat("set clustering_method_rows to main heatmap\n")
-    }
-    if(!is.null(row_dend_width)) {
-        if(row_dend_width[[1]] == 0) {
-            object@ht_list[[i_main]]@row_dend_param$width = unit(0, "mm")
-        } else {
-            object@ht_list[[i_main]]@row_dend_param$width = row_dend_width + DENDROGRAM_PADDING  # append the gap
+        if(!is.null(clustering_distance_rows)) {
+            object@ht_list[[i_main]]@row_dend_param$distance = clustering_distance_rows
+            if(verbose) qqcat("set clustering_distance_rows to main heatmap\n")
         }
-    }
-    if(!is.null(show_row_dend)) {
-        object@ht_list[[i_main]]@row_dend_param$show = show_row_dend
-    }
-    if(!is.null(row_dend_gp)) {
-        object@ht_list[[i_main]]@row_dend_param$gp = check_gp(row_dend_gp)
-        if(verbose) qqcat("set row_dend_gp to main heatmap\n")
-    }
-    if(!is.null(row_dend_reorder)) {
-        object@ht_list[[i_main]]@row_dend_param$reorder = row_dend_reorder
-        if(verbose) qqcat("set row_dend_reorder to main heatmap\n")
-    }
-    if(!is.null(row_order)) {
-        if(is.character(row_order)) {
-            row_order = structure(seq_len(nrow(object@ht_list[[i_main]]@matrix)), names = rownames(object@ht_list[[i_main]]@matrix))[row_order]
+        if(!is.null(clustering_method_rows)) {
+            object@ht_list[[i_main]]@row_dend_param$method = clustering_method_rows
+            if(verbose) qqcat("set clustering_method_rows to main heatmap\n")
         }
-        object@ht_list[[i_main]]@row_order = row_order
-        if(verbose) qqcat("set row_order to main heatmap\n")
+        if(!is.null(row_dend_width)) {
+            if(row_dend_width[[1]] == 0) {
+                object@ht_list[[i_main]]@row_dend_param$width = unit(0, "mm")
+            } else {
+                object@ht_list[[i_main]]@row_dend_param$width = row_dend_width + DENDROGRAM_PADDING  # append the gap
+            }
+        }
+        if(!is.null(show_row_dend)) {
+            object@ht_list[[i_main]]@row_dend_param$show = show_row_dend
+        }
+        if(!is.null(row_dend_gp)) {
+            object@ht_list[[i_main]]@row_dend_param$gp = check_gp(row_dend_gp)
+            if(verbose) qqcat("set row_dend_gp to main heatmap\n")
+        }
+        if(!is.null(row_dend_reorder)) {
+            object@ht_list[[i_main]]@row_dend_param$reorder = row_dend_reorder
+            if(verbose) qqcat("set row_dend_reorder to main heatmap\n")
+        }
+        if(!is.null(row_order)) {
+            if(is.character(row_order)) {
+                row_order = structure(seq_len(nrow(object@ht_list[[i_main]]@matrix)), names = rownames(object@ht_list[[i_main]]@matrix))[row_order]
+            }
+            object@ht_list[[i_main]]@row_order = row_order
+            if(verbose) qqcat("set row_order to main heatmap\n")
+        }
+    } else {
+        if(!is.null(column_split)) {
+            object@ht_list[[i_main]]@matrix_param$column_split = column_split
+            if(verbose) qqcat("set column_split to main heatmap\n")
+        }
+        if(!is.null(column_km)) {
+            object@ht_list[[i_main]]@matrix_param$column_km = column_km
+            if(verbose) qqcat("set column_km to main heatmap\n")
+        }
+
+        if(!is.null(column_gap)) {
+            object@ht_list[[i_main]]@matrix_param$column_gap = column_gap
+            if(verbose) qqcat("set column_gap to main heatmap\n")
+        }
+
+        if(!is.null(cluster_columns)) {
+
+            if(is.null(show_column_dend) && identical(cluster_columns, TRUE)) {
+                show_column_dend = TRUE
+            }
+
+            if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
+                object@ht_list[[i_main]]@column_dend_param$obj = cluster_columns
+                object@ht_list[[i_main]]@column_dend_param$cluster = TRUE
+                if(verbose) qqcat("set cluster_columns to main heatmap\n")
+            } else if(inherits(cluster_columns, "function")) {
+                object@ht_list[[i_main]]@column_dend_param$fun = cluster_columns
+                object@ht_list[[i_main]]@column_dend_param$cluster = TRUE
+                if(verbose) qqcat("set cluster_columns to main heatmap\n")
+            } else {
+                object@ht_list[[i_main]]@column_dend_param$cluster = cluster_columns
+                if(verbose) qqcat("set cluster_columns to main heatmap\n")
+                if(!cluster_columns) {
+                    column_dend_width = unit(0, "mm")
+                    show_column_dend = FALSE
+                } else {
+                    column_dend_width = unit(10, "mm")
+                }
+            }
+        }
+
+        if(!is.null(show_column_dend)) {
+            if(!show_column_dend) {
+                column_dend_width = unit(0, "mm")
+            }
+        }
+        if(!is.null(clustering_distance_columns)) {
+            object@ht_list[[i_main]]@column_dend_param$distance = clustering_distance_columns
+            if(verbose) qqcat("set clustering_distance_columns to main heatmap\n")
+        }
+        if(!is.null(clustering_method_columns)) {
+            object@ht_list[[i_main]]@column_dend_param$method = clustering_method_columns
+            if(verbose) qqcat("set clustering_method_columns to main heatmap\n")
+        }
+        if(!is.null(column_dend_width)) {
+            if(column_dend_width[[1]] == 0) {
+                object@ht_list[[i_main]]@column_dend_param$width = unit(0, "mm")
+            } else {
+                object@ht_list[[i_main]]@column_dend_param$width = column_dend_width + DENDROGRAM_PADDING  # append the gap
+            }
+        }
+        if(!is.null(show_column_dend)) {
+            object@ht_list[[i_main]]@column_dend_param$show = show_column_dend
+        }
+        if(!is.null(column_dend_gp)) {
+            object@ht_list[[i_main]]@column_dend_param$gp = check_gp(column_dend_gp)
+            if(verbose) qqcat("set column_dend_gp to main heatmap\n")
+        }
+        if(!is.null(column_dend_reorder)) {
+            object@ht_list[[i_main]]@column_dend_param$reorder = column_dend_reorder
+            if(verbose) qqcat("set column_dend_reorder to main heatmap\n")
+        }
+        if(!is.null(column_order)) {
+            if(is.character(column_order)) {
+                column_order = structure(seq_len(ncol(object@ht_list[[i_main]]@matrix)), names = colnames(object@ht_list[[i_main]]@matrix))[column_order]
+            }
+            object@ht_list[[i_main]]@column_order = column_order
+            if(verbose) qqcat("set column_order to main heatmap\n")
+        }
     }
 
     if(verbose) qqcat("auto adjust all heatmap/annotations by the main heatmap\n")
 
+
     ######## auto adjust ##########
     ht_main = object@ht_list[[i_main]]
-    ht_main = make_row_cluster(ht_main)  # with pre-defined order
-    if(verbose) qqcat("perform row clustering on the main heatmap\n")
+    if(direction == "horizontal") {
+        ht_main = make_row_cluster(ht_main)  # with pre-defined order
+        if(verbose) qqcat("perform row clustering on the main heatmap\n")
+    } else {
+        ht_main = make_column_cluster(ht_main)  # with pre-defined order
+        if(verbose) qqcat("perform column clustering on the main heatmap\n")
+    }
     object@ht_list[[i_main]] = ht_main
 
-    row_dend_side = match.arg(row_dend_side)[1]
-    row_sub_title_side = match.arg(row_sub_title_side)[1]
+    if(direction == "horizontal") {
+        row_dend_side = match.arg(row_dend_side)[1]
+        row_sub_title_side = match.arg(row_sub_title_side)[1]
 
-    if(row_dend_side == "left" || row_sub_title_side == "left") {
-        # if the first one is a HeatmapAnnotation object
-        # add a heatmap with zero column so that we can put titles and dend on the most left
-        if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
-            object = Heatmap(matrix(nrow = nr, ncol = 0)) + object
-            gap = unit.c(unit(0, "mm"), gap)
-            i_main = i_main + 1
-            if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very left\n")
+        if(row_dend_side == "left" || row_sub_title_side == "left") {
+            # if the first one is a HeatmapAnnotation object
+            # add a heatmap with zero column so that we can put titles and dend on the most left
+            if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
+                object = Heatmap(matrix(nrow = nr, ncol = 0)) + object
+                ht_gap = unit.c(unit(0, "mm"), ht_gap)
+                i_main = i_main + 1
+                if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very left\n")
+            }
+                
         }
-            
-    }
 
-    if(row_dend_side == "right" || row_sub_title_side == "right") {
-        # if the last one is a HeatmapAnnotation object
-        if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
-            object = object + Heatmap(matrix(nrow = nr, ncol = 0))
-            gap = unit.c(gap, unit(0, "mm"))
-            if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very right\n")
+        if(row_dend_side == "right" || row_sub_title_side == "right") {
+            # if the last one is a HeatmapAnnotation object
+            if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
+                object = object + Heatmap(matrix(nrow = nr, ncol = 0))
+                ht_gap = unit.c(ht_gap, unit(0, "mm"))
+                if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very right\n")
+            }
+        }
+    } else {
+        column_dend_side = match.arg(column_dend_side)[1]
+        column_sub_title_side = match.arg(column_sub_title_side)[1]
+
+        if(column_dend_side == "top" || column_sub_title_side == "top") {
+            if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
+                object = Heatmap(matrix(nrow = 0, ncol = nc)) %v% object
+                ht_gap = unit.c(unit(0, "mm"), ht_gap)
+                i_main = i_main + 1
+                if(verbose) qqcat("add a zero-row heatmap for column dend/title on the very top\n")
+            }   
+        }
+
+        if(column_dend_side == "bottom" || column_sub_title_side == "bottom") {
+            if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
+                object = object %v% Heatmap(matrix(nrow = 0, ncol = nc))
+                ht_gap = unit.c(ht_gap, unit(0, "mm"))
+                if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very bottom\n")
+            }
         }
     }
 
     object@ht_list_param$main_heatmap = i_main
+    object@ht_list_param$ht_gap = ht_gap
     object@ht_list_param$merge_legends = merge_legends
     if(!is.null(padding)) {
         if(length(padding) == 1) {
@@ -473,68 +613,139 @@ setMethod(f = "make_layout",
     object@ht_list_param$padding = padding
 
     ## orders of other heatmaps should be changed
-    for(i in seq_len(n_ht)) {
-        if(inherits(object@ht_list[[i]], "Heatmap") & i != i_main) {
-            object@ht_list[[i]]@row_order_list = ht_main@row_order_list
-            object@ht_list[[i]]@row_order = ht_main@row_order
-            object@ht_list[[i]]@row_dend_param$show = FALSE
-            object@ht_list[[i]]@row_dend_param$cluster = FALSE  # don't do clustering because cluster was already done
+    if(direction == "horizontal") {
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap") & i != i_main) {
+                object@ht_list[[i]]@row_order_list = ht_main@row_order_list
+                object@ht_list[[i]]@row_order = ht_main@row_order
+                object@ht_list[[i]]@row_dend_param$show = FALSE
+                object@ht_list[[i]]@row_dend_param$cluster = FALSE  # don't do clustering because cluster was already done
+            }
         }
-    }
-    if(verbose) qqcat("adjust row order for all other heatmaps\n")
-
-    # update other heatmaps' row titles
-    for(i in seq_len(n_ht)) {
-        if(inherits(object@ht_list[[i]], "Heatmap") && i != i_main) {
-            object@ht_list[[i]]@row_title = character(0)
+        if(verbose) qqcat("adjust row order for all other heatmaps\n")
+    } else {
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap") & i != i_main) {
+                object@ht_list[[i]]@column_order_list = ht_main@column_order_list
+                object@ht_list[[i]]@column_order = ht_main@column_order
+                object@ht_list[[i]]@column_dend_param$show = FALSE
+                object@ht_list[[i]]@column_dend_param$cluster = FALSE  # don't do clustering because cluster was already done
+            }
         }
+        if(verbose) qqcat("adjust column order for all other heatmaps\n")
     }
-    if(verbose) qqcat("remove row titles for all other heatmaps\n")
-
-    if(row_dend_side == "left") {
-        # move dend to the first one
-        object@ht_list[[i_main]]@row_dend_param$show = FALSE
-        object@ht_list[[1]]@row_dend_list = ht_main@row_dend_list
-        object@ht_list[[1]]@row_dend_param = ht_main@row_dend_param
-        object@ht_list[[1]]@row_dend_param$side = "left"
-        if(verbose) qqcat("add dendrogram of the main heatmap to the left of the first heatmap\n")
-    } else if(row_dend_side == "right") {
-        object@ht_list[[i_main]]@row_dend_param$show = FALSE
-        object@ht_list[[n_ht]]@row_dend_list = ht_main@row_dend_list
-        object@ht_list[[n_ht]]@row_dend_param = ht_main@row_dend_param
-        object@ht_list[[n_ht]]@row_dend_param$side = "right"
-        if(verbose) qqcat("add dendrogram of the main heatmap to the right of the last heatmap\n")
+    
+    if(direction == "horizontal") {
+        # update other heatmaps' row titles
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap") && i != i_main) {
+                object@ht_list[[i]]@row_title = character(0)
+            }
+        }
+        if(verbose) qqcat("remove row titles for all other heatmaps\n")
+    } else {
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap") && i != i_main) {
+                object@ht_list[[i]]@column_title = character(0)
+            }
+        }
+        if(verbose) qqcat("remove column titles for all other heatmaps\n")
     }
 
-    if(row_sub_title_side == "left") {
-        object@ht_list[[i_main]]@row_title = character(0)
-        object@ht_list[[1]]@row_title = ht_main@row_title
-        object@ht_list[[1]]@row_title_param = ht_main@row_title_param
-        object@ht_list[[1]]@row_title_param$side = "left"
-        object@ht_list[[1]]@row_title_param$just = get_text_just(ht_main@row_title_param$rot, "left")
-        if(verbose) qqcat("add row title of the main heatmap to the left of the first heatmap\n")
-    } else if(row_sub_title_side == "right") {
-        object@ht_list[[i_main]]@row_title = character(0)
-        object@ht_list[[n_ht]]@row_title = ht_main@row_title
-        object@ht_list[[n_ht]]@row_title_param = ht_main@row_title_param
-        object@ht_list[[n_ht]]@row_title_param$side = "right"
-        object@ht_list[[n_ht]]@row_title_param$just = get_text_just(ht_main@row_title_param$rot, "right")
-        if(verbose) qqcat("add row title of the main heatmap to the right of the last heatmap\n")
+    if(direction == "horizontal") {
+        if(row_dend_side == "left") {
+            # move dend to the first one
+            object@ht_list[[i_main]]@row_dend_param$show = FALSE
+            object@ht_list[[1]]@row_dend_list = ht_main@row_dend_list
+            object@ht_list[[1]]@row_dend_param = ht_main@row_dend_param
+            object@ht_list[[1]]@row_dend_param$side = "left"
+            if(verbose) qqcat("add dendrogram of the main heatmap to the left of the first heatmap\n")
+        } else if(row_dend_side == "right") {
+            object@ht_list[[i_main]]@row_dend_param$show = FALSE
+            object@ht_list[[n_ht]]@row_dend_list = ht_main@row_dend_list
+            object@ht_list[[n_ht]]@row_dend_param = ht_main@row_dend_param
+            object@ht_list[[n_ht]]@row_dend_param$side = "right"
+            if(verbose) qqcat("add dendrogram of the main heatmap to the right of the last heatmap\n")
+        }
+
+        if(row_sub_title_side == "left") {
+            object@ht_list[[i_main]]@row_title = character(0)
+            object@ht_list[[1]]@row_title = ht_main@row_title
+            object@ht_list[[1]]@row_title_param = ht_main@row_title_param
+            object@ht_list[[1]]@row_title_param$side = "left"
+            object@ht_list[[1]]@row_title_param$just = get_text_just(ht_main@row_title_param$rot, "left")
+            if(verbose) qqcat("add row title of the main heatmap to the left of the first heatmap\n")
+        } else if(row_sub_title_side == "right") {
+            object@ht_list[[i_main]]@row_title = character(0)
+            object@ht_list[[n_ht]]@row_title = ht_main@row_title
+            object@ht_list[[n_ht]]@row_title_param = ht_main@row_title_param
+            object@ht_list[[n_ht]]@row_title_param$side = "right"
+            object@ht_list[[n_ht]]@row_title_param$just = get_text_just(ht_main@row_title_param$rot, "right")
+            if(verbose) qqcat("add row title of the main heatmap to the right of the last heatmap\n")
+        }
+    } else {
+        if(column_dend_side == "top") {
+            object@ht_list[[i_main]]@column_dend_param$show = FALSE
+            object@ht_list[[1]]@column_dend_list = ht_main@column_dend_list
+            object@ht_list[[1]]@column_dend_param = ht_main@column_dend_param
+            object@ht_list[[1]]@column_dend_param$side = "top"
+            if(verbose) qqcat("add dendrogram of the main heatmap to the top of the first heatmap\n")
+        } else if(column_dend_side == "bottom") {
+            object@ht_list[[i_main]]@column_dend_param$show = FALSE
+            object@ht_list[[n_ht]]@column_dend_list = ht_main@column_dend_list
+            object@ht_list[[n_ht]]@column_dend_param = ht_main@column_dend_param
+            object@ht_list[[n_ht]]@column_dend_param$side = "bottom"
+            if(verbose) qqcat("add dendrogram of the main heatmap to the bottom of the last heatmap\n")
+        }
+
+        if(column_sub_title_side == "top") {
+            object@ht_list[[i_main]]@column_title = character(0)
+            object@ht_list[[1]]@column_title = ht_main@column_title
+            object@ht_list[[1]]@column_title_param = ht_main@column_title_param
+            object@ht_list[[1]]@column_title_param$side = "top"
+            object@ht_list[[1]]@column_title_param$just = get_text_just(ht_main@column_title_param$rot, "top")
+            if(verbose) qqcat("add column title of the main heatmap to the top of the first heatmap\n")
+        } else if(column_sub_title_side == "bottom") {
+            object@ht_list[[i_main]]@column_title = character(0)
+            object@ht_list[[n_ht]]@column_title = ht_main@column_title
+            object@ht_list[[n_ht]]@column_title_param = ht_main@column_title_param
+            object@ht_list[[n_ht]]@column_title_param$side = "bottom"
+            object@ht_list[[n_ht]]@column_title_param$just = get_text_just(ht_main@row_title_param$rot, "bottom")
+            if(verbose) qqcat("add column title of the main heatmap to the bottom of the last heatmap\n")
+        }
     }
 
     # gap 
-    for(i in seq_len(n_ht)) {
-        if(inherits(object@ht_list[[i]], "Heatmap")) {
-            object@ht_list[[i]]@matrix_param$row_gap = ht_main@matrix_param$row_gap
+    if(direction == "horizontal") {
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                object@ht_list[[i]]@matrix_param$row_gap = ht_main@matrix_param$row_gap
+            }
         }
+        if(verbose) qqcat("adjust row_gap for all other heatmaps\n")
+    } else {
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                object@ht_list[[i]]@matrix_param$column_gap = ht_main@matrix_param$column_gap
+            }
+        }
+        if(verbose) qqcat("adjust column_gap for all other heatmaps\n")
     }
-    if(verbose) qqcat("adjust row_gap for all other heatmaps\n")
-
-    for(i in seq_len(n_ht)) {
-        # supress row clustering because all rows in all heatmaps are adjusted
-        if(inherits(object@ht_list[[i]], "Heatmap")) {
-            if(verbose) qqcat("prepare layout for heatmap: @{object@ht_list[[i]]@name}\n")
-            object@ht_list[[i]] = prepare(object@ht_list[[i]], process_rows = FALSE)
+    
+    if(direction == "horizontal") {
+        for(i in seq_len(n_ht)) {
+            # supress row clustering because all rows in all heatmaps are adjusted
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(verbose) qqcat("prepare layout for heatmap: @{object@ht_list[[i]]@name}\n")
+                object@ht_list[[i]] = prepare(object@ht_list[[i]], process_rows = FALSE)
+            }
+        }
+    } else {
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(verbose) qqcat("prepare layout for heatmap: @{object@ht_list[[i]]@name}\n")
+                object@ht_list[[i]] = prepare(object@ht_list[[i]], process_columns = FALSE)
+            }
         }
     }
 
@@ -657,7 +868,7 @@ setMethod(f = "make_layout",
             size = heatmap_legend_size(object, legend_list = heatmap_legend_list)
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_right_width = size[1]
-            object@layout$layout_index = rbind(object@layout$layout_index, heamap_legend_right = heatmap_list_layout_index("heamtap_legend_right"))
+            object@layout$layout_index = rbind(object@layout$layout_index, heamap_legend_right = heatmap_list_layout_index("heatmap_legend_right"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object, legend_list = heatmap_legend_list))
     } else {
@@ -720,17 +931,37 @@ setMethod(f = "make_layout",
         object@annotation_legend_param$size = unit(c(0, 0), "null")
     }
 
-    main_matrix_rn = rownames(object@ht_list[[i_main]]@matrix)
-    if(!is.null(main_matrix_rn)) {
-        for(i in seq_len(n_ht)) {
-            if(i == i_main) next
-            if(inherits(object@ht_list[[i]], "Heatmap")) {
-                matrix_rn = rownames(object@ht_list[[i]]@matrix)
-                if(!is.null(matrix_rn)) {
-                    # if same set but different order
-                    if(setequal(main_matrix_rn, matrix_rn)) {
-                        if(!identical(main_matrix_rn, matrix_rn)) {
-                            warning("Row names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
+    if(direction == "horizontal") {
+        main_matrix_rn = rownames(object@ht_list[[i_main]]@matrix)
+        if(!is.null(main_matrix_rn)) {
+            for(i in seq_len(n_ht)) {
+                if(i == i_main) next
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    matrix_rn = rownames(object@ht_list[[i]]@matrix)
+                    if(!is.null(matrix_rn)) {
+                        # if same set but different order
+                        if(setequal(main_matrix_rn, matrix_rn)) {
+                            if(!identical(main_matrix_rn, matrix_rn)) {
+                                warning("Row names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        main_matrix_cn = colnames(object@ht_list[[i_main]]@matrix)
+        if(!is.null(main_matrix_cn)) {
+            for(i in seq_len(n_ht)) {
+                if(i == i_main) next
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    matrix_cn = colnames(object@ht_list[[i]]@matrix)
+                    if(!is.null(matrix_cn)) {
+                        # if same set but different order
+                        if(setequal(main_matrix_cn, matrix_cn)) {
+                            if(!identical(main_matrix_cn, matrix_cn)) {
+                                warning("Column names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
+                            }
                         }
                     }
                 }
@@ -849,9 +1080,12 @@ setMethod(f = "draw",
 
     
     padding = object@ht_list_param$padding
-    layout = grid.layout(nrow = 7, ncol = 7, widths = component_width(object, 1:7), heights = component_height(object, 1:7))
-    ht_list_width = sum(component_width(object, 1:7)) + padding[2] + padding[4]
-    ht_list_height = sum(component_height(object, 1:7)) + padding[1] + padding[3]
+    layout = grid.layout(nrow = length(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT), 
+        ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), 
+        widths = component_width(object), 
+        heights = component_height(object))
+    ht_list_width = sum(component_width(object)) + padding[2] + padding[4]
+    ht_list_height = sum(component_height(object)) + padding[1] + padding[3]
 
     if(is_abs_unit(ht_list_width)) {
         ht_list_width = unit(round(convertWidth(ht_list_width, "mm", valueOnly = TRUE)), "mm")
@@ -893,19 +1127,19 @@ setMethod(f = "draw",
 
 
 HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT = 1:7
-names(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT) = c("annotation_legend_top", "heatmap_legend_top", "row_title_top",
-    "heatmap_list", "row_title_bottom", "heatmap_legend_bottom", "annotation_legend_bottom")
+names(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT) = c("annotation_legend_top", "heatmap_legend_top", "column_title_top",
+    "heatmap_list", "column_title_bottom", "heatmap_legend_bottom", "annotation_legend_bottom")
 HEATMAP_LIST_LAYOUT_ROW_COMPONENT = 1:7
 names(HEATMAP_LIST_LAYOUT_ROW_COMPONENT) = c("annotation_legend_left", "heatmap_legend_left", "row_title_left", 
     "heatmap_list", "row_title_right", "heatmap_legend_right", "annotation_legend_right")
 
 heatmap_list_layout_index = function(nm) {
-    if(grepl("column", nm)) {
-        ind = c(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT[nm], HEATMAP_LIST_LAYOUT_ROW_COMPONENT["heatmap_list"])
-    } else if(grepl("row", nm)) {
-        ind = c(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT["heatmap_list"], HEATMAP_LIST_LAYOUT_ROW_COMPONENT[nm])
-    } else if(nm == "heatmap_list") { # heatmap_body
+    if(nm == "heatmap_list") { # heatmap_body
         ind = c(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT["heatmap_list"], HEATMAP_LIST_LAYOUT_ROW_COMPONENT["heatmap_list"])
+    } else if(nm %in% names(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT)) {
+        ind = c(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT[nm], HEATMAP_LIST_LAYOUT_ROW_COMPONENT["heatmap_list"])
+    } else if(nm %in% names(HEATMAP_LIST_LAYOUT_ROW_COMPONENT)) {
+        ind = c(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT["heatmap_list"], HEATMAP_LIST_LAYOUT_ROW_COMPONENT[nm])
     }
     names(ind) = c("layout.pos.row", "layout.pos.col")
     return(ind)
@@ -1185,7 +1419,7 @@ setMethod(f = "adjust_heatmap_list",
 
         max_left_component_width = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
             if(inherits(ht, "Heatmap")) {
-                sum(component_height(ht, c("row_dend_left", "row_names_left", "row_anno_left")))
+                sum(component_width(ht, c("row_dend_left", "row_names_left", "row_anno_left")))
             } else {
                 ht@extended[2]
             }
@@ -1221,7 +1455,7 @@ setMethod(f = "adjust_heatmap_list",
         }
 
         ## only some of the heatmaps have null unit and the number is the number of rows
-        total_fixed_rows = unit(0, "mm")
+        total_fixed_height = unit(0, "mm")
         total_null_units_lt = list()
         for(i in seq_along(object@ht_list)) {
             ht = object@ht_list[[i]]
@@ -1323,7 +1557,7 @@ setMethod(f = "draw_heatmap_list",
     n = length(object@ht_list)
     ht_gap = object@ht_list_param$ht_gap
 
-    if(object@ht_list_param$direction == "horizontal") {
+    if(object@direction == "horizontal") {
 
         heatmap_width = object@layout$heatmap_width
         max_bottom_component_height = object@layout$max_bottom_component_height
@@ -1379,10 +1613,10 @@ setMethod(f = "draw_heatmap_list",
         for(i in seq_len(n)) {
             ht = object@ht_list[[i]]
 
-            if(i == n) {
+            if(i == 1) {
                 y = unit(1, "npc")
             } else {
-                y = unit(1, "npc") - sum(heatmap_height[seq_len(i-1)]) + sum(ht_gap[seq_len(i-1)])
+                y = unit(1, "npc") - sum(heatmap_height[seq_len(i-1)]) - sum(ht_gap[seq_len(i-1)])
             }
             
             pushViewport(viewport(y = y, x = unit(0, "npc"), height = heatmap_height[i], just = c("left", "top"), name = paste0("heatmap_", object@ht_list[[i]]@name)))
