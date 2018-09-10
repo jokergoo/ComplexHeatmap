@@ -89,6 +89,9 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 #
 # == details
 # The AnnotationFunction class is a wrapper of the function which draws heatmap annotation.
+#
+# If the annotation function is subsetable, the annotation graphics can be split by rows or by columns
+# according to the split of the heatmap.
 AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), 
 	var_imported = list(), n = 0, data_scale = c(0, 1), subset_rule = list(), 
 	subsetable = FALSE, width = NULL, height = NULL) {
@@ -167,7 +170,7 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 #
 # == param
 # -x An `AnnotationFunction-class` object.
-# -i Index
+# -i A vector of indices.
 #
 # == details
 # One good thing for designing the `AnnotationFunction-class` can be subsetted.
@@ -238,6 +241,7 @@ setMethod(f = "draw",
 
     # names should be passed to the data viewport
 	pushViewport(viewport(width = anno_width, height = anno_height))
+	vp_name1 = current.viewport()$name
 	object@fun(index)
 	if(test2) {
 		grid.text(test, y = unit(1, "npc") + unit(2, "mm"), just = "bottom")
@@ -256,6 +260,10 @@ setMethod(f = "draw",
 				gp = gpar(fill = "transparent", col = "red", lty = 2))
 		}
 		
+	}
+	vp_name2 = current.viewport()$name
+	if(vp_name1 != vp_name2) {
+		stop("Viewports are not the same before and after plotting the annotation graphics.")
 	}
 	popViewport()
 

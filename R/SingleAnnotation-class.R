@@ -4,12 +4,6 @@
 # Class for a Single Annotation
 #
 # == details
-# A complex heatmap always has more than one annotations on rows and columns. Here
-# the `SingleAnnotation-class` defines the basic unit of annotations.
-# The most simple annotation is one row or one column grids in which different colors
-# represent different classes of the data. The annotation can also be more complex
-# graphics, such as a boxplot that shows data distribution in corresponding row or column.
-#
 # The `SingleAnnotation-class` is used for storing data for a single annotation and provides
 # methods for drawing annotation graphics.
 #
@@ -58,44 +52,55 @@ SingleAnnotation = setClass("SingleAnnotation",
 # Constructor method for SingleAnnotation class
 #
 # == param
-# -name name for this annotation. If it is not specified, an internal name is assigned.
-# -value A vector of discrete or continuous annotation.
-# -col colors corresponding to ``value``. If the mapping is discrete mapping, the value of ``col``
-#      should be a vector; If the mapping is continuous mapping, the value of ``col`` should be 
-#      a color mapping function. 
-# -fun a self-defined function to add annotation graphics. The argument of this function should only 
-#      be a vector of index that corresponds to rows or columns.
-# -na_col color for ``NA`` values in simple annotations.
-# -which is the annotation a row annotation or a column annotation?
-# -show_legend if it is a simple annotation, whether show legend when making the complete heatmap.
-# -gp Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.
-# -legend_param parameters for the legend. See `color_mapping_legend,ColorMapping-method` for options.
-# -show_name whether show annotation name
-# -name_gp graphic parameters for annotation name
-# -name_offset offset to the annotation, a `grid::unit` object
+# -name Name for the annotation. If it is not specified, an internal name is assigned.
+# -value A vector or a matrix of discrete or continuous values.
+# -col Colors corresponding to ``value``. If the mapping is discrete, the value of ``col``
+#      should be a named vector; If the mapping is continuous, the value of ``col`` should be 
+#      a color mapping function.
+# -fun A user-defined function to add annotation graphics. The argument of this function should only 
+#      be a vector of index that corresponds to rows or columns. Normally the function should be 
+#      constructed by `AnnotationFunction` if you want the annotation supports splitting. 
+#      See **Details** for more explanation.
+# -na_col Color for ``NA`` values in the simple annotations.
+# -which Whether the annotation is a row annotation or a column annotation?
+# -show_legend If it is a simple annotation, whether show legend in the final heatmap?
+# -gp Since simple annotation is represented as rows of grids. This argument controls graphic parameters for the simple annotation.
+#     The ``fill`` parameter is ignored here.
+# -legend_param Parameters for the legend. See `color_mapping_legend,ColorMapping-method` for all possible options.
+# -show_name Whether show annotation name?
+# -name_gp Graphic parameters for annotation name.
+# -name_offset Offset to the annotation, a `grid::unit` object.
 # -name_side 'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations
-# -name_rot rotation of the annotation name, can only take values in ``c(00, 90, 180, 270)``.
+# -name_rot Rotation of the annotation name, it can only take values in ``c(0, 90, 180, 270)``.
+# -width The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation,
+#        the width must be an absolute unit.
+# -height The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation,
+#        the width must be an absolute unit.
 #
 # == details
-# The most simple annotation is one row or one column grids in which different colors
-# represent different classes of the data. Here the function use `ColorMapping-class`
-# to process such simple annotation. ``value`` and ``col`` arguments controls values and colors
-# of the simple annotation and a `ColorMapping-class` object will be constructed based on ``value`` and ``col``.
+# A single annotation is a basic unit of complex heatmap annotations where the heamtap annotations
+# are always a list of single annotations. An annotation can be simply heatmap-like (here we call
+# it simple annotation) or more complex like points, lines, boxes (for which we call it complex annotation).
 #
-# ``fun`` is used to construct a more complex annotation. Users can add any type of annotation graphics
-# by implementing a function. The only input argument of ``fun`` is a index
-# of rows or columns which is already adjusted by the clustering. In the package, there are already
-# several annotation graphic function generators: `anno_points`, `anno_histogram` and `anno_boxplot`.
+# In the `SingleAnnotation` constructor, ``value``, ``col``, ``na_col`` are used to construct a `anno_simple`
+# annotation funciton which is generated internally by `AnnotationFunction`. The legend of the simple annotation
+# can be automatcally generated,
 #
-# In the case that row annotations are splitted by rows, ``index`` corresponding to row orders in each row-slice
-# and ``fun`` will be applied on each of the row slices.
+# For construcing a complex annotation, users need to use ``fun`` which is a user-defind function. Normally it 
+# is constucted by `AnnotationFunction`. One big advantage for using `AnnotationFunction` is the annotation function
+# or the graphics drawn by the annotation function can be split according to row splitting or column splitting of
+# the heatmap. Users can also provide a "pure" function which is a normal R function for the ``fun`` argument. 
+# The function only needs one argument which is a vector of index for rows or columns depending whether it is 
+# a row annotation or column annotation. The other two optional arguments are the current slice index and total
+# number of slices. See **Examples** section for an example.
 #
-# One thing that users should be careful is the difference of coordinates when the annotation is a row
-# annotation or a column annotation. 
+# The `SingleAnnotation-class` is a simpls wrapper on top of `AnnotationFunction-class` only with annotation 
+# name added.
 #
 # == seealso
-# There are following built-in annotation functions that can be used to generate complex annotations: 
-# `anno_points`, `anno_barplot`, `anno_histogram`, `anno_boxplot`, `anno_density`, `anno_text` and `anno_link`.
+# There are following built-in annotation functions that can be directly used to generate complex annotations: 
+# `anno_simple`, `anno_points`, `anno_barplot`, `anno_histogram`, `anno_boxplot`, `anno_density`, `anno_text`,
+# `anno_joyplot`, `anno_horizon`, `anno_image`, `anno_lines` and `anno_mark`.
 # 
 # == value
 # A `SingleAnnotation-class` object.
@@ -103,6 +108,32 @@ SingleAnnotation = setClass("SingleAnnotation",
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
+# == example
+# ha = SingleAnnotation(value = 1:10)
+# draw(ha, test = "single column annotation")
+#
+# m = cbind(1:10, 10:1)
+# colnames(m) = c("a", "b")
+# ha = SingleAnnotation(value = m)
+# draw(ha, test = "matrix as column annotation")
+#
+# anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)))
+# ha = SingleAnnotation(fun = anno)
+# draw(ha, test = "anno_barplot as input")
+#
+# fun = local({
+#     # because there variables outside the function for use, we put it a local environment
+#     value = 1:10
+#     function(index, k = 1, n = 1) {
+#         pushViewport(viewport(xscale = c(0.5, length(index) + 0.5), yscale = range(value)))
+#         grid.points(seq_along(index), value[index])
+#         grid.rect()
+#         if(k == 1) grid.yaxis()
+#         popViewport()
+#     }
+# })
+# ha = SingleAnnotation(fun = fun, height = unit(4, "cm"))
+# draw(ha, test = "self-defined function")
 SingleAnnotation = function(name, value, col, fun, 
 	na_col = "grey",
 	which = c("column", "row"), 
@@ -378,17 +409,25 @@ SingleAnnotation = function(name, value, col, fun,
     	    if(is.null(names(col))) {
                 if(is.factor(value)) {
                     names(col) = levels(value)
-                } else {
+                    if(verbose) qqcat("@{names}: add names for discrete color mapping\n")
+                } else if(length(col) == length(unique(value))) {
                     names(col) = unique(value)
+                    if(verbose) qqcat("@{names}: add names for discrete color mapping\n")
+                } else if(is.numeric(value)) {
+                    col = colorRamp2(seq(min(value, na.rm = TRUE), max(value, na.rm = TRUE), length = length(col)), col)
+                    if(verbose) qqcat("@{name}: assume as a continuous color mapping\n")
                 }
-                if(verbose) qqcat("@{names}: add names for discrete color mapping\n")
             }
-            col = col[intersect(c(names(col), "_NA_"), as.character(value))]
-    		if("_NA_" %in% names(col)) {
-    			na_col = col["_NA_"]
-    			col = col[names(col) != "_NA_"]
-    		}
-            color_mapping = ColorMapping(name = name, colors = col, na_col = na_col)
+            if(is.function(col)) {
+                color_mapping = ColorMapping(name = name, col_fun = col, na_col = na_col)
+            } else {
+                col = col[intersect(c(names(col), "_NA_"), as.character(value))]
+        		if("_NA_" %in% names(col)) {
+        			na_col = col["_NA_"]
+        			col = col[names(col) != "_NA_"]
+        		}
+                color_mapping = ColorMapping(name = name, colors = col, na_col = na_col)
+            }
         } else if(is.function(col)) {
             color_mapping = ColorMapping(name = name, col_fun = col, na_col = na_col)
         }
@@ -460,19 +499,15 @@ SingleAnnotation = function(name, value, col, fun,
 }
 
 # == title
-# Draw the single annotation
+# Draw the Single Annotation
 #
 # == param
-# -object a `SingleAnnotation-class` object.
-# -index a vector of orders
-# -k if row annotation is splitted, the value identifies which row slice. It is only used for the names of the viewport
-#    which contains the annotation graphics.
-# -n total number of row slices
-#
-# == details
-# A viewport is created.
-#
-# The graphics would be different depending the annotation is a row annotation or a column annotation.
+# -object A `SingleAnnotation-class` object.
+# -index A vector of indices.
+# -k The index of the slice.
+# -n Total number of slices. ``k`` and ``n`` are used to adjust axis and annotation names. E.g.
+#    if ``k`` is 2 and ``n`` is 3, the axis and annotation names are not drawn.
+# -test Is it in test mode? The value can be logical or a text which is plotted as the title of plot.
 #
 # == value
 # No value is returned.
@@ -614,7 +649,7 @@ setMethod(f = "draw",
 # Print the SingleAnnotation object
 #
 # == param
-# -object a `SingleAnnotation-class` object.
+# -object A `SingleAnnotation-class` object.
 #
 # == value
 # No value is returned.
@@ -691,6 +726,17 @@ has_AnnotationFunction = function(single_anno) {
 ## subset method for .SingleAnnotation-class
 ## column annotation only allows column subsetting and row annotaiton only allows row subsetting
 
+# == title
+# Subset an SingleAnnotation Object
+#
+# == param
+# -x An `SingleAnnotation-class` object.
+# -i A vector of indices.
+#
+# == example
+# ha = SingleAnnotation(value = 1:10)
+# ha[1:5]
+# draw(ha[1:5], test = "ha[1:5]")
 "[.SingleAnnotation" = function(x, i) {
     # only allow subsetting for anno_* functions defined in ComplexHeatmap
     if(nargs() == 2) {
@@ -708,7 +754,12 @@ has_AnnotationFunction = function(single_anno) {
     }
 }
 
-
+# == title
+# Copy the SingleAnnotation object
+#
+# == param
+# -object The `SingleAnnotation-class` object.
+#
 setMethod(f = "copy_all",
     signature = "SingleAnnotation",
     definition = function(object) {
@@ -723,13 +774,26 @@ setMethod(f = "copy_all",
 })
 
 
-
+# == title
+# Width of the SingleAnnotation object
+#
+# == param
+# -object The `SingleAnnotation-class` object.
+#
 setMethod(f = "width",
     signature = "SingleAnnotation",
     definition = function(object) {
     object@width
 })
 
+# == title
+# Assign the Width of the SingleAnnotation object
+#
+# == param
+# -object The `SingleAnnotation-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
 setReplaceMethod(f = "width",
     signature = "SingleAnnotation",
     definition = function(object, value, ...) {
@@ -738,12 +802,26 @@ setReplaceMethod(f = "width",
     object
 })
 
+# == title
+# Height of the SingleAnnotation object
+#
+# == param
+# -object The `SingleAnnotation-class` object.
+#
 setMethod(f = "height",
     signature = "SingleAnnotation",
     definition = function(object) {
     object@height
 })
 
+# == title
+# Assign the Height of the SingleAnnotation object
+#
+# == param
+# -object The `SingleAnnotation-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
 setReplaceMethod(f = "height",
     signature = "SingleAnnotation",
     definition = function(object, value, ...) {
@@ -752,6 +830,15 @@ setReplaceMethod(f = "height",
     object
 })
 
+# == title
+# Size of the SingleAnnotation object
+#
+# == param
+# -object The `SingleAnnotation-class` object.
+#
+# == detail
+# It returns the width if it is a row annotation and the height if it is a column annotation.
+#
 setMethod(f = "size",
     signature = "SingleAnnotation",
     definition = function(object) {
@@ -762,6 +849,17 @@ setMethod(f = "size",
     }
 })
 
+# == title
+# Assign the Size of the SingleAnnotation object
+#
+# == param
+# -object The `SingleAnnotation-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
+# == detail
+# It assigns the width if it is a row annotation and the height if it is a column annotation.
+#
 setReplaceMethod(f = "size",
     signature = "SingleAnnotation",
     definition = function(object, value, ...) {
@@ -773,6 +871,12 @@ setReplaceMethod(f = "size",
     object
 })
 
+# == title
+# Number of Observations
+#
+# == param
+# -x The `SingleAnnotation-class` object.
+#
 nobs.SingleAnnotation = function(x) {
     if(x@fun@n > 0) {
         x@fun@n

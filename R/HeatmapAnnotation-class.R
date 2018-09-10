@@ -1,6 +1,6 @@
 
 # == title
-# Class for heatmap annotations
+# Class for Heatmap Annotations
 #
 # == details
 # A complex heatmap contains a list of annotations which are represented as different graphics
@@ -42,31 +42,35 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # Constructor method for HeatmapAnnotation class
 #
 # == param
-# -df a data frame. Each column will be treated as a simple annotation. The data frame must have column names.
-# -name name of the heatmap annotation, optional.
-# -col a list of colors which contains color mapping to columns in ``df``. See `SingleAnnotation` for how to set colors.
-# -na_col color for ``NA`` values in simple annotations.
-# -annotation_legend_param a list which contains parameters for annotation legends
-# -show_legend whether show legend for each column in ``df``.
-# -... functions which define complex annotations or vectors of simple annotation. Values should be named arguments.
-# -which are the annotations row annotations or column annotations?
-# -annotation_height height of each annotation if annotations are column annotations.
-# -annotation_width width of each annotation if annotations are row annotations.
-# -height height of the column annotations, basically it is identical to ``bottom_annotation_height`` or ``top_annotation_height``
-#        in `Heatmap` function.
-# -width width of the whole heatmap annotations, only used for row annotation when appending to the list of heatmaps.
-# -gp graphic parameters for simple annotations.
-# -gap gap between each annotation
-# -show_annotation_name whether show annotation names. For column annotation, annotation names are drawn either on the left
+# -... Name-value pairs where the names correspond to annotation names and values can be a vector, a matrix and an
+#      annotation function. Each pair is sent to `SingleAnnotation` to contruct a single annotation.
+# -df A data frame. Each column will be treated as a simple annotation. The data frame must have column names.
+# -name Name of the heatmap annotation, optional.
+# -col A list of colors which contain color mapping to columns in ``df`` and simple annotations define din ``...```. 
+#      See `SingleAnnotation` for how to set colors.
+# -na_col Color for ``NA`` values in simple annotations.
+# -annotation_legend_param A list which contains parameters for annotation legends. See `color_mapping_legend,ColorMapping-method` for all possible options.
+# -show_legend Whether show annotation legend. The value can be one single value or a vector which corresponds to the simple annotations.
+# -which Are the annotations row annotations or column annotations?
+# -annotation_height Height of each annotation if annotations are column annotations.
+# -annotation_width Width of each annotation if annotations are row annotations.
+# -height Height of the complete column annotations.
+# -width Width of the complete heatmap annotations.
+# -gp Graphic parameters for simple annotations (with ``fill`` parameter ignored).
+# -gap Gap between each two annotation. It can be a single value or a vector of `grid.unit` objects.
+# -show_annotation_name Whether show annotation names? For column annotation, annotation names are drawn either on the left
 #   or the right, and for row annotations, names are draw either on top to at bottom. The value can be a vector.
-# -annotation_name_gp graphic parameters for anntation names. Graphic paramters can be vectors.
-# -annotation_name_offset offset to the annotations, `grid::unit` object. The value can be a vector.
-# -annotation_name_side side of the annotation names.
-# -annotation_name_rot rotation of the annotation names, can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
+# -annotation_name_gp Graphic parameters for anntation names. Graphic paramters can be vectors.
+# -annotation_name_offset Offset to the annotations, `grid::unit` object. The value can be a vector.
+# -annotation_name_side Side of the annotation names.
+# -annotation_name_rot Rotation of the annotation names, can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
 #
 # == details
-# The simple annotations are defined by ``df`` and ``col`` arguments. Complex annotations are
-# defined by the function list. So you need to at least to define ``df`` or a annotation function.
+# There are three ways to specify heatmap annotations:
+#
+# 1. If the annotation is simply a vector or a matrix, it can be specified as ``HeatmapAnnotation(foo = 1:10)``.
+# 2. If the annotations are already stored as a data frame, it can be specified as ``HeatmapAnnotation(df = df)``.
+# 3. For complex annotation, users can use the pre-defined annotation functions such as `anno_points`: ``HeatmapAnnotation(foo = anno_points(1:10))``.
 #
 # == value
 # A `HeatmapAnnotation-class` object.
@@ -350,7 +354,7 @@ HeatmapAnnotation = function(...,
     		if(!is.null(width)) {
     			global_width = width
     		}
-    		anno_size = lapply(anno_list, width)
+    		anno_size = do.call("unit.c", lapply(anno_list, width))
 			width = sum(anno_size) + sum(gap) - gap[n_total_anno]
     	} else {
     		if(length(annotation_width) != n_total_anno) {
@@ -410,10 +414,10 @@ HeatmapAnnotation = function(...,
 }
 
 # == title
-# Construct row annotations
+# Construct Row Annotations
 #
 # == param
-# -... pass to `HeatmapAnnotation`
+# -... Pass to `HeatmapAnnotation`
 #
 # == details
 # The function is identical to 
@@ -431,10 +435,10 @@ rowAnnotation = function(...) {
 }
 
 # == title
-# Construct column annotations
+# Construct Column Annotations
 #
 # == param
-# -... pass to `HeatmapAnnotation`
+# -... Pass to `HeatmapAnnotation`
 #
 # == details
 # The function is identical to
@@ -452,13 +456,13 @@ columnAnnotation = function(...) {
 }
 
 # == title
-# Get a list of color mapping objects
+# Get a List of ColorMapping objects
 #
 # == param
-# -object a `HeatmapAnnotation-class` object.
+# -object A `HeatmapAnnotation-class` object.
 #
 # == details
-# Color mapping for visible simple annotations are only returned.
+# Color mappings for visible simple annotations are only returned.
 #
 # This function is only for internal use.
 #
@@ -482,13 +486,13 @@ setMethod(f = "get_color_mapping_list",
 })
 
 # == title
-# Get a list of color mapping parameters
+# Get a List of Annotation Legend Parameters
 #
 # == param
-# -object a `HeatmapAnnotation-class` object.
+# -object A `HeatmapAnnotation-class` object.
 #
 # == details
-# Color mapping parameters for visible simple annotations are only returned.
+# The annotation legend parameters for visible simple annotations are only returned.
 #
 # This function is only for internal use.
 #
@@ -512,19 +516,16 @@ setMethod(f = "get_legend_param_list",
 })
 
 # == title
-# Draw the heatmap annotations
+# Draw the Heatmap Annotations
 #
 # == param
-# -object a `HeatmapAnnotation-class` object.
-# -index a vector of order.
-# -k if row annotation is splitted, the value identifies which row slice.
-# -n total number of row slices.
-# -align_to if the allocated space is more than than the column annotation itself, should
-#     the viewport be aligned to the top or bottom?
-# -... pass to `grid::viewport` which contains all annotations.
-#
-# == details
-# A viewport is created. Mostly, this method is used inside `draw,HeatmapList-method`.
+# -object A `HeatmapAnnotation-class` object.
+# -index A vector of indices.
+# -k The current slice index for the annotation if it is split.
+# -n Total number of slices.
+# -align_to This argument will be removed in the future.
+# -... Pass to `grid::viewport` which contains all the annotations.
+# -test Is it in test mode? The value can be logical or a text which is plotted as the title of plot.
 #
 # == value
 # No value is returned.
@@ -617,10 +618,10 @@ setMethod(f = "draw",
 })
 
 # == title
-# Print the Heatmap Annotation object
+# Print the HeatmapAnnotation object
 #
 # == param
-# -object a `HeatmapAnnotation-class` object.
+# -object A `HeatmapAnnotation-class` object.
 #
 # == value
 # No value is returned.
@@ -707,7 +708,13 @@ setMethod(f = "show",
 })
 
 
-nobs.HeatmapAnnotation = function(object, ...) {
+# == title
+# Number of Observations
+#
+# == param
+# -x The `HeatmapAnnotation-class` object.
+#
+nobs.HeatmapAnnotation = function(object) {
 	n_anno = length(object@anno_list)
 	len = sapply(seq_len(n_anno), function(i) {
 		if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
@@ -742,15 +749,37 @@ nobs.HeatmapAnnotation = function(object, ...) {
 #
 setMethod(f = "add_heatmap",
     signature = "HeatmapAnnotation",
-    definition = function(object, x) {
+    definition = function(object, x, direction = c("horizontal", "vertical")) {
+
+    direction = match.arg(direction)[1]
 
     ht_list = new("HeatmapList")
-    ht_list = add_heatmap(ht_list, object)
-    ht_list = add_heatmap(ht_list, x)
+    ht_list@direction = direction
+    
+    ht_list = add_heatmap(ht_list, object, direction = direction)
+    ht_list = add_heatmap(ht_list, x, direction = direction)
     return(ht_list)
 
 })
 
+# == title
+# Concatenate Heatmap Annotations
+#
+# == param
+# -... `HeatmapAnnotation-class` objects.
+# -gap gap between the annotations.
+#
+# == details
+# The heatmap annotations should be same number of observations.
+# 
+# == example
+# ha1 = HeatmapAnnotation(foo = 1:10)
+# ha2 = HeatmapAnnotation(bar = anno_points(10:1))
+# ha = c(ha1, ha2)
+# ha
+# ha3 = HeatmapAnnotation(sth = cbind(1:10, 10:1))
+# ha = c(ha1, ha2, ha3, gap = unit(c(1, 4), "mm"))
+# ha
 c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
 	anno_list = list(...)
 	n = length(anno_list)
@@ -758,6 +787,7 @@ c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
 		stop("All annotations should be all row annotation or all column annotation.")
 	}
 	if(length(gap) == 1) gap = rep(gap, n)
+	if(length(gap) == n - 1) gap = unit.c(gap, unit(0, "mm"))
 	x = anno_list[[1]]
 	if(n > 1) {
 		x@gap[length(x@gap)] = gap[1]
@@ -800,10 +830,30 @@ c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
 	return(x)
 }
 
+# == title
+# Annotation Names
+#
+# == param
+# -x A `HeatmapAnnotation-class` object.
+#
+# == example
+# ha = HeatmapAnnotation(foo = 1:10, bar = anno_points(10:1))
+# names(ha)
 names.HeatmapAnnotation = function(x) {
 	names(x@anno_list)
 }
 
+# == title
+# Assign Annotation Names
+#
+# == param
+# -x A `HeatmapAnnotation-class` object.
+# -value A vector of new names.
+#
+# == example
+# ha = HeatmapAnnotation(foo = 1:10, bar = anno_points(10:1))
+# names(ha) = c("A", "B")
+# names(ha)
 `names<-.HeatmapAnnotation` = function(x, value) {
 	if(length(value) != length(x@anno_list)) {
 		stop("Length of `value` should be same as number of annotations.")
@@ -819,7 +869,21 @@ names.HeatmapAnnotation = function(x) {
 }
 
 
-# ha[1:2, c("foo", "bar")]
+# == title
+# Subset the HeatmapAnnotation object
+#
+# == param
+# -x A `HeatmapAnnotation-class` object.
+# -i Index of observations.
+# -j Index of annotations.
+#
+# == example
+# ha = HeatmapAnnotation(foo = 1:10, bar = anno_points(10:1),
+# 	sth = cbind(1:10, 10:1))
+# ha[1:5, ]
+# ha[, c("foo", "bar")]
+# ha[, 1:2]
+# ha[1:5, c("foo", "sth")]
 "[.HeatmapAnnotation" = function(x, i, j) {
 	if(!missing(j)) {
 		if(is.character(j)) {
@@ -839,7 +903,7 @@ names.HeatmapAnnotation = function(x) {
         x2@gap = x@gap[j]
         x2@gap[length(x2@gap)] = unit(0, "mm")
 
-        x2@size = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
+        size(x2) = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
 
     } else if(nargs() == 3 && missing(j)) {  # ha[1:4, ]
         x2 = x
@@ -863,7 +927,7 @@ names.HeatmapAnnotation = function(x) {
         x2@gap = x@gap[j]
         x2@gap[length(x2@gap)] = unit(0, "mm")
 
-        x2@size = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
+        size(x2) = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
 
     }
     
@@ -878,18 +942,37 @@ names.HeatmapAnnotation = function(x) {
     return(x2)
 }
 
+# == title
+# Number of Annotations
+#
+# == param
+# -x A `HeatmapAnnotation-class` object.
+#
 length.HeatmapAnnotation = function(x) {
 	length(x@anno_list)
 }
 
 
-
+# == title
+# Width of the HeatmapAnnotation object
+#
+# == param
+# -object The `HeatmapAnnotation-class` object.
+#
 setMethod(f = "width",
     signature = "HeatmapAnnotation",
     definition = function(object) {
     object@width
 })
 
+# == title
+# Assign the Width of the HeatmapAnnotation object
+#
+# == param
+# -object The `HeatmapAnnotation-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
 setReplaceMethod(f = "width",
     signature = "HeatmapAnnotation",
     definition = function(object, value, ...) {
@@ -906,13 +989,26 @@ setReplaceMethod(f = "width",
 })
 
 
-
+# == title
+# Height of the HeatmapAnnotation object
+#
+# == param
+# -object The `HeatmapAnnotation-class` object.
+#
 setMethod(f = "height",
     signature = "HeatmapAnnotation",
     definition = function(object) {
     object@height
 })
 
+# == title
+# Assign the Height of the HeatmapAnnotation object
+#
+# == param
+# -object The `HeatmapAnnotation-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
 setReplaceMethod(f = "height",
     signature = "HeatmapAnnotation",
     definition = function(object, value, ...) {
@@ -928,6 +1024,15 @@ setReplaceMethod(f = "height",
     object
 })
 
+# == title
+# Size of the HeatmapAnnotation object
+#
+# == param
+# -object The `HeatmapAnnotation-class` object.
+#
+# == detail
+# It returns the width if it is a row annotation and the height if it is a column annotation.
+#
 setMethod(f = "size",
     signature = "HeatmapAnnotation",
     definition = function(object) {
@@ -938,6 +1043,17 @@ setMethod(f = "size",
     }
 })
 
+# == title
+# Assign the Size of the HeatmapAnnotation object
+#
+# == param
+# -object The `HeatmapAnnotation-class` object.
+# -value A `grid::unit` object.
+# -... Other arguments
+#
+# == detail
+# It assigns the width if it is a row annotation and the height if it is a column annotation.
+#
 setReplaceMethod(f = "size",
     signature = "HeatmapAnnotation",
     definition = function(object, value, ...) {
@@ -949,7 +1065,31 @@ setReplaceMethod(f = "size",
     object
 })
 
-## for some reasons, only set height for column annotation and width for row annotation
+# == title
+# Resize the Width or Height of Heatmap Annotations
+#
+# == param
+# -annotation_height A vector of of annotation heights in `grid.unit` class.
+# -annotation_width A vector of of annotation widths in `grid.unit` class.
+# -height The height of the complete heatmap annotation.
+# -width The width of the complete heatmap annotation.
+# -anno_simple_row_size The size of one line of the simple annotation.
+# -simple_anno_size_adjust Whether adjust the size of the simple annotation?
+#
+# == details
+# The function only adjust height for column annotations and width for row annotations.
+#
+# the basic rule is:
+# 1. if ``annotation_height`` is set, it needs to be a vector and ``height`` is disabled. If all
+#    ``annotation_height`` are absolute units, ``height`` is ignored.
+# 2. if ``annotation_height`` contains non-absolute units, ``height`` also need to be set and the
+#    non-absolute unit should be set in a simple form such as 1:10 or ``unit(1, "null")``.
+# 3. ``anno_simple_row_size`` is only used when ``annotation_height`` is NULL.
+# 4. if only ``height`` is set, non-simple annotation is adjusted while keep simple anntation unchanged.
+# 5. if only ``height`` is set and all annotations are simple annotations, all anntations are adjusted.
+#      and ``anno_simple_row_size`` is disabled.
+# 6. If ``simple_anno_size_adjust`` is ``FALSE``, the size of the simple annotations will not change.
+#
 setMethod(f = "resize",
 	signature = "HeatmapAnnotation",
 	definition = function(object, 

@@ -86,12 +86,12 @@ default_col = function(x, main_matrix = FALSE) {
 }
 
 # == title
-# Calculate pairwise distance from a matrix
+# Calculate Pairwise Distance from a Matrix
 #
 # == param
-# -mat a matrix. The distance is calculated by rows.
-# -pairwise_fun a function which calculates distance between two vectors.
-# -... pass to `stats::as.dist`.
+# -mat A matrix. The distance is calculated by rows.
+# -pairwise_fun A function which calculates distance between two vectors.
+# -... Pass to `stats::as.dist`.
 #
 # == detail
 # You can construct any type of distance measurements by defining a pair-wise distance function.
@@ -190,7 +190,13 @@ check_gp = function(gp) {
 }
 
 
-# gp should already be checked by `check_gp`
+# == title
+# Subset a gpar object
+#
+# == param
+# -gp A `gpar` object.
+# -k A vector of indices.
+#
 subset_gp = function(gp, k) {
     gp = lapply(gp, function(x) {
         if(length(x) == 1) x
@@ -271,11 +277,11 @@ list_component = function() {
 }
 
 # == title
-# Maximum width of text
+# Maximum Width of Text
 #
 # == param
-# -text a vector of text
-# -... pass to `grid::textGrob`
+# -text A vector of text
+# -... Pass to `grid::textGrob`
 #
 # == details
 # Simply calculate maximum width of a list of `grid::textGrob` objects.
@@ -285,9 +291,6 @@ list_component = function() {
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
-#
-# == seealso
-# `max_text_width` is always used to calculate the size of viewport when there is text annotation (`anno_text`)
 #
 # == example
 # x = c("a", "bb", "ccc")
@@ -305,20 +308,17 @@ max_text_width = function(text, gp = gpar()) {
 }
 
 # == title
-# Maximum height of text
+# Maximum Height of Text
 #
 # == param
-# -text a vector of text
-# -... pass to `grid::textGrob`
+# -text A vector of text
+# -... Pass to `grid::textGrob`
 #
 # == details
 # Simply calculate maximum height of a list of `grid::textGrob` objects.
 #
 # == value
 # A `grid::unit` object.
-#
-# == seealso
-# `max_text_height` is always used to calculate the size of viewport when there is text annotation (`anno_text`)
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

@@ -72,3 +72,27 @@ AdditiveUnit = function(...) {
         add_heatmap(x, y)
     }
 }
+
+
+"%v%" = function(x, y) {
+    if(inherits(x, "HeatmapAnnotation")) {
+        if(x@which != "column") {
+            stop("You should specify `which` to `column` or use `columnAnnotation()` directly if you want to add column annotations vertically.")
+        }
+    }
+    if(inherits(y, "HeatmapAnnotation")) {
+        if(y@which != "column") {
+            stop("You should specify `which` to `column` or use `columnAnnotation()` directly if you want to add column annotations vertically.")
+        }
+    }
+    if(is.null(x)) {
+        ht_list = new("HeatmapList")
+        add_heatmap(ht_list, y, direction = "vertical")
+    } else if(is.null(y)) {
+        ht_list = new("HeatmapList")
+        add_heatmap(ht_list, x, direction = "vertical")
+    } else {
+        add_heatmap(x, y, direction = "vertical")
+    }
+}
+

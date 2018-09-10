@@ -97,6 +97,10 @@ Heatmap = setClass("Heatmap",
         top_annotation_param = "list",
         bottom_annotation = "ANY",
         bottom_annotation_param = "list",
+        left_annotation = "ANY", # NULL or a `HeatmapAnnotation` object
+        left_annotation_param = "list",
+        right_annotation = "ANY",
+        right_annotation_param = "list",
 
         heatmap_param = "list",
 
@@ -121,6 +125,7 @@ Heatmap = setClass("Heatmap",
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
 # -color_space the color space in which colors are interpolated. Only used if ``matrix`` is numeric and 
 #            ``col`` is a vector of colors. Pass to `circlize::colorRamp2`.
+# -border
 # -cell_fun self-defined function to add graphics on each cell. Seven parameters will be passed into 
 #           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height``, ``fill`` which are row index,
 #           column index in ``matrix``, coordinate of the middle points in the heatmap body viewport,
@@ -152,11 +157,7 @@ Heatmap = setClass("Heatmap",
 #                object with edges rendered, this argument will be ignored.
 # -row_dend_reorder apply reordering on rows. The value can be a logical value or a vector which contains weight 
 #               which is used to reorder rows
-# -row_hclust_side deprecated, use ``row_dend_side`` instead
-# -row_hclust_width deprecated, use ``row_dend_width`` instead
-# -show_row_hclust deprecated, use ``show_row_dend`` instead
-# -row_hclust_gp deprecated, use ``row_dend_gp`` instead
-# -row_hclust_reorder deprecated, use ``row_dend_reorder`` instead
+# -row_dend_gp
 # -cluster_columns whether make cluster on columns. Same settings as ``cluster_rows``.
 # -clustering_distance_columns same setting as ``clustering_distance_rows``.
 # -clustering_method_columns method to make cluster, pass to `stats::hclust`.
@@ -166,38 +167,43 @@ Heatmap = setClass("Heatmap",
 # -column_dend_gp graphic parameters for drawling lines. Same settings as ``row_dend_gp``.
 # -column_dend_reorder apply reordering on columns. The value can be a logical value or a vector which contains weight 
 #               which is used to reorder columns
-# -column_hclust_side deprecated, use ``column_dend_side`` instead
-# -column_hclust_height deprecated, use ``column_dend_height`` instead
-# -show_column_hclust deprecated, use ``show_column_dend`` instead
-# -column_hclust_gp deprecated, use ``column_dend_gp`` instead
-# -column_hclust_reorder deprecated, use ``column_dend_reorder`` instead
+# -column_dend_gp
 # -row_order order of rows. It makes it easy to adjust row order for a list of heatmaps if this heatmap 
 #      is selected as the main heatmap. Manually setting row order should turn off clustering
 # -column_order order of column. It makes it easy to adjust column order for both matrix and column annotations.
+# -row_labels
 # -row_names_side should the row names be put on the left or right of the heatmap?
 # -show_row_names whether show row names.
 # -row_names_max_width maximum width of row names viewport. Because some times row names can be very long, it is not reasonable
 #                      to show them all.
 # -row_names_gp graphic parameters for drawing text.
+# -row_names_rot
+# -column_labels
 # -column_names_side should the column names be put on the top or bottom of the heatmap?
 # -column_names_max_height maximum height of column names viewport.
 # -show_column_names whether show column names.
 # -column_names_gp graphic parameters for drawing text.
+# -column_names_rot
 # -top_annotation a `HeatmapAnnotation` object which contains a list of annotations.
-# -top_annotation_height total height of the column annotations on the top.
 # -bottom_annotation a `HeatmapAnnotation` object.
-# -bottom_annotation_height total height of the column annotations on the bottom.
+# -left_annotation
+# -right_annotation
 # -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering.
 #     For each row-clusters, hierarchical clustering is still applied with parameters above.
-# -km_title row title for each cluster when ``km`` is set. It must a text with format of ".*\%i.*" where "\%i" is replaced by the index of the cluster.
 # -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
 #        indicating rows are to be split according to the split on the tree.
+# -row_km
+# -row_split
+# -column_km
+# -column_split
 # -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object. If it is a vector, the order corresponds
 #   to top to bottom in the heatmap
-# -combined_name_fun if the heatmap is split by rows, how to make a combined row title for each slice?
-#                 The input parameter for this function is a vector which contains level names under each column in ``split``.
-# -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
-#        is appended to a list of heatmaps.
+# -row_gap
+# -column_gap
+# -width
+# -height
+# -heatmap_body_width
+# -heatmap_body_height
 # -show_heatmap_legend whether show heatmap legend?
 # -heatmap_legend_param a list contains parameters for the heatmap legend. See `color_mapping_legend,ColorMapping-method` for all available parameters.
 # -use_raster whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if ``cell_fun``
@@ -276,6 +282,8 @@ Heatmap = function(matrix, col, name,
 
     top_annotation = NULL,
     bottom_annotation = NULL,
+    left_annotation = NULL,
+    right_annotation = NULL,
 
     km = 1, 
     split = NULL, 
@@ -699,6 +707,46 @@ Heatmap = function(matrix, col, name,
         }
     }
 
+    .Object@left_annotation = left_annotation # a `rowAnnotation` object
+    if(is.null(left_annotation)) {
+        .Object@left_annotation_param$width = unit(0, "mm")
+    } else {
+        .Object@left_annotation_param$width = width(left_annotation) + ROW_ANNO_PADDING*2  # append the gap
+    }
+    if(!is.null(left_annotation)) {
+        if(length(left_annotation) > 0) {
+            if(!.Object@left_annotation@which == "row") {
+                stop("`which` in `left_annotation` should only be `row`, or consider using `rowAnnotation()`.")
+            }
+        }
+        nb = nobs(left_annotation)
+        if(!is.na(nb)) {
+            if(nb != ncol(.Object@matrix)) {
+                stop("number of items in left anntotion should be same as number of columns of the matrix.")
+            }
+        }
+    }
+
+    .Object@right_annotation = right_annotation # a `rowAnnotation` object
+    if(is.null(right_annotation)) {
+        .Object@right_annotation_param$width = unit(0, "mm")
+    } else {
+        .Object@right_annotation_param$width = width(right_annotation) + ROW_ANNO_PADDING*2  # append the gap
+    }
+    if(!is.null(right_annotation)) {
+        if(length(right_annotation) > 0) {
+            if(!.Object@right_annotation@which == "row") {
+                stop("`which` in `right_annotation` should only be `row`, or consider using `rowAnnotation()`.")
+            }
+        }
+        nb = nobs(right_annotation)
+        if(!is.na(nb)) {
+            if(nb != ncol(.Object@matrix)) {
+                stop("number of items in left anntotion should be same as number of columns of the matrix.")
+            }
+        }
+    }
+
     .Object@layout = list(
         layout_size = list(
             column_title_top_height = unit(0, "mm"),
@@ -715,10 +763,12 @@ Heatmap = function(matrix, col, name,
             row_names_left_width = unit(0, "mm"),
             row_dend_right_width = unit(0, "mm"),
             row_names_right_width = unit(0, "mm"),
-            row_title_right_width = unit(0, "mm")
+            row_title_right_width = unit(0, "mm"),
+            row_anno_left_width = unit(0, "mm"),
+            row_anno_right_width = unit(0, "mm")
         ),
 
-        layout_index = data.frame(),
+        layout_index = NULL,
         graphic_fun_list = list()
     )
 
@@ -737,10 +787,10 @@ Heatmap = function(matrix, col, name,
 
 
 # == title
-# Make cluster on rows
+# Make Cluster on Rows
 #
 # == param
-# -object a `Heatmap-class` object.
+# -object A `Heatmap-class` object.
 #
 # == details
 # The function will fill or adjust ``row_dend_list``, ``row_order_list``, ``row_title`` and ``matrix_param`` slots.
@@ -1185,16 +1235,16 @@ make_cluster = function(object, which = c("row", "column")) {
 }
 
 # == title
-# Make the layout of a single heatmap
+# Make the Layout of a Single Heatmap
 #
 # == param
-# -object a `Heatmap-class` object.
+# -object A `Heatmap-class` object.
 # 
 # == detail
 # The layout of the single heatmap will be established by setting the size of each heatmap components.
-# Also functions that make graphics for heatmap components will be recorded.
+# Also functions that make graphics for heatmap components will be recorded by saving as functions.
 #
-# Whether apply row clustering or column clustering affects the layout, so clustering should be applied 
+# Whether to apply row clustering or column clustering affects the layout, so clustering should be applied 
 # first before making the layout.
 #
 # This function is only for internal use.
@@ -1254,7 +1304,7 @@ setMethod(f = "make_layout",
         
         ###########################################
         ## heatmap body
-        object@layout$layout_index = rbind(c(5, 4))
+        object@layout$layout_index = rbind(heatmapb_body = heatmap_layout_index("heatmap_body"))
         object@layout$graphic_fun_list = list(function(object) {
             for(i in seq_len(nr_slice)) {
                 for(j in seq_len(nc_slice)) {
@@ -1277,14 +1327,14 @@ setMethod(f = "make_layout",
             } else {
                 object@layout$layout_size$column_title_top_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
             }
-            object@layout$layout_index = rbind(object@layout$layout_index, c(1, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, column_title_top = heatmap_layout_index("column_title_top"))
         } else {
             if(column_title_rot %in% c(0, 180)) {
                 object@layout$layout_size$column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
             } else {
                 object@layout$layout_size$column_title_bottom_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
             }
-            object@layout$layout_index = rbind(object@layout$layout_index, c(9, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, column_title_bottom = heatmap_layout_index("column_title_bottom"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             if(length(column_title) == 1 && nc_slice > 1) {
@@ -1310,14 +1360,14 @@ setMethod(f = "make_layout",
             } else {
                 object@layout$layout_size$row_title_left_width = max_text_height(row_title, gp = row_title_gp) + TITLE_PADDING*2
             }
-            object@layout$layout_index = rbind(object@layout$layout_index, c(5, 1))
+            object@layout$layout_index = rbind(object@layout$layout_index, row_title_left = heatmap_layout_index("row_title_left"))
         } else {
             if(row_title_rot %in% c(0, 180)) {
                 object@layout$layout_size$row_title_right_width = max_text_width(row_title, gp = row_title_gp) + TITLE_PADDING*2
             } else {
                 object@layout$layout_size$row_title_right_width = max_text_height(row_title, gp = row_title_gp) + TITLE_PADDING*2
             }
-            object@layout$layout_index = rbind(object@layout$layout_index, c(5, 7))
+            object@layout$layout_index = rbind(object@layout$layout_index, row_title_right = heatmap_layout_index("row_title_right"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             if(length(row_title) == 1 && nr_slice > 1) {
@@ -1339,10 +1389,10 @@ setMethod(f = "make_layout",
     if(show_row_dend) {
         if(row_dend_side == "left") {
             object@layout$layout_size$row_dend_left_width = row_dend_width
-            object@layout$layout_index = rbind(object@layout$layout_index, c(5, 2))
+            object@layout$layout_index = rbind(object@layout$layout_index, row_dend_left = heatmap_layout_index("row_dend_left"))
         } else {
             object@layout$layout_size$row_dend_right_width = row_dend_width
-            object@layout$layout_index = rbind(object@layout$layout_index, c(5, 6))
+            object@layout$layout_index = rbind(object@layout$layout_index, row_dend_right = heatmap_layout_index("row_dend_right"))
         }
         row_dend_max_height = dend_heights(row_dend_slice) + max(dend_heights(object@row_dend_list))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
@@ -1380,10 +1430,10 @@ setMethod(f = "make_layout",
     if(show_column_dend) {
         if(column_dend_side == "top") {
             object@layout$layout_size$column_dend_top_height = column_dend_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(2, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, column_dend_top = heatmap_layout_index("column_dend_top"))
         } else {
             object@layout$layout_size$column_dend_bottom_height = column_dend_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(8, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, column_dend_bottom = heatmap_layout_index("column_dend_bottom"))
         }
         column_dend_max_height = dend_heights(column_dend_slice) + max(dend_heights(object@column_dend_list))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
@@ -1422,10 +1472,10 @@ setMethod(f = "make_layout",
         row_names_width = min(row_names_width, object@row_names_param$max_width)
         if(row_names_side == "left") {
             object@layout$layout_size$row_names_left_width = row_names_width
-            object@layout$layout_index = rbind(object@layout$layout_index, c(5, 3))
+            object@layout$layout_index = rbind(object@layout$layout_index, row_names_left = heatmap_layout_index("row_names_left"))
         } else {
             object@layout$layout_size$row_names_right_width = row_names_width
-            object@layout$layout_index = rbind(object@layout$layout_index, c(5, 5))
+            object@layout$layout_index = rbind(object@layout$layout_index, row_names_right = heatmap_layout_index("row_names_right"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             for(i in seq_len(nr_slice)) {
@@ -1445,10 +1495,10 @@ setMethod(f = "make_layout",
         column_names_height = min(column_names_height, object@column_names_param$max_height)
         if(column_names_side == "top") {
             object@layout$layout_size$column_names_top_height = column_names_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(3, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, column_names_top = heatmap_layout_index("column_names_top"))
         } else {
             object@layout$layout_size$column_names_bottom_height = column_names_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(7, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, column_names_bottom = heatmap_layout_index("column_names_bottom"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             for(i in seq_len(nc_slice)) {
@@ -1465,7 +1515,7 @@ setMethod(f = "make_layout",
     if(!is.null(annotation)) {
         if(length(annotation@anno_list) > 0) {
             object@layout$layout_size$column_anno_top_height = annotation_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(4, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, column_anno_top = heatmap_layout_index("column_anno_top"))
             
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(nc_slice)) {
@@ -1483,11 +1533,46 @@ setMethod(f = "make_layout",
     if(!is.null(annotation)) {
         if(length(annotation@anno_list) > 0) {
             object@layout$layout_size$column_anno_bottom_height = annotation_height
-            object@layout$layout_index = rbind(object@layout$layout_index, c(6, 4))
+            object@layout$layout_index = rbind(object@layout$layout_index, column_anno_bottom = heatmap_layout_index("column_anno_bottom"))
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(nc_slice)) {
                     draw_annotation(object, k = i, which = "bottom", x = slice_x[i], 
                         width = slice_width[i], height = unit(1, "npc"), just = "left")
+                }
+            })
+        }
+    }
+
+    ##########################################
+    ## annotation on left
+    annotation = object@left_annotation
+    annotation_width = object@left_annotation_param$width
+    if(!is.null(annotation)) {
+        if(length(annotation@anno_list) > 0) {
+            object@layout$layout_size$row_anno_left_width = annotation_width
+            object@layout$layout_index = rbind(object@layout$layout_index, row_anno_left = heatmap_layout_index("row_anno_left"))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+                    for(i in seq_len(nr_slice)) {
+                        draw_annotation(object, k = i, which = "left",  y = slice_y[i], 
+                            height = slice_height[i], width = unit(1, "npc"), just = "top") 
+                    }
+                }
+            )
+        }
+    }
+
+    ##########################################
+    ## annotation on right
+    annotation = object@right_annotation
+    annotation_width = object@right_annotation_param$width
+    if(!is.null(annotation)) {
+        if(length(annotation@anno_list) > 0) {
+            object@layout$layout_size$row_anno_right_width = annotation_width
+            object@layout$layout_index = rbind(object@layout$layout_index, row_anno_right = heatmap_layout_index("row_anno_right"))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+                for(i in seq_len(nr_slice)) {
+                    draw_annotation(object, k = i, which = "right", y = slice_y[i], 
+                        height = slice_height[i], width = unit(1, "npc"), just = "top")
                 }
             })
         }
@@ -1499,8 +1584,10 @@ setMethod(f = "make_layout",
         object@matrix_param$width = object@heatmap_param$width -
             sum(layout_size$row_title_left_width,
                 layout_size$row_dend_left_width,
+                layout_size$row_anno_left_width,
                 layout_size$row_names_left_width,
                 layout_size$row_dend_right_width,
+                layout_size$row_anno_right_width,
                 layout_size$row_names_right_width,
                 layout_size$row_title_right_width)   
     } else if(is_abs_unit(object@matrix_param$width)) {  # e.g. unit(1, "npc")
@@ -1510,7 +1597,9 @@ setMethod(f = "make_layout",
             layout_size$row_names_left_width,
             layout_size$row_dend_right_width,
             layout_size$row_names_right_width,
-            layout_size$row_title_right_width
+            layout_size$row_title_right_width,
+            layout_size$row_anno_left_width,
+            layout_size$row_anno_right_width
         ) + object@matrix_param$width
         if(nr_slice > 1) {
             object@heatmap_param$width = object@heatmap_param$width + sum(row_gap[seq_len(nr_slice-1)])
@@ -1557,17 +1646,17 @@ setMethod(f = "make_layout",
 })
 
 # == title
-# Draw the single heatmap with default parameters
+# Draw the Single Heatmap with Defaults
 #
 # == param
-# -object a `Heatmap-class` object.
+# -object A `Heatmap-class` object.
 #
 # == details
-# Actually it calls `draw,Heatmap-method`, but only with default parameters. If users want to customize the heatmap,
+# It actually calls `draw,Heatmap-method`, but only with default parameters. If users want to customize the heatmap,
 # they can pass parameters directly to `draw,Heatmap-method`.
 #
 # == value
-# This function returns no value.
+# The `HeatmapList-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -1576,18 +1665,16 @@ setMethod(f = "show",
     signature = "Heatmap",
     definition = function(object) {
 
-    # cat("A Heatmap object:\n")
-    # cat("name:", object@name, "\n")
-    # cat("dim:", nrow(object@matrix), "x", ncol(object@matrix), "\n")
     draw(object)
 })
 
 # == title
-# Add heatmaps or row annotations as a heatmap list
+# Add Heatmap to the Heatmap List
 #
 # == param
-# -object a `Heatmap-class` object.
+# -object A `Heatmap-class` object.
 # -x a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
+# -direction Whether the heatmap is added horizontal or vertically?
 #
 # == details
 # There is a shortcut function ``+.AdditiveUnit``.
@@ -1600,11 +1687,15 @@ setMethod(f = "show",
 #
 setMethod(f = "add_heatmap",
     signature = "Heatmap",
-    definition = function(object, x) {
+    definition = function(object, x, direction = c("horizontal", "vertical")) {
+
+    direction = match.arg(direction)[1]
 
     ht_list = new("HeatmapList")
-    ht_list = add_heatmap(ht_list, object)
-    ht_list = add_heatmap(ht_list, x)
+    ht_list@direction = direction
+    
+    ht_list = add_heatmap(ht_list, object, direction = direction)
+    ht_list = add_heatmap(ht_list, x, direction = direction)
     return(ht_list)
 
 })
@@ -1613,16 +1704,13 @@ setMethod(f = "add_heatmap",
 # Draw the heatmap body
 #
 # == param
-# -object a `Heatmap-class` object.
-# -k a matrix may be split by rows, the value identifies which row-slice.
-# -... pass to `grid::viewport`, basically for defining the position of the viewport.
+# -object A `Heatmap-class` object.
+# -kr Row slice index.
+# -kc Column slice index.
+# -... Pass to `grid::viewport` which includes the subset of heatmap body.
 #
 # == details
-# The matrix can be split into several parts by rows if ``km`` or ``split`` is 
-# specified when initializing the `Heatmap` object. If the matrix is split, 
-# there will be gaps between rows to identify different row-slice.
-#
-# A viewport is created which contains subset rows of the heatmap.
+# A viewport is created which contains subset rows and columns of the heatmap.
 #
 # This function is only for internal use.
 #
@@ -1784,19 +1872,15 @@ R_binary = function() {
 }
 
 # == title
-# Draw dendrogram on row or column
+# Draw Heatmap Dendrograms
 #
 # == param
-# -object a `Heatmap-class` object.
-# -which is dendrogram put on the row or on the column of the heatmap?
-# -k a matrix may be splitted by rows, the value identifies which row-slice.
-# -max_height maximum height of the dendrograms.
-# -... pass to `grid::viewport`, basically for defining the position of the viewport.
+# -object A `Heatmap-class` object.
+# -which Are the dendrograms put on the row or on the column of the heatmap?
+# -k Slice index.
+# -... Pass to `grid::viewport` which includes the complete heatmap dendrograms.
 #
 # == details
-# If the matrix is split into several row slices, a list of dendrograms will be drawn by 
-# the heatmap that each dendrogram corresponds to its row slices.
-#
 # A viewport is created which contains dendrograms.
 #
 # This function is only for internal use.
@@ -1813,7 +1897,7 @@ R_binary = function() {
 setMethod(f = "draw_dend",
     signature = "Heatmap",
     definition = function(object,
-    which = c("row", "column"), k = 1, max_height, ...) {
+    which = c("row", "column"), k = 1, ...) {
 
     which = match.arg(which)[1]
     
@@ -1839,7 +1923,7 @@ setMethod(f = "draw_dend",
         return(invisible(NULL))
     }
 
-    if(missing(max_height)) max_height = dend_heights(dend)
+    max_height = dend_heights(dend)
 
     dend_padding = unit(1, "mm")
     if(side %in% c("left", "right")) {
@@ -1878,11 +1962,10 @@ setMethod(f = "draw_dend",
 # Draw row names or column names
 #
 # == param
-# -object a `Heatmap-class` object.
-# -which are names put on the row or on the column of the heatmap?
-# -k a matrix may be split by rows, the value identifies which row-slice.
-# -dimname_padding padding for the row/column names
-# -... pass to `grid::viewport`, basically for defining the position of the viewport.
+# -object A `Heatmap-class` object.
+# -which Are the names put on the row or on the column of the heatmap?
+# -k Slice index.
+# -... Pass to `grid::viewport` which includes the complete heatmap row/column names.
 #
 # == details
 # A viewport is created which contains row names or column names.
@@ -1916,13 +1999,13 @@ setMethod(f = "draw_dimnames",
 })
 
 # == title
-# Draw heatmap title
+# Draw Heatmap Title
 #
 # == param
-# -object a `Heatmap-class` object.
-# -which is title put on the row or on the column of the heatmap?
-# -k a matrix may be split by rows, the value identifies which row-slice.
-# -... pass to `grid::viewport`, basically for defining the position of the viewport.
+# -object A `Heatmap-class` object.
+# -which Is title put on the row or on the column of the heatmap?
+# -k Slice index.
+# -... Pass to `grid::viewport` which includes the complete heatmap title
 #
 # == details
 # A viewport is created which contains heatmap title.
@@ -1991,17 +2074,18 @@ setMethod(f = "draw_title",
 })
 
 # == title
-# Draw column annotations
+# Draw Heatmap Annotations on the Heatmap
 #
 # == param
-# -object a `Heatmap-class` object.
-# -which are the annotations put on the top or bottom of the heatmap?
+# -object A `Heatmap-class` object.
+# -which The position of the heamtap annotation.
+# -k Slice index.
+# -... Pass to `grid::viewport` which includes the complete heatmap annotation.
 #
 # == details
-# A viewport is created which contains column annotations.
+# A viewport is created which contains column/top annotations.
 #
-# Since the column annotations is a `HeatmapAnnotation-class` object, the function
-# calls `draw,HeatmapAnnotation-method` to draw the annotations.
+# The function calls `draw,HeatmapAnnotation-method` to draw the annotations.
 #
 # This function is only for internal use.
 #
@@ -2013,21 +2097,28 @@ setMethod(f = "draw_title",
 #
 setMethod(f = "draw_annotation",
     signature = "Heatmap",
-    definition = function(object, which = c("top", "bottom"), k = 1, ...) {
+    definition = function(object, which = c("top", "bottom", "left", "right"), k = 1, ...) {
     
     which = match.arg(which)[1]
 
     annotation = switch(which,
         top = object@top_annotation,
-        bottom = object@bottom_annotation)
+        bottom = object@bottom_annotation,
+        left = object@left_annotation,
+        right = object@right_annotation)
 
     # if there is no annotation, draw nothing
     if(is.null(annotation)) {
         return(invisible(NULL))
     }
 
-    index = object@column_order_list[[k]]
-    n = length(object@column_order_list)
+    if(which %in% c("top", "bottom")) {
+        index = object@column_order_list[[k]]
+        n = length(object@column_order_list)
+    } else {
+        index = object@row_order_list[[k]]
+        n = length(object@row_order_list)
+    }
 
     pushViewport(viewport(...))
     draw(annotation, index = index, k = k, n = n)
@@ -2035,13 +2126,16 @@ setMethod(f = "draw_annotation",
 })
 
 # == title
-# Width of each heatmap component
+# Widths of Heatmap Components
 #
 # == param
-# -object a `Heatmap-class` object.
-# -k which component in the heatmap, see `Heatmap-class`.
+# -object A `Heatmap-class` object.
+# -k Which components in the heatmap. The value should numeric indices or the names
+#    of the corresponding row component. See **Detials**.
 #
 # == details
+# All row components are: ``row_title_left``, ``row_dend_left``, ``row_names_left``, ``row_anno_left``,
+# ``heatmap_body``, ``row_anno_right``, ``row_names_right``, ``row_dend_right``, ``row_title_right``.
 #
 # This function is only for internal use.
 #
@@ -2053,40 +2147,37 @@ setMethod(f = "draw_annotation",
 #
 setMethod(f = "component_width",
     signature = "Heatmap",
-    definition = function(object, k = 1:7) {
+    definition = function(object, k = HEATMAP_LAYOUT_ROW_COMPONENT) {
 
+    if(is.numeric(k)) {
+        component_name = names(HEATMAP_LAYOUT_ROW_COMPONENT)[k]
+    } else {
+        component_name = k
+    }
     # this function is used for grid.layout, so null unit is allowed
-    .single_unit = function(k) {
-        if(k == 1) {
-            object@layout$layout_size$row_title_left_width
-        } else if(k == 2) {
-            object@layout$layout_size$row_dend_left_width
-        } else if(k == 3) {
-            object@layout$layout_size$row_names_left_width
-        } else if(k == 4) {
+    .single_unit = function(nm) {
+        if(nm == "heatmap_body") {
             object@matrix_param$width
-        } else if(k == 5) {
-            object@layout$layout_size$row_names_right_width
-        } else if(k == 6) {
-            object@layout$layout_size$row_dend_right_width
-        } else if(k == 7) {
-            object@layout$layout_size$row_title_right_width
         } else {
-            stop("wrong 'k'")
+            object@layout$layout_size[[paste0(nm, "_width")]]
         }
     }
-
-    do.call("unit.c", lapply(k, function(i) .single_unit(i)))
+    
+    do.call("unit.c", lapply(component_name, .single_unit))
 })
 
 # == title
-# Height of each heatmap component
+# Heights of Heatmap Components
 #
 # == param
-# -object a `Heatmap-class` object.
-# -k which component in the heatmap, see `Heatmap-class`.
+# -object A `Heatmap-class` object.
+# -k Which components in the heatmap. The value should numeric indices or the names
+#    of the corresponding column component. See **Detials**.
 #
 # == detail
+# All column components are: ``column_title_top``, ``column_dend_top``, ``column_names_top``, 
+# ``column_anno_top``, ``heatmap_body``, ``column_anno_bottom``, ``column_names_bottom``, 
+# ``column_dend_bottom``, ``column_title_bottom``.
 #
 # This function is only for internal use.
 #
@@ -2098,62 +2189,109 @@ setMethod(f = "component_width",
 #
 setMethod(f = "component_height",
     signature = "Heatmap",
-    definition = function(object, k = 1:9) {
+    definition = function(object, k = HEATMAP_LAYOUT_COLUMN_COMPONENT) {
 
+    if(is.numeric(k)) {
+        component_name = names(HEATMAP_LAYOUT_COLUMN_COMPONENT)[k]
+    } else {
+        component_name = k
+    }
     # this function is used for grid.layout, so null unit is allowed
-    .single_unit = function(k) {
-        if(k == 1) {
-            object@layout$layout_size$column_title_top_height
-        } else if(k == 2) {
-            object@layout$layout_size$column_dend_top_height
-        } else if(k == 4) {
-            object@layout$layout_size$column_anno_top_height
-        } else if(k == 3) {
-            object@layout$layout_size$column_names_top_height
-        } else if(k == 5) {
+    .single_unit = function(nm) {
+        if(nm == "heatmap_body") {
             object@matrix_param$height
-        } else if(k == 7) {
-            object@layout$layout_size$column_names_bottom_height
-        } else if(k == 6) {
-            object@layout$layout_size$column_anno_bottom_height
-        } else if(k == 8) {
-            object@layout$layout_size$column_dend_bottom_height
-        } else if(k == 9) {
-            object@layout$layout_size$column_title_bottom_height
         } else {
-            stop("wrong 'k'")
+            object@layout$layout_size[[paste0(nm, "_height")]]
         }
     }
 
-    do.call("unit.c", lapply(k, function(i) .single_unit(i)))
+    do.call("unit.c", lapply(component_name, .single_unit))
 })
 
-has_component = function(object, which) {
+has_component = function(object, component) {
     m = object@layout$layout_index
-    switch(which,
-        "top_column_dend" = any(m[, 1] == 2 & m[,2] == 4),
-        "top_column_names" = any(m[, 1] == 3 & m[,2] == 4),
-        "top_annotation" = any(m[, 1] == 4 & m[,2] == 4),
-        "bottom_annotation" = any(m[, 1] == 6 & m[,2] == 4),
-        "bottom_column_names" = any(m[, 1] == 7 & m[,2] == 4),
-        "bottom_column_dend" = any(m[, 1] == 8 & m[,2] == 4)
-    )
+    ind = heatmap_layout_index(component)
+    any(m[, 1] == ind[1] & m[, 2] == ind[2])
+}
+
+
+HEATMAP_LAYOUT_COLUMN_COMPONENT = 1:9
+names(HEATMAP_LAYOUT_COLUMN_COMPONENT) = c("column_title_top", "column_dend_top", "column_names_top", "column_anno_top",
+    "heatmap_body", "column_anno_bottom", "column_names_bottom", "column_dend_bottom", "column_title_bottom")
+HEATMAP_LAYOUT_ROW_COMPONENT = 1:9
+names(HEATMAP_LAYOUT_ROW_COMPONENT) = c("row_title_left", "row_dend_left", "row_names_left", "row_anno_left",
+    "heatmap_body", "row_anno_right", "row_names_right", "row_dend_right", "row_title_right")
+
+heatmap_layout_index = function(nm) {
+    if(grepl("column", nm)) {
+        ind = c(HEATMAP_LAYOUT_COLUMN_COMPONENT[nm], HEATMAP_LAYOUT_ROW_COMPONENT["heatmap_body"])
+    } else if(grepl("row", nm)) {
+        ind = c(HEATMAP_LAYOUT_COLUMN_COMPONENT["heatmap_body"], HEATMAP_LAYOUT_ROW_COMPONENT[nm])
+    } else if(nm == "heatmap_body") { # heatmap_body
+        ind = c(HEATMAP_LAYOUT_COLUMN_COMPONENT["heatmap_body"], HEATMAP_LAYOUT_ROW_COMPONENT["heatmap_body"])
+    }
+    names(ind) = c("layout.pos.row", "layout.pos.col")
+    return(ind)
 }
 
 # == title
-# Set height of each heatmap component
+# Set Width of Heatmap Component
 #
 # == param
-# -object a `Heatmap-class` object.
-# -k which components, see `Heatmap-class`.
-# -v height of the component, a `grid::unit` object.
+# -object A `Heatmap-class` object.
+# -k Which row component? The value should a numeric index or the name
+#    of the corresponding row component. See **Detials**.
+# -v width of the component, a `grid::unit` object.
 #
 # == detail
+# All row components are: ``row_title_left``, ``row_dend_left``, ``row_names_left``, ``row_anno_left``,
+# ``heatmap_body``, ``row_anno_right``, ``row_names_right``, ``row_dend_right``, ``row_title_right``.
 #
 # This function is only for internal use.
 #
 # == value
-# This function returns no value.
+# The `Heatmap-class` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+setMethod(f = "set_component_width",
+    signature = "Heatmap",
+    definition = function(object, k, v) {
+
+    if(is.numeric(k)) {
+        nm = names(HEATMAP_LAYOUT_ROW_COMPONENT)[k]
+    } else {
+        nm = k
+    }
+
+    object@layout$layout_size[[ paste0(nm, "_width") ]] = v
+    
+    if(is_abs_unit(object@matrix_param$width)) {
+        object@heatmap_param$width = sum(component_width(object))
+    }
+
+    return(object)
+})
+
+# == title
+# Set Height of Heatmap Component
+#
+# == param
+# -object A `Heatmap-class` object.
+# -k Which column component? The value should a numeric index or the name
+#    of the corresponding column component. See **Detials**.
+# -v Height of the component, a `grid::unit` object.
+#
+# == detail
+# All column components are: ``column_title_top``, ``column_dend_top``, ``column_names_top``, 
+# ``column_anno_top``, ``heatmap_body``, ``column_anno_bottom``, ``column_names_bottom``, 
+# ``column_dend_bottom``, ``column_title_bottom``.
+#
+# This function is only for internal use.
+#
+# == value
+# The `Heatmap-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -2162,48 +2300,40 @@ setMethod(f = "set_component_height",
     signature = "Heatmap",
     definition = function(object, k, v) {
 
-    if(k == 1) {
-        object@layout$layout_size$column_title_top_height = v
-    } else if(k == 2) {
-        object@layout$layout_size$column_dend_top_height = v
-    } else if(k == 4) {
-        object@layout$layout_size$column_anno_top_height = v
-    } else if(k == 3) {
-        object@layout$layout_size$column_names_top_height = v
-    } else if(k == 7) {
-        object@layout$layout_size$column_names_bottom_height = v
-    } else if(k == 6) {
-        object@layout$layout_size$column_anno_bottom_height = v
-    } else if(k == 8) {
-        object@layout$layout_size$column_dend_bottom_height = v
-    } else if(k == 9) {
-        object@layout$layout_size$column_title_bottom_height = v
+    if(is.numeric(k)) {
+        nm = names(HEATMAP_LAYOUT_COLUMN_COMPONENT)[k]
     } else {
-        stop("wrong 'k'")
+        nm = k
     }
 
+    object@layout$layout_size[[ paste0(nm, "_height") ]] = v
+    
     if(is_abs_unit(object@matrix_param$height)) {
-        object@heatmap_param$height = sum(component_height(object, 1:9))
+        object@heatmap_param$height = sum(component_height(object))
     }
 
     return(object)
 })
 
 # == title
-# Draw a single heatmap
+# Draw a Single Heatmap
 #
 # == param
-# -object a `Heatmap-class` object.
-# -internal only used inside the calling of `draw,HeatmapList-method`. Only heatmap without legends will be drawn.
-# -test only for testing
-# -... pass to `draw,HeatmapList-method`.
+# -object A `Heatmap-class` object.
+# -internal If ``TRUE``, it is only used inside the calling of `draw,HeatmapList-method`. 
+#           It only draws the heatmap without legends where the legend will be drawn by `draw,HeatmapList-method`. 
+# -test Only for testing. If it is ``TRUE``, the heatmap body is directly drawn.
+# -... Pass to `draw,HeatmapList-method`.
 #
 # == detail
 # The function creates a `HeatmapList-class` object which only contains a single heatmap
 # and call `draw,HeatmapList-method` to make the final heatmap.
 #
+# There are some arguments which control the global setting of the heatmap such as legends.
+# Please go to `draw,HeatmapList-method` for these arguments.
+#
 # == value
-# This function returns no value.
+# A `HeatmapList-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -2230,13 +2360,15 @@ setMethod(f = "draw",
         upViewport()
     } else {
         if(internal) {  # a heatmap without legend
-            layout = grid.layout(nrow = 9, ncol = 7, widths = component_width(object, 1:7), 
-                heights = component_height(object, 1:9))
+            layout = grid.layout(nrow = length(HEATMAP_LAYOUT_COLUMN_COMPONENT), 
+                ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), widths = component_width(object), 
+                heights = component_height(object))
             pushViewport(viewport(layout = layout))
             ht_layout_index = object@layout$layout_index
             ht_graphic_fun_list = object@layout$graphic_fun_list
             for(j in seq_len(nrow(ht_layout_index))) {
-                if(5 %in% ht_layout_index[j, 1] == 5 && 4 %in% ht_layout_index[j, 2]) {
+                if(HEATMAP_LAYOUT_COLUMN_COMPONENT["heatmap_body"] %in% ht_layout_index[j, 1] && 
+                   HEATMAP_LAYOUT_ROW_COMPONENT["heatmap_body"] %in% ht_layout_index[j, 2]) {
                     pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2], name = paste(object@name, "heatmap_body_wrap", sep = "_")))
                 } else {
                     pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
@@ -2257,23 +2389,23 @@ setMethod(f = "draw",
 })
 
 # == title
-# Prepare the heatmap
+# Prepare the Heatmap
 #
 # == param
-# -object a `Heatmap-class` object.
-# -process_rows whether process rows of the heatmap
+# -object A `Heatmap-class` object.
+# -process_rows Whether to process rows of the heatmap.
 #
 # == detail
 # The preparation of the heatmap includes following steps:
 #
-# - making clustering on rows if specified (by calling `make_row_cluster,Heatmap-method`)
-# - making clustering on columns if specified (by calling `make_column_cluster,Heatmap-method`)
+# - making clustering on rows if it is specified (by calling `make_row_cluster,Heatmap-method`)
+# - making clustering on columns (by calling `make_column_cluster,Heatmap-method`)
 # - making the layout of the heatmap (by calling `make_layout,Heatmap-method`)
 #
 # This function is only for internal use.
 #
 # == value
-# A `Heatmap-class` object.
+# The `Heatmap-class` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -2292,10 +2424,23 @@ setMethod(f = "prepare",
 
 })
 
-# ht[1:10, ]
-# ht[1:10]
-# ht[, 1:10]
-# ht[1:10, 1:10]
+# == title
+# Subset a Heatmap
+#
+# == param
+# -x A `Heatmap-class` object.
+# -i Row indices
+# -j Column indices
+#
+# == example
+# m = matrix(rnorm(100), nrow = 10)
+# rownames(m) = letters[1:10]
+# colnames(m) = LETTERS[1:10]
+# ht = Heatmap(m)
+# ht[1:5, ]
+# ht[1:5]
+# ht[, 1:5]
+# ht[1:5, 1:5]
 "[.Heatmap" = function(x, i, j) {
     if(nargs() == 2) {
         subset_heatmap_by_row(x, i)
@@ -2344,14 +2489,43 @@ subset_heatmap_by_column = function(ht, ind) {
     return(ht)
 }
 
+# == title
+# Dimension of the Heatmap
+#
+# == param
+# -x A `Heatmap-class` object.
+#
 dim.Heatmap = function(x) {
     dim(x@matrix)
 }
 
-length.Heatmap = function(x) {
+# == title
+# Number of Rows in the Heatmap
+#
+# == param
+# -x A `Heatmap-class` object.
+#
+nrow.Heatmap = function(x) {
     nrow(x@matrix)
 }
 
+# == title
+# Number of Columns in the Heatmap
+#
+# == param
+# -x A `Heatmap-class` object.
+#
+ncol.Heatmap = function(x) {
+    ncol(x@matrix)
+}
+
+# == title
+# Print the Summary of a Heatmap
+#
+# == param
+# -object A `Heatmap-class` object.
+# -... Other arguments.
+#
 summary.Heatmap = function(object, ...) {
     qqcat("a matrix with @{nrow(object@matrix)} rows and @{ncol(object@matrix)} columns\n")
     qqcat("name: @{object@name}\n")
@@ -2437,6 +2611,22 @@ summary.Heatmap = function(object, ...) {
         qqcat("=======================================\n")
     } else {
         qqcat("has no bottom annotation\n")
+    }
+    if(length(object@left_annotation)) {
+        qqcat("has @{length(object@left_annotation)} left annotationa:\n")
+        qqcat("=======================================\n")
+        show(object@left_annotation)
+        qqcat("=======================================\n")
+    } else {
+        qqcat("has no left annotation\n")
+    }
+    if(length(object@right_annotation)) {
+        qqcat("has @{length(object@right_annotation)} right annotationa:\n")
+        qqcat("=======================================\n")
+        show(object@right_annotation)
+        qqcat("=======================================\n")
+    } else {
+        qqcat("has no right annotation\n")
     }
 }
 

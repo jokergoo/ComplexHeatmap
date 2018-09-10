@@ -4,6 +4,7 @@ setGeneric('add_heatmap', function(object, ...) standardGeneric('add_heatmap'))
 setGeneric('map_to_colors', function(object, ...) standardGeneric('map_to_colors'))
 
 setGeneric('set_component_height', function(object, ...) standardGeneric('set_component_height'))
+setGeneric('set_component_width', function(object, ...) standardGeneric('set_component_width'))
 
 setGeneric('draw_heatmap_body', function(object, ...) standardGeneric('draw_heatmap_body'))
 

@@ -16,9 +16,10 @@
 #
 # - `SingleAnnotation-class`: a single row annotation or column annotation.
 # - `ColorMapping-class`: mapping from values to colors.
+# - `AnnotationFunction-class`: construct an annotation function which allows subsetting.
 #
 # For plotting one single heatmap, please go to the documentation page of `Heatmap`.
-# For plotting multiple heatmaps, please go to `HeatmapList-class` and ``+.AdditiveUnit``.
+# For plotting multiple heatmaps, please go to `HeatmapList-class`, ``+.AdditiveUnit`` and ``%v%.AdditiveUnit``.
 #
 # The vignette provides detailed explanation of how to use this package.
 #

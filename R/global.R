@@ -140,6 +140,7 @@ DENDROGRAM_PADDING = unit(1, "mm")
 DIMNAME_PADDING = unit(1, "mm")
 TITLE_PADDING = unit(2.5, "mm")
 COLUMN_ANNO_PADDING = unit(1, "mm")
+ROW_ANNO_PADDING = unit(1, "mm")
 
 
 
