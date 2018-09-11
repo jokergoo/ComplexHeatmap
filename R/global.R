@@ -71,41 +71,27 @@ ht_global_opt = setGlobalOptions(
 	heatmap_column_title_gp = list(
 		.value = NULL,
 		.class = "gpar"),
-	heatmap_legend_title_gp = list(
+	legend_title_gp = list(
 		.value = NULL,
 		.class = "gpar"),
-	heatmap_legend_title_position = list(
+	legend_title_position = list(
 		.value = NULL,
 		.class = "character"),
-	heatmap_legend_labels_gp = list(
+	legend_labels_gp = list(
 		.value = NULL,
 		.class = "gpar"),
-	heatmap_legend_grid_height = list(
+	legend_grid_height = list(
 		.value = NULL,
 		.class = "unit"),
-	heatmap_legend_grid_width = list(
+	legend_grid_width = list(
 		.value = NULL,
 		.class = "unit"),
-	heatmap_legend_grid_border = list(
+	legend_grid_border = list(
 		.value = NULL),
 
-	annotation_legend_title_gp = list(
-		.value = NULL,
-		.class = "gpar"),
-	annotation_legend_title_position = list(
-		.value = NULL,
-		.class = "character"),
-	annotation_legend_labels_gp = list(
-		.value = NULL,
-		.class = "gpar"),
-	annotation_legend_grid_height = list(
-		.value = NULL,
-		.class = "unit"),
-	annotation_legend_grid_width = list(
-		.value = NULL,
-		.class = "unit"),
-	annotation_legend_grid_border = list(
+	border = list(
 		.value = NULL),
+
 	fast_hclust = list(
 		.value = FALSE,
 		.class = "logical",
@@ -136,11 +122,11 @@ ht_opt = ht_global_opt
 .ENV$row_pos = NULL
 
 
-DENDROGRAM_PADDING = unit(1, "mm")
+DENDROGRAM_PADDING = unit(0.5, "mm")
 DIMNAME_PADDING = unit(1, "mm")
 TITLE_PADDING = unit(2.5, "mm")
-COLUMN_ANNO_PADDING = unit(1, "mm")
-ROW_ANNO_PADDING = unit(1, "mm")
+COLUMN_ANNO_PADDING = unit(0.5, "mm")
+ROW_ANNO_PADDING = unit(0.5, "mm")
 
 
 

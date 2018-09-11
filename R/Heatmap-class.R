@@ -308,7 +308,7 @@ Heatmap = function(matrix, col, name,
     raster_quality = 2,
     raster_device_param = list()) {
 
-    verbose = ht_global_opt("verbose")
+    verbose = ht_opt("verbose")
 
     if(!dev.interactive()) {
         pdf(file = NULL)
@@ -327,26 +327,26 @@ Heatmap = function(matrix, col, name,
     for(opt_name in c("row_names_gp", "column_names_gp", "row_title_gp", "column_title_gp")) {
         opt_name2 = paste0("heatmap_", opt_name)
         if(! opt_name %in% called_args) { # if this argument is not called
-            if(!is.null(ht_global_opt(opt_name2))) {
-                if(verbose) qqcat("re-assign @{opt_name} with `ht_global_opt('@{opt_name2}'')`\n")
-                assign(opt_name, ht_global_opt(opt_name2))
+            if(!is.null(ht_opt(opt_name2))) {
+                if(verbose) qqcat("re-assign @{opt_name} with `ht_opt('@{opt_name2}'')`\n")
+                assign(opt_name, ht_opt(opt_name2))
             }
         }
     }
 
     if("heatmap_legend_param" %in% called_args) {
         for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border"), names(heatmap_legend_param))) {
-            opt_name2 = paste0("heatmap_legend_", opt_name)
-            if(!is.null(ht_global_opt(opt_name2)))
-                if(verbose) qqcat("re-assign heatmap_legend_param$@{opt_name} with `ht_global_opt('@{opt_name2}'')`\n")
-                heatmap_legend_param[[opt_name]] = ht_global_opt(opt_name2)
+            opt_name2 = paste0("legend_", opt_name)
+            if(!is.null(ht_opt(opt_name2)))
+                if(verbose) qqcat("re-assign heatmap_legend_param$@{opt_name} with `ht_opt('@{opt_name2}'')`\n")
+                heatmap_legend_param[[opt_name]] = ht_opt(opt_name2)
         }
     } else {
         for(opt_name in c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border")) {
-            opt_name2 = paste0("heatmap_legend_", opt_name)
-            if(!is.null(ht_global_opt(opt_name2)))
-                if(verbose) qqcat("re-assign heatmap_legend_param$@{opt_name} with `ht_global_opt('@{opt_name2}'')`\n")
-                heatmap_legend_param[[opt_name]] = ht_global_opt(opt_name2)
+            opt_name2 = paste0("legend_", opt_name)
+            if(!is.null(ht_opt(opt_name2)))
+                if(verbose) qqcat("re-assign heatmap_legend_param$@{opt_name} with `ht_opt('@{opt_name2}'')`\n")
+                heatmap_legend_param[[opt_name]] = ht_opt(opt_name2)
         }
     }
 
@@ -616,7 +616,7 @@ Heatmap = function(matrix, col, name,
     .Object@row_dend_param$distance = clustering_distance_rows
     .Object@row_dend_param$method = clustering_method_rows
     .Object@row_dend_param$side = match.arg(row_dend_side)[1]
-    .Object@row_dend_param$width = row_dend_width + unit(1, "mm")  # append the gap
+    .Object@row_dend_param$width = row_dend_width + DENDROGRAM_PADDING  # append the gap
     .Object@row_dend_param$show = show_row_dend
     .Object@row_dend_param$gp = check_gp(row_dend_gp)
     .Object@row_dend_param$reorder = row_dend_reorder
@@ -653,7 +653,7 @@ Heatmap = function(matrix, col, name,
     .Object@column_dend_param$distance = clustering_distance_columns
     .Object@column_dend_param$method = clustering_method_columns
     .Object@column_dend_param$side = match.arg(column_dend_side)[1]
-    .Object@column_dend_param$height = column_dend_height + unit(1, "mm")  # append the gap
+    .Object@column_dend_param$height = column_dend_height + DENDROGRAM_PADDING  # append the gap
     .Object@column_dend_param$show = show_column_dend
     .Object@column_dend_param$gp = check_gp(column_dend_gp)
     .Object@column_dend_param$reorder = column_dend_reorder
@@ -671,7 +671,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(top_annotation)) {
         .Object@top_annotation_param$height = unit(0, "mm")    
     } else {
-        .Object@top_annotation_param$height = height(top_annotation) + COLUMN_ANNO_PADDING*2  # append the gap
+        .Object@top_annotation_param$height = height(top_annotation) + COLUMN_ANNO_PADDING  # append the gap
     }
     if(!is.null(top_annotation)) {
         if(length(top_annotation) > 0) {
@@ -691,7 +691,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(bottom_annotation)) {
         .Object@bottom_annotation_param$height = unit(0, "mm")
     } else {
-        .Object@bottom_annotation_param$height = height(bottom_annotation) + COLUMN_ANNO_PADDING*2  # append the gap
+        .Object@bottom_annotation_param$height = height(bottom_annotation) + COLUMN_ANNO_PADDING  # append the gap
     }
     if(!is.null(bottom_annotation)) {
         if(length(bottom_annotation) > 0) {
@@ -711,7 +711,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(left_annotation)) {
         .Object@left_annotation_param$width = unit(0, "mm")
     } else {
-        .Object@left_annotation_param$width = width(left_annotation) + ROW_ANNO_PADDING*2  # append the gap
+        .Object@left_annotation_param$width = width(left_annotation) + ROW_ANNO_PADDING  # append the gap
     }
     if(!is.null(left_annotation)) {
         if(length(left_annotation) > 0) {
@@ -731,7 +731,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(right_annotation)) {
         .Object@right_annotation_param$width = unit(0, "mm")
     } else {
-        .Object@right_annotation_param$width = width(right_annotation) + ROW_ANNO_PADDING*2  # append the gap
+        .Object@right_annotation_param$width = width(right_annotation) + ROW_ANNO_PADDING  # append the gap
     }
     if(!is.null(right_annotation)) {
         if(length(right_annotation) > 0) {
@@ -825,7 +825,7 @@ make_cluster = function(object, which = c("row", "column")) {
 
     verbose = object@heatmap_param$verbose
 
-    if(ht_global_opt("fast_hclust")) {
+    if(ht_opt("fast_hclust")) {
         hclust = fastcluster::hclust
         if(verbose) qqcat("apply hclust by fastcluster::hclust\n")
     } else {
@@ -1396,12 +1396,23 @@ setMethod(f = "make_layout",
         }
         row_dend_max_height = dend_heights(row_dend_slice) + max(dend_heights(object@row_dend_list))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+            
+            if(row_dend_side == "left") {
+                pushViewport(viewport(x = unit(0, "npc"), width = unit(1, "npc") - DENDROGRAM_PADDING, just = "left"))
+            } else {
+                pushViewport(viewport(x = DENDROGRAM_PADDING, width = unit(1, "npc") - DENDROGRAM_PADDING, just = "left"))
+            }
             for(i in seq_len(nr_slice)) {
-                draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = "top")
+                draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = "top",
+                    max_height = row_dend_max_height)
             }
 
             if(nr_slice > 1) {
-                pushViewport(viewport(xscale = c(0, row_dend_max_height), width = unit(1, "npc") - DENDROGRAM_PADDING*2))
+                if(row_dend_side == "left") {
+                    pushViewport(viewport(xscale = c(0, row_dend_max_height)))
+                } else {
+                    pushViewport(viewport(xscale = c(0, row_dend_max_height)))
+                }
                 p = sapply(object@row_dend_list, function(x) {
                     attr(x, "x")/nobs(x)
                 })
@@ -1413,10 +1424,11 @@ setMethod(f = "make_layout",
                     slice_leaf_pos[i] = slice_leaf_pos[i] - slice_height[i]*p[i]
                 }
                 row_dend_slice = merge(row_dend_slice, object@row_dend_list, only_parent = TRUE)
-                row_dend_slice = adjust_dend_by_x(row_dend_slice, x = slice_leaf_pos)
+                row_dend_slice = adjust_dend_by_x(row_dend_slice, slice_leaf_pos)
                 grid.dendrogram(row_dend_slice, facing = ifelse(row_dend_side == "left", "right", "left"))
                 popViewport()
             }
+            upViewport()
         })
     }
 
@@ -1436,12 +1448,22 @@ setMethod(f = "make_layout",
         }
         column_dend_max_height = dend_heights(column_dend_slice) + max(dend_heights(object@column_dend_list))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
+            if(column_dend_side == "top") {
+                pushViewport(viewport(y = DENDROGRAM_PADDING, height = unit(1, "npc") - DENDROGRAM_PADDING, just = "bottom"))
+            } else {
+                pushViewport(viewport(y = unit(0, "npc"), height = unit(1, "npc") - DENDROGRAM_PADDING, just = "bottom"))
+            }
             for(i in seq_len(nc_slice)) {
-                draw_dend(object, k = i, which = "column", x = slice_x[i], width = slice_width[i], just = "left")
+                draw_dend(object, k = i, which = "column", x = slice_x[i], width = slice_width[i], just = "left",
+                    max_height = column_dend_max_height)
             }
 
             if(nc_slice > 1) {
-                pushViewport(viewport(yscale = c(0, column_dend_max_height), height = unit(1, "npc") - DENDROGRAM_PADDING*2))
+                if(column_dend_side == "top") {
+                    pushViewport(viewport(yscale = c(0, column_dend_max_height)))
+                } else {
+                    pushViewport(viewport(yscale = c(0, column_dend_max_height)))
+                }
                 p = sapply(object@column_dend_list, function(x) {
                     attr(x, "x")/nobs(x)
                 })
@@ -1453,10 +1475,11 @@ setMethod(f = "make_layout",
                     slice_leaf_pos[i] = slice_leaf_pos[i] + slice_width[i]*p[i]
                 }
                 column_dend_slice = merge(column_dend_slice, object@column_dend_list, only_parent = TRUE)
-                column_dend_slice = adjust_dend_by_x(column_dend_slice, x = slice_leaf_pos)
+                column_dend_slice = adjust_dend_by_x(column_dend_slice, slice_leaf_pos)
                 grid.dendrogram(column_dend_slice, facing = ifelse(column_dend_side == "top", "bottom", "top"))
                 popViewport()
             }
+            upViewport()
         })
     }
 
@@ -1517,8 +1540,9 @@ setMethod(f = "make_layout",
             
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(nc_slice)) {
-                    draw_annotation(object, k = i, which = "top", x = slice_x[i], 
-                        width = slice_width[i], height = unit(1, "npc"), just = "left")
+                    draw_annotation(object, k = i, which = "top", x = slice_x[i], width = slice_width[i], 
+                        y = COLUMN_ANNO_PADDING, height = unit(1, "npc") - COLUMN_ANNO_PADDING, 
+                        just = c("left", "bottom"))
                 }
             }) 
         }
@@ -1534,8 +1558,9 @@ setMethod(f = "make_layout",
             object@layout$layout_index = rbind(object@layout$layout_index, column_anno_bottom = heatmap_layout_index("column_anno_bottom"))
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(nc_slice)) {
-                    draw_annotation(object, k = i, which = "bottom", x = slice_x[i], 
-                        width = slice_width[i], height = unit(1, "npc"), just = "left")
+                    draw_annotation(object, k = i, which = "bottom", x = slice_x[i], width = slice_width[i], 
+                        y = unit(0, "npc"), height = unit(1, "npc") - COLUMN_ANNO_PADDING, 
+                        just = c("left", "bottom"))
                 }
             })
         }
@@ -1551,8 +1576,9 @@ setMethod(f = "make_layout",
             object@layout$layout_index = rbind(object@layout$layout_index, row_anno_left = heatmap_layout_index("row_anno_left"))
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                     for(i in seq_len(nr_slice)) {
-                        draw_annotation(object, k = i, which = "left",  y = slice_y[i], 
-                            height = slice_height[i], width = unit(1, "npc"), just = "top") 
+                        draw_annotation(object, k = i, which = "left",  y = slice_y[i], height = slice_height[i], 
+                            x = unit(0, "npc"), width = unit(1, "npc") - ROW_ANNO_PADDING, 
+                            just = c("left", "top"))
                     }
                 }
             )
@@ -1569,8 +1595,9 @@ setMethod(f = "make_layout",
             object@layout$layout_index = rbind(object@layout$layout_index, row_anno_right = heatmap_layout_index("row_anno_right"))
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(nr_slice)) {
-                    draw_annotation(object, k = i, which = "right", y = slice_y[i], 
-                        height = slice_height[i], width = unit(1, "npc"), just = "top")
+                    draw_annotation(object, k = i, which = "right", y = slice_y[i], height = slice_height[i], 
+                        x = ROW_ANNO_PADDING, width = unit(1, "npc") - ROW_ANNO_PADDING, 
+                        just = c("left", "top"))
                 }
             })
         }
@@ -1895,7 +1922,7 @@ R_binary = function() {
 setMethod(f = "draw_dend",
     signature = "Heatmap",
     definition = function(object,
-    which = c("row", "column"), k = 1, ...) {
+    which = c("row", "column"), k = 1, max_height = NULL, ...) {
 
     which = match.arg(which)[1]
     
@@ -1921,19 +1948,20 @@ setMethod(f = "draw_dend",
         return(invisible(NULL))
     }
 
-    max_height = dend_heights(dend)
+    if(is.null(max_height)) {
+        max_height = dend_heights(dend)
+    }
 
-    dend_padding = unit(1, "mm")
     if(side %in% c("left", "right")) {
         xscale = c(0, max_height)
         yscale = c(0, nobs(dend))
-        width = unit(1, "npc") - dend_padding*2
+        width = unit(1, "npc")
         height = unit(1, "npc")
         name = paste(object@name, "dend_row", k, sep = "_")
     } else {
         xscale = c(0, nobs(dend))
         yscale = c(0, max_height)
-        height = unit(1, "npc") - dend_padding*2
+        height = unit(1, "npc")
         width = unit(1, "npc")
         name = paste(object@name, "dend_column", k, sep = "_")
     }

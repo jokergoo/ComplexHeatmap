@@ -386,7 +386,9 @@ upViewport = function(...) {
     if(ht_global_opt$show_vp_border) {
         grid.rect(gp = gpar(fill = "transparent", col = "black", lty = 3))
         vpname = current.viewport()$name
-        add_vp_name(vpname)
+        if(!grepl("^GRID.VP", vpname)) {
+            add_vp_name(vpname)
+        }
     }
     grid::upViewport(...)
 }
@@ -395,7 +397,9 @@ popViewport = function(...) {
     if(ht_global_opt$show_vp_border) {
         grid.rect(gp = gpar(fill = "transparent", col = "black", lty = 3))
         vpname = current.viewport()$name
-        add_vp_name(vpname)
+        if(!grepl("^GRID.VP", vpname)) {
+            add_vp_name(vpname)
+        }
     }
     grid::popViewport(...)
 }

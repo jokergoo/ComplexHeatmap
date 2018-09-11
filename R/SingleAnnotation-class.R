@@ -151,21 +151,21 @@ SingleAnnotation = function(name, value, col, fun,
     .ENV$current_annotation_which = which
     on.exit(.ENV$current_SingleAnnotation_which <- NULL)
 
-    verbose = ht_global_opt$verbose
+    verbose = ht_opt$verbose
 
     # re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
     if("legend_param" %in% called_args) {
         for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border"), names(legend_param))) {
-            opt_name2 = paste0("annotation_legend_", opt_name)
-            if(!is.null(ht_global_opt(opt_name2)))
-                legend_param[[opt_name]] = ht_global_opt(opt_name2)
+            opt_name2 = paste0("legend_", opt_name)
+            if(!is.null(ht_opt(opt_name2)))
+                legend_param[[opt_name]] = ht_opt(opt_name2)
         }
     } else {
         for(opt_name in c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border")) {
-            opt_name2 = paste0("annotation_legend_", opt_name)
-            if(!is.null(ht_global_opt(opt_name2)))
-                legend_param[[opt_name]] = ht_global_opt(opt_name2)
+            opt_name2 = paste0("legend_", opt_name)
+            if(!is.null(ht_opt(opt_name2)))
+                legend_param[[opt_name]] = ht_opt(opt_name2)
         }
     }
 
@@ -525,7 +525,7 @@ setMethod(f = "draw",
         test2 = test
     }
 
-    verbose = ht_global_opt$verbose
+    verbose = ht_opt$verbose
 
     ## it draws annotation names, create viewports with names
     if(test2) {
@@ -560,6 +560,7 @@ setMethod(f = "draw",
         fun = object@fun
         if(verbose) qqcat("adjust annotation axis\n")
         if(!is.null(fun@var_env$axis)) {
+            axis_ov = fun@var_env$axis
             if(fun@var_env$axis && n > 1) {
                 if(object@which == "row") {
                     if(k == n && fun@var_env$axis_param$side == "bottom") {
@@ -581,6 +582,9 @@ setMethod(f = "draw",
             }
         }
         draw(fun, index = index)
+        if(!is.null(fun@var_env$axis)) {
+            fun@var_env$axis = axis_ov
+        }
     } else {
         if(verbose) qqcat("execute user-defined annotation function\n")
         object@fun(index, k, n)

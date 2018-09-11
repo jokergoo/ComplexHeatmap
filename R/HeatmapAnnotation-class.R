@@ -104,7 +104,7 @@ HeatmapAnnotation = function(...,
 
 	fun_args = names(as.list(environment()))
 
-	verbose = ht_global_opt$verbose
+	verbose = ht_opt$verbose
 	
 	.Object = new("HeatmapAnnotation")
 
