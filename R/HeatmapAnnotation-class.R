@@ -244,10 +244,13 @@ HeatmapAnnotation = function(...,
     		NA
     	}
     })
-
-    if(length(unique(len)) > 1) {
-    	stop("Length of annotations differs.")
-    }
+    len = len[!is.na(len)]
+    len = len[len > 0]
+    if(length(len)) {
+	    if(length(unique(len)) > 1) {
+	    	stop("Length of annotations differs.")
+	    }
+	}
 
     i_simple = 0
 	i_anno = 0
@@ -269,7 +272,14 @@ HeatmapAnnotation = function(...,
 			arg_list$name_offset = NULL
 		}
 		if(inherits(anno_value_list[[ag]], c("function", "AnnotationFunction"))) {
-			arg_list$fun = fun = anno_value_list[[ag]]
+			arg_list$fun = anno_value_list[[ag]]
+			if(inherits(anno_value_list[[ag]], "function")) {
+				if(which == "row") {
+					arg_list$width = unit(1, "cm")
+				} else {
+					arg_list$height = unit(1, "cm")
+				}
+			}
 			anno_list[[ag]] = do.call(SingleAnnotation, arg_list)
 		} else if(is.atomic(anno_value_list[[ag]])) {
 			arg_list$show_legend = show_legend[i_simple + 1]
@@ -651,6 +661,7 @@ setMethod(f = "show",
 		}
 	})
 	len = len[!is.na(len)]
+	len = len[len > 0]
 	cat("  items:", ifelse(length(len), len[1], "unknown"), "\n")
 	cat("  width:", as.character(object@width), "\n")
 	cat("  height:", as.character(object@height), "\n")
@@ -724,6 +735,7 @@ nobs.HeatmapAnnotation = function(object) {
 		}
 	})
 	len = len[!is.na(len)]
+	len = len[len > 0]
 	if(length(len)) {
 		return(len[1])
 	} else {
@@ -1245,7 +1257,7 @@ setMethod(f = "resize",
 	if(is_annotation_size_set) {
 		# since annotation_size_adjusted has been recalculated, here we simply
 		# update the corresponding slots
-		slot(object, "size_name") = unit(sum(annotation_size_adjusted) + sum(gap), "mm")
+		slot(object, size_name) = unit(sum(annotation_size_adjusted) + sum(gap), "mm")
 		object@anno_size = unit(annotation_size_adjusted, "mm")
 	} else {
 		size = convertUnitFun(size, "mm", valueOnly = TRUE)

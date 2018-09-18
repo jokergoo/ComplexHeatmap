@@ -57,13 +57,17 @@
 # densityHeatmap(lt)
 #
 densityHeatmap = function(data, 
-	col = rev(brewer.pal(11, "Spectral")),
 	density_param = list(na.rm = TRUE),
+	
+	col = rev(brewer.pal(11, "Spectral")),
 	color_space = "LAB", 
-	anno = NULL, 
-	ylab = deparse(substitute(data)), 
-	title = paste0("Density heatmap of ", deparse(substitute(data))),
+	top_annotation = NULL, 
+	bottom_annotation = NULL,
+	ylab = deparse(substitute(data)),
+	column_title = paste0("Density heatmap of ", deparse(substitute(data))),
+	title = column_title,
 	range = c(-Inf, Inf),
+
 	cluster_columns = FALSE,
 	clustering_distance_columns = "euclidean",
 	clustering_method_columns = "complete",
@@ -74,7 +78,7 @@ densityHeatmap = function(data,
 	column_dend_reorder = TRUE,
 	column_names_side = c("bottom", "top"),
 	show_column_names = TRUE,
-	column_names_max_height = unit(4, "cm"),
+	column_names_max_height = unit(6, "cm"),
 	column_names_gp = gpar(fontsize = 12),
 	column_order = NULL,
 	...) {
@@ -115,65 +119,35 @@ densityHeatmap = function(data,
 
 	col = colorRamp2(seq(0, max(mat, na.rm = TRUE), length = length(col)), col, space = color_space)
 
-	if(is.null(anno)) {
-		ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, 
-			cluster_columns = cluster_columns,
-			clustering_distance_columns = clustering_distance_columns,
-			clustering_method_columns = clustering_method_columns,
-			column_dend_side = column_dend_side,
-			column_dend_height = column_dend_height,
-			show_column_dend = show_column_dend,
-			column_dend_gp = column_dend_gp,
-			column_dend_reorder = column_dend_reorder,
-			column_names_side = column_names_side,
-			show_column_names = show_column_names,
-			column_names_max_height = column_names_max_height,
-			column_names_gp = column_names_gp,
-			column_order = column_order)
-	} else if(inherits(anno, "HeatmapAnnotation")) {
-		ht = Heatmap(mat, col = col, top_annotation = anno, name = "density", cluster_rows = FALSE,
-			cluster_columns = cluster_columns,
-			clustering_distance_columns = clustering_distance_columns,
-			clustering_method_columns = clustering_method_columns,
-			column_dend_side = column_dend_side,
-			column_dend_height = column_dend_height,
-			show_column_dend = show_column_dend,
-			column_dend_gp = column_dend_gp,
-			column_dend_reorder = column_dend_reorder,
-			column_names_side = column_names_side,
-			show_column_names = show_column_names,
-			column_names_max_height = column_names_max_height,
-			column_names_gp = column_names_gp,
-			column_order = column_order)
-	} else {
-		if(!is.data.frame(anno)) anno = data.frame(anno = anno)
-		ha = HeatmapAnnotation(df = anno)
-		ht = Heatmap(mat, col = col, top_annotation = ha, name = "density", cluster_rows = FALSE, 
-			cluster_columns = cluster_columns,
-			clustering_distance_columns = clustering_distance_columns,
-			clustering_method_columns = clustering_method_columns,
-			column_dend_side = column_dend_side,
-			column_dend_height = column_dend_height,
-			show_column_dend = show_column_dend,
-			column_dend_gp = column_dend_gp,
-			column_dend_reorder = column_dend_reorder,
-			column_names_side = column_names_side,
-			show_column_names = show_column_names,
-			column_names_max_height = column_names_max_height,
-			column_names_gp = column_names_gp,
-			column_order = column_order)
-	}
-
 	bb = grid.pretty(c(min_x, max_x))
-	ht_list = rowAnnotation(axis = function(index) NULL, width = grobHeight(textGrob(ylab))*2 + max(grobWidth(textGrob(bb))) + unit(6, "mm")) + 
-		ht + rowAnnotation(quantile = function(index) NULL, width = grobWidth(textGrob("100%")) + unit(6, "mm"))
+	ht = Heatmap(mat, col = col, name = "density", cluster_rows = FALSE, 
+		cluster_columns = cluster_columns,
+		clustering_distance_columns = clustering_distance_columns,
+		clustering_method_columns = clustering_method_columns,
+		column_dend_side = column_dend_side,
+		column_dend_height = column_dend_height,
+		show_column_dend = show_column_dend,
+		column_dend_gp = column_dend_gp,
+		column_dend_reorder = column_dend_reorder,
+		column_names_side = column_names_side,
+		show_column_names = show_column_names,
+		column_names_max_height = column_names_max_height,
+		column_names_gp = column_names_gp,
+		column_order = column_order,
+		left_annotation = rowAnnotation(axis = anno_empty(border = FALSE, 
+				width = grobHeight(textGrob(ylab))*2 + max_text_width(bb) + unit(6, "mm")),
+			show_annotation_name = FALSE), 
+		right_annotation = rowAnnotation(quantile = anno_empty(border = FALSE, 
+				width = grobWidth(textGrob("100%")) + unit(6, "mm")),
+			show_annotation_name = FALSE)
+	)
 
-	ht_list = draw(ht_list, column_title = title, ...)
-	column_order = column_order(ht_list)$density
+	ht = draw(ht, column_title = title, ...)
+	column_order = column_order(ht)$density
 
 	decorate_annotation("axis", {
 		grid.text(ylab, x = grobHeight(textGrob(ylab)), rot = 90)
-	}, slice = 1)
+	})
 
 	decorate_heatmap_body("density", {
 		pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = TRUE))

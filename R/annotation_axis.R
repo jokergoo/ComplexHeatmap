@@ -130,7 +130,7 @@ heightDetails.annotation_axis = function(x) {
 
 
 pretty_breaks = function(x) {
-	at = pretty(x, n = 5)
+	at = pretty(x, n = 3)
 	at = at[at >= x[1] & at <= x[2]]
 	at
 }

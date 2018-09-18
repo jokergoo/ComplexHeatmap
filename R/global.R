@@ -128,5 +128,5 @@ TITLE_PADDING = unit(2.5, "mm")
 COLUMN_ANNO_PADDING = unit(0.5, "mm")
 ROW_ANNO_PADDING = unit(0.5, "mm")
 
-
+GLOBAL_PADDING = unit(c(2, 2, 2, 2), "mm")
 

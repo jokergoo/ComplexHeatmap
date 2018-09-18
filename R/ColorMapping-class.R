@@ -91,14 +91,17 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 			if(is.null(breaks)) {
 				stop("You should provide breaks.\n")
 			}
-		}
+		
 
-		le1 = grid.pretty(range(breaks))
-		le2 = pretty(breaks, n = 3)
-		if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
-			le = le1
+			le1 = grid.pretty(range(breaks))
+			le2 = pretty(breaks, n = 3)
+			if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
+				le = le1
+			} else {
+				le = le2
+			}
 		} else {
-			le = le2
+			le = breaks
 		}
 
 		.Object@colors = col_fun(le)
@@ -245,7 +248,7 @@ setMethod(f = "color_mapping_legend",
 	plot = TRUE,
 	title = object@name,
 	title_gp = gpar(fontsize = 10, fontface = "bold"),
-	title_position = c("topleft", "topcenter", "leftcenter", "lefttop"),
+	title_position = "topleft",
 	color_bar = object@type,
 	grid_height = unit(4, "mm"),
 	grid_width = unit(4, "mm"),

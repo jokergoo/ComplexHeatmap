@@ -412,3 +412,9 @@ draw(ht, test = TRUE)
 
 ht = Heatmap(mat, row_km = 2, column_km = 2, use_raster = TRUE)
 draw(ht, test = TRUE)
+
+#### test global padding
+ra = rowAnnotation(foo = 1:24)
+Heatmap(mat, show_column_names = FALSE) + ra
+	left_annotation = ra)
+

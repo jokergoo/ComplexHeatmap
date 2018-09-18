@@ -1,0 +1,115 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{A Brief Introduction of ComplexHeatmap package}
+-->
+
+A Brief Introduction of ComplexHeatmap package
+========================================
+
+**Author**: Zuguang Gu ( z.gu@dkfz.de )
+
+**Date**: `r Sys.Date()`
+
+-------------------------------------------------------------
+
+```{r global_settings, echo = FALSE, message = FALSE}
+library(markdown)
+options(markdown.HTML.options = c(options('markdown.HTML.options')[[1]], "toc"))
+
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    fig.align = "center"
+)
+options(markdown.HTML.stylesheet = "custom.css")
+
+options(width = 100)
+```
+
+# A Single Heatmap
+
+```{r}
+Heatmap(mat_meth)
+```
+
+```{r}
+Heatmap(mat_meth, name = "methylation",
+	top_annotation = HeatmapAnnotation(
+		type = anno$type,
+		gender = anno$gender,
+		age = anno_points(anno$age, ylim = c(0, 80)),
+		mutation = as.matrix(anno[, c("mut1", "mut2")])
+	), column_title = "Differential Methylated Regions")
+```
+
+```{r}
+Heatmap(mat_meth, name = "methylation",
+	top_annotation = HeatmapAnnotation(
+		df = anno,
+		annotation_name_side = "left"
+	), column_title = "Differential Methylated Regions")
+```
+
+```{r}
+Heatmap(mat_meth, name = "methylation",
+	top_annotation = HeatmapAnnotation(
+		df = anno,
+		annotation_name_side = "left"
+	), 
+	right_annotation = rowAnnotation(
+		anno_gene = anno_gene,
+		tss_dist = anno_points(tss_dist)
+	),
+	column_title = "Differential Methylated Regions")
+```
+
+
+```{r}
+Heatmap(mat_meth, name = "methylation",
+	top_annotation = HeatmapAnnotation(
+		type = anno$type,
+		gender = anno$gender,
+		age = anno_points(anno$age, ylim = c(0, 80)),
+		mutation = as.matrix(anno[, c("mut1", "mut2")])
+	), 
+	right_annotation = rowAnnotation(
+		anno_gene = anno_gene,
+		tss_dist = anno_points(tss_dist)
+	),
+	show_column_names = FALSE,
+	column_title = "Differential Methylated Regions",
+	column_km = 2, row_km = 4)
+```
+
+
+## Heatmap List
+
+```{r}
+Heatmap(mat_meth) + Heatmap(mat_expr)
+```
+
+```{r}
+meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+expr_col_fun = colorRamp2(c(-2, 0, 2), c("green", "white", "red"))
+Heatmap(mat_meth, name = "methylation", col = meth_col_fun) + 
+Heatmap(mat_expr, name = "epxression", col = expr_col_fun)
+```
+
+```{r}
+ht_list = Heatmap(mat_meth, name = "methylation", col = meth_col_fun) + 
+	Heatmap(mat_expr, name = "epxression", col = expr_col_fun)
+draw(ht_list, row_km = 4)
+```
+
+
+```{r}
+Heatmap(mat_meth[1:40, ], name = "methylation", col = meth_col_fun) %v%
+Heatmap(mat_expr[1:40, ], name = "epxression", col = expr_col_fun)
+```
+
+## OncoPrint
+
+## Density as a heatmap
+

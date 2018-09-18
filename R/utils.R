@@ -195,12 +195,18 @@ check_gp = function(gp) {
 #
 # == param
 # -gp A `gpar` object.
-# -k A vector of indices.
+# -i A vector of indices.
 #
-subset_gp = function(gp, k) {
+# == value
+# A `grid::gpar` object.
+#
+# == example
+# gp = gpar(col = 1:10, fill = 1)
+# subset_gp(gp, 1:5)
+subset_gp = function(gp, i) {
     gp = lapply(gp, function(x) {
         if(length(x) == 1) x
-        else x[k]
+        else x[i]
     })
     class(gp) = "gpar"
     return(gp)
@@ -280,17 +286,22 @@ list_component = function() {
 # Maximum Width of Text
 #
 # == param
-# -text A vector of text
-# -... Pass to `grid::textGrob`
+# -text A vector of text.
+# -... Pass to `grid::textGrob`.
 #
 # == details
 # Simply calculate maximum width of a list of `grid::textGrob` objects.
 #
+# Note it ignores the text rotation.
+#
 # == value
-# A `grid::unit` object.
+# A `grid::unit` object which is in "mm".
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
+#
+# == seealso
+# `max_text_height` calculates the maximum height of a text vector.
 #
 # == example
 # x = c("a", "bb", "ccc")
@@ -311,17 +322,22 @@ max_text_width = function(text, gp = gpar()) {
 # Maximum Height of Text
 #
 # == param
-# -text A vector of text
-# -... Pass to `grid::textGrob`
+# -text A vector of text.
+# -... Pass to `grid::textGrob`.
 #
 # == details
 # Simply calculate maximum height of a list of `grid::textGrob` objects.
+#
+# Note it ignores the text rotation.
 #
 # == value
 # A `grid::unit` object.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
+#
+# == seealso
+# `max_text_width` calculates the maximum width of a text vector.
 #
 # == example
 # x = c("a", "b\nb", "c\nc\nc")
@@ -419,6 +435,25 @@ unit.c = function(...) {
     do.call(grid::unit.c, lt)
 }
 
+">.unit" = function(x, y) {
+    if(!identical(attr(x, "unit"), "mm")) {
+        stop("x should be in mm unit")
+    }
+    if(!identical(attr(y, "unit"), "mm")) {
+        stop("y should be in mm unit")
+    }
+    x[[1]] > y[[1]]
+}
+
+"<.unit" = function(x, y) {
+    if(!identical(attr(x, "unit"), "mm")) {
+        stop("x should be in mm unit")
+    }
+    if(!identical(attr(y, "unit"), "mm")) {
+        stop("y should be in mm unit")
+    }
+    x[[1]] < y[[1]]
+}
 
 normalize_graphic_param_to_mat = function(x, nc, nr, name) {
     if(is.matrix(x)) {
@@ -439,4 +474,3 @@ normalize_graphic_param_to_mat = function(x, nc, nr, name) {
         }
     }
 }
-

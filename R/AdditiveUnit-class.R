@@ -9,7 +9,7 @@
 AdditiveUnit = setClass("AdditiveUnit")
 
 # == title
-# Constructor method for AdditiveUnit class
+# Constructor Method for AdditiveUnit Class
 #
 # == param
 # -... black hole arguments.
@@ -23,21 +23,17 @@ AdditiveUnit = setClass("AdditiveUnit")
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-# == example
-# # no example for this function
-# NULL
-#
 AdditiveUnit = function(...) {
     new("AdditiveUnit", ...)
 }
 
 
 # == title
-# Add heatmaps or row annotations to a heatmap list
+# Horizontally Add Heatmaps or Annotations to a Heatmap List
 #
 # == param
-# -x a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
-# -y a `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
+# -x A `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
+# -y A `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == detail
 # It is only a helper function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
@@ -47,6 +43,9 @@ AdditiveUnit = function(...) {
 #
 # == value
 # A `HeatmapList-class` object.
+#
+# == seealso
+# `%v%` operator is used for vertical heatmap list.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -64,9 +63,11 @@ AdditiveUnit = function(...) {
     }
     if(is.null(x)) {
         ht_list = new("HeatmapList")
+        ht_list@direction = "horizontal"
         add_heatmap(ht_list, y)
     } else if(is.null(y)) {
         ht_list = new("HeatmapList")
+        ht_list@direction = "horizontal"
         add_heatmap(ht_list, x)
     } else {
         add_heatmap(x, y)
@@ -74,6 +75,28 @@ AdditiveUnit = function(...) {
 }
 
 
+# == title
+# Vertically Add Heatmaps or Annotations to a Heatmap List
+#
+# == param
+# -x A `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
+# -y A `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
+#
+# == detail
+# It is only a helper function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
+# or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input objects.
+#
+# The `HeatmapAnnotation-class` object to be added should only be column annotations.
+#
+# == value
+# A `HeatmapList-class` object.
+#
+# == seealso
+# `+.AdditiveUnit` operator is used for vertical heatmap list.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 "%v%" = function(x, y) {
     if(inherits(x, "HeatmapAnnotation")) {
         if(x@which != "column") {
@@ -87,9 +110,11 @@ AdditiveUnit = function(...) {
     }
     if(is.null(x)) {
         ht_list = new("HeatmapList")
+        ht_list@direction = "vertical"
         add_heatmap(ht_list, y, direction = "vertical")
     } else if(is.null(y)) {
         ht_list = new("HeatmapList")
+        ht_list@direction = "vertical"
         add_heatmap(ht_list, x, direction = "vertical")
     } else {
         add_heatmap(x, y, direction = "vertical")

@@ -42,7 +42,9 @@
 #     grid.circle(gp = gpar(fill = "#FF000080"))
 # })
 #
-decorate_heatmap_body = function(heatmap, code, slice = 1, envir = new.env(parent = parent.frame())) {
+decorate_heatmap_body = function(heatmap, code, 
+	slice = 1, row_slice = slice, column_slice = 1,
+	envir = new.env(parent = parent.frame())) {
 
 	current_vp = current.viewport()$name
 	if(current_vp == "ROOT") {
@@ -54,7 +56,7 @@ decorate_heatmap_body = function(heatmap, code, slice = 1, envir = new.env(paren
 		seekViewport(vp_name)
 		upViewport()
 	} else {
-		vp_name = paste0(heatmap, "_heatmap_body_", slice)
+		vp_name = paste0(heatmap, "_heatmap_body_", row_slice, "_", column_slice)
 		seekViewport(vp_name)
 	}
 

@@ -33,14 +33,14 @@
 }
 
 # == title
-# Whether the unit object contains absolute unit
+# Whether the Unit is Absolute
 #
 # == param
-# -u a `grid::unit` object
+# -u A `grid::unit` object.
 #
 # == details
 # Besides the normal absolute units (e.g. "mm", "inches"), this function
-# simply treat `grid::grob` objects as absolute units.
+# simply assume `grid::grob` objects as absolute units.
 #
 # For a complex unit which is combination of different units, it is absolute
 # only if all units included are absolute units.

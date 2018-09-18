@@ -189,7 +189,13 @@ SingleAnnotation = function(name, value, col, fun,
     if(!missing(value)) {
         if(verbose) qqcat("@{name}: annotation value is vector/matrix\n")
         if(is.logical(value)) {
-            value = as.character(value)
+            if(is.matrix(value)) {
+                oa = attributes(value)
+                value = as.character(value)
+                attributes(value) = oa
+            } else {
+                value = as.character(value)
+            }
             if(verbose) qqcat("@{name}: annotation value is logical, convert to character\n")
         }
         if(is.factor(value)) {
@@ -802,7 +808,9 @@ setReplaceMethod(f = "width",
     signature = "SingleAnnotation",
     definition = function(object, value, ...) {
     object@width = value
-    width(object@fun) = value
+    if(inherits(object@fun, "AnnotationFunction")) {
+        width(object@fun) = value
+    }
     object
 })
 
@@ -830,7 +838,9 @@ setReplaceMethod(f = "height",
     signature = "SingleAnnotation",
     definition = function(object, value, ...) {
     object@height = value
-    height(object@fun) = value
+    if(inherits(object@fun, "AnnotationFunction")) {
+        height(object@fun) = value
+    }
     object
 })
 

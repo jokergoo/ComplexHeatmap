@@ -808,19 +808,46 @@ setMethod(f = "make_layout",
     ColorMappingList = list()
     for(i in seq_along(object@ht_list)) {
         ht = object@ht_list[[i]]
-        if(inherits(ht, "Heatmap")) {
-            if(merge_legends && !is.null(ht@top_annotation)) {
-                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+        if(direction == "horizontal") {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                }
+                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
+                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                }
+                if(!is.null(ht@right_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                }
+            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
             }
-            if(ht@heatmap_param$show_heatmap_legend) {
-                ColorMappingList = c(ColorMappingList, ht@matrix_color_mapping)
+        } else {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(object@ht_list_param$merge_legends && !is.null(ht@left_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                }
+                if(!is.null(ht@top_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                }
+                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
+                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@right_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                }
+            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
             }
-            if(merge_legends && !is.null(ht@bottom_annotation)) {
-                ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
-            }
-        }
-        if(inherits(ht, "HeatmapAnnotation")) {
-            ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht))
         }
     }
     if(length(ColorMappingList) == 0 && length(heatmap_legend_list) == 0) {
@@ -879,12 +906,23 @@ setMethod(f = "make_layout",
     if(!merge_legends) {
         for(i in seq_along(object@ht_list)) {
             ht = object@ht_list[[i]]
-            if(inherits(ht, "Heatmap")) {
-                if(!is.null(ht@top_annotation)) {
-                    ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@top_annotation))
+            if(direction == "horizontal") {
+                if(inherits(ht, "Heatmap")) {
+                    if(!is.null(ht@top_annotation)) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                    }
+                    if(!is.null(ht@bottom_annotation)) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                    }
                 }
-                if(!is.null(ht@bottom_annotation)) {
-                    ColorMappingList = c(ColorMappingList, get_color_mapping_list(ht@bottom_annotation))
+            } else {
+                if(inherits(ht, "Heatmap")) {
+                    if(!is.null(ht@left_annotation)) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                    }
+                    if(!is.null(ht@right_annotation)) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                    }
                 }
             }
         }
@@ -1198,7 +1236,41 @@ setMethod(f = "draw",
         on.exit(ht_opt(ovl))
     }
 
-    padding = object@ht_list_param$padding
+    # calculate proper padding
+    if(is.null(padding)) {
+        padding = GLOBAL_PADDING
+        if(!has_heatmap_list_component(object, "heatmap_legend_bottom") && 
+           !has_heatmap_list_component(object, "annotation_legend_bottom") &&
+           !has_heatmap_list_component(object, "column_title_bottom")) {
+            if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
+                padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height + GLOBAL_PADDING[1]
+            }
+        }
+        if(!has_heatmap_list_component(object, "heatmap_legend_left") && 
+           !has_heatmap_list_component(object, "annotation_legend_left") &&
+           !has_heatmap_list_component(object, "row_title_left")) {
+            if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]]) {
+                padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width + GLOBAL_PADDING[2]
+            }
+        }
+        if(!has_heatmap_list_component(object, "heatmap_legend_top") && 
+           !has_heatmap_list_component(object, "annotation_legend_top") &&
+           !has_heatmap_list_component(object, "column_title_top")) {
+            if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]]) {
+                padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height + GLOBAL_PADDING[3]
+            }
+        }
+        if(!has_heatmap_list_component(object, "heatmap_legend_right") && 
+           !has_heatmap_list_component(object, "annotation_legend_right") &&
+           !has_heatmap_list_component(object, "row_title_right")) {
+            if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
+                padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
+            }
+        }
+        object@ht_list_param$padding = padding
+    }
+
+
     layout = grid.layout(nrow = length(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT), 
         ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), 
         widths = component_width(object), 
@@ -1236,8 +1308,6 @@ setMethod(f = "draw",
     upViewport()
     upViewport()
 
-    
-
     object@ht_list_param$width = ht_list_width
     object@ht_list_param$height = ht_list_height
 
@@ -1262,6 +1332,12 @@ heatmap_list_layout_index = function(nm) {
     }
     names(ind) = c("layout.pos.row", "layout.pos.col")
     return(ind)
+}
+
+has_heatmap_list_component = function(object, component) {
+    m = object@layout$layout_index
+    ind = heatmap_list_layout_index(component)
+    any(m[, 1] == ind[1] & m[, 2] == ind[2])
 }
 
 
@@ -1404,7 +1480,7 @@ setMethod(f = "adjust_heatmap_list",
             if(inherits(ht, "Heatmap")) {
                 sum(component_height(ht, c("column_dend_top", "column_names_top", "column_anno_top")))
             } else {
-                ht@extended[3]
+                unit(0, "mm")
             }
         })))
         max_top_component_height = convertHeight(max_top_component_height, "mm")
@@ -1412,7 +1488,7 @@ setMethod(f = "adjust_heatmap_list",
             if(inherits(ht, "Heatmap")) {
                 sum(component_height(ht, c("column_dend_bottom", "column_names_bottom", "column_anno_bottom")))
             } else {
-                ht@extended[1]
+                unit(0, "mm")
             }
         })))
         max_bottom_component_height = convertHeight(max_bottom_component_height, "mm")
@@ -1489,27 +1565,91 @@ setMethod(f = "adjust_heatmap_list",
         object@layout$heatmap_width = heatmap_width
         object@layout$max_top_component_height = max_top_component_height
         object@layout$max_bottom_component_height = max_bottom_component_height
-        
-        # for annotation, check whether extension exceed plotting regions
+
         # and calcualte proper paddings
         if(is.null(object@ht_list_param$padding)) {
-            object@ht_list_param$padding = unit(c(2, 2, 2, 2), "mm")
-            row_anno_index = which(sapply(object@ht_list, inherits, "HeatmapAnnotation"))
-            row_anno_max_top_extended = unit(0, "mm")
-            if(length(row_anno_index)) {
-                row_anno_max_top_extended = max(do.call("unit.c", lapply(object@ht_list[row_anno_index], function(anno) anno@extended[3])))
-                row_anno_max_top_extended = convertHeight(row_anno_max_top_extended, "mm")
+            object@ht_list_param$padding = GLOBAL_PADDING
+            row_anno_max_top_extended = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
+                if(inherits(ht, "HeatmapAnnotation")) {
+                    ht@extended[3]
+                } else if(inherits(ht, "Heatmap")) {
+                    u = unit(0, "mm")
+                    if(!is.null(ht@left_annotation)) {
+                        u = unit.c(u, ht@left_annotation@extended[3])
+                    }
+                    if(!is.null(ht@right_annotation)) {
+                        u = unit.c(u, ht@right_annotation@extended[3])
+                    }
+                    u
+                } else {
+                    unit(0, "mm")
+                }
+            })))
+            row_anno_max_top_extended = convertHeight(row_anno_max_top_extended, "mm")
+
+            row_anno_max_bottom_extended = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
+                if(inherits(ht, "HeatmapAnnotation")) {
+                    ht@extended[1]
+                } else if(inherits(ht, "Heatmap")) {
+                    u = unit(0, "mm")
+                    if(!is.null(ht@left_annotation)) {
+                        u = unit.c(u, ht@left_annotation@extended[1])
+                    }
+                    if(!is.null(ht@right_annotation)) {
+                        u = unit.c(u, ht@right_annotation@extended[1])
+                    }
+                    u
+                } else {
+                    unit(0, "mm")
+                }
+            })))
+            row_anno_max_bottom_extended = convertHeight(row_anno_max_bottom_extended, "mm")
+            
+            ## save row_anno_max_top_extended and max_top_component_height and adjust padding when the layout is completely initialized
+            object@layout$row_anno_max_top_extended = row_anno_max_top_extended
+            object@layout$max_top_component_height = max_top_component_height
+            object@layout$row_anno_max_bottom_extended = row_anno_max_bottom_extended
+            object@layout$max_bottom_component_height = max_bottom_component_height
+
+            ## left and right
+            column_anno_max_left_extended = unit(0, "mm")
+            max_left_component_width = unit(0, "mm")
+            if(inherits(object@ht_list[[1]], "Heatmap")) {
+                ht_first = object@ht_list[[1]]
+                max_left_component_width = sum(component_width(ht_first, c("row_title_left", "row_dend_left", "row_anno_left")))
+                u = unit(0, "mm")
+                if(!is.null(ht_first@top_annotation)) {
+                    u = unit.c(u, ht_first@top_annotation@extended[2])
+                }
+                if(!is.null(ht_first@bottom_annotation)) {
+                    u = unit.c(u, ht_first@bottom_annotation@extended[2])
+                }
+                column_anno_max_left_extended = max(u)
+                max_left_component_width = convertWidth(max_left_component_width, "mm")
+                column_anno_max_left_extended = convertWidth(column_anno_max_left_extended, "mm")
             }
 
-            row_anno_max_bottom_extended = unit(0, "mm")
-            if(length(row_anno_index)) {
-                row_anno_max_bottom_extended = max(do.call("unit.c", lapply(object@ht_list[row_anno_index], function(anno) anno@extended[1])))
-                row_anno_max_bottom_extended = convertHeight(row_anno_max_bottom_extended, "mm")
+            column_anno_max_right_extended = unit(0, "mm")
+            max_right_component_width = unit(0, "mm")
+            if(inherits(object@ht_list[[ length(object@ht_list) ]], "Heatmap")) {
+                ht_last = object@ht_list[[ length(object@ht_list) ]]
+                max_right_component_width = sum(component_width(ht_last, c("row_title_right", "row_dend_right", "row_anno_right")))
+                u = unit(0, "mm")
+                if(!is.null(ht_last@top_annotation)) {
+                    u = unit.c(u, ht_last@top_annotation@extended[4])
+                }
+                if(!is.null(ht_last@bottom_annotation)) {
+                    u = unit.c(u, ht_last@bottom_annotation@extended[4])
+                }
+                column_anno_max_right_extended = max(u)
+                max_right_component_width = convertWidth(max_right_component_width, "mm")
+                column_anno_max_right_extended = convertWidth(column_anno_max_right_extended, "mm")
             }
 
-            if(row_anno_max_bottom_extended[[1]] > max_bottom_component_height[[1]]) {
-                object@ht_list_param$padding[1] = unit(2, "mm") + row_anno_max_bottom_extended - max_bottom_component_height
-            }
+            object@layout$column_anno_max_left_extended = column_anno_max_left_extended
+            object@layout$max_left_component_width = max_left_component_width
+            object@layout$column_anno_max_right_extended = column_anno_max_right_extended
+            object@layout$max_right_component_width = max_right_component_width
         }
     } else {
         # adjust left anntatation, right annotation of all heatmaps should be aligned
@@ -1538,9 +1678,9 @@ setMethod(f = "adjust_heatmap_list",
 
         max_left_component_width = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
             if(inherits(ht, "Heatmap")) {
-                sum(component_width(ht, c("row_dend_left", "row_names_left", "row_anno_left")))
+                sum(component_width(ht, c("row_dend_left", "row_names_left", "row_anno_left")))   
             } else {
-                ht@extended[2]
+                unit(0, "mm")
             }
         })))
         max_left_component_width = convertWidth(max_left_component_width, "mm")
@@ -1548,7 +1688,7 @@ setMethod(f = "adjust_heatmap_list",
             if(inherits(ht, "Heatmap")) {
                 sum(component_width(ht, c("row_dend_right", "row_names_right", "row_anno_right")))
             } else {
-                ht@extended[4]
+                unit(0, "mm")
             }
         })))
         max_right_component_width = convertHeight(max_right_component_width, "mm")
@@ -1626,25 +1766,90 @@ setMethod(f = "adjust_heatmap_list",
         object@layout$max_left_component_width = max_left_component_width
         object@layout$max_right_component_width = max_right_component_width
         
-        # for annotation, check whether extension exceed plotting regions
         # and calcualte proper paddings
         if(is.null(object@ht_list_param$padding)) {
-            object@ht_list_param$padding = unit(c(2, 2, 2, 2), "mm")
-            column_anno_index = which(sapply(object@ht_list, inherits, "HeatmapAnnotation"))
-            column_anno_max_left_extended = unit(0, "mm")
-            if(length(column_anno_index)) {
-                column_anno_max_left_extended = max(do.call("unit.c", lapply(object@ht_list[column_anno_index], function(anno) anno@extended[2])))
-                column_anno_max_left_extended = convertWidth(column_anno_max_left_extended, "mm")
+            object@ht_list_param$padding = GLOBAL_PADDING
+            column_anno_max_left_extended = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
+                if(inherits(ht, "HeatmapAnnotation")) {
+                    ht@extended[2]
+                } else if(inherits(ht, "Heatmap")) {
+                    u = unit(0, "mm")
+                    if(!is.null(ht@top_annotation)) {
+                        u = unit.c(u, ht@top_annotation@extended[2])
+                    }
+                    if(!is.null(ht@bottom_annotation)) {
+                        u = unit.c(u, ht@right_annotation@extended[2])
+                    }
+                    u
+                } else {
+                    unit(0, "mm")
+                }
+            })))
+            column_anno_max_left_extended = convertHeight(column_anno_max_left_extended, "mm")
+
+            column_anno_max_right_extended = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
+                if(inherits(ht, "HeatmapAnnotation")) {
+                    ht@extended[4]
+                } else if(inherits(ht, "Heatmap")) {
+                    u = unit(0, "mm")
+                    if(!is.null(ht@top_annotation)) {
+                        u = unit.c(u, ht@top_annotation@extended[4])
+                    }
+                    if(!is.null(ht@top_annotation)) {
+                        u = unit.c(u, ht@top_annotation@extended[4])
+                    }
+                    u
+                } else {
+                    unit(0, "mm")
+                }
+            })))
+            column_anno_max_right_extended = convertHeight(column_anno_max_right_extended, "mm")
+            
+            ## save row_anno_max_top_extended and max_top_component_height and adjust padding when the layout is completely initialized
+            object@layout$column_anno_max_left_extended = column_anno_max_left_extended
+            object@layout$max_left_component_width = max_left_component_width
+            object@layout$column_anno_max_right_extended = column_anno_max_right_extended
+            object@layout$max_right_component_width = max_right_component_width
+
+            ## top and bottom
+            row_anno_max_top_extended = unit(0, "mm")
+            max_top_component_height = unit(0, "mm")
+            if(inherits(object@ht_list[[1]], "Heatmap")) {
+                ht_first = object@ht_list[[1]]
+                max_top_component_height = sum(component_height(ht_first, c("column_title_top", "column_dend_top", "column_anno_top")))
+                u = unit(0, "mm")
+                if(!is.null(ht_first@left_annotation)) {
+                    u = unit.c(u, ht_first@left_annotation@extended[3])
+                }
+                if(!is.null(ht_first@right_annotation)) {
+                    u = unit.c(u, ht_first@right_annotation@extended[3])
+                }
+                row_anno_max_top_extended = max(u)
+                max_top_component_height = convertHeight(max_top_component_height, "mm")
+                row_anno_max_top_extended = convertHeight(row_anno_max_top_extended, "mm")
             }
 
-            column_anno_max_right_extended = unit(0, "mm")
-            if(length(column_anno_index)) {
-                column_anno_max_right_extended = max(do.call("unit.c", lapply(object@ht_list[column_anno_index], function(anno) anno@extended[4])))
-                column_anno_max_right_extended = convertWidth(column_anno_max_right_extended, "mm")
+            row_anno_max_bottom_extended = unit(0, "mm")
+            max_bottom_component_height = unit(0, "mm")
+            if(inherits(object@ht_list[[ length(object@ht_list) ]], "Heatmap")) {
+                ht_last = object@ht_list[[ length(object@ht_list) ]]
+                max_right_component_width = sum(component_height(ht_last, c("column_title_bottom", "column_dend_bottom", "column_anno_bottom")))
+                u = unit(0, "mm")
+                if(!is.null(ht_last@left_annotation)) {
+                    u = unit.c(u, ht_last@left_annotation@extended[1])
+                }
+                if(!is.null(ht_last@right_annotation)) {
+                    u = unit.c(u, ht_last@right_annotation@extended[1])
+                }
+                row_anno_max_bottom_extended = max(u)
+                max_bottom_component_height = convertHeight(max_bottom_component_height, "mm")
+                row_anno_max_bottom_extended = convertHeight(row_anno_max_bottom_extended, "mm")
             }
-            if(column_anno_max_left_extended[[1]] > max_left_component_width[[1]]) {
-                object@ht_list_param$padding[2] = unit(2, "mm") + column_anno_max_left_extended - max_left_component_width
-            }
+
+            object@layout$row_anno_max_top_extended = row_anno_max_top_extended
+            object@layout$max_top_component_height = max_top_component_height
+            object@layout$row_anno_max_bottom_extended = row_anno_max_bottom_extended
+            object@layout$max_bottom_component_height = max_bottom_component_height
         }
     }
 
@@ -1681,6 +1886,23 @@ setMethod(f = "draw_heatmap_list",
         heatmap_width = object@layout$heatmap_width
         max_bottom_component_height = object@layout$max_bottom_component_height
         max_top_component_height = object@layout$max_top_component_height
+
+        if(all(sapply(object@ht_list, function(ht) {
+            if(inherits(ht, "Heatmap")) {
+                ncol(ht@matrix) == 0
+            } else {
+                TRUE
+            }
+        }))) {
+            if(has_heatmap_list_component(object, "annotation_legend_top") || 
+               has_heatmap_list_component(object, "heatmap_legend_top")) {
+                max_top_component_height = object@layout$row_anno_max_top_extended
+            }
+            if(has_heatmap_list_component(object, "annotation_legend_bottom") || 
+               has_heatmap_list_component(object, "heatmap_legend_bottom")) {
+                max_bottom_component_height = object@layout$row_anno_max_bottom_extended
+            }
+        }
 
         pushViewport(viewport(name = "main_heatmap_list"))
         
@@ -1719,7 +1941,24 @@ setMethod(f = "draw_heatmap_list",
         heatmap_height = object@layout$heatmap_height
         max_left_component_width = object@layout$max_left_component_width
         max_right_component_width = object@layout$max_right_component_width
-        
+
+        if(all(sapply(object@ht_list, function(ht) {
+            if(inherits(ht, "Heatmap")) {
+                nrow(ht@matrix) == 0
+            } else {
+                TRUE
+            }
+        }))) {
+            if(has_heatmap_list_component(object, "annotation_legend_right") || 
+               has_heatmap_list_component(object, "heatmap_legend_right")) {
+                max_right_component_width = object@layout$column_anno_max_right_extended
+            }
+            if(has_heatmap_list_component(object, "annotation_legend_left") || 
+               has_heatmap_list_component(object, "heatmap_legend_left")) {
+                max_left_component_width = object@layout$column_anno_max_left_extended
+            }
+        }
+
         pushViewport(viewport(name = "main_heatmap_list"))
         
         i_main = object@ht_list_param$main_heatmap
@@ -1800,10 +2039,16 @@ setMethod(f = "draw_title",
             "right" = 270)
 
         pushViewport(viewport(name = "global_row_title"))
+        if("fill" %in% names(gp)) {
+            grid.rect(gp = gpar(fill = gp$fill))
+        }
         grid.text(title, rot = rot, gp = gp)
         upViewport()
     } else {
         pushViewport(viewport(name = "global_column_title"))
+        if("fill" %in% names(gp)) {
+            grid.rect(gp = gpar(fill = gp$fill))
+        }
         grid.text(title, gp = gp)
         upViewport()
     }
@@ -1832,30 +2077,72 @@ setMethod(f = "draw_heatmap_legend",
     signature = "HeatmapList",
     definition = function(object, legend_list = list(), ...) {
 
+    # actually we call the "heatmap legends" the main legends
+    # for horizontal heamtap list, legends of heamtap/row annotation/left/right annotation
+    # for vertical heatmap list, legends of heamtap/column annotation/top/bottom annotation
+    # if merge_legends is true, the it contains all the legends
+
     side = object@heatmap_legend_param$side
     size = object@heatmap_legend_param$size
     padding = object@heatmap_legend_param$padding
+    direction = object@direction
 
     ColorMappingList = list()
     ColorMappingParamList = list()
     for(i in seq_along(object@ht_list)) {
         ht = object@ht_list[[i]]
-        if(inherits(object@ht_list[[i]], "Heatmap")) {
-            if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+        if(direction == "horizontal") {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                }
+                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
+                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
+                    ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                }
+                if(!is.null(ht@right_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                }
+            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
+                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
             }
-            if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
-                ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
-                ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
+        } else {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(object@ht_list_param$merge_legends && !is.null(ht@left_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                }
+                if(!is.null(ht@top_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                }
+                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
+                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
+                    ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@right_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                }
+            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
+                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
             }
-            if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
-            }
-        } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
-            ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
-            ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
         }
     }
 
@@ -1918,23 +2205,41 @@ setMethod(f = "draw_annotation_legend",
     signature = "HeatmapList",
     definition = function(object, legend_list = list(), ...) {
 
+    # actually we call the "annotation legends" the secondary legends
+    # for horizontal heamtap list, legends of all top/bottom annotations
+    # for vertical heatmap list, legends of all left/right annotations
+
     side = object@annotation_legend_param$side
     size = object@annotation_legend_param$size
     padding = object@annotation_legend_param$padding
     offset = object@annotation_legend_param$offset
+    direction = object@direction
 
     ColorMappingList = list()
     ColorMappingParamList = list()
     for(i in seq_along(object@ht_list)) {
         ht = object@ht_list[[i]]
-        if(inherits(ht, "Heatmap")) {
-            if(!is.null(ht@top_annotation)) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+        if(direction == "horizontal") {
+            if(inherits(ht, "Heatmap")) {
+                if(!is.null(ht@top_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                }
             }
-            if(!is.null(ht@bottom_annotation)) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+        } else {
+            if(inherits(ht, "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                }
+                if(!is.null(ht@right_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                }
             }
         }
     }
@@ -1984,28 +2289,64 @@ setMethod(f = "heatmap_legend_size",
 
     side = object@heatmap_legend_param$side
     padding = object@heatmap_legend_param$padding
+    direction = object@direction
 
     ColorMappingList = list()
     ColorMappingParamList = list()
     for(i in seq_along(object@ht_list)) {
         ht = object@ht_list[[i]]
-        if(inherits(object@ht_list[[i]], "Heatmap")) {
-            if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+        if(direction == "horizontal") {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                }
+                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
+                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
+                    ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                }
+                if(!is.null(ht@right_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                }
+            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
+                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
             }
-            if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
-                ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
-                ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
+        } else {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(object@ht_list_param$merge_legends && !is.null(ht@left_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                }
+                if(!is.null(ht@top_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                }
+                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
+                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
+                    ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                }
+                if(object@ht_list_param$merge_legends && !is.null(ht@right_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                }
+            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
+                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
             }
-            if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
-            }
-            
-        } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
-            ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
-            ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
         }
     }
 
@@ -2040,19 +2381,33 @@ setMethod(f = "annotation_legend_size",
 
     side = object@annotation_legend_param$side
     padding = object@annotation_legend_param$padding
+    direction = object@direction
 
     ColorMappingList = list()
     ColorMappingParamList = list()
     for(i in seq_along(object@ht_list)) {
         ht = object@ht_list[[i]]
-        if(inherits(ht, "Heatmap")) {
-            if(!is.null(ht@top_annotation)) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+        if(direction == "horizontal") {
+            if(inherits(ht, "Heatmap")) {
+                if(!is.null(ht@top_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                }
             }
-            if(!is.null(ht@bottom_annotation)) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+        } else {
+            if(inherits(ht, "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                }
+                if(!is.null(ht@right_annotation)) {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                }
             }
         }
     }
@@ -2088,11 +2443,21 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
         }
     }
 
-    width = convertWidth(grobWidth(pk), "mm")
-    height = convertHeight(grobHeight(pk), "mm")
+    # width = convertWidth(grobWidth(pk), "mm")
+    # height = convertHeight(grobHeight(pk), "mm")
+    width = width(pk)
+    height = height(pk)
 
     if(plot) {
-        grid.draw(pk)
+        if(side == "right") {
+            draw(pk, x = unit(1, "npc"), just = "right")
+        } else if(side == "left") {
+            draw(pk, x = unit(0, "npc"), just = "left")
+        } else if(side == "top") {
+            draw(pk, y = unit(1, "npc"), just = "top")
+        } else if(side == "bottom") {
+            draw(pk, y = unit(0, "npc", just = "bottom"))
+        }
     }
 
     size = unit.c(width, height)
