@@ -1,5 +1,6 @@
 \name{names<-.HeatmapAnnotation}
 \alias{names<-.HeatmapAnnotation}
+\alias{namesAssign.HeatmapAnnotation}
 \title{
 Assign Annotation Names
 }

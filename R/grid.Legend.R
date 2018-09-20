@@ -4,7 +4,6 @@
 #
 # == details
 # This is a very simple class for legends that it only has one slot which is the real `grid::grob` of the legends.
-# The design of the ``Legends`` class is to support more helper functions such as `width.Legends` to get 
 # more information of the legends grob.
 # 
 # == example
@@ -218,7 +217,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 			textGrob(title, x = title_x, y = unit(1, "npc"), just = title_just, gp = title_gp),
 			edit_vp_in_legend_grob(legend_body, x = unit(0, "npc"), y = unit(0, "npc"), valid.just = c(0, 0)),
 			vp = viewport(width = total_width, height = total_height),
-			cl = "Legend"
+			cl = "legend"
 		)
 		attr(gf, "width") = total_width
 		attr(gf, "height") = total_height
@@ -273,7 +272,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 			edit_vp_in_legend_grob(legend_body, x = unit(1, "npc"), y = unit(1, "npc"), 
 				valid.just = c(1, 1)),
 			vp = viewport(width = total_width, height = total_height),
-			cl = "Legend"
+			cl = "legend"
 		)
 		attr(gf, "width") = total_width
 		attr(gf, "height") = total_height
@@ -761,6 +760,10 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
 	} else {
 		legend_list = list(...)
 	}
+	if(length(legend_list) == 1) {
+		return(legend_list[[1]])
+	}
+
 	legend_list = lapply(legend_list, function(x) {
 		lgd = x@grob
 		lgd$name = legend_grob_name()
@@ -809,7 +812,6 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
 
     	## pack_width is the width for each column
     	## pack_height is the total height of the packed legends
-
     	gl = list()
     	for(i in 1:nc) {
     		ind = ind_list[[i]]
@@ -1036,21 +1038,66 @@ grid.draw.Legends = function(x, recording = TRUE) {
 	grid.draw(x@grob, recording =  recording)
 }
 
+# == title
+# Grob width for legend_body
+#
+# == param
+# -x legend body
+#
 widthDetails.legend_body = function(x) {
 	attr(x, "width")
 }
 
+# == title
+# Grob height for legend_body
+#
+# == param
+# -x legend body
+#
 heightDetails.legend_body = function(x) {
 	attr(x, "height")
 }
 
+# == title
+# Grob width for packed_legends
+#
+# == param
+# -x legend body
+#
+widthDetails.legend = function(x) {
+	attr(x, "width")
+}
+
+# == title
+# Grob height for packed_legends
+#
+# == param
+# -x legend body
+#
+heightDetails.legend = function(x) {
+	attr(x, "height")
+}
+
+# == title
+# Grob width for packed_legends
+#
+# == param
+# -x legend body
+#
 widthDetails.packed_legends = function(x) {
 	attr(x, "width")
 }
 
+# == title
+# Grob height for packed_legends
+#
+# == param
+# -x legend body
+#
 heightDetails.packed_legends = function(x) {
 	attr(x, "height")
 }
+
 
 # assume x is ordered
 is_diff_equal = function(x) {

@@ -373,7 +373,6 @@ size.HeatmapAnnotation = function(x, ...) {
 }
 
 
-
 # == title
 # Width of the Legends
 #
@@ -385,8 +384,10 @@ size.HeatmapAnnotation = function(x, ...) {
 # The returned unit x is in ``mm``.
 #
 width.Legends = function(x, ...) {
-	attr(x@grob, "width")
+	s = attr(x@grob, "width")
+	s
 }
+
 
 # == title
 # Height of the Legends
@@ -399,6 +400,7 @@ width.Legends = function(x, ...) {
 # The returned unit x is in ``mm``.
 #
 height.Legends = function(x, ...) {
-	attr(x@grob, "height")
+	s = attr(x@grob, "height")
+	s
 }
 

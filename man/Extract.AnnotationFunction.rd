@@ -1,5 +1,6 @@
 \name{[.AnnotationFunction}
 \alias{[.AnnotationFunction}
+\alias{Extract.AnnotationFunction}
 \title{
 Subset an AnnotationFunction Object
 }

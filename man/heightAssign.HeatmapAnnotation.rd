@@ -1,5 +1,6 @@
 \name{height<-.HeatmapAnnotation}
 \alias{height<-.HeatmapAnnotation}
+\alias{heightAssign.HeatmapAnnotation}
 \title{
 Assign the Height to the HeatmapAnnotation x
 }
@@ -19,4 +20,5 @@ Assign the Height to the HeatmapAnnotation x
 \examples{
 # There is no example
 NULL
+
 }

@@ -1,5 +1,6 @@
 \name{size<-}
 \alias{size<-}
+\alias{sizeAssign}
 \title{
 Generic assignment method for size
 }
@@ -19,4 +20,5 @@ size(x, ...) <- value
 \examples{
 # There is no example
 NULL
+
 }

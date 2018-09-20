@@ -120,10 +120,23 @@ annotation_axis_grob = function(at = NULL, labels = at, labels_rot = 0, gp = gpa
 	return(gb)
 }
 
+
+# == title
+# Grob width for annotation_axis
+#
+# == param
+# -x legend body
+#
 widthDetails.annotation_axis = function(x) {
 	attr(x, "width")
 }
 
+# == title
+# Grob width for annotation_axis
+#
+# == param
+# -x legend body
+#
 heightDetails.annotation_axis = function(x) {
 	attr(x, "height")
 }

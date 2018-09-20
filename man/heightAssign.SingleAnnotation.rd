@@ -1,5 +1,6 @@
 \name{height<-.SingleAnnotation}
 \alias{height<-.SingleAnnotation}
+\alias{heightAssign.SingleAnnotation}
 \title{
 Assign the Height to the SingleAnnotation x
 }
@@ -19,4 +20,5 @@ Assign the Height to the SingleAnnotation x
 \examples{
 # There is no example
 NULL
+
 }

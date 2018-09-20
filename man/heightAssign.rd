@@ -1,5 +1,6 @@
 \name{height<-}
 \alias{height<-}
+\alias{heightAssign}
 \title{
 Generic assignment method for height
 }
@@ -19,4 +20,5 @@ height(x, ...) <- value
 \examples{
 # There is no example
 NULL
+
 }

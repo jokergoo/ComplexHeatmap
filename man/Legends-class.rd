@@ -9,7 +9,6 @@ The Class for Legends
 }
 \details{
 This is a very simple class for legends that it only has one slot which is the real \code{\link[grid]{grob}} of the legends.
-The design of the \code{Legends} class is to support more helper functions such as \code{\link{width.Legends}} to get 
 more information of the legends grob.
 }
 \examples{

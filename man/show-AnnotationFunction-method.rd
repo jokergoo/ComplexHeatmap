@@ -17,4 +17,5 @@ Print the AnnotationFunction object
 \examples{
 # There is no example
 NULL
+
 }

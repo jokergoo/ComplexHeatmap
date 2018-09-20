@@ -123,7 +123,7 @@ HeatmapAnnotation = function(...,
 	sc = sys.calls()
 	for(i in seq_along(sc)) {
 		scl = as.list(sc[[i]])
-		if(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation")) {
+		if(any(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation"))) {
 			arg_list = scl[-1]
 			break
 		}
@@ -309,7 +309,7 @@ HeatmapAnnotation = function(...,
 	if(!missing(col)) {
 		unused_col_name = setdiff(names(col), col_name_defined)
 		if(length(unused_col_name)) {
-			warning(paste0("Following are defined in `col` while have no corresponding annotations:\n", paste(unused_col_name, collapse = ", ")))
+			# warning(paste0("Following are defined in `col` while have no corresponding annotations:\n", paste(unused_col_name, collapse = ", ")))
 		}
 	}
 

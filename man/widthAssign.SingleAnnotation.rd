@@ -1,5 +1,6 @@
 \name{width<-.SingleAnnotation}
 \alias{width<-.SingleAnnotation}
+\alias{widthAssign.SingleAnnotation}
 \title{
 Assign the Width to the SingleAnnotation x
 }
@@ -19,4 +20,5 @@ Assign the Width to the SingleAnnotation x
 \examples{
 # There is no example
 NULL
+
 }

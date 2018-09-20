@@ -1,5 +1,6 @@
 \name{size<-.SingleAnnotation}
 \alias{size<-.SingleAnnotation}
+\alias{sizeAssign.SingleAnnotation}
 \title{
 Assign the Size of the SingleAnnotation x
 }
@@ -22,4 +23,5 @@ It assigns the width if it is a row annotation and the height if it is a column 
 \examples{
 # There is no example
 NULL
+
 }

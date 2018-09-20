@@ -105,4 +105,5 @@ are all subsettable.
 \examples{
 # There is no example
 NULL
+
 }

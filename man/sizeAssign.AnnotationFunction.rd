@@ -1,5 +1,6 @@
 \name{size<-.AnnotationFunction}
 \alias{size<-.AnnotationFunction}
+\alias{sizeAssign.AnnotationFunction}
 \title{
 Assign the Size to the AnnotationFunction x
 }

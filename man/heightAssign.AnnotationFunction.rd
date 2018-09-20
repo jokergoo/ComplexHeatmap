@@ -1,5 +1,6 @@
 \name{height<-.AnnotationFunction}
 \alias{height<-.AnnotationFunction}
+\alias{heightAssign.AnnotationFunction}
 \title{
 Assign the Height to the AnnotationFunction x
 }
@@ -19,4 +20,5 @@ Assign the Height to the AnnotationFunction x
 \examples{
 # There is no example
 NULL
+
 }

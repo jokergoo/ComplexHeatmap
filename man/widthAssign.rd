@@ -1,5 +1,6 @@
 \name{width<-}
 \alias{width<-}
+\alias{widthAssign}
 \title{
 Generic assignment method for width
 }
@@ -19,4 +20,5 @@ width(x, ...) <- value
 \examples{
 # There is no example
 NULL
+
 }

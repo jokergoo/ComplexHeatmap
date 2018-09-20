@@ -17,7 +17,7 @@ Add row annotations or heatmaps as a heatmap list
 
 }
 \details{
-There is a helper function \code{+.AdditiveUnit} for horizontal add or \code{\link{\%v\%}} for vertical add.
+There is a helper function \code{+.AdditiveUnit} for horizontal add or \code{\link[=pct_v_pct]{\%v\%}} for vertical add.
 }
 \value{
 A \code{\link{HeatmapList-class}} object.
@@ -28,4 +28,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
+
 }

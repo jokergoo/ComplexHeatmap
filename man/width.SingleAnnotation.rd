@@ -18,4 +18,5 @@ Width of the SingleAnnotation x
 \examples{
 # There is no example
 NULL
+
 }

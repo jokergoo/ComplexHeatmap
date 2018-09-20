@@ -28,4 +28,5 @@ A \code{\link{grob}} object which is generally contructed by \code{\link[grid]{s
 \examples{
 # There is no example
 NULL
+
 }

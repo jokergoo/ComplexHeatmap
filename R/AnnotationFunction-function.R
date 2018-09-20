@@ -2607,3 +2607,24 @@ row_anno_link = function(...) {
 	anno_link(..., which = "row")
 }
 
+anno_summarize = function(which = c("column", "row"),
+	width = NULL, height = NULL, border = FALSE, ...) {
+
+	if(is.null(.ENV$current_annotation_which)) {
+		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
+	}
+
+	if(which == "column") {
+		stop("`anno_summarize()` is only allowed as a column annotation.")
+	}
+
+	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
+
+	# get variables fron oncoPrint() function
+	pf = parent.frame()
+	# find where the heatmap object is.
+	
+}
+

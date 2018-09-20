@@ -1,5 +1,6 @@
 \name{draw_dend-Heatmap-method}
 \alias{draw_dend,Heatmap-method}
+\alias{draw_dend}
 \title{
 Draw Heatmap Dendrograms
 }
@@ -33,8 +34,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\alias{draw_dend}
 \examples{
 # There is no example
 NULL
+
 }

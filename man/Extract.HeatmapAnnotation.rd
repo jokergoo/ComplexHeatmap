@@ -1,5 +1,6 @@
 \name{[.HeatmapAnnotation}
 \alias{[.HeatmapAnnotation}
+\alias{Extract.HeatmapAnnotation}
 \title{
 Subset the HeatmapAnnotation object
 }

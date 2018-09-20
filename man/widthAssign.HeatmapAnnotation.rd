@@ -1,5 +1,6 @@
 \name{width<-.HeatmapAnnotation}
 \alias{width<-.HeatmapAnnotation}
+\alias{widthAssign.HeatmapAnnotation}
 \title{
 Assign the Width to the HeatmapAnnotation x
 }
@@ -19,4 +20,5 @@ Assign the Width to the HeatmapAnnotation x
 \examples{
 # There is no example
 NULL
+
 }

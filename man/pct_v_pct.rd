@@ -1,5 +1,6 @@
 \name{\%v\%}
 \alias{\%v\%}
+\alias{pct_v_pct}
 \title{
 Vertically Add Heatmaps or Annotations to a Heatmap List
 }
@@ -25,7 +26,7 @@ The \code{\link{HeatmapAnnotation-class}} object to be added should only be colu
 A \code{\link{HeatmapList-class}} object.
 }
 \seealso{
-\code{\link{+.AdditiveUnit}} operator is used for vertical heatmap list.
+\code{\link[=add.AdditiveUnit]{+.AdditiveUnit}} operator is used for vertical heatmap list.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
@@ -33,4 +34,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
+
 }

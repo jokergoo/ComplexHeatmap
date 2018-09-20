@@ -18,4 +18,5 @@ Height of the HeatmapAnnotation x
 \examples{
 # There is no example
 NULL
+
 }

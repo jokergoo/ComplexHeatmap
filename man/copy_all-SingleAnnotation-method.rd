@@ -21,4 +21,5 @@ it calls \code{\link{copy_all,AnnotationFunction-method}} to hard copy the varia
 \examples{
 # There is no example
 NULL
+
 }

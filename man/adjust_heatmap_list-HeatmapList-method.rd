@@ -1,5 +1,6 @@
 \name{adjust_heatmap_list-HeatmapList-method}
 \alias{adjust_heatmap_list,HeatmapList-method}
+\alias{adjust_heatmap_list}
 \title{
 Adjust heatmap list
 }
@@ -14,8 +15,8 @@ Adjust heatmap list
   \item{object}{A \code{\link{HeatmapList-class}} object}
 
 }
-\alias{adjust_heatmap_list}
 \examples{
 # There is no example
 NULL
+
 }

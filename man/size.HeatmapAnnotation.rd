@@ -21,4 +21,5 @@ It returns the width if it is a row annotation and the height if it is a column 
 \examples{
 # There is no example
 NULL
+
 }

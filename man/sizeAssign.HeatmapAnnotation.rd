@@ -1,5 +1,6 @@
 \name{size<-.HeatmapAnnotation}
 \alias{size<-.HeatmapAnnotation}
+\alias{sizeAssign.HeatmapAnnotation}
 \title{
 Assign the Size to the HeatmapAnnotation x
 }
@@ -22,4 +23,5 @@ It assigns the width if it is a row annotation and the height if it is a column 
 \examples{
 # There is no example
 NULL
+
 }
