@@ -14,7 +14,7 @@ decorate_dend(heatmap, code, slice = 1, which = c("column", "row"),
 
   \item{heatmap}{name of the heatmap}
   \item{code}{code that adds graphics in the selected heatmap body}
-  \item{slice}{index of row slices in the heatmap}
+  \item{slice}{index of row slice or column slice in the heatmap}
   \item{which}{on rows or on columns?}
   \item{envir}{where to look for variables inside \code{code}}
 

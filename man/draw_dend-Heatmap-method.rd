@@ -1,11 +1,10 @@
 \name{draw_dend-Heatmap-method}
 \alias{draw_dend,Heatmap-method}
-\alias{draw_dend}
 \title{
-Draw dendrogram on row or column
+Draw Heatmap Dendrograms
 }
 \description{
-Draw dendrogram on row or column
+Draw Heatmap Dendrograms
 }
 \usage{
 \S4method{draw_dend}{Heatmap}(object,
@@ -13,17 +12,14 @@ Draw dendrogram on row or column
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{which}{is dendrogram put on the row or on the column of the heatmap?}
-  \item{k}{a matrix may be splitted by rows, the value identifies which row-slice.}
-  \item{max_height}{maximum height of the dendrograms.}
-  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
+  \item{which}{Are the dendrograms put on the row or on the column of the heatmap?}
+  \item{k}{Slice index.}
+  \item{max_height}{maximal height of dendrogram.}
+  \item{...}{Pass to \code{\link[grid]{viewport}} which includes the complete heatmap dendrograms.}
 
 }
 \details{
-If the matrix is split into several row slices, a list of dendrograms will be drawn by 
-the heatmap that each dendrogram corresponds to its row slices.
-
 A viewport is created which contains dendrograms.
 
 This function is only for internal use.
@@ -37,8 +33,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{draw_dend}
 \examples{
 # There is no example
 NULL
-
 }

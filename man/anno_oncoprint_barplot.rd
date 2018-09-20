@@ -1,16 +1,24 @@
 \name{anno_oncoprint_barplot}
 \alias{anno_oncoprint_barplot}
 \title{
-Column barplot annotation for oncoPrint
+Barplot annotation for oncoPrint
 }
 \description{
-Column barplot annotation for oncoPrint
+Barplot annotation for oncoPrint
 }
 \usage{
-anno_oncoprint_barplot()
+anno_oncoprint_barplot(type = all_type, which = c("column", "row"),
+    width = NULL, height = NULL, border = FALSE, ...)
 }
-\details{
-This function is only used for column annotation
+\arguments{
+
+  \item{type}{-type}
+  \item{which}{-which}
+  \item{width}{-width}
+  \item{height}{-height}
+  \item{border}{-border}
+  \item{...}{-...}
+
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
@@ -18,5 +26,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

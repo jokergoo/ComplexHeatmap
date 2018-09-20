@@ -1,17 +1,17 @@
 \name{show-ColorMapping-method}
 \alias{show,ColorMapping-method}
 \title{
-Print ColorMapping object
+Print ColorMapping Object
 }
 \description{
-Print ColorMapping object
+Print ColorMapping Object
 }
 \usage{
 \S4method{show}{ColorMapping}(object)
 }
 \arguments{
 
-  \item{object}{a \code{\link{ColorMapping-class}} object.}
+  \item{object}{A \code{\link{ColorMapping-class}} object.}
 
 }
 \value{
@@ -23,5 +23,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

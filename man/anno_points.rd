@@ -1,40 +1,38 @@
 \name{anno_points}
 \alias{anno_points}
 \title{
-Using points as annotation
+Points Annotation
 }
 \description{
-Using points as annotation
+Points Annotation
 }
 \usage{
 anno_points(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16,
-    size = unit(2, "mm"), ylim = NULL, axis = FALSE, axis_side = NULL,
-    axis_gp = gpar(fontsize = 8), axis_direction = c("normal", "reverse"), ...)
+    size = unit(2, "mm"), ylim = NULL, extend = 0.05, axis = TRUE,
+    axis_param = default_axis_param(which), width = NULL, height = NULL)
 }
 \arguments{
 
-  \item{x}{a vector of numeric values.}
-  \item{which}{is the annotation a column annotation or a row annotation?}
-  \item{border}{whether show border of the annotation compoment}
-  \item{gp}{graphic parameters.}
-  \item{pch}{point type.}
-  \item{size}{point size.}
-  \item{ylim}{data ranges.}
-  \item{axis}{whether add axis.}
-  \item{axis_side}{if it is placed as column annotation, value can only be "left" or "right". If it is placed as row annotation, value can only be "bottom" or "top".}
-  \item{axis_gp}{graphic parameters for axis}
-  \item{axis_direction}{if the annotation is row annotation, should the axis be from left to right (default) or follow the reversed direction?}
-  \item{...}{for future use.}
+  \item{x}{The value vector. The value can be a vector or a matrix. The length of the vector or the number of rows of the matrix is taken as the number of the observations of the annotation.}
+  \item{which}{Whether it is a column annotation or a row annotation?}
+  \item{border}{Wether draw borders of the annotation region?}
+  \item{gp}{Graphic parameters for points. The length of each graphic parameter can be 1, length of \code{x} if \code{x} is a vector, or number of columns of \code{x} is \code{x} is a matrix.}
+  \item{pch}{Point type. The length setting is the same as \code{gp}.}
+  \item{size}{Point size, the value should be a \code{\link[grid]{unit}} object. The length setting is the same as \code{gp}.}
+  \item{ylim}{Data ranges. By default it is \code{range(x)}.}
+  \item{extend}{The extension to both side of \code{ylim}. The value is a percent value corresponding to \code{ylim[2] - ylim[1]}.}
+  \item{axis}{Whether to add axis?}
+  \item{axis_param}{parameters for controlling axis. See \code{\link{default_axis_param}} for all possible settings and default parameters.}
+  \item{width}{Width of the annotation.}
+  \item{height}{Height of the annotation.}
 
 }
 \value{
-A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
-}
-\author{
-Zuguang Gu <z.gu@dkfz.de>
+An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
 \examples{
-f = anno_points(rnorm(10))
-grid.newpage(); f(1:10)
-
+anno = anno_points(runif(10))
+draw(anno, test = "anno_points")
+anno = anno_points(matrix(runif(20), nc = 2), pch = 1:2)
+draw(anno, test = "matrix")
 }

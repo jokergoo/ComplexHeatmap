@@ -7,7 +7,7 @@ Width of each heatmap list component
 Width of each heatmap list component
 }
 \usage{
-\S4method{component_width}{HeatmapList}(object, k = 1:7)
+\S4method{component_width}{HeatmapList}(object, k = HEATMAP_LIST_LAYOUT_ROW_COMPONENT)
 }
 \arguments{
 
@@ -25,6 +25,6 @@ A \code{\link[grid]{unit}} object
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# no example for this internal method
-
+# There is no example
+NULL
 }

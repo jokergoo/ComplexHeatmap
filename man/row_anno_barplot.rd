@@ -1,10 +1,10 @@
 \name{row_anno_barplot}
 \alias{row_anno_barplot}
 \title{
-Row annotation which is represented as barplots
+Barplots as Row Annotation
 }
 \description{
-Row annotation which is represented as barplots
+Barplots as Row Annotation
 }
 \usage{
 row_anno_barplot(...)
@@ -16,15 +16,13 @@ row_anno_barplot(...)
 }
 \details{
 A wrapper of \code{\link{anno_barplot}} with pre-defined \code{which} to \code{row}.
+
+You can directly use \code{\link{anno_barplot}} for row annotation if you call it in \code{\link{rowAnnotation}}.
 }
 \value{
 See help page of \code{\link{anno_barplot}}
 }
-\author{
-Zuguang Gu <z.gu@dkfz.de>
-}
 \examples{
 # There is no example
 NULL
-
 }

@@ -1,17 +1,17 @@
 \name{rowAnnotation}
 \alias{rowAnnotation}
 \title{
-Construct row annotations
+Construct Row Annotations
 }
 \description{
-Construct row annotations
+Construct Row Annotations
 }
 \usage{
 rowAnnotation(...)
 }
 \arguments{
 
-  \item{...}{pass to \code{\link{HeatmapAnnotation}}}
+  \item{...}{Pass to \code{\link{HeatmapAnnotation}}}
 
 }
 \details{
@@ -27,7 +27,6 @@ A \code{\link{HeatmapAnnotation-class}} object.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-df = data.frame(type = c("a", "a", "a", "b", "b", "b"))
-ha = columnAnnotation(df = df)
-
+# There is no example
+NULL
 }

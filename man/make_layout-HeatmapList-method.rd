@@ -7,12 +7,15 @@ Make layout for the complete plot
 Make layout for the complete plot
 }
 \usage{
-\S4method{make_layout}{HeatmapList}(object, row_title = character(0),
+\S4method{make_layout}{HeatmapList}(object,
+    
+    row_title = character(0),
     row_title_side = c("left", "right"),
     row_title_gp = gpar(fontsize = 14),
     column_title = character(0),
     column_title_side = c("top", "bottom"),
     column_title_gp = gpar(fontsize = 14),
+    
     heatmap_legend_side = c("right", "left", "bottom", "top"),
     merge_legends = FALSE,
     show_heatmap_legend = TRUE,
@@ -20,12 +23,18 @@ Make layout for the complete plot
     annotation_legend_side = c("right", "left", "bottom", "top"),
     show_annotation_legend = TRUE,
     annotation_legend_list = list(),
-    gap = unit(3, "mm"),
-    row_gap = NULL,
+    
+    ht_gap = unit(2, "mm"),
+    
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
+    padding = NULL,
+    
     row_dend_side = c("original", "left", "right"),
-    row_hclust_side = row_dend_side,
     row_sub_title_side = c("original", "left", "right"),
+    column_dend_side = c("original", "top", "bottom"),
+    column_sub_title_side = c("original", "top", "bottom"),
+    
+    row_gap = NULL,
     cluster_rows = NULL,
     clustering_distance_rows = NULL,
     clustering_method_rows = NULL,
@@ -34,9 +43,22 @@ Make layout for the complete plot
     row_dend_reorder = NULL,
     row_dend_gp = NULL,
     row_order = NULL,
-    km = NULL,
-    split = NULL,
-    combined_name_fun = NULL)
+    row_km = NULL,
+    row_split = NULL,
+    heatmap_body_height = NULL,
+    
+    column_gap = NULL,
+    cluster_columns = NULL,
+    clustering_distance_columns = NULL,
+    clustering_method_columns = NULL,
+    column_dend_width = NULL,
+    show_column_dend = NULL,
+    column_dend_reorder = NULL,
+    column_dend_gp = NULL,
+    column_order = NULL,
+    column_km = NULL,
+    column_split = NULL,
+    heatmap_body_width = NULL)
 }
 \arguments{
 
@@ -54,12 +76,14 @@ Make layout for the complete plot
   \item{annotation_legend_side}{side of annotation legend.}
   \item{show_annotation_legend}{whether show annotation legend.}
   \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
-  \item{gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
-  \item{row_gap}{gap between row clusters if rows are split}
+  \item{ht_gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
   \item{main_heatmap}{name or index for the main heatmap}
+  \item{padding}{padding of the plot}
   \item{row_dend_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
-  \item{row_hclust_side}{deprecated, use \code{row_dend_side} instead}
-  \item{row_sub_title_side}{if auto adjust, where to put sub row titles for the main heatmap}
+  \item{row_sub_title_side}{row sub title}
+  \item{column_dend_side}{column dend}
+  \item{column_sub_title_side}{column sub title}
+  \item{row_gap}{gap between row clusters if rows are split}
   \item{cluster_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{cluster_rows} in main heatmap is ignored.}
   \item{clustering_distance_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{clustering_distance_rows} in main heatmap is ignored.}
   \item{clustering_method_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{clustering_method_rows} in main heatmap is ignored.}
@@ -68,9 +92,21 @@ Make layout for the complete plot
   \item{row_dend_reorder}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_dend_reorder} in main heatmap is ignored.}
   \item{row_dend_gp}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_dend_gp} in main heatmap is ignored.}
   \item{row_order}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_order} in main heatmap is ignored.}
-  \item{km}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{km} in main heatmap is ignored.}
-  \item{split}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{split} in main heatmap is ignored.}
-  \item{combined_name_fun}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{combined_name_fun} in main heatmap is ignored.}
+  \item{row_km}{row km}
+  \item{row_split}{row split}
+  \item{heatmap_body_height}{heatmap body height}
+  \item{column_gap}{column gap}
+  \item{cluster_columns}{cluster columns}
+  \item{clustering_distance_columns}{clustering distance columns}
+  \item{clustering_method_columns}{clustering method columns}
+  \item{column_dend_width}{column dend width}
+  \item{show_column_dend}{show column dendrogram}
+  \item{column_dend_reorder}{column dend reorder}
+  \item{column_dend_gp}{column dendrogram gp}
+  \item{column_order}{column order}
+  \item{column_km}{column km}
+  \item{column_split}{column split}
+  \item{heatmap_body_width}{heatmap bpdy widht}
 
 }
 \details{
@@ -87,7 +123,6 @@ A \code{\link{HeatmapList-class}} object in which settings for each heatmap are 
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

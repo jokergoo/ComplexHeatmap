@@ -1,10 +1,17 @@
 
 # == title
-# AnnotationFunction class
+# The AnnotationFunction class
 #
 # == details
-# THe AnnotationFunction class is a wrapper of user-defined annotation functions.
-# See `AnnotationFunction` constructor for details
+# The heatmap annotation is basically graphics aligned to the columns or heatmap if it is column annotation
+# or heatmap rows if it is row annotation, while the type of the graphics can be arbitory, e.g.
+# it can be heatmap-like or points. Here the AnnotationFunction class is designed for creating
+# complex and flexible annotation graphics. As the main part, it uses a use-defined function
+# to define the graphics. It also keeps information of the size of the plotting regions of the annotation.
+# And most importantly, it allows subsetting of the annotation to draw a subset of the graphics, which
+# is the base for the splitting of the annotations.
+#
+# See `AnnotationFunction` constructor for details.
 #
 AnnotationFunction = setClass("AnnotationFunction",
 	slots = list(
@@ -69,16 +76,17 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 
 
 # == title
-# Constructor of AnnotationFunction class
+# Constructor of AnnotationFunction Class
 #
 # == param
-# -fun A function which defines how to draw annotation. See **Details** section.
-# -fun_name The name of the function. It is only used for `show,AnnotationFunction-method`.
+# -fun A function which defines how to draw this annotation. See **Details** section.
+# -fun_name The name of the function. It is only used for printing the object.
 # -which Whether it is drawn as a column annotation or a row annotation?
-# -var_imported The name of the object or the objects themselves that the annotation function depends on. See **Details** section.
-# -n Number of observations in the annotation. It is not mandatory, but it is better to provide this information.
+# -var_import The names of the variables or the variable themselves that the annotation function depends on. See **Details** section.
+# -n Number of observations in the annotation. It is not mandatory, but it is better to provide this information
+#   so that the higher order `HeatmapAnnotation` knows it and it can perform check on the consistency of annotations and heatmaps.
 # -data_scale The data scale on the data axis (y-axis for column annotation and x-axis for row annotation). It is only used
-#             when `decoration_annotation` is used with "native" unit coordinates.
+#             when `decorate_annotation` is used with "native" unit coordinates.
 # -subset_rule The rule of subsetting variables in ``var_import``. It should be set when users want the final object to
 #              be subsetable. See **Details** section.
 # -subsetable Whether the object is subsetable?
@@ -88,12 +96,83 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 #        the width must be an absolute unit.
 #
 # == details
-# The AnnotationFunction class is a wrapper of the function which draws heatmap annotation.
+# A normal R function defines how to draw the annotation graphics. As expected, the main part of the AnnotationFunction
+# class is this function. The function defines how to draw at specific positions which correspond to rows or columns
+# in the heatmap. The function should have three arguments: ``index``, ``k`` and ``n`` (the names of the arguments can
+# be arbitory) where ``k`` and ``n`` are optional. ``index`` corresponds to the indices of rows or columns of the heatmap.
+# The value of ``index`` is not necessarily to be the whole row indices or column indices. It can also be a subset of
+# the indices if the annotation is split into slices according to the split of the heatmap. The value in ``index`` is
+# always sorted according to the reordering of heatmap rows or columns (e.g. by clustering). So, ``index`` actually contains
+# a list of row or column indices for the current slice after row or column reordering. This type of design makes sure
+# the annotation graphics are drawn at the correct positions and can be correctly corresponded to the heatmap rows or columns.
+# 
+# As mentioned, annotation can be split into slices. ``k`` corresponds to the current slice and ``n`` corresponds to
+# the total number of slices. The information of ``k`` and ``n`` sometimes can be useful, for example, we want to add axis
+# in the annotation, and if it is a column annotation and axis is drawn on the very right of the annotation area, the axis
+# is only drawn when ``k == n``.
 #
-# If the annotation function is subsetable, the annotation graphics can be split by rows or by columns
-# according to the split of the heatmap.
+# Since the function only allows ``index``, ``k`` and ``n``, the function sometimes uses several external variables which can
+# not be defined inside the function, e.g. the data points for the annotation. These variables should be imported
+# into the AnnotationFunction class so that the function can correctly find these variables. 
+#
+# One important feature for AnnotationFunction class is it can be subsetable. To allow subsetting of the object,
+# users need to define the rule for the imported variables if there is any. The rules are simple function which
+# accpets the variable and indices, and returns the subset of the variable. The subset rule functions implemented
+# in this package are `subset_gp`, `subset_matrix_by_row` and `subset_vector`. These three functions are enough for
+# most of the cases.
+#
+# In following, we defined three AnnotationFunction objects: 
+#
+# 1. It needs external variable and support subsetting
+#
+#	x = 1:10
+#	anno1 = AnnotationFunction(
+#		fun = function(index) {
+#			n = length(index)
+#			pushViewport(viewport())
+#			grid.points(1:n, x[index])
+#			popViewport()
+#		},
+#		var_imported = list(x = x),
+#		n = 10,
+#		subset_rule = list(x = subset_vector),
+#		subsetable = TRUE
+#	)
+#
+# 2. The data variable is defined inside the function and no need to import other variables.
+#
+#	anno2 = AnnotationFunction(
+#		fun = function(index) {
+#			x = 1:10
+#			n = length(index)
+#			pushViewport(viewport())
+#			grid.points(1:n, x[index])
+#			popViewport()
+#		},
+#		n = 10,
+#		subsetable = TRUE
+#	)
+#
+# 3. The most compact way to only specify the function to the constructor.
+#
+#	anno3 = AnnotationFunction(
+#		fun = function(index) {
+#			x = 1:10
+#			n = length(index)
+#			pushViewport(viewport())
+#			grid.points(1:n, x[index])
+#			popViewport()
+#		}
+#	)
+#
+# Finally, you need to push a viewport for graphics and finally pop the viewport.
+#
+# In the package, quite a lot annotation function are constructed by `AnnotationFunction` constructor:
+# `anno_empty`, `anno_image`, `anno_points`, `anno_lines`, `anno_barplot`, `anno_boxplot`, `anno_histogram`,
+# `anno_density`, `anno_joyplot`, `anno_horizon`, `anno_text` and `anno_mark`. Thess built-in annotation functions
+# are all subsettable.
 AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), 
-	var_imported = list(), n = 0, data_scale = c(0, 1), subset_rule = list(), 
+	var_import = list(), n = 0, data_scale = c(0, 1), subset_rule = list(), 
 	subsetable = FALSE, width = NULL, height = NULL) {
 
 	which = match.arg(which)[1]
@@ -114,25 +193,32 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 	anno@n = n
 	anno@data_scale = data_scale
 
-	anno@var_env = new.env()
-	if(is.character(var_imported)) {
-		for(nm in var_imported) {
-			anno@var_env[[nm]] = get(nm, envir = parent.frame())
-		}
-	} else if(inherits(var_imported, "list")) {
-		if(is.null(names(var_imported))) {
-			var_imported_nm = sapply(as.list(substitute(var_imported))[-1], as.character)
-			names(var_imported) = var_imported_nm
-		}
+	if(length(var_import)) {
+		anno@var_env = new.env()
+		if(is.character(var_import)) {
+			for(nm in var_import) {
+				anno@var_env[[nm]] = get(nm, envir = parent.frame())
+			}
+		} else if(inherits(var_import, "list")) {
+			if(is.null(names(var_import))) {
+				var_imported_nm = sapply(as.list(substitute(var_import))[-1], as.character)
+				names(var_import) = var_imported_nm
+			}
 
-		for(nm in names(var_imported)) {
-			anno@var_env[[nm]] = var_imported[[nm]]
+			for(nm in names(var_import)) {
+				anno@var_env[[nm]] = var_import[[nm]]
+			}
+		} else {
+			stop_wrap("`var_import` needs to be a character vector which contains variable names or a list of variables")
 		}
+		environment(fun) = anno@var_env
 	} else {
-		stop_wrap("`var_import` needs to be a character vector which contains variable names or a list of variables")
+		anno@var_env = environment(fun)
 	}
-	
-	environment(fun) = anno@var_env
+
+	if(length(as.list(formals(fun))) == 1) {
+		formals(fun) = alist(index = , k = 1, n = 1)
+	}
 	anno@fun = fun
 	
 	if(is.null(subset_rule)) {
@@ -173,7 +259,8 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 # -i A vector of indices.
 #
 # == details
-# One good thing for designing the `AnnotationFunction-class` can be subsetted.
+# One good thing for designing the `AnnotationFunction-class` object is it can be subsetted,
+# and this is the base for the splitting of the annotations.
 #
 # == example
 # anno = anno_simple(1:10)
@@ -204,11 +291,13 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 }
 
 # == title
-# Draw the AnnotationFunction object
+# Draw the AnnotationFunction Object
 #
 # == param
 # -object The `AnnotationFunction-class` object.
 # -index Index of observations.
+# -k Current index of slice.
+# -n Total number of slices.
 # -test Is it in test mode? The value can be logical or a text which is plotted as the title of plot.
 #
 # == detail
@@ -219,7 +308,7 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 # 
 setMethod(f = "draw",
 	signature = "AnnotationFunction",
-	definition = function(object, index, test = FALSE) {
+	definition = function(object, index, k = 1, n = 1, test = FALSE) {
 		
 	if(is.character(test)) {
 		test2 = TRUE
@@ -242,7 +331,7 @@ setMethod(f = "draw",
     # names should be passed to the data viewport
 	pushViewport(viewport(width = anno_width, height = anno_height))
 	vp_name1 = current.viewport()$name
-	object@fun(index)
+	object@fun(index, k, n)
 	if(test2) {
 		grid.text(test, y = unit(1, "npc") + unit(2, "mm"), just = "bottom")
 
@@ -283,6 +372,8 @@ setMethod(f = "draw",
 # In `AnnotationFunction-class`, there is an environment which stores some external variables
 # for the annotation function. This `copy_all,AnnotationFunction-method` hard copy all the variables
 # in that environment to a new environment.
+#
+# The environment is at ``object@var_env``.
 setMethod(f = "copy_all",
 	signature = "AnnotationFunction",
 	definition = function(object) {
@@ -334,111 +425,21 @@ setMethod(f = "show",
 })
 
 # == title
-# Width of the AnnotationFunction object
-#
-# == param
-# -object The `AnnotationFunction-class` object.
-#
-setMethod(f = "width",
-	signature = "AnnotationFunction",
-	definition = function(object) {
-	object@width
-})
-
-# == title
-# Assign the Width of the AnnotationFunction object
-#
-# == param
-# -object The `AnnotationFunction-class` object.
-# -value A `grid::unit` object.
-# -... Other arguments
-#
-setReplaceMethod(f = "width",
-	signature = "AnnotationFunction",
-	definition = function(object, value, ...) {
-	object@width = value
-	object
-})
-
-# == title
-# Height of the AnnotationFunction object
-#
-# == param
-# -object The `AnnotationFunction-class` object.
-#
-setMethod(f = "height",
-	signature = "AnnotationFunction",
-	definition = function(object) {
-	object@height
-})
-
-# == title
-# Assign the Height of the AnnotationFunction object
-#
-# == param
-# -object The `AnnotationFunction-class` object.
-# -value A `grid::unit` object.
-# -... Other arguments
-#
-setReplaceMethod(f = "height",
-	signature = "AnnotationFunction",
-	definition = function(object, value, ...) {
-	object@height = value
-	object
-})
-
-# == title
-# Size of the AnnotationFunction object
-#
-# == param
-# -object The `AnnotationFunction-class` object.
-#
-# == detail
-# It returns the width if it is a row annotation and the height if it is a column annotation.
-#
-setMethod(f = "size",
-	signature = "AnnotationFunction",
-	definition = function(object) {
-	if(object@which == "row") {
-		object@width
-	} else {
-		object@height
-	}
-})
-
-# == title
-# Assign the Size of the AnnotationFunction object
-#
-# == param
-# -object The `AnnotationFunction-class` object.
-# -value A `grid::unit` object.
-# -... Other arguments
-#
-# == detail
-# It assigns the width if it is a row annotation and the height if it is a column annotation.
-#
-setReplaceMethod(f = "size",
-	signature = "AnnotationFunction",
-	definition = function(object, value, ...) {
-	if(object@which == "row") {
-		object@width = value
-	} else {
-		object@height = value
-	}
-	object
-})
-
-# == title
 # Number of Observations
 #
 # == param
-# -x The `AnnotationFunction-class` object.
+# -object The `AnnotationFunction-class` object.
+# -... other arguments
 #
 # == details
-# It returns the ``n`` slot in the object.
-nobs.AnnotationFunction = function(x) {
-	if(x@n > 0) {
-		x@n
+# It returns the ``n`` slot in the object. If there does not exist, it returns ``NA``.
+#
+# == example
+# anno = anno_points(1:10)
+# nobs(anno)
+nobs.AnnotationFunction = function(object, ...) {
+	if(object@n > 0) {
+		object@n
 	} else {
 		NA
 	}

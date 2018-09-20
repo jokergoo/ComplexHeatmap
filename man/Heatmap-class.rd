@@ -69,7 +69,6 @@ The \code{\link{Heatmap-class}} provides following methods:
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# for examples, please go to `Heatmap` method page
+# There is no example
 NULL
-
 }

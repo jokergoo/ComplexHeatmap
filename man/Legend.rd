@@ -1,79 +1,69 @@
 \name{Legend}
 \alias{Legend}
 \title{
-Making legend grobs
+Make a Single Legend
 }
 \description{
-Making legend grobs
+Make a Single Legend
 }
 \usage{
-Legend(at, labels = at, nrow = NULL, ncol = 1, col_fun, by_row = FALSE,
+Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
     grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
-    labels_gp = gpar(fontsize = 10),
+    labels_gp = gpar(fontsize = 10), labels_rot = 0,
     border = NULL, background = "#EEEEEE",
     type = "grid", legend_gp = gpar(),
     pch = 16, size = unit(2, "mm"),
     legend_height = NULL, legend_width = NULL,
     direction = c("vertical", "horizontal"),
     title = "", title_gp = gpar(fontsize = 10, fontface = "bold"),
-    title_position = c("topleft", "topcenter", "leftcenter", "lefttop"))
+    title_position = c("topleft", "topcenter", "leftcenter", "lefttop", "leftcenter-rot", "lefttop-rot"))
 }
 \arguments{
 
-  \item{at}{breaks, can be wither numeric or character}
-  \item{labels}{labels corresponding to \code{at}}
-  \item{nrow}{if there are too many legends, they can be positioned in an array, this controls number of rows}
-  \item{ncol}{if there are too many legends, they can be positioned in an array, this controls number of columns. At a same time only one of \code{nrow} and \code{ncol} can be specified.}
-  \item{col_fun}{a color mapping function which is used to make a continuous color bar}
-  \item{by_row}{when there are multiple columns for legends, whether to arrange them by rows.}
-  \item{grid_height}{height of legend grid}
-  \item{grid_width}{width of legend grid}
-  \item{gap}{when legends are put in multiple columns, this is the gap between neighbouring columns, measured as a \code{\link[grid]{unit}} object}
-  \item{labels_gp}{graphic parameters for labels}
-  \item{border}{color of legend borders, also for the ticks in the continuous legend}
-  \item{background}{background colors}
-  \item{type}{type of legends, can be \code{grid}, \code{points} and \code{lines}}
-  \item{legend_gp}{graphic parameters for the legend}
-  \item{pch}{type of points}
-  \item{size}{size of points}
-  \item{legend_height}{height of the whole legend, used when \code{col_fun} is specified and \code{direction} is set to \code{vertical}}
-  \item{legend_width}{width of the whole legend, used when \code{col_fun} is specified  and \code{direction} is set to \code{horizontal}}
-  \item{direction}{direction of the continuous or discrete legend}
-  \item{title}{title of the legend}
-  \item{title_gp}{graphic parameters of title}
-  \item{title_position}{position of title according to the legend}
+  \item{at}{Breaks of the legend. The values can be either numeric or character. If it is not specified, the values of \code{labels} are taken as labels.}
+  \item{labels}{Labels corresponding to \code{at}. If it is not specified, the values of \code{at} are taken as labels.}
+  \item{col_fun}{A color mapping function which is used to make a continuous legend. Use \code{\link[circlize]{colorRamp2}} to generate the color mapping function. If \code{at} is missing, the breaks recorded in the color mapping function are used for \code{at}.}
+  \item{nrow}{For legend which is represented as grids, \code{nrow} controls number of rows of the grids if the grids are arranged into multiple rows.}
+  \item{ncol}{Similar as \code{nrow}, \code{ncol} controls number of columns of the grids if the grids are arranged into multiple columns. Note at a same time only one of \code{nrow} and \code{ncol} can be specified.}
+  \item{by_row}{Are the legend grids arranged by rows or by columns?}
+  \item{grid_height}{The height of legend grid. It can also control the height of the continuous legend if it is horizontal.}
+  \item{grid_width}{The width of legend grid. It can also control the width of the continuous legend if it is vertical.}
+  \item{gap}{If legend grids are put into multiple rows or columns, this controls the gap between neighbouring rows or columns, measured as a \code{\link[grid]{unit}} object.}
+  \item{labels_gp}{Graphic parameters for labels.}
+  \item{labels_rot}{Text rotation for labels. It should only be used for horizontal continuous legend.}
+  \item{border}{Color of legend grid borders. It also works for the ticks in the continuous legend.}
+  \item{background}{Background colors for the grids. It is used when points and lines are the legend graphics.}
+  \item{type}{Type of legends. The value can be one of \code{grid}, \code{points} and \code{lines}.}
+  \item{legend_gp}{Graphic parameters for the legend grids. You should control the filled color of the legend grids by \code{gpar(fill = ...)}.}
+  \item{pch}{Type of points if points are used as legend. Note you can use single-letter as pch, e.g. \code{pch = 'A'}.}
+  \item{size}{Size of points.}
+  \item{legend_height}{Height of the whole legend body. It is only used for vertical continous legend.}
+  \item{legend_width}{Width of the whole legend body. It is only used for horizontal continous legend.}
+  \item{direction}{Direction of the legend, vertical or horizontal?}
+  \item{title}{Title of the legend.}
+  \item{title_gp}{Graphic parameters of the title.}
+  \item{title_position}{Position of title relative to the legend. \code{topleft}, \code{topcenter}, \code{leftcenter-rot} and \code{lefttop-rot} are only for vertical legend and \code{leftcenter}, \code{lefttop} are only for  horizontal legend.}
 
+}
+\details{
+The \code{Legend} function supports very flexible legend settings. Please go to ...
 }
 \seealso{
-\code{\link{packLegend}} packs multiple legends into one \code{\link[grid]{grob}} object
+\code{\link{packLegend}} packs multiple legends into one \code{\link{Legends-class}} object.
 }
 \value{
-A \code{\link[grid]{grob}} object
+A \code{\link{Legends-class}} object.
 }
 \examples{
-lgd = Legend(title = "discrete", at = 1:4, labels = letters[1:4], 
-	legend_gp = gpar(fill = 2:5))
-grid.newpage()
-grid.draw(lgd)
+lgd = Legend(labels = month.name[1:6], title = "foo", legend_gp = gpar(fill = 1:6))
+draw(lgd, test = "add labels and title")
 
 require(circlize)
-col_fun = colorRamp2(c(-1, 0, 1), c("blue", "white", "red"))
-lgd = Legend(title = "continuous", at = seq(-1, 1, by = 0.5), col_fun = col_fun)
-grid.newpage()
-grid.draw(lgd)
+col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+lgd = Legend(col_fun = col_fun, title = "foo")
+draw(lgd, test = "only col_fun")
 
-lgd = Legend(title = "continuous", at = seq(-1, 1, by = 0.5), col_fun = col_fun,
-	direction = "horizontal")
-grid.newpage()
-grid.draw(lgd)
-
-lgd = Legend(title = "discrete", at = 1:10, labels = letters[1:10], 
-	ncol = 4, by_row = TRUE, legend_gp = gpar(fill = rand_color(10)))
-grid.newpage()
-grid.draw(lgd)
-
-lgd = Legend(title = "lty", at = 1:3, labels = 1:3, type = "lines",
-	legend_gp = gpar(lty = 1:3))
-grid.newpage()
-grid.draw(lgd)
+col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.1, 0.15, 0.5, 0.9, 0.95, 1))
+draw(lgd, test = "unequal interval breaks")
 }

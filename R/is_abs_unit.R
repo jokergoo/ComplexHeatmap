@@ -40,7 +40,7 @@
 #
 # == details
 # Besides the normal absolute units (e.g. "mm", "inches"), this function
-# simply assume `grid::grob` objects as absolute units.
+# simply assumes `grid::grob` objects as absolute units.
 #
 # For a complex unit which is combination of different units, it is absolute
 # only if all units included are absolute units.

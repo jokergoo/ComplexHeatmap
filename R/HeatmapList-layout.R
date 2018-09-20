@@ -17,12 +17,14 @@
 # -annotation_legend_side side of annotation legend.
 # -show_annotation_legend whether show annotation legend.
 # -annotation_legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
-# -gap gap between heatmaps, should be a `grid::unit` object.
-# -row_gap gap between row clusters if rows are split
+# -ht_gap gap between heatmaps, should be a `grid::unit` object.
 # -main_heatmap name or index for the main heatmap
+# -padding padding of the plot
 # -row_dend_side if auto adjust, where to put the row dendrograms for the main heatmap
-# -row_hclust_side deprecated, use ``row_dend_side`` instead
-# -row_sub_title_side if auto adjust, where to put sub row titles for the main heatmap
+# -row_sub_title_side row sub title
+# -column_dend_side column dend
+# -column_sub_title_side column sub title
+# -row_gap gap between row clusters if rows are split
 # -cluster_rows same setting as in `Heatmap`, if it is specified, ``cluster_rows`` in main heatmap is ignored.
 # -clustering_distance_rows same setting as in `Heatmap`, if it is specified, ``clustering_distance_rows`` in main heatmap is ignored.
 # -clustering_method_rows same setting as in `Heatmap`, if it is specified, ``clustering_method_rows`` in main heatmap is ignored.
@@ -31,9 +33,21 @@
 # -row_dend_reorder same setting as in `Heatmap`, if it is specified, ``row_dend_reorder`` in main heatmap is ignored.
 # -row_dend_gp same setting as in `Heatmap`, if it is specified, ``row_dend_gp`` in main heatmap is ignored.
 # -row_order same setting as in `Heatmap`, if it is specified, ``row_order`` in main heatmap is ignored.
-# -km same setting as in `Heatmap`, if it is specified, ``km`` in main heatmap is ignored.
-# -split same setting as in `Heatmap`, if it is specified, ``split`` in main heatmap is ignored.
-# -combined_name_fun same setting as in `Heatmap`, if it is specified, ``combined_name_fun`` in main heatmap is ignored.
+# -row_km row km
+# -row_split row split
+# -heatmap_body_height heatmap body height
+# -column_gap column gap
+# -cluster_columns cluster columns
+# -clustering_distance_columns clustering distance columns
+# -clustering_method_columns clustering method columns
+# -column_dend_width column dend width
+# -show_column_dend show column dendrogram
+# -column_dend_reorder column dend reorder
+# -column_dend_gp column dendrogram gp
+# -column_order column order
+# -column_km column km
+# -column_split column split
+# -heatmap_body_width heatmap bpdy widht
 #
 # == detail
 # It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.

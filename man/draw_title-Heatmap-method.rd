@@ -1,10 +1,10 @@
 \name{draw_title-Heatmap-method}
 \alias{draw_title,Heatmap-method}
 \title{
-Draw heatmap title
+Draw Heatmap Title
 }
 \description{
-Draw heatmap title
+Draw Heatmap Title
 }
 \usage{
 \S4method{draw_title}{Heatmap}(object,
@@ -12,10 +12,10 @@ Draw heatmap title
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{which}{is title put on the row or on the column of the heatmap?}
-  \item{k}{a matrix may be split by rows, the value identifies which row-slice.}
-  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
+  \item{which}{Is title put on the row or on the column of the heatmap?}
+  \item{k}{Slice index.}
+  \item{...}{Pass to \code{\link[grid]{viewport}} which includes the complete heatmap title}
 
 }
 \details{
@@ -30,7 +30,6 @@ This function returns no value.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

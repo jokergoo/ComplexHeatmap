@@ -1,10 +1,10 @@
 \name{row_anno_density}
 \alias{row_anno_density}
 \title{
-Row annotation which is represented as density plot
+Density as Row Annotation
 }
 \description{
-Row annotation which is represented as density plot
+Density as Row Annotation
 }
 \usage{
 row_anno_density(...)
@@ -16,15 +16,13 @@ row_anno_density(...)
 }
 \details{
 A wrapper of \code{\link{anno_density}} with pre-defined \code{which} to \code{row}.
+
+You can directly use \code{\link{anno_density}} for row annotation if you call it in \code{\link{rowAnnotation}}.
 }
 \value{
 See help page of \code{\link{anno_density}}
 }
-\author{
-Zuguang Gu <z.gu@dkfz.de>
-}
 \examples{
 # There is no example
 NULL
-
 }

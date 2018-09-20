@@ -49,7 +49,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 )
 
 # == title
-# Constructor method for SingleAnnotation class
+# Constructor Method for SingleAnnotation Class
 #
 # == param
 # -name Name for the annotation. If it is not specified, an internal name is assigned.
@@ -57,8 +57,8 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -col Colors corresponding to ``value``. If the mapping is discrete, the value of ``col``
 #      should be a named vector; If the mapping is continuous, the value of ``col`` should be 
 #      a color mapping function.
-# -fun A user-defined function to add annotation graphics. The argument of this function should only 
-#      be a vector of index that corresponds to rows or columns. Normally the function should be 
+# -fun A user-defined function to add annotation graphics. The argument of this function should be at least 
+#      a vector of index that corresponds to rows or columns. Normally the function should be 
 #      constructed by `AnnotationFunction` if you want the annotation supports splitting. 
 #      See **Details** for more explanation.
 # -na_col Color for ``NA`` values in the simple annotations.
@@ -92,14 +92,18 @@ SingleAnnotation = setClass("SingleAnnotation",
 # the heatmap. Users can also provide a "pure" function which is a normal R function for the ``fun`` argument. 
 # The function only needs one argument which is a vector of index for rows or columns depending whether it is 
 # a row annotation or column annotation. The other two optional arguments are the current slice index and total
-# number of slices. See **Examples** section for an example.
+# number of slices. See **Examples** section for an example. If it is a normal R function, it will be constructed
+# into the `AnnotationFunction-class` object internally.
 #
-# The `SingleAnnotation-class` is a simpls wrapper on top of `AnnotationFunction-class` only with annotation 
+# The `SingleAnnotation-class` is a simple wrapper on top of `AnnotationFunction-class` only with annotation 
 # name added.
+#
+# The class also stored the "extended area" relative to the area for the annotation graphics. The extended areas
+# are those created by annotation names and axes.
 #
 # == seealso
 # There are following built-in annotation functions that can be directly used to generate complex annotations: 
-# `anno_simple`, `anno_points`, `anno_barplot`, `anno_histogram`, `anno_boxplot`, `anno_density`, `anno_text`,
+# `anno_simple`, `anno_points`, `anno_lines`, `anno_barplot`, `anno_histogram`, `anno_boxplot`, `anno_density`, `anno_text`,
 # `anno_joyplot`, `anno_horizon`, `anno_image`, `anno_lines` and `anno_mark`.
 # 
 # == value
@@ -133,7 +137,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 #     }
 # })
 # ha = SingleAnnotation(fun = fun, height = unit(4, "cm"))
-# draw(ha, test = "self-defined function")
+# draw(ha, index = 1:10, test = "self-defined function")
 SingleAnnotation = function(name, value, col, fun, 
 	na_col = "grey",
 	which = c("column", "row"), 
@@ -147,9 +151,11 @@ SingleAnnotation = function(name, value, col, fun,
     name_rot = ifelse(which == "column", 0, 90),
     width = NULL, height = NULL) {
 
+    .ENV$current_annotation_which = NULL
 	which = match.arg(which)[1]
     .ENV$current_annotation_which = which
-    on.exit(.ENV$current_SingleAnnotation_which <- NULL)
+    
+    on.exit(.ENV$current_annotation_which <- NULL)
 
     verbose = ht_opt$verbose
 
@@ -222,6 +228,8 @@ SingleAnnotation = function(name, value, col, fun,
             anno_fun_extend = fun@extended
             if(verbose) qqcat("@{name}: annotation is a AnnotationFunction object\n")
         } else {
+            fun = AnnotationFunction(fun = fun)
+            anno_fun_extend = fun@extended
             if(verbose) qqcat("@{name}: annotation is a user-defined function\n")
         }
     }
@@ -463,42 +471,31 @@ SingleAnnotation = function(name, value, col, fun,
         .Object@subsetable = TRUE
     } else {
         
-        if(inherits(fun, "AnnotationFunction")) {
-        	f_which = fun@which
-        	if(!is.null(f_which)) {
-        		fun_name = fun@fun_name
-        		if(f_which != which) {
-        			stop(paste0("You are putting ", fun_name, "() as ", which, " annotations, you need to set 'which' argument to '", which, "' as well,\nor use the helper function ", which, "_", fun_name, "()."))
-        		}
-        	}
-        } else {
-            if(length(formals(fun)) == 1) {
-                formals(fun) = alist(index = , k = 1, n = 1)
-            }
+        f_which = fun@which
+    	if(!is.null(f_which)) {
+    		fun_name = fun@fun_name
+    		if(f_which != which) {
+    			stop(paste0("You are putting ", fun_name, "() as ", which, " annotations, you need to set 'which' argument to '", which, "' as well,\nor use the helper function ", which, "_", fun_name, "()."))
+    		}
         }
+        
         if(verbose) qqcat("@{name}: calcualte width/height of SingleAnnotation based on the annotation function\n")
     	.Object@fun = fun
     	.Object@show_legend = FALSE
 
-        if(inherits(fun, "AnnotationFunction")) {
-            if(is.null(width)) {
-                .Object@width = .Object@fun@width
-            } else {
-                .Object@width = width
-                .Object@fun@width = width
-            }
-            if(is.null(height)) {
-                .Object@height = .Object@fun@height
-            } else {
-                .Object@height = height
-                .Object@fun@height = height
-            }
-            .Object@subsetable = .Object@fun@subsetable
+        if(is.null(width)) {
+            .Object@width = .Object@fun@width
         } else {
             .Object@width = width
-            .Object@height = height
+            .Object@fun@width = width
         }
-
+        if(is.null(height)) {
+            .Object@height = .Object@fun@height
+        } else {
+            .Object@height = height
+            .Object@fun@height = height
+        }
+        .Object@subsetable = .Object@fun@subsetable
     }
 
     return(.Object)
@@ -511,8 +508,8 @@ SingleAnnotation = function(name, value, col, fun,
 # -object A `SingleAnnotation-class` object.
 # -index A vector of indices.
 # -k The index of the slice.
-# -n Total number of slices. ``k`` and ``n`` are used to adjust axis and annotation names. E.g.
-#    if ``k`` is 2 and ``n`` is 3, the axis and annotation names are not drawn.
+# -n Total number of slices. ``k`` and ``n`` are used to adjust annotation names. E.g.
+#    if ``k`` is 2 and ``n`` is 3, the annotation names are not drawn.
 # -test Is it in test mode? The value can be logical or a text which is plotted as the title of plot.
 #
 # == value
@@ -542,6 +539,9 @@ setMethod(f = "draw",
 
     if(missing(index)) {
         if(has_AnnotationFunction(object)) {
+            if(object@fun@n == 0) {
+                stop("Cannot infer the number of Observations in the annotation function, you need to provide `index`.")
+            }
             index = seq_len(object@fun@n)
         }
     }
@@ -562,40 +562,10 @@ setMethod(f = "draw",
 	pushViewport(viewport(width = anno_width, height = anno_height, 
         name = paste("annotation", object@name, k, sep = "_"),
         xscale = data_scale$x, yscale = data_scale$y))
-    if(has_AnnotationFunction(object)) {
-        fun = object@fun
-        if(verbose) qqcat("adjust annotation axis\n")
-        if(!is.null(fun@var_env$axis)) {
-            axis_ov = fun@var_env$axis
-            if(fun@var_env$axis && n > 1) {
-                if(object@which == "row") {
-                    if(k == n && fun@var_env$axis_param$side == "bottom") {
-                        fun@var_env$axis = TRUE
-                    } else if(k == 1 && fun@var_env$axis_param$side == "top") {
-                        fun@var_env$axis = TRUE
-                    } else {
-                        fun@var_env$axis = FALSE
-                    }
-                } else if(object@which == "column") {
-                    if(k == 1 && fun@var_env$axis_param$side == "left") {
-                        fun@var_env$axis = TRUE
-                    } else if(k == n && fun@var_env$axis_param$side == "right") {
-                        fun@var_env$axis = TRUE
-                    } else {
-                        fun@var_env$axis = FALSE
-                    }
-                }
-            }
-        }
-        draw(fun, index = index)
-        if(!is.null(fun@var_env$axis)) {
-            fun@var_env$axis = axis_ov
-        }
-    } else {
-        if(verbose) qqcat("execute user-defined annotation function\n")
-        object@fun(index, k, n)
-    }
-	
+    
+    if(verbose) qqcat("execute annotation function\n")
+    draw(object@fun, index = index, k = k, n = n)
+    
 	# add annotation name
     draw_name = object@name_param$show
 	if(object@name_param$show && n > 1) {
@@ -743,6 +713,11 @@ has_AnnotationFunction = function(single_anno) {
 # -x An `SingleAnnotation-class` object.
 # -i A vector of indices.
 #
+# == details
+# The SingleAnnotation class object is subsetable only if the containing `AnnotationFunction-class`
+# object is subsetable. All the ``anno_*`` functions are subsetable, so if the SingleAnnotation object
+# is constructed by one of these functions, it is also subsetable.
+#
 # == example
 # ha = SingleAnnotation(value = 1:10)
 # ha[1:5]
@@ -770,130 +745,31 @@ has_AnnotationFunction = function(single_anno) {
 # == param
 # -object The `SingleAnnotation-class` object.
 #
+# == details
+# Since the SingleAnnotation object always contains an `AnnotationFunction-class` object,
+# it calls `copy_all,AnnotationFunction-method` to hard copy the variable environment.
 setMethod(f = "copy_all",
     signature = "SingleAnnotation",
     definition = function(object) {
 
     x2 = object
-    if(inherits(object@fun, "AnnotationFunction")) {
-        x2@fun = object@fun[seq_len(object@fun@n)]
-        return(x2)
-    } else {
-        return(x2)
-    }
+    x2@fun = copy_all(object@fun)
+    return(x2)
 })
 
-
-# == title
-# Width of the SingleAnnotation object
-#
-# == param
-# -object The `SingleAnnotation-class` object.
-#
-setMethod(f = "width",
-    signature = "SingleAnnotation",
-    definition = function(object) {
-    object@width
-})
-
-# == title
-# Assign the Width of the SingleAnnotation object
-#
-# == param
-# -object The `SingleAnnotation-class` object.
-# -value A `grid::unit` object.
-# -... Other arguments
-#
-setReplaceMethod(f = "width",
-    signature = "SingleAnnotation",
-    definition = function(object, value, ...) {
-    object@width = value
-    if(inherits(object@fun, "AnnotationFunction")) {
-        width(object@fun) = value
-    }
-    object
-})
-
-# == title
-# Height of the SingleAnnotation object
-#
-# == param
-# -object The `SingleAnnotation-class` object.
-#
-setMethod(f = "height",
-    signature = "SingleAnnotation",
-    definition = function(object) {
-    object@height
-})
-
-# == title
-# Assign the Height of the SingleAnnotation object
-#
-# == param
-# -object The `SingleAnnotation-class` object.
-# -value A `grid::unit` object.
-# -... Other arguments
-#
-setReplaceMethod(f = "height",
-    signature = "SingleAnnotation",
-    definition = function(object, value, ...) {
-    object@height = value
-    if(inherits(object@fun, "AnnotationFunction")) {
-        height(object@fun) = value
-    }
-    object
-})
-
-# == title
-# Size of the SingleAnnotation object
-#
-# == param
-# -object The `SingleAnnotation-class` object.
-#
-# == detail
-# It returns the width if it is a row annotation and the height if it is a column annotation.
-#
-setMethod(f = "size",
-    signature = "SingleAnnotation",
-    definition = function(object) {
-    if(object@which == "row") {
-        object@width
-    } else {
-        object@height
-    }
-})
-
-# == title
-# Assign the Size of the SingleAnnotation object
-#
-# == param
-# -object The `SingleAnnotation-class` object.
-# -value A `grid::unit` object.
-# -... Other arguments
-#
-# == detail
-# It assigns the width if it is a row annotation and the height if it is a column annotation.
-#
-setReplaceMethod(f = "size",
-    signature = "SingleAnnotation",
-    definition = function(object, value, ...) {
-    if(object@which == "row") {
-        width(object) = value
-    } else {
-        height(object) = value
-    }
-    object
-})
 
 # == title
 # Number of Observations
 #
 # == param
-# -x The `SingleAnnotation-class` object.
+# -object The `SingleAnnotation-class` object.
+# -... other arguments.
 #
-nobs.SingleAnnotation = function(x) {
-    if(x@fun@n > 0) {
-        x@fun@n
+# == details
+# It returns the ``n`` slot of the annotaton function. If it does not exist, it returns ``NA``.
+nobs.SingleAnnotation = function(object, ...) {
+    if(object@fun@n > 0) {
+        object@fun@n
     } else {
         NA
     }

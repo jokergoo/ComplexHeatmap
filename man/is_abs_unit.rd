@@ -1,22 +1,22 @@
 \name{is_abs_unit}
 \alias{is_abs_unit}
 \title{
-Whether the unit object contains absolute unit
+Whether the Unit is Absolute
 }
 \description{
-Whether the unit object contains absolute unit
+Whether the Unit is Absolute
 }
 \usage{
 is_abs_unit(u)
 }
 \arguments{
 
-  \item{u}{a \code{\link[grid]{unit}} object}
+  \item{u}{A \code{\link[grid]{unit}} object.}
 
 }
 \details{
 Besides the normal absolute units (e.g. "mm", "inches"), this function
-simply treat \code{\link[grid]{grob}} objects as absolute units.
+simply assumes \code{\link[grid]{grob}} objects as absolute units.
 
 For a complex unit which is combination of different units, it is absolute
 only if all units included are absolute units.

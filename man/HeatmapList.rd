@@ -23,11 +23,7 @@ No value is returned.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\section{Detailes}{
-There is no public constructor method for the \code{\link{HeatmapList-class}}.
-}
 \examples{
-# no example
+# There is no example
 NULL
-
 }

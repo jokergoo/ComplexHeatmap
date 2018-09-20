@@ -10,46 +10,20 @@
 #           determines how to extract them. Only work when ``mat`` is a matrix.
 # -alter_fun a single function or a list of functions which define how to add graphics for different alterations.
 #                 If it is a list, the names of the list should cover all alteration types.
-# -alter_fun_list deprecated, use ``alter_run`` instead.
 # -col a vector of color for which names correspond to alteration types.
-# -row_order order of genes. By default it is sorted by frequency of alterations decreasingly.
-#                            Set it to ``NULL`` if you don't want to set the order
-# -column_order order of samples. By default the order is calculated by the 'memo sort' method which can visualize
-#                                 the mutual exclusivity across genes. Set it to ``NULL`` if you don't want to set the order
+# -top_annotation
+# -right_annotation
 # -show_pct whether show percent values on the left of the oncoprint
 # -pct_gp graphic paramters for percent row annotation
 # -pct_digits digits for percent values
-# -axis_gp graphic paramters for axes
-# -show_row_barplot whether show barplot annotation on rows
-# -row_barplot_width width of barplot annotation on rows. It should be a `grid::unit` object
+# -pct_side side of pct
+# -show_row_names
+# -row_names_side
+# -row_names_gp
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
+# -remove_empty_rows if there is no alteration in that sample, whether remove it on the heatmap
+# -show_column_names
 # -heatmap_legend_param pass to `Heatmap`
-# -top_annotation by default the top annotation contains barplots representing frequency of mutations in every sample.
-# -top_annotation_height total height of the column annotations on the top.
-# -bottom_annotation a `HeatmapAnnotation` object.
-# -bottom_annotation_height total height of the column annotations on the bottom.
-# -barplot_ignore specific alterations that you don't want to put on the barplots. If you want to really suppress the top barplot
-#        set ``top_annotation`` to ``NULL``.
-# -row_title title on row.
-# -row_title_side will the title be put on the left or right of the heatmap?
-# -row_title_gp graphic parameters for drawing text.
-# -row_title_rot rotation of row titles. Only 0, 90, 270 are allowed to set.
-# -column_title title on column.
-# -column_title_side will the title be put on the top or bottom of the heatmap?
-# -column_title_gp graphic parameters for drawing text.
-# -column_title_rot rotation of column titles. Only 0, 90, 270 are allowed to set.
-# -show_row_names whether show row names.
-# -row_names_gp graphic parameters for drawing text.
-# -show_column_names whether show column names.
-# -column_names_gp graphic parameters for drawing text.
-# -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
-#        indicating rows are to be split according to the split on the tree.
-# -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object. If it is a vector, the order corresponds
-#   to top to bottom in the heatmap
-# -combined_name_fun if the heatmap is split by rows, how to make a combined row title for each slice?
-#                 The input parameter for this function is a vector which contains level names under each column in ``split``.
-# -width the width of the single heatmap, should be a fixed `grid::unit` object. It is used for the layout when the heatmap
-#        is appended to a list of heatmaps.
 # -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
 # == details
@@ -69,50 +43,34 @@
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-oncoPrint = function(mat, get_type = function(x) x,
-	alter_fun = alter_fun_list, alter_fun_list = NULL, col, 
-	row_order = oncoprint_row_order(),
-	column_order = oncoprint_column_order(),
-	show_pct = TRUE, pct_gp = row_names_gp, pct_digits = 0,
-	axis_gp = gpar(fontsize = 8), 
-	show_row_barplot = TRUE, 
-	row_barplot_width = unit(2, "cm"),
+oncoPrint = function(mat, 
+	get_type = function(x) x,
+	alter_fun, 
+	col, 
+
+	top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot(),
+		show_annotation_name = FALSE),
+	right_annotation = rowAnnotation(row_barplot = anno_oncoprint_barplot(
+			axis_param = list(side = "top", labels_rot = 0)),
+		show_annotation_name = FALSE),
+
+	show_pct = TRUE, 
+	pct_gp = gpar(fontsize = 10), 
+	pct_digits = 0,
+	pct_side = "left",
+	show_row_names = TRUE,
+	row_names_side = "right",
+	row_names_gp = pct_gp,
+	
 	remove_empty_columns = FALSE,
+	remove_empty_rows = FALSE,
+	show_column_names = FALSE,
 	heatmap_legend_param = list(title = "Alterations"),
-	top_annotation = HeatmapAnnotation(column_bar = anno_oncoprint_barplot(), 
-		annotation_height = unit(2, "cm")),
-	top_annotation_height = top_annotation@size,
-	bottom_annotation = new("HeatmapAnnotation"),
-    bottom_annotation_height = bottom_annotation@size,
-    barplot_ignore = NULL,
-	row_title = character(0),
-    row_title_side = c("left", "right"),
-    row_title_gp = gpar(fontsize = 14),
-    row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
-    column_title = character(0),
-    column_title_side = c("top", "bottom"),
-    column_title_gp = gpar(fontsize = 14),
-    column_title_rot = 0,
-    show_row_names = TRUE,
-    row_names_gp = gpar(fontsize = 12),
-    show_column_names = FALSE,
-    column_names_gp = gpar(fontsize = 12),
-    split = NULL,
-    gap = unit(1, "mm"),
-    combined_name_fun = function(x) paste(x, collapse = "/"),
-    width = NULL,
 	...) {
 
-	if(length(names(list(...))) > 0) {
-		if(any(names(list(...)) %in% c("show_column_barplot", "column_barplot_height"))) {
-			stop("`show_column_barplot` and `column_barplot_height` is deprecated, please configure `top_annotation` directly.")
-		}
-	}
+	arg_list = list(...)
+	arg_names = names(arg_list)
 
-	if(!is.null(alter_fun_list)) {
-		warning("`alter_fun_list` is deprecated, please `alter_fun` instead.")
-	}
-	
 	# convert mat to mat_list
 	if(inherits(mat, "data.frame")) {
 		mat = as.matrix(mat)
@@ -153,6 +111,8 @@ oncoPrint = function(mat, get_type = function(x) x,
 	} else {
 		stop("Incorrect type of 'mat'")
 	}
+
+	cat("All mutation types:", paste(all_type, collapse = ", "), "\n")
 
 	if(missing(alter_fun) && missing(col)) {
 		if(length(mat_list) == 1) {
@@ -240,19 +200,31 @@ oncoPrint = function(mat, get_type = function(x) x,
 
 	count_matrix = apply(arr, c(1, 2), sum)
 	n_mut = rowSums(apply(arr, 1:2, any))
+
+	row_order = NULL
+	if(!"row_order" %in% arg_names) {
+		row_order = oncoprint_row_order()
+	}
+	column_order = NULL
+	if(!"column_order" %in% arg_names) {
+		column_order = oncoprint_column_order()
+	}
 	
 	if(is.null(row_order)) row_order = seq_len(nrow(count_matrix))
 	if(is.null(column_order)) column_order = seq_len(ncol(count_matrix))
-	row_order = row_order
 	if(is.character(column_order)) {
 		column_order = structure(seq_len(dim(arr)[2]), names = dimnames(arr)[[2]])[column_order]
 	}
-	column_order = column_order
 	names(column_order) = as.character(column_order)
 	if(remove_empty_columns) {
 		l = rowSums(apply(arr, c(2, 3), sum)) > 0
 		arr = arr[, l, , drop = FALSE]
 		column_order = structure(seq_len(sum(l)), names = which(l))[as.character(intersect(column_order, which(l)))]
+	}
+	if(remove_empty_rows) {
+		l = rowSums(apply(arr, c(1, 3), sum)) > 0
+		arr = arr[l, , , drop = FALSE]
+		row_order = structure(seq_len(sum(l)), names = which(l))[as.character(intersect(row_order, which(l)))]
 	}
 
 	# validate col
@@ -264,62 +236,21 @@ oncoPrint = function(mat, get_type = function(x) x,
 	# for each gene, percent of samples that have alterations
 	pct_num = rowSums(apply(arr, 1:2, any)) / ncol(mat_list[[1]])
 	pct = paste0(round(pct_num * 100, digits = pct_digits), "%")
-	ha_pct = rowAnnotation(pct = row_anno_text(pct, just = "right", offset = unit(1, "npc"), gp = pct_gp), width = max_text_width(pct, gp = pct_gp))
 
-	#####################################################################
-	# row annotation which is a barplot
-	anno_row_bar = function(index, k = NULL, N = NULL) {
-		n = length(index)
-		count = apply(arr, c(1, 3), sum)[, , drop = FALSE]
-		all_type = all_type[!(colnames(count) %in% barplot_ignore)]
-		count = count[, setdiff(colnames(count), barplot_ignore), drop = FALSE]
-		max_count = max(rowSums(count))
-		count = count[index, , drop = FALSE]
-		pushViewport(viewport(xscale = c(0, max_count*1.1), yscale = c(0.5, n + 0.5)))
-		for(i in seq_len(nrow(count))) {
-			if(any(count[i, ] > 0)) {
-				x = count[i, ]
-				x = x[x > 0]
-				x2 = cumsum(x)
-				type = all_type[count[i, ] > 0]
-				# row order is from top to end while coordinate of y is from bottom to top
-				# so here we need to use n-i+1
-				grid.rect(x2, n-i+1, width = x, height = 0.8, default.units = "native", just = "right", gp = gpar(col = NA, fill = col[type]))
-			}
-		}
-		breaks = grid.pretty(c(0, max_count))
-		if(k == 1) {
-			grid.xaxis(at = breaks, label = breaks, main = FALSE, gp = axis_gp)
-		}
-		upViewport()
+	### now the annotations
+	if("left_annotation" %in% arg_names) {
+		stop("'left_annotation' are not allowed to specify, you can add...")
 	}
-
-	ha_row_bar = rowAnnotation(row_bar = anno_row_bar, width = row_barplot_width)
-
-	###################################################################
-	# column annotation which is also a barplot
-	anno_column_bar = function(index) {
-		n = length(index)
-		count = apply(arr, c(2, 3), sum)[index, , drop = FALSE]
-		all_type = all_type[!(colnames(count) %in% barplot_ignore)]
-		count = count[, setdiff(colnames(count), barplot_ignore), drop = FALSE]
-		max_count = max(rowSums(count))
-		pushViewport(viewport(yscale = c(0, max_count*1.1), xscale = c(0.5, n + 0.5)))
-		for(i in seq_len(nrow(count))) {
-			if(any(count[i, ] > 0)) {
-				y = count[i, ]
-				y = y[y > 0]
-				y2 = cumsum(y)
-				type = all_type[count[i, ] > 0]
-				grid.rect(i, y2, height = y, width = 0.8, default.units = "native", just = "top", gp = gpar(col = NA, fill = col[type]))
-			}
-		}
-		breaks = grid.pretty(c(0, max_count))
-		grid.yaxis(at = breaks, label = breaks, gp = axis_gp)
-		upViewport()
+	left_annotation = NULL
+	if(show_pct) {
+		left_annotation = rowAnnotation(pct = anno_text(pct, just = "right", location = unit(1, "npc"), gp = pct_gp),
+			show_annotation_name = FALSE)
 	}
-
-	top_annotation = top_annotation
+	if(show_row_names) {
+		ha_row_names = rowAnnotation(rownames = anno_text(dimnames(arr)[[1]], gp = pct_gp, just = "left", location = unit(0, "npc")),
+			show_annotation_name = FALSE)
+		right_annotation = c(ha_row_names, right_annotation)
+	}
 
 	#####################################################################
 	# the main matrix
@@ -327,61 +258,31 @@ oncoPrint = function(mat, get_type = function(x) x,
 	dim(pheudo) = dim(arr)[1:2]
 	dimnames(pheudo) = dimnames(arr)[1:2]
 	
-	if(length(list(...))) {
-		if(any(names(list(...)) %in% c("rect_gp", "cluster_rows", "cluster_columns", "cell_fun"))) {
+	if(length(arg_list)) {
+		if(any(arg_names %in% c("rect_gp", "cluster_rows", "cluster_columns", "cell_fun"))) {
 			stop("'rect_gp', 'cluster_rows', 'cluster_columns', 'cell_fun' are not allowed to use in `oncoPrint()`.")
 		}
 	}
 
-	ht = Heatmap(pheudo, col = col, rect_gp = gpar(type = "none"), 
-		cluster_rows = FALSE, cluster_columns = FALSE, row_order = row_order, column_order = column_order,
+	ht = Heatmap(pheudo, col = col, 
+		rect_gp = gpar(type = "none"), 
+		cluster_rows = FALSE, cluster_columns = FALSE, 
+		row_order = row_order, column_order = column_order,
 		cell_fun = function(j, i, x, y, width, height, fill) {
 			z = arr[i, j, ]
 			names(z) = dimnames(arr)[[3]]
 			af(x, y, width, height, z, j, i)
 		},
 		top_annotation = top_annotation,
-		top_annotation_height = top_annotation_height,
-		bottom_annotation = bottom_annotation,
-		bottom_annotation_height = bottom_annotation_height,
-		row_title = row_title,
-		row_title_side = row_title_side,
-		row_title_gp = row_names_gp,
-		row_title_rot = row_title_rot,
-		column_title = column_title,
-		column_title_side = column_title_side,
-		column_title_gp = column_title_gp,
-		column_title_rot = column_title_rot,
-		show_row_names = show_row_names,
-		row_names_gp = row_names_gp,
+		left_annotation = left_annotation,
+		right_annotation = right_annotation,
+		show_row_names = FALSE,
 		show_column_names = show_column_names,
-		column_names_gp = column_names_gp,
-		heatmap_legend_param = heatmap_legend_param, 
-		split = split,
-		gap = gap,
-		combined_name_fun = combined_name_fun,
-		width = width,
-		...)
+		heatmap_legend_param = heatmap_legend_param,
+		...
+	)
 
-	ht@matrix_param$oncoprint = list()
-	ht@matrix_param$oncoprint$arr = arr
-	ht@matrix_param$oncoprint$barplot_ignore = barplot_ignore
-	ht@matrix_param$oncoprint$all_type = all_type
-	ht@matrix_param$oncoprint$axis_gp = axis_gp
-	ht@matrix_param$oncoprint$col = col
-
-	if(show_pct) {
-		ht_list = ha_pct + ht
-	} else {
-		ht_list = ht
-	}
-
-	if(show_row_barplot) {
-		ht_list = ht_list + ha_row_bar
-	}
-
-	return(ht_list)
-
+	return(ht)
 }
 
 # == title
@@ -417,42 +318,49 @@ unify_mat_list = function(mat_list, default = 0) {
 
 
 # == title
-# Column barplot annotation for oncoPrint
+# Barplot annotation for oncoPrint
 #
-# == details
-# This function is only used for column annotation
+# == param
+# -type
+# -which
+# -width
+# -height
+# -border
+# -...
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_oncoprint_barplot = function() {
+anno_oncoprint_barplot = function(type = all_type, which = c("column", "row"),
+	width = NULL, height = NULL, border = FALSE, ...) {
 
-	function(index) {
-		object = get("object", envir = parent.frame(n = 5))
-		arr = object@matrix_param$oncoprint$arr
-		barplot_ignore = object@matrix_param$oncoprint$barplot_ignore
-		all_type = object@matrix_param$oncoprint$all_type
-		axis_gp = object@matrix_param$oncoprint$axis_gp
-		col = object@matrix_param$oncoprint$col
+	if(is.null(.ENV$current_annotation_which)) {
+		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
+	}
 
-		n = length(index)
-		count = apply(arr, c(2, 3), sum)[index, , drop = FALSE]
-		all_type = all_type[!(colnames(count) %in% barplot_ignore)]
-		count = count[, setdiff(colnames(count), barplot_ignore), drop = FALSE]
-		max_count = max(rowSums(count))
-		pushViewport(viewport(yscale = c(0, max_count*1.1), xscale = c(0.5, n + 0.5)))
-		for(i in seq_len(nrow(count))) {
-			if(any(count[i, ] > 0)) {
-				y = count[i, ]
-				y = y[y > 0]
-				y2 = cumsum(y)
-				type = all_type[count[i, ] > 0]
-				grid.rect(i, y2, height = y, width = 0.8, default.units = "native", just = "top", gp = gpar(col = NA, fill = col[type]))
-			}
-		}
-		breaks = grid.pretty(c(0, max_count))
-		grid.yaxis(at = breaks, label = breaks, gp = axis_gp)
-		upViewport()
+	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
+
+	# get variables fron oncoPrint() function
+	pf = parent.frame()
+	arr = get("arr", envir = pf, inherits = FALSE)
+	all_type = get("all_type", envir = pf, inherits = FALSE)
+	col = get("col", envir = pf, inherits = FALSE)
+
+	type = type
+	all_type = intersect(all_type, type)
+	arr = arr[, , all_type, drop = FALSE]
+	col = col[all_type]
+
+	if(which == "column") {
+		count = apply(arr, c(2, 3), sum)
+		anno_barplot(count, gp = gpar(fill = col, col = NA), which = "column",
+			baseline = 0, height = anno_size$height, border = border, ...)
+	} else {
+		count = apply(arr, c(1, 3), sum)
+		anno_barplot(count, gp = gpar(fill = col, col = NA), which = "row",
+			baseline = 0, width = anno_size$width, border = border, ...)
 	}
 }
 

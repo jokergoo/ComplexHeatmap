@@ -1,10 +1,10 @@
 \name{AdditiveUnit}
 \alias{AdditiveUnit}
 \title{
-Constructor method for AdditiveUnit class
+Constructor Method for AdditiveUnit Class
 }
 \description{
-Constructor method for AdditiveUnit class
+Constructor Method for AdditiveUnit Class
 }
 \usage{
 AdditiveUnit(...)
@@ -24,6 +24,6 @@ No value is returned.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# no example for this function
+# There is no example
 NULL
 }

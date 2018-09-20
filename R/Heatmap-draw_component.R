@@ -181,6 +181,7 @@ R_binary = function() {
 # -object A `Heatmap-class` object.
 # -which Are the dendrograms put on the row or on the column of the heatmap?
 # -k Slice index.
+# -max_height maximal height of dendrogram.
 # -... Pass to `grid::viewport` which includes the complete heatmap dendrograms.
 #
 # == details

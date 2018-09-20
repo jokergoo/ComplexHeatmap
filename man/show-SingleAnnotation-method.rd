@@ -11,7 +11,7 @@ Print the SingleAnnotation object
 }
 \arguments{
 
-  \item{object}{a \code{\link{SingleAnnotation-class}} object.}
+  \item{object}{A \code{\link{SingleAnnotation-class}} object.}
 
 }
 \value{
@@ -23,5 +23,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

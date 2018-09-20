@@ -1,4 +1,10 @@
 
+# == title
+# Adjust heatmap list
+#
+# == param
+# -object A `HeatmapList-class` object
+#
 setMethod(f = "adjust_heatmap_list",
     signature = "HeatmapList",
     definition = function(object) {

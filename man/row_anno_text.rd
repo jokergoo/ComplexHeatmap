@@ -1,10 +1,10 @@
 \name{row_anno_text}
 \alias{row_anno_text}
 \title{
-Row annotation which is represented as text
+Text as Row Annotation
 }
 \description{
-Row annotation which is represented as text
+Text as Row Annotation
 }
 \usage{
 row_anno_text(...)
@@ -16,15 +16,13 @@ row_anno_text(...)
 }
 \details{
 A wrapper of \code{\link{anno_text}} with pre-defined \code{which} to \code{row}.
+
+You can directly use \code{\link{anno_text}} for row annotation if you call it in \code{\link{rowAnnotation}}.
 }
 \value{
 See help page of \code{\link{anno_text}}
 }
-\author{
-Zuguang Gu <z.gu@dkfz.de>
-}
 \examples{
 # There is no example
 NULL
-
 }

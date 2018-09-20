@@ -125,11 +125,12 @@ Heatmap = setClass("Heatmap",
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
 # -color_space the color space in which colors are interpolated. Only used if ``matrix`` is numeric and 
 #            ``col`` is a vector of colors. Pass to `circlize::colorRamp2`.
-# -border
+# -border border
 # -cell_fun self-defined function to add graphics on each cell. Seven parameters will be passed into 
 #           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height``, ``fill`` which are row index,
 #           column index in ``matrix``, coordinate of the middle points in the heatmap body viewport,
 #           the width and height of the cell and the filled color. ``x``, ``y``, ``width`` and ``height`` are all `grid::unit` objects.
+# -layer_fun layer fun
 # -row_title title on row.
 # -row_title_side will the title be put on the left or right of the heatmap?
 # -row_title_gp graphic parameters for drawing text.
@@ -157,7 +158,6 @@ Heatmap = setClass("Heatmap",
 #                object with edges rendered, this argument will be ignored.
 # -row_dend_reorder apply reordering on rows. The value can be a logical value or a vector which contains weight 
 #               which is used to reorder rows
-# -row_dend_gp
 # -cluster_columns whether make cluster on columns. Same settings as ``cluster_rows``.
 # -clustering_distance_columns same setting as ``clustering_distance_rows``.
 # -clustering_method_columns method to make cluster, pass to `stats::hclust`.
@@ -167,43 +167,42 @@ Heatmap = setClass("Heatmap",
 # -column_dend_gp graphic parameters for drawling lines. Same settings as ``row_dend_gp``.
 # -column_dend_reorder apply reordering on columns. The value can be a logical value or a vector which contains weight 
 #               which is used to reorder columns
-# -column_dend_gp
 # -row_order order of rows. It makes it easy to adjust row order for a list of heatmaps if this heatmap 
 #      is selected as the main heatmap. Manually setting row order should turn off clustering
 # -column_order order of column. It makes it easy to adjust column order for both matrix and column annotations.
-# -row_labels
+# -row_labels row labels
 # -row_names_side should the row names be put on the left or right of the heatmap?
 # -show_row_names whether show row names.
 # -row_names_max_width maximum width of row names viewport. Because some times row names can be very long, it is not reasonable
 #                      to show them all.
 # -row_names_gp graphic parameters for drawing text.
-# -row_names_rot
-# -column_labels
+# -row_names_rot rotation of row labels
+# -column_labels column labels
 # -column_names_side should the column names be put on the top or bottom of the heatmap?
 # -column_names_max_height maximum height of column names viewport.
 # -show_column_names whether show column names.
 # -column_names_gp graphic parameters for drawing text.
-# -column_names_rot
+# -column_names_rot rotation of column labels
 # -top_annotation a `HeatmapAnnotation` object which contains a list of annotations.
 # -bottom_annotation a `HeatmapAnnotation` object.
-# -left_annotation
-# -right_annotation
+# -left_annotation should specified in `rowAnnotation`
+# -right_annotation should shpecified in `rowAnnotation`
 # -km do k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering.
 #     For each row-clusters, hierarchical clustering is still applied with parameters above.
 # -split a vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
 #        indicating rows are to be split according to the split on the tree.
-# -row_km
-# -row_split
-# -column_km
-# -column_split
+# -row_km row km
+# -row_split row split
+# -column_km column km
+# -column_split column split
 # -gap gap between row-slices if the heatmap is split by rows, should be `grid::unit` object. If it is a vector, the order corresponds
 #   to top to bottom in the heatmap
-# -row_gap
-# -column_gap
-# -width
-# -height
-# -heatmap_body_width
-# -heatmap_body_height
+# -row_gap row gap
+# -column_gap column gap
+# -width width
+# -height height
+# -heatmap_body_width width
+# -heatmap_body_height height
 # -show_heatmap_legend whether show heatmap legend?
 # -heatmap_legend_param a list contains parameters for the heatmap legend. See `color_mapping_legend,ColorMapping-method` for all available parameters.
 # -use_raster whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if ``cell_fun``
@@ -211,6 +210,7 @@ Heatmap = setClass("Heatmap",
 # -raster_device graphic device which is used to generate the raster image
 # -raster_quality a value set to larger than 1 will improve the quality of the raster image.
 # -raster_device_param a list of further parameters for the selected graphic device
+# -post_fun a function which will be executed after the plot is drawn.
 #
 # == details
 # The initialization function only applies parameter checking and fill values to each slot with proper ones.
@@ -307,7 +307,9 @@ Heatmap = function(matrix, col, name,
     use_raster = nrow(matrix) > 5000, 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
-    raster_device_param = list()) {
+    raster_device_param = list(),
+
+    post_fun = NULL) {
 
     verbose = ht_opt("verbose")
 
@@ -781,6 +783,7 @@ Heatmap = function(matrix, col, name,
     .Object@heatmap_param$raster_quality = raster_quality
     .Object@heatmap_param$raster_device_param = raster_device_param
     .Object@heatmap_param$verbose = verbose
+    .Object@heatmap_param$post_fun = post_fun
 
     if(nrow(matrix) == 0) {
         .Object@heatmap_param$height = unit(0, "mm")
@@ -822,6 +825,25 @@ setMethod(f = "make_row_cluster",
     make_cluster(object, "row")
 })
 
+# == title
+# Make Cluster on Columns
+#
+# == param
+# -object A `Heatmap-class` object.
+#
+# == details
+# The function will fill or adjust ``column_dend_list``, ``column_order_list``, ``column_title`` and ``matrix_param`` slots.
+#
+# If ``order`` is defined, no clustering will be applied.
+#
+# This function is only for internal use.
+#
+# == value
+# A `Heatmap-class` object.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "make_column_cluster",
     signature = "Heatmap",
     definition = function(object) {
@@ -1324,6 +1346,7 @@ setMethod(f = "draw",
 # == param
 # -object A `Heatmap-class` object.
 # -process_rows Whether to process rows of the heatmap.
+# -process_columns Whether to process columns of the heatmap.
 #
 # == detail
 # The preparation of the heatmap includes following steps:

@@ -1,40 +1,46 @@
 \name{anno_density}
 \alias{anno_density}
 \title{
-Using kernel density as annotation
+Density Annotation
 }
 \description{
-Using kernel density as annotation
+Density Annotation
 }
 \usage{
-anno_density(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"),
-    type = c("lines", "violin", "heatmap"), ...)
+anno_density(x, which = c("column", "row"),
+    type = c("lines", "violin", "heatmap"),
+    heatmap_colors = rev(brewer.pal(name = "RdYlBu", n = 11)),
+    joyplot_scale = 1, border = TRUE, gp = gpar(fill = "#CCCCCC"),
+    axis = TRUE, axis_param = default_axis_param(which),
+    width = NULL, height = NULL)
 }
 \arguments{
 
-  \item{x}{a matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for density is calculated by columns, if \code{which} is \code{row}, the calculation is by rows.}
-  \item{which}{is the annotation a column annotation or a row annotation?}
-  \item{gp}{graphic parameters. Note it is ignored if \code{type} equals to \code{heatmap}.}
-  \item{type}{which type of graphics is used to represent density distribution.}
-  \item{...}{pass to \code{\link[stats]{density}}}
+  \item{x}{A matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for boxplots are calculated by columns, if \code{which} is \code{row}, the calculation is done by rows.}
+  \item{which}{Whether it is a column annotation or a row annotation?}
+  \item{type}{Type of graphics to represent density distribution. "lines" for normal density plot; "violine" for violin plot and "heatmap" for heatmap visualization of density distribution.}
+  \item{heatmap_colors}{A vector of colors for interpolating density values.}
+  \item{joyplot_scale}{Relative height of density distribution. A value higher than 1 increases the height of the density distribution and the plot will represented as so-called "joyplot".}
+  \item{border}{Wether draw borders of the annotation region?}
+  \item{gp}{Graphic parameters for the boxes. The length of the graphic parameters should be one or the number of observations.}
+  \item{axis}{Whether to add axis?}
+  \item{axis_param}{parameters for controlling axis. See \code{\link{default_axis_param}} for all possible settings and default parameters.}
+  \item{width}{Width of the annotation.}
+  \item{height}{Height of the annotation.}
 
 }
 \value{
-A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
-}
-\author{
-Zuguang Gu <z.gu@dkfz.de>
+An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
 \examples{
-mat = matrix(rnorm(32), nrow = 4)
-f = anno_density(mat)
-grid.newpage(); f(1:8)
-
-f = anno_density(mat, which = "row", type = "violin")
-grid.newpage(); f(1:4)
-
-lt = lapply(1:4, function(i) rnorm(8))
-f = anno_density(lt, type = "heatmap")
-grid.newpage(); f(1:4)
-
+m = matrix(rnorm(100), 10)
+anno = anno_density(m, which = "row")
+draw(anno, test = "normal density")
+anno = anno_density(m, which = "row", type = "violin")
+draw(anno, test = "violin")
+anno = anno_density(m, which = "row", type = "heatmap")
+draw(anno, test = "heatmap")
+anno = anno_density(m, which = "row", type = "heatmap", 
+    heatmap_colors = c("white", "orange"))
+draw(anno, test = "heatmap, colors")
 }

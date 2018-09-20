@@ -1,38 +1,39 @@
 \name{anno_histogram}
 \alias{anno_histogram}
 \title{
-Using histogram as annotation
+Histogram Annotation
 }
 \description{
-Using histogram as annotation
+Histogram Annotation
 }
 \usage{
-anno_histogram(x, which = c("column", "row"), gp = gpar(fill = "#CCCCCC"), ...)
+anno_histogram(x, which = c("column", "row"), n_breaks = 11,
+    border = FALSE, gp = gpar(fill = "#CCCCCC"),
+    axis = TRUE, axis_param = default_axis_param(which),
+    width = NULL, height = NULL)
 }
 \arguments{
 
-  \item{x}{a matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for histogram is calculated by columns, if \code{which} is \code{row}, the calculation is by rows.}
-  \item{which}{is the annotation a column annotation or a row annotation?}
-  \item{gp}{graphic parameters}
-  \item{...}{pass to \code{\link[graphics]{hist}}}
+  \item{x}{A matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for boxplots are calculated by columns, if \code{which} is \code{row}, the calculation is done by rows.}
+  \item{which}{Whether it is a column annotation or a row annotation?}
+  \item{n_breaks}{Number of breaks for calculating histogram.}
+  \item{border}{Wether draw borders of the annotation region?}
+  \item{gp}{Graphic parameters for the boxes. The length of the graphic parameters should be one or the number of observations.}
+  \item{axis}{Whether to add axis?}
+  \item{axis_param}{parameters for controlling axis. See \code{\link{default_axis_param}} for all possible settings and default parameters.}
+  \item{width}{Width of the annotation.}
+  \item{height}{Height of the annotation.}
 
 }
 \value{
-A graphic function which can be set in \code{\link{HeatmapAnnotation}} constructor method.
-}
-\author{
-Zuguang Gu <z.gu@dkfz.de>
+An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
 \examples{
-mat = matrix(rnorm(32), nrow = 4)
-f = anno_histogram(mat)
-grid.newpage(); f(1:8)
-
-f = anno_histogram(mat, which = "row")
-grid.newpage(); f(1:4)
-
-lt = lapply(1:4, function(i) rnorm(8))
-f = anno_histogram(lt)
-grid.newpage(); f(1:4)
-
+m = matrix(rnorm(1000), nc = 10)
+anno = anno_histogram(t(m), which = "row")
+draw(anno, test = "row histogram")
+anno = anno_histogram(t(m), which = "row", gp = gpar(fill = 1:10))
+draw(anno, test = "row histogram with color")
+anno = anno_histogram(t(m), which = "row", n_breaks = 20)
+draw(anno, test = "row histogram with color")
 }

@@ -1,18 +1,17 @@
 \name{make_row_cluster-Heatmap-method}
 \alias{make_row_cluster,Heatmap-method}
-\alias{make_row_cluster}
 \title{
-Make cluster on rows
+Make Cluster on Rows
 }
 \description{
-Make cluster on rows
+Make Cluster on Rows
 }
 \usage{
 \S4method{make_row_cluster}{Heatmap}(object)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
 
 }
 \details{
@@ -28,8 +27,8 @@ A \code{\link{Heatmap-class}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{make_row_cluster}
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

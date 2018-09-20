@@ -1,22 +1,23 @@
 \name{make_column_cluster-Heatmap-method}
 \alias{make_column_cluster,Heatmap-method}
-\alias{make_column_cluster}
 \title{
-Make cluster on columns
+Make Cluster on Columns
 }
 \description{
-Make cluster on columns
+Make Cluster on Columns
 }
 \usage{
 \S4method{make_column_cluster}{Heatmap}(object)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
 
 }
 \details{
-The function will fill or adjust \code{column_dend} and \code{column_order} slots.
+The function will fill or adjust \code{column_dend_list}, \code{column_order_list}, \code{column_title} and \code{matrix_param} slots.
+
+If \code{order} is defined, no clustering will be applied.
 
 This function is only for internal use.
 }
@@ -26,8 +27,8 @@ A \code{\link{Heatmap-class}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{make_column_cluster}
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

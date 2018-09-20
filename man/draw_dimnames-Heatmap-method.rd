@@ -1,6 +1,5 @@
 \name{draw_dimnames-Heatmap-method}
 \alias{draw_dimnames,Heatmap-method}
-\alias{draw_dimnames}
 \title{
 Draw row names or column names
 }
@@ -9,15 +8,14 @@ Draw row names or column names
 }
 \usage{
 \S4method{draw_dimnames}{Heatmap}(object,
-    which = c("row", "column"), k = 1, dimname_padding = unit(0, "mm"), ...)
+    which = c("row", "column"), k = 1, ...)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{which}{are names put on the row or on the column of the heatmap?}
-  \item{k}{a matrix may be split by rows, the value identifies which row-slice.}
-  \item{dimname_padding}{padding for the row/column names}
-  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
+  \item{which}{Are the names put on the row or on the column of the heatmap?}
+  \item{k}{Slice index.}
+  \item{...}{Pass to \code{\link[grid]{viewport}} which includes the complete heatmap row/column names.}
 
 }
 \details{
@@ -31,8 +29,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{draw_dimnames}
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

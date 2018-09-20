@@ -2,10 +2,10 @@
 \docType{class}
 \alias{HeatmapAnnotation-class}
 \title{
-Class for heatmap annotations
+Class for Heatmap Annotations
 }
 \description{
-Class for heatmap annotations
+Class for Heatmap Annotations
 }
 \details{
 A complex heatmap contains a list of annotations which are represented as different graphics
@@ -23,7 +23,6 @@ The \code{\link{HeatmapAnnotation-class}} provides following methods:
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# for examples, please go to `HeatmapAnnotation` method page
+# There is no example
 NULL
-
 }

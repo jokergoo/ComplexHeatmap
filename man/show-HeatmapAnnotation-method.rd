@@ -1,17 +1,17 @@
 \name{show-HeatmapAnnotation-method}
 \alias{show,HeatmapAnnotation-method}
 \title{
-Print the Heatmap Annotation object
+Print the HeatmapAnnotation object
 }
 \description{
-Print the Heatmap Annotation object
+Print the HeatmapAnnotation object
 }
 \usage{
 \S4method{show}{HeatmapAnnotation}(object)
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
+  \item{object}{A \code{\link{HeatmapAnnotation-class}} object.}
 
 }
 \value{
@@ -23,5 +23,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

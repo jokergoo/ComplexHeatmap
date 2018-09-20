@@ -45,7 +45,7 @@ AdditiveUnit = function(...) {
 # A `HeatmapList-class` object.
 #
 # == seealso
-# `%v%` operator is used for vertical heatmap list.
+# `\%v\%` operator is used for vertical heatmap list.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

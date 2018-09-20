@@ -1,10 +1,10 @@
 \name{row_anno_points}
 \alias{row_anno_points}
 \title{
-Row annotation which is represented as points
+Points as Row Annotation
 }
 \description{
-Row annotation which is represented as points
+Points as Row Annotation
 }
 \usage{
 row_anno_points(...)
@@ -16,15 +16,13 @@ row_anno_points(...)
 }
 \details{
 A wrapper of \code{\link{anno_points}} with pre-defined \code{which} to \code{row}.
+
+You can directly use \code{\link{anno_points}} for row annotation if you call it in \code{\link{rowAnnotation}}.
 }
 \value{
 See help page of \code{\link{anno_points}}
 }
-\author{
-Zuguang Gu <z.gu@dkfz.de>
-}
 \examples{
 # There is no example
 NULL
-
 }

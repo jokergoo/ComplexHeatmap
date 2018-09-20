@@ -7,16 +7,17 @@ Add row annotations or heatmaps as a heatmap list
 Add row annotations or heatmaps as a heatmap list
 }
 \usage{
-\S4method{add_heatmap}{HeatmapAnnotation}(object, x)
+\S4method{add_heatmap}{HeatmapAnnotation}(object, x, direction = c("horizontal", "vertical"))
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapAnnotation-class}} object.}
-  \item{x}{a \code{\link{Heatmap-class}} object, a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
+  \item{object}{A \code{\link{HeatmapAnnotation-class}} object.}
+  \item{x}{A \code{\link{Heatmap-class}} object, a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
+  \item{direction}{Whether it is a horizontal add or a vertical add?}
 
 }
 \details{
-There is a shortcut function \code{+.AdditiveUnit}.
+There is a helper function \code{+.AdditiveUnit} for horizontal add or \code{\link{\%v\%}} for vertical add.
 }
 \value{
 A \code{\link{HeatmapList-class}} object.
@@ -25,15 +26,6 @@ A \code{\link{HeatmapList-class}} object.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-mat = matrix(rnorm(80, 2), 8, 10)
-mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
-rownames(mat) = letters[1:12]
-colnames(mat) = letters[1:10]
-
-ht = Heatmap(mat)
-
-ha = HeatmapAnnotation(points = anno_points(1:12, which = "row"), 
-    which = "row")
-add_heatmap(ha, ht)
-
+# There is no example
+NULL
 }

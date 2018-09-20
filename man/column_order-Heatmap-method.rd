@@ -24,6 +24,6 @@ Zuguang Gu <z.gu@dkfz.de>
 mat = matrix(rnorm(100), 10)
 ht = Heatmap(mat)
 column_order(ht)
-ht = Heatmap(mat, km = 2)
+ht = Heatmap(mat, column_km = 2)
 column_order(ht)
 }

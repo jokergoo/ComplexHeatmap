@@ -287,7 +287,7 @@ list_component = function() {
 #
 # == param
 # -text A vector of text.
-# -... Pass to `grid::textGrob`.
+# -gp Graphic parameters for text.
 #
 # == details
 # Simply calculate maximum width of a list of `grid::textGrob` objects.
@@ -323,7 +323,7 @@ max_text_width = function(text, gp = gpar()) {
 #
 # == param
 # -text A vector of text.
-# -... Pass to `grid::textGrob`.
+# -gp Graphic parameters for text.
 #
 # == details
 # Simply calculate maximum height of a list of `grid::textGrob` objects.
@@ -464,11 +464,11 @@ normalize_graphic_param_to_mat = function(x, nc, nr, name) {
         }
     } else {
         if(length(x) == nc) {
-            return(matrix(rep(x, each = nr), nc = nc))
+            return(matrix(rep(x, each = nr), ncol = nc))
         } else if(length(x) == nr) {
-            return(matrix(rep(x, times = nc), nc = nc))
+            return(matrix(rep(x, times = nc), ncol = nc))
         } else if(length(x) == 1) {
-            return(matrix(x, nc = nc, nr = nr))
+            return(matrix(x, ncol = nc, nrow = nr))
         } else {
             stop(paste0("Since ", name, " is a vector, it should have length of ", nc, " or ", nr, "."))
         }

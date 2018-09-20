@@ -62,3 +62,5 @@ ha = HeatmapAnnotation(foo = 1:10, bar = sample(c("a", "b"), 10, replace = TRUE)
 	anno = anno_horizon(lt), which = "row")
 draw(ha, test = "complex annotations on row")
 
+## test row annotation with no heatmap
+rowAnnotation(foo = 1:10, bar = anno_points(10:1))

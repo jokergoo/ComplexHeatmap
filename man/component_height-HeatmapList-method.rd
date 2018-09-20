@@ -7,7 +7,7 @@ Height of each heatmap list component
 Height of each heatmap list component
 }
 \usage{
-\S4method{component_height}{HeatmapList}(object, k = 1:7)
+\S4method{component_height}{HeatmapList}(object, k = HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT)
 }
 \arguments{
 
@@ -22,6 +22,6 @@ A \code{\link[grid]{unit}} object
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# no example for this internal method
-
+# There is no example
+NULL
 }

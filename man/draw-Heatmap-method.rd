@@ -1,39 +1,36 @@
 \name{draw-Heatmap-method}
 \alias{draw,Heatmap-method}
 \title{
-Draw a single heatmap
+Draw a Single Heatmap
 }
 \description{
-Draw a single heatmap
+Draw a Single Heatmap
 }
 \usage{
 \S4method{draw}{Heatmap}(object, internal = FALSE, test = FALSE, ...)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{internal}{only used inside the calling of \code{\link{draw,HeatmapList-method}}. Only heatmap without legends will be drawn.}
-  \item{test}{only for testing}
-  \item{...}{pass to \code{\link{draw,HeatmapList-method}}.}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
+  \item{internal}{If \code{TRUE}, it is only used inside the calling of \code{\link{draw,HeatmapList-method}}.  It only draws the heatmap without legends where the legend will be drawn by \code{\link{draw,HeatmapList-method}}. }
+  \item{test}{Only for testing. If it is \code{TRUE}, the heatmap body is directly drawn.}
+  \item{...}{Pass to \code{\link{draw,HeatmapList-method}}.}
 
 }
 \details{
 The function creates a \code{\link{HeatmapList-class}} object which only contains a single heatmap
 and call \code{\link{draw,HeatmapList-method}} to make the final heatmap.
+
+There are some arguments which control the global setting of the heatmap such as legends.
+Please go to \code{\link{draw,HeatmapList-method}} for these arguments.
 }
 \value{
-This function returns no value.
+A \code{\link{HeatmapList-class}} object.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-mat = matrix(rnorm(80, 2), 8, 10)
-mat = rbind(mat, matrix(rnorm(40, -2), 4, 10))
-rownames(mat) = letters[1:12]
-colnames(mat) = letters[1:10]
-
-ht = Heatmap(mat)
-draw(ht, heatmap_legend_side = "left")
-
+# There is no example
+NULL
 }

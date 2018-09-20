@@ -12,7 +12,6 @@ This class is a super class for \code{\link{Heatmap-class}}, \code{\link{Heatmap
 It is only designed for \code{+} generic method so that above three classes can be appended to each other.
 }
 \examples{
-# no example
+# There is no example
 NULL
-
 }

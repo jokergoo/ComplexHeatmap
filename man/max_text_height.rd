@@ -1,31 +1,33 @@
 \name{max_text_height}
 \alias{max_text_height}
 \title{
-Maximum height of text
+Maximum Height of Text
 }
 \description{
-Maximum height of text
+Maximum Height of Text
 }
 \usage{
-max_text_height(text, ...)
+max_text_height(text, gp = gpar())
 }
 \arguments{
 
-  \item{text}{a vector of text}
-  \item{...}{pass to \code{\link[grid]{textGrob}}}
+  \item{text}{A vector of text.}
+  \item{gp}{Graphic parameters for text.}
 
 }
 \details{
 Simply calculate maximum height of a list of \code{\link[grid]{textGrob}} objects.
+
+Note it ignores the text rotation.
 }
 \value{
 A \code{\link[grid]{unit}} object.
 }
-\seealso{
-\code{\link{max_text_height}} is always used to calculate the size of viewport when there is text annotation (\code{\link{anno_text}})
-}
 \author{
 Zuguang Gu <z.gu@dkfz.de>
+}
+\seealso{
+\code{\link{max_text_width}} calculates the maximum width of a text vector.
 }
 \examples{
 x = c("a", "b\nb", "c\nc\nc")

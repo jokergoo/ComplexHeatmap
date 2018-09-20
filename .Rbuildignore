@@ -1,7 +1,9 @@
 ^\..*
 README.*
-test/
+tests/
 check.bat
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .travis.yml
+vignettes_old
+

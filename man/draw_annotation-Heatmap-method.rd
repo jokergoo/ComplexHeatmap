@@ -1,26 +1,26 @@
 \name{draw_annotation-Heatmap-method}
 \alias{draw_annotation,Heatmap-method}
-\alias{draw_annotation}
 \title{
-Draw column annotations
+Draw Heatmap Annotations on the Heatmap
 }
 \description{
-Draw column annotations
+Draw Heatmap Annotations on the Heatmap
 }
 \usage{
-\S4method{draw_annotation}{Heatmap}(object, which = c("top", "bottom"))
+\S4method{draw_annotation}{Heatmap}(object, which = c("top", "bottom", "left", "right"), k = 1, ...)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{which}{are the annotations put on the top or bottom of the heatmap?}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
+  \item{which}{The position of the heamtap annotation.}
+  \item{k}{Slice index.}
+  \item{...}{Pass to \code{\link[grid]{viewport}} which includes the complete heatmap annotation.}
 
 }
 \details{
-A viewport is created which contains column annotations.
+A viewport is created which contains column/top annotations.
 
-Since the column annotations is a \code{\link{HeatmapAnnotation-class}} object, the function
-calls \code{\link{draw,HeatmapAnnotation-method}} to draw the annotations.
+The function calls \code{\link{draw,HeatmapAnnotation-method}} to draw the annotations.
 
 This function is only for internal use.
 }
@@ -30,8 +30,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{draw_annotation}
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

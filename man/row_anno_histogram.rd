@@ -1,10 +1,10 @@
 \name{row_anno_histogram}
 \alias{row_anno_histogram}
 \title{
-Row annotation which is represented as histogram
+Histograms as Row Annotation
 }
 \description{
-Row annotation which is represented as histogram
+Histograms as Row Annotation
 }
 \usage{
 row_anno_histogram(...)
@@ -16,15 +16,13 @@ row_anno_histogram(...)
 }
 \details{
 A wrapper of \code{\link{anno_histogram}} with pre-defined \code{which} to \code{row}.
+
+You can directly use \code{\link{anno_histogram}} for row annotation if you call it in \code{\link{rowAnnotation}}.
 }
 \value{
 See help page of \code{\link{anno_histogram}}
 }
-\author{
-Zuguang Gu <z.gu@dkfz.de>
-}
 \examples{
 # There is no example
 NULL
-
 }

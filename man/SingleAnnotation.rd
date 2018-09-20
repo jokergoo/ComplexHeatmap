@@ -1,10 +1,10 @@
 \name{SingleAnnotation}
 \alias{SingleAnnotation}
 \title{
-Constructor method for SingleAnnotation class
+Constructor Method for SingleAnnotation Class
 }
 \description{
-Constructor method for SingleAnnotation class
+Constructor Method for SingleAnnotation Class
 }
 \usage{
 SingleAnnotation(name, value, col, fun,
@@ -13,50 +13,61 @@ SingleAnnotation(name, value, col, fun,
     show_legend = TRUE,
     gp = gpar(col = NA),
     legend_param = list(),
-    show_name = FALSE,
+    show_name = TRUE,
     name_gp = gpar(fontsize = 12),
-    name_offset = unit(2, "mm"),
+    name_offset = unit(1, "mm"),
     name_side = ifelse(which == "column", "right", "bottom"),
-    name_rot = ifelse(which == "column", 0, 90))
+    name_rot = ifelse(which == "column", 0, 90),
+    width = NULL, height = NULL)
 }
 \arguments{
 
-  \item{name}{name for this annotation. If it is not specified, an internal name is assigned.}
-  \item{value}{A vector of discrete or continuous annotation.}
-  \item{col}{colors corresponding to \code{value}. If the mapping is discrete mapping, the value of \code{col} should be a vector; If the mapping is continuous mapping, the value of \code{col} should be  a color mapping function. }
-  \item{fun}{a self-defined function to add annotation graphics. The argument of this function should only  be a vector of index that corresponds to rows or columns.}
-  \item{na_col}{color for \code{NA} values in simple annotations.}
-  \item{which}{is the annotation a row annotation or a column annotation?}
-  \item{show_legend}{if it is a simple annotation, whether show legend when making the complete heatmap.}
-  \item{gp}{Since simple annotation is represented as a row of grids. This argument controls graphic parameters for the simple annotation.}
-  \item{legend_param}{parameters for the legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for options.}
-  \item{show_name}{whether show annotation name}
-  \item{name_gp}{graphic parameters for annotation name}
-  \item{name_offset}{offset to the annotation, a \code{\link[grid]{unit}} object}
+  \item{name}{Name for the annotation. If it is not specified, an internal name is assigned.}
+  \item{value}{A vector or a matrix of discrete or continuous values.}
+  \item{col}{Colors corresponding to \code{value}. If the mapping is discrete, the value of \code{col} should be a named vector; If the mapping is continuous, the value of \code{col} should be  a color mapping function.}
+  \item{fun}{A user-defined function to add annotation graphics. The argument of this function should be at least  a vector of index that corresponds to rows or columns. Normally the function should be  constructed by \code{\link{AnnotationFunction}} if you want the annotation supports splitting.  See **Details** for more explanation.}
+  \item{na_col}{Color for \code{NA} values in the simple annotations.}
+  \item{which}{Whether the annotation is a row annotation or a column annotation?}
+  \item{show_legend}{If it is a simple annotation, whether show legend in the final heatmap?}
+  \item{gp}{Since simple annotation is represented as rows of grids. This argument controls graphic parameters for the simple annotation. The \code{fill} parameter is ignored here.}
+  \item{legend_param}{Parameters for the legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for all possible options.}
+  \item{show_name}{Whether show annotation name?}
+  \item{name_gp}{Graphic parameters for annotation name.}
+  \item{name_offset}{Offset to the annotation, a \code{\link[grid]{unit}} object.}
   \item{name_side}{'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations}
-  \item{name_rot}{rotation of the annotation name, can only take values in \code{c(00, 90, 180, 270)}.}
+  \item{name_rot}{Rotation of the annotation name, it can only take values in \code{c(0, 90, 180, 270)}.}
+  \item{width}{The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation, the width must be an absolute unit.}
+  \item{height}{The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation, the width must be an absolute unit.}
 
 }
 \details{
-The most simple annotation is one row or one column grids in which different colors
-represent different classes of the data. Here the function use \code{\link{ColorMapping-class}}
-to process such simple annotation. \code{value} and \code{col} arguments controls values and colors
-of the simple annotation and a \code{\link{ColorMapping-class}} object will be constructed based on \code{value} and \code{col}.
+A single annotation is a basic unit of complex heatmap annotations where the heamtap annotations
+are always a list of single annotations. An annotation can be simply heatmap-like (here we call
+it simple annotation) or more complex like points, lines, boxes (for which we call it complex annotation).
 
-\code{fun} is used to construct a more complex annotation. Users can add any type of annotation graphics
-by implementing a function. The only input argument of \code{fun} is a index
-of rows or columns which is already adjusted by the clustering. In the package, there are already
-several annotation graphic function generators: \code{\link{anno_points}}, \code{\link{anno_histogram}} and \code{\link{anno_boxplot}}.
+In the \code{\link{SingleAnnotation}} constructor, \code{value}, \code{col}, \code{na_col} are used to construct a \code{\link{anno_simple}}
+annotation funciton which is generated internally by \code{\link{AnnotationFunction}}. The legend of the simple annotation
+can be automatcally generated,
 
-In the case that row annotations are splitted by rows, \code{index} corresponding to row orders in each row-slice
-and \code{fun} will be applied on each of the row slices.
+For construcing a complex annotation, users need to use \code{fun} which is a user-defind function. Normally it 
+is constucted by \code{\link{AnnotationFunction}}. One big advantage for using \code{\link{AnnotationFunction}} is the annotation function
+or the graphics drawn by the annotation function can be split according to row splitting or column splitting of
+the heatmap. Users can also provide a "pure" function which is a normal R function for the \code{fun} argument. 
+The function only needs one argument which is a vector of index for rows or columns depending whether it is 
+a row annotation or column annotation. The other two optional arguments are the current slice index and total
+number of slices. See **Examples** section for an example. If it is a normal R function, it will be constructed
+into the \code{\link{AnnotationFunction-class}} object internally.
 
-One thing that users should be careful is the difference of coordinates when the annotation is a row
-annotation or a column annotation.
+The \code{\link{SingleAnnotation-class}} is a simple wrapper on top of \code{\link{AnnotationFunction-class}} only with annotation 
+name added.
+
+The class also stored the "extended area" relative to the area for the annotation graphics. The extended areas
+are those created by annotation names and axes.
 }
 \seealso{
-There are following built-in annotation functions that can be used to generate complex annotations: 
-\code{\link{anno_points}}, \code{\link{anno_barplot}}, \code{\link{anno_histogram}}, \code{\link{anno_boxplot}}, \code{\link{anno_density}}, \code{\link{anno_text}} and \code{\link{anno_link}}.
+There are following built-in annotation functions that can be directly used to generate complex annotations: 
+\code{\link{anno_simple}}, \code{\link{anno_points}}, \code{\link{anno_lines}}, \code{\link{anno_barplot}}, \code{\link{anno_histogram}}, \code{\link{anno_boxplot}}, \code{\link{anno_density}}, \code{\link{anno_text}},
+\code{\link{anno_joyplot}}, \code{\link{anno_horizon}}, \code{\link{anno_image}}, \code{\link{anno_lines}} and \code{\link{anno_mark}}.
 }
 \value{
 A \code{\link{SingleAnnotation-class}} object.
@@ -65,21 +76,29 @@ A \code{\link{SingleAnnotation-class}} object.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# discrete character
-SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"))
-SingleAnnotation(name = "test", value = c("a", "a", "a", "b", "b", "b"), 
-    which = "row")
+ha = SingleAnnotation(value = 1:10)
+draw(ha, test = "single column annotation")
 
-# with defined colors
-SingleAnnotation(value = c("a", "a", "a", "b", "b", "b"), 
-    col = c("a" = "red", "b" = "blue"))
+m = cbind(1:10, 10:1)
+colnames(m) = c("a", "b")
+ha = SingleAnnotation(value = m)
+draw(ha, test = "matrix as column annotation")
 
-# continuous numbers
-require(circlize)
-SingleAnnotation(value = 1:10)
-SingleAnnotation(value = 1:10, col = colorRamp2(c(1, 10), c("blue", "red")))
+anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)))
+ha = SingleAnnotation(fun = anno)
+draw(ha, test = "anno_barplot as input")
 
-# self-defined graphic function
-SingleAnnotation(fun = anno_points(1:10))
-
+fun = local({
+    # because there variables outside the function for use, we put it a local environment
+    value = 1:10
+    function(index, k = 1, n = 1) {
+        pushViewport(viewport(xscale = c(0.5, length(index) + 0.5), yscale = range(value)))
+        grid.points(seq_along(index), value[index])
+        grid.rect()
+        if(k == 1) grid.yaxis()
+        popViewport()
+    }
+})
+ha = SingleAnnotation(fun = fun, height = unit(4, "cm"))
+draw(ha, index = 1:10, test = "self-defined function")
 }

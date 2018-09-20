@@ -39,13 +39,12 @@
 # You can get or set option values by the traditional way (like `base::options`) or by ``$`` operator:
 #
 #     # to get option values
-#     ht_global_opt("heatmap_row_names_gp")
-#     ht_global_opt$heatmap_row_names_gp
+#     ht_opt("heatmap_row_names_gp")
+#     ht_opt$heatmap_row_names_gp
 #
 #     # to set option values
-#     ht_global_opt("heatmap_row_names_gp" = gpar(fontsize = 8))
-#     ht_global_opt$heatmap_row_names_gp = gpar(fontsize = 8)
-#
+#     ht_opt("heatmap_row_names_gp" = gpar(fontsize = 8))
+#     ht_opt$heatmap_row_names_gp = gpar(fontsize = 8)
 #
 # == value
 # Depends on the options users selected.
@@ -57,8 +56,8 @@
 # # no example for this function
 # NULL
 #
-ht_global_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE) {}
-ht_global_opt = setGlobalOptions(
+ht_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE) {}
+ht_opt = setGlobalOptions(
 	heatmap_row_names_gp = list(
 		.value = NULL,
 		.class = "gpar"),
@@ -114,7 +113,24 @@ ht_global_opt = setGlobalOptions(
 	anno_simple_row_size = unit(5, "mm")
 )
 
-ht_opt = ht_global_opt
+
+# == title
+# Global graphic options for heatmaps
+#
+# == param
+# -... options, see 'details' section
+# -RESET reset all the option values
+# -READ.ONLY ``TRUE`` means only to return read-only values, ``FALSE`` means only to return non-read-only
+#          values, ``NULL`` means to return both.
+# -LOCAL switch local mode
+# -ADD add new options
+#
+# == details
+# This function is deprecated. Please use `ht_opt` instead. However, changes by this function
+# will also sychronized in `ht_opt`.
+#
+ht_global_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE) {}
+ht_global_opt = ht_opt
 
 .ENV = new.env()
 .ENV$current_annotation_which = NULL

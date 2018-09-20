@@ -1,6 +1,5 @@
 \name{draw_heatmap_body-Heatmap-method}
 \alias{draw_heatmap_body,Heatmap-method}
-\alias{draw_heatmap_body}
 \title{
 Draw the heatmap body
 }
@@ -8,21 +7,18 @@ Draw the heatmap body
 Draw the heatmap body
 }
 \usage{
-\S4method{draw_heatmap_body}{Heatmap}(object, k = 1, ...)
+\S4method{draw_heatmap_body}{Heatmap}(object, kr = 1, kc = 1, ...)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{k}{a matrix may be split by rows, the value identifies which row-slice.}
-  \item{...}{pass to \code{\link[grid]{viewport}}, basically for defining the position of the viewport.}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
+  \item{kr}{Row slice index.}
+  \item{kc}{Column slice index.}
+  \item{...}{Pass to \code{\link[grid]{viewport}} which includes the subset of heatmap body.}
 
 }
 \details{
-The matrix can be split into several parts by rows if \code{km} or \code{split} is 
-specified when initializing the \code{\link{Heatmap}} object. If the matrix is split, 
-there will be gaps between rows to identify different row-slice.
-
-A viewport is created which contains subset rows of the heatmap.
+A viewport is created which contains subset rows and columns of the heatmap.
 
 This function is only for internal use.
 }
@@ -32,8 +28,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{draw_heatmap_body}
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

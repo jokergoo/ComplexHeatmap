@@ -4,7 +4,7 @@
 #
 # == details
 # This is a very simple class for legends that it only has one slot which is the real `grid::grob` of the legends.
-# The design of the ``Legends`` class is to support more helper functions such as `width,Legends-class` to get 
+# The design of the ``Legends`` class is to support more helper functions such as `width.Legends` to get 
 # more information of the legends grob.
 # 
 # == example
@@ -20,6 +20,25 @@ Legends = setClass("Legends",
 )
 
 # == title
+# Constructor method for Legends class
+#
+# == param
+# -... arguments
+#
+# == details
+# There is no public constructor method for the `Legends-class`.
+#
+# == value
+# No value is returned.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+Legends = function(...) {
+    new("Legends", ...)
+}
+
+# == title
 # Make a Single Legend
 #
 # == param
@@ -31,7 +50,7 @@ Legends = setClass("Legends",
 #      are used for ``at``.
 # -nrow For legend which is represented as grids, ``nrow`` controls number of rows of the grids if the grids
 #      are arranged into multiple rows.
-# -ncol Similar as ``nrow`, ``ncol`` controls number of columns of the grids if the grids
+# -ncol Similar as ``nrow``, ``ncol`` controls number of columns of the grids if the grids
 #      are arranged into multiple columns. Note at a same time only one of ``nrow`` and ``ncol`` can be specified.
 # -by_row Are the legend grids arranged by rows or by columns?
 # -grid_height The height of legend grid. It can also control the height of the continuous legend if it is horizontal.
@@ -726,6 +745,8 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # A `Legends-class` object.
 #
 # == example
+# require(circlize)
+# col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
 # lgd1 = Legend(at = 1:6, legend_gp = gpar(fill = 1:6), title = "legend1")
 # lgd2 = Legend(col_fun = col_fun, title = "legend2", at = c(0, 0.25, 0.5, 0.75, 1))
 # pd = packLegend(lgd1, lgd2)
@@ -977,7 +998,7 @@ valid_just = function(just) {
 # == example
 # lgd = Legend(at = 1:4, title = "foo")
 # draw(lgd, x = unit(0, "npc"), y = unit(0, "npc"), just = c("left", "bottom"))
-setMethod("draw",
+setMethod(f = "draw",
 	signature = "Legends",
 	definition = function(object, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre", test = FALSE) {
 	
@@ -1002,40 +1023,6 @@ setMethod("draw",
 })
 
 # == title
-# Width of the Legends
-#
-# == param
-# -object The `grid::grob` object returned by `Legend` or `packLegend`.
-#
-# == value
-# The returned unit object is in ``mm``.
-#
-# == seealso
-# `height,Legends-method` gives the height of the legend object.
-setMethod("width",
-	signature = "Legends",
-	definition = function(object) {
-	attr(object@grob, "width")
-})
-
-# == title
-# Height of the Legends
-#
-# == param
-# -object The `grid::grob` object returned by `Legend` or `packLegend`.
-#
-# == value
-# The returned unit object is in ``mm``.
-#
-# == seealso
-# `width,Legends-method` gives the width of the legend object.
-setMethod("height",
-	signature = "Legends",
-	definition = function(object) {
-	attr(object@grob, "height")
-})
-
-# == title
 # Draw the Legends
 #
 # == param
@@ -1043,8 +1030,8 @@ setMethod("height",
 # -recording Pass to `grid::grid.draw`.
 #
 # == details
-# This function is actually an S3 method of the ``Legends`` class for the `grid::grid.draw()`
-# general method. It applies `grid::draw()` on the ``grob`` slot of the object.
+# This function is actually an S3 method of the ``Legends`` class for the `grid::grid.draw`
+# general method. It applies `grid::grid.draw` on the ``grob`` slot of the object.
 grid.draw.Legends = function(x, recording = TRUE) {
 	grid.draw(x@grob, recording =  recording)
 }

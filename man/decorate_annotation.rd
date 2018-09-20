@@ -7,7 +7,7 @@ Decorate the heatmap annotation
 Decorate the heatmap annotation
 }
 \usage{
-decorate_annotation(annotation, code, slice, envir = new.env(parent = parent.frame()))
+decorate_annotation(annotation, code, slice = 1, envir = new.env(parent = parent.frame()))
 }
 \arguments{
 

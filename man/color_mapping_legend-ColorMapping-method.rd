@@ -1,87 +1,72 @@
 \name{color_mapping_legend-ColorMapping-method}
 \alias{color_mapping_legend,ColorMapping-method}
-\alias{color_mapping_legend}
 \title{
-Draw legend based on color mapping
+Draw Legend Based on Color Mapping
 }
 \description{
-Draw legend based on color mapping
+Draw Legend Based on Color Mapping
 }
 \usage{
-\S4method{color_mapping_legend}{ColorMapping}(object, ...,
-    plot = TRUE,
+\S4method{color_mapping_legend}{ColorMapping}(object,
+    plot = TRUE, ...,
+    
+    color_bar = object@type,
+    
     title = object@name,
     title_gp = gpar(fontsize = 10, fontface = "bold"),
-    title_position = c("topleft", "topcenter", "leftcenter", "lefttop"),
-    color_bar = object@type,
+    title_position = "topleft",
     grid_height = unit(4, "mm"),
     grid_width = unit(4, "mm"),
     border = NULL,
     at = object@levels,
     labels = at,
     labels_gp = gpar(fontsize = 10),
+    labels_rot = 0,
     nrow = NULL,
     ncol = 1,
     by_row = FALSE,
-    legend_height = NULL, legend_width = NULL,
+    legend_height = NULL,
+    legend_width = NULL,
     legend_direction = c("vertical", "horizontal"),
+    
     param = NULL)
 }
 \arguments{
 
-  \item{object}{a \code{\link{ColorMapping-class}} object.}
-  \item{plot}{whether to plot or just return the size of the legend viewport.}
-  \item{title}{title of the legend, by default it is the name of the legend}
-  \item{title_gp}{graphical parameters for legend title}
-  \item{title_position}{position of the title}
-  \item{color_bar}{a string of "continous" or "discrete". If the mapping is continuous, whether show the legend as discrete color bar or continuous color bar}
-  \item{grid_height}{height of each legend grid.}
-  \item{grid_width}{width of each legend grid.}
-  \item{border}{color for legend grid borders.}
-  \item{at}{break values of the legend}
-  \item{labels}{labels corresponding to break values}
-  \item{labels_gp}{graphcial parameters for legend labels}
-  \item{nrow}{if there are too many legend grids, they can be put as an array, this controls number of rows}
-  \item{ncol}{if there are too many legend grids, they can be put as an array, this controls number of columns}
-  \item{by_row}{when there are multiple columns for legends, whether to arrange them by rows.}
-  \item{legend_height}{height of the legend, only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{vertical}}
-  \item{legend_width}{width of the legend, only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{horizontal}}
-  \item{legend_direction}{when \code{color_bar} is \code{continuous}, should the legend be vertical or horizontal? When \code{color_bar} is \code{discrete}, should the items in the legend proceed vertically or horizontally?}
-  \item{param}{will be parsed if the parameters are specified as a list}
-  \item{...}{pass to \code{\link[grid]{viewport}}.}
+  \item{object}{A \code{\link{ColorMapping-class}} object.}
+  \item{plot}{Whether to plot or just return the legend object?}
+  \item{...}{Pass to \code{\link{draw,Legends-method}}.}
+  \item{color_bar}{"continous" or "discrete". It controls whether to show the discrete legend for the continuous color mapping.}
+  \item{title}{Title of the legend, by default it is the name of the legend.}
+  \item{title_gp}{Graphical parameters for legend title.}
+  \item{title_position}{Position of the title. See \code{\link{Legend}} for all possible values.}
+  \item{grid_height}{Height of each legend grid. Pass to \code{\link{Legend}}.}
+  \item{grid_width}{Width of each legend grid. Pass to \code{\link{Legend}}.}
+  \item{border}{Color for legend grid borders. Pass to \code{\link{Legend}}.}
+  \item{at}{Break values of the legend. By default it is the levels in the \code{\link{ColorMapping-class}} object.}
+  \item{labels}{Labels corresponding to break values.}
+  \item{labels_gp}{Graphcial parameters for legend labels.}
+  \item{labels_rot}{Rotation of labels.}
+  \item{nrow}{Pass to \code{\link{Legend}}. It controls the layout of legend grids if they are arranged in multiple rows or columns.}
+  \item{ncol}{Pass to \code{\link{Legend}}. It controls the layout of legend grids if they are arranged in multiple rows or columns.}
+  \item{by_row}{Pass to \code{\link{Legend}}. It controls the order of legend grids if they are arranged in multiple rows or columns.}
+  \item{legend_height}{Height of the legend body. It only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{vertical}. Pass to \code{\link{Legend}}.}
+  \item{legend_width}{Width of the legend body. It only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{horizontal}. Pass to \code{\link{Legend}}.}
+  \item{legend_direction}{When \code{color_bar} is \code{continuous}, whether the legend is vertical or horizontal? Pass to \code{\link{Legend}}.}
+  \item{param}{All the legend-related parameters can be specified as a single list.}
 
 }
 \details{
-A viewport is created which contains a legend title, legend grids and corresponding labels.
-
-This function will be improved in the future to support more types of legends.
+The legend is constructed by \code{\link{Legend}}.
 }
 \value{
-A \code{\link[grid]{grob}} object which contains the legend
+A \code{\link{Legends-class}} object.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{color_mapping_legend}
 \examples{
-# discrete color mapping for characters
-cm = ColorMapping(name = "test",
-    colors = c("blue", "white", "red"),
-    levels = c("a", "b", "c"))
-grid.newpage()
-color_mapping_legend(cm)
-
-# discrete color mapping for numeric values
-cm = ColorMapping(name = "test",
-    colors = c("blue", "white", "red"),
-    levels = c(1, 2, 3))
-grid.newpage()
-color_mapping_legend(cm)
-
-# continuous color mapping
-require(circlize)
-cm = ColorMapping(name = "test",
-    col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")))
-grid.newpage()
-color_mapping_legend(cm, title_gp = gpar(fontsize = 16))
-
+# There is no example
+NULL
 }

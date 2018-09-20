@@ -1,33 +1,36 @@
 \name{set_component_height-Heatmap-method}
 \alias{set_component_height,Heatmap-method}
-\alias{set_component_height}
 \title{
-Set height of each heatmap component
+Set Height of Heatmap Component
 }
 \description{
-Set height of each heatmap component
+Set Height of Heatmap Component
 }
 \usage{
 \S4method{set_component_height}{Heatmap}(object, k, v)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object.}
-  \item{k}{which components, see \code{\link{Heatmap-class}}.}
-  \item{v}{height of the component, a \code{\link[grid]{unit}} object.}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
+  \item{k}{Which column component? The value should a numeric index or the name of the corresponding column component. See **Detials**.}
+  \item{v}{Height of the component, a \code{\link[grid]{unit}} object.}
 
 }
 \details{
+All column components are: \code{column_title_top}, \code{column_dend_top}, \code{column_names_top}, 
+\code{column_anno_top}, \code{heatmap_body}, \code{column_anno_bottom}, \code{column_names_bottom}, 
+\code{column_dend_bottom}, \code{column_title_bottom}.
+
 This function is only for internal use.
 }
 \value{
-This function returns no value.
+The \code{\link{Heatmap-class}} object.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{set_component_height}
 \examples{
-# no example for this internal method
+# There is no example
 NULL
-
 }

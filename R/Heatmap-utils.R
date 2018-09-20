@@ -42,6 +42,12 @@ subset_heatmap_by_row = function(ht, ind) {
         ht@row_names_param$labels = ht@row_names_param$labels[ind]
     }
     ht@row_names_param$gp = subset_gp(ht@row_names_param$gp, ind)
+    if(length(ht@left_annotation)) {
+        ht@left_annotation = ht@left_annotation[ind]
+    }
+    if(length(ht@right_annotation)) {
+        ht@right_annotation = ht@right_annotation[ind]
+    }
     return(ht)
 }
 
@@ -55,10 +61,10 @@ subset_heatmap_by_column = function(ht, ind) {
         ht@column_names_param$labels = ht@column_names_param$labels[ind]
     }
     ht@column_names_param$gp = subset_gp(ht@column_names_param$gp, ind)
-    if(length(ht@top_annotation@anno_list)) {
+    if(length(ht@top_annotation)) {
         ht@top_annotation = ht@top_annotation[ind]
     }
-    if(length(ht@bottom_annotation@anno_list)) {
+    if(length(ht@bottom_annotation)) {
         ht@bottom_annotation = ht@bottom_annotation[ind]
     }
     return(ht)

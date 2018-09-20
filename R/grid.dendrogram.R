@@ -17,7 +17,7 @@ subset_dendrogram = function(x, ind) {
 #
 # == param
 # -dend A `dendrogram` object
-# -leaf_pos A vector of positions of leaves. The value can also be a `grid.unit` object.
+# -leaf_pos A vector of positions of leaves. The value can also be a `grid::unit` object.
 #
 # == detail
 # The positions of nodes stored as ``x`` attribute are recalculated based on the new positions of leaves.
@@ -264,7 +264,7 @@ dendrogramGrob = function(dend, facing = c("bottom", "top", "left", "right"),
 #
 # grid.dendrogram(dend, test = TRUE)
 #
-# require(dendextend2)
+# require(dendextend)
 # dend = color_branches(dend, k = 2)
 # dend = adjust_dend_by_x(dend, unit(sort(runif(10)*10), "cm"))
 # grid.dendrogram(dend, test = TRUE)
@@ -303,9 +303,9 @@ grid.dendrogram = function(dend, ..., test = FALSE) {
 # Merge Dendrograms
 # 
 # == param
-# -parent The parent dendrogram.
-# -children The children dendrograms. They are connected to the leaves of the parent dendrogram.
-#           So the length of ``children`` should be as same as the number of leaves of the parent dendrogram.
+# -x The parent dendrogram.
+# -y The children dendrograms. They are connected to the leaves of the parent dendrogram.
+#           So the length of ``y`` should be as same as the number of leaves of the parent dendrogram.
 # -only_parent Whether only returns the parent dendrogram where the height and node positions have
 #              been adjusted by children dendrograms.
 # -... Other arguments.
@@ -334,7 +334,9 @@ grid.dendrogram = function(dend, ..., test = FALSE) {
 # dend_p = color_branches(dend_p, k = 1, col = "orange")
 # dend_m = merge(dend_p, list(dend1, dend2, dend3))
 # grid.dendrogram(dend_m, test = TRUE)
-merge.dendrogram = function(parent, children, only_parent = FALSE, ...) {
+merge.dendrogram = function(x, y, only_parent = FALSE, ...) {
+    parent = x
+    children = y
 
     n = nobs(parent)
     if(n != length(children)) {
@@ -478,6 +480,12 @@ dend_branches_heights = function(d, v = NULL) {
 }
 
 
+# == title
+# Height of dendrograms
+#
+# == param
+# -x a `dendrogram` object and a list of `dendrogram` objects.
+#
 dend_heights = function(x) {
     if(is.null(x)) return(0)
 
@@ -527,7 +535,7 @@ dend_xy = function(dend) {
         x = unlist(x)
     }
     return(list(x = x,
-                y = c(0, dend_heights(dend1))))
+                y = c(0, dend_heights(dend))))
 }
 
 

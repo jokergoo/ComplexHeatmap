@@ -21,12 +21,7 @@ they can pass parameters directly to \code{\link{draw,HeatmapList-method}}.
 \value{
 This function returns no value.
 }
-\author{
-Zuguang Gu <z.gu@dkfz.de>
-
-}
 \examples{
 # There is no example
 NULL
-
 }

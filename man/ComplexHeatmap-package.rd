@@ -25,15 +25,15 @@ There are also several internal classes:
 \itemize{
   \item \code{\link{SingleAnnotation-class}}: a single row annotation or column annotation.
   \item \code{\link{ColorMapping-class}}: mapping from values to colors.
+  \item \code{\link{AnnotationFunction-class}}: construct an annotation function which allows subsetting.
 }
 
 For plotting one single heatmap, please go to the documentation page of \code{\link{Heatmap}}.
-For plotting multiple heatmaps, please go to \code{\link{HeatmapList-class}} and \code{+.AdditiveUnit}.
+For plotting multiple heatmaps, please go to \code{\link{HeatmapList-class}}, \code{+.AdditiveUnit} and \code{\%v\%.AdditiveUnit}.
 
 The vignette provides detailed explanation of how to use this package.
 }
 \examples{
 # There is no example
 NULL
-
 }

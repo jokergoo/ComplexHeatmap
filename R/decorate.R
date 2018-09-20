@@ -2,13 +2,15 @@
 # Decorate the heatmap body
 #
 # == param
-# -heatmap name of the heatmap which is set as ``name`` option in `Heatmap` function
+# -heatmap name of the heatmap which is set as ``name`` argument in `Heatmap` function
 # -code code that adds graphics in the selected heatmap body
-# -slice index of row slices in the heatmap if it is split by rows
+# -slice index of row slices in the heatmap
+# -row_slice index of row slices in the heatmap
+# -column_slice index of column slices in the heatmap
 # -envir where to look for variables inside ``code``
 #
 # == details
-# There is a viewport for each row slice in each heatmap.
+# There is a viewport for each row slice and each column slice in each heatmap.
 # This function contructs the name of the viewport,
 # goes to the viewport by `grid::seekViewport` and applies code
 # to that viewport.
@@ -51,14 +53,8 @@ decorate_heatmap_body = function(heatmap, code,
 		current_vp = "global"
 	}
 	
-	if(is.null(slice)) {
-		vp_name = paste0(heatmap, "_heatmap_body_", 1)
-		seekViewport(vp_name)
-		upViewport()
-	} else {
-		vp_name = paste0(heatmap, "_heatmap_body_", row_slice, "_", column_slice)
-		seekViewport(vp_name)
-	}
+	vp_name = paste0(heatmap, "_heatmap_body_", row_slice, "_", column_slice)
+	seekViewport(vp_name)
 
 	eval(substitute(code), envir = envir)
 
@@ -71,7 +67,7 @@ decorate_heatmap_body = function(heatmap, code,
 # == param
 # -heatmap name of the heatmap
 # -code code that adds graphics in the selected heatmap body
-# -slice index of row slices in the heatmap
+# -slice index of row slice or column slice in the heatmap
 # -which on rows or on columns?
 # -envir where to look for variables inside ``code``
 #
@@ -111,19 +107,7 @@ decorate_dend = function(heatmap, code, slice = 1, which = c("column", "row"),
 	}
 
 	which = match.arg(which)[1]
-	if(which == "column") {
-		vp_name = paste0(heatmap, "_dend_", which)
-	} else if(which == "row") {
-		if(is.null(slice)) {
-			vp_name = paste0(heatmap, "_dend_", which, "_", 1)
-			seekViewport(vp_name)
-			upViewport()
-		} else {
-			vp_name = paste0(heatmap, "_dend_", which, "_", slice)
-			seekViewport(vp_name)
-		}
-	}
-
+	vp_name = paste0(heatmap, "_dend_", which, "_", slice)	
 	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
 	eval(substitute(code), envir = e)
@@ -186,7 +170,7 @@ decorate_row_dend = function(..., envir = new.env(parent = parent.frame())) {
 # == param
 # -heatmap name of the heatmap
 # -code code that adds graphics in the selected heatmap body
-# -slice index of row slices in the heatmap
+# -slice index of row slice or column slice in the heatmap
 # -which on rows or on columns?
 # -envir where to look for variables inside ``code``
 #
@@ -230,19 +214,7 @@ decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"
 	}
 
 	which = match.arg(which)[1]
-	if(which == "column") {
-		vp_name = paste0(heatmap, "_", which, "_names")
-	} else if(which == "row") {
-		if(is.null(slice)) {
-			vp_name = paste0(heatmap, "_", which, "_names_", 1)
-			seekViewport(vp_name)
-			upViewport()
-		} else {
-			vp_name = paste0(heatmap, "_", which, "_names_", slice)
-			seekViewport(vp_name)
-		}
-	}
-
+	vp_name = paste0(heatmap, "_", which, "_names_", slice)
 	seekViewport(vp_name)
 	eval(substitute(code), envir = envir)
 	seekViewport(current_vp)
@@ -303,7 +275,7 @@ decorate_column_names = function(..., envir = new.env(parent = parent.frame())) 
 # == param
 # -heatmap name of the heatmap
 # -code code that adds graphics in the selected heatmap body
-# -slice index of row slices in the heatmap
+# -slice index of row slice or column slice in the heatmap
 # -which on rows or on columns?
 # -envir where to look for variables inside ``code``
 #
@@ -335,19 +307,7 @@ decorate_title = function(heatmap, code, slice = 1, which = c("column", "row"),
 	}
 
 	which = match.arg(which)[1]
-	if(which == "column") {
-		vp_name = paste0(heatmap, "_", which, "_title")
-	} else if(which == "row") {
-		if(is.null(slice)) {
-			vp_name = paste0(heatmap, "_", which, "_title_", 1)
-			seekViewport(vp_name)
-			upViewport()
-		} else {
-			vp_name = paste0(heatmap, "_", which, "_title_", slice)
-			seekViewport(vp_name)
-		}
-	}
-
+	vp_name = paste0(heatmap, "_", which, "_title_", slice)
 	seekViewport(vp_name)
 	eval(substitute(code), envir = envir)
 	seekViewport(current_vp)
@@ -436,36 +396,15 @@ decorate_column_title = function(..., envir = new.env(parent = parent.frame())) 
 #     grid.rect(gp = gpar(fill = "#FF000080"))
 # }, slice = 2)
 #
-decorate_annotation = function(annotation, code, slice, envir = new.env(parent = parent.frame())) {
+decorate_annotation = function(annotation, code, slice = 1, envir = new.env(parent = parent.frame())) {
 
 	current_vp = current.viewport()$name
 	if(current_vp == "ROOT") {
 		current_vp = "global"
 	}
 	
-	if(missing(slice)) {
-		vp_name = paste0("annotation_", annotation)
-		o = try(seekViewport(vp_name), silent = TRUE)
-		if(inherits(o, "try-error")) {
-			vp_name2 = paste0("annotation_", annotation, "_", 1)
-			o = try(seekViewport(vp_name2), silent = TRUE)
-			if(inherits(o, "try-error")) {
-				stop(paste0("Cannot find viewport ", vp_name, " or ", vp_name2, "\n"))
-			}
-			vp_name = vp_name2
-		}
-		seekViewport(vp_name)
-	} else {
-		if(is.null(slice)) {
-			vp_name = paste0("annotation_", annotation, "_", 1)
-			seekViewport(vp_name)
-			upViewport()
-		} else {
-			vp_name = paste0("annotation_", annotation, "_", slice)
-			seekViewport(vp_name)
-		}
-	}
-
+	vp_name = paste0("annotation_", annotation, "_", slice)
+	seekViewport(vp_name)
 	eval(substitute(code), envir = envir)
 	seekViewport(current_vp)
 }
