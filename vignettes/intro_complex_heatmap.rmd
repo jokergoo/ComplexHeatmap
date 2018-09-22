@@ -12,6 +12,10 @@ Common use of ComplexHeatmap package
 
 -------------------------------------------------------------
 
+In this vignette we only show the most used cases of the ComplexHeatmap package.
+ComplexHeatmap package is highly flexible and users can find the complete reference
+in []().
+
 ```{r global_settings, echo = FALSE, message = FALSE}
 library(markdown)
 options(markdown.HTML.options = c(options('markdown.HTML.options')[[1]], "toc"))
@@ -26,16 +30,121 @@ knitr::opts_chunk$set(
 options(markdown.HTML.stylesheet = "custom.css")
 
 options(width = 100)
+
+library(circlize)
+library(ComplexHeatmap)
 ```
+
+First we load the circlize package and ComplexHeatmap package. The circlize
+package is used very often with ComplexHeatmap for generating color mapping
+functions.
 
 ```{r}
 library(circlize)
 library(ComplexHeatmap)
-
-source("generate_random_dataset.R")
 ```
 
-# A Single Heatmap with annotations
+In the vignette, we demonstrate ComplexHeatmap package with a randomly
+generated DNA methylation data and gene expression data.
+
+```{r}
+load(system.file("extdata", "random_meth_expr_data.RData", package = "ComplexHeatmap"))
+```
+
+The data variables are:
+
+- `mat_meth`: The methylation matrix for 1000 DMRs in 20 samples. The value in
+  the matrix is the mean methylation of all CpGs in a DMR.
+- `mat_expr`: The gene expression matrix. The $i^th$ row is the gene having
+  the closest TSS to the $i^th$ DMR in `mat_meth`. The samples are the same as in `mat_meth`.
+
+The annotation variables for samples are:
+
+- `anno`: The annotation data frame. There are five annotations:
+    - `type`: Whether the sample is a tumor sample or a control sample.
+    - `gender`: Whether the patient is a male or female. There are two `NA`
+      values in it.
+    - `age`: Age of the patient. It is a numeric annotation.
+    - `mut1` and `mut2`: Whether the sample has mutation for the two genes.
+      The value is logical.
+- `anno_col`: The color of annotations in `anno`.
+
+```{r}
+anno
+anno_col
+```
+
+The annotation variables for DMRs or the associated genes are:
+
+- `direction`: The direction of methylation, i.e. whether the DMR is
+  hyper-methylated in tumor?
+- `cor_pvalue`: The p-value for the correlation test between DMR methylation
+  and gene expression.
+- `gene_type`: Gene types, e.g. protein-coding gene, or lincRNA.
+- `tss_dist`: The distance from DMR to the nearest TSS.
+- `anno_gene`: Annotation to genes, e.g. TSS, intragenic, intergenic.
+- `anno_states`: The value is how much percent in a DMR is covered by a
+  certain chromatin states. There are three different chromatin states in this
+  data frame: active TSS state, enhancer state and repressive state.
+
+You may find we didn't set the colors for the annotations of DMRs or genes, we
+will demonstrate how random colors are assigned to them if the colors are not
+set.
+
+In real case, this set of data types is very common for many epigenomic
+researches, which always have data of DNA methylation, gene expression and
+histone modifications, or some of them. We will show here how ComplexHeatmap
+package easily helps the integrative analysis of multiple datasets to find the
+associations hiding behind it.
+
+## A Single Heatmap with annotations
+
+A single heatmap is the most used way to visualize matrix-like data.
+
+Drawing a heatmap is straightforward. The only mandatory argument is the
+matrix. However, a heatmap can have different components: names or labels by
+the heatmap, the dendrograms, the annotations for rows or columns and the
+title of the heatmap. All these components can be added by `Heatmap()`
+function. The `Heatmap()` function has huge number of arguments which give
+exact control of the heatmap components and users can refer to ...
+
+In following example, we added column and row dendrogram, column annotations
+and column names. The dendrograms and row/columns names are natural to add. If
+the matrix has row names or column names, they are added to the heatmap by
+default, and clustering is turned on, dendrograms are also added to the
+heatmap.
+
+Annotations are a little bit complex to configure. Because the aim of ComplexHeatmap
+package is to provide a flexible way to control many types of annotations, the package
+has a `HeatmapAnnotation()` function to properly construct heatmap annotations.
+
+In following, apart from `col` and `annotation_legend_param`, all other
+arguments specify single annotations and they are combined as a global heatmap
+annotation. The simplest annotation is heatmap-like annotation for which you
+only to specify it as a numeric or character vector (e.g. the `type` and
+`gender` annotation). The heatmap-like annotation can also be a matrix (e.g.
+`mutation` annotation) that the annotation will be represented as a multi-row
+or multi-column annotation and they share one color mapping schema. Moreover,
+the annotation can be so-called "complex annotations" that it is defined by a
+annotation function. A annotation function is defined by users and basically
+users can draw whatever they want. 	
+
+In ComplexHeatmap package, there are already several pre-defined annotation functions.
+In following, `anno_points()` generates an annotation function given the data and the 
+settings (check the returned value of `anno_points(1:10)`).
+
+Colors for the legends are controlled by `col`. `col` can only control colors for
+"simple annotations" which are specified by a vector or a matrix. The value of `col`
+should be a named list where the name in `col` should correspond to the names of
+the annotations (e.g. `mutation` in following example) because that is the way to
+connect `col` to individual annotations. The discrete annotations (e.g. in character)
+have the color as a named vector and the continous annotations have color as a 
+color mapping function which is generated by `circlize::colorRmap2()`. You can check
+the value of `anno_col` for example.
+
+In following code, we also customized the legend for the mutation annotation because
+the labels or the levels in `mutation` is `TRUE` and `FALSE` and we change to `has mutation`
+and `no mutation`.
 
 ```{r}
 Heatmap(mat_meth, name = "methylation",
@@ -44,72 +153,211 @@ Heatmap(mat_meth, name = "methylation",
 		gender = anno$gender,
 		age = anno_points(anno$age, ylim = c(0, 80)),
 		mutation = as.matrix(anno[, c("mut1", "mut2")]),
-		col = anno_col
-	), column_title = "Differential Methylated Regions")
-```
-
-```{r}
-Heatmap(mat_meth, name = "methylation",
-	top_annotation = HeatmapAnnotation(
-		df = anno,
-		annotation_name_side = "left"
-	), column_title = "Differential Methylated Regions")
-```
-
-```{r}
-Heatmap(mat_meth, name = "methylation",
-	top_annotation = HeatmapAnnotation(
-		df = anno,
 		col = anno_col,
+		border = c(mutation = TRUE),
+		annotation_legend_param = list(
+			mutation = list(
+				at = c("TRUE", "FALSE"),
+				labels = c("has mutation", "no mutation")
+		))
+	), column_title = "Differential Methylated Regions")
+```
+
+As you may notice, the legends are arranged into two columns. The reason for
+doing this is we always assume the matrix itself gives the major information,
+especially when you have several heatmaps add horizontally, while the column
+annotations give the secondary information. However, if you want to merge the
+heatmap legends and annotaiton legends, you need to explicitly draw the
+heatmap by `draw()` function and specify `merge_legends = TRUE`.
+
+Also, as mentioned before, the heatmap has components on the four sides. We
+can set the title to the left of the heatmap by setting `row_title` and we put
+the annotation to the bottom of the heatmap by switching to
+`bottom_annotation`. we can also control the side of the annotation name to
+the left by setting the `annotation_name_side` argument in
+`HeatmapAnnotation()`.
+
+```{r}
+ht = Heatmap(mat_meth, name = "methylation",
+	bottom_annotation = HeatmapAnnotation(
+		df = anno,
 		annotation_name_side = "left"
+	), row_title = "Differential Methylated Regions")
+draw(ht, merge_legends = TRUE)
+```
+
+We can also set the left and right annotation which is similar as top and
+bottom annotation. The main difference is you need to use `rowAnnotation()`
+or `HeatmapAnntation(..., which = "row")` to construct the row annotations.
+the `anno_*()` functions, if you specify them inside `rowAnnotation()`, you
+don't need to ...
+
+```{r}
+Heatmap(mat_meth, name = "methylation",
+	top_annotation = HeatmapAnnotation(
+		type = anno$type,
+		gender = anno$gender,
+		age = anno_points(anno$age, ylim = c(0, 80)),
+		col = anno_col
 	), 
 	right_annotation = rowAnnotation(
 		anno_gene = anno_gene,
-		tss_dist = anno_points(tss_dist),
-		col = list(anno_gene = anno_gene_col)
+		tss_dist = anno_points(tss_dist, size = unit(0.5, "mm"), 
+			width = unit(2, "cm"))
 	),
 	column_title = "Differential Methylated Regions")
 ```
 
+ComplexHeatmap package supports to split heatmaps by rows or/and by columns.
+The split can be applied by k-means clustering, by cutting the dendrograms,
+or by a categorical data frame. In following example, we simply split the
+heatmap into 2 groups horizontally and 4 groups vertically.
 
-```{r}
-Heatmap(mat_meth, name = "methylation",
-	top_annotation = HeatmapAnnotation(
-		type = anno$type,
-		gender = anno$gender,
-		age = anno_points(anno$age, ylim = c(0, 80)),
-		mutation = as.matrix(anno[, c("mut1", "mut2")]),
-		col = anno_col
-	), 
+```{r, fig.width = 8}
+ht = Heatmap(mat_meth, name = "methylation",
 	right_annotation = rowAnnotation(
+		direction = direction,
+		pvalue = -log10(cor_pvalue),
 		anno_gene = anno_gene,
-		tss_dist = anno_points(tss_dist),
-		col = list(anno_gene = anno_gene_col)
+		gene_type = gene_type,
+		tss_dist = anno_points(tss_dist, size = unit(0.5, "mm"), 
+			width = unit(2, "cm")),
+		states = as.matrix(anno_states),
+		col = list(
+			pvalue = colorRamp2(c(0, 2, 4), c("green", "white", "red")),
+			states = colorRamp2(c(0, 1), c("white", "orange"))),
+		annotation_legend_param = list(
+			pvalue = list(at = c(0, 2, 4), labels = c("1", "0.01", "0.0001")))
 	),
 	show_column_names = FALSE,
 	column_title = "Differential Methylated Regions",
 	column_km = 2, row_km = 4)
+draw(ht)
 ```
 
+When k-means splitting and data frame splitting are both provided, they are combined.
+
+```{r, fig.width = 8}
+draw(ht, row_km = 2, row_split = direction)
+```
 
 ## Heatmap List
+
+One unique advantage of ComplexHeatmap is it supports adding a list of heatmaps and annotations.
+"+" operator is for horizontal add.
+
 
 ```{r}
 meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
 expr_col_fun = colorRamp2(c(-2, 0, 2), c("green", "white", "red"))
-ht_list = Heatmap(mat_meth, name = "methylation", col = meth_col_fun) + 
-	Heatmap(mat_expr, name = "epxression", col = expr_col_fun)
+ht_list = Heatmap(mat_meth, name = "methylation", col = meth_col_fun,
+		column_title = "Methylation") + 
+	Heatmap(mat_expr, name = "epxression", col = expr_col_fun,
+		column_title = "Expression")
 draw(ht_list, row_km = 4)
 ```
 
+As memtioned, row anntations can be attached to the heatmap by `left_annotation` or
+by `right_annotation`. Actually they can also be separated and add to the heatmaps.
+so `Heatmap(..., left_annotation = rowAnnotation(...))` is similar as `Heatmap(...) + rowAnnotation(...)`.
 
 ```{r}
-ht_list = Heatmap(mat_meth[1:40, ], name = "methylation", col = meth_col_fun) %v%
-	Heatmap(mat_expr[1:40, ], name = "epxression", col = expr_col_fun)
+ht_list = Heatmap(mat_meth, name = "methylation", col = meth_col_fun,
+		column_title = "Methylation") + 
+	Heatmap(mat_expr, name = "epxression", col = expr_col_fun,
+		column_title = "Expression") +
+	rowAnnotation(anno_gene = anno_gene,
+		tss_dist = anno_points(tss_dist, size = unit(0.5, "mm"), 
+			width = unit(2, "cm"))
+	)
+draw(ht_list, row_km = 4)
+```
+
+ComplexHeatmap also supports add heatmap vertically, you just need to change the add operator
+to `%v%`. 
+
+```{r}
+ht_list = Heatmap(mat_meth[1:40, ], name = "methylation", col = meth_col_fun,
+		row_km = 2, row_title = "Methylation", show_column_names = FALSE) %v%
+	Heatmap(mat_expr[1:40, ], name = "epxression", col = expr_col_fun,
+		row_km = 2, row_title = "Expression")
 draw(ht_list, column_km = 2)
+```
+
+And similar, column annotations can be separated from teh heatmap and add to the list.
+
+```{r}
+ht_list = Heatmap(mat_meth[1:40, ], name = "methylation", col = meth_col_fun,
+		row_km = 2, row_title = "Methylation", show_column_names = FALSE) %v%
+	columnAnnotation(
+		type = anno$type,
+		gender = anno$gender,
+		age = anno_points(anno$age, ylim = c(0, 80)),
+		mutation = as.matrix(anno[, c("mut1", "mut2")]),
+		col = anno_col,
+		annotation_name_side = "left"
+	) %v%
+	Heatmap(mat_expr[1:40, ], name = "epxression", col = expr_col_fun,
+		row_km = 2, row_title = "Expression")
+draw(ht_list, column_km = 2)
+```
+
+## Density as a heatmap
+
+```{r}
+densityHeatmap(mat_meth[1:40, ], ylab = "methylation values", 
+	title = "Methylation distribution in samples")
+```
+
+```{r, fig.height = 10}
+densityHeatmap(mat_meth[1:40, ], ylab = "methylation values", 
+	show_column_names = FALSE,
+	title = "Methylation distribution in samples",
+	top_annotation = HeatmapAnnotation(type = anno$type, col = anno_col)) %v%
+columnAnnotation(
+	gender = anno$gender,
+	age = anno_points(anno$age, ylim = c(0, 80)),
+	col = anno_col
+) %v%
+Heatmap(mat_expr[1:40, ], name = "epxression", col = expr_col_fun,
+		row_km = 2, row_title = "Expression", heatmap_body_height = unit(6, "cm"))
 ```
 
 ## OncoPrint
 
-## Density as a heatmap
+```{r, fig.width = 10}
+mat = readRDS(system.file("extdata", "tcga_lung_adenocarcinoma_provisional_ras_raf_mek_jnk_signalling.rds",
+	package = "ComplexHeatmap"))
+alter_fun = list(
+    background = function(x, y, w, h) {
+        grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "#CCCCCC", col = NA))
+    },
+    HOMDEL = function(x, y, w, h) {
+        grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "blue", col = NA))
+    },
+    AMP = function(x, y, w, h) {
+        grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "red", col = NA))
+    },
+    MUT = function(x, y, w, h) {
+        grid.rect(x, y, w-unit(0.5, "mm"), h*0.33, gp = gpar(fill = "#008000", col = NA))
+    }
+)
+col = c("MUT" = "#008000", "AMP" = "red", "HOMDEL" = "blue")
+oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+    alter_fun = alter_fun, col = col, 
+    remove_empty_columns = TRUE, remove_empty_rows = TRUE,
+    column_title = "OncoPrint for TCGA Lung Adenocarcinoma, genes in Ras Raf MEK JNK signalling",
+    heatmap_legend_param = list(title = "Alternations", at = c("AMP", "HOMDEL", "MUT"), 
+        labels = c("Amplification", "Deep deletion", "Mutation")))
+```
+
+
+
+## Stacked plot
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
 

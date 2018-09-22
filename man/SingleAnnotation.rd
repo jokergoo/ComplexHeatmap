@@ -12,6 +12,7 @@ SingleAnnotation(name, value, col, fun,
     which = c("column", "row"),
     show_legend = TRUE,
     gp = gpar(col = NA),
+    border = FALSE,
     legend_param = list(),
     show_name = TRUE,
     name_gp = gpar(fontsize = 12),
@@ -30,6 +31,7 @@ SingleAnnotation(name, value, col, fun,
   \item{which}{Whether the annotation is a row annotation or a column annotation?}
   \item{show_legend}{If it is a simple annotation, whether show legend in the final heatmap?}
   \item{gp}{Since simple annotation is represented as rows of grids. This argument controls graphic parameters for the simple annotation. The \code{fill} parameter is ignored here.}
+  \item{border}{border, only work for simple annotation}
   \item{legend_param}{Parameters for the legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for all possible options.}
   \item{show_name}{Whether show annotation name?}
   \item{name_gp}{Graphic parameters for annotation name.}

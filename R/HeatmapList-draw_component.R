@@ -181,6 +181,7 @@ setMethod(f = "adjust_heatmap_list",
             object@layout$max_top_component_height = max_top_component_height
             object@layout$row_anno_max_bottom_extended = row_anno_max_bottom_extended
             object@layout$max_bottom_component_height = max_bottom_component_height
+            object@layout$max_title_component_height = max_title_component_height
 
             ## left and right
             column_anno_max_left_extended = unit(0, "mm")
@@ -381,6 +382,7 @@ setMethod(f = "adjust_heatmap_list",
             object@layout$max_left_component_width = max_left_component_width
             object@layout$column_anno_max_right_extended = column_anno_max_right_extended
             object@layout$max_right_component_width = max_right_component_width
+            object@layout$max_title_component_width = max_title_component_width
 
             ## top and bottom
             row_anno_max_top_extended = unit(0, "mm")
@@ -452,11 +454,24 @@ setMethod(f = "draw_heatmap_list",
     n = length(object@ht_list)
     ht_gap = object@ht_list_param$ht_gap
 
+#     padding = unit(c(0, 0, 0, 0), "mm")
+
+#     if((has_heatmap_list_component(object, "heatmap_legend_right") || 
+#        has_heatmap_list_component(object, "annotation_legend_right")) &&
+#        !has_heatmap_list_component(object, "row_title_right")) {
+#         if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
+#             padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
+#         }
+#     }
+# browser()
+#     pushViewport(viewport(x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
+#         height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
+
     if(object@direction == "horizontal") {
 
         heatmap_width = object@layout$heatmap_width
-        max_bottom_component_height = object@layout$max_bottom_component_height
-        max_top_component_height = object@layout$max_top_component_height
+        max_bottom_component_height = object@layout$max_bottom_component_height + object@layout$max_title_component_height[2]
+        max_top_component_height = object@layout$max_top_component_height + object@layout$max_title_component_height[1]
 
         if(all(sapply(object@ht_list, function(ht) {
             if(inherits(ht, "Heatmap")) {
@@ -476,7 +491,7 @@ setMethod(f = "draw_heatmap_list",
         }
 
         pushViewport(viewport(name = "main_heatmap_list"))
-        
+
         i_main = object@ht_list_param$main_heatmap
         ht_main = object@ht_list[[i_main]]
         slice_y = ht_main@layout$slice$y
@@ -510,8 +525,8 @@ setMethod(f = "draw_heatmap_list",
         upViewport()
     } else {
         heatmap_height = object@layout$heatmap_height
-        max_left_component_width = object@layout$max_left_component_width
-        max_right_component_width = object@layout$max_right_component_width
+        max_left_component_width = object@layout$max_left_component_width + object@layout$max_title_component_width[1]
+        max_right_component_width = object@layout$max_right_component_width + object@layout$max_title_component_width[2]
 
         if(all(sapply(object@ht_list, function(ht) {
             if(inherits(ht, "Heatmap")) {
@@ -531,7 +546,7 @@ setMethod(f = "draw_heatmap_list",
         }
 
         pushViewport(viewport(name = "main_heatmap_list"))
-        
+
         i_main = object@ht_list_param$main_heatmap
         ht_main = object@ht_list[[i_main]]
         slice_x = ht_main@layout$slice$x
@@ -564,6 +579,7 @@ setMethod(f = "draw_heatmap_list",
 
         upViewport()
     }
+    # upViewport()
 
 })
 

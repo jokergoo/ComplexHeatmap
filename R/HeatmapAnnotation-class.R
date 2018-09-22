@@ -57,6 +57,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -height Height of the complete column annotations.
 # -width Width of the complete heatmap annotations.
 # -gp Graphic parameters for simple annotations (with ``fill`` parameter ignored).
+# -border border of single annotations.
 # -gap Gap between each two annotation. It can be a single value or a vector of `grid::unit` objects.
 # -show_annotation_name Whether show annotation names? For column annotation, annotation names are drawn either on the left
 #   or the right, and for row annotations, names are draw either on top to at bottom. The value can be a vector.
@@ -91,6 +92,7 @@ HeatmapAnnotation = function(...,
 	height = NULL,   # total height
 	width = NULL,    # total width
 	gp = gpar(col = NA),
+	border = FALSE,
 	gap = unit(0, "mm"),
 	show_annotation_name = TRUE,
 	annotation_name_gp = gpar(),
@@ -204,18 +206,13 @@ HeatmapAnnotation = function(...,
     is_name_rot_called = !missing(annotation_name_rot)
 
 	n_total_anno = length(anno_value_list)
-	if(length(show_annotation_name) == 1) {
-    	show_annotation_name = rep(show_annotation_name, n_total_anno)
-    }
-    if(length(annotation_name_offset) == 1) {
-    	annotation_name_offset = rep(annotation_name_offset, n_total_anno)
-    }
-    if(length(annotation_name_side) == 1) {
-    	annotation_name_side = rep(annotation_name_side, n_total_anno)
-    }
-    if(length(annotation_name_rot) == 1) {
-    	annotation_name_rot = rep(annotation_name_rot, n_total_anno)
-    }
+
+    an = names(anno_value_list)
+    show_annotation_name = recycle_param(show_annotation_name, an, TRUE)
+    annotation_name_offset = recycle_param(annotation_name_offset, an, TRUE)
+    annotation_name_side = recycle_param(annotation_name_side, an, TRUE)
+    annotation_name_rot = recycle_param(annotation_name_rot, an, TRUE)
+    border = recycle_param(border, an, FALSE)
     annotation_name_gp = recycle_gp(annotation_name_gp, n_total_anno)
 
     if(!missing(col)) {
@@ -265,7 +262,8 @@ HeatmapAnnotation = function(...,
 				name_gp = subset_gp(annotation_name_gp, i_anno), 
 	        	name_offset = annotation_name_offset[i_anno], 
 	        	name_side = annotation_name_side[i_anno], 
-	        	name_rot = annotation_name_rot[i_anno])
+	        	name_rot = annotation_name_rot[i_anno],
+	        	border = border[i_anno])
 		if(!is_name_offset_called) {
 			arg_list$name_rot = NULL
 		}
@@ -301,7 +299,7 @@ HeatmapAnnotation = function(...,
 		    }
 		    i_simple = i_simple + 1
 		} else {
-			stop("Annotations should be vector/data frame/matrix/functions.")
+			stop(paste0(ag, ": annotations should be vector/data frame (only `df`)/matrix/functions."))
 		} 
 		
 	}

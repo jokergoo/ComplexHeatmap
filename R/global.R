@@ -109,7 +109,7 @@ ht_opt = setGlobalOptions(
 			}
 		},
 		.length = 1),
-	show_vp_border = TRUE,
+	show_vp_border = FALSE,
 	anno_simple_row_size = unit(5, "mm")
 )
 

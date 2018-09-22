@@ -66,6 +66,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -show_legend If it is a simple annotation, whether show legend in the final heatmap?
 # -gp Since simple annotation is represented as rows of grids. This argument controls graphic parameters for the simple annotation.
 #     The ``fill`` parameter is ignored here.
+# -border border, only work for simple annotation
 # -legend_param Parameters for the legend. See `color_mapping_legend,ColorMapping-method` for all possible options.
 # -show_name Whether show annotation name?
 # -name_gp Graphic parameters for annotation name.
@@ -143,6 +144,7 @@ SingleAnnotation = function(name, value, col, fun,
 	which = c("column", "row"), 
 	show_legend = TRUE, 
 	gp = gpar(col = NA), 
+    border = FALSE,
 	legend_param = list(),
 	show_name = TRUE, 
 	name_gp = gpar(fontsize = 12),
@@ -453,7 +455,7 @@ SingleAnnotation = function(name, value, col, fun,
         value = value
 
         if(verbose) qqcat("@{name}: generate AnnotationFunction for simple annotation values by anno_simple()\n")
-        .Object@fun = anno_simple(value, col = color_mapping, which = which, na_col = na_col, gp = gp)
+        .Object@fun = anno_simple(value, col = color_mapping, which = which, na_col = na_col, gp = gp, border = border)
         if(missing(width)) {
             .Object@width = .Object@fun@width
         } else {

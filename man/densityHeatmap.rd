@@ -12,8 +12,6 @@ densityHeatmap(data,
     
     col = rev(brewer.pal(11, "Spectral")),
     color_space = "LAB",
-    top_annotation = NULL,
-    bottom_annotation = NULL,
     ylab = deparse(substitute(data)),
     column_title = paste0("Density heatmap of ", deparse(substitute(data))),
     title = column_title,
@@ -41,8 +39,6 @@ densityHeatmap(data,
   \item{density_param}{Parameters send to \code{\link[stats]{density}}, \code{na.rm} is enforced to be \code{TRUE}.}
   \item{col}{A vector of colors that density values are mapped to.}
   \item{color_space}{The color space in which colors are interpolated. Pass to \code{\link[circlize]{colorRamp2}}.}
-  \item{top_annotation}{A \code{\link{HeatmapAnnotation-class}} object which is put on top of the heatmap.}
-  \item{bottom_annotation}{A \code{\link{HeatmapAnnotation-class}} object which is put at bottom of the heatmap.}
   \item{ylab}{Label on y-axis.}
   \item{column_title}{Title of the heatmap.}
   \item{title}{Same as \code{column_title}.}

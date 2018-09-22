@@ -17,6 +17,7 @@ HeatmapAnnotation(...,
     height = NULL,   # total height
     width = NULL,    # total width
     gp = gpar(col = NA),
+    border = FALSE,
     gap = unit(0, "mm"),
     show_annotation_name = TRUE,
     annotation_name_gp = gpar(),
@@ -39,6 +40,7 @@ HeatmapAnnotation(...,
   \item{height}{Height of the complete column annotations.}
   \item{width}{Width of the complete heatmap annotations.}
   \item{gp}{Graphic parameters for simple annotations (with \code{fill} parameter ignored).}
+  \item{border}{border of single annotations.}
   \item{gap}{Gap between each two annotation. It can be a single value or a vector of \code{\link[grid]{unit}} objects.}
   \item{show_annotation_name}{Whether show annotation names? For column annotation, annotation names are drawn either on the left or the right, and for row annotations, names are draw either on top to at bottom. The value can be a vector.}
   \item{annotation_name_gp}{Graphic parameters for anntation names. Graphic paramters can be vectors.}

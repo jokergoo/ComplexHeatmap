@@ -7,8 +7,6 @@
 # -density_param Parameters send to `stats::density`, ``na.rm`` is enforced to be ``TRUE``.
 # -col A vector of colors that density values are mapped to.
 # -color_space The color space in which colors are interpolated. Pass to `circlize::colorRamp2`.
-# -top_annotation A `HeatmapAnnotation-class` object which is put on top of the heatmap.
-# -bottom_annotation A `HeatmapAnnotation-class` object which is put at bottom of the heatmap.
 # -ylab Label on y-axis.
 # -column_title Title of the heatmap.
 # -title Same as ``column_title``.
@@ -58,8 +56,6 @@ densityHeatmap = function(data,
 	
 	col = rev(brewer.pal(11, "Spectral")),
 	color_space = "LAB", 
-	top_annotation = NULL, 
-	bottom_annotation = NULL,
 	ylab = deparse(substitute(data)),
 	column_title = paste0("Density heatmap of ", deparse(substitute(data))),
 	title = column_title,

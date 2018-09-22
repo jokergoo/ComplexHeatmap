@@ -474,3 +474,31 @@ normalize_graphic_param_to_mat = function(x, nc, nr, name) {
         }
     }
 }
+
+recycle_param = function(x, all_names, default) {
+    n = length(all_names)
+    if(length(x) == n) {
+        return(x)
+    } else {
+        nm = names(x)
+        if(length(intersect(nm, all_names)) == 0) {
+            nm = NULL
+        }
+        if(is.null(nm)) {
+            if(length(x) == 1) {
+                x = rep(x, n)
+            } else {
+                if(length(x) > n) {
+                    x = x[1:n]
+                } else {
+                    x = c(x, rep(default, n - length(x)))
+                }
+            }
+        } else {
+            x2 = structure(rep(default, n), names = all_names)
+            x2[intersect(nm, all_names)] = x[intersect(nm, all_names)]
+            x = x2
+        }
+        return(x)
+    }
+}

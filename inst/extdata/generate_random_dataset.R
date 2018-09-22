@@ -11,7 +11,7 @@ anno = data.frame(type = type, gender = gender, age = age, mutation, stringsAsFa
 
 anno_col = list(type = c("Tumor" = "red", "Control" = "blue"),
     gender = c("F" = "pink", "M" = "darkgreen"),
-    mutation = c("TRUE" = "black", "FALSE" = "white"))
+    mutation = c("TRUE" = "black", "FALSE" = "#EEEEEE"))
 
 ######################################
 # generate methylation matrix
@@ -50,9 +50,9 @@ dimnames(mat_expr) = dimnames(mat_meth)
 
 #############################################################
 # matrix for correlation between methylation and expression
-cor_pvalue = -log10(sapply(seq_len(nrow(mat_meth)), function(i) {
+cor_pvalue = sapply(seq_len(nrow(mat_meth)), function(i) {
     cor.test(mat_meth[i, ], mat_expr[i, ])$p.value
-}))
+})
 
 #####################################################
 # matrix for types of genes
@@ -120,5 +120,7 @@ rand_repressive = function(m) {
 anno_states = data.frame(
     tss = sapply(mean_meth, rand_tss), 
     enhancer = sapply(mean_meth, rand_enhancer), 
-    rand_repressive = sapply(mean_meth, rand_repressive))
+    repressive = sapply(mean_meth, rand_repressive))
 
+save(mat_meth, mat_expr, anno, anno_col, anno_states, cor_pvalue, direction,
+    anno_gene, gene_type, tss_dist, file = "random_meth_expr_data.RData")

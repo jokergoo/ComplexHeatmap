@@ -505,7 +505,6 @@ setMethod(f = "draw",
         object@ht_list_param$padding = padding
     }
 
-
     layout = grid.layout(nrow = length(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT), 
         ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), 
         widths = component_width(object), 
