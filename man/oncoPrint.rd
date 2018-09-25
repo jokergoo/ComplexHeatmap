@@ -10,6 +10,7 @@ Make oncoPrint
 oncoPrint(mat,
     get_type = function(x) x,
     alter_fun,
+    alter_fun_is_vectorized = NULL,
     col,
     
     top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot(),
@@ -37,6 +38,7 @@ oncoPrint(mat,
   \item{mat}{a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary value representing the alteration is present or absent. When it is a list, the names represent alteration types. You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
   \item{get_type}{If different alterations are encoded in the matrix, this self-defined function determines how to extract them. Only work when \code{mat} is a matrix.}
   \item{alter_fun}{a single function or a list of functions which define how to add graphics for different alterations. If it is a list, the names of the list should cover all alteration types.}
+  \item{alter_fun_is_vectorized}{-alter_fun_is_vectorized}
   \item{col}{a vector of color for which names correspond to alteration types.}
   \item{top_annotation}{-top_annotation}
   \item{right_annotation}{-right_annotation}

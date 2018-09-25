@@ -32,6 +32,7 @@ Draw a list of heatmaps
     
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     padding = NULL,
+    adjust_annotation_name = FALSE,
     
     row_dend_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right"),
@@ -104,6 +105,7 @@ Draw a list of heatmaps
   \item{ht_gap}{= gap, }
   \item{main_heatmap}{= which(sapply(object@ht_list, inherits, "Heatmap"))[1],}
   \item{padding}{= NULL,}
+  \item{adjust_annotation_name}{adjust_annotation_name}
   \item{row_dend_side}{= c("original", "left", "right"),}
   \item{row_sub_title_side}{= c("original", "left", "right"),}
   \item{column_dend_side}{= c("original", "top", "bottom"),}

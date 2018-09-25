@@ -88,7 +88,10 @@ setMethod(f = "draw_heatmap_body",
         do.call(device_fun, c(list(filename = temp_image, width = max(c(heatmap_width*raster_quality, 1)), height = max(c(heatmap_height*raster_quality, 1))), raster_device_param))
         grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
         if(is.function(layer_fun)) {
-            layer_fun(row_order, column_order)
+            layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
+                x[expand_index[[2]]], y[expand_index[[1]]],
+                unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
+                as.vector(col_matrix))
         }
         dev.off2()
         
@@ -149,11 +152,19 @@ setMethod(f = "draw_heatmap_body",
         }
 
         if(is.function(cell_fun)) {
-            for(i in row_order) {
-                for(j in column_order) {
-                    cell_fun(j, i, unit(x[which(column_order == j)], "npc"), unit(y[which(row_order == i)], "npc"), unit(1/nc, "npc"), unit(1/nr, "npc"), col_matrix[which(row_order == i), which(column_order == j)])
+            for(i in seq_len(nr)) {
+                for(j in seq_len(nc)) {
+                    cell_fun(column_order[j], row_order[i], unit(x[j], "npc"), unit(y[i], "npc"), 
+                        unit(1/nc, "npc"), unit(1/nr, "npc"), 
+                        col_matrix[i, j])
                 }
             }
+        }
+        if(is.function(layer_fun)) {
+            layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
+                x[expand_index[[2]]], y[expand_index[[1]]],
+                unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
+                as.vector(col_matrix))
         }
     }
 

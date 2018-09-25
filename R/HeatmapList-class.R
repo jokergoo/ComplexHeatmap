@@ -225,6 +225,7 @@ setMethod(f = "add_heatmap",
 # -ht_gap = gap, 
 # -main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
 # -padding = NULL,
+# -adjust_annotation_name adjust_annotation_name
 # -row_dend_side = c("original", "left", "right"),
 # -row_sub_title_side = c("original", "left", "right"),
 # -column_dend_side = c("original", "top", "bottom"),
@@ -308,6 +309,7 @@ setMethod(f = "draw",
 
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     padding = NULL,
+    adjust_annotation_name = FALSE,
 
     row_dend_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right"),
@@ -388,6 +390,8 @@ setMethod(f = "draw",
 
     object@heatmap_legend_param$offset = heatmap_legend_offset
     object@annotation_legend_param$offset = annotation_legend_offset
+
+    object@ht_list_param$adjust_annotation_name = adjust_annotation_name
 
     object = make_layout(
         object, 
@@ -474,34 +478,34 @@ setMethod(f = "draw",
     # calculate proper padding
     if(is.null(padding)) {
         padding = GLOBAL_PADDING
-        if(!has_heatmap_list_component(object, "heatmap_legend_bottom") && 
-           !has_heatmap_list_component(object, "annotation_legend_bottom") &&
-           !has_heatmap_list_component(object, "column_title_bottom")) {
-            if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
-                padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height + GLOBAL_PADDING[1]
-            }
-        }
-        if(!has_heatmap_list_component(object, "heatmap_legend_left") && 
-           !has_heatmap_list_component(object, "annotation_legend_left") &&
-           !has_heatmap_list_component(object, "row_title_left")) {
-            if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]]) {
-                padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width + GLOBAL_PADDING[2]
-            }
-        }
-        if(!has_heatmap_list_component(object, "heatmap_legend_top") && 
-           !has_heatmap_list_component(object, "annotation_legend_top") &&
-           !has_heatmap_list_component(object, "column_title_top")) {
-            if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]]) {
-                padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height + GLOBAL_PADDING[3]
-            }
-        }
-        if(!has_heatmap_list_component(object, "heatmap_legend_right") && 
-           !has_heatmap_list_component(object, "annotation_legend_right") &&
-           !has_heatmap_list_component(object, "row_title_right")) {
-            if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
-                padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
-            }
-        }
+        # if(!has_heatmap_list_component(object, "heatmap_legend_bottom") && 
+        #    !has_heatmap_list_component(object, "annotation_legend_bottom") &&
+        #    !has_heatmap_list_component(object, "column_title_bottom")) {
+        #     if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
+        #         padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height + GLOBAL_PADDING[1]
+        #     }
+        # }
+        # if(!has_heatmap_list_component(object, "heatmap_legend_left") && 
+        #    !has_heatmap_list_component(object, "annotation_legend_left") &&
+        #    !has_heatmap_list_component(object, "row_title_left")) {
+        #     if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]]) {
+        #         padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width + GLOBAL_PADDING[2]
+        #     }
+        # }
+        # if(!has_heatmap_list_component(object, "heatmap_legend_top") && 
+        #    !has_heatmap_list_component(object, "annotation_legend_top") &&
+        #    !has_heatmap_list_component(object, "column_title_top")) {
+        #     if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]]) {
+        #         padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height + GLOBAL_PADDING[3]
+        #     }
+        # }
+        # if(!has_heatmap_list_component(object, "heatmap_legend_right") && 
+        #    !has_heatmap_list_component(object, "annotation_legend_right") &&
+        #    !has_heatmap_list_component(object, "row_title_right")) {
+        #     if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
+        #         padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
+        #     }
+        # }
         object@ht_list_param$padding = padding
     }
 

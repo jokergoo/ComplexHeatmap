@@ -10,6 +10,7 @@
 #           determines how to extract them. Only work when ``mat`` is a matrix.
 # -alter_fun a single function or a list of functions which define how to add graphics for different alterations.
 #                 If it is a list, the names of the list should cover all alteration types.
+# -alter_fun_is_vectorized
 # -col a vector of color for which names correspond to alteration types.
 # -top_annotation
 # -right_annotation
@@ -46,6 +47,7 @@
 oncoPrint = function(mat, 
 	get_type = function(x) x,
 	alter_fun, 
+	alter_fun_is_vectorized = NULL,
 	col, 
 
 	top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot(),
@@ -114,65 +116,6 @@ oncoPrint = function(mat,
 
 	cat("All mutation types:", paste(all_type, collapse = ", "), "\n")
 
-	if(missing(alter_fun) && missing(col)) {
-		if(length(mat_list) == 1) {
-			af = function(x, y, w, h, v, j, i) {
-				grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
-				if(v[1]) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA))
-			}
-			col = "red"
-		} else if(length(mat_list) == 2) {
-			af = function(x, y, w, h, v, j, i) {
-				grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
-				if(v[1]) grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA))
-		        if(v[2]) grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
-		    }
-		    col = c("red", "blue")
-		} else {
-			stop("`alter_fun` should be specified.")
-		}
-		names(col) = names(mat_list)
-	} else if(is.list(alter_fun)) {
-
-		# validate the list first
-		if(is.null(alter_fun$background)) alter_fun$background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
-		sdf = setdiff(all_type, names(alter_fun))
-		if(length(sdf) > 0) {
-			stop(paste0("You should define shape function for: ", paste(sdf, collapse = ", ")))
-		}
-
-		alter_fun = alter_fun[unique(c("background", intersect(names(alter_fun), all_type)))]
-
-		af = function(x, y, w, h, v, j, i) {
-			if(!is.null(alter_fun$background)) alter_fun$background(x, y, w, h)
-
-			alter_fun = alter_fun[names(alter_fun) != "background"]
-
-			if(sum(v)) {
-				for(nm in names(alter_fun)) {
-					if(v[nm]) {
-						if(length(formals(alter_fun[[nm]])) == 6) {
-							alter_fun[[nm]](x, y, w, h, j, i)
-						} else {
-							alter_fun[[nm]](x, y, w, h)
-						}
-					}
-				}
-			}
-		}
-	} else {
-		if(length(formals(alter_fun)) == 7) {
-			af = function(x, y, w, h, v, j, i) {
-				alter_fun(x, y, w, h, v, j, i)
-			}
-		} else {
-			af = function(x, y, w, h, v, j, i) {
-				alter_fun(x, y, w, h, v)
-			}
-		}
-	}
-
-	col = col[intersect(names(col), all_type)]
 
 	# type as the third dimension
 	arr = array(FALSE, dim = c(dim(mat_list[[1]]), length(all_type)), dimnames = c(dimnames(mat_list[[1]]), list(all_type)))
@@ -197,6 +140,111 @@ oncoPrint = function(mat,
 		scores = apply(count_matrix[row_order, ,drop = FALSE], 2, scoreCol)
 		order(scores, decreasing=TRUE)
 	}
+
+	if(missing(alter_fun)) {
+		if(length(mat_list) == 1) {
+			af = list(
+				background = function(x, y, w, h, j, i) {
+					grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
+				},
+				function(x, y, w, h, j, i) {
+					grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA))
+				}
+			)
+			alter_fun_is_vectorized = TRUE
+			names(af) = c("background", names(mat_list))
+			col = "red"
+		} else if(length(mat_list) == 2) {
+			af = list(
+				background = function(x, y, w, h, j, i) {
+					grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
+				},
+				function(x, y, w, h, j, i) {
+					grid.rect(x, y, w*0.9, h*0.9, gp = gpar(fill = "red", col = NA))
+				},
+				function(x, y, w, h, j, i) {
+					grid.rect(x, y, w*0.9, h*0.4, gp = gpar(fill = "blue", col = NA))
+				}
+			)
+			alter_fun_is_vectorized = TRUE
+			names(af) = c("background", names(mat_list))
+			col = c("red", "blue")
+		} else {
+			stop("`alter_fun` should be specified.")
+		}
+		names(col) = names(mat_list)
+		warning("Using default `alter_fun` graphics and reset `col`.")
+	}
+
+	if(is.list(alter_fun)) {
+
+		# validate the list first
+		if(is.null(alter_fun$background)) alter_fun$background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
+		sdf = setdiff(all_type, names(alter_fun))
+		if(length(sdf) > 0) {
+			stop(paste0("You should define graphic function for: ", paste(sdf, collapse = ", ")))
+		}
+
+		alter_fun = alter_fun[unique(c("background", intersect(names(alter_fun), all_type)))]
+
+		if(is.null(alter_fun_is_vectorized)) {
+			alter_fun_is_vectorized = guess_alter_fun_is_vectorized(alter_fun)
+		}
+
+		if(alter_fun_is_vectorized) {
+			layer_fun = function(j, i, x, y, w, h, fill) {
+				alter_fun$background(x, y, w, h)
+				for(nm in all_type) {
+					m = arr[, , nm]
+					l = pindex(m, i, j)
+					if(sum(l)) {
+						alter_fun[[nm]](x[l], y[l], w[l], h[l])
+					}
+				}
+			}
+			cell_fun = NULL
+		} else {
+			layer_fun = NULL
+			cell_fun = function(j, i, x, y, w, h, fill) {
+				alter_fun$background(x, y, w, h)
+				for(nm in all_type) {
+					if(arr[i, j, nm]) {
+						alter_fun[[nm]](x, y, w, h)
+					}
+				}
+			}
+		}
+	} else if(is.function(alter_fun)) {
+		
+		if(length(formals(alter_fun)) == 5) {
+			af = function(x, y, w, h, v, j, i) alter_fun(x, y, w, h, v)
+		} else {
+			af = alter_fun
+		}
+
+		if(is.null(alter_fun_is_vectorized)) {
+			alter_fun_is_vectorized = FALSE
+		}
+
+		if(alter_fun_is_vectorized) {
+			layer_fun = function(j, i, x, y, w, h, fill) {
+				v = pindex(arr, i, j)
+				af(x, y, w, h, v, j, i)
+			}
+			cell_fun = NULL
+		} else {
+			layer_fun = NULL
+			cell_fun = function(j, i, x, y, w, h, fill) {
+				v = arr[i, j, ]
+				af(x, y, w, h, v, j, i)
+			}
+		}
+	} else {
+		stop("You need to set `alter_fun`.")
+	}
+
+	col = col[intersect(names(col), all_type)]
+
 
 	count_matrix = apply(arr, c(1, 2), sum)
 	n_mut = rowSums(apply(arr, 1:2, any))
@@ -268,11 +316,7 @@ oncoPrint = function(mat,
 		rect_gp = gpar(type = "none"), 
 		cluster_rows = FALSE, cluster_columns = FALSE, 
 		row_order = row_order, column_order = column_order,
-		cell_fun = function(j, i, x, y, width, height, fill) {
-			z = arr[i, j, ]
-			names(z) = dimnames(arr)[[3]]
-			af(x, y, width, height, z, j, i)
-		},
+		cell_fun = cell_fun, layer_fun = layer_fun,
 		top_annotation = top_annotation,
 		left_annotation = left_annotation,
 		right_annotation = right_annotation,
@@ -364,4 +408,27 @@ anno_oncoprint_barplot = function(type = all_type, which = c("column", "row"),
 	}
 }
 
+guess_alter_fun_is_vectorized = function(alter_fun) {
+	n = 50
+	if(is.list(alter_fun)) {
+		x = 1:n
+		y = 1:n
+		w = unit(1:n, "mm")
+		h = unit(1:n, "mm")
+		dev.null()
+		oe = try({
+			for(i in seq_along(alter_fun)) {
+				alter_fun[[i]](x, y, w, h)
+			}
+		}, silent = TRUE)
+		dev.off2()
+		if(inherits(oe, "try-error")) {
+			return(FALSE)
+		} else {
+			return(TRUE)
+		}
+	} else {
+		return(FALSE)
+	}
+}
 

@@ -453,19 +453,28 @@ setMethod(f = "draw_heatmap_list",
 
     n = length(object@ht_list)
     ht_gap = object@ht_list_param$ht_gap
+    adjust_annotation_name = object@ht_list_param$adjust_annotation_name
 
-#     padding = unit(c(0, 0, 0, 0), "mm")
+    padding = unit(c(0, 0, 0, 0), "mm")
 
-#     if((has_heatmap_list_component(object, "heatmap_legend_right") || 
-#        has_heatmap_list_component(object, "annotation_legend_right")) &&
-#        !has_heatmap_list_component(object, "row_title_right")) {
-#         if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
-#             padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
-#         }
-#     }
-# browser()
-#     pushViewport(viewport(x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
-#         height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
+    if(adjust_annotation_name) {
+        if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
+            padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height
+        }
+        if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]]) {
+            padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width + GLOBAL_PADDING[2]
+        }
+            
+        if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]]) {
+            padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height + GLOBAL_PADDING[3]
+        }
+        if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
+            padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
+        }
+    }
+
+    pushViewport(viewport(x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
+        height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
 
     if(object@direction == "horizontal") {
 
@@ -579,7 +588,7 @@ setMethod(f = "draw_heatmap_list",
 
         upViewport()
     }
-    # upViewport()
+    upViewport()
 
 })
 

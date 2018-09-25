@@ -1,3 +1,12 @@
+CHANGES in VERSION 1.99.0
+
+This a major update of the package. The main changes are:
+* support column split
+* support align heatmaps vertically
+* add a naive `AnnotationFunction` class to handle annotation functions
+
+=======================
+
 CHANGES in VERSION 1.19.1
 
 * `Heatmap()`: no column name added if the input matrix is a one-column matrix.

@@ -502,3 +502,85 @@ recycle_param = function(x, all_names, default) {
         return(x)
     }
 }
+
+# == title
+# Convert XY in a parent viewport
+#
+# == param
+# -u a list of two units which is x and y
+# -vp_name the name of the parent viewport
+#
+# == example
+# grid.newpage()
+# pushViewport(viewport(x = 0.5, y = 0.5, width = 0.5, height = 0.5, just = c("left", "bottom")))
+# u = list(x = unit(2, "cm"), y = unit(2, "cm"))
+# convertXY_in_vp(u)
+convertXY_in_vp = function(u, vp_name = "ROOT") {
+    vp = current.viewport()
+    current_vp_name = vp$name
+    original_vp_name = current_vp_name
+    while(current_vp_name != vp_name) {
+
+        if(current_vp_name == "ROOT") {
+            return(u)
+        }
+
+        u$x = convertX(u$x, "mm")
+        u$y = convertX(u$y, "mm")
+        current_vp_x = convertX(vp$x - vp$width*vp$valid.just[1], "mm")
+        current_vp_y = convertY(vp$y - vp$height*vp$valid.just[2], "mm")
+
+        upViewport(1)
+        offset_x = convertX(current_vp_x, "mm")
+        offset_y = convertY(current_vp_y, "mm")
+        u$x = u$x + offset_x
+        u$y = u$y + offset_y
+
+        vp = current.viewport()
+        current_vp_name = vp$name
+    }
+    seekViewport(original_vp_name)
+
+    return(u)
+}
+
+# == title
+# Get values in a matrix by pair-wise indices
+#
+# == param
+# -m a matrix or a 3d array
+# -i row indices
+# -j column indicies
+#
+# == example
+# m = matrix(rnorm(100), 10)
+# m2 = m[m > 0]
+# ind = do.call("rbind", lapply(1:10, function(ci) {
+#     i = which(m[, ci] > 0)
+#     cbind(i = i, j = rep(ci, length(i)))
+# }))
+# pindex(m, ind[, 1], ind[, 2])
+# identical(pindex(m, ind[, 1], ind[, 2]), m[m > 0])
+#
+# # 3d array
+# arr = array(1:27, dim = c(3, 3, 3))
+# pindex(arr, 1:2, 2:3)
+# identical(pindex(arr, 1:2, 2:3),
+#    rbind(arr[1, 2, ], arr[2, 3, ]))
+pindex = function(m, i, j) {
+    nr = nrow(m)
+    nc = ncol(m)
+    ind = (j-1)*nr + i
+    dm = dim(m)
+    if(length(dm) == 2) {
+        v = as.vector(m)
+        v[ind]
+    } else if(length(dm) == 3) {
+        v = m
+        dim(v) = c(dm[1]*dm[2], dm[3])
+        v[ind, , drop = FALSE]
+    } else {
+        stop("dimension of `m` can only be 2 and 3.")
+    }
+}
+
