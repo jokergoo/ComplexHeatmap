@@ -313,11 +313,6 @@ Heatmap = function(matrix, col, name,
 
     verbose = ht_opt("verbose")
 
-    if(!dev.interactive()) {
-        pdf(file = NULL)
-        on.exit(dev.off())
-    }
-
     .Object = new("Heatmap")
     if(missing(name)) {
         name = paste0("matrix_", get_heatmap_index() + 1)
@@ -1120,9 +1115,18 @@ make_cluster = function(object, which = c("row", "column")) {
             if(nd > 1) {
                 if(!is.null(dend_param$fun)) {
                     if(which == "row") {
-                        dend_list[[i]] = dend_param$fun(submat)
+                        obj = dend_param$fun(submat)
                     } else {
-                        dend_list[[i]] = dend_param$fun(t(submat))
+                        obj = dend_param$fun(t(submat))
+                    }
+                    if(inherits(obj, "dendrogram") || inherits(obj, "hclust")) {
+                        dend_list[[i]] = obj
+                    } else {
+                        oe = try(obj <- as.dendrogram(obj), silent = TRUE)
+                        if(inherits(oe, "try-error")) {
+                            stop("the clustering function must return a `dendrogram` object or a object that can be coerced to `dendrogram` class.")
+                        }
+                        dend_list[[i]] = obj
                     }
                     order_list[[i]] = order_list[[i]][ get_dend_order(dend_list[[i]]) ]
                 } else {

@@ -187,7 +187,7 @@ setMethod(f = "add_heatmap",
 
         if(length(unique(nc)) > 1) {
             cat("`ncol` of all heatmaps:\n")
-            print(nr)
+            print(nc)
             stop("`ncol` of all heatmaps should be the same for vertical heatmap list.")
             for(i in l) {
                 cat(object@ht_list[[i]]@name, ":", ncol(object@ht_list[[i]]@matrix), "\n")
