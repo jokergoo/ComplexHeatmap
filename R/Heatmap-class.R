@@ -304,7 +304,7 @@ Heatmap = function(matrix, col, name,
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
 
-    use_raster = nrow(matrix) > 5000, 
+    use_raster = nrow(matrix) > 2000 || ncol(matrix) > 2000, 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
     raster_device_param = list(),
@@ -1014,6 +1014,19 @@ make_cluster = function(object, which = c("row", "column")) {
                                 lt = lapply(x, function(x) x)
                                 lt$fmt = title
                                 do.call(sprintf, lt)
+                            })
+                        } else if(grepl("@\\{.+\\}", title)) {
+                            title = apply(unique(split), 1, function(x) {
+                                x = x
+                                GetoptLong::qq(title)
+                            })
+                        } else if(grepl("\\{.+\\}", title)) {
+                            if(!requireNamespace("glue")) {
+                                stop("You need to install glue package.")
+                            }
+                            title = apply(unique(split), 1, function(x) {
+                                x = x
+                                glue::glue(title)
                             })
                         }
                     }

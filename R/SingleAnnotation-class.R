@@ -528,6 +528,7 @@ setMethod(f = "draw",
         test2 = TRUE
     } else {
         test2 = test
+        test = ""
     }
 
     verbose = ht_opt$verbose

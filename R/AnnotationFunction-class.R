@@ -314,6 +314,7 @@ setMethod(f = "draw",
 		test2 = TRUE
 	} else {
 		test2 = test
+		test = ""
 	}
 	if(test2) {
         grid.newpage()

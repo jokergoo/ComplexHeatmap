@@ -140,7 +140,10 @@ HeatmapAnnotation = function(...,
     		warning("`df` should be a data frame while not a matrix. Convert it to data frame.")
     		df = as.data.frame(df)
     	} else if(!is.data.frame(df)) {
-    		stop("`df` should be a data frame.")
+    		oe = try(df <- as.data.frame(df), silent = TRUE)
+    		if(inherits(oe, "try-errir")) {
+    			stop("`df` should be a data frame.")
+    		}
     	}
     }
 
@@ -555,6 +558,7 @@ setMethod(f = "draw",
         test2 = TRUE
     } else {
         test2 = test
+        test = ""
     }
 
     if(test2) {

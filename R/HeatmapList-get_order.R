@@ -130,6 +130,7 @@ setMethod(f = "column_order",
 	        lt_rd = c(lt_rd, list(lt))
 	    }
 	    names(lt_rd) = names(object@ht_list)[ht_index]
+	    if(length(lt_rd) == 1) lt_rd = lt_rd[[1]]
 	    return(lt_rd)
 	}
 })
