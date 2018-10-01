@@ -752,7 +752,8 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # draw(pd, test = "two legends")
 # pd = packLegend(lgd1, lgd2, direction = "horizontal")
 # draw(pd, test = "two legends packed horizontally")
-packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horizontal"),
+packLegend = function(..., row_gap = unit(2, "mm"), column_gap = unit(2, "mm"),
+	direction = c("vertical", "horizontal"),
 	max_width = NULL, max_height = NULL, list = NULL) {
 
 	if(!is.null(list)) {
@@ -770,10 +771,12 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
 		lgd
 	})
 	direction = match.arg(direction)
-	if(length(gap) != 1) {
-		stop("Length of `gap` must be one.")
+	if(length(row_gap) != 1) {
+		stop("Length of `row_gap` must be one.")
 	}
-
+	if(length(column_gap) != 1) {
+		stop("Length of `column_gap` must be one.")
+	}
     n_lgd = length(legend_list)
     if(direction == "vertical") {
 	    lgd_height = do.call("unit.c", lapply(legend_list, grobHeight))
@@ -784,7 +787,7 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
 	    } else {
 	    	lgd_height_num = convertHeight(lgd_height, "mm", valueOnly = TRUE)
 	    	max_height_num = convertHeight(max_height, "mm", valueOnly = TRUE)
-	    	gap_num = convertHeight(gap, "mm", valueOnly = TRUE)
+	    	gap_num = convertHeight(column_gap, "mm", valueOnly = TRUE)
 
 	    	if(n_lgd == 1 && max_height_num < lgd_height_num) {
 	    		ind_list = list(1)
@@ -799,14 +802,14 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
     	pack_height = NULL
     	for(i in 1:nc) {
     		ind = ind_list[[i]]
-    		pack_width = unit.c(pack_width, max(do.call("unit.c", lapply(legend_list[ ind_list[[i]] ], grobWidth))) + gap)
+    		pack_width = unit.c(pack_width, max(do.call("unit.c", lapply(legend_list[ ind_list[[i]] ], grobWidth))) + column_gap)
 
-    		hu = do.call("unit.c", lapply(legend_list[ind], function(x) unit.c(grobHeight(x), gap)))
+    		hu = do.call("unit.c", lapply(legend_list[ind], function(x) unit.c(grobHeight(x), row_gap)))
     		hu = hu[-length(hu)]
     		ph = sum(hu)
     		pack_height[i] = convertHeight(ph, "mm", valueOnly = TRUE)
     	}
-    	pack_width[length(pack_width)] = pack_width[length(pack_width)] - gap
+    	pack_width[length(pack_width)] = pack_width[length(pack_width)] - column_gap
     	pack_width = convertWidth(pack_width, "mm")
     	pack_height = unit(max(pack_height), "mm")
 
@@ -820,9 +823,9 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
     		legend_x = convertX(legend_x, "mm")
     		for(j in 1:ni) {
     			# the legend height in current column
-    			current_legend_height = do.call("unit.c", lapply(legend_list[ind], function(x) grobHeight(x) + gap))
+    			current_legend_height = do.call("unit.c", lapply(legend_list[ind], function(x) grobHeight(x) + row_gap))
     			current_legend_height = convertHeight(current_legend_height, "mm")
-    			legend_y = unit(1, "npc") - sum(current_legend_height[1:j]) + gap
+    			legend_y = unit(1, "npc") - sum(current_legend_height[1:j]) + row_gap
 	    		gl = c(gl, list(
 	    			edit_vp_in_legend_grob(legend_list[[ ind[j] ]], x = legend_x, y = legend_y, valid.just = c(0, 0))
 	    		))
@@ -837,7 +840,7 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
 	    } else {
 	    	lgd_width_num = convertWidth(lgd_width, "mm", valueOnly = TRUE)
 	    	max_width_num = convertWidth(max_width, "mm", valueOnly = TRUE)
-	    	gap_num = convertWidth(gap, "mm", valueOnly = TRUE)
+	    	gap_num = convertWidth(column_gap, "mm", valueOnly = TRUE)
 
 	    	if(n_lgd == 1 && max_width_num < lgd_width_num) {
 	    		ind_list = list(1)
@@ -852,14 +855,14 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
     	pack_height = NULL
     	for(i in 1:nr) {
     		ind = ind_list[[i]]
-    		pack_height = unit.c(pack_height, max(do.call("unit.c", lapply(legend_list[ind], function(x) grobHeight(x) + gap))))
+    		pack_height = unit.c(pack_height, max(do.call("unit.c", lapply(legend_list[ind], function(x) grobHeight(x) + row_gap))))
 
-    		hu = do.call("unit.c", lapply(legend_list[ind], function(x) unit.c(grobWidth(x), gap)))
+    		hu = do.call("unit.c", lapply(legend_list[ind], function(x) unit.c(grobWidth(x), column_gap)))
     		hu = hu[-length(hu)]
     		ph = sum(hu)
     		pack_width[i] = convertWidth(ph, "mm", valueOnly = TRUE)
     	}
-    	pack_height[length(pack_height)] = pack_height[length(pack_height)] - gap
+    	pack_height[length(pack_height)] = pack_height[length(pack_height)] - row_gap
     	pack_height = convertWidth(pack_height, "mm")
     	pack_width = unit(max(pack_width), "mm")
 
@@ -873,9 +876,9 @@ packLegend = function(..., gap = unit(2, "mm"), direction = c("vertical", "horiz
     		legend_y = unit(1, "npc") - sum(pack_height[1:i]) + pack_height[i]  # most bottom side
     		for(j in 1:ni) {
     			# the legend width in current row
-    			current_legend_width = do.call("unit.c", lapply(legend_list[ind], function(x) grobWidth(x) + gap))
+    			current_legend_width = do.call("unit.c", lapply(legend_list[ind], function(x) grobWidth(x) + column_gap))
     			current_legend_width = convertWidth(current_legend_width, "mm")
-    			legend_x = sum(current_legend_width[1:j]) - gap  # most right side
+    			legend_x = sum(current_legend_width[1:j]) - column_gap  # most right side
     			legend_x = convertX(legend_x, "mm")
 	    		gl = c(gl, list(
 	    			edit_vp_in_legend_grob(legend_list[[ ind[j] ]], x = legend_x, y = legend_y, valid.just = c(1, 1))
@@ -1015,9 +1018,9 @@ setMethod(f = "draw",
 	}
 	if(test2) {
         grid.newpage()
-        rect_grob = rectGrob(gp = gpar(col = "red", lty = 2))
-        legend$children[[rect_grob$name]] = rect_grob
-        legend$childrenOrder = c(legend$childrenOrder, rect_grob$name)
+        # rect_grob = rectGrob(gp = gpar(col = "red", lty = 2, fill = "transparent"))
+        # legend$children[[rect_grob$name]] = rect_grob
+        # legend$childrenOrder = c(legend$childrenOrder, rect_grob$name)
     }
 	grid.draw(legend)
 	if(test2) {

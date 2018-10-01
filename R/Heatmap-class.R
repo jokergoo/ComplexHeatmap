@@ -1275,6 +1275,19 @@ make_cluster = function(object, which = c("row", "column")) {
                     lt$fmt = title
                     do.call(sprintf, lt)
                 })
+            } else if(grepl("@\\{.+\\}", title)) {
+                title = apply(unique(split), 1, function(x) {
+                    x = x
+                    GetoptLong::qq(title)
+                })
+            } else if(grepl("\\{.+\\}", title)) {
+                if(!requireNamespace("glue")) {
+                    stop("You need to install glue package.")
+                }
+                title = apply(unique(split), 1, function(x) {
+                    x = x
+                    glue::glue(title)
+                })
             }
         }
     }
