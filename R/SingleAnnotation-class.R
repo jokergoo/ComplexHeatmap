@@ -229,6 +229,8 @@ SingleAnnotation = function(name, value, col, fun,
         if(inherits(fun, "AnnotationFunction")) {
             anno_fun_extend = fun@extended
             if(verbose) qqcat("@{name}: annotation is a AnnotationFunction object\n")
+
+            show_name = fun@show_name
         } else {
             fun = AnnotationFunction(fun = fun)
             anno_fun_extend = fun@extended

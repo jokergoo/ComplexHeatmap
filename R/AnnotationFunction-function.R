@@ -61,7 +61,8 @@ anno_empty = function(which = c("column", "row"), border = TRUE, width = NULL, h
 		subset_rule = list(),
 		subsetable = TRUE,
 		height = anno_size$height,
-		width = anno_size$width
+		width = anno_size$width,
+		show_name = FALSE
 	)
 	return(anno) 
 }
@@ -762,7 +763,7 @@ update_anno_extend = function(anno, axis_grob, axis_param) {
 # 	add_points = TRUE, pt_gp = gpar(col = 5:6), pch = c(1, 16))
 # draw(anno, test = "matrix")
 anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), 
-	add_points = FALSE, pch = 16, size = unit(2, "mm"), pt_gp = gpar(), ylim = NULL, 
+	add_points = FALSE, smooth = FALSE, pch = 16, size = unit(2, "mm"), pt_gp = gpar(), ylim = NULL, 
 	extend = 0.05, axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 
@@ -822,18 +823,34 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 		if(is.matrix(value)) {
 			for(i in seq_len(ncol(value))) {
-				grid.lines(value[index, i], n - seq_along(index) + 1, gp = subset_gp(gp, i), 
-					default.units = "native")
+				x = n - seq_along(index) + 1
+				y = value[index, i]
+				if(smooth) {
+					fit = loess(y ~ x)
+					x2 = seq(x[1], x[length(x)], length = 100)
+					y2 = predict(fit, x2)
+					grid.lines(y2, x2, gp = subset_gp(gp, i), default.units = "native")
+				} else {
+					grid.lines(y, x, gp = subset_gp(gp, i), default.units = "native")
+				}
 				if(add_points) {
-					grid.points(value[index, i], n - seq_along(index) + 1, gp = subset_gp(pt_gp, i), 
+					grid.points(y, x, gp = subset_gp(pt_gp, i), 
 						default.units = "native", pch = pch[i], size = size[i])
 				}
 			}
 		} else {
-			grid.lines(value[index, i], n - seq_along(index) + 1, gp = gp, 
-				default.units = "native")
+			x = n - seq_along(index) + 1
+			y = value[index]
+			if(smooth) {
+				fit = loess(y ~ x)
+				x2 = seq(x[1], x[length(x)], length = 100)
+				y2 = predict(fit, x2)
+				grid.lines(y2, x2, gp = gp, default.units = "native")
+			} else {
+				grid.lines(y, x, gp = gp, default.units = "native")
+			}
 			if(add_points) {
-				grid.points(value[index], n - seq_along(index) + 1, gp = gp, default.units = "native", 
+				grid.points(y, x, gp = gp, default.units = "native", 
 					pch = pch[index], size = size[index])
 			}
 		}
@@ -853,15 +870,32 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 		pushViewport(viewport(yscale = data_scale, xscale = c(0.5, n+0.5)))
 		if(is.matrix(value)) {
 			for(i in seq_len(ncol(value))) {
-				grid.lines(seq_along(index), value[index, i], gp = subset_gp(gp, i), 
-					default.units = "native")
+				x = seq_along(index)
+				y = value[index, i]
+				if(smooth) {
+					fit = loess(y ~ x)
+					x2 = seq(x[1], x[length(x)], length = 100)
+					y2 = predict(fit, x2)
+					grid.lines(x2, y2, gp = subset_gp(gp, i), default.units = "native")
+				} else {
+					grid.lines(x, y, gp = subset_gp(gp, i), default.units = "native")
+				}
 				if(add_points) {
-					grid.points(seq_along(index), value[index, i], gp = subset_gp(pt_gp, i), 
+					grid.points(x, y, gp = subset_gp(pt_gp, i), 
 						default.units = "native", pch = pch[i], size = size[i])
 				}
 			}
 		} else {
-			grid.lines(seq_along(index), value[index], gp = gp, default.units = "native")
+			x = seq_along(index)
+			y = value[index]
+			if(smooth) {
+				fit = loess(y ~ x)
+				x2 = seq(x[1], x[length(x)], length = 100)
+				y2 = predict(fit, x2)
+				grid.lines(x2, y2, gp = gp, default.units = "native")
+			} else {
+				grid.lines(x, y, gp = gp, default.units = "native")
+			}
 			if(add_points) {
 				grid.points(seq_along(index), value[index], gp = pt_gp, default.units = "native", 
 					pch = pch[index], size = size[index])
@@ -891,7 +925,8 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 		height = anno_size$height,
 		n = n,
 		data_scale = data_scale,
-		var_import = list(value, gp, border, pch, size, pt_gp, axis, axis_param, axis_grob, data_scale, add_points)
+		var_import = list(value, gp, border, pch, size, pt_gp, axis, axis_param, 
+			axis_grob, data_scale, add_points, smooth)
 	)
 
 	anno@subset_rule$gp = subset_vector
@@ -968,15 +1003,17 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	if(!is.null(ylim)) data_scale = ylim
 	if(baseline == "min") {
 		data_scale = data_scale + c(0, extend)*(data_scale[2] - data_scale[1])
+		baseline = min(x)
 	} else if(baseline == "max") {
 		data_scale = data_scale + c(-extend, 0)*(data_scale[2] - data_scale[1])
+		baseline = max(x)
 	} else {
 		if(is.numeric(baseline)) {
 			if(baseline == 0 && all(rowSums(x) == 1)) {
 				data_scale = c(0, 1)
 			} else if(baseline <= min(x)) {
 				data_scale = c(baseline, extend*(data_scale[2] - baseline) + data_scale[2])
-			} else if(baseline >= rowSums(x)) {
+			} else if(baseline >= max(x)) {
 				data_scale = c(-extend*(baseline - data_scale[1]) + data_scale[1], baseline)
 			} else {
 				data_scale = data_scale + c(-extend, extend)*(data_scale[2] - data_scale[1])
@@ -1824,7 +1861,8 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 		width = width,
 		height = height,
 		n = n,
-		var_import = list(value, gp, just, rot, location)
+		var_import = list(value, gp, just, rot, location),
+		show_name = FALSE
 	)
 
 	anno@subset_rule$value = subset_vector
@@ -2465,6 +2503,8 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		width = unit(1, "npc")
 	}
 
+	# a map between row index and positions
+	# pos_map = 
 	row_fun = function(index) {
 		n = length(index)
 		# adjust at and labels
@@ -2558,7 +2598,9 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		width = width,
 		height = height,
 		n = -1,
-		var_import = list(at, labels2index, at2labels, link_gp, labels_gp, padding, side, link_width, extend)
+		var_import = list(at, labels2index, at2labels, link_gp, labels_gp, padding, 
+			side, link_width, extend),
+		show_name = FALSE
 	)
 
 	anno@subset_rule$at = subset_by_intersect

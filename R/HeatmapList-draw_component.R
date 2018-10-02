@@ -523,6 +523,16 @@ setMethod(f = "draw_heatmap_list",
             } else if(inherits(ht, "HeatmapAnnotation")) {
                 # calcualte the position of the heatmap body
                 pushViewport(viewport(y = max_bottom_component_height, height = unit(1, "npc") - max_top_component_height - max_bottom_component_height, just = c("bottom")))
+                # if(length(ht) == 1 & n_slice > 1) {
+                #     if(inherits(ht@anno_list[[1]], "AnnotationFunction")) {
+                #         if(identical(ht@anno_list[[1]]@fun@fun_name, "anno_mark")) {
+                #             # adjust pos_map var
+                #             fun = ht@anno_list[[1]]@fun
+                #             draw(fun, index = ht_main@row_order)
+                #             next
+                #         }
+                #     }
+                # }
                 for(j in seq_len(n_slice)) {
                     draw(ht, index = ht_main@row_order_list[[j]], y = slice_y[j], height = slice_height[j], just = slice_just[2], k = j, n = n_slice)
                 }

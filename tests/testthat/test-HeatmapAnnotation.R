@@ -64,3 +64,8 @@ draw(ha, test = "complex annotations on row")
 
 ## test row annotation with no heatmap
 rowAnnotation(foo = 1:10, bar = anno_points(10:1))
+
+
+HeatmapAnnotation(1:10)
+
+HeatmapAnnotation(data.frame(1:10))

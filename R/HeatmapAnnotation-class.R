@@ -133,6 +133,9 @@ HeatmapAnnotation = function(...,
     called_args = names(arg_list)
     anno_args = setdiff(called_args, fun_args)
     if(any(anno_args == "")) stop("annotations should have names.")
+    if(is.null(called_args)) {
+    	stop_wrap("It seems you are putting only one argument to the function. If it is a simple vector annotation, specify it as HeatmapAnnotation(name = value). If it is a data frame annotation, specify it as HeatmapAnnotation(df = value)")
+    }
 
     ##### pull all annotation to `anno_value_list`####
     if("df" %in% called_args) {
@@ -563,8 +566,8 @@ setMethod(f = "draw",
 
     if(test2) {
     	grid.newpage()
-    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(4, "cm"), height = object@height))
-    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(4, "cm"), width = object@width))
+    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(2, "cm"), height = object@height))
+    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(2, "cm"), width = object@width))
     } else {
 		pushViewport(viewport(...))
 	}
@@ -579,7 +582,12 @@ setMethod(f = "draw",
 			}
 		})
 		len = len[!is.na(len)]
-		if(length(len)) index = seq_len(len[1])
+		if(length(len)) {
+			index = seq_len(len[1])
+		} 
+		if(!length(index)) {
+			stop("Cannot infer the number of observations of the annotation.")
+		}
     }
 
 	if(which == "column") {
@@ -607,10 +615,10 @@ setMethod(f = "draw",
 	}
 	if(test2) {
         grid.text(test, y = unit(1, "npc") + unit(2, "mm"), just = "bottom")
-        grid.rect(unit(0, "npc") - object@extended[2], unit(0, "npc") - object@extended[1], 
-            width = unit(1, "npc") + object@extended[2] + object@extended[4],
-            height = unit(1, "npc") + object@extended[1] + object@extended[3],
-            just = c("left", "bottom"), gp = gpar(fill = "transparent", col = "red", lty = 2))
+        # grid.rect(unit(0, "npc") - object@extended[2], unit(0, "npc") - object@extended[1], 
+        #     width = unit(1, "npc") + object@extended[2] + object@extended[4],
+        #     height = unit(1, "npc") + object@extended[1] + object@extended[3],
+        #     just = c("left", "bottom"), gp = gpar(fill = "transparent", col = "red", lty = 2))
     }
 	upViewport()
 })

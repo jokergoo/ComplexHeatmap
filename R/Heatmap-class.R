@@ -767,7 +767,8 @@ Heatmap = function(matrix, col, name,
         ),
 
         layout_index = NULL,
-        graphic_fun_list = list()
+        graphic_fun_list = list(),
+        initialized = FALSE
     )
 
     .Object@heatmap_param$width = width
@@ -1397,6 +1398,10 @@ setMethod(f = "prepare",
     signature = "Heatmap",
     definition = function(object, process_rows = TRUE, process_columns = TRUE) {
 
+    if(object@layout$initialized) {
+        return(object)
+    }
+    
     if(process_rows) {
         object = make_row_cluster(object)
     }

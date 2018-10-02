@@ -279,7 +279,12 @@ rep.list = function(x, n) {
 
 
 list_component = function() {
-    vp_name = grid.ls(viewports = TRUE, grobs = FALSE, print = FALSE)$name
+    vp = grid.ls(viewports = TRUE, grob = FALSE, flatten = FALSE, print = FALSE)
+    vp = unlist(vp)
+    attributes(vp) = NULL
+    vp = vp[!grepl("^\\d+$", vp)]
+    vp = vp[!grepl("GRID.VP", vp)]
+    unique(vp)
 }
 
 # == title
@@ -361,13 +366,13 @@ dev.null = function(...) {
 stop_wrap = function (...) {
     x = paste0(...)
     x = paste(strwrap(x), collapse = "\n")
-    stop(x)
+    stop(x, call. = FALSE)
 }
 
 warning_wrap = function (...) {
     x = paste0(...)
     x = paste(strwrap(x), collapse = "\n")
-    warning(x)
+    warning(x, call. = FALSE)
 }
 
 message_wrap = function (...) {

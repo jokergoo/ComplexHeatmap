@@ -123,6 +123,18 @@ draw(anno, test = "matrix")
 anno = anno_lines(cbind(c(1:5, 1:5), c(5:1, 5:1)), gp = gpar(col = 2:3),
 	add_points = TRUE, pt_gp = gpar(col = 5:6), pch = c(1, 16))
 draw(anno, test = "matrix")
+anno = anno_lines(sort(rnorm(10)), height = unit(2, "cm"), smooth = TRUE, add_points = TRUE)
+draw(anno, test = "anno_lines, smooth")
+anno = anno_lines(cbind(sort(rnorm(10)), sort(rnorm(10), decreasing = TRUE)), 
+	height = unit(2, "cm"), smooth = TRUE, add_points = TRUE, gp = gpar(col = 2:3))
+draw(anno, test = "anno_lines, smooth, matrix")
+
+anno = anno_lines(sort(rnorm(10)), width = unit(2, "cm"), smooth = TRUE, add_points = TRUE, which = "row")
+draw(anno, test = "anno_lines, smooth, by row")
+anno = anno_lines(cbind(sort(rnorm(10)), sort(rnorm(10), decreasing = TRUE)), 
+	width = unit(2, "cm"), smooth = TRUE, add_points = TRUE, gp = gpar(col = 2:3), which = "row")
+draw(anno, test = "anno_lines, smooth, matrix, by row")
+
 
 
 ###### test anno_text #######
@@ -246,4 +258,5 @@ anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which =
 Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark = anno)
 Heatmap(m) + rowAnnotation(mark = anno)
 
-
+ht_list = Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark = anno)
+draw(ht_list, row_split = c(rep("a", 95), rep("b", 5)))

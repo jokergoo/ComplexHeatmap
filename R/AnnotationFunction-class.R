@@ -25,7 +25,8 @@ AnnotationFunction = setClass("AnnotationFunction",
 		subset_rule = "list",
 		subsetable = "logical",
 		data_scale = "numeric",
-		extended = "ANY"
+		extended = "ANY",
+		show_name = "logical"
 	),
 	prototype = list(
 		fun_name = "",
@@ -35,7 +36,8 @@ AnnotationFunction = setClass("AnnotationFunction",
 		subsetable = FALSE,
 		data_scale = c(0, 1),
 		n = 0,
-		extended = unit(c(0, 0, 0, 0), "mm")
+		extended = unit(c(0, 0, 0, 0), "mm"),
+		show_name = TRUE
 	)
 )
 
@@ -173,7 +175,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # are all subsettable.
 AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), 
 	var_import = list(), n = 0, data_scale = c(0, 1), subset_rule = list(), 
-	subsetable = FALSE, width = NULL, height = NULL) {
+	subsetable = FALSE, show_name = TRUE, width = NULL, height = NULL) {
 
 	which = match.arg(which)[1]
 
@@ -189,6 +191,8 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
 	anno@width = anno_size$width
 	anno@height = anno_size$height
+
+	anno@show_name = show_name
 
 	anno@n = n
 	anno@data_scale = data_scale

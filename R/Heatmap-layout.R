@@ -24,6 +24,10 @@ setMethod(f = "make_layout",
     signature = "Heatmap",
     definition = function(object) {
 
+    if(object@layout$initialized) {
+        return(object)
+    }
+
     # position of each row-slice
     row_gap = object@matrix_param$row_gap
     column_gap = object@matrix_param$column_gap
@@ -432,6 +436,8 @@ setMethod(f = "make_layout",
     object@heatmap_param$width_is_absolute_unit = is_abs_unit(object@heatmap_param$width) 
     object@heatmap_param$height_is_absolute_unit = is_abs_unit(object@heatmap_param$height) 
     
+    object@layout$initialized = TRUE
+
     return(object)
 })
 
