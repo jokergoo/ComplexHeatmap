@@ -309,7 +309,7 @@ setMethod(f = "draw",
 
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     padding = NULL,
-    adjust_annotation_name = FALSE,
+    adjust_annotation_extension = TRUE,
 
     row_dend_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right"),
@@ -391,7 +391,7 @@ setMethod(f = "draw",
     object@heatmap_legend_param$offset = heatmap_legend_offset
     object@annotation_legend_param$offset = annotation_legend_offset
 
-    object@ht_list_param$adjust_annotation_name = adjust_annotation_name
+    object@ht_list_param$adjust_annotation_extension = adjust_annotation_extension
 
     object = make_layout(
         object, 

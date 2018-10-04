@@ -453,11 +453,11 @@ setMethod(f = "draw_heatmap_list",
 
     n = length(object@ht_list)
     ht_gap = object@ht_list_param$ht_gap
-    adjust_annotation_name = object@ht_list_param$adjust_annotation_name
+    adjust_annotation_extension = object@ht_list_param$adjust_annotation_extension
 
     padding = unit(c(0, 0, 0, 0), "mm")
 
-    if(adjust_annotation_name) {
+    if(adjust_annotation_extension) {
         if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
             padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height
         }
