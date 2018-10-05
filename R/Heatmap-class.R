@@ -292,9 +292,9 @@ Heatmap = function(matrix, col, name,
     row_split = split,
     column_km = 1,
     column_split = NULL,
-    gap = unit(0.5, "mm"),
-    row_gap = unit(0.5, "mm"),
-    column_gap = unit(0.5, "mm"),
+    gap = unit(1, "mm"),
+    row_gap = unit(1, "mm"),
+    column_gap = unit(1, "mm"),
 
     width = unit(1, "npc"),
     heatmap_body_width = NULL,
@@ -350,6 +350,7 @@ Heatmap = function(matrix, col, name,
 
     if(is.data.frame(matrix)) {
         if(verbose) qqcat("convert data frame to matrix\n")
+        warnings("The input is a data frame, convert to the matrix.")
         matrix = as.matrix(matrix)
     }
     if(!is.matrix(matrix)) {
@@ -525,7 +526,7 @@ Heatmap = function(matrix, col, name,
     }
     
     ##### titles, should also consider titles after row splitting #####
-    if(length(row_title) == 0) {
+    if(length(row_title) != 1) {
     } else if(!inherits(row_title, c("expression", "call"))) {
         if(is.na(row_title)) {
             row_title = character(0)
@@ -539,7 +540,7 @@ Heatmap = function(matrix, col, name,
     .Object@row_title_param$gp = check_gp(row_title_gp)  # if the number of settings is same as number of row-splits, gp will be adjusted by `make_row_dend`
     .Object@row_title_param$just = get_text_just(rot = row_title_rot, side = .Object@row_title_param$side)
 
-    if(length(column_title) == 0) {
+    if(length(column_title) != 1) {
     } else if(!inherits(column_title, c("expression", "call"))) {
         if(is.na(column_title)) {
             column_title = character(0)
