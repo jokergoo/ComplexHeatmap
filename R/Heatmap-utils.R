@@ -33,13 +33,14 @@
 
 
 subset_heatmap_by_row = function(ht, ind) {
-    ht@row_order = intersect(ht@row_order, ind)
+    ht@row_order = order(intersect(ht@row_order, ind))
     if(!is.null(ht@row_dend_param$obj)) {
         stop("row dend is specified as a clustering object, cannot do subsetting.")
     }
     ht@matrix = ht@matrix[ind, , drop = FALSE]
     if(!is.null(ht@row_names_param$labels)) {
         ht@row_names_param$labels = ht@row_names_param$labels[ind]
+        ht@row_names_param$anno = ht@row_names_param$anno[ind]
     }
     ht@row_names_param$gp = subset_gp(ht@row_names_param$gp, ind)
     if(length(ht@left_annotation)) {
@@ -52,13 +53,14 @@ subset_heatmap_by_row = function(ht, ind) {
 }
 
 subset_heatmap_by_column = function(ht, ind) {
-    ht@column_order = intersect(ht@column_order, ind)
+    ht@column_order = order(intersect(ht@column_order, ind))
     if(!is.null(ht@column_dend_param$obj)) {
         stop("column dend is specified as a clustering object, cannot do subsetting.")
     }
     ht@matrix = ht@matrix[, ind, drop = FALSE]
     if(!is.null(ht@column_names_param$labels)) {
         ht@column_names_param$labels = ht@column_names_param$labels[ind]
+        ht@column_names_param$anno = ht@column_names_param$anno[ind]
     }
     ht@column_names_param$gp = subset_gp(ht@column_names_param$gp, ind)
     if(length(ht@top_annotation)) {

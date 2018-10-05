@@ -310,7 +310,8 @@ setMethod(f = "draw",
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     padding = NULL,
     adjust_annotation_extension = TRUE,
-
+    
+    auto_adjust = TRUE,
     row_dend_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right"),
     column_dend_side = c("original", "top", "bottom"),
@@ -518,14 +519,14 @@ setMethod(f = "draw",
 
     if(is_abs_unit(ht_list_width)) {
         ht_list_width = unit(round(convertWidth(ht_list_width, "mm", valueOnly = TRUE)), "mm")
-        qqcat("Since all heatmaps/annotations have absolute units, the total width of the plot is @{ht_list_width} mm.\n")
+        qqcat("Since all heatmaps/annotations have absolute units, the total width of the plot is @{ht_list_width}\n")
         w = ht_list_width
     } else {
         w = unit(1, "npc")
     }
     if(is_abs_unit(ht_list_height)) {
         ht_list_height = unit(round(convertHeight(ht_list_height, "mm", valueOnly = TRUE)), "mm")
-        qqcat("Since all heatmaps/annotations have absolute units, the total height of the plot is @{ht_list_height} mm.\n")
+        qqcat("Since all heatmaps/annotations have absolute units, the total height of the plot is @{ht_list_height}\n")
         h = ht_list_height
     } else {
         h = unit(1, "npc")

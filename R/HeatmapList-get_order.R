@@ -26,7 +26,7 @@ setMethod(f = "row_order",
 	object = make_layout(object)
 
 	n = length(object@ht_list)
-	ht_index = sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap"))
+	ht_index = which(sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap")))
 	if(length(ht_index) == 0) {
 		return(NULL)
 	}
@@ -45,7 +45,7 @@ setMethod(f = "row_order",
 	        lt_rd = c(lt_rd, list(lt))
 	    }
 	    names(lt_rd) = names(object@ht_list)[ht_index]
-	    return(lt_rd)
+	    proper_format_lt(lt_rd)
 	}
 })
 
@@ -111,7 +111,7 @@ setMethod(f = "column_order",
 	object = make_layout(object)
 
 	n = length(object@ht_list)
-	ht_index = sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap"))
+	ht_index = which(sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap")))
 	if(length(ht_index) == 0) {
 		return(NULL)
 	}
@@ -130,8 +130,7 @@ setMethod(f = "column_order",
 	        lt_rd = c(lt_rd, list(lt))
 	    }
 	    names(lt_rd) = names(object@ht_list)[ht_index]
-	    if(length(lt_rd) == 1) lt_rd = lt_rd[[1]]
-	    return(lt_rd)
+	    proper_format_lt(lt_rd)
 	}
 })
 
@@ -195,7 +194,7 @@ setMethod(f = "row_dend",
 	object = make_layout(object)
 
 	n = length(object@ht_list)
-	ht_index = sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap"))
+	ht_index = which(sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap")))
 	if(length(ht_index) == 0) {
 		return(NULL)
 	}
@@ -214,7 +213,7 @@ setMethod(f = "row_dend",
 	        lt_rd = c(lt_rd, list(lt))
 	    }
 	    names(lt_rd) = names(object@ht_list)[ht_index]
-	    return(lt_rd)
+	    proper_format_lt(lt_rd)
 	}
 })
 
@@ -281,7 +280,7 @@ setMethod(f = "column_dend",
 	object = make_layout(object)
 
 	n = length(object@ht_list)
-	ht_index = sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap"))
+	ht_index = which(sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap")))
 	if(length(ht_index) == 0) {
 		return(NULL)
 	}
@@ -300,7 +299,7 @@ setMethod(f = "column_dend",
 	        lt_rd = c(lt_rd, list(lt))
 	    }
 	    names(lt_rd) = names(object@ht_list)[ht_index]
-	    return(lt_rd)
+	    proper_format_lt(lt_rd)
 	}
 })
 
@@ -338,3 +337,23 @@ setMethod(f = "column_dend",
 	}
 })
 
+
+
+proper_format_lt = function(lt) {
+	n_ht = length(lt)
+	# for a single heatmap 
+	if(n_ht == 1) {
+		if(length(lt[[1]]) == 1) {
+			return(lt[[1]][[1]])
+		} else {
+			return(lt[[1]])
+		}
+	} else {
+		has_splitting = sapply(lt, function(x) length(x) != 1)
+		if(has_splitting) {
+			return(lt)
+		} else {
+			return(lapply(lt, function(x) x[[1]]))
+		}
+	}
+}

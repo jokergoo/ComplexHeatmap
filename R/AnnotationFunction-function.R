@@ -158,7 +158,7 @@ anno_simple = function(x, col, na_col = "grey",
 	input_is_matrix = is.matrix(x)
 
 	anno_size = anno_width_and_height(which, width, height, 
-		ht_opt$anno_simple_row_size*ifelse(input_is_matrix, ncol(x), 1))
+		ht_opt$anno_simple_size*ifelse(input_is_matrix, ncol(x), 1))
 	
 	if(missing(col)) {
 		col = default_col(x)

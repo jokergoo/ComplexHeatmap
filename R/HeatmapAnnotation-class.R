@@ -87,18 +87,23 @@ HeatmapAnnotation = function(...,
 	annotation_legend_param = list(), 
 	show_legend = TRUE, 
 	which = c("column", "row"), 
-	annotation_height = NULL, 
-	annotation_width = NULL, 
-	height = NULL,   # total height
-	width = NULL,    # total width
 	gp = gpar(col = NA),
 	border = FALSE,
 	gap = unit(0, "mm"),
+	
 	show_annotation_name = TRUE,
 	annotation_name_gp = gpar(),
 	annotation_name_offset = unit(1, "mm"),
 	annotation_name_side = ifelse(which == "column", "right", "bottom"),
-	annotation_name_rot = ifelse(which == "column", 0, 90)) {
+	annotation_name_rot = ifelse(which == "column", 0, 90),
+	
+	annotation_height = NULL, 
+	annotation_width = NULL, 
+	height = NULL,
+	width = NULL,
+	anno_simple_size = ht_opt$anno_simple_size,
+	simple_anno_size_adjust = FALSE
+	) {
 
 	.ENV$current_annotation_which = NULL
 	which = match.arg(which)[1]
@@ -336,26 +341,9 @@ HeatmapAnnotation = function(...,
     global_height = NULL
     global_width = NULL
     if(which == "column") {
-    	if(is.null(annotation_height)) {
-    		if(!is.null(height)) {
-    			global_height = height
-    		}
-    		anno_size = do.call("unit.c", lapply(anno_list, height))
-			height = sum(anno_size) + sum(gap) - gap[n_total_anno]
-    	} else {
-    		if(length(annotation_height) != n_total_anno) {
-    			stop(qq("Length of `annotation_height` should be @{n_total_anno}"))
-    		}
-    		if(!is.unit(annotation_height)) {
-    			stop("`annotation_height` should be unit object")
-    		}
-    		if(!all(sapply(seq_along(annotation_height), function(x) is_abs_unit(annotation_height[i])))) {
-    			stop("`annotation_height` should only contain absolute units")
-    		}
-    		anno_size = annotation_height
-    		height = sum(anno_size) + sum(gap) - gap[n_total_anno]
-    	}
-
+		anno_size = do.call("unit.c", lapply(anno_list, height))
+		height = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	
     	# for width, only look at `width`
     	if(is.null(width)) {
     		width = unit(1, "npc")
@@ -365,26 +353,10 @@ HeatmapAnnotation = function(...,
     	}
     	
     } else if(which == "row") {
-    	if(is.null(annotation_width)) {
-    		if(!is.null(width)) {
-    			global_width = width
-    		}
-    		anno_size = do.call("unit.c", lapply(anno_list, width))
-			width = sum(anno_size) + sum(gap) - gap[n_total_anno]
-    	} else {
-    		if(length(annotation_width) != n_total_anno) {
-    			stop(qq("Length of `annotation_width` should be @{n_total_anno}"))
-    		}
-    		if(!is.unit(annotation_width)) {
-    			stop("`annotation_width` should be unit object")
-    		}
-    		if(!all(sapply(seq_along(annotation_width), function(x) is_abs_unit(annotation_width[i])))) {
-    			stop("`annotation_width` should only contain absolute units")
-    		}
-    		anno_size = annotation_width
-    		width = sum(anno_size) + sum(gap) - gap[n_total_anno]
-    	}
 
+		anno_size = do.call("unit.c", lapply(anno_list, width))
+		width = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	
     	if(is.null(height)) {
     		height = unit(1, "npc")
     	}
@@ -417,13 +389,14 @@ HeatmapAnnotation = function(...,
     }
     .Object@extended = extended
 
-    ### if global width or height was set, adjust it
-    if(!is.null(global_height)) {
-    	height(.Object) = global_height
-    }
-    if(!is.null(global_width)) {
-    	width(.Object) = global_width
-    }
+    ## adjust height/width if `width`/`annotation_width` is set
+    if(which == "column") {
+	    .Object = resize(.Object, height = height, annotation_height = annotation_height,
+	    	anno_simple_size = anno_simple_size, simple_anno_size_adjust = simple_anno_size_adjust)
+	} else {
+		.Object = resize(.Object, width = width, annotation_width = annotation_width, 
+			anno_simple_size = anno_simple_size, simple_anno_size_adjust = simple_anno_size_adjust)
+	}
 
     return(.Object)
 }
@@ -972,7 +945,7 @@ length.HeatmapAnnotation = function(x) {
 # -annotation_width A vector of of annotation widths in `grid::unit` class.
 # -height The height of the complete heatmap annotation.
 # -width The width of the complete heatmap annotation.
-# -anno_simple_row_size The size of one line of the simple annotation.
+# -anno_simple_size The size of one line of the simple annotation.
 # -simple_anno_size_adjust Whether adjust the size of the simple annotation?
 #
 # == details
@@ -983,10 +956,10 @@ length.HeatmapAnnotation = function(x) {
 #    ``annotation_height`` are absolute units, ``height`` is ignored.
 # 2. if ``annotation_height`` contains non-absolute units, ``height`` also need to be set and the
 #    non-absolute unit should be set in a simple form such as 1:10 or ``unit(1, "null")``.
-# 3. ``anno_simple_row_size`` is only used when ``annotation_height`` is NULL.
+# 3. ``anno_simple_size`` is only used when ``annotation_height`` is NULL.
 # 4. if only ``height`` is set, non-simple annotation is adjusted while keep simple anntation unchanged.
 # 5. if only ``height`` is set and all annotations are simple annotations, all anntations are adjusted.
-#      and ``anno_simple_row_size`` is disabled.
+#      and ``anno_simple_size`` is disabled.
 # 6. If ``simple_anno_size_adjust`` is ``FALSE``, the size of the simple annotations will not change.
 #
 setMethod(f = "resize",
@@ -996,7 +969,7 @@ setMethod(f = "resize",
 	annotation_width = NULL,
 	height = NULL, 
 	width = NULL, 
-	anno_simple_row_size = ht_opt$anno_simple_row_size,
+	anno_simple_size = ht_opt$anno_simple_size,
 	simple_anno_size_adjust = FALSE) {
 
 	if(object@which == "column") {
@@ -1162,10 +1135,10 @@ setMethod(f = "resize",
 
 			anno_size2 = anno_size
 			# size_adjusted = convertUnitFun(size_adjusted, "mm", valueOnly = TRUE)
-			if(is.null(anno_simple_row_size)) {
-				anno_simple_row_size = 5
+			if(is.null(anno_simple_size)) {
+				anno_simple_size = 5
 			} else {
-				anno_simple_row_size = convertUnitFun(anno_simple_row_size, "mm", valueOnly = TRUE)
+				anno_simple_size = convertUnitFun(anno_simple_size, "mm", valueOnly = TRUE)
 			}
 
 			if(size_adjusted <= sum(gap)) {
@@ -1173,12 +1146,12 @@ setMethod(f = "resize",
 			}
 
 			## fix the size of simple annotation and zoom function annotations
-			ts = size_adjusted - sum(gap) - sum(anno_size[l_simple_anno]*anno_simple_row_size/5)
+			ts = size_adjusted - sum(gap) - sum(anno_size[l_simple_anno]*anno_simple_size/5)
 			if(ts < 0) {
 				stop(paste0(size_name, " you set is too small."))
 			}
 			anno_size2[!l_simple_anno] = anno_size[!l_simple_anno]/sum(anno_size[!l_simple_anno]) * ts
-			anno_size2[l_simple_anno] = anno_size[l_simple_anno]*anno_simple_row_size/5
+			anno_size2[l_simple_anno] = anno_size[l_simple_anno]*anno_simple_size/5
 
 			size_adjusted = unit(size_adjusted, "mm")
 			anno_size2 = unit(anno_size2, "mm")

@@ -52,6 +52,8 @@ ha = HeatmapAnnotation(foo = anno_empty(), height = unit(4, "cm"))
 draw(ha, 1:10, test = "anno_empty")
 ha = HeatmapAnnotation(foo = anno_empty(), bar = 1:10, height = unit(4, "cm"))
 draw(ha, 1:10, test = "anno_empty")
+ha = HeatmapAnnotation(foo = anno_empty(), bar = 1:10, height = unit(4, "cm"))
+draw(ha, 1:10, test = "anno_empty")
 
 ha = HeatmapAnnotation(foo = function(index) {grid.rect()}, bar = 1:10 height = unit(4, "cm"))
 draw(ha, 1:10, test = "self-defined function")
