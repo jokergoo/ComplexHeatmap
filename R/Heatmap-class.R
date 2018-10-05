@@ -350,7 +350,7 @@ Heatmap = function(matrix, col, name,
 
     if(is.data.frame(matrix)) {
         if(verbose) qqcat("convert data frame to matrix\n")
-        warnings("The input is a data frame, convert to the matrix.")
+        warning_wrap("The input is a data frame, convert it to the matrix.")
         matrix = as.matrix(matrix)
     }
     if(!is.matrix(matrix)) {
@@ -361,7 +361,7 @@ Heatmap = function(matrix, col, name,
             if(!missing(name)) colnames(matrix) = name
             if(verbose) qqcat("convert simple vector to one-column matrix\n")
         } else {
-            stop("If data is not a matrix, it should be a simple vector.")
+            stop_wrap("If input is not a matrix, it should be a simple vector.")
         }
     }
 
@@ -436,14 +436,18 @@ Heatmap = function(matrix, col, name,
     ### check row_split and column_split ###
     if(!is.null(row_split)) {
         if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
-            .Object@matrix_param$row_split = row_split
+            if(is.numeric(row_split) && length(row_split) == 1) {
+                .Object@matrix_param$row_split = row_split
+            } else {
+                stop_wrap("When `cluster_rows` is a dendrogram, `row_split` can only be a single number.")
+            }
         } else {
             if(identical(cluster_rows, TRUE) && is.numeric(row_split) && length(row_split) == 1) {
 
             } else {
                 if(!is.data.frame(row_split)) row_split = data.frame(row_split)
                 if(nrow(row_split) != nrow(matrix)) {
-                    stop("Length or number of rows of `row_split` should be same as rows in `matrix`.")
+                    stop_wrap("Length or nrow of `row_split` should be same as nrow of `matrix`.")
                 }
             }
         }
@@ -452,14 +456,18 @@ Heatmap = function(matrix, col, name,
 
     if(!is.null(column_split)) {
         if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
-            .Object@matrix_param$column_split = column_split
+            if(is.numeric(column_split) && length(column_split) == 1) {
+                .Object@matrix_param$column_split = column_split
+            } else {
+               stop_wrap("When `cluster_columns` is a dendrogram, `column_split` can only be a single number.")
+            }
         } else {
             if(identical(cluster_columns, TRUE) && is.numeric(column_split) && length(column_split) == 1) {
 
             } else {
                 if(!is.data.frame(column_split)) column_split = data.frame(column_split)
                 if(nrow(column_split) != ncol(matrix)) {
-                    stop("Length or number of columns of `column_split` should be same as columns in `matrix`.")
+                    stop("Length or ncol of `column_split` should be same as ncol of `matrix`.")
                 }
             }
         }
