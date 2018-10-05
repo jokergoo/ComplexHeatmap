@@ -296,10 +296,10 @@ Heatmap = function(matrix, col, name,
     row_gap = unit(1, "mm"),
     column_gap = unit(1, "mm"),
 
-    width = unit(1, "npc"),
-    heatmap_body_width = NULL,
-    height = unit(1, "npc"), 
-    heatmap_body_height = NULL,
+    heatmap_width = unit(1, "npc"),
+    width = NULL,
+    heatmap_height = unit(1, "npc"), 
+    height = NULL,
 
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
@@ -482,24 +482,24 @@ Heatmap = function(matrix, col, name,
     .Object@matrix_param$cell_fun = cell_fun
     .Object@matrix_param$layer_fun = layer_fun
     
-    if(!missing(heatmap_body_width)) {
-        if(is_abs_unit(heatmap_body_width)) {
-            width = unit(1, "npc") # since width is a relative unit and all components are absolute, it will be refit
+    if(!missing(width)) {
+        if(is_abs_unit(width)) {
+            heatmap_width = unit(1, "npc") # since width is a relative unit and all components are absolute, it will be refit
         }
     }
-    if(!missing(heatmap_body_height)) {
-        if(is_abs_unit(heatmap_body_height)) {
-            height = unit(1, "npc")
+    if(!missing(height)) {
+        if(is_abs_unit(height)) {
+            heatmap_height = unit(1, "npc")
         }
     }
-    if(is.null(heatmap_body_width)) {
-        heatmap_body_width = unit(ncol(matrix), "null")
+    if(is.null(width)) {
+        width = unit(ncol(matrix), "null")
     }
-    if(is.null(heatmap_body_height)) {
-        heatmap_body_height = unit(nrow(matrix), "null")
+    if(is.null(height)) {
+        height = unit(nrow(matrix), "null")
     }
-    .Object@matrix_param$width = heatmap_body_width
-    .Object@matrix_param$height = heatmap_body_height
+    .Object@matrix_param$width = width
+    .Object@matrix_param$height = height
 
     ### color for main matrix #########
     if(ncol(matrix) > 0 && nrow(matrix) > 0) {
@@ -780,8 +780,8 @@ Heatmap = function(matrix, col, name,
         initialized = FALSE
     )
 
-    .Object@heatmap_param$width = width
-    .Object@heatmap_param$height = height
+    .Object@heatmap_param$width = heatmap_width
+    .Object@heatmap_param$height = heatmap_height
     .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
     .Object@heatmap_param$use_raster = use_raster
     .Object@heatmap_param$raster_device = match.arg(raster_device)[1]
