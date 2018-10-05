@@ -596,6 +596,12 @@ setMethod(f = "show",
         }
     }
 
+    if(length(x@ht_list) == 1) {
+        if(inherits(x@ht_list[[1]], "Heatmap")) {
+           return(x@ht_list[[1]][i, j])
+        }
+    }
+
     if(nargs() == 2) {
         subset_heatmap_list_by_row(x, i)
     } else {
