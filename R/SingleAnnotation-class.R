@@ -151,6 +151,7 @@ SingleAnnotation = function(name, value, col, fun,
 	name_offset = unit(1, "mm"),
 	name_side = ifelse(which == "column", "right", "bottom"),
     name_rot = ifelse(which == "column", 0, 90),
+    anno_simple_size = ht_opt$anno_simple_size,
     width = NULL, height = NULL) {
 
     .ENV$current_annotation_which = NULL
@@ -457,7 +458,7 @@ SingleAnnotation = function(name, value, col, fun,
         value = value
 
         if(verbose) qqcat("@{name}: generate AnnotationFunction for simple annotation values by anno_simple()\n")
-        .Object@fun = anno_simple(value, col = color_mapping, which = which, na_col = na_col, gp = gp, border = border)
+        .Object@fun = anno_simple(value, col = color_mapping, which = which, na_col = na_col, gp = gp, border = border, anno_simple_size = anno_simple_size)
         if(missing(width)) {
             .Object@width = .Object@fun@width
         } else {

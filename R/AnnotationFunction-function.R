@@ -142,6 +142,7 @@ subset_vector = function(x, i) x[i]
 anno_simple = function(x, col, na_col = "grey", 
 	which = c("column", "row"), border = FALSE, gp = gpar(col = NA),
 	pch = NULL, pt_size = unit(1, "snpc")*0.8, pt_gp = gpar(), 
+	anno_simple_size = ht_opt$anno_simple_size,
 	width = NULL, height = NULL) {
 
 	if(is.null(.ENV$current_annotation_which)) {
@@ -159,7 +160,7 @@ anno_simple = function(x, col, na_col = "grey",
 	input_is_matrix = is.matrix(x)
 
 	anno_size = anno_width_and_height(which, width, height, 
-		ht_opt$anno_simple_size*ifelse(input_is_matrix, ncol(x), 1))
+		anno_simple_size*ifelse(input_is_matrix, ncol(x), 1))
 	
 	if(missing(col)) {
 		col = default_col(x)

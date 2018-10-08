@@ -297,6 +297,7 @@ HeatmapAnnotation = function(...,
 			arg_list$legend_param = annotation_legend_param[[i_simple + 1]]
 			arg_list$value = anno_value_list[[ag]]
 			arg_list$na_col = na_col
+			arg_list$anno_simple_size = anno_simple_size
 			if(missing(col)) {
 				anno_list[[ag]] = do.call(SingleAnnotation, arg_list)
 		    } else {
@@ -1108,7 +1109,6 @@ setMethod(f = "resize",
 	}
 
 	# from here `annotation_size_adjusted` contains absolute units if it is called.
-
 	gap = convertUnitFun(gap, "mm", valueOnly = TRUE)
 
 	if(is_size_set) {
@@ -1144,7 +1144,6 @@ setMethod(f = "resize",
 			} else {
 				anno_simple_size = convertUnitFun(anno_simple_size, "mm", valueOnly = TRUE)
 			}
-
 			if(size_adjusted <= sum(gap)) {
 				stop(paste0(size_name, " you set is smaller than sum of gaps."))
 			}
