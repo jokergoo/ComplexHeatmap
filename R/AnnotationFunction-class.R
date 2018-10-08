@@ -19,7 +19,7 @@ AnnotationFunction = setClass("AnnotationFunction",
 		fun_name = "character",
 		width = "ANY",
 		height = "ANY",
-		n = "numeric",
+		n = "ANY",
 		var_env = "environment",
 		fun = "function",
 		subset_rule = "list",
@@ -35,7 +35,7 @@ AnnotationFunction = setClass("AnnotationFunction",
 		subset_rule = list(),
 		subsetable = FALSE,
 		data_scale = c(0, 1),
-		n = 0,
+		n = NA_integer_,
 		extended = unit(c(0, 0, 0, 0), "mm"),
 		show_name = TRUE
 	)
@@ -50,7 +50,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 			height = default
 		} else {
 			if(!is_abs_unit(height)) {
-				stop("height can only be an absolute unit.")
+				stop_wrap("height of the annotation can only be an absolute unit.")
 			} else {
 				height = convertHeight(height, "mm")
 			}
@@ -64,7 +64,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 			width = default
 		} else {
 			if(!is_abs_unit(width)) {
-				stop("width can only be an absolute unit.")
+				stop_wrap("width of the annotation can only be an absolute unit.")
 			} else {
 				width = convertWidth(width, "mm")
 			}
@@ -174,7 +174,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # `anno_density`, `anno_joyplot`, `anno_horizon`, `anno_text` and `anno_mark`. Thess built-in annotation functions
 # are all subsettable.
 AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), 
-	var_import = list(), n = 0, data_scale = c(0, 1), subset_rule = list(), 
+	var_import = list(), n = NA, data_scale = c(0, 1), subset_rule = list(), 
 	subsetable = FALSE, show_name = TRUE, width = NULL, height = NULL) {
 
 	which = match.arg(which)[1]
@@ -213,7 +213,7 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 				anno@var_env[[nm]] = var_import[[nm]]
 			}
 		} else {
-			stop_wrap("`var_import` needs to be a character vector which contains variable names or a list of variables")
+			stop_wrap("`var_import` needs to be a character vector which contains variable names or a list of variables.")
 		}
 		environment(fun) = anno@var_env
 	} else {
@@ -275,14 +275,14 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 		return(x)
 	} else {
 		if(!x@subsetable) {
-			stop("This object is not subsetable.")
+			stop_wrap("This object is not subsetable.")
 		}
 		x = copy_all(x)
 		for(var in names(x@subset_rule)) {
 			oe = try(x@var_env[[var]] <- x@subset_rule[[var]](x@var_env[[var]], i), silent = TRUE)
 			if(inherits(oe, "try-error")) {
 				message(paste0("An error when subsetting ", var))
-				stop(oe)
+				stop_wrap(oe)
 			}
 		}
 		if(is.logical(i)) {
@@ -357,7 +357,7 @@ setMethod(f = "draw",
 	}
 	vp_name2 = current.viewport()$name
 	if(vp_name1 != vp_name2) {
-		stop("Viewports are not the same before and after plotting the annotation graphics.")
+		stop_wrap("Viewports should be the same before and after plotting the annotation graphics.")
 	}
 	popViewport()
 
@@ -443,7 +443,9 @@ setMethod(f = "show",
 # anno = anno_points(1:10)
 # nobs(anno)
 nobs.AnnotationFunction = function(object, ...) {
-	if(object@n > 0) {
+	if(is.na(object@n)) {
+		return(NA)
+	} else if(object@n > 0) {
 		object@n
 	} else {
 		NA

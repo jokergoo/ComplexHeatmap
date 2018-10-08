@@ -416,6 +416,7 @@ setMethod(f = "draw",
         main_heatmap = main_heatmap,
         padding = padding,
 
+        auto_adjust = auto_adjust,
         row_dend_side = row_dend_side,
         row_sub_title_side = row_sub_title_side,
         column_dend_side = column_dend_side,

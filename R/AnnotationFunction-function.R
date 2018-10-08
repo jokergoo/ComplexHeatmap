@@ -55,6 +55,7 @@ anno_empty = function(which = c("column", "row"), border = TRUE, width = NULL, h
 
 	anno = AnnotationFunction(
 		fun = fun,
+		n = NA,
 		fun_name = "anno_empty",
 		which = which,
 		var_import = list(border),
@@ -236,6 +237,7 @@ anno_simple = function(x, col, na_col = "grey",
                 fill = map_to_colors(color_mapping, value[index, i])
                 grid.rect(x, y = (nc-i +0.5)/nc, width = 1/n, height = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
                 if(!is.null(pch)) {
+                	pch = pch[index, , drop = FALSE]
 					l = !is.na(pch[, i])
 					grid.points(x[l], y = rep((nc-i +0.5)/nc, sum(l)), pch = pch[l, i], size = pt_size, gp = pt_gp)
 				}
@@ -244,6 +246,7 @@ anno_simple = function(x, col, na_col = "grey",
 			fill = map_to_colors(color_mapping, value[index])
 			grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
 			if(!is.null(pch)) {
+				pch = pch[index]
 				l = !is.na(pch)
 				grid.points(x[l], y = rep(0.5, sum(l)), pch = pch[l], size = pt_size[l], gp = subset_gp(pt_gp, which(l)))
 			}
@@ -337,10 +340,10 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 	if(inherits(image, "character")) { ## they are file path
 		image_type = tolower(gsub("^.*\\.(\\w+)$", "\\1", image))
 		if(! all(image_type[image_type != ""] %in% allowed_image_type)) {
-			stop("image file should be of png/svg/pdf/eps/jpeg/jpg/tiff.")
+			stop_wrap("image file should be of png/svg/pdf/eps/jpeg/jpg/tiff.")
 		}
 	} else {
-		stop("`image` should be a vector of path.")
+		stop_wrap("`image` should be a vector of path.")
 	}
 
 	n_image = length(image)
@@ -352,25 +355,25 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 			image_class[i] = NA
 		} else if(image_type[i] == "png") {
 			if(!requireNamespace("png")) {
-				stop("Need png package to read png images.")
+				stop_wrap("Need png package to read png images.")
 			}
 			image_list[[i]] = png::readPNG(image[i])
 			image_class[i] = "raster"
 		} else if(image_type[i] %in% c("jpeg", "jpg")) {
 			if(!requireNamespace("jpeg")) {
-				stop("Need jpeg package to read jpeg/jpg images.")
+				stop_wrap("Need jpeg package to read jpeg/jpg images.")
 			}
 			image_list[[i]] = jpeg::readJPEG(image[i])
 			image_class[i] = "raster"
 		} else if(image_type[i] == "tiff") {
 			if(!requireNamespace("tiff")) {
-				stop("Need tiff package to read tiff images.")
+				stop_wrap("Need tiff package to read tiff images.")
 			}
 			image_list[[i]] = tiff::readTIFF(image[i])
 			image_class[i] = "raster"
 		} else if(image_type[i] %in% c("pdf", "eps")) {
 			if(!requireNamespace("grImport")) {
-				stop("Need grImport package to read pdf/eps images.")
+				stop_wrap("Need grImport package to read pdf/eps images.")
 			}
 			temp_file = tempfile()
 			getFromNamespace("PostScriptTrace", ns = "grImport")(image[[i]], temp_file)
@@ -379,10 +382,10 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 			image_class[i] = "grImport::Picture"
 		} else if(image_type[i] == "svg") {
 			if(!requireNamespace("grImport2")) {
-				stop("Need grImport2 package to read svg images.")
+				stop_wrap("Need grImport2 package to read svg images.")
 			}
 			if(!requireNamespace("rsvg")) {
-				stop("Need rsvg package to convert svg images.")
+				stop_wrap("Need rsvg package to convert svg images.")
 			}
 			temp_file = tempfile()
 			rsvg::rsvg_svg(image[i], temp_file)
@@ -1931,13 +1934,13 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 					value[[i]] = cbind(seq_along(x[[i]]), x[[i]])
 				}
 			} else {
-				stop("Since x is a list, x need to be a list of two-column matrices.")
+				stop_wrap("Since x is a list, x need to be a list of two-column matrices.")
 			}
 		} else {
 			value = x
 		}
 	} else {
-		stop("The input should be a list of two-column matrices or a matrix/data frame.")
+		stop_wrap("The input should be a list of two-column matrices or a matrix/data frame.")
 	}
 
 	xscale = range(lapply(value, function(x) x[, 1]), na.rm = TRUE)
@@ -2124,13 +2127,13 @@ anno_horizon = function(x, which = c("column", "row"),
 					value[[i]] = cbind(seq_along(x[[i]]), x[[i]])
 				}
 			} else {
-				stop("Since x is a list, x need to be a list of two-column matrices.")
+				stop_wrap("Since x is a list, x need to be a list of two-column matrices.")
 			}
 		} else {
 			value = x
 		}
 	} else {
-		stop("The input should be a list of two-column matrices or a matrix/data frame.")
+		stop_wrap("The input should be a list of two-column matrices or a matrix/data frame.")
 	}
 
 	if(is.null(gp$pos_fill)) gp$pos_fill = "#D73027"
@@ -2148,7 +2151,7 @@ anno_horizon = function(x, which = c("column", "row"),
 	}
 
 	if(which == "column") {
-		stop("anno_horizon() does not support column annotation. If you want, please email me.")
+		stop_wrap("anno_horizon() does not support column annotation. If you want, please email me.")
 	}
 
 	if(normalize) {
@@ -2323,7 +2326,7 @@ split_vec_by_NA = function(x) {
 #
 row_anno_points = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message("From this version of ComplexHeatmap, you can directly use `anno_points()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_points()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_points(..., which = "row")
 }
@@ -2345,7 +2348,7 @@ row_anno_points = function(...) {
 #
 row_anno_barplot = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message("From this version of ComplexHeatmap, you can directly use `anno_barplot()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_barplot()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_barplot(..., which = "row")
 }
@@ -2367,7 +2370,7 @@ row_anno_barplot = function(...) {
 #
 row_anno_boxplot = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message("From this version of ComplexHeatmap, you can directly use `anno_boxplot()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_boxplot()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_boxplot(..., which = "row")
 }
@@ -2388,7 +2391,7 @@ row_anno_boxplot = function(...) {
 #
 row_anno_histogram = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message("From this version of ComplexHeatmap, you can directly use `anno_histogram()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_histogram()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_histogram(..., which = "row")
 }
@@ -2409,7 +2412,7 @@ row_anno_histogram = function(...) {
 #
 row_anno_density = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message("From this version of ComplexHeatmap, you can directly use `anno_density()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_density()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_density(..., which = "row")
 }
@@ -2430,7 +2433,7 @@ row_anno_density = function(...) {
 #
 row_anno_text = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message("From this version of ComplexHeatmap, you can directly use `anno_text()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_text()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_text(..., which = "row")
 }
@@ -2482,7 +2485,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	}
 
 	if(!is.numeric(at)) {
-		stop(paste0("`at` should be numeric ", which, " index corresponding to the matrix."))
+		stop_wrap(paste0("`at` should be numeric ", which, " index corresponding to the matrix."))
 	}
 	
 	n = length(at)
@@ -2623,7 +2626,7 @@ subset_by_intersect = function(x, i) {
 # `anno_link` is deprecated, please use `anno_mark` instead.
 #
 anno_link = function(...) {
-	warning("anno_link() is deprecated, please use anno_mark() instead.")
+	warning_wrap("anno_link() is deprecated, please use anno_mark() instead.")
 	anno_mark(...)
 }
 
@@ -2644,7 +2647,7 @@ anno_link = function(...) {
 #
 row_anno_link = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message("From this version of ComplexHeatmap, you can directly use `anno_mark()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_mark()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_link(..., which = "row")
 }
@@ -2659,7 +2662,7 @@ anno_summarize = function(which = c("column", "row"),
 	}
 
 	if(which == "column") {
-		stop("`anno_summarize()` is only allowed as a column annotation.")
+		stop_wrap("`anno_summarize()` is only allowed as a column annotation.")
 	}
 
 	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))

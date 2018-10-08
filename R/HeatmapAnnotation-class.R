@@ -145,12 +145,12 @@ HeatmapAnnotation = function(...,
     ##### pull all annotation to `anno_value_list`####
     if("df" %in% called_args) {
     	if(is.matrix(df)) {
-    		warning("`df` should be a data frame while not a matrix. Convert it to data frame.")
+    		warning_wrap("`df` should be a data frame while not a matrix. Convert it to data frame.")
     		df = as.data.frame(df)
     	} else if(!is.data.frame(df)) {
     		oe = try(df <- as.data.frame(df), silent = TRUE)
     		if(inherits(oe, "try-errir")) {
-    			stop("`df` should be a data frame.")
+    			stop_wrap("`df` should be a data frame.")
     		}
     	}
     }
@@ -158,7 +158,7 @@ HeatmapAnnotation = function(...,
     anno_arg_list = list(...)
 	if("df" %in% called_args && length(anno_arg_list)) {
 		if(any(duplicated(c(names(df), names(anno_arg_list))))) {
-			stop("Annotation names are duplicated. Check the column names of `df`.")
+			stop_wrap("Annotation names are duplicated. Check the column names of `df`.")
 		}
 	}
 
@@ -190,12 +190,12 @@ HeatmapAnnotation = function(...,
 		if(all(sapply(annotation_legend_param, inherits, "list"))) {  # if it is a list of lists
 			nl = length(annotation_legend_param)
 			if(nl > n_simple_anno) {
-				stop("Amount of legend params is larger than the number of simple annotations.")
+				stop_wrap("Amount of legend params is larger than the number of simple annotations.")
 			}
 			if(is.null(names(annotation_legend_param))) {
 				names(annotation_legend_param) = simple_anno_name[seq_len(nl)]
 			} else if(length(setdiff(names(annotation_legend_param), simple_anno_name))) {
-				stop("Some names in 'annotation_legend_param' are not in names of simple annotations.")
+				stop_wrap("Some names in 'annotation_legend_param' are not in names of simple annotations.")
 			} else {
 				annotation_legend_param = annotation_legend_param[ intersect(simple_anno_name, names(annotation_legend_param)) ]
 			}
@@ -539,8 +539,8 @@ setMethod(f = "draw",
 
     if(test2) {
     	grid.newpage()
-    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(2, "cm"), height = object@height))
-    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(2, "cm"), width = object@width))
+    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(3, "cm"), height = object@height))
+    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(3, "cm"), width = object@width))
     } else {
 		pushViewport(viewport(...))
 	}
@@ -571,7 +571,7 @@ setMethod(f = "draw",
 			oe = try(draw(object@anno_list[[i]], index, k, n))
 			if(inherits(oe, "try-error")) {
 				cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
-				stop(oe)
+				stop_wrap(oe)
 			}
 			upViewport()
 		}
@@ -581,7 +581,7 @@ setMethod(f = "draw",
 			oe = try(draw(object@anno_list[[i]], index, k, n))
 			if(inherits(oe, "try-error")) {
 				cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
-				stop(oe)
+				stop_wrap(oe)
 			}
 			upViewport()
 		}
@@ -653,7 +653,11 @@ setMethod(f = "show",
 				paste0(object@anno_list[[i]]@color_mapping@type, " vector")
 			}
 		} else if(inherits(object@anno_list[[i]]@fun, "AnnotationFunction")) {
-			"AnnotationFunction"
+			if(object@anno_list[[i]]@fun@fun_name != "") {
+				paste0(object@anno_list[[i]]@fun@fun_name, "()")
+			} else {
+				"AnnotationFunction"
+			}
 		} else if(inherits(object@anno_list[[i]]@fun, "function")) {
 			"function"
 		} else {

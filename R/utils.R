@@ -364,19 +364,19 @@ dev.null = function(...) {
 }
 
 stop_wrap = function (...) {
-    x = paste0(...)
+    x = qq(paste0(...))
     x = paste(strwrap(x), collapse = "\n")
     stop(x, call. = FALSE)
 }
 
 warning_wrap = function (...) {
-    x = paste0(...)
+    x = qq(paste0(...))
     x = paste(strwrap(x), collapse = "\n")
     warning(x, call. = FALSE)
 }
 
 message_wrap = function (...) {
-    x = paste0(...)
+    x = qq(paste0(...))
     x = paste(strwrap(x), collapse = "\n")
     message(x)
 }
@@ -465,7 +465,7 @@ normalize_graphic_param_to_mat = function(x, nc, nr, name) {
         if(nrow(x) == nr && ncol(x) == nc) {
             return(x)
         } else {
-            stop(paste0(name, "needs to be a matrix with ", nc, " columns and ", nr, " rows."))
+            stop_wrap(paste0(name, "needs to be a matrix with ", nc, " columns and ", nr, " rows."))
         }
     } else {
         if(length(x) == nc) {
@@ -475,7 +475,7 @@ normalize_graphic_param_to_mat = function(x, nc, nr, name) {
         } else if(length(x) == 1) {
             return(matrix(x, ncol = nc, nrow = nr))
         } else {
-            stop(paste0("Since ", name, " is a vector, it should have length of ", nc, " or ", nr, "."))
+            stop_wrap(paste0("Since ", name, " is a vector, it should have length of ", nc, " or ", nr, "."))
         }
     }
 }
@@ -585,7 +585,7 @@ pindex = function(m, i, j) {
         dim(v) = c(dm[1]*dm[2], dm[3])
         v[ind, , drop = FALSE]
     } else {
-        stop("dimension of `m` can only be 2 and 3.")
+        stop_wrap("dimension of `m` can only be 2 and 3.")
     }
 }
 

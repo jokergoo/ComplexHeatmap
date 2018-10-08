@@ -482,25 +482,6 @@ Heatmap = function(matrix, col, name,
     .Object@matrix_param$cell_fun = cell_fun
     .Object@matrix_param$layer_fun = layer_fun
     
-    if(!missing(width)) {
-        if(is_abs_unit(width)) {
-            heatmap_width = unit(1, "npc") # since width is a relative unit and all components are absolute, it will be refit
-        }
-    }
-    if(!missing(height)) {
-        if(is_abs_unit(height)) {
-            heatmap_height = unit(1, "npc")
-        }
-    }
-    if(is.null(width)) {
-        width = unit(ncol(matrix), "null")
-    }
-    if(is.null(height)) {
-        height = unit(nrow(matrix), "null")
-    }
-    .Object@matrix_param$width = width
-    .Object@matrix_param$height = height
-
     ### color for main matrix #########
     if(ncol(matrix) > 0 && nrow(matrix) > 0) {
         if(missing(col)) {
@@ -522,7 +503,7 @@ Heatmap = function(matrix, col, name,
                     .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
                     if(verbose) qqcat("input color is a vector with no names, treat it as continuous color mapping\n")
                 } else {
-                    stop("`col` should have names to map to values in `mat`.")
+                    stop_wrap("`col` should have names to map to values in `mat`.")
                 }
             } else {
                 col = col[intersect(c(names(col), "_NA_"), as.character(matrix))]
@@ -534,13 +515,8 @@ Heatmap = function(matrix, col, name,
     }
     
     ##### titles, should also consider titles after row splitting #####
-    if(length(row_title) != 1) {
-    } else if(!inherits(row_title, c("expression", "call"))) {
-        if(is.na(row_title)) {
-            row_title = character(0)
-        } else if(row_title == "") {
-            row_title = character(0)
-        }
+    if(identical(row_title, NA) || identical(row_title, "")) {
+        row_title = character(0)
     }
     .Object@row_title = row_title
     .Object@row_title_param$rot = row_title_rot %% 360
@@ -548,13 +524,8 @@ Heatmap = function(matrix, col, name,
     .Object@row_title_param$gp = check_gp(row_title_gp)  # if the number of settings is same as number of row-splits, gp will be adjusted by `make_row_dend`
     .Object@row_title_param$just = get_text_just(rot = row_title_rot, side = .Object@row_title_param$side)
 
-    if(length(column_title) != 1) {
-    } else if(!inherits(column_title, c("expression", "call"))) {
-        if(is.na(column_title)) {
-            column_title = character(0)
-        } else if(column_title == "") {
-            column_title = character(0)
-        }
+    if(identical(column_title, NA) || identical(column_title, "")) {
+        column_title = character(0)
     }
     .Object@column_title = column_title
     .Object@column_title_param$rot = column_title_rot %% 360
@@ -574,6 +545,9 @@ Heatmap = function(matrix, col, name,
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
     # we use anno_text to draw row/column names because it already takes care of text rotation
     if(length(row_labels)) {
+        if(length(row_labels) != nrow(matrix)) {
+            stop_wrap("Length of `row_labels` should be the same as the nrow of matrix.")
+        }
         row_names_anno = anno_text(row_labels, which = "row", gp = row_names_gp, rot = row_names_rot,
             location = ifelse(.Object@row_names_param$side == "left", 1, 0), 
             just = ifelse(.Object@row_names_param$side == "left", "right", "left"))
@@ -590,6 +564,9 @@ Heatmap = function(matrix, col, name,
     .Object@column_names_param$rot = column_names_rot
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
     if(length(column_labels)) {
+        if(length(column_labels) != ncol(matrix)) {
+            stop_wrap("Length of `column_labels` should be the same as the ncol of matrix.")
+        }
         column_names_anno = anno_text(column_labels, which = "column", gp = column_names_gp, rot = column_names_rot,
             location = ifelse(.Object@column_names_param$side == "top", 0, 1), 
             just = ifelse(.Object@column_names_param$side == "top", 
@@ -683,13 +660,13 @@ Heatmap = function(matrix, col, name,
     if(!is.null(top_annotation)) {
         if(length(top_annotation) > 0) {
             if(!.Object@top_annotation@which == "column") {
-                stop("`which` in `top_annotation` should only be `column`.")
+                stop_wrap("`which` in `top_annotation` should only be `column`.")
             }
         }
         nb = nobs(top_annotation)
         if(!is.na(nb)) {
             if(nb != ncol(.Object@matrix)) {
-                stop("number of items in top anntotion should be same as number of columns of the matrix.")
+                stop_wrap("number of observations in top annotation should be as same as ncol of the matrix.")
             }
         }
     }
@@ -703,13 +680,13 @@ Heatmap = function(matrix, col, name,
     if(!is.null(bottom_annotation)) {
         if(length(bottom_annotation) > 0) {
             if(!.Object@bottom_annotation@which == "column") {
-                stop("`which` in `bottom_annotation` should only be `column`.")
+                stop_wrap("`which` in `bottom_annotation` should only be `column`.")
             }
         }
         nb = nobs(bottom_annotation)
         if(!is.na(nb)) {
             if(nb != ncol(.Object@matrix)) {
-                stop("number of items in bottom anntotion should be same as number of columns of the matrix.")
+                stop_wrap("number of observations in bottom anntotion should be as same as ncol of the matrix.")
             }
         }
     }
@@ -723,13 +700,13 @@ Heatmap = function(matrix, col, name,
     if(!is.null(left_annotation)) {
         if(length(left_annotation) > 0) {
             if(!.Object@left_annotation@which == "row") {
-                stop("`which` in `left_annotation` should only be `row`, or consider using `rowAnnotation()`.")
+                stop_wrap("`which` in `left_annotation` should only be `row`, or consider using `rowAnnotation()`.")
             }
         }
         nb = nobs(left_annotation)
         if(!is.na(nb)) {
             if(nb != nrow(.Object@matrix)) {
-                stop("number of items in left anntotion should be same as number of rows of the matrix.")
+                stop_wrap("number of observations in left anntotion should be same as nrow of the matrix.")
             }
         }
     }
@@ -743,13 +720,13 @@ Heatmap = function(matrix, col, name,
     if(!is.null(right_annotation)) {
         if(length(right_annotation) > 0) {
             if(!.Object@right_annotation@which == "row") {
-                stop("`which` in `right_annotation` should only be `row`, or consider using `rowAnnotation()`.")
+                stop_wrap("`which` in `right_annotation` should only be `row`, or consider using `rowAnnotation()`.")
             }
         }
         nb = nobs(right_annotation)
         if(!is.na(nb)) {
             if(nb != nrow(.Object@matrix)) {
-                stop("number of items in right anntotion should be same as number of rows of the matrix.")
+                stop_wrap("number of observations in right anntotion should be same as nrow of the matrix.")
             }
         }
     }
@@ -780,6 +757,36 @@ Heatmap = function(matrix, col, name,
         initialized = FALSE
     )
 
+    if(is.null(width)) {
+        width = unit(ncol(matrix), "null")
+    } else if(is.numeric(width) && !inherits(width, "unit")) {
+        width = unit(width, "null")
+    } else if(!inherits(width, "unit")) {
+        stop_wrap("`width` should be a `unit` object or a single number.")
+    }
+
+    if(is.null(height)) {
+        height = unit(nrow(matrix), "null")
+    } else if(is.numeric(height) && !inherits(height, "unit")) {
+        height = unit(height, "null")
+    } else if(!inherits(height, "unit")) {
+        stop_wrap("`height` should be a `unit` object or a single number.")
+    }
+
+    if(!is.null(width) && !is.null(heatmap_width)) {
+        if(is_abs_unit(width) && is_abs_unit(heatmap_width)) {
+            stop_wrap("`heatmap_width` and `width` should not all be the absolute units.")
+        }
+    }
+    if(!is.null(height) && !is.null(heatmap_height)) {
+        if(is_abs_unit(height) && is_abs_unit(heatmap_height)) {
+            stop_wrap("`heatmap_height` and `width` should not all be the absolute units.")
+        }
+    }
+    
+    .Object@matrix_param$width = width
+    .Object@matrix_param$height = height
+
     .Object@heatmap_param$width = heatmap_width
     .Object@heatmap_param$height = heatmap_height
     .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
@@ -791,11 +798,9 @@ Heatmap = function(matrix, col, name,
     .Object@heatmap_param$post_fun = post_fun
 
     if(nrow(matrix) == 0) {
-        .Object@heatmap_param$height = unit(0, "mm")
         .Object@matrix_param$height = unit(0, "mm")
     }
     if(ncol(matrix) == 0) {
-        .Object@heatmap_param$width = unit(0, "mm")
         .Object@matrix_param$width = unit(0, "mm")
     }
 
@@ -827,7 +832,13 @@ setMethod(f = "make_row_cluster",
     signature = "Heatmap",
     definition = function(object) {
 
-    make_cluster(object, "row")
+    object = make_cluster(object, "row")
+    if(length(object@row_title) > 1) {
+        if(length(object@row_title) != length(object@row_order_list)) {
+            stop_wrap("If `row_title` is set with length > 1, the length should be as same as the number of row slices.")
+        }
+    }
+    return(object)  
 })
 
 # == title
@@ -853,7 +864,13 @@ setMethod(f = "make_column_cluster",
     signature = "Heatmap",
     definition = function(object) {
 
-    make_cluster(object, "column")
+    object = make_cluster(object, "column")
+    if(length(object@column_title) > 1) {
+        if(length(object@column_title) != length(object@column_order_list)) {
+            stop_wrap("If `column_title` is set with length > 1, the length should be as same as the number of column slices.")
+        }
+    }
+    return(object)
 })
 
 make_cluster = function(object, which = c("row", "column")) {
@@ -902,7 +919,7 @@ make_cluster = function(object, which = c("row", "column")) {
 
         if(!is.null(dend_param$obj)) {
             if(km > 1) {
-                stop("You can not make k-means partition since you have already specified a clustering object.")
+                stop_wrap("You can not perform k-means clustering since you have already specified a clustering object.")
             }
 
             if(inherits(dend_param$obj, "hclust")) {
@@ -916,10 +933,10 @@ make_cluster = function(object, which = c("row", "column")) {
                 if(verbose) qqcat("since you provided a clustering object and @{which}_split is null, the entrie clustering object is taken as an one-element list.\n")
             } else {
                 if(length(split) > 1 || !is.numeric(split)) {
-                    stop(qq("Since you specified a clustering object, you can only split @{which}s by providing a number (number of @{which} slices)."))
+                    stop_wrap(qq("Since you specified a clustering object, you can only split @{which}s by providing a number (number of @{which} slices)."))
                 }
                 if(split < 2) {
-                    stop("Here `split` should be equal or larger than 2.")
+                    stop_wrap("Here `split` should be equal or larger than 2.")
                 }
                 
                 ct = cut_dendrogram(dend_param$obj, split)
@@ -959,11 +976,11 @@ make_cluster = function(object, which = c("row", "column")) {
 
                 if(which == "row") {
                     if(length(reorder) != nrow(mat)) {
-                        stop("weight of reordering should have same length as number of rows.\n")
+                        stop_wrap("weight of reordering should have same length as number of rows.\n")
                     }
                 } else {
                     if(length(reorder) != ncol(mat)) {
-                        stop("weight of reordering should have same length as number of columns\n")
+                        stop_wrap("weight of reordering should have same length as number of columns\n")
                     }
                 }
                 
@@ -1010,9 +1027,9 @@ make_cluster = function(object, which = c("row", "column")) {
                 } else if(length(gap) == n_slice - 1) {
                     gap = unit.c(gap, unit(0, "mm"))
                 } else if(length(gap) != n_slice) {
-                    stop(qq("Length of `gap` should be 1 or number of @{which} slices."))
+                    stop_wrap(qq("Length of `gap` should be 1 or number of @{which} slices."))
                 }
-                object@matrix_param[[ paste0(which, "_gap") ]] = gap# adjust title
+                object@matrix_param[[ paste0(which, "_gap") ]] = gap # adjust title
                 
                 title = slot(object, paste0(which, "_title"))
                 if(!is.null(split)) {
@@ -1032,7 +1049,7 @@ make_cluster = function(object, which = c("row", "column")) {
                             })
                         } else if(grepl("\\{.+\\}", title)) {
                             if(!requireNamespace("glue")) {
-                                stop("You need to install glue package.")
+                                stop_wrap("You need to install glue package.")
                             }
                             title = apply(unique(split), 1, function(x) {
                                 x = x
@@ -1097,7 +1114,7 @@ make_cluster = function(object, which = c("row", "column")) {
         order_list[[1]] = order
     } else {
 
-        if(verbose) qqcat("process `split` data frame\n")
+        if(verbose) cat("process `split` data frame\n")
         if(is.null(ncol(split))) split = data.frame(split)
         if(is.matrix(split)) split = as.data.frame(split)
 
@@ -1147,7 +1164,7 @@ make_cluster = function(object, which = c("row", "column")) {
                     } else {
                         oe = try(obj <- as.dendrogram(obj), silent = TRUE)
                         if(inherits(oe, "try-error")) {
-                            stop("the clustering function must return a `dendrogram` object or a object that can be coerced to `dendrogram` class.")
+                            stop_wrap("the clustering function must return a `dendrogram` object or a object that can be coerced to `dendrogram` class.")
                         }
                         dend_list[[i]] = obj
                     }
@@ -1201,11 +1218,11 @@ make_cluster = function(object, which = c("row", "column")) {
 
             if(which == "row") {
                 if(length(reorder) != nrow(mat)) {
-                    stop("weight of reordering should have same length as number of rows\n")
+                    stop_wrap("weight of reordering should have same length as number of rows\n")
                 }
             } else {
                 if(length(reorder) != ncol(mat)) {
-                    stop("weight of reordering should have same length as number of columns\n")
+                    stop_wrap("weight of reordering should have same length as number of columns\n")
                 }
             }
             for(i in seq_along(dend_list)) {
@@ -1240,11 +1257,11 @@ make_cluster = function(object, which = c("row", "column")) {
 
     if(which == "row") {
         if(nrow(mat) != length(order)) {
-            stop(qq("Number of rows in the matrix are not the same as the length of the cluster or the @{which} orders."))
+            stop_wrap(qq("Number of rows in the matrix are not the same as the length of the cluster or the @{which} orders."))
         }
     } else {
         if(ncol(mat) != length(order)) {
-            stop(qq("Number of columns in the matrix are not the same as the length of the cluster or the @{which} orders."))
+            stop_wrap(qq("Number of columns in the matrix are not the same as the length of the cluster or the @{which} orders."))
         }
     }
 
@@ -1269,7 +1286,7 @@ make_cluster = function(object, which = c("row", "column")) {
     } else if(length(gap) == n_slice - 1) {
         gap = unit.c(gap, unit(0, "mm"))
     } else if(length(gap) != n_slice) {
-        stop(qq("Length of `gap` should be 1 or number of @{which} slices."))
+        stop_wrap(qq("Length of `gap` should be 1 or number of @{which} slices."))
     }
     object@matrix_param[[ paste0(which, "_gap") ]] = gap
     
@@ -1292,7 +1309,7 @@ make_cluster = function(object, which = c("row", "column")) {
                 })
             } else if(grepl("\\{.+\\}", title)) {
                 if(!requireNamespace("glue")) {
-                    stop("You need to install glue package.")
+                    stop_wrap("You need to install glue package.")
                 }
                 title = apply(unique(split), 1, function(x) {
                     x = x
@@ -1371,7 +1388,7 @@ setMethod(f = "draw",
             upViewport()
         } else {
             if(ncol(object@matrix) == 0) {
-                stop("Single heatmap should contains a matrix with at least one column. Zero-column matrix can only be appended to the heatmap list.")
+                stop_wrap("Single heatmap should contains a matrix with at least one column. Zero-column matrix can only be appended to the heatmap list.")
             }
             ht_list = new("HeatmapList")
             ht_list = add_heatmap(ht_list, object)

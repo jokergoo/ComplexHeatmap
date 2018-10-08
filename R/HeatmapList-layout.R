@@ -86,6 +86,7 @@ setMethod(f = "make_layout",
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     padding = NULL,
 
+    auto_adjust = TRUE,
     row_dend_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right"),
     column_dend_side = c("original", "top", "bottom"),
@@ -423,6 +424,7 @@ setMethod(f = "make_layout",
         }
     }
     object@ht_list_param$padding = padding
+    object@ht_list_param$auto_adjust = auto_adjust
 
     ## orders of other heatmaps should be changed
     if(direction == "horizontal") {
@@ -445,6 +447,30 @@ setMethod(f = "make_layout",
             }
         }
         if(verbose) qqcat("adjust column order for all other heatmaps\n")
+    }
+
+    if(auto_adjust) {
+        if(direction == "horizontal") {
+            for(i in seq_len(n_ht)) {
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    if(i == 1 && !is.null(object@ht_list[[i]]@row_names_param$anno) && object@ht_list[[i]]@row_names_param$side == "left") {
+                    } else if(i == n_ht && !is.null(object@ht_list[[i]]@row_names_param$anno) && object@ht_list[[i]]@row_names_param$side == "right") {
+                    } else {
+                        object@ht_list[[i]]@row_names_param$anno = NULL
+                        object@ht_list[[i]]@row_names_param$show = FALSE
+                    }
+                }
+            }
+        } else {
+            for(i in seq_len(n_ht)) {
+                if(inherits(object@ht_list[[i]], "Heatmap") & i != i_main) {
+                    object@ht_list[[i]]@column_order_list = ht_main@column_order_list
+                    object@ht_list[[i]]@column_order = ht_main@column_order
+                    object@ht_list[[i]]@column_dend_param$show = FALSE
+                    object@ht_list[[i]]@column_dend_param$cluster = FALSE  # don't do clustering because cluster was already done
+                }
+            }
+        }   
     }
     
     if(direction == "horizontal") {

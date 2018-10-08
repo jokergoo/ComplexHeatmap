@@ -399,9 +399,6 @@ setMethod(f = "make_layout",
             object@heatmap_param$width = object@heatmap_param$width + sum(row_gap[seq_len(nr_slice-1)])
         }
     } else {
-        if(!is.unit(object@heatmap_param$width)) {
-            warning("width of the heatmap can only be set as an absolute unit.")
-        }
         object@heatmap_param$width = unit(1, "npc")
     }
 
