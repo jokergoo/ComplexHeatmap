@@ -2653,7 +2653,9 @@ row_anno_link = function(...) {
 	anno_link(..., which = "row")
 }
 
-anno_summarize = function(which = c("column", "row"),
+# only allow for one-column/one-row heamtap
+# discrete: barplot; continuous: boxplot (maybe also barplot, e.g. pct overlap)
+anno_summary = function(which = c("column", "row"), bar_width = 0.8,
 	width = NULL, height = NULL, border = FALSE, ...) {
 
 	if(is.null(.ENV$current_annotation_which)) {
@@ -2662,15 +2664,53 @@ anno_summarize = function(which = c("column", "row"),
 		which = .ENV$current_annotation_which
 	}
 
-	if(which == "column") {
-		stop_wrap("`anno_summarize()` is only allowed as a column annotation.")
-	}
-
 	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
 
 	# get variables fron oncoPrint() function
 	pf = parent.frame()
 	# find where the heatmap object is.
+	row_fun = function(index) {
+
+	}
+	column_fun = function(index) {
+		ht = get("object", envir = parent.frame(7))
+		mat = ht@matrix
+		cm = ht@matrix_color_mapping
+		order_list = ht@row_order_list
+		ng = length(order_list)
+
+		if(cm@type == "discrete") {
+			tl = lapply(order_list, function(od) table(mat[od, 1]))
+			tl = lapply(tl, function(x) x/sum(x))
+			pushViewport(viewport(xscale = c(0.5, ng+0.5), yscale = c(0, 1)))
+			for(i in 1:ng) {
+				x = i
+				y = cumsum(tl[[i]])
+				grid.rect(x, y, w = bar_width, just = "top", gp = gpar(fill = map_to_colors(cm, names(y))))
+			}
+			# axis
+			popViewport()
+		}
+
+	}
+
+	if(which == "row") {
+		fun = row_fun
+	} else if(which == "column") {
+		fun = column_fun
+	}
 	
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_summary",
+		which = which,
+		width = width,
+		height = height,
+		n = 1,
+		show_name = FALSE
+	)
+
+	anno@subsetable = FALSE
+	return(anno)
 }
 

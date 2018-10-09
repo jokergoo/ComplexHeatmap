@@ -401,7 +401,7 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
         } else if(side == "top") {
             draw(pk, y = unit(1, "npc"), just = "top")
         } else if(side == "bottom") {
-            draw(pk, y = unit(1, "npc"), just = "top")
+            draw(pk, y = unit(0, "npc"), just = "bottom")
         }
     }
 

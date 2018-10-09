@@ -589,3 +589,11 @@ pindex = function(m, i, j) {
     }
 }
 
+
+unit_with_vp = function(..., vp = current.viewport()$name) {
+    u = unit(...)
+    attr(u, "viewport") = vp
+    return(u)
+}
+
+

@@ -977,6 +977,8 @@ valid_just = function(just) {
 			"left" = c("left", "center"),
 			"right" = c("right", "center"),
 			"top" = c("center", "top"),
+			"bottom" = c("center", "bottom"),
+			"top" = c("center", "top"),
 			c("center", "center"))
 	}
 	if(length(just) != 2) {

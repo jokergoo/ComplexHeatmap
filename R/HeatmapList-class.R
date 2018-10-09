@@ -308,7 +308,7 @@ setMethod(f = "draw",
     ht_gap = gap, 
 
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
-    padding = NULL,
+    padding = GLOBAL_PADDING,
     adjust_annotation_extension = TRUE,
     
     auto_adjust = TRUE,
@@ -478,12 +478,6 @@ setMethod(f = "draw",
         column_split = column_split,
         heatmap_body_width = heatmap_body_width
     )
-
-    # calculate proper padding
-    if(is.null(padding)) {
-        padding = GLOBAL_PADDING
-        object@ht_list_param$padding = padding
-    }
 
     layout = grid.layout(nrow = length(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT), 
         ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), 

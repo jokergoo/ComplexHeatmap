@@ -1244,6 +1244,9 @@ make_cluster = function(object, which = c("row", "column")) {
             } else {
                 slice_mean = sapply(order_list, function(ind) rowMeans(mat[, ind, drop = FALSE]))
             }
+            if(!is.matrix(slice_mean)) {
+                slice_mean = matrix(slice_mean, nrow = 1)
+            }
             dend_slice = as.dendrogram(hclust(dist(t(slice_mean))))
             if(verbose) qqcat("perform clustering on mean of @{which} slices\n")
         }
