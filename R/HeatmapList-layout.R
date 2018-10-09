@@ -191,10 +191,21 @@ setMethod(f = "make_layout",
     }
 
     ### update some values for the main heatmap
+    ht_nr = nrow(object@ht_list[[i_main]]@matrix)
+    ht_nc = ncol(object@ht_list[[i_main]]@matrix)
     if(direction == "horizontal") {
         if(!is.null(row_split)) {
             object@ht_list[[i_main]]@matrix_param$row_split = row_split
             if(verbose) qqcat("set row_split to main heatmap\n")
+            if(is.data.frame(row_split)) {
+                if(nrow(row_split) != ht_nr) {
+                    stop_wrap("`row_split` should have same nrow as the main matrix.")
+                }
+            } else if(is.atomic(row_split)) {
+                if(length(row_split) > 1 && length(row_split) != ht_nr) {
+                    stop_wrap("`row_split` should have same length as nrow of the main matrix.")
+                }
+            }
         }
         if(!is.null(row_km)) {
             object@ht_list[[i_main]]@matrix_param$row_km = row_km
@@ -274,6 +285,15 @@ setMethod(f = "make_layout",
         if(!is.null(column_split)) {
             object@ht_list[[i_main]]@matrix_param$column_split = column_split
             if(verbose) qqcat("set column_split to main heatmap\n")
+            if(is.data.frame(column_split)) {
+                if(nrow(column_split) != ht_nc) {
+                    stop_wrap("`column_split` should have same ncol as the main matrix.")
+                }
+            } else if(is.atomic(column_split)) {
+                if(length(column_split) > 1 && length(column_split) != ht_nr) {
+                    stop_wrap("`column_split` should have same length as ncol of the main matrix.")
+                }
+            }
         }
         if(!is.null(column_km)) {
             object@ht_list[[i_main]]@matrix_param$column_km = column_km
@@ -463,11 +483,13 @@ setMethod(f = "make_layout",
             }
         } else {
             for(i in seq_len(n_ht)) {
-                if(inherits(object@ht_list[[i]], "Heatmap") & i != i_main) {
-                    object@ht_list[[i]]@column_order_list = ht_main@column_order_list
-                    object@ht_list[[i]]@column_order = ht_main@column_order
-                    object@ht_list[[i]]@column_dend_param$show = FALSE
-                    object@ht_list[[i]]@column_dend_param$cluster = FALSE  # don't do clustering because cluster was already done
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    if(i == 1 && !is.null(object@ht_list[[i]]@column_names_param$anno) && object@ht_list[[i]]@column_names_param$side == "top") {
+                    } else if(i == n_ht && !is.null(object@ht_list[[i]]@column_names_param$anno) && object@ht_list[[i]]@column_names_param$side == "bottom") {
+                    } else {
+                        object@ht_list[[i]]@column_names_param$anno = NULL
+                        object@ht_list[[i]]@column_names_param$show = FALSE
+                    }
                 }
             }
         }   
@@ -495,12 +517,14 @@ setMethod(f = "make_layout",
             # move dend to the first one
             object@ht_list[[i_main]]@row_dend_param$show = FALSE
             object@ht_list[[1]]@row_dend_list = ht_main@row_dend_list
+            object@ht_list[[1]]@row_dend_slice = ht_main@row_dend_slice
             object@ht_list[[1]]@row_dend_param = ht_main@row_dend_param
             object@ht_list[[1]]@row_dend_param$side = "left"
             if(verbose) qqcat("add dendrogram of the main heatmap to the left of the first heatmap\n")
         } else if(row_dend_side == "right") {
             object@ht_list[[i_main]]@row_dend_param$show = FALSE
             object@ht_list[[n_ht]]@row_dend_list = ht_main@row_dend_list
+            object@ht_list[[n_ht]]@row_dend_slice = ht_main@row_dend_slice
             object@ht_list[[n_ht]]@row_dend_param = ht_main@row_dend_param
             object@ht_list[[n_ht]]@row_dend_param$side = "right"
             if(verbose) qqcat("add dendrogram of the main heatmap to the right of the last heatmap\n")
@@ -525,12 +549,14 @@ setMethod(f = "make_layout",
         if(column_dend_side == "top") {
             object@ht_list[[i_main]]@column_dend_param$show = FALSE
             object@ht_list[[1]]@column_dend_list = ht_main@column_dend_list
+            object@ht_list[[1]]@column_dend_slice = ht_main@column_dend_slice
             object@ht_list[[1]]@column_dend_param = ht_main@column_dend_param
             object@ht_list[[1]]@column_dend_param$side = "top"
             if(verbose) qqcat("add dendrogram of the main heatmap to the top of the first heatmap\n")
         } else if(column_dend_side == "bottom") {
             object@ht_list[[i_main]]@column_dend_param$show = FALSE
             object@ht_list[[n_ht]]@column_dend_list = ht_main@column_dend_list
+            object@ht_list[[n_ht]]@column_dend_slice = ht_main@column_dend_slice
             object@ht_list[[n_ht]]@column_dend_param = ht_main@column_dend_param
             object@ht_list[[n_ht]]@column_dend_param$side = "bottom"
             if(verbose) qqcat("add dendrogram of the main heatmap to the bottom of the last heatmap\n")

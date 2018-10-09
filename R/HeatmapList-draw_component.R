@@ -23,20 +23,20 @@ setMethod(f = "adjust_heatmap_list",
     if(direction == "horizontal") {
 
         # adjust top anntatation, top annotation of all heatmaps should be aligned
-        max_top_anno_height = max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, "column_anno_top")))) - COLUMN_ANNO_PADDING
+        max_top_anno_height = max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, "column_anno_top")))) - ht_opt$COLUMN_ANNO_PADDING
         max_top_anno_height = convertHeight(max_top_anno_height, "mm")
-        max_bottom_anno_height = max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, "column_anno_bottom")))) - COLUMN_ANNO_PADDING
+        max_bottom_anno_height = max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, "column_anno_bottom")))) - ht_opt$COLUMN_ANNO_PADDING
         max_bottom_anno_height = convertHeight(max_bottom_anno_height, "mm")
         for(i in ht_index) {
             if(has_component(object@ht_list[[i]], "column_anno_top")) {
                 if(verbose) qqcat("adjust height of top annotation of heamtap @{object@ht_list[[i]]@name}\n")
                 object@ht_list[[i]]@top_annotation = resize(object@ht_list[[i]]@top_annotation, height = max_top_anno_height)
-                object@ht_list[[i]] = set_component_height(object@ht_list[[i]], "column_anno_top", object@ht_list[[i]]@top_annotation@height + COLUMN_ANNO_PADDING)
+                object@ht_list[[i]] = set_component_height(object@ht_list[[i]], "column_anno_top", object@ht_list[[i]]@top_annotation@height + ht_opt$COLUMN_ANNO_PADDING)
             }
             if(has_component(object@ht_list[[i]], "column_anno_bottom")) {   
                 if(verbose) qqcat("adjust height of bottom annotation of heamtap @{object@ht_list[[i]]@name}\n")
                 object@ht_list[[i]]@bottom_annotation = resize(object@ht_list[[i]]@bottom_annotation, height = max_bottom_anno_height)
-                object@ht_list[[i]] = set_component_height(object@ht_list[[i]], "column_anno_bottom", object@ht_list[[i]]@bottom_annotation@height + COLUMN_ANNO_PADDING)
+                object@ht_list[[i]] = set_component_height(object@ht_list[[i]], "column_anno_bottom", object@ht_list[[i]]@bottom_annotation@height + ht_opt$COLUMN_ANNO_PADDING)
             }
         }
 
@@ -138,7 +138,7 @@ setMethod(f = "adjust_heatmap_list",
         object@layout$max_bottom_component_height = max_bottom_component_height
 
         # and calcualte proper paddings
-        if(is.null(object@ht_list_param$padding)) {
+        if(TRUE) {
             object@ht_list_param$padding = GLOBAL_PADDING
             row_anno_max_top_extended = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
                 if(inherits(ht, "HeatmapAnnotation")) {
@@ -188,7 +188,7 @@ setMethod(f = "adjust_heatmap_list",
             max_left_component_width = unit(0, "mm")
             if(inherits(object@ht_list[[1]], "Heatmap")) {
                 ht_first = object@ht_list[[1]]
-                max_left_component_width = sum(component_width(ht_first, c("row_title_left", "row_dend_left", "row_anno_left")))
+                max_left_component_width = sum(component_width(ht_first, c("row_names_left", "row_dend_left", "row_anno_left")))
                 u = unit(0, "mm")
                 if(!is.null(ht_first@top_annotation)) {
                     u = unit.c(u, ht_first@top_annotation@extended[2])
@@ -205,7 +205,7 @@ setMethod(f = "adjust_heatmap_list",
             max_right_component_width = unit(0, "mm")
             if(inherits(object@ht_list[[ length(object@ht_list) ]], "Heatmap")) {
                 ht_last = object@ht_list[[ length(object@ht_list) ]]
-                max_right_component_width = sum(component_width(ht_last, c("row_title_right", "row_dend_right", "row_anno_right")))
+                max_right_component_width = sum(component_width(ht_last, c("row_names_right", "row_dend_right", "row_anno_right")))
                 u = unit(0, "mm")
                 if(!is.null(ht_last@top_annotation)) {
                     u = unit.c(u, ht_last@top_annotation@extended[4])
@@ -225,20 +225,20 @@ setMethod(f = "adjust_heatmap_list",
         }
     } else {
         # adjust left anntatation, right annotation of all heatmaps should be aligned
-        max_left_anno_width = max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_width(ht, "row_anno_left")))) - ROW_ANNO_PADDING
+        max_left_anno_width = max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_width(ht, "row_anno_left")))) - ht_opt$ROW_ANNO_PADDING
         max_left_anno_width = convertWidth(max_left_anno_width, "mm")
-        max_right_anno_width = max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_width(ht, "row_anno_right")))) - ROW_ANNO_PADDING
+        max_right_anno_width = max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_width(ht, "row_anno_right")))) - ht_opt$ROW_ANNO_PADDING
         max_right_anno_width = convertWidth(max_right_anno_width, "mm")
         for(i in ht_index) {
             if(has_component(object@ht_list[[i]], "row_anno_left")) {
                 if(verbose) qqcat("adjust width of left annotation of heamtap @{object@ht_list[[i]]@name}\n")
                 object@ht_list[[i]]@left_annotation = resize(object@ht_list[[i]]@left_annotation, width = max_left_anno_width)
-                object@ht_list[[i]] = set_component_width(object@ht_list[[i]], "row_anno_left", object@ht_list[[i]]@left_annotation@width + ROW_ANNO_PADDING)
+                object@ht_list[[i]] = set_component_width(object@ht_list[[i]], "row_anno_left", object@ht_list[[i]]@left_annotation@width + ht_opt$ROW_ANNO_PADDING)
             }
             if(has_component(object@ht_list[[i]], "row_anno_right")) {   
                 if(verbose) qqcat("adjust width of right annotation of heamtap @{object@ht_list[[i]]@name}\n")
                 object@ht_list[[i]]@right_annotation = resize(object@ht_list[[i]]@right_annotation, width = max_right_anno_width)
-                object@ht_list[[i]] = set_component_width(object@ht_list[[i]], "row_anno_right", object@ht_list[[i]]@right_annotation@width + ROW_ANNO_PADDING)
+                object@ht_list[[i]] = set_component_width(object@ht_list[[i]], "row_anno_right", object@ht_list[[i]]@right_annotation@width + ht_opt$ROW_ANNO_PADDING)
             }
         }
 
@@ -263,7 +263,7 @@ setMethod(f = "adjust_heatmap_list",
                 unit(0, "mm")
             }
         })))
-        max_right_component_width = convertHeight(max_right_component_width, "mm")
+        max_right_component_width = convertWidth(max_right_component_width, "mm")
 
         # adjust width 
         if(verbose) qqcat("adjust title/dend width of all heatmaps\n")
@@ -389,7 +389,7 @@ setMethod(f = "adjust_heatmap_list",
             max_top_component_height = unit(0, "mm")
             if(inherits(object@ht_list[[1]], "Heatmap")) {
                 ht_first = object@ht_list[[1]]
-                max_top_component_height = sum(component_height(ht_first, c("column_title_top", "column_dend_top", "column_anno_top")))
+                max_top_component_height = sum(component_height(ht_first, c("column_names_top", "column_dend_top", "column_anno_top")))
                 u = unit(0, "mm")
                 if(!is.null(ht_first@left_annotation)) {
                     u = unit.c(u, ht_first@left_annotation@extended[3])
@@ -406,7 +406,7 @@ setMethod(f = "adjust_heatmap_list",
             max_bottom_component_height = unit(0, "mm")
             if(inherits(object@ht_list[[ length(object@ht_list) ]], "Heatmap")) {
                 ht_last = object@ht_list[[ length(object@ht_list) ]]
-                max_right_component_width = sum(component_height(ht_last, c("column_title_bottom", "column_dend_bottom", "column_anno_bottom")))
+                max_bottom_component_height = sum(component_height(ht_last, c("column_names_bottom", "column_dend_bottom", "column_anno_bottom")))
                 u = unit(0, "mm")
                 if(!is.null(ht_last@left_annotation)) {
                     u = unit.c(u, ht_last@left_annotation@extended[1])
@@ -456,7 +456,6 @@ setMethod(f = "draw_heatmap_list",
     adjust_annotation_extension = object@ht_list_param$adjust_annotation_extension
 
     padding = unit(c(0, 0, 0, 0), "mm")
-
     if(adjust_annotation_extension) {
         if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
             padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height

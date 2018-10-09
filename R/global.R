@@ -85,10 +85,12 @@ ht_opt = setGlobalOptions(
 	legend_grid_width = list(
 		.value = NULL,
 		.class = "unit"),
-	legend_grid_border = list(
+	legend_border = list(
 		.value = NULL),
 
-	border = list(
+	heatmap_border = list(
+		.value = NULL),
+	annotation_border = list(
 		.value = NULL),
 
 	fast_hclust = list(
@@ -110,7 +112,31 @@ ht_opt = setGlobalOptions(
 		},
 		.length = 1),
 	show_vp_border = FALSE,
-	anno_simple_size = unit(5, "mm")
+	anno_simple_size = list(
+		.value = unit(5, "mm"),
+		.class = "unit"
+	),
+
+	DENDROGRAM_PADDING = list(
+		.value = unit(0.5, "mm"),
+		.class = "unit"
+	),
+	DIMNAME_PADDING = list(
+		.value = unit(1, "mm"),
+		.class = "unit"
+	),
+	TITLE_PADDING = list(
+		.value = unit(2.5, "mm"),
+		.class = "unit"
+	),
+	COLUMN_ANNO_PADDING = list(
+		.value = unit(1, "mm"),
+		.class = "unit"
+	),
+	ROW_ANNO_PADDING = list(
+		.value = unit(1, "mm"),
+		.class = "unit"
+	)
 )
 
 
@@ -138,11 +164,13 @@ ht_global_opt = ht_opt
 .ENV$row_pos = NULL
 
 
-DENDROGRAM_PADDING = unit(0.5, "mm")
-DIMNAME_PADDING = unit(1, "mm")
-TITLE_PADDING = unit(2.5, "mm")
-COLUMN_ANNO_PADDING = unit(1, "mm")
-ROW_ANNO_PADDING = unit(1, "mm")
+# DENDROGRAM_PADDING = unit(0.5, "mm")
+# DIMNAME_PADDING = unit(1, "mm")
+# TITLE_PADDING = unit(2.5, "mm")
+# COLUMN_ANNO_PADDING = unit(1, "mm")
+# ROW_ANNO_PADDING = unit(1, "mm")
 
 GLOBAL_PADDING = unit(c(2, 2, 2, 2), "mm")
+
+
 

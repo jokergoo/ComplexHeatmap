@@ -92,16 +92,16 @@ setMethod(f = "make_layout",
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
             if(column_title_rot %in% c(0, 180)) {
-                object@layout$layout_size$column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
+                object@layout$layout_size$column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + ht_opt$TITLE_PADDING*2
             } else {
-                object@layout$layout_size$column_title_top_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
+                object@layout$layout_size$column_title_top_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + ht_opt$TITLE_PADDING*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_top = heatmap_layout_index("column_title_top"))
         } else {
             if(column_title_rot %in% c(0, 180)) {
-                object@layout$layout_size$column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
+                object@layout$layout_size$column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + ht_opt$TITLE_PADDING*2
             } else {
-                object@layout$layout_size$column_title_bottom_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + TITLE_PADDING*2
+                object@layout$layout_size$column_title_bottom_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + ht_opt$TITLE_PADDING*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_bottom = heatmap_layout_index("column_title_bottom"))
         }
@@ -125,16 +125,16 @@ setMethod(f = "make_layout",
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
             if(row_title_rot %in% c(0, 180)) {
-                object@layout$layout_size$row_title_left_width = max_text_width(row_title, gp = row_title_gp) + TITLE_PADDING*2
+                object@layout$layout_size$row_title_left_width = max_text_width(row_title, gp = row_title_gp) + ht_opt$TITLE_PADDING*2
             } else {
-                object@layout$layout_size$row_title_left_width = max_text_height(row_title, gp = row_title_gp) + TITLE_PADDING*2
+                object@layout$layout_size$row_title_left_width = max_text_height(row_title, gp = row_title_gp) + ht_opt$TITLE_PADDING*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, row_title_left = heatmap_layout_index("row_title_left"))
         } else {
             if(row_title_rot %in% c(0, 180)) {
-                object@layout$layout_size$row_title_right_width = max_text_width(row_title, gp = row_title_gp) + TITLE_PADDING*2
+                object@layout$layout_size$row_title_right_width = max_text_width(row_title, gp = row_title_gp) + ht_opt$TITLE_PADDING*2
             } else {
-                object@layout$layout_size$row_title_right_width = max_text_height(row_title, gp = row_title_gp) + TITLE_PADDING*2
+                object@layout$layout_size$row_title_right_width = max_text_height(row_title, gp = row_title_gp) + ht_opt$TITLE_PADDING*2
             }
             object@layout$layout_index = rbind(object@layout$layout_index, row_title_right = heatmap_layout_index("row_title_right"))
         }
@@ -167,9 +167,9 @@ setMethod(f = "make_layout",
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             
             if(row_dend_side == "left") {
-                pushViewport(viewport(x = unit(0, "npc"), width = unit(1, "npc") - DENDROGRAM_PADDING, just = "left"))
+                pushViewport(viewport(x = unit(0, "npc"), width = unit(1, "npc") - ht_opt$DENDROGRAM_PADDING, just = "left"))
             } else {
-                pushViewport(viewport(x = DENDROGRAM_PADDING, width = unit(1, "npc") - DENDROGRAM_PADDING, just = "left"))
+                pushViewport(viewport(x = ht_opt$DENDROGRAM_PADDING, width = unit(1, "npc") - ht_opt$DENDROGRAM_PADDING, just = "left"))
             }
             for(i in seq_len(nr_slice)) {
                 draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = "top",
@@ -218,9 +218,9 @@ setMethod(f = "make_layout",
         column_dend_max_height = dend_heights(column_dend_slice) + max(dend_heights(object@column_dend_list))
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             if(column_dend_side == "top") {
-                pushViewport(viewport(y = DENDROGRAM_PADDING, height = unit(1, "npc") - DENDROGRAM_PADDING, just = "bottom"))
+                pushViewport(viewport(y = ht_opt$DENDROGRAM_PADDING, height = unit(1, "npc") - ht_opt$DENDROGRAM_PADDING, just = "bottom"))
             } else {
-                pushViewport(viewport(y = unit(0, "npc"), height = unit(1, "npc") - DENDROGRAM_PADDING, just = "bottom"))
+                pushViewport(viewport(y = unit(0, "npc"), height = unit(1, "npc") - ht_opt$DENDROGRAM_PADDING, just = "bottom"))
             }
             for(i in seq_len(nc_slice)) {
                 draw_dend(object, k = i, which = "column", x = slice_x[i], width = slice_width[i], just = "left",
@@ -258,7 +258,7 @@ setMethod(f = "make_layout",
     show_row_names = object@row_names_param$show
     row_names_anno = object@row_names_param$anno
     if(show_row_names) {
-        row_names_width = row_names_anno@width + DIMNAME_PADDING*2
+        row_names_width = row_names_anno@width + ht_opt$DIMNAME_PADDING*2
         row_names_width = min(row_names_width, object@row_names_param$max_width)
         if(row_names_side == "left") {
             object@layout$layout_size$row_names_left_width = row_names_width
@@ -270,7 +270,7 @@ setMethod(f = "make_layout",
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             for(i in seq_len(nr_slice)) {
                 draw_dimnames(object, k = i, which = "row", y = slice_y[i], 
-                    height = slice_height[i], width = unit(1, "npc") - DIMNAME_PADDING*2, just = "top")
+                    height = slice_height[i], width = unit(1, "npc") - ht_opt$DIMNAME_PADDING*2, just = "top")
             }
         })
     }
@@ -281,7 +281,7 @@ setMethod(f = "make_layout",
     show_column_names = object@column_names_param$show
     column_names_anno = object@column_names_param$anno
     if(show_column_names) {
-        column_names_height = column_names_anno@height + DIMNAME_PADDING*2
+        column_names_height = column_names_anno@height + ht_opt$DIMNAME_PADDING*2
         column_names_height = min(column_names_height, object@column_names_param$max_height)
         if(column_names_side == "top") {
             object@layout$layout_size$column_names_top_height = column_names_height
@@ -293,7 +293,7 @@ setMethod(f = "make_layout",
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             for(i in seq_len(nc_slice)) {
                 draw_dimnames(object, k = i, which = "column", x = slice_x[i], 
-                    width = slice_width[i], height = unit(1, "npc") - DIMNAME_PADDING*2, just = "left")
+                    width = slice_width[i], height = unit(1, "npc") - ht_opt$DIMNAME_PADDING*2, just = "left")
             }
         })
     }
@@ -310,7 +310,7 @@ setMethod(f = "make_layout",
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(nc_slice)) {
                     draw_annotation(object, k = i, which = "top", x = slice_x[i], width = slice_width[i], 
-                        y = COLUMN_ANNO_PADDING, height = unit(1, "npc") - COLUMN_ANNO_PADDING, 
+                        y = ht_opt$COLUMN_ANNO_PADDING, height = unit(1, "npc") - ht_opt$COLUMN_ANNO_PADDING, 
                         just = c("left", "bottom"))
                 }
             }) 
@@ -328,7 +328,7 @@ setMethod(f = "make_layout",
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(nc_slice)) {
                     draw_annotation(object, k = i, which = "bottom", x = slice_x[i], width = slice_width[i], 
-                        y = unit(0, "npc"), height = unit(1, "npc") - COLUMN_ANNO_PADDING, 
+                        y = unit(0, "npc"), height = unit(1, "npc") - ht_opt$COLUMN_ANNO_PADDING, 
                         just = c("left", "bottom"))
                 }
             })
@@ -346,7 +346,7 @@ setMethod(f = "make_layout",
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                     for(i in seq_len(nr_slice)) {
                         draw_annotation(object, k = i, which = "left",  y = slice_y[i], height = slice_height[i], 
-                            x = unit(0, "npc"), width = unit(1, "npc") - ROW_ANNO_PADDING, 
+                            x = unit(0, "npc"), width = unit(1, "npc") - ht_opt$ROW_ANNO_PADDING, 
                             just = c("left", "top"))
                     }
                 }
@@ -365,7 +365,7 @@ setMethod(f = "make_layout",
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
                 for(i in seq_len(nr_slice)) {
                     draw_annotation(object, k = i, which = "right", y = slice_y[i], height = slice_height[i], 
-                        x = ROW_ANNO_PADDING, width = unit(1, "npc") - ROW_ANNO_PADDING, 
+                        x = ht_opt$ROW_ANNO_PADDING, width = unit(1, "npc") - ht_opt$ROW_ANNO_PADDING, 
                         just = c("left", "top"))
                 }
             })

@@ -165,13 +165,13 @@ SingleAnnotation = function(name, value, col, fun,
     # re-define some of the argument values according to global settings
     called_args = names(as.list(match.call())[-1])
     if("legend_param" %in% called_args) {
-        for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border"), names(legend_param))) {
+        for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "border"), names(legend_param))) {
             opt_name2 = paste0("legend_", opt_name)
             if(!is.null(ht_opt(opt_name2)))
                 legend_param[[opt_name]] = ht_opt(opt_name2)
         }
     } else {
-        for(opt_name in c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border")) {
+        for(opt_name in c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "border")) {
             opt_name2 = paste0("legend_", opt_name)
             if(!is.null(ht_opt(opt_name2)))
                 legend_param[[opt_name]] = ht_opt(opt_name2)

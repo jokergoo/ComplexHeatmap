@@ -349,7 +349,7 @@ proper_format_lt = function(lt) {
 			return(lt[[1]])
 		}
 	} else {
-		has_splitting = sapply(lt, function(x) length(x) != 1)
+		has_splitting = any(sapply(lt, function(x) length(x) != 1))
 		if(has_splitting) {
 			return(lt)
 		} else {

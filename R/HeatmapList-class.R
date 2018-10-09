@@ -355,11 +355,41 @@ setMethod(f = "draw",
     legend_labels_gp = NULL,
     legend_grid_height = NULL,
     legend_grid_width = NULL,
-    legend_grid_border = NULL,
+    legend_border = NULL,
+    heatmap_border = NULL,
+    annotation_border = NULL,
     fastcluster = NULL,
-    show_vp_border = NULL,
-    anno_simple_row_size = NULL
+    anno_simple_size = NULL
     ) {
+
+    verbose = ht_opt$verbose
+
+    ovl = list()
+    for(opt_nm in c("heatmap_row_names_gp",
+                    "heatmap_column_names_gp",
+                    "heatmap_row_title_gp",
+                    "heatmap_column_title_gp",
+                    "legend_title_gp",
+                    "legend_title_position",
+                    "legend_labels_gp",
+                    "legend_grid_height",
+                    "legend_grid_width",
+                    "legend_border",
+                    "heatmap_border",
+                    "annotation_border",
+                    "fastcluster",
+                    "anno_simple_size")) {
+        v = get(opt_nm, inherits = FALSE)
+        if(!is.null(v)) {
+            ovl[[opt_nm]] = ht_opt[[opt_nm]]
+            ht_opt[[opt_nm]] = v
+
+            if(verbose) qqcat("temporarily set the global parameter @{opt_nm}\n")
+        }
+    }
+    if(length(ovl)) {
+        on.exit(ht_opt(ovl))
+    }
 
     direction = object@direction
 
@@ -449,65 +479,9 @@ setMethod(f = "draw",
         heatmap_body_width = heatmap_body_width
     )
 
-    verbose = ht_opt$verbose
-
-    ovl = list()
-    for(opt_nm in c("heatmap_row_names_gp",
-                    "heatmap_column_names_gp",
-                    "heatmap_row_title_gp",
-                    "heatmap_column_title_gp",
-                    "legend_title_gp",
-                    "legend_title_position",
-                    "legend_labels_gp",
-                    "legend_grid_height",
-                    "legend_grid_width",
-                    "legend_grid_border",
-                    "fastcluster",
-                    "show_vp_border",
-                    "anno_simple_row_size")) {
-        v = get(opt_nm, inherits = FALSE)
-        if(!is.null(v)) {
-            ovl[[opt_nm]] = ht_opt[[opt_nm]]
-            ht_opt[[opt_nm]] = v
-
-            if(verbose) qqcat("temporarily set the global parameter @{opt_nm}\n")
-        }
-    }
-    if(length(ovl)) {
-        on.exit(ht_opt(ovl))
-    }
-
     # calculate proper padding
     if(is.null(padding)) {
         padding = GLOBAL_PADDING
-        # if(!has_heatmap_list_component(object, "heatmap_legend_bottom") && 
-        #    !has_heatmap_list_component(object, "annotation_legend_bottom") &&
-        #    !has_heatmap_list_component(object, "column_title_bottom")) {
-        #     if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
-        #         padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height + GLOBAL_PADDING[1]
-        #     }
-        # }
-        # if(!has_heatmap_list_component(object, "heatmap_legend_left") && 
-        #    !has_heatmap_list_component(object, "annotation_legend_left") &&
-        #    !has_heatmap_list_component(object, "row_title_left")) {
-        #     if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]]) {
-        #         padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width + GLOBAL_PADDING[2]
-        #     }
-        # }
-        # if(!has_heatmap_list_component(object, "heatmap_legend_top") && 
-        #    !has_heatmap_list_component(object, "annotation_legend_top") &&
-        #    !has_heatmap_list_component(object, "column_title_top")) {
-        #     if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]]) {
-        #         padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height + GLOBAL_PADDING[3]
-        #     }
-        # }
-        # if(!has_heatmap_list_component(object, "heatmap_legend_right") && 
-        #    !has_heatmap_list_component(object, "annotation_legend_right") &&
-        #    !has_heatmap_list_component(object, "row_title_right")) {
-        #     if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
-        #         padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
-        #     }
-        # }
         object@ht_list_param$padding = padding
     }
 

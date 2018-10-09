@@ -333,14 +333,14 @@ Heatmap = function(matrix, col, name,
     }
 
     if("heatmap_legend_param" %in% called_args) {
-        for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border"), names(heatmap_legend_param))) {
+        for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "border"), names(heatmap_legend_param))) {
             opt_name2 = paste0("legend_", opt_name)
             if(!is.null(ht_opt(opt_name2)))
                 if(verbose) qqcat("re-assign heatmap_legend_param$@{opt_name} with `ht_opt('@{opt_name2}'')`\n")
                 heatmap_legend_param[[opt_name]] = ht_opt(opt_name2)
         }
     } else {
-        for(opt_name in c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "grid_border")) {
+        for(opt_name in c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "border")) {
             opt_name2 = paste0("legend_", opt_name)
             if(!is.null(ht_opt(opt_name2)))
                 if(verbose) qqcat("re-assign heatmap_legend_param$@{opt_name} with `ht_opt('@{opt_name2}'')`\n")
@@ -477,6 +477,9 @@ Heatmap = function(matrix, col, name,
 
     ### parameters for heatmap body ###
     .Object@matrix_param$gp = check_gp(rect_gp)
+    if(missing(border)) {
+        if(!is.null(ht_opt$heatmap_border)) border = ht_opt$heatmap_border
+    }
     if(identical(border, TRUE)) border = "black"
     .Object@matrix_param$border = border
     .Object@matrix_param$cell_fun = cell_fun
@@ -600,7 +603,7 @@ Heatmap = function(matrix, col, name,
     .Object@row_dend_param$distance = clustering_distance_rows
     .Object@row_dend_param$method = clustering_method_rows
     .Object@row_dend_param$side = match.arg(row_dend_side)[1]
-    .Object@row_dend_param$width = row_dend_width + DENDROGRAM_PADDING  # append the gap
+    .Object@row_dend_param$width = row_dend_width + ht_opt$DENDROGRAM_PADDING  # append the gap
     .Object@row_dend_param$show = show_row_dend
     .Object@row_dend_param$gp = check_gp(row_dend_gp)
     .Object@row_dend_param$reorder = row_dend_reorder
@@ -637,7 +640,7 @@ Heatmap = function(matrix, col, name,
     .Object@column_dend_param$distance = clustering_distance_columns
     .Object@column_dend_param$method = clustering_method_columns
     .Object@column_dend_param$side = match.arg(column_dend_side)[1]
-    .Object@column_dend_param$height = column_dend_height + DENDROGRAM_PADDING  # append the gap
+    .Object@column_dend_param$height = column_dend_height + ht_opt$DENDROGRAM_PADDING  # append the gap
     .Object@column_dend_param$show = show_column_dend
     .Object@column_dend_param$gp = check_gp(column_dend_gp)
     .Object@column_dend_param$reorder = column_dend_reorder
@@ -655,7 +658,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(top_annotation)) {
         .Object@top_annotation_param$height = unit(0, "mm")    
     } else {
-        .Object@top_annotation_param$height = height(top_annotation) + COLUMN_ANNO_PADDING  # append the gap
+        .Object@top_annotation_param$height = height(top_annotation) + ht_opt$COLUMN_ANNO_PADDING  # append the gap
     }
     if(!is.null(top_annotation)) {
         if(length(top_annotation) > 0) {
@@ -675,7 +678,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(bottom_annotation)) {
         .Object@bottom_annotation_param$height = unit(0, "mm")
     } else {
-        .Object@bottom_annotation_param$height = height(bottom_annotation) + COLUMN_ANNO_PADDING  # append the gap
+        .Object@bottom_annotation_param$height = height(bottom_annotation) + ht_opt$COLUMN_ANNO_PADDING  # append the gap
     }
     if(!is.null(bottom_annotation)) {
         if(length(bottom_annotation) > 0) {
@@ -695,7 +698,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(left_annotation)) {
         .Object@left_annotation_param$width = unit(0, "mm")
     } else {
-        .Object@left_annotation_param$width = width(left_annotation) + ROW_ANNO_PADDING  # append the gap
+        .Object@left_annotation_param$width = width(left_annotation) + ht_opt$ROW_ANNO_PADDING  # append the gap
     }
     if(!is.null(left_annotation)) {
         if(length(left_annotation) > 0) {
@@ -715,7 +718,7 @@ Heatmap = function(matrix, col, name,
     if(is.null(right_annotation)) {
         .Object@right_annotation_param$width = unit(0, "mm")
     } else {
-        .Object@right_annotation_param$width = width(right_annotation) + ROW_ANNO_PADDING  # append the gap
+        .Object@right_annotation_param$width = width(right_annotation) + ht_opt$ROW_ANNO_PADDING  # append the gap
     }
     if(!is.null(right_annotation)) {
         if(length(right_annotation) > 0) {

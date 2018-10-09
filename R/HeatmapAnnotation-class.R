@@ -223,6 +223,9 @@ HeatmapAnnotation = function(...,
     annotation_name_offset = recycle_param(annotation_name_offset, an, TRUE)
     annotation_name_side = recycle_param(annotation_name_side, an, TRUE)
     annotation_name_rot = recycle_param(annotation_name_rot, an, TRUE)
+    if(missing(border)) {
+    	if(!is.null(ht_opt$annotation_border)) border = ht_opt$annotation_border
+    }
     border = recycle_param(border, an, FALSE)
     annotation_name_gp = recycle_gp(annotation_name_gp, n_total_anno)
 
