@@ -364,19 +364,19 @@ dev.null = function(...) {
 }
 
 stop_wrap = function (...) {
-    x = qq(paste0(...))
+    x = paste0(...)
     x = paste(strwrap(x), collapse = "\n")
     stop(x, call. = FALSE)
 }
 
 warning_wrap = function (...) {
-    x = qq(paste0(...))
+    x = paste0(...)
     x = paste(strwrap(x), collapse = "\n")
     warning(x, call. = FALSE)
 }
 
 message_wrap = function (...) {
-    x = qq(paste0(...))
+    x = paste0(...)
     x = paste(strwrap(x), collapse = "\n")
     message(x)
 }
@@ -597,3 +597,41 @@ unit_with_vp = function(..., vp = current.viewport()$name) {
 }
 
 
+grid.boxplot = function(value, pos, outline = TRUE, box_width = 0.6,
+    pch = 1, size = unit(2, "mm"), gp = gpar(fill = "#CCCCCC"), 
+    direction = c("vertical", "horizontal"), ...) {
+
+    direction = match.args(direction)[1]
+    boxplot_stats = boxplot(value, plot = FALSE)$stats
+
+    if(direction == "vertical") {
+    grid.rect(x = pos, y = boxplot_stats[2, ], 
+            height = boxplot_stats[4, ] - boxplot_stats[2, ], width = 1*box_width, just = "bottom", 
+            default.units = "native", gp = gp)
+        
+        grid.segments(seq_along(index) - 0.5*box_width, boxplot_stats[5, ],
+                      seq_along(index) + 0.5*box_width, boxplot_stats[5, ], 
+                      default.units = "native", gp = gp)
+        grid.segments(seq_along(index), boxplot_stats[5, ],
+                      seq_along(index), boxplot_stats[4, ], 
+                      default.units = "native", gp = gp)
+        grid.segments(seq_along(index), boxplot_stats[1, ],
+                      seq_along(index), boxplot_stats[2, ], 
+                      default.units = "native", gp = gp)
+        grid.segments(seq_along(index) - 0.5*box_width, boxplot_stats[1, ],
+                      seq_along(index) + 0.5*box_width, boxplot_stats[1, ], 
+                      default.units = "native", gp = gp)
+        grid.segments(seq_along(index) - 0.5*box_width, boxplot_stats[3, ],
+                      seq_along(index) + 0.5*box_width, boxplot_stats[3, ], 
+                      default.units = "native", gp = gp)
+        if(outline) {   
+            for(i in seq_along(value)) {
+                l1 = value[[i]] > boxplot_stats[5,i]
+                if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = value[[i]][l1], 
+                    default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+                l2 = value[[i]] < boxplot_stats[1,i]
+                if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = value[[i]][l2], 
+                    default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+            }
+        }
+}

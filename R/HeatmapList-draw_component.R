@@ -339,7 +339,7 @@ setMethod(f = "adjust_heatmap_list",
         object@layout$max_right_component_width = max_right_component_width
         
         # and calcualte proper paddings
-        if(is.null(object@ht_list_param$padding)) {
+        if(TRUE) {
             object@ht_list_param$padding = GLOBAL_PADDING
             column_anno_max_left_extended = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
                 if(inherits(ht, "HeatmapAnnotation")) {

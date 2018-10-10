@@ -404,11 +404,11 @@ SingleAnnotation = function(name, value, col, fun,
                 extended[[3]] = text_width
             }
         }
-        for(i in 1:4) {
-            extended[[i]] = max(anno_fun_extend[[i]], extended[[i]])
-        }
-        .Object@extended = extended
     }
+    for(i in 1:4) {
+        extended[[i]] = max(anno_fun_extend[[i]], extended[[i]])
+    }
+    .Object@extended = extended
 
     .Object@name_param = name_param
 

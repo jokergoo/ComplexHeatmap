@@ -2655,8 +2655,9 @@ row_anno_link = function(...) {
 
 # only allow for one-column/one-row heamtap
 # discrete: barplot; continuous: boxplot (maybe also barplot, e.g. pct overlap)
-anno_summary = function(which = c("column", "row"), bar_width = 0.8,
-	width = NULL, height = NULL, border = FALSE, ...) {
+anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0.8, 
+	axis = TRUE, axis_param = default_axis_param(which), 
+	width = NULL, height = NULL, ...) {
 
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
@@ -2666,11 +2667,32 @@ anno_summary = function(which = c("column", "row"), bar_width = 0.8,
 
 	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
 
-	# get variables fron oncoPrint() function
-	pf = parent.frame()
-	# find where the heatmap object is.
-	row_fun = function(index) {
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, c(0, 1)) else NULL
 
+	row_fun = function(index) {
+		ht = get("object", envir = parent.frame(7))
+		mat = ht@matrix
+		cm = ht@matrix_color_mapping
+		order_list = ht@column_order_list
+		ng = length(order_list)
+
+		if(cm@type == "discrete") {
+			tl = lapply(order_list, function(od) table(mat[1, od]))
+			tl = lapply(tl, function(x) x/sum(x))
+
+			pushViewport(viewport(yscale = c(0.5, ng+0.5), xscale = c(0, 1)))
+			for(i in 1:ng) {
+				x = i
+				y = cumsum(tl[[i]])
+				grid.rect(y, x, height = bar_width, width = tl[[i]], just = "right", gp = gpar(fill = map_to_colors(cm, names(y))), default.units = "native")
+			}
+			if(axis) grid.draw(axis_grob)
+			if(border) grid.rect(gp = gpar(fill = "transparent"))
+			popViewport()
+		} else {
+			stop_wrap("`anno_summary()` currently only supports discrete matrix.")
+		}
 	}
 	column_fun = function(index) {
 		ht = get("object", envir = parent.frame(7))
@@ -2682,16 +2704,19 @@ anno_summary = function(which = c("column", "row"), bar_width = 0.8,
 		if(cm@type == "discrete") {
 			tl = lapply(order_list, function(od) table(mat[od, 1]))
 			tl = lapply(tl, function(x) x/sum(x))
+
 			pushViewport(viewport(xscale = c(0.5, ng+0.5), yscale = c(0, 1)))
 			for(i in 1:ng) {
 				x = i
 				y = cumsum(tl[[i]])
-				grid.rect(x, y, w = bar_width, just = "top", gp = gpar(fill = map_to_colors(cm, names(y))))
+				grid.rect(x, y, width = bar_width, height = tl[[i]], just = "top", gp = gpar(fill = map_to_colors(cm, names(y))), default.units = "native")
 			}
-			# axis
+			if(axis) grid.draw(axis_grob)
+			if(border) grid.rect(gp = gpar(fill = "transparent"))
 			popViewport()
+		} else {
+			stop_wrap("`anno_summary()` currently only supports discrete matrix.")
 		}
-
 	}
 
 	if(which == "row") {
@@ -2706,11 +2731,14 @@ anno_summary = function(which = c("column", "row"), bar_width = 0.8,
 		which = which,
 		width = width,
 		height = height,
+		var_import = list(bar_width, border, axis, axis_grob),
 		n = 1,
 		show_name = FALSE
 	)
 
 	anno@subsetable = FALSE
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+
 	return(anno)
 }
 

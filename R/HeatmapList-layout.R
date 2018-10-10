@@ -146,12 +146,15 @@ setMethod(f = "make_layout",
     # i_main is aleays numeric index
     if(is.character(i_main)) {
         i_main = which(names(object@ht_list) == i_main)[1]
+        if(length(i_main) == 0) {
+            stop_wrap(qq("cannot find heatmap '@{main_heatmap}'"))
+        }
     }
 
     if(verbose) qqcat("@{n_ht} heatmaps/annotations, main heatmap: @{i_main}th\n")
 
     if(inherits(object@ht_list[[i_main]], "HeatmapAnnotation")) {
-        stop("the main heatmap can only be the heatmap.")
+        stop_wrap("the main heatmap can only be the heatmap.")
     }
 
     nr = nrow(object@ht_list[[i_main]]@matrix)
