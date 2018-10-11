@@ -330,7 +330,8 @@ setMethod(f = "draw",
     split = NULL,
     row_km = km,
     row_split = split,
-    heatmap_body_height = NULL,
+    height = NULL,
+    heatmap_height = NULL,
 
     column_gap = NULL,
     cluster_columns = NULL,
@@ -343,7 +344,8 @@ setMethod(f = "draw",
     column_order = NULL,
     column_km = NULL,
     column_split = NULL,
-    heatmap_body_width = NULL,
+    width = NULL,
+    heatmap_width = NULL,
 
     ### global setting
     heatmap_row_names_gp = NULL,
@@ -402,10 +404,37 @@ setMethod(f = "draw",
         }
         if(direction == "horizontal") {
             nr = ob[1]
-            object = object + Heatmap(matrix(ncol = 0, nrow = nr))
+            max_height = max(do.call("unit.c", lapply(object@ht_list, function(ha) {
+                h = height(ha)
+                if(is_abs_unit(h)) {
+                    convertHeight(h, "mm")
+                } else {
+                    unit(0, "mm")
+                }
+            })))
+            max_height = convertHeight(max_height, "mm")
+            if(max_height[[1]] == 0) {
+                object = object + Heatmap(matrix(ncol = 0, nrow = nr))
+            } else {
+                object = object + Heatmap(matrix(ncol = 0, nrow = nr), height = max_height)
+            }
+            
         } else {
             nc = ob[1]
-            object = object %v% Heatmap(matrix(nrow = 0, ncol = nc))
+            max_width = max(do.call("unit.c", lapply(object@ht_list, function(ha) {
+                w = width(ha)
+                if(is_abs_unit(w)) {
+                    convertWidth(w, "mm")
+                } else {
+                    unit(0, "mm")
+                }
+            })))
+            max_width = convertWidth(max_width, "mm")
+            if(max_width[[1]] == 0) {
+                object = object %v% Heatmap(matrix(nrow = 0, ncol = nc))
+            } else {
+                object = object %v% Heatmap(matrix(nrow = 0, ncol = nc), width = max_width)
+            }
         }
     }
 
@@ -463,7 +492,8 @@ setMethod(f = "draw",
         row_order = row_order,
         row_km = row_km,
         row_split = row_split,
-        heatmap_body_height = heatmap_body_height,
+        height = height,
+        heatmap_height = heatmap_height,
 
         column_gap = column_gap,
         cluster_columns = cluster_columns,
@@ -476,7 +506,8 @@ setMethod(f = "draw",
         column_order = column_order,
         column_km = column_km,
         column_split = column_split,
-        heatmap_body_width = heatmap_body_width
+        width = width,
+        heatmap_width = heatmap_width
     )
 
     layout = grid.layout(nrow = length(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT), 

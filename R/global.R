@@ -111,7 +111,7 @@ ht_opt = setGlobalOptions(
 			}
 		},
 		.length = 1),
-	show_vp_border = FALSE,
+	show_vp = FALSE,
 	anno_simple_size = list(
 		.value = unit(5, "mm"),
 		.class = "unit"

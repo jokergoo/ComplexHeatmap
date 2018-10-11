@@ -71,3 +71,16 @@ rowAnnotation(foo = 1:10, bar = anno_points(10:1))
 HeatmapAnnotation(1:10)
 
 HeatmapAnnotation(data.frame(1:10))
+
+
+
+ha = HeatmapAnnotation(summary = anno_summary(height = unit(4, "cm")))
+v = sample(letters[1:2], 50, replace = TRUE)
+split = sample(letters[1:2], 50, replace = TRUE)
+
+Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
+
+ha = HeatmapAnnotation(summary = anno_summary(gp = gpar(fill = 2:3), height = unit(4, "cm")))
+v = rnorm(50)
+Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
+

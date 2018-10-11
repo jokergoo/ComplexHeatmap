@@ -2656,7 +2656,9 @@ row_anno_link = function(...) {
 # only allow for one-column/one-row heamtap
 # discrete: barplot; continuous: boxplot (maybe also barplot, e.g. pct overlap)
 anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0.8, 
-	axis = TRUE, axis_param = default_axis_param(which), 
+	axis = TRUE, axis_param = default_axis_param(which),
+	ylim = NULL, extend = 0.05, outline = TRUE, box_width = 0.6,
+	pch = 1, size = unit(2, "mm"), gp = gpar(),
 	width = NULL, height = NULL, ...) {
 
 	if(is.null(.ENV$current_annotation_which)) {
@@ -2668,7 +2670,11 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
 
 	axis_param = validate_axis_param(axis_param, which)
-	axis_grob = if(axis) construct_axis_grob(axis_param, which, c(0, 1)) else NULL
+	if(is.null(ylim)) {
+		axis_grob = if(axis) construct_axis_grob(axis_param, which, c(0, 1)) else NULL
+	} else {
+		axis_grob = if(axis) construct_axis_grob(axis_param, which, ylim) else NULL
+	}
 
 	row_fun = function(index) {
 		ht = get("object", envir = parent.frame(7))
@@ -2691,7 +2697,7 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 			if(border) grid.rect(gp = gpar(fill = "transparent"))
 			popViewport()
 		} else {
-			stop_wrap("`anno_summary()` currently only supports discrete matrix.")
+			
 		}
 	}
 	column_fun = function(index) {
@@ -2702,6 +2708,9 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 		ng = length(order_list)
 
 		if(cm@type == "discrete") {
+			if(!is.null(ylim)) {
+				stop_wrap("For discrete matrix, `ylim` is not allowed to set. It is always c(0, 1).")
+			}
 			tl = lapply(order_list, function(od) table(mat[od, 1]))
 			tl = lapply(tl, function(x) x/sum(x))
 
@@ -2715,7 +2724,39 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 			if(border) grid.rect(gp = gpar(fill = "transparent"))
 			popViewport()
 		} else {
-			stop_wrap("`anno_summary()` currently only supports discrete matrix.")
+			vl = lapply(order_list, function(od) mat[od, 1])
+			nv = length(vl)
+			if(is.null(ylim)) {
+				if(!outline) {
+					boxplot_stats = boxplot(vl, plot = FALSE)$stats
+					data_scale = range(boxplot_stats)
+				} else {
+					data_scale = range(vl, na.rm = TRUE)
+				}
+			} else {
+				data_scale = ylim
+			}
+			data_scale = data_scale + c(-extend, extend)*(data_scale[2] - data_scale[1])
+
+			if(is.null(ylim)) {
+				axis_param = validate_axis_param(axis_param, which)
+				axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
+			}
+
+			gp = recycle_gp(gp, nv)
+			if(length(pch) == 1) pch = rep(pch, nv)
+			if(length(size) == 1) size = rep(size, nv)
+
+			pushViewport(viewport(xscale = c(0.5, ng+0.5), yscale = data_scale))
+			for(i in 1:ng) {
+				x = i
+				v = vl[[i]]
+				grid.boxplot(v, pos = x, box_width = box_width, gp = subset_gp(gp, i),
+					pch = pch, size = size)
+			}
+			if(axis) grid.draw(axis_grob)
+			if(border) grid.rect(gp = gpar(fill = "transparent"))
+			popViewport()
 		}
 	}
 
@@ -2731,7 +2772,8 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 		which = which,
 		width = width,
 		height = height,
-		var_import = list(bar_width, border, axis, axis_grob),
+		var_import = list(bar_width, border, axis, axis_grob, axis_param, which, ylim, extend, 
+			outline, box_width, pch, size, gp),
 		n = 1,
 		show_name = FALSE
 	)

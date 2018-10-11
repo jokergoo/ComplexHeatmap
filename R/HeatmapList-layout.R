@@ -103,7 +103,8 @@ setMethod(f = "make_layout",
     row_order = NULL,
     row_km = NULL,
     row_split = NULL,
-    heatmap_body_height = NULL,
+    height = NULL,
+    heatmap_height = NULL,
 
     column_gap = NULL,
     cluster_columns = NULL,
@@ -116,7 +117,8 @@ setMethod(f = "make_layout",
     column_order = NULL,
     column_km = NULL,
     column_split = NULL,
-    heatmap_body_width = NULL) {
+    width = NULL,
+    heatmap_width = NULL) {
 
     verbose = ht_opt("verbose")
 
@@ -298,6 +300,37 @@ setMethod(f = "make_layout",
             object@ht_list[[i_main]]@row_order = row_order
             if(verbose) qqcat("set row_order to main heatmap\n")
         }
+
+        
+        if(!is.null(height) && !is.null(heatmap_height)) {
+            stop_wrap("You can only specify one of `height` and `heatmap_height` in draw().")
+        }
+        if(!is.null(height)) {
+            if(!inherits(height, "unit")) {
+                stop_wrap("`height` specified in `draw()` should be a unit.")
+            }
+            if(!is_abs_unit(height)) {
+                stop_wrap("`height` specified in `draw()` should be an absolute unit.")
+            }
+
+        }
+        if(!is.null(heatmap_height)) {
+            if(!inherits(heatmap_height, "unit")) {
+                stop_wrap("`heatmap_height` specified in `draw()` should be a unit.")
+            }
+            if(!is_abs_unit(heatmap_height)) {
+                stop_wrap("`heatmap_height` specified in `draw()` should be an absolute unit.")
+            }
+        }
+        
+        if(!is.null(height) && is.null(heatmap_height)) {
+            object@ht_list[[i_main]]@matrix_param$height = height
+            object@ht_list[[i_main]]@heatmap_param$height = unit(1, "npc")
+        } else if(is.null(height) && !is.null(heatmap_height)) {
+            object@ht_list[[i_main]]@matrix_param$height = unit(1, "npc")
+            object@ht_list[[i_main]]@heatmap_param$height = heatmap_height
+        } 
+        
     } else {
         if(!is.null(column_split)) {
             object@ht_list[[i_main]]@matrix_param$column_split = column_split
@@ -386,6 +419,35 @@ setMethod(f = "make_layout",
             object@ht_list[[i_main]]@column_order = column_order
             if(verbose) qqcat("set column_order to main heatmap\n")
         }
+
+        if(!is.null(width) && !is.null(heatmap_width)) {
+            stop_wrap("You can only specify one of `width` and `heatmap_width` in draw().")
+        }
+        if(!is.null(width)) {
+            if(!inherits(width, "unit")) {
+                stop_wrap("`width` specified in `draw()` should be a unit.")
+            }
+            if(!is_abs_unit(width)) {
+                stop_wrap("`width` specified in `draw()` should be an absolute unit.")
+            }
+
+        }
+        if(!is.null(heatmap_width)) {
+            if(!inherits(heatmap_width, "unit")) {
+                stop_wrap("`heatmap_width` specified in `draw()` should be a unit.")
+            }
+            if(!is_abs_unit(heatmap_width)) {
+                stop_wrap("`heatmap_width` specified in `draw()` should be an absolute unit.")
+            }
+        }
+        
+        if(!is.null(width) && is.null(heatmap_width)) {
+            object@ht_list[[i_main]]@matrix_param$width = width
+            object@ht_list[[i_main]]@heatmap_param$width = unit(1, "npc")
+        } else if(is.null(width) && !is.null(heatmap_width)) {
+            object@ht_list[[i_main]]@matrix_param$width = unit(1, "npc")
+            object@ht_list[[i_main]]@heatmap_param$width = heatmap_width
+        }  
     }
 
     if(verbose) qqcat("auto adjust all heatmap/annotations by the main heatmap\n")
@@ -484,6 +546,25 @@ setMethod(f = "make_layout",
             }
         }
         if(verbose) qqcat("adjust column order for all other heatmaps\n")
+    }
+
+    # width and height
+    if(direction == "horizontal") {
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap") & i != i_main) {
+                object@ht_list[[i]]@matrix_param$height = object@ht_list[[i_main]]@matrix_param$height
+                object@ht_list[[i]]@heatmap_param$height = object@ht_list[[i_main]]@heatmap_param$height
+            }
+        }
+        if(verbose) qqcat("adjust heights for all other heatmaps\n")
+    } else {
+        for(i in seq_len(n_ht)) {
+            if(inherits(object@ht_list[[i]], "Heatmap") & i != i_main) {
+                object@ht_list[[i]]@matrix_param$width = object@ht_list[[i_main]]@matrix_param$width
+                object@ht_list[[i]]@heatmap_param$width = object@ht_list[[i_main]]@heatmap_param$width
+            }
+        }
+        if(verbose) qqcat("adjust width for all other heatmaps\n")
     }
 
     if(auto_adjust) {
@@ -969,18 +1050,48 @@ setMethod(f = "component_width",
     } else {
         component_name = k
     }
+
+    direction = object@direction
     # this function is used for grid.layout, so null unit is allowed
-    .single_unit = function(nm) {
+    .single_unit_horizontal = function(nm) {
         if(nm == "heatmap_list") {
              width = sum(do.call("unit.c", lapply(object@ht_list, function(ht) {
                     if(inherits(ht, "Heatmap")) {
                         ht@heatmap_param$width
                     } else {
-                        size(ht)
+                        width(ht) # width of the row annotation, always a fixed unit
                     }
                 })))
             if(is_abs_unit(width)) {
-                width + sum(object@ht_list_param$ht_gap)
+                width + sum(object@ht_list_param$ht_gap) - object@ht_list_param$ht_gap[length(object@ht_list_param$ht_gap)]
+            } else {
+                unit(1, "null") 
+            }
+        } else {
+            object@layout[[paste0("layout_", nm, "_width")]]
+        }
+    }
+
+    .single_unit_vertical = function(nm) {
+        if(nm == "heatmap_list") {
+            width = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
+                    if(inherits(ht, "Heatmap")) {
+                        ht@heatmap_param$width
+                    } else {
+                        # the width of column annotation is always unit(1, "npc")
+                        w = width(ht)
+                        # if a relative unit, reset to unit(0, "mm")
+                        if(!is_abs_unit(w)) w = unit(0, "mm")
+                        w
+                    }
+                })))
+            if(is_abs_unit(width)) {
+                # if height is zeor, this means, there is no heatmap and no width is set for all heatmapannotations
+                if(convertWidth(width, "mm", valueOnly = TRUE) == 0) {
+                    unit(1, "null")
+                } else {
+                    width
+                }
             } else {
                 unit(1, "null") 
             }
@@ -989,7 +1100,11 @@ setMethod(f = "component_width",
         }
     }
     
-    do.call("unit.c", lapply(component_name, .single_unit))
+    if(direction == "horizontal") {
+        do.call("unit.c", lapply(component_name, .single_unit_horizontal))
+    } else {
+        do.call("unit.c", lapply(component_name, .single_unit_vertical))
+    }
 })
 
 # == title
@@ -1014,18 +1129,19 @@ setMethod(f = "component_height",
     } else {
         component_name = k
     }
+    direction = object@direction
     # this function is used for grid.layout, so null unit is allowed
-    .single_unit = function(nm) {
+    .single_unit_vertical = function(nm) {
         if(nm == "heatmap_list") {
-            height = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
+             height = sum(do.call("unit.c", lapply(object@ht_list, function(ht) {
                     if(inherits(ht, "Heatmap")) {
                         ht@heatmap_param$height
                     } else {
-                        size(ht)
+                        height(ht) # width of the row annotation, always a fixed unit
                     }
                 })))
             if(is_abs_unit(height)) {
-                height
+                height + sum(object@ht_list_param$ht_gap) - object@ht_list_param$ht_gap[length(object@ht_list_param$ht_gap)]
             } else {
                 unit(1, "null") 
             }
@@ -1034,5 +1150,35 @@ setMethod(f = "component_height",
         }
     }
 
-    do.call("unit.c", lapply(component_name, .single_unit))
+    .single_unit_horizontal = function(nm) {
+        if(nm == "heatmap_list") {
+            height = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
+                    if(inherits(ht, "Heatmap")) {
+                        ht@heatmap_param$height
+                    } else {
+                        h = height(ht)
+                        if(!is_abs_unit(h)) h = unit(0, "mm")
+                        h
+                    }
+                })))
+            if(is_abs_unit(height)) {
+                # if height is zeor, this means, there is no heatmap and no width is set for all heatmapannotations
+                if(convertWidth(height, "mm", valueOnly = TRUE) == 0) {
+                    unit(1, "null")
+                } else {
+                    height
+                }
+            } else {
+                unit(1, "null") 
+            }
+        } else {
+            object@layout[[paste0("layout_", nm, "_height")]]
+        }
+    }
+    
+    if(direction == "horizontal") {
+        do.call("unit.c", lapply(component_name, .single_unit_horizontal))
+    } else {
+        do.call("unit.c", lapply(component_name, .single_unit_vertical))
+    }
 })

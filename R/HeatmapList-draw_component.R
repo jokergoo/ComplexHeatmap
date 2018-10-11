@@ -188,7 +188,7 @@ setMethod(f = "adjust_heatmap_list",
             max_left_component_width = unit(0, "mm")
             if(inherits(object@ht_list[[1]], "Heatmap")) {
                 ht_first = object@ht_list[[1]]
-                max_left_component_width = sum(component_width(ht_first, c("row_names_left", "row_dend_left", "row_anno_left")))
+                max_left_component_width = sum(component_width(ht_first, c("row_names_left", "row_dend_left", "row_anno_left", "row_title_left")))
                 u = unit(0, "mm")
                 if(!is.null(ht_first@top_annotation)) {
                     u = unit.c(u, ht_first@top_annotation@extended[2])
@@ -205,7 +205,7 @@ setMethod(f = "adjust_heatmap_list",
             max_right_component_width = unit(0, "mm")
             if(inherits(object@ht_list[[ length(object@ht_list) ]], "Heatmap")) {
                 ht_last = object@ht_list[[ length(object@ht_list) ]]
-                max_right_component_width = sum(component_width(ht_last, c("row_names_right", "row_dend_right", "row_anno_right")))
+                max_right_component_width = sum(component_width(ht_last, c("row_names_right", "row_dend_right", "row_anno_right", "row_title_right")))
                 u = unit(0, "mm")
                 if(!is.null(ht_last@top_annotation)) {
                     u = unit.c(u, ht_last@top_annotation@extended[4])
@@ -250,7 +250,7 @@ setMethod(f = "adjust_heatmap_list",
 
         max_left_component_width = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
             if(inherits(ht, "Heatmap")) {
-                sum(component_width(ht, c("row_dend_left", "row_names_left", "row_anno_left")))   
+                sum(component_width(ht, c("row_dend_left", "row_names_left", "row_anno_left", "row_title_left")))   
             } else {
                 unit(0, "mm")
             }
@@ -258,7 +258,7 @@ setMethod(f = "adjust_heatmap_list",
         max_left_component_width = convertWidth(max_left_component_width, "mm")
         max_right_component_width = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
             if(inherits(ht, "Heatmap")) {
-                sum(component_width(ht, c("row_dend_right", "row_names_right", "row_anno_right")))
+                sum(component_width(ht, c("row_dend_right", "row_names_right", "row_anno_right", "row_title_right")))
             } else {
                 unit(0, "mm")
             }
@@ -389,7 +389,7 @@ setMethod(f = "adjust_heatmap_list",
             max_top_component_height = unit(0, "mm")
             if(inherits(object@ht_list[[1]], "Heatmap")) {
                 ht_first = object@ht_list[[1]]
-                max_top_component_height = sum(component_height(ht_first, c("column_names_top", "column_dend_top", "column_anno_top")))
+                max_top_component_height = sum(component_height(ht_first, c("column_names_top", "column_dend_top", "column_anno_top", "column_title_top")))
                 u = unit(0, "mm")
                 if(!is.null(ht_first@left_annotation)) {
                     u = unit.c(u, ht_first@left_annotation@extended[3])
@@ -406,7 +406,7 @@ setMethod(f = "adjust_heatmap_list",
             max_bottom_component_height = unit(0, "mm")
             if(inherits(object@ht_list[[ length(object@ht_list) ]], "Heatmap")) {
                 ht_last = object@ht_list[[ length(object@ht_list) ]]
-                max_bottom_component_height = sum(component_height(ht_last, c("column_names_bottom", "column_dend_bottom", "column_anno_bottom")))
+                max_bottom_component_height = sum(component_height(ht_last, c("column_names_bottom", "column_dend_bottom", "column_anno_bottom", "column_title_bottom")))
                 u = unit(0, "mm")
                 if(!is.null(ht_last@left_annotation)) {
                     u = unit.c(u, ht_last@left_annotation@extended[1])

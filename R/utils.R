@@ -73,7 +73,13 @@ default_col = function(x, main_matrix = FALSE) {
     } else if(is.numeric(x)) {
         if(main_matrix) {
             if(length(unique(x)) > 100) {
-                col_fun = colorRamp2(seq(quantile(x, 0.01), quantile(x, 0.99), length = 3), c("blue", "#EEEEEE", "red"))
+                q1 = quantile(x, 0.01)
+                q2 = quantile(x, 0.99)
+                if(length(unique(x[x > q1 & x < q2])) == 1) {
+                     col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
+                } else {
+                    col_fun = colorRamp2(seq(q1, q2, length = 3), c("blue", "#EEEEEE", "red"))
+                }
             } else {
                 col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
             }
@@ -404,7 +410,7 @@ add_vp_name = function(vpname) {
 }
 
 upViewport = function(...) {
-    if(ht_global_opt$show_vp_border) {
+    if(ht_global_opt$show_vp) {
         grid.rect(gp = gpar(fill = "transparent", col = "black", lty = 3))
         vpname = current.viewport()$name
         if(!grepl("^GRID.VP", vpname)) {
@@ -415,7 +421,7 @@ upViewport = function(...) {
 }
 
 popViewport = function(...) {
-    if(ht_global_opt$show_vp_border) {
+    if(ht_global_opt$show_vp) {
         grid.rect(gp = gpar(fill = "transparent", col = "black", lty = 3))
         vpname = current.viewport()$name
         if(!grepl("^GRID.VP", vpname)) {
