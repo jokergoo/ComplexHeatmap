@@ -192,7 +192,7 @@ setMethod(f = "make_layout",
                 for(i in seq_len(nr_slice)) {
                     slice_leaf_pos[i] = slice_leaf_pos[i] - slice_height[i]*p[i]
                 }
-                row_dend_slice = merge(row_dend_slice, object@row_dend_list, only_parent = TRUE)
+                row_dend_slice = merge_dendrogram(row_dend_slice, object@row_dend_list, only_parent = TRUE)
                 row_dend_slice = adjust_dend_by_x(row_dend_slice, slice_leaf_pos)
                 grid.dendrogram(row_dend_slice, facing = ifelse(row_dend_side == "left", "right", "left"))
                 popViewport()
@@ -243,7 +243,7 @@ setMethod(f = "make_layout",
                 for(i in seq_len(nc_slice)) {
                     slice_leaf_pos[i] = slice_leaf_pos[i] + slice_width[i]*p[i]
                 }
-                column_dend_slice = merge(column_dend_slice, object@column_dend_list, only_parent = TRUE)
+                column_dend_slice = merge_dendrogram(column_dend_slice, object@column_dend_list, only_parent = TRUE)
                 column_dend_slice = adjust_dend_by_x(column_dend_slice, slice_leaf_pos)
                 grid.dendrogram(column_dend_slice, facing = ifelse(column_dend_side == "top", "bottom", "top"))
                 popViewport()

@@ -321,10 +321,10 @@ grid.dendrogram = function(dend, ..., test = FALSE) {
 # dend2 = as.dendrogram(hclust(dist(m2)))
 # dend3 = as.dendrogram(hclust(dist(m3)))
 # dend_p = as.dendrogram(hclust(dist(rbind(colMeans(m1), colMeans(m2), colMeans(m3)))))
-# dend_m = merge(dend_p, list(dend1, dend2, dend3))
+# dend_m = merge_dendrogram(dend_p, list(dend1, dend2, dend3))
 # grid.dendrogram(dend_m, test = TRUE)
 #
-# dend_m = merge(dend_p, list(dend1, dend2, dend3), only_parent = TRUE)
+# dend_m = merge_dendrogram(dend_p, list(dend1, dend2, dend3), only_parent = TRUE)
 # grid.dendrogram(dend_m, test = TRUE)
 #
 # require(dendextend)
@@ -332,9 +332,9 @@ grid.dendrogram = function(dend, ..., test = FALSE) {
 # dend2 = color_branches(dend2, k = 1, col = "blue")
 # dend3 = color_branches(dend3, k = 1, col = "green")
 # dend_p = color_branches(dend_p, k = 1, col = "orange")
-# dend_m = merge(dend_p, list(dend1, dend2, dend3))
+# dend_m = merge_dendrogram(dend_p, list(dend1, dend2, dend3))
 # grid.dendrogram(dend_m, test = TRUE)
-merge.dendrogram = function(x, y, only_parent = FALSE, ...) {
+merge_dendrogram = function(x, y, only_parent = FALSE, ...) {
     parent = x
     children = y
 
@@ -549,7 +549,7 @@ dend_xy = function(dend) {
 # == details
 # The clustering is firstly applied in each group, then clustering is applied
 # to group means. The within-group dendrograms and between-group dendrogram
-# are finally connected by `merge.dendrogram`.
+# are finally connected by `merge_dendrogram`.
 #
 # In the final dendrogram, the within group dendrograms are enforced to be 
 # flat lines to emphasize that the within group dendrograms have no sense to 
@@ -591,7 +591,7 @@ cluster_within_group = function(mat, factor) {
         attr(node, "height") = 0
         node
     }))
-    dend = merge(parent, dend_list)
+    dend = merge_dendrogram(parent, dend_list)
     order.dendrogram(dend) = unlist(order_list)
     return(dend)
    

@@ -21,6 +21,8 @@
 # -show_row_names Whether show row names?
 # -row_names_side side of the row names
 # -row_names_gp Graphic parameters of row names.
+# -row_order row order
+# -column_order column order
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -remove_empty_rows if there is no alteration in that sample, whether remove it on the heatmap
 # -show_column_names Whether show column names?
@@ -58,6 +60,9 @@ oncoPrint = function(mat,
 	show_row_names = TRUE,
 	row_names_side = "right",
 	row_names_gp = pct_gp,
+
+	row_order = NULL,
+	column_order = NULL,
 	
 	remove_empty_columns = FALSE,
 	remove_empty_rows = FALSE,
@@ -246,11 +251,9 @@ oncoPrint = function(mat,
 	count_matrix = apply(arr, c(1, 2), sum)
 	n_mut = rowSums(apply(arr, 1:2, any))
 
-	row_order = NULL
 	if(!"row_order" %in% arg_names) {
 		row_order = oncoprint_row_order()
 	}
-	column_order = NULL
 	if(!"column_order" %in% arg_names) {
 		column_order = oncoprint_column_order()
 	}

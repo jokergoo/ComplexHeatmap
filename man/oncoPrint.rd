@@ -27,6 +27,9 @@ oncoPrint(mat,
     row_names_side = "right",
     row_names_gp = pct_gp,
     
+    row_order = NULL,
+    column_order = NULL,
+    
     remove_empty_columns = FALSE,
     remove_empty_rows = FALSE,
     show_column_names = FALSE,
@@ -49,6 +52,8 @@ oncoPrint(mat,
   \item{show_row_names}{Whether show row names?}
   \item{row_names_side}{side of the row names}
   \item{row_names_gp}{Graphic parameters of row names.}
+  \item{row_order}{row order}
+  \item{column_order}{column order}
   \item{remove_empty_columns}{if there is no alteration in that sample, whether remove it on the heatmap}
   \item{remove_empty_rows}{if there is no alteration in that sample, whether remove it on the heatmap}
   \item{show_column_names}{Whether show column names?}
