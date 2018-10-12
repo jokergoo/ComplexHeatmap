@@ -21,7 +21,7 @@ Draw a Single Heatmap
 The function creates a \code{\link{HeatmapList-class}} object which only contains a single heatmap
 and call \code{\link{draw,HeatmapList-method}} to make the final heatmap.
 
-There are some arguments which control the global setting of the heatmap such as legends.
+There are some arguments which control the some settings of the heatmap such as legends.
 Please go to \code{\link{draw,HeatmapList-method}} for these arguments.
 }
 \value{
@@ -33,5 +33,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

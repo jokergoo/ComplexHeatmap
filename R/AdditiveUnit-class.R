@@ -1,10 +1,11 @@
 
 # == title
-# An internal class
+# Class for Concatenating Heatmaps and Annotations
 #
-# == detail
-# This class is a super class for `Heatmap-class`, `HeatmapList-class` and `HeatmapAnnotation-class` classes.
-# It is only designed for ``+`` generic method so that above three classes can be appended to each other.
+# == detail 
+# This class is a super class for `Heatmap-class`, `HeatmapList-class` and
+# `HeatmapAnnotation-class` classes. It is only designed for ``+`` generic
+# method so that above three classes can be appended to each other.
 #
 AdditiveUnit = setClass("AdditiveUnit")
 
@@ -12,7 +13,7 @@ AdditiveUnit = setClass("AdditiveUnit")
 # Constructor Method for AdditiveUnit Class
 #
 # == param
-# -... black hole arguments.
+# -... Black hole arguments.
 #
 # == details
 # This method is not used in the package.
@@ -36,10 +37,16 @@ AdditiveUnit = function(...) {
 # -y A `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == detail
-# It is only a helper function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
-# or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input objects.
+# It is only a helper function. It actually calls
+# `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method` or
+# `add_heatmap,HeatmapAnnotation-method` depending on the class of the input
+# objects.
 #
-# The `HeatmapAnnotation-class` object to be added should only be row annotations.
+# The `HeatmapAnnotation-class` object to be added should only be row
+# annotations. Column annotations should be added to the heatmap list by
+# `\%v\%`.
+#
+# ``x`` and ``y`` can also be ``NULL``.
 #
 # == value
 # A `HeatmapList-class` object.
@@ -83,16 +90,21 @@ AdditiveUnit = function(...) {
 # -y A `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
 #
 # == detail
-# It is only a helper function. It actually calls `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method`
-# or `add_heatmap,HeatmapAnnotation-method` depending on the class of the input objects.
+# It is only a helper function. It actually calls
+# `add_heatmap,Heatmap-method`, `add_heatmap,HeatmapList-method` or
+# `add_heatmap,HeatmapAnnotation-method` depending on the class of the input
+# objects.
 #
-# The `HeatmapAnnotation-class` object to be added should only be column annotations.
+# The `HeatmapAnnotation-class` object to be added should only be column
+# annotations.
+#
+# ``x`` and ``y`` can also be ``NULL``.
 #
 # == value
 # A `HeatmapList-class` object.
 #
 # == seealso
-# `+.AdditiveUnit` operator is used for vertical heatmap list.
+# `+.AdditiveUnit` operator is used for horizontal heatmap list.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

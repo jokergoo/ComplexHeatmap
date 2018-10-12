@@ -2,23 +2,22 @@
 \alias{height<-}
 \alias{heightAssign}
 \title{
-Generic assignment method for height
+Generic Assignment Method for height()
 }
 \description{
-Generic assignment method for height
+Generic Assignment Method for height()
 }
 \usage{
 height(x, ...) <- value
 }
 \arguments{
 
-  \item{x}{x}
-  \item{value}{value}
-  \item{...}{other arguments}
+  \item{x}{An object.}
+  \item{value}{The value}
+  \item{...}{Other arguments.}
 
 }
 \examples{
 # There is no example
 NULL
-
 }

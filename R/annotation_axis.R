@@ -1,3 +1,17 @@
+# == title
+# Grob for annotation axis
+#
+# == param
+# -at Break values.
+# -labels Corresponding labels.
+# -labels_rot Rotations of labels.
+# -gp Graphic parameters.
+# -side side of the axis to the annotation viewport.
+# -facing Facing of the axis.
+#
+# == value
+# A `grid::grob` object.
+#
 annotation_axis_grob = function(at = NULL, labels = at, labels_rot = 0, gp = gpar(), 
 	side = "left", facing = "outside") {
 

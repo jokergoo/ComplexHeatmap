@@ -1,6 +1,5 @@
 \name{draw_annotation_legend-HeatmapList-method}
 \alias{draw_annotation_legend,HeatmapList-method}
-\alias{draw_annotation_legend}
 \title{
 Draw legends for all column annotations
 }
@@ -28,8 +27,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{draw_annotation_legend}
 \examples{
 # There is no example
 NULL
-
 }

@@ -17,5 +17,4 @@ Grob width for annotation_axis
 \examples{
 # There is no example
 NULL
-
 }

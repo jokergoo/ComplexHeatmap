@@ -11,7 +11,7 @@ AdditiveUnit(...)
 }
 \arguments{
 
-  \item{...}{black hole arguments.}
+  \item{...}{Black hole arguments.}
 
 }
 \details{
@@ -26,5 +26,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

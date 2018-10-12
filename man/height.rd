@@ -1,22 +1,21 @@
 \name{height}
 \alias{height}
 \title{
-Generic method for height
+Generic Method for height()
 }
 \description{
-Generic method for height
+Generic Method for height()
 }
 \usage{
 height(x, ...)
 }
 \arguments{
 
-  \item{x}{x}
-  \item{...}{other arguments}
+  \item{x}{An object.}
+  \item{...}{Other arguments.}
 
 }
 \examples{
 # There is no example
 NULL
-
 }

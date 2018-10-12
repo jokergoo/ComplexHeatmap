@@ -15,7 +15,7 @@ Get column dendrograms from a heatmap
 
 }
 \value{
-A dendrogram object
+The format of the returned object depends on whether rows/columns of the heatmaps are split.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
@@ -23,7 +23,9 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 mat = matrix(rnorm(100), 10)
 ht = Heatmap(mat)
+ht = draw(ht)
 column_dend(ht)
 ht = Heatmap(mat, column_km = 2)
+ht = draw(ht)
 column_dend(ht)
 }

@@ -188,7 +188,7 @@ SingleAnnotation = function(name, value, col, fun,
     .Object@name = name
 
     if(!name_rot %in% c(0, 90, 180, 270)) {
-        stop_wrap("@{name}: `name_rot` can only take values in c(0, 90, 180, 270)")
+        stop_wrap(qq("@{name}: `name_rot` can only take values in c(0, 90, 180, 270)"))
     }
 
     if(verbose) qqcat("create a SingleAnnotation with name '@{name}'\n")
@@ -243,7 +243,7 @@ SingleAnnotation = function(name, value, col, fun,
     if(which == "column") {
         if(verbose) qqcat("@{name}: it is a column annotation\n")
     	if(!name_side %in% c("left", "right")) {
-    		stop_wrap("@{name}: `name_side` should be 'left' or 'right' when it is a column annotation.")
+    		stop_wrap(qq("@{name}: `name_side` should be 'left' or 'right' when it is a column annotation."))
     	}
         if(verbose) qqcat("@{name}: adjust positions of annotation names\n")
     	if(name_side == "left") {
@@ -306,7 +306,7 @@ SingleAnnotation = function(name, value, col, fun,
     } else if(which == "row") {
         if(verbose) qqcat("@{name}: it is a row annotation\n")
     	if(!name_side %in% c("top", "bottom")) {
-    		stop_wrap("@{name}: `name_side` should be 'left' or 'right' when it is a column annotation.")
+    		stop_wrap(qq("@{name}: `name_side` should be 'left' or 'right' when it is a column annotation."))
     	}
         if(verbose) qqcat("@{name}: adjust positions of annotation names\n")
     	if(name_side == "top") {
@@ -414,7 +414,7 @@ SingleAnnotation = function(name, value, col, fun,
 
     gp = check_gp(gp)
     if(!is.null(gp$fill)) {
-    	stop_wrap("@{name}: You should not set `fill`.")
+    	stop_wrap(qq("@{name}: You should not set `fill`."))
     }
 
     if(missing(fun)) {
@@ -480,7 +480,7 @@ SingleAnnotation = function(name, value, col, fun,
     	if(!is.null(f_which)) {
     		fun_name = fun@fun_name
     		if(f_which != which) {
-    			stop_wrap("You are putting @{fun_name} as @{which} annotations, you need to set 'which' argument to '@{which}' as well, or use the helper function @{which}_@{fun_name}().")
+    			stop_wrap(qq("You are putting @{fun_name} as @{which} annotations, you need to set 'which' argument to '@{which}' as well, or use the helper function @{which}_@{fun_name}()."))
     		}
         }
         

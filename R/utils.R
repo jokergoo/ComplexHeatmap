@@ -283,7 +283,12 @@ rep.list = function(x, n) {
     return(lt)
 }
 
-
+# == title
+# List All Heatmap Components
+#
+# == value
+# A vector of viewport names.
+#
 list_component = function() {
     vp = grid.ls(viewports = TRUE, grob = FALSE, flatten = FALSE, print = FALSE)
     vp = unlist(vp)
@@ -518,7 +523,7 @@ recycle_param = function(x, all_names, default) {
 # Convert XY in a parent viewport
 #
 # == param
-# -u a list of two units which is x and y
+# -u A list of two units which is x and y
 # -vp_name the name of the parent viewport
 #
 # == example
@@ -607,7 +612,18 @@ unit_with_vp = function(..., vp = current.viewport()$name) {
 # Draw a Single Boxplot
 #
 # == param
-# 
+# -value A vector of numeric values.
+# -pos Position of the boxplot.
+# -outline Whether draw outlines.
+# -box_width width of the box.
+# -pch Point type.
+# -size Point size.
+# -gp Graphic parameters.
+# -direction Whether the box is vertical or horizontal.
+#
+# == details
+# All the values are measured with ``native`` coordinate.
+#
 grid.boxplot = function(value, pos, outline = TRUE, box_width = 0.6,
     pch = 1, size = unit(2, "mm"), gp = gpar(fill = "#CCCCCC"), 
     direction = c("vertical", "horizontal")) {

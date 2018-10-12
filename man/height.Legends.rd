@@ -11,15 +11,14 @@ Height of the Legends
 }
 \arguments{
 
-  \item{x}{The \code{\link[grid]{grob}} x returned by \code{\link{Legend}} or \code{\link{packLegend}}.}
-  \item{...}{other arguments}
+  \item{x}{The \code{\link[grid]{grob}} object returned by \code{\link{Legend}} or \code{\link{packLegend}}.}
+  \item{...}{Other arguments.}
 
 }
 \value{
-The returned unit x is in \code{mm}.
+The returned unit x is always in \code{mm}.
 }
 \examples{
 # There is no example
 NULL
-
 }

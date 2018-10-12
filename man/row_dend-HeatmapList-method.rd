@@ -15,7 +15,7 @@ Get row dendrograms from a heatmap list
 
 }
 \value{
-A list of dendrograms for which each dendrogram corresponds to a row slice
+The format of the returned object depends on whether rows/columns of the heatmaps are split.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
@@ -23,9 +23,12 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 mat = matrix(rnorm(100), 10)
 ht_list = Heatmap(mat) + Heatmap(mat)
+ht_list = draw(ht_list)
 row_dend(ht_list)
 ht_list = Heatmap(mat, row_km = 2) + Heatmap(mat)
+ht_list = draw(ht_list)
 row_dend(ht_list)
 ht_list = Heatmap(mat, row_km = 2) %v% Heatmap(mat)
+ht_list = draw(ht_list)
 row_dend(ht_list)
 }

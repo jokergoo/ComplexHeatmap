@@ -2,23 +2,22 @@
 \alias{size<-}
 \alias{sizeAssign}
 \title{
-Generic assignment method for size
+Generic Assignment Method for size()
 }
 \description{
-Generic assignment method for size
+Generic Assignment Method for size()
 }
 \usage{
 size(x, ...) <- value
 }
 \arguments{
 
-  \item{x}{x}
-  \item{value}{value}
-  \item{...}{other arguments}
+  \item{x}{An object.}
+  \item{value}{The value}
+  \item{...}{Other arguments.}
 
 }
 \examples{
 # There is no example
 NULL
-
 }

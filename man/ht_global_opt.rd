@@ -20,10 +20,9 @@ ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE)
 }
 \details{
 This function is deprecated. Please use \code{\link{ht_opt}} instead. However, changes by this function
-will also sychronized in \code{\link{ht_opt}}.
+will also be sychronized in \code{\link{ht_opt}}.
 }
 \examples{
 # There is no example
 NULL
-
 }

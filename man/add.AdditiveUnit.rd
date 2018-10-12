@@ -17,10 +17,16 @@ Horizontally Add Heatmaps or Annotations to a Heatmap List
 
 }
 \details{
-It is only a helper function. It actually calls \code{\link{add_heatmap,Heatmap-method}}, \code{\link{add_heatmap,HeatmapList-method}}
-or \code{\link{add_heatmap,HeatmapAnnotation-method}} depending on the class of the input objects.
+It is only a helper function. It actually calls
+\code{\link{add_heatmap,Heatmap-method}}, \code{\link{add_heatmap,HeatmapList-method}} or
+\code{\link{add_heatmap,HeatmapAnnotation-method}} depending on the class of the input
+objects.
 
-The \code{\link{HeatmapAnnotation-class}} object to be added should only be row annotations.
+The \code{\link{HeatmapAnnotation-class}} object to be added should only be row
+annotations. Column annotations should be added to the heatmap list by
+\code{\link[=pct_v_pct]{\%v\%}}.
+
+\code{x} and \code{y} can also be \code{NULL}.
 }
 \value{
 A \code{\link{HeatmapList-class}} object.
@@ -34,5 +40,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

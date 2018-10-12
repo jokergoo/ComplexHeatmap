@@ -1,22 +1,21 @@
 \name{width}
 \alias{width}
 \title{
-Generic method for width
+Generic Method for width()
 }
 \description{
-Generic method for width
+Generic Method for width()
 }
 \usage{
 width(x, ...)
 }
 \arguments{
 
-  \item{x}{x}
-  \item{...}{other arguments}
+  \item{x}{An object.}
+  \item{...}{Other arguments.}
 
 }
 \examples{
 # There is no example
 NULL
-
 }

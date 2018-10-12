@@ -2,11 +2,11 @@
 # Decorate the heatmap body
 #
 # == param
-# -heatmap name of the heatmap which is set as ``name`` argument in `Heatmap` function
-# -code code that adds graphics in the selected heatmap body
-# -slice index of row slices in the heatmap
-# -row_slice index of row slices in the heatmap
-# -column_slice index of column slices in the heatmap
+# -heatmap name of the heatmap which is set as ``name`` argument in `Heatmap` function.
+# -code code that adds graphics in the selected heatmap body.
+# -slice index of row slices in the heatmap.
+# -row_slice index of row slices in the heatmap.
+# -column_slice index of column slices in the heatmap.
 # -envir where to look for variables inside ``code``
 #
 # == details
@@ -14,22 +14,6 @@
 # This function contructs the name of the viewport,
 # goes to the viewport by `grid::seekViewport` and applies code
 # to that viewport.
-#
-# If you know the number of rows and columns for that row slice, it is
-# simple to calculate the position of every small grid in the row slice.
-# E.g., the position for the grid in i^th row and j^th column is:
-#
-#     # assume nc is the number of columns 
-#     # and nr is the number of rows in that row slice
-#     unit((i-0.5)/nc, "npc")
-#     unit((j-0.5)/nr, "npc")
-#
-#     # the width is
-#     unit(1/nc, "npc")
-#
-#     # the height is
-#     unit(1/nr, "npc")
-#
 #
 # == value
 # This function returns no value.
@@ -395,7 +379,7 @@ decorate_column_title = function(..., envir = new.env(parent = parent.frame())) 
 # decorate_annotation("point", {
 #     grid.rect(gp = gpar(fill = "#FF000080"))
 # }, slice = 2)
-#
+
 decorate_annotation = function(annotation, code, slice = 1, envir = new.env(parent = parent.frame())) {
 
 	current_vp = current.viewport()$name

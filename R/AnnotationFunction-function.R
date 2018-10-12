@@ -4,9 +4,9 @@
 #
 # == param
 # -which Whether it is a column annotation or a row annotation?
-# -border Wether draw borders of the annotation region?
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -border Whether draw borders of the annotation region?
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == details
 # It creates an empty annotation and holds space, later users can add graphics
@@ -91,7 +91,7 @@ subset_vector = function(x, i) x[i]
 #
 # == param
 # -x The value vector. The value can be a vector or a matrix. The length of the vector
-#    or the number of rows of the matrix is taken as the number of the observations of the annotation.
+#    or the nrow of the matrix is taken as the number of the observations of the annotation.
 #    The value can be numeric or character and NA value is allowed.
 # -col Color that maps to ``x``. If ``x`` is numeric and needs a continuous mapping, ``col`` 
 #      should be a color mapping function which accepts a vector of values and returns a
@@ -110,14 +110,14 @@ subset_vector = function(x, i) x[i]
 #          the value of ``pt_size`` can be a vector, while if ``x`` is a matrix, ``pt_size`` can
 #          only be a single value.
 # -pt_gp Graphic parameters for points/symbols. The length setting is same as ``pt_size``.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == details
 # The "simple annotation" is the most widely used annotation type which is heatmap-like, where
 # the grid colors correspond to the values. `anno_simple` also supports to add points/symbols
-# on top of the grids where the it can be normal point (when pch is set as numbers) or letters (when
-# pch is set as single letters).
+# on top of the grids where the it can be normal point (when ``pch`` is set as numbers) or letters (when
+# ``pch`` is set as single letters).
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -303,8 +303,8 @@ anno_simple = function(x, col, na_col = "grey",
 # -gp Graphic parameters for annotation grids. If the image has transparent background, the ``fill`` parameter 
 #     can be used to control the background color in the annotation grids.
 # -space The space around the image to the annotation grid borders. The value should be a `grid::unit` object.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == details
 # This function supports image formats in ``png``, ``svg``, ``pdf``, ``eps``, ``jpeg/jpg``, ``tiff``. 
@@ -578,8 +578,8 @@ construct_axis_grob = function(axis_param, which, data_scale) {
 # -extend The extension to both side of ``ylim``. The value is a percent value corresponding to ``ylim[2] - ylim[1]``.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -745,6 +745,7 @@ update_anno_extend = function(anno, axis_grob, axis_param) {
 # -border Wether draw borders of the annotation region?
 # -gp Graphic parameters for lines. The length of each graphic parameter can be 1, or number of columns of ``x`` is ``x`` is a matrix.
 # -add_points Whether to add points on the lines?
+# -smooth If it is ``TRUE``, smoothing by `stats::loess` is performed. If it is ``TRUE``, ``add_points`` is set to ``TRUE`` by default.
 # -pch Point type. The length setting is the same as ``gp``.
 # -size Point size, the value should be a `grid::unit` object. The length setting is the same as ``gp``.
 # -pt_gp Graphic parameters for points. The length setting is the same as ``gp``.
@@ -752,8 +753,8 @@ update_anno_extend = function(anno, axis_grob, axis_param) {
 # -extend The extension to both side of ``ylim``. The value is a percent value corresponding to ``ylim[2] - ylim[1]``.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -767,7 +768,7 @@ update_anno_extend = function(anno, axis_grob, axis_param) {
 # 	add_points = TRUE, pt_gp = gpar(col = 5:6), pch = c(1, 16))
 # draw(anno, test = "matrix")
 anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), 
-	add_points = FALSE, smooth = FALSE, pch = 16, size = unit(2, "mm"), pt_gp = gpar(), ylim = NULL, 
+	add_points = smooth, smooth = FALSE, pch = 16, size = unit(2, "mm"), pt_gp = gpar(), ylim = NULL, 
 	extend = 0.05, axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 
@@ -969,8 +970,8 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 # -extend The extension to both side of ``ylim``. The value is a percent value corresponding to ``ylim[2] - ylim[1]``.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -1139,8 +1140,8 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 # -size Point size.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -1331,8 +1332,8 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 # -gp Graphic parameters for the boxes. The length of the graphic parameters should be one or the number of observations.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -1489,8 +1490,8 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 # -gp Graphic parameters for the boxes. The length of the graphic parameters should be one or the number of observations.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -1744,8 +1745,8 @@ anno_density = function(x, which = c("column", "row"),
 #           of ``location`` should be a `grid::unit` object, normally in ``npc`` unit. E.g. ``unit(0, 'npc')``
 #           means the most left of the annotation region and ``unit(1, 'npc')`` means the most right of
 #           the annotation region. 
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -1888,8 +1889,8 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 # -transparency Transparency of the filled colors. Value should be between 0 and 1.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -2075,8 +2076,8 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 # -gap Gap size of neighbouring horizon chart.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
-# -width Width of the annotation.
-# -height Height of the annotation.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == detail
 # Horizon chart as row annotation is only supported.
@@ -2653,13 +2654,49 @@ row_anno_link = function(...) {
 	anno_link(..., which = "row")
 }
 
-# only allow for one-column/one-row heamtap
-# discrete: barplot; continuous: boxplot (maybe also barplot, e.g. pct overlap)
+# == title
+# Summary Annotation
+#
+# == param
+# -which Whether it is a column annotation or a row annotation?
+# -border Wether draw borders of the annotation region?
+# -bar_width Relative width of the bars. The value should be smaller than one.
+# -axis Whether to add axis?
+# -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
+# -ylim Data ranges. ``ylim`` for barplot is enforced to be ``c(0, 1)``.
+# -extend The extension to both side of ``ylim``. The value is a percent value corresponding to ``ylim[2] - ylim[1]``. This argument is only for boxplot.
+# -outline Whether draw outline of boxplots?
+# -box_width Relative width of boxes. The value should be smaller than one.
+# -pch Point style.
+# -size Point size.
+# -gp Graphic parameters.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+#
+# == detail
+# ``anno_summary`` is a special annotation function that it only works for one-column or one-row heatmap. 
+# It shows the summary of the values in the heatmap. If the values in the heatmap is discrete, 
+# the proportion of each level (the sum is normalized to 1) is visualized as stacked barplot. If the heatmap
+# is split into multiple slices, multiple bars are put in the annotation. If the value is continuous, boxplot is used.
+#
+# In the barplot, the color schema is used as the same as the heatmap, while for the boxplot, the color needs
+# to be controlled by ``gp``.
+#
+# == example
+# ha = HeatmapAnnotation(summary = anno_summary(height = unit(4, "cm")))
+# v = sample(letters[1:2], 50, replace = TRUE)
+# split = sample(letters[1:2], 50, replace = TRUE)
+# Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
+#
+# ha = HeatmapAnnotation(summary = anno_summary(gp = gpar(fill = 2:3), height = unit(4, "cm")))
+# v = rnorm(50)
+# Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
+#
 anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0.8, 
 	axis = TRUE, axis_param = default_axis_param(which),
 	ylim = NULL, extend = 0.05, outline = TRUE, box_width = 0.6,
 	pch = 1, size = unit(2, "mm"), gp = gpar(),
-	width = NULL, height = NULL, ...) {
+	width = NULL, height = NULL) {
 
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]

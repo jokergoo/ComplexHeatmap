@@ -7,7 +7,7 @@
 # 
 # == detail
 # The layout of the single heatmap will be established by setting the size of each heatmap components.
-# Also functions that make graphics for heatmap components will be recorded by saving as functions.
+# Also how to make graphics for heatmap components will be recorded by saving as functions.
 #
 # Whether to apply row clustering or column clustering affects the layout, so clustering should be applied 
 # first before making the layout.

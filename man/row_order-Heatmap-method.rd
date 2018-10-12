@@ -15,7 +15,7 @@ Get row order from a heatmap
 
 }
 \value{
-A list contains row orders which correspond to the original matrix
+The format of the returned object depends on whether rows/columns of the heatmaps are split.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
@@ -23,7 +23,9 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 mat = matrix(rnorm(100), 10)
 ht = Heatmap(mat)
+ht = draw(ht)
 row_order(ht)
 ht = Heatmap(mat, row_km = 2)
+ht = draw(ht)
 row_order(ht)
 }

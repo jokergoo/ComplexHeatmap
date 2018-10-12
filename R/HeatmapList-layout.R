@@ -35,7 +35,8 @@
 # -row_order same setting as in `Heatmap`, if it is specified, ``row_order`` in main heatmap is ignored.
 # -row_km row km
 # -row_split row split
-# -heatmap_body_height heatmap body height
+# -height height of the heatmap body
+# -heatmap_height height of the complete heatmap
 # -column_gap column gap
 # -cluster_columns cluster columns
 # -clustering_distance_columns clustering distance columns
@@ -47,12 +48,15 @@
 # -column_order column order
 # -column_km column km
 # -column_split column split
-# -heatmap_body_width heatmap bpdy widht
+# -width width of the heatmap body
+# -heatmap_width width of the complete heatmap
 #
 # == detail
-# It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
+# It sets the size of each component of the heatmap list and adjusts graphic
+# parameters for each heatmap if necessary.
 #
-# The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.
+# The layout for the heatmap list and layout for each heatmap are calculated
+# when drawing the heatmap list.
 #
 # This function is only for internal use.
 #

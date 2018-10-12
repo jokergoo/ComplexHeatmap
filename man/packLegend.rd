@@ -7,7 +7,8 @@ Pack Legends
 Pack Legends
 }
 \usage{
-packLegend(..., gap = unit(2, "mm"), direction = c("vertical", "horizontal"),
+packLegend(...,gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2, "mm"),
+    direction = c("vertical", "horizontal"),
     max_width = NULL, max_height = NULL, list = NULL)
 }
 \arguments{

@@ -17,6 +17,9 @@ Subset a Heatmap
   \item{j}{Column indices}
 
 }
+\details{
+This functionality is quite experimental. It should be applied before the layout is initialized.
+}
 \examples{
 m = matrix(rnorm(100), nrow = 10)
 rownames(m) = letters[1:10]

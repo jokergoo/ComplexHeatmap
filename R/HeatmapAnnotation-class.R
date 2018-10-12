@@ -52,10 +52,6 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -annotation_legend_param A list which contains parameters for annotation legends. See `color_mapping_legend,ColorMapping-method` for all possible options.
 # -show_legend Whether show annotation legend. The value can be one single value or a vector which corresponds to the simple annotations.
 # -which Are the annotations row annotations or column annotations?
-# -annotation_height Height of each annotation if annotations are column annotations.
-# -annotation_width Width of each annotation if annotations are row annotations.
-# -height Height of the complete column annotations.
-# -width Width of the complete heatmap annotations.
 # -gp Graphic parameters for simple annotations (with ``fill`` parameter ignored).
 # -border border of single annotations.
 # -gap Gap between each two annotation. It can be a single value or a vector of `grid::unit` objects.
@@ -65,6 +61,12 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -annotation_name_offset Offset to the annotations, `grid::unit` object. The value can be a vector.
 # -annotation_name_side Side of the annotation names.
 # -annotation_name_rot Rotation of the annotation names, can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
+# -annotation_height Height of each annotation if annotations are column annotations.
+# -annotation_width Width of each annotation if annotations are row annotations.
+# -height Height of the complete column annotations.
+# -width Width of the complete heatmap annotations.
+# -anno_simple_size size of the simple annotation.
+# -simple_anno_size_adjust whether also adjust the size of simple annotations when adjust the whole heatmap annotation.
 #
 # == details
 # There are three ways to specify heatmap annotations:
@@ -231,16 +233,16 @@ HeatmapAnnotation = function(...,
 
     if(!missing(col)) {
     	if(is.null(names(col))) {
-    		stop("`col` should be a named list.")
+    		stop_wrap("`col` should be a named list.")
     	}
     	if(any(is.na(names(col)))) {
-    		stop("`col` should be a named list.")
+    		stop_wrap("`col` should be a named list.")
     	}
     	if(any(sapply(col, function(x) if(is.function(x)) FALSE else is.null(names(x))))) {
-    		stop("elements in `col` should be named vectors.")
+    		stop_wrap("elements in `col` should be named vectors.")
     	}
     	if(any(sapply(col, function(x) if(is.function(x)) FALSE else any(is.na(names(x)))))) {
-    		stop("elements in `col` should be named vectors.")
+    		stop_wrap("elements in `col` should be named vectors.")
     	}
     }
 
@@ -260,7 +262,7 @@ HeatmapAnnotation = function(...,
     len = len[len > 0]
     if(length(len)) {
 	    if(length(unique(len)) > 1) {
-	    	stop("Length of annotations differs.")
+	    	stop_wrap("Length of annotations differs.")
 	    }
 	}
 
@@ -314,7 +316,7 @@ HeatmapAnnotation = function(...,
 		    }
 		    i_simple = i_simple + 1
 		} else {
-			stop(paste0(ag, ": annotations should be vector/data frame (only `df`)/matrix/functions."))
+			stop_wrap(paste0(ag, ": annotations should be vector/data frame (only `df`)/matrix/functions."))
 		} 
 		
 	}
@@ -336,7 +338,7 @@ HeatmapAnnotation = function(...,
     } else if(length(gap) == n_total_anno - 1) {
     	gap = unit.c(gap, unit(0, "mm"))
     } else if(length(gap) < n_total_anno - 1) {
-    	stop("Length of `gap` is wrong.")
+    	stop_wrap("Length of `gap` is wrong.")
     } 
 
     .Object@gap = gap

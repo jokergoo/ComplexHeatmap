@@ -25,5 +25,4 @@ See help page of \code{\link{anno_points}}
 \examples{
 # There is no example
 NULL
-
 }

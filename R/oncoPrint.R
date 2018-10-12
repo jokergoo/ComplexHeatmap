@@ -4,42 +4,37 @@
 #
 # == param
 # -mat a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary
-#      value representing the alteration is present or absent. When it is a list, the names represent alteration types.
+#      value representing the alteration is present or absent. When it is a list, the names of the list represent alteration types.
 #      You can use `unify_mat_list` to make all matrix having same row names and column names.
 # -get_type If different alterations are encoded in the matrix, this self-defined function
 #           determines how to extract them. Only work when ``mat`` is a matrix.
 # -alter_fun a single function or a list of functions which define how to add graphics for different alterations.
 #                 If it is a list, the names of the list should cover all alteration types.
-# -alter_fun_is_vectorized
+# -alter_fun_is_vectorized Whether ``alter_fun`` is implemented vectorized. Internally the function will guess.
 # -col a vector of color for which names correspond to alteration types.
-# -top_annotation
-# -right_annotation
+# -top_annotation Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes having the alteration in each sample.
+# -right_annotation Annotation put on the right of hte oncoPrint. By default it is barplto which shows the number of samples having the alteration in each gene.
 # -show_pct whether show percent values on the left of the oncoprint
 # -pct_gp graphic paramters for percent row annotation
 # -pct_digits digits for percent values
 # -pct_side side of pct
-# -show_row_names
-# -row_names_side
-# -row_names_gp
+# -show_row_names Whether show row names?
+# -row_names_side side of the row names
+# -row_names_gp Graphic parameters of row names.
 # -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
 # -remove_empty_rows if there is no alteration in that sample, whether remove it on the heatmap
-# -show_column_names
+# -show_column_names Whether show column names?
 # -heatmap_legend_param pass to `Heatmap`
 # -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
 #
 # == details
-# The function returns a normal heatmap list and you can add more heatmaps/row annotations to it.
-#
 # The 'memo sort' method is from https://gist.github.com/armish/564a65ab874a770e2c26 . Thanks to
 # B. Arman Aksoy for contributing the code.
-#
-# The function would be a little bit slow if you plot it in an interactive device because all alterations
-# are added through a foo loop.
 #
 # For more explanation, please go to the vignette.
 #
 # == value
-# A `HeatmapList-class` object which means you can add other heatmaps or row annotations to it.
+# A `Heatmap-class` object which means you can add other heatmaps or annotations to it.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -69,6 +64,8 @@ oncoPrint = function(mat,
 	show_column_names = FALSE,
 	heatmap_legend_param = list(title = "Alterations"),
 	...) {
+
+	.in_oncoprint = TRUE
 
 	arg_list = list(...)
 	arg_names = names(arg_list)
@@ -365,13 +362,16 @@ unify_mat_list = function(mat_list, default = 0) {
 # Barplot annotation for oncoPrint
 #
 # == param
-# -type
-# -which
-# -width
-# -height
-# -border
-# -...
+# -type A vector of the alteration types in your data. It can be a subset of all alteration types if you don't want to show them all.
+# -which Is ti a row annotation or a column annotation?
+# -width Wisth of the annotation.
+# -height Height of the annotation.
+# -border Whether draw the border?
+# -... Other parameters passed to `anno_barplot`.
 #
+# == detail
+# This annotation function should always use with `oncoPrint`.
+# 
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
@@ -388,6 +388,9 @@ anno_oncoprint_barplot = function(type = all_type, which = c("column", "row"),
 
 	# get variables fron oncoPrint() function
 	pf = parent.frame()
+	if(!exists(".in_oncoprint", envir = pf, inherits = FALSE)) {
+		stop_wrap("`anno_oncoprint_barplot()` should only be used with `oncoPrint()`.")
+	}
 	arr = get("arr", envir = pf, inherits = FALSE)
 	all_type = get("all_type", envir = pf, inherits = FALSE)
 	col = get("col", envir = pf, inherits = FALSE)

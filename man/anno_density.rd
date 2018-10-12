@@ -25,8 +25,8 @@ anno_density(x, which = c("column", "row"),
   \item{gp}{Graphic parameters for the boxes. The length of the graphic parameters should be one or the number of observations.}
   \item{axis}{Whether to add axis?}
   \item{axis_param}{parameters for controlling axis. See \code{\link{default_axis_param}} for all possible settings and default parameters.}
-  \item{width}{Width of the annotation.}
-  \item{height}{Height of the annotation.}
+  \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
+  \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
 
 }
 \value{

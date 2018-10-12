@@ -17,5 +17,4 @@ Grob height for legend_body
 \examples{
 # There is no example
 NULL
-
 }

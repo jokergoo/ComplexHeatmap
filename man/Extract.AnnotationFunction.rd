@@ -17,7 +17,7 @@ Subset an AnnotationFunction Object
 
 }
 \details{
-One good thing for designing the \code{\link{AnnotationFunction-class}} object is it can be subsetted,
+One good thing for designing the \code{\link{AnnotationFunction-class}} is it can be subsetted,
 and this is the base for the splitting of the annotations.
 }
 \examples{

@@ -12,18 +12,22 @@ HeatmapAnnotation(...,
     annotation_legend_param = list(),
     show_legend = TRUE,
     which = c("column", "row"),
-    annotation_height = NULL,
-    annotation_width = NULL,
-    height = NULL,   # total height
-    width = NULL,    # total width
     gp = gpar(col = NA),
     border = FALSE,
     gap = unit(0, "mm"),
+    
     show_annotation_name = TRUE,
     annotation_name_gp = gpar(),
     annotation_name_offset = unit(1, "mm"),
     annotation_name_side = ifelse(which == "column", "right", "bottom"),
-    annotation_name_rot = ifelse(which == "column", 0, 90))
+    annotation_name_rot = ifelse(which == "column", 0, 90),
+    
+    annotation_height = NULL,
+    annotation_width = NULL,
+    height = NULL,
+    width = NULL,
+    anno_simple_size = ht_opt$anno_simple_size,
+    simple_anno_size_adjust = FALSE)
 }
 \arguments{
 
@@ -35,10 +39,6 @@ HeatmapAnnotation(...,
   \item{annotation_legend_param}{A list which contains parameters for annotation legends. See \code{\link{color_mapping_legend,ColorMapping-method}} for all possible options.}
   \item{show_legend}{Whether show annotation legend. The value can be one single value or a vector which corresponds to the simple annotations.}
   \item{which}{Are the annotations row annotations or column annotations?}
-  \item{annotation_height}{Height of each annotation if annotations are column annotations.}
-  \item{annotation_width}{Width of each annotation if annotations are row annotations.}
-  \item{height}{Height of the complete column annotations.}
-  \item{width}{Width of the complete heatmap annotations.}
   \item{gp}{Graphic parameters for simple annotations (with \code{fill} parameter ignored).}
   \item{border}{border of single annotations.}
   \item{gap}{Gap between each two annotation. It can be a single value or a vector of \code{\link[grid]{unit}} objects.}
@@ -47,6 +47,12 @@ HeatmapAnnotation(...,
   \item{annotation_name_offset}{Offset to the annotations, \code{\link[grid]{unit}} object. The value can be a vector.}
   \item{annotation_name_side}{Side of the annotation names.}
   \item{annotation_name_rot}{Rotation of the annotation names, can only take values in \code{c(00, 90, 180, 270)}. The value can be a vector.}
+  \item{annotation_height}{Height of each annotation if annotations are column annotations.}
+  \item{annotation_width}{Width of each annotation if annotations are row annotations.}
+  \item{height}{Height of the complete column annotations.}
+  \item{width}{Width of the complete heatmap annotations.}
+  \item{anno_simple_size}{size of the simple annotation.}
+  \item{simple_anno_size_adjust}{whether also adjust the size of simple annotations when adjust the whole heatmap annotation.}
 
 }
 \details{
@@ -68,5 +74,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

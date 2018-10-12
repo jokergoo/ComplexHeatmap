@@ -3,42 +3,7 @@
 # Class for a list of heatmaps
 #
 # == details
-# A heatmap list is defined as a list of heatmaps and row annotations.
-#
-# The components for the heamtap list are placed into a 7 x 7 layout:
-#
-#          +------+(1)
-#          +------+(2)
-#          +------+(3)
-#    +-+-+-+------+-+-+-+
-#    |1|2|3| 4(4) |5|6|7|
-#    +-+-+-+------+-+-+-+
-#          +------+(5)
-#          +------+(6)
-#          +------+(7)
-# 
-# From top to bottom in column 4, the regions are:
-#
-# - annotation legend on the top, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
-# - heatmap legend on the top, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
-# - title for the heatmap list which is put on the top, graphics are drawn by `draw_title,HeatmapList-method`.
-# - the list of heatmaps and row annotations
-# - title for the heatmap list which is put on the bottom, graphics are drawn by `draw_title,HeatmapList-method`.
-# - heatmap legend on the bottom, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
-# - annotation legend on the bottom, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
-# 
-# From left to right in row 4, the regions are:
-#
-# - annotation legend on the left, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
-# - heatmap legend on the left, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
-# - title for the heatmap list which is put on the left, graphics are drawn by `draw_title,HeatmapList-method`.
-# - the list of heatmaps and row annotations
-# - title for the heatmap list which is put on the right, graphics are drawn by `draw_title,HeatmapList-method`.
-# - heatmap legend on the right, graphics are drawn by `draw_heatmap_legend,HeatmapList-method`.
-# - annotation legend on the right, graphics are drawn by `draw_annotation_legend,HeatmapList-method`.
-#
-# For the list of heatmaps which are placed at (5, 5) in the layout, the heatmaps and row annotations
-# are placed one after the other.
+# A heatmap list is defined as a list of heatmaps and annotations.
 #
 # == methods
 # The `HeatmapList-class` provides following methods:
@@ -121,7 +86,7 @@ HeatmapList = function(...) {
 # == param
 # -object a `HeatmapList-class` object.
 # -x a `Heatmap-class` object or a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
-# -direction direction
+# -direction direction of the concatenation.
 #
 # == details
 # There is a shortcut function ``+.AdditiveUnit``.
@@ -138,7 +103,7 @@ setMethod(f = "add_heatmap",
     
     direction = match.arg(direction)[1]
     if(object@direction != direction) {
-        stop("The heatmap list should only be all horizontal or vertical.")
+        stop_wrap("The heatmap list should only be all horizontal or vertical.")
     }
 
     # check settings of this new heatmap
@@ -149,9 +114,9 @@ setMethod(f = "add_heatmap",
         object@ht_list = c(object@ht_list, x)
     } else if(inherits(x, "HeatmapAnnotation")) {
         if(x@which == "row" && direction == "vertical") {
-            stop("Row annotations should be added to the heatmap list in horizontal direction.")
+            stop_wrap("Row annotations should be added to the heatmap list in horizontal direction.")
         } else if(x@which == "column" && direction == "horizontal") {
-            stop("Column annotations should be added to the heatmap list in vertical direction.")
+            stop_wrap("Column annotations should be added to the heatmap list in vertical direction.")
         }
         ht_name = x@name
         x = list(x)
@@ -176,7 +141,7 @@ setMethod(f = "add_heatmap",
         if(length(unique(nr)) > 1) {
             cat("`nrow` of all heatmaps:\n")
             print(nr)
-            stop("`nrow` of all heatmaps should be the same for horizontal heatmap list.")
+            stop_wrap("`nrow` of all heatmaps should be the same for horizontal heatmap list.")
             for(i in l) {
                 cat(object@ht_list[[i]]@name, ":", nrow(object@ht_list[[i]]@matrix), "\n")
             }
@@ -188,7 +153,7 @@ setMethod(f = "add_heatmap",
         if(length(unique(nc)) > 1) {
             cat("`ncol` of all heatmaps:\n")
             print(nc)
-            stop("`ncol` of all heatmaps should be the same for vertical heatmap list.")
+            stop_wrap("`ncol` of all heatmaps should be the same for vertical heatmap list.")
             for(i in l) {
                 cat(object@ht_list[[i]]@name, ":", ncol(object@ht_list[[i]]@matrix), "\n")
             }
@@ -204,71 +169,72 @@ setMethod(f = "add_heatmap",
 # Draw a list of heatmaps
 #
 # == param
-# -object a `HeatmapList-class` object
-# -newpage whether create a new page for the graphics.
+# -object a `HeatmapList-class` object.
+# -newpage whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use `grid::grabExpr`.
 # -row_title title on the row.
 # -row_title_side will the title be put on the left or right of the heatmap.
 # -row_title_gp graphic parameters for drawing text.
 # -column_title title on the column.
 # -column_title_side will the title be put on the top or bottom of the heatmap.
 # -column_title_gp graphic parameters for drawing text.
-# -heatmap_legend_side = c("right", "left", "bottom", "top"), 
-# -heatmap_legend_offset = unit(0, "mm"),
-# -merge_legends = FALSE,
-# -show_heatmap_legend = TRUE, 
-# -heatmap_legend_list = list(),
-# -annotation_legend_side = c("right", "left", "bottom", "top"), 
-# -annotation_legend_offset = unit(0, "mm"),
-# -show_annotation_legend = TRUE, 
-# -annotation_legend_list = list(),
-# -gap = unit(2, "mm"), 
-# -ht_gap = gap, 
-# -main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
-# -padding = NULL,
-# -adjust_annotation_name adjust_annotation_name
-# -row_dend_side = c("original", "left", "right"),
-# -row_sub_title_side = c("original", "left", "right"),
-# -column_dend_side = c("original", "top", "bottom"),
-# -column_sub_title_side = c("original", "top", "bottom"), 
-# -row_gap = NULL,
-# -cluster_rows = NULL,
-# -clustering_distance_rows = NULL,
-# -clustering_method_rows = NULL,
-# -row_dend_width = NULL, 
-# -show_row_dend = NULL, 
-# -row_dend_reorder = NULL,
-# -row_dend_gp = NULL,
-# -row_order = NULL,
-# -km = NULL,
-# -split = NULL,
-# -row_km = km,
-# -row_split = split,
-# -heatmap_body_height = NULL,
-# -column_gap = NULL,
-# -cluster_columns = NULL,
-# -clustering_distance_columns = NULL,
-# -clustering_method_columns = NULL,
-# -column_dend_width = NULL, 
-# -show_column_dend = NULL, 
-# -column_dend_reorder = NULL,
-# -column_dend_gp = NULL,
-# -column_order = NULL,
-# -column_km = NULL,
-# -column_split = NULL,
-# -heatmap_body_width = NULL,
-# -heatmap_row_names_gp = NULL,
-# -heatmap_column_names_gp = NULL,
-# -heatmap_row_title_gp = NULL,
-# -heatmap_column_title_gp = NULL,
-# -legend_title_gp = NULL,
-# -legend_title_position = NULL,
-# -legend_labels_gp = NULL,
-# -legend_grid_height = NULL,
-# -legend_grid_width = NULL,
-# -legend_grid_border = NULL,
-# -fastcluster = NULL,
-# -show_vp_border = NULL,
-# -anno_simple_row_size = NULL
+# -heatmap_legend_side side to put heatmap legend
+# -heatmap_legend_offset currently disabled
+# -merge_legends merge heatmap legends and annotation legends to put into one column.
+# -show_heatmap_legend whether show all heatmap legends
+# -heatmap_legend_list use-defined legends which are put after the heatmap legends
+# -annotation_legend_side side of the annotation legends
+# -annotation_legend_offset currently disabled
+# -show_annotation_legend whether show annotation legends
+# -annotation_legend_list user-defined legends which are put after the annotation legends
+# -gap gap between heatmaps/annotations
+# -ht_gap same as ``gap``.
+# -main_heatmap index of main heatmap. The value can be a numeric index or the heatmap name
+# -padding padding of the whole plot. The value is a unit vector of length 4, which corresponds to bottom, left, top and right.
+# -adjust_annotation_name whether take annotation name into account when calculating positions of graphic elements.
+# -row_dend_side side of the dendrogram from the main heatmap
+# -row_sub_title_side side of the row title from the main heatmap
+# -column_dend_side side of the dendrogram from the main heatmap
+# -column_sub_title_side side of the column title from the main heatmap
+# -row_gap this modifies ``row_gap`` of the main heatmap
+# -cluster_rows this modifies ``cluster_rows`` of the main heatmap
+# -clustering_distance_rows this modifies ``clustering_distance_rows`` of the main heatmap
+# -clustering_method_rows this modifies ``clustering_method_rows`` of the main heatmap
+# -row_dend_width this modifies ``row_dend_width`` of the main heatmap
+# -show_row_dend this modifies ``show_row_dend`` of the main heatmap
+# -row_dend_reorder this modifies ``row_dend_reorder`` of the main heatmap
+# -row_dend_gp this modifies ``row_dend_gp`` of the main heatmap
+# -row_order this modifies ``row_order`` of the main heatmap
+# -km = this modifies ``km`` of the main heatmap
+# -split this modifies ``split`` of the main heatmap
+# -row_km this modifies ``row_km`` of the main heatmap
+# -row_split this modifies ``row_split`` of the main heatmap
+# -heatmap_body_height this modifies ``heatmap_body_height`` of the main heatmap
+# -column_gap this modifies ``column_gap`` of the main heatmap
+# -cluster_columns this modifies ``cluster_columns`` of the main heatmap
+# -clustering_distance_columns this modifies ``clustering_distance_columns`` of the main heatmap
+# -clustering_method_columns this modifies ``clustering_method_columns`` of the main heatmap
+# -column_dend_width this modifies ``column_dend_width`` of the main heatmap
+# -show_column_dend this modifies ``show_column_dend`` of the main heatmap
+# -column_dend_reorder this modifies ``column_dend_reorder`` of the main heatmap
+# -column_dend_gp this modifies ``column_dend_gp`` of the main heatmap
+# -column_order this modifies ``column_order`` of the main heatmap
+# -column_km this modifies ``column_km`` of the main heatmap
+# -column_split this modifies ``column_split`` of the main heatmap
+# -heatmap_body_width this set the value in `ht_opt` and reset back after the plot is done
+# -heatmap_row_names_gp  this set the value in `ht_opt` and reset back after the plot is done
+# -heatmap_column_names_gp this set the value in `ht_opt` and reset back after the plot is done
+# -heatmap_row_title_gp this set the value in `ht_opt` and reset back after the plot is done
+# -heatmap_column_title_gp this set the value in `ht_opt` and reset back after the plot is done
+# -legend_title_gp this set the value in `ht_opt` and reset back after the plot is done
+# -legend_title_position this set the value in `ht_opt` and reset back after the plot is done
+# -legend_labels_gp this set the value in `ht_opt` and reset back after the plot is done
+# -legend_grid_height this set the value in `ht_opt` and reset back after the plot is done
+# -legend_grid_width  this set the value in `ht_opt` and reset back after the plot is done
+# -legend_border this set the value in `ht_opt` and reset back after the plot is done
+# -heatmap_border this set the value in `ht_opt` and reset back after the plot is done
+# -annotation_border  this set the value in `ht_opt` and reset back after the plot is done
+# -fastcluster this set the value in `ht_opt` and reset back after the plot is done
+# -anno_simple_size  this set the value in `ht_opt` and reset back after the plot is done
 #
 # == detail
 # The function first calls `make_layout,HeatmapList-method` to calculate
@@ -277,7 +243,7 @@ setMethod(f = "add_heatmap",
 # in the layout.
 #
 # == value
-# This function returns a list of row dendrograms and column dendrogram.
+# This function returns a `HeatmapList-class` object for which the layout has been created.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -400,7 +366,7 @@ setMethod(f = "draw",
         ob = sapply(object@ht_list, nobs)
         ob = ob[!is.na(ob)]
         if(length(ob) == 0) {
-            stop("There is no heatmap in the list and cannot infer the number of observations in the heatmap annotations, please add a zero row/column matrix by hand.")
+            stop_wrap("There is no heatmap in the list and cannot infer the number of observations in the heatmap annotations, please add a zero row/column matrix by hand.")
         }
         if(direction == "horizontal") {
             nr = ob[1]
@@ -589,62 +555,143 @@ setMethod(f = "show",
 })
 
 
+# == title
+# Subset a HeatmapList object
+#
+# == param
+# -x A `HeatmapList-class` object
+# -i row indices
+# -j column indices
+#
+# == details
+# If the heatmap list is horizontal, ``i`` is the real row indices and ``j`` corresponds to heatmap names and single annotation names.
+#
 "[.HeatmapList" = function(x, i, j) {
+
+    direction = x@direction
 
     if(!is.null(x@layout$initialized)) {
         if(x@layout$initialized) {
-            stop("subsetting on HeatmapList can only be applied before `draw()`.")
+            stop_wrap("subsetting on HeatmapList can only be applied before `draw()`.")
         }
     }
 
     if(length(x@ht_list) == 1) {
         if(inherits(x@ht_list[[1]], "Heatmap")) {
-           return(x@ht_list[[1]][i, j])
+            if(direction == "horizontal") {
+                return(x@ht_list[[1]][i, j] + NULL)
+            } else {
+                return(x@ht_list[[1]][i, j] %v% NULL)
+            }
         }
     }
 
     if(nargs() == 2) {
-        subset_heatmap_list_by_row(x, i)
+        subset_heatmap_list_by_row(x, i, direction)
     } else {
         if(missing(i)) {
-            subset_heatmap_list_by_column(x, j)
+            subset_heatmap_list_by_column(x, j, direction)
         } else if(missing(j)) {
-            subset_heatmap_list_by_row(x, i)
+            subset_heatmap_list_by_row(x, i, direction)
         } else {
-            x = subset_heatmap_list_by_row(x, i)
-            subset_heatmap_list_by_column(x, j)
+            x = subset_heatmap_list_by_row(x, i, direction)
+            subset_heatmap_list_by_column(x, j, direction)
         }
     }
 }
 
 # there is no main heatmap yet
-subset_heatmap_list_by_row = function(ht_list, ind) {
+subset_heatmap_list_by_row = function(ht_list, ind, direction) {
     
-    for(i in seq_along(ht_list@ht_list)) {
-        ht_list@ht_list[[i]] = ht_list@ht_list[[i]][ind]
+    if(direction == "horizontal") {
+        for(i in seq_along(ht_list@ht_list)) {
+            if(inherits(ht_list@ht_list[[i]], "Heatmap")) {
+                ht_list@ht_list[[i]] = ht_list@ht_list[[i]][ind, ]
+            } else {
+                ht_list@ht_list[[i]] = ht_list@ht_list[[i]][ind]
+            }
+        }
+    } else {
+        if(is.numeric(ind)) {
+            ht_list@ht_list = ht_list@ht_list[ind]
+        } else {
+            ht_list = NULL
+            # also check annotation names
+            for(nm in names(ht_list@ht_list)) {
+                if(inherits(ht_list@ht_list[[nm]], "Heatmap")) {
+                    if(nm %in% ind) {
+                        ht_list[[nm]] = ht_list@ht_list[[nm]]
+                    }
+                } else {
+                    anno_nm = names(ht_list@ht_list[[nm]]@anno_list)
+                    if(anno_nm %in% ind) {
+                        ht_list[[nm]] = ht_list@ht_list[[nm]][, intersect(ind, anno_nm)]
+                    }
+                }
+            }
+            ht_list@ht_list = ht_list
+        }
     }
     return(ht_list)
 }
 
-subset_heatmap_list_by_column = function(ht_list, ind) {
-    if(is.numeric(ind)) {
-        ht_list@ht_list = ht_list@ht_list[ind]
-    } else {
-        ht_list = NULL
-        # also check annotation names
-        for(nm in names(ht_list@ht_list)) {
-            if(inherits(ht_list@ht_list[[nm]], "Heatmap")) {
-                if(nm %in% ind) {
-                    ht_list[[nm]] = ht_list@ht_list[[nm]]
-                }
-            } else {
-                anno_nm = names(ht_list@ht_list[[nm]]@anno_list)
-                if(anno_nm %in% ind) {
-                    ht_list[[nm]] = ht_list@ht_list[[nm]][, intersect(ind, anno_nm)]
+subset_heatmap_list_by_column = function(ht_list, ind, direction) {
+    if(direction == "horizontal") {
+        if(is.numeric(ind)) {
+            ht_list@ht_list = ht_list@ht_list[ind]
+        } else {
+            ht_list = NULL
+            # also check annotation names
+            for(nm in names(ht_list@ht_list)) {
+                if(inherits(ht_list@ht_list[[nm]], "Heatmap")) {
+                    if(nm %in% ind) {
+                        ht_list[[nm]] = ht_list@ht_list[[nm]]
+                    }
+                } else {
+                    anno_nm = names(ht_list@ht_list[[nm]]@anno_list)
+                    if(anno_nm %in% ind) {
+                        ht_list[[nm]] = ht_list@ht_list[[nm]][, intersect(ind, anno_nm)]
+                    }
                 }
             }
+            ht_list@ht_list = ht_list
         }
-        ht_list@ht_list = ht_list
+    } else {
+        for(i in seq_along(ht_list@ht_list)) {
+            if(inherits(ht_list@ht_list[[i]], "Heatmap")) {
+                ht_list@ht_list[[i]] = ht_list@ht_list[[i]][, ind]
+            } else {
+                ht_list@ht_list[[i]] = ht_list@ht_list[[i]][ind]
+            }
+        }
     }
     return(ht_list)
+}
+
+# == title
+# Names of the heatmaps/annotations
+#
+# == param
+# -x A `HeatmapList-class` object
+#
+names.HeatmapList = function(x) {
+    nm = NULL
+    for(i in seq_along(x@ht_list)) {
+        if(inherits(x@ht_list[[i]], "Heatmap")) {
+            nm = c(nm, x@ht_list[[i]]@name)
+        } else {
+            nm = c(nm, names(x@ht_list[[i]]))
+        }
+    }
+    return(nm)
+}
+
+# == title
+# Length of the HeatmapList object
+#
+# == param
+# -x A `HeatmapList-class` object
+#
+length.HeatmapList = function(x) {
+    length(x@ht_list)
 }

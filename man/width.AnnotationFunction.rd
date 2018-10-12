@@ -1,18 +1,18 @@
 \name{width.AnnotationFunction}
 \alias{width.AnnotationFunction}
 \title{
-Width of the AnnotationFunction x
+Width of the AnnotationFunction Object
 }
 \description{
-Width of the AnnotationFunction x
+Width of the AnnotationFunction Object
 }
 \usage{
 \method{width}{AnnotationFunction}(x, ...)
 }
 \arguments{
 
-  \item{x}{The \code{\link{AnnotationFunction-class}} x.}
-  \item{...}{other arguments}
+  \item{x}{A \code{\link{AnnotationFunction-class}} object.}
+  \item{...}{Other arguments}
 
 }
 \examples{

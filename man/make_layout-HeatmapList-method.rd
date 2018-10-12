@@ -27,8 +27,9 @@ Make layout for the complete plot
     ht_gap = unit(2, "mm"),
     
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
-    padding = NULL,
+    padding = GLOBAL_PADDING,
     
+    auto_adjust = TRUE,
     row_dend_side = c("original", "left", "right"),
     row_sub_title_side = c("original", "left", "right"),
     column_dend_side = c("original", "top", "bottom"),
@@ -45,7 +46,8 @@ Make layout for the complete plot
     row_order = NULL,
     row_km = NULL,
     row_split = NULL,
-    heatmap_body_height = NULL,
+    height = NULL,
+    heatmap_height = NULL,
     
     column_gap = NULL,
     cluster_columns = NULL,
@@ -58,7 +60,8 @@ Make layout for the complete plot
     column_order = NULL,
     column_km = NULL,
     column_split = NULL,
-    heatmap_body_width = NULL)
+    width = NULL,
+    heatmap_width = NULL)
 }
 \arguments{
 
@@ -94,7 +97,8 @@ Make layout for the complete plot
   \item{row_order}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_order} in main heatmap is ignored.}
   \item{row_km}{row km}
   \item{row_split}{row split}
-  \item{heatmap_body_height}{heatmap body height}
+  \item{height}{height of the heatmap body}
+  \item{heatmap_height}{height of the complete heatmap}
   \item{column_gap}{column gap}
   \item{cluster_columns}{cluster columns}
   \item{clustering_distance_columns}{clustering distance columns}
@@ -106,13 +110,16 @@ Make layout for the complete plot
   \item{column_order}{column order}
   \item{column_km}{column km}
   \item{column_split}{column split}
-  \item{heatmap_body_width}{heatmap bpdy widht}
+  \item{width}{width of the heatmap body}
+  \item{heatmap_width}{width of the complete heatmap}
 
 }
 \details{
-It sets the size of each component of the heatmap list and adjusts graphic parameters for each heatmap if necessary.
+It sets the size of each component of the heatmap list and adjusts graphic
+parameters for each heatmap if necessary.
 
-The layout for the heatmap list and layout for each heatmap are calculated when drawing the heatmap list.
+The layout for the heatmap list and layout for each heatmap are calculated
+when drawing the heatmap list.
 
 This function is only for internal use.
 }
@@ -125,5 +132,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

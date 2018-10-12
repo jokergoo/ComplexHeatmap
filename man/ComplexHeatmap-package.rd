@@ -2,22 +2,22 @@
 \docType{package}
 \alias{ComplexHeatmap-package}
 \title{
-Making complex heatmap
+Make complex heatmaps
 }
 \description{
-Making complex heatmap
+Make complex heatmaps
 }
 \details{
 This package aims to provide a simple and flexible way to arrange
-multiple heatmaps as well as self-defining annotation graphics.
+multiple heatmaps as well as flexible annotation graphics.
 
 The package is implemented in an object-oriented way. 
 Components of heatmap lists are abstracted into several classes.
 
 \itemize{
   \item \code{\link{Heatmap-class}}: a single heatmap containing heatmap body, row/column names, titles, dendrograms and column annotations.
-  \item \code{\link{HeatmapList-class}}: a list of heatmaps and row annotations.
-  \item \code{\link{HeatmapAnnotation-class}}: a list of row annotations or column annotations.
+  \item \code{\link{HeatmapList-class}}: a list of heatmaps and row/column annotations.
+  \item \code{\link{HeatmapAnnotation-class}}: a list of row/column annotations.
 }
 
 There are also several internal classes:
@@ -31,10 +31,9 @@ There are also several internal classes:
 For plotting one single heatmap, please go to the documentation page of \code{\link{Heatmap}}.
 For plotting multiple heatmaps, please go to \code{\link{HeatmapList-class}}, \code{+.AdditiveUnit} and \code{\%v\%.AdditiveUnit}.
 
-The vignette provides detailed explanation of how to use this package.
+You can refer to the ComplexHeatmap Complete Reference for all the information of this package ().
 }
 \examples{
 # There is no example
 NULL
-
 }

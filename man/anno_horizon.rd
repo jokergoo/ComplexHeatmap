@@ -26,8 +26,8 @@ anno_horizon(x, which = c("column", "row"),
   \item{gap}{Gap size of neighbouring horizon chart.}
   \item{axis}{Whether to add axis?}
   \item{axis_param}{parameters for controlling axis. See \code{\link{default_axis_param}} for all possible settings and default parameters.}
-  \item{width}{Width of the annotation.}
-  \item{height}{Height of the annotation.}
+  \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
+  \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
 
 }
 \details{

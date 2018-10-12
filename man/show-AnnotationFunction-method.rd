@@ -1,10 +1,10 @@
 \name{show-AnnotationFunction-method}
 \alias{show,AnnotationFunction-method}
 \title{
-Print the AnnotationFunction object
+Print the AnnotationFunction Object
 }
 \description{
-Print the AnnotationFunction object
+Print the AnnotationFunction Object
 }
 \usage{
 \S4method{show}{AnnotationFunction}(object)
@@ -17,5 +17,4 @@ Print the AnnotationFunction object
 \examples{
 # There is no example
 NULL
-
 }

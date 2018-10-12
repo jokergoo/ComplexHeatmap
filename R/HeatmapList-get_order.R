@@ -6,7 +6,7 @@
 # -object a `HeatmapList-class` object
 #
 # == value
-# A list contains row orders which correspond to the original matrix
+# The format of the returned object depends on whether rows/columns of the heatmaps are split.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -14,10 +14,13 @@
 # == example
 # mat = matrix(rnorm(100), 10)
 # ht_list = Heatmap(mat) + Heatmap(mat)
+# ht_list = draw(ht_list)
 # row_order(ht_list)
 # ht_list = Heatmap(mat, row_km = 2) + Heatmap(mat)
+# ht_list = draw(ht_list)
 # row_order(ht_list)
 # ht_list = Heatmap(mat, row_km = 2) %v% Heatmap(mat)
+# ht_list = draw(ht_list)
 # row_order(ht_list)
 setMethod(f = "row_order",
 	signature = "HeatmapList",
@@ -56,7 +59,7 @@ setMethod(f = "row_order",
 # -object a `Heatmap-class` object
 #
 # == value
-# A list contains row orders which correspond to the original matrix
+# The format of the returned object depends on whether rows/columns of the heatmaps are split.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -64,8 +67,10 @@ setMethod(f = "row_order",
 # == example
 # mat = matrix(rnorm(100), 10)
 # ht = Heatmap(mat)
+# ht = draw(ht)
 # row_order(ht)
 # ht = Heatmap(mat, row_km = 2)
+# ht = draw(ht)
 # row_order(ht)
 #
 setMethod(f = "row_order",
@@ -89,7 +94,7 @@ setMethod(f = "row_order",
 # -object a `HeatmapList-class` object
 #
 # == value
-# A list contains column orders which correspond every matrix
+# The format of the returned object depends on whether rows/columns of the heatmaps are split.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -97,12 +102,16 @@ setMethod(f = "row_order",
 # == example
 # mat = matrix(rnorm(100), 10)
 # ht_list = Heatmap(mat) + Heatmap(mat)
+# ht_list = draw(ht_list)
 # column_order(ht_list)
 # ht_list = Heatmap(mat, column_km = 2) + Heatmap(mat, column_km = 2)
+# ht_list = draw(ht_list)
 # column_order(ht_list)
 # ht_list = Heatmap(mat) %v% Heatmap(mat)
+# ht_list = draw(ht_list)
 # column_order(ht_list)
 # ht_list = Heatmap(mat, column_km = 2) %v% Heatmap(mat)
+# ht_list = draw(ht_list)
 # column_order(ht_list)
 setMethod(f = "column_order",
 	signature = "HeatmapList",
@@ -141,7 +150,7 @@ setMethod(f = "column_order",
 # -object a `Heatmap-class` object
 #
 # == value
-# A vector containing column orders
+# The format of the returned object depends on whether rows/columns of the heatmaps are split.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -149,8 +158,10 @@ setMethod(f = "column_order",
 # == example
 # mat = matrix(rnorm(100), 10)
 # ht = Heatmap(mat)
+# ht = draw(ht)
 # column_order(ht)
 # ht = Heatmap(mat, column_km = 2)
+# ht = draw(ht)
 # column_order(ht)
 setMethod(f = "column_order",
 	signature = "Heatmap",
@@ -174,7 +185,7 @@ setMethod(f = "column_order",
 # -object a `HeatmapList-class` object
 # 
 # == value
-# A list of dendrograms for which each dendrogram corresponds to a row slice
+# The format of the returned object depends on whether rows/columns of the heatmaps are split.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -182,10 +193,13 @@ setMethod(f = "column_order",
 # == example
 # mat = matrix(rnorm(100), 10)
 # ht_list = Heatmap(mat) + Heatmap(mat)
+# ht_list = draw(ht_list)
 # row_dend(ht_list)
 # ht_list = Heatmap(mat, row_km = 2) + Heatmap(mat)
+# ht_list = draw(ht_list)
 # row_dend(ht_list)
 # ht_list = Heatmap(mat, row_km = 2) %v% Heatmap(mat)
+# ht_list = draw(ht_list)
 # row_dend(ht_list)
 setMethod(f = "row_dend",
 	signature = "HeatmapList",
@@ -225,7 +239,7 @@ setMethod(f = "row_dend",
 # -object a `Heatmap-class` object
 # 
 # == value
-# A list of dendrograms for which each dendrogram corresponds to a row slice
+# The format of the returned object depends on whether rows/columns of the heatmaps are split.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -233,8 +247,10 @@ setMethod(f = "row_dend",
 # == example
 # mat = matrix(rnorm(100), 10)
 # ht = Heatmap(mat)
+# ht = draw(ht)
 # row_dend(ht)
 # ht = Heatmap(mat, row_km = 2)
+# ht = draw(ht)
 # row_dend(ht)
 #
 setMethod(f = "row_dend",
@@ -258,7 +274,7 @@ setMethod(f = "row_dend",
 # -object a `HeatmapList-class` object
 # 
 # == value
-# A list of dendrograms for which dendrogram corresponds to each matrix
+# The format of the returned object depends on whether rows/columns of the heatmaps are split.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -266,12 +282,16 @@ setMethod(f = "row_dend",
 # == example
 # mat = matrix(rnorm(100), 10)
 # ht_list = Heatmap(mat) + Heatmap(mat)
+# ht_list = draw(ht_list)
 # column_dend(ht_list)
 # ht_list = Heatmap(mat, column_km = 2) + Heatmap(mat, column_km = 2)
+# ht_list = draw(ht_list)
 # column_dend(ht_list)
 # ht_list = Heatmap(mat) %v% Heatmap(mat)
+# ht_list = draw(ht_list)
 # column_dend(ht_list)
 # ht_list = Heatmap(mat, column_km = 2) %v% Heatmap(mat)
+# ht_list = draw(ht_list)
 # column_dend(ht_list)
 setMethod(f = "column_dend",
 	signature = "HeatmapList",
@@ -311,7 +331,7 @@ setMethod(f = "column_dend",
 # -object a `Heatmap-class` object
 # 
 # == value
-# A dendrogram object
+# The format of the returned object depends on whether rows/columns of the heatmaps are split.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -319,8 +339,10 @@ setMethod(f = "column_dend",
 # == example
 # mat = matrix(rnorm(100), 10)
 # ht = Heatmap(mat)
+# ht = draw(ht)
 # column_dend(ht)
 # ht = Heatmap(mat, column_km = 2)
+# ht = draw(ht)
 # column_dend(ht)
 #
 setMethod(f = "column_dend",

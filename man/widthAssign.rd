@@ -2,23 +2,22 @@
 \alias{width<-}
 \alias{widthAssign}
 \title{
-Generic assignment method for width
+Generic Assignment Method for width()
 }
 \description{
-Generic assignment method for width
+Generic Assignment Method for width()
 }
 \usage{
 width(x, ...) <- value
 }
 \arguments{
 
-  \item{x}{x}
-  \item{value}{value}
-  \item{...}{other arguments}
+  \item{x}{An object.}
+  \item{value}{The value}
+  \item{...}{Other arguments.}
 
 }
 \examples{
 # There is no example
 NULL
-
 }

@@ -12,11 +12,11 @@ Number of Observations
 \arguments{
 
   \item{object}{The \code{\link{AnnotationFunction-class}} object.}
-  \item{...}{other arguments}
+  \item{...}{Other arguments.}
 
 }
 \details{
-It returns the \code{n} slot in the object. If there does not exist, it returns \code{NA}.
+returns \code{NA}.
 }
 \examples{
 anno = anno_points(1:10)

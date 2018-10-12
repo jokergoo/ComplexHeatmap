@@ -1,7 +1,7 @@
 
 
 # == title
-# Global graphic options for heatmaps
+# Global Options
 #
 # == param
 # -... options, see 'details' section
@@ -14,26 +14,40 @@
 # == details
 # You can set some parameters for all heatmaps/annotations simultaneously by this global function.
 # Pleast note you should put it before your heatmap code and reset
-# all option values after drawing the heatmaps to get rid of affecting next heatmap plotting.
+# all option values after drawing the heatmaps to get rid of affecting next heatmap.
 #
-# There are following parameters:
+# There are following parameters to control all heatmaps:
 #
-# -heatmap_row_names_gp set ``row_names_gp`` in `Heatmap`.
-# -heatmap_column_names_gp set ``column_names_gp`` in `Heatmap`.
-# -heatmap_row_title_gp set ``row_title_gp`` in `Heatmap`.
-# -heatmap_column_title_gp set ``column_title_gp`` in `Heatmap`.
-# -heatmap_legend_title_gp set ``title_gp`` element in ``heatmap_legend_param`` in `Heatmap`.
-# -heatmap_legend_title_position set ``title_position`` element in ``heatmap_legend_param`` in `Heatmap`.
-# -heatmap_legend_labels_gp set ``labels_gp`` element in ``heatmap_legend_param`` in `Heatmap`.
-# -heatmap_legend_grid_width set ``grid_width`` element in ``heatmap_legend_param`` in `Heatmap`.
-# -heatmap_legend_grid_height set ``grid_height`` element in ``heatmap_legend_param`` in `Heatmap`.
-# -heatmap_legend_grid_border set ``grid_border`` element in ``heatmap_legend_param`` in `Heatmap`.
-# -heatmap_legend_title_gp set ``title_gp`` element in ``legend_param`` in `SingleAnnotation`.
-# -heatmap_legend_title_position set ``title_position`` element in ``legend_param`` in `SingleAnnotation`.
-# -heatmap_legend_labels_gp set ``labels_gp`` element in ``legend_param`` in `SingleAnnotation`.
-# -heatmap_legend_grid_width set ``grid_width`` element in ``legend_param`` in `SingleAnnotation`.
-# -heatmap_legend_grid_height set ``grid_height`` element in ``legend_param`` in `SingleAnnotation`.
-# -heatmap_legend_grid_border set ``grid_border`` element in ``legend_param`` in `SingleAnnotation`.
+# -heatmap_row_names_gp set ``row_names_gp`` in all `Heatmap`.
+# -heatmap_column_names_gp set ``column_names_gp`` in all `Heatmap`.
+# -heatmap_row_title_gp set ``row_title_gp`` in all `Heatmap`.
+# -heatmap_column_title_gp set ``column_title_gp`` in all `Heatmap`.
+# -heatmap_border set `border` in all `Heatmap`.
+#
+# Following parameters to control the legends: 
+#
+# -legend_title_gp set
+# -legend_title_position
+# -legend_labels_gp
+# -legend_grid_width
+# -legend_grid_height
+# -legend_border
+#
+# Following parameters to control annotations:
+#
+# -annotation_border border of all annotations
+# -anno_simple_size size for the simple annotation.
+#
+# Following parameters to control the space between heatmap components:
+#
+# -DENDROGRAM_PADDING space bewteen dendrograms and heatmap body
+# -DIMNAME_PADDING space between row/column names and heatmap body
+# -TITLE_PADDING space between row/column titles and heatmap body
+# -COLUMN_ANNO_PADDING space between column annotations and heatmap body
+# -ROW_ANNO_PADDING space between row annotations and heatmap body
+#
+# Other parameters:
+#
 # -fast_hclust whether use `fastcluster::hclust` to speed up clustering?
 #
 # You can get or set option values by the traditional way (like `base::options`) or by ``$`` operator:
@@ -46,8 +60,7 @@
 #     ht_opt("heatmap_row_names_gp" = gpar(fontsize = 8))
 #     ht_opt$heatmap_row_names_gp = gpar(fontsize = 8)
 #
-# == value
-# Depends on the options users selected.
+# Reset to the default values by ``ht_opt(RESET = TRUE)``.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -153,7 +166,7 @@ ht_opt = setGlobalOptions(
 #
 # == details
 # This function is deprecated. Please use `ht_opt` instead. However, changes by this function
-# will also sychronized in `ht_opt`.
+# will also be sychronized in `ht_opt`.
 #
 ht_global_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE) {}
 ht_global_opt = ht_opt

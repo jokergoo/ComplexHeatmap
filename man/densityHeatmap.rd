@@ -35,7 +35,7 @@ densityHeatmap(data,
 }
 \arguments{
 
-  \item{data}{A matrix or a list. If it is a matrix, density will be calculated by columns.}
+  \item{data}{A matrix or a list. If it is a matrix, density is calculated by columns.}
   \item{density_param}{Parameters send to \code{\link[stats]{density}}, \code{na.rm} is enforced to be \code{TRUE}.}
   \item{col}{A vector of colors that density values are mapped to.}
   \item{color_space}{The color space in which colors are interpolated. Pass to \code{\link[circlize]{colorRamp2}}.}
@@ -47,7 +47,7 @@ densityHeatmap(data,
   \item{title_gp}{= gpar(fontsize = 14),}
   \item{ylab_gp}{= gpar(fontsize = 12),}
   \item{tick_label_gp}{= gpar(fontsize = 10),}
-  \item{quantile_gp}{= gpar(fontsize = 10),# -column_order Order of columns.}
+  \item{quantile_gp}{= gpar(fontsize = 10),}
   \item{column_order}{column_order}
   \item{column_names_side}{Pass to \code{\link{Heatmap}}.}
   \item{show_column_names}{Pass to \code{\link{Heatmap}}.}
@@ -59,13 +59,15 @@ densityHeatmap(data,
 
 }
 \details{
-To visualize data distribution in a matrix or in a list, sometimes we use boxplot or beanplot.
-Here we use colors to map the density values and visualize distribution of values
-in each column (or each vector in the list) through a heatmap. It is useful if you have huge number 
-of columns in \code{data} to visualize.
+To visualize data distribution in a matrix or in a list, we normally use
+boxplot or violinplot. We can also use colors to map the density values and
+visualize distribution of values through a heatmap. It is useful if you have
+huge number of columns in \code{data} to visualize.
 
-The density matrix is generated with 500 rows ranging between the maximun and minimal values in all densities.
-The density values in each row are linearly intepolated between the two density values at the two nearest bounds.
+The density matrix is generated with 500 rows ranging between the maximun
+and minimal values in all densities. The density values in each row are
+linearly intepolated between the two density values at the two nearest
+bounds.
 }
 \value{
 A \code{\link{HeatmapList-class}} object with only one heatmap, but it can only add other heatmaps/annotations vertically.
@@ -77,10 +79,11 @@ Zuguang Gu <z.gu@dkfz.de>
 matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]
 densityHeatmap(matrix)
 
+lt = list(rnorm(10), rnorm(10))
+densityHeatmap(lt)
+
 ha = HeatmapAnnotation(points = anno_points(runif(10)),
     anno = rep(c("A", "B"), each = 5), col = list(anno = c("A" = "red", "B" = "blue")))
 densityHeatmap(matrix, top_annotation = ha)
-
-lt = list(rnorm(10), rnorm(10))
-densityHeatmap(lt)
+densityHeatmap(matrix, top_annotation = ha) %v% Heatmap(matrix, height = unit(6, "cm"))
 }

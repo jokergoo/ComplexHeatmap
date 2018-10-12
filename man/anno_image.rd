@@ -18,8 +18,8 @@ anno_image(image, which = c("column", "row"), border = TRUE,
   \item{border}{Wether draw borders of the annotation region?}
   \item{gp}{Graphic parameters for annotation grids. If the image has transparent background, the \code{fill} parameter  can be used to control the background color in the annotation grids.}
   \item{space}{The space around the image to the annotation grid borders. The value should be a \code{\link[grid]{unit}} object.}
-  \item{width}{Width of the annotation.}
-  \item{height}{Height of the annotation.}
+  \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
+  \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
 
 }
 \details{

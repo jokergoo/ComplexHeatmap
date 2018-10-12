@@ -15,7 +15,7 @@ Get column order from a heatmap list
 
 }
 \value{
-A vector containing column orders
+The format of the returned object depends on whether rows/columns of the heatmaps are split.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
@@ -23,7 +23,9 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 mat = matrix(rnorm(100), 10)
 ht = Heatmap(mat)
+ht = draw(ht)
 column_order(ht)
 ht = Heatmap(mat, column_km = 2)
+ht = draw(ht)
 column_order(ht)
 }

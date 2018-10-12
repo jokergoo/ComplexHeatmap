@@ -7,6 +7,9 @@
 # -i Row indices
 # -j Column indices
 #
+# == details
+# This functionality is quite experimental. It should be applied before the layout is initialized.
+#
 # == example
 # m = matrix(rnorm(100), nrow = 10)
 # rownames(m) = letters[1:10]

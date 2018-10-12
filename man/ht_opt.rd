@@ -1,10 +1,10 @@
 \name{ht_opt}
 \alias{ht_opt}
 \title{
-Global graphic options for heatmaps
+Global Options
 }
 \description{
-Global graphic options for heatmaps
+Global Options
 }
 \usage{
 ht_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE)
@@ -21,27 +21,49 @@ ht_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE)
 \details{
 You can set some parameters for all heatmaps/annotations simultaneously by this global function.
 Pleast note you should put it before your heatmap code and reset
-all option values after drawing the heatmaps to get rid of affecting next heatmap plotting.
+all option values after drawing the heatmaps to get rid of affecting next heatmap.
 
-There are following parameters:
+There are following parameters to control all heatmaps:
 
 \describe{
-  \item{heatmap_row_names_gp}{set \code{row_names_gp} in \code{\link{Heatmap}}.}
-  \item{heatmap_column_names_gp}{set \code{column_names_gp} in \code{\link{Heatmap}}.}
-  \item{heatmap_row_title_gp}{set \code{row_title_gp} in \code{\link{Heatmap}}.}
-  \item{heatmap_column_title_gp}{set \code{column_title_gp} in \code{\link{Heatmap}}.}
-  \item{heatmap_legend_title_gp}{set \code{title_gp} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
-  \item{heatmap_legend_title_position}{set \code{title_position} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
-  \item{heatmap_legend_labels_gp}{set \code{labels_gp} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
-  \item{heatmap_legend_grid_width}{set \code{grid_width} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
-  \item{heatmap_legend_grid_height}{set \code{grid_height} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
-  \item{heatmap_legend_grid_border}{set \code{grid_border} element in \code{heatmap_legend_param} in \code{\link{Heatmap}}.}
-  \item{heatmap_legend_title_gp}{set \code{title_gp} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
-  \item{heatmap_legend_title_position}{set \code{title_position} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
-  \item{heatmap_legend_labels_gp}{set \code{labels_gp} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
-  \item{heatmap_legend_grid_width}{set \code{grid_width} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
-  \item{heatmap_legend_grid_height}{set \code{grid_height} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
-  \item{heatmap_legend_grid_border}{set \code{grid_border} element in \code{legend_param} in \code{\link{SingleAnnotation}}.}
+  \item{heatmap_row_names_gp}{set \code{row_names_gp} in all \code{\link{Heatmap}}.}
+  \item{heatmap_column_names_gp}{set \code{column_names_gp} in all \code{\link{Heatmap}}.}
+  \item{heatmap_row_title_gp}{set \code{row_title_gp} in all \code{\link{Heatmap}}.}
+  \item{heatmap_column_title_gp}{set \code{column_title_gp} in all \code{\link{Heatmap}}.}
+  \item{heatmap_border}{set \code{\link{border}} in all \code{\link{Heatmap}}.}
+}
+
+Following parameters to control the legends:
+
+\describe{
+  \item{legend_title_gp}{set}
+  \item{legend_title_position}{-legend_title_position}
+  \item{legend_labels_gp}{-legend_labels_gp}
+  \item{legend_grid_width}{-legend_grid_width}
+  \item{legend_grid_height}{-legend_grid_height}
+  \item{legend_border}{-legend_border}
+}
+
+Following parameters to control annotations:
+
+\describe{
+  \item{annotation_border}{border of all annotations}
+  \item{anno_simple_size}{size for the simple annotation.}
+}
+
+Following parameters to control the space between heatmap components:
+
+\describe{
+  \item{DENDROGRAM_PADDING}{space bewteen dendrograms and heatmap body}
+  \item{DIMNAME_PADDING}{space between row/column names and heatmap body}
+  \item{TITLE_PADDING}{space between row/column titles and heatmap body}
+  \item{COLUMN_ANNO_PADDING}{space between column annotations and heatmap body}
+  \item{ROW_ANNO_PADDING}{space between row annotations and heatmap body}
+}
+
+Other parameters:
+
+\describe{
   \item{fast_hclust}{whether use \code{\link[fastcluster]{hclust}} to speed up clustering?}
 }
 
@@ -55,9 +77,8 @@ You can get or set option values by the traditional way (like \code{\link[base]{
     # to set option values
     ht_opt("heatmap_row_names_gp" = gpar(fontsize = 8))
     ht_opt$heatmap_row_names_gp = gpar(fontsize = 8)  }
-}
-\value{
-Depends on the options users selected.
+
+Reset to the default values by \code{ht_opt(RESET = TRUE)}.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

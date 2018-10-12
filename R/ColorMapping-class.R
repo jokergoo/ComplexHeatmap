@@ -4,7 +4,7 @@
 #
 
 # == title
-# Class for Mapping Values to Colors
+# Class for Color Mapping
 #
 # == details
 # The `ColorMapping-class` handles color mapping for discrete values and continuous values.
@@ -127,7 +127,7 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 }
 
 # == title
-# Print ColorMapping Object
+# Print the ColorMapping Object
 #
 # == param
 # -object A `ColorMapping-class` object.

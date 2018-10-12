@@ -2,10 +2,10 @@
 \docType{class}
 \alias{ColorMapping-class}
 \title{
-Class for Mapping Values to Colors
+Class for Color Mapping
 }
 \description{
-Class for Mapping Values to Colors
+Class for Color Mapping
 }
 \details{
 The \code{\link{ColorMapping-class}} handles color mapping for discrete values and continuous values.
@@ -26,5 +26,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

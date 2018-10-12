@@ -1,6 +1,5 @@
 \name{adjust_heatmap_list-HeatmapList-method}
 \alias{adjust_heatmap_list,HeatmapList-method}
-\alias{adjust_heatmap_list}
 \title{
 Adjust heatmap list
 }
@@ -15,8 +14,16 @@ Adjust heatmap list
   \item{object}{A \code{\link{HeatmapList-class}} object}
 
 }
+\details{
+This function adjust heatmap components for all heatmaps to align them nicely.
+
+This function is only for internal use.
+}
+\author{
+Zuguang Gu <z.gu@dkfz.de>
+}
+\alias{adjust_heatmap_list}
 \examples{
 # There is no example
 NULL
-
 }

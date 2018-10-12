@@ -19,6 +19,7 @@ SingleAnnotation(name, value, col, fun,
     name_offset = unit(1, "mm"),
     name_side = ifelse(which == "column", "right", "bottom"),
     name_rot = ifelse(which == "column", 0, 90),
+    anno_simple_size = ht_opt$anno_simple_size,
     width = NULL, height = NULL)
 }
 \arguments{

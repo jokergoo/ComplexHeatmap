@@ -1,10 +1,10 @@
 \name{copy_all-AnnotationFunction-method}
 \alias{copy_all,AnnotationFunction-method}
 \title{
-Copy the AnnotationFunction object
+Copy the AnnotationFunction Object
 }
 \description{
-Copy the AnnotationFunction object
+Copy the AnnotationFunction Object
 }
 \usage{
 \S4method{copy_all}{AnnotationFunction}(object)
@@ -15,14 +15,15 @@ Copy the AnnotationFunction object
 
 }
 \details{
-In \code{\link{AnnotationFunction-class}}, there is an environment which stores some external variables
-for the annotation function. This \code{\link{copy_all,AnnotationFunction-method}} hard copy all the variables
-in that environment to a new environment.
+In \code{\link{AnnotationFunction-class}}, there is an environment which
+stores some external variables for the annotation function (specified by the
+\code{var_import} argument by constructing the \code{\link{AnnotationFunction-class}}
+object. This \code{\link{copy_all,AnnotationFunction-method}} hard copies all the
+variables into a new isolated environment.
 
 The environment is at \code{object@var_env}.
 }
 \examples{
 # There is no example
 NULL
-
 }

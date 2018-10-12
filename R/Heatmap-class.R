@@ -10,42 +10,6 @@
 # Class for a single heatmap
 #
 # == details
-# The components for a single heamtap are placed into a 9 x 7 layout:
-#
-#          +------+ (1)
-#          +------+ (2)
-#          +------+ (3)
-#          +------+ (4)
-#    +-+-+-+------+-+-+-+
-#    |1|2|3| 4(5) |5|6|7|
-#    +-+-+-+------+-+-+-+
-#          +------+ (6)
-#          +------+ (7)
-#          +------+ (8)
-#          +------+ (9)
-#
-# From top to bottom in column 4, the regions are:
-#
-# - title which is put on the top of the heatmap, graphics are drawn by `draw_title,Heatmap-method`.
-# - column cluster on the top, graphics are drawn by `draw_dend,Heatmap-method`.
-# - column annotation on the top, graphics are drawn by `draw_annotation,Heatmap-method`.
-# - column names on the top, graphics are drawn by `draw_dimnames,Heatmap-method`.
-# - heatmap body, graphics are drawn by `draw_heatmap_body,Heatmap-method`.
-# - column names on the bottom, graphics are drawn by `draw_dimnames,Heatmap-method`.
-# - column annotation on the bottom, graphics are drawn by `draw_annotation,Heatmap-method`.
-# - column cluster on the bottom, graphics are drawn by `draw_dend,Heatmap-method`.
-# - title on the bottom, graphics are drawn by `draw_title,Heatmap-method`.
-# 
-# From left to right in row 5, the regions are:
-#
-# - title which is put in the left of the heatmap, graphics are drawn by `draw_title,Heatmap-method`.
-# - row cluster on the left, graphics are drawn by `draw_dend,Heatmap-method`.
-# - row names on the left, graphics are drawn by `draw_dimnames,Heatmap-method`.
-# - heatmap body
-# - row names on the right, graphics are drawn by `draw_dimnames,Heatmap-method`.
-# - row cluster on the right, graphics are drawn by `draw_dend,Heatmap-method`.
-# - title on the right, graphics are drawn by `draw_title,Heatmap-method`.
-#
 # The `Heatmap-class` is not responsible for heatmap legend and annotation legends. The `draw,Heatmap-method` method
 # will construct a `HeatmapList-class` object which only contains one single heatmap
 # and call `draw,HeatmapList-method` to make a complete heatmap.
@@ -125,12 +89,12 @@ Heatmap = setClass("Heatmap",
 # -rect_gp graphic parameters for drawing rectangles (for heatmap body).
 # -color_space the color space in which colors are interpolated. Only used if ``matrix`` is numeric and 
 #            ``col`` is a vector of colors. Pass to `circlize::colorRamp2`.
-# -border border
+# -border whether draw border or the color of border.
 # -cell_fun self-defined function to add graphics on each cell. Seven parameters will be passed into 
 #           this function: ``i``, ``j``, ``x``, ``y``, ``width``, ``height``, ``fill`` which are row index,
 #           column index in ``matrix``, coordinate of the middle points in the heatmap body viewport,
 #           the width and height of the cell and the filled color. ``x``, ``y``, ``width`` and ``height`` are all `grid::unit` objects.
-# -layer_fun layer fun
+# -layer_fun similar as ``cell_fun``, but is vectorized. 
 # -row_title title on row.
 # -row_title_side will the title be put on the left or right of the heatmap?
 # -row_title_gp graphic parameters for drawing text.
@@ -199,10 +163,10 @@ Heatmap = setClass("Heatmap",
 #   to top to bottom in the heatmap
 # -row_gap row gap
 # -column_gap column gap
-# -width width
-# -height height
-# -heatmap_body_width width
-# -heatmap_body_height height
+# -width width of the heatmap body
+# -height height of the heatmap body
+# -heatmap_width width of the whole heatmap (including heatmap components)
+# -heatmap_height height of the whole heatmap (including heatmap components)
 # -show_heatmap_legend whether show heatmap legend?
 # -heatmap_legend_param a list contains parameters for the heatmap legend. See `color_mapping_legend,ColorMapping-method` for all available parameters.
 # -use_raster whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if ``cell_fun``
@@ -213,14 +177,13 @@ Heatmap = setClass("Heatmap",
 # -post_fun a function which will be executed after the plot is drawn.
 #
 # == details
-# The initialization function only applies parameter checking and fill values to each slot with proper ones.
-# Then it will be ready for clustering and layout.
+# The initialization function only applies parameter checking and fill values to the slots with proper values.
 # 
 # Following methods can be applied on the `Heatmap-class` object:
 #
 # - `show,Heatmap-method`: draw a single heatmap with default parameters
 # - `draw,Heatmap-method`: draw a single heatmap.
-# - `add_heatmap,Heatmap-method` append heatmaps and row annotations to a list of heatmaps.
+# - ``+`` or `\%v\%` append heatmaps and row annotations to a list of heatmaps.
 #
 # The constructor function pretends to be a high-level graphic function because the ``show`` method
 # of the `Heatmap-class` object actually plots the graphics.
@@ -851,7 +814,8 @@ setMethod(f = "make_row_cluster",
 # -object A `Heatmap-class` object.
 #
 # == details
-# The function will fill or adjust ``column_dend_list``, ``column_order_list``, ``column_title`` and ``matrix_param`` slots.
+# The function will fill or adjust ``column_dend_list``,
+# ``column_order_list``, ``column_title`` and ``matrix_param`` slots.
 #
 # If ``order`` is defined, no clustering will be applied.
 #
@@ -1343,7 +1307,7 @@ make_cluster = function(object, which = c("row", "column")) {
 # The function creates a `HeatmapList-class` object which only contains a single heatmap
 # and call `draw,HeatmapList-method` to make the final heatmap.
 #
-# There are some arguments which control the global setting of the heatmap such as legends.
+# There are some arguments which control the some settings of the heatmap such as legends.
 # Please go to `draw,HeatmapList-method` for these arguments.
 #
 # == value
@@ -1414,7 +1378,7 @@ setMethod(f = "draw",
 # == detail
 # The preparation of the heatmap includes following steps:
 #
-# - making clustering on rows if it is specified (by calling `make_row_cluster,Heatmap-method`)
+# - making clustering on rows (by calling `make_row_cluster,Heatmap-method`)
 # - making clustering on columns (by calling `make_column_cluster,Heatmap-method`)
 # - making the layout of the heatmap (by calling `make_layout,Heatmap-method`)
 #

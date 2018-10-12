@@ -13,7 +13,7 @@ Add heatmaps and row annotations to the heatmap list
 
   \item{object}{a \code{\link{HeatmapList-class}} object.}
   \item{x}{a \code{\link{Heatmap-class}} object or a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
-  \item{direction}{direction}
+  \item{direction}{direction of the concatenation.}
 
 }
 \details{
@@ -28,5 +28,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

@@ -1,10 +1,10 @@
 \name{show-ColorMapping-method}
 \alias{show,ColorMapping-method}
 \title{
-Print ColorMapping Object
+Print the ColorMapping Object
 }
 \description{
-Print ColorMapping Object
+Print the ColorMapping Object
 }
 \usage{
 \S4method{show}{ColorMapping}(object)
@@ -23,5 +23,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

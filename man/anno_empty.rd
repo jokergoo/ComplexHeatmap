@@ -12,9 +12,9 @@ anno_empty(which = c("column", "row"), border = TRUE, width = NULL, height = NUL
 \arguments{
 
   \item{which}{Whether it is a column annotation or a row annotation?}
-  \item{border}{Wether draw borders of the annotation region?}
-  \item{width}{Width of the annotation.}
-  \item{height}{Height of the annotation.}
+  \item{border}{Whether draw borders of the annotation region?}
+  \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
+  \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
 
 }
 \details{

@@ -1,22 +1,21 @@
 \name{size}
 \alias{size}
 \title{
-Generic method for size
+Generic Method for size()
 }
 \description{
-Generic method for size
+Generic Method for size()
 }
 \usage{
 size(x, ...)
 }
 \arguments{
 
-  \item{x}{x}
-  \item{...}{other arguments}
+  \item{x}{An object.}
+  \item{...}{Other arguments.}
 
 }
 \examples{
 # There is no example
 NULL
-
 }

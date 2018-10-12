@@ -11,7 +11,7 @@ convertXY_in_vp(u, vp_name = "ROOT")
 }
 \arguments{
 
-  \item{u}{a list of two units which is x and y}
+  \item{u}{A list of two units which is x and y}
   \item{vp_name}{the name of the parent viewport}
 
 }

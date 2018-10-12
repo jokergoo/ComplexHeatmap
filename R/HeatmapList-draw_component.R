@@ -5,6 +5,14 @@
 # == param
 # -object A `HeatmapList-class` object
 #
+# == details
+# This function adjust heatmap components for all heatmaps to align them nicely.
+#
+# This function is only for internal use.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
 setMethod(f = "adjust_heatmap_list",
     signature = "HeatmapList",
     definition = function(object) {

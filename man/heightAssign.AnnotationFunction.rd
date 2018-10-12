@@ -2,23 +2,22 @@
 \alias{height<-.AnnotationFunction}
 \alias{heightAssign.AnnotationFunction}
 \title{
-Assign the Height to the AnnotationFunction x
+Assign the Height to the AnnotationFunction Object
 }
 \description{
-Assign the Height to the AnnotationFunction x
+Assign the Height to the AnnotationFunction Object
 }
 \usage{
 \method{height}{AnnotationFunction}(x, ...) <- value
 }
 \arguments{
 
-  \item{x}{The \code{\link{AnnotationFunction-class}} x.}
-  \item{value}{A \code{\link[grid]{unit}} x.}
-  \item{...}{other arguments}
+  \item{x}{The \code{\link{AnnotationFunction-class}} object.}
+  \item{value}{A \code{\link[grid]{unit}} object.}
+  \item{...}{Other arguments.}
 
 }
 \examples{
 # There is no example
 NULL
-
 }

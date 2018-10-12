@@ -1,6 +1,6 @@
 Package: ComplexHeatmap
 Type: Package
-Title: Making Complex Heatmaps
+Title: Make Complex Heatmaps
 Version: 1.99.0
 Date: 2018-6-9
 Author: Zuguang Gu
@@ -15,7 +15,7 @@ VignetteBuilder: knitr
 Description: Complex heatmaps are efficient to visualize associations 
     between different sources of data sets and reveal potential structures. 
     Here the ComplexHeatmap package provides a highly flexible way to arrange 
-    multiple heatmaps and supports self-defined annotation graphics.
+    multiple heatmaps and supports various annotation graphics.
 biocViews: Software, Visualization, Sequencing
 URL: https://github.com/jokergoo/ComplexHeatmap
 License: MIT + file LICENSE

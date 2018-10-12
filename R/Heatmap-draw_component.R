@@ -1,12 +1,12 @@
 
 # == title
-# Draw the heatmap body
+# Draw the Heatmap Body
 #
 # == param
 # -object A `Heatmap-class` object.
 # -kr Row slice index.
 # -kc Column slice index.
-# -... Pass to `grid::viewport` which includes the subset of heatmap body.
+# -... Pass to `grid::viewport` which includes the slice of heatmap body.
 #
 # == details
 # A viewport is created which contains subset rows and columns of the heatmap.

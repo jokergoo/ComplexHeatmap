@@ -1,18 +1,18 @@
 \name{height.AnnotationFunction}
 \alias{height.AnnotationFunction}
 \title{
-Height of the AnnotationFunction x
+Height of the AnnotationFunction Object
 }
 \description{
-Height of the AnnotationFunction x
+Height of the AnnotationFunction Object
 }
 \usage{
 \method{height}{AnnotationFunction}(x, ...)
 }
 \arguments{
 
-  \item{x}{The \code{\link{AnnotationFunction-class}} x.}
-  \item{...}{other arguments}
+  \item{x}{The \code{\link{AnnotationFunction-class}} object.}
+  \item{...}{Other arguments}
 
 }
 \examples{

@@ -18,5 +18,4 @@ Number of Observations
 \examples{
 # There is no example
 NULL
-
 }

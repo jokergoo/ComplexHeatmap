@@ -3,12 +3,14 @@
 # The AnnotationFunction class
 #
 # == details
-# The heatmap annotation is basically graphics aligned to the columns or heatmap if it is column annotation
-# or heatmap rows if it is row annotation, while the type of the graphics can be arbitory, e.g.
-# it can be heatmap-like or points. Here the AnnotationFunction class is designed for creating
-# complex and flexible annotation graphics. As the main part, it uses a use-defined function
-# to define the graphics. It also keeps information of the size of the plotting regions of the annotation.
-# And most importantly, it allows subsetting of the annotation to draw a subset of the graphics, which
+# The heatmap annotation is basically graphics aligned to the heatmap columns
+# if it is column annotation or heatmap rows if it is row annotation, while
+# there is no restrictions for the graphic types, e.g. it can be heatmap-like
+# annotation or points. Here the AnnotationFunction class is designed for
+# creating complex and flexible annotation graphics. As the main part of the class, it uses
+# a user-defined function to define the graphics. It also keeps information of
+# the size of the plotting regions of the annotation. And most importantly, it
+# allows subsetting of the annotation to draw a subset of the graphics, which
 # is the base for the splitting of the annotations.
 #
 # See `AnnotationFunction` constructor for details.
@@ -81,7 +83,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # Constructor of AnnotationFunction Class
 #
 # == param
-# -fun A function which defines how to draw this annotation. See **Details** section.
+# -fun A function which defines how to draw the annotation. See **Details** section.
 # -fun_name The name of the function. It is only used for printing the object.
 # -which Whether it is drawn as a column annotation or a row annotation?
 # -var_import The names of the variables or the variable themselves that the annotation function depends on. See **Details** section.
@@ -92,36 +94,54 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # -subset_rule The rule of subsetting variables in ``var_import``. It should be set when users want the final object to
 #              be subsetable. See **Details** section.
 # -subsetable Whether the object is subsetable?
+# -show_name It is used to turn off the drawing of annotation names in `HeatmapAnnotation`. Annotations always have names
+#        associated and normally they will be drawn beside the annotation graphics to tell what the annotation is about.
+#        e.g. the annotation names put beside the points annotation graphics. However, for some of the annotations, the names
+#        are not necessarily to be drawn, such as text annotations drawn by `anno_text` or an empty annotation drawn by `anno_empty()`.
+#        In this case, when `show_names` is set to `FALSE`, there will be no annotation names drawn for the annotation.
 # -width The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation,
-#        the width must be an absolute unit.
+#        the width must be an absolute unit. Since the ``AnnotationFunction`` object is always contained by the `SingleAnnotation-class`object,
+#        you can only set the width of row annotations or height of column annotations, while e.g. the height of the row annotation is always ``unit(1, "npc")``
+#        which means it always fully filled in the parent ``SingleAnnotation`` and only in `SingleAnnotation` or even `HeatmapAnnotation`
+#        can adjust the height of the row annotations.
 # -height The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation,
 #        the width must be an absolute unit.
 #
 # == details
-# A normal R function defines how to draw the annotation graphics. As expected, the main part of the AnnotationFunction
-# class is this function. The function defines how to draw at specific positions which correspond to rows or columns
-# in the heatmap. The function should have three arguments: ``index``, ``k`` and ``n`` (the names of the arguments can
-# be arbitory) where ``k`` and ``n`` are optional. ``index`` corresponds to the indices of rows or columns of the heatmap.
-# The value of ``index`` is not necessarily to be the whole row indices or column indices. It can also be a subset of
-# the indices if the annotation is split into slices according to the split of the heatmap. The value in ``index`` is
-# always sorted according to the reordering of heatmap rows or columns (e.g. by clustering). So, ``index`` actually contains
-# a list of row or column indices for the current slice after row or column reordering. This type of design makes sure
-# the annotation graphics are drawn at the correct positions and can be correctly corresponded to the heatmap rows or columns.
+# We use a normal R function defines how to draw the annotation graphics. As
+# expected, the main part of the AnnotationFunction class is this function.
+# The function defines how to draw at specific positions which correspond to
+# rows or columns in the heatmap. The function should have three arguments:
+# ``index``, ``k`` and ``n`` (the names of the arguments can be arbitory)
+# where ``k`` and ``n`` are optional. ``index`` corresponds to the indices of
+# rows or columns of the heatmap. The value of ``index`` is not necessarily to
+# be the whole row indices or column indices of the heatmap. It can be a
+# subset of the indices if the annotation is split into slices according to
+# the split of the heatmap. ``index`` is always reordered according to the
+# reordering of heatmap rows or columns (e.g. by clustering). So, ``index``
+# actually contains a list of row or column indices for the current slice
+# after row or column reordering.
 # 
-# As mentioned, annotation can be split into slices. ``k`` corresponds to the current slice and ``n`` corresponds to
-# the total number of slices. The information of ``k`` and ``n`` sometimes can be useful, for example, we want to add axis
-# in the annotation, and if it is a column annotation and axis is drawn on the very right of the annotation area, the axis
-# is only drawn when ``k == n``.
+# As mentioned, annotation can be split into slices. ``k`` corresponds to the
+# current slice and ``n`` corresponds to the total number of slices. As you can image, 
+# when ``n > 1``, the annotation function will be executed for all ``k``s. The
+# information of ``k`` and ``n`` sometimes can be useful, for example, we want
+# to add axis ot the right side of a column annotation, if this column annotation
+# is split into several slices, the axis is only drawn when``k == n``.
 #
-# Since the function only allows ``index``, ``k`` and ``n``, the function sometimes uses several external variables which can
-# not be defined inside the function, e.g. the data points for the annotation. These variables should be imported
-# into the AnnotationFunction class so that the function can correctly find these variables. 
+# Since the function only allows ``index``, ``k`` and ``n``, the function
+# sometimes uses several external variables which can not be defined inside
+# the function, e.g. the data points for the annotation. These variables
+# should be imported into the AnnotationFunction class so that the function
+# can correctly find these variables (by ``var_import`` argument).
 #
-# One important feature for AnnotationFunction class is it can be subsetable. To allow subsetting of the object,
-# users need to define the rule for the imported variables if there is any. The rules are simple function which
-# accpets the variable and indices, and returns the subset of the variable. The subset rule functions implemented
-# in this package are `subset_gp`, `subset_matrix_by_row` and `subset_vector`. These three functions are enough for
-# most of the cases.
+# One important feature for AnnotationFunction class is it can be subsetable.
+# To allow subsetting of the object, users need to define the rules for the
+# imported variables. The rules are simple function which
+# accpets the variable and indices, and returns the subset of the variable.
+# The subset rule functions implemented in this package are `subset_gp`,
+# `subset_matrix_by_row` and `subset_vector`. These three functions are enough
+# for most of the cases.
 #
 # In following, we defined three AnnotationFunction objects: 
 #
@@ -155,7 +175,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 #		subsetable = TRUE
 #	)
 #
-# 3. The most compact way to only specify the function to the constructor.
+# 3. Only specify the function to the constructor. ``anno3`` is not subsettable.
 #
 #	anno3 = AnnotationFunction(
 #		fun = function(index) {
@@ -167,15 +187,20 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 #		}
 #	)
 #
-# Finally, you need to push a viewport for graphics and finally pop the viewport.
+# As you can see from the examples, you need to push a viewport for graphics and finally pop the viewport.
 #
-# In the package, quite a lot annotation function are constructed by `AnnotationFunction` constructor:
+# In the package, we have implemted quite a lot annotation function by `AnnotationFunction` constructor:
 # `anno_empty`, `anno_image`, `anno_points`, `anno_lines`, `anno_barplot`, `anno_boxplot`, `anno_histogram`,
-# `anno_density`, `anno_joyplot`, `anno_horizon`, `anno_text` and `anno_mark`. Thess built-in annotation functions
-# are all subsettable.
+# `anno_density`, `anno_joyplot`, `anno_horizon`, `anno_text` and `anno_mark`. These built-in annotation functions
+# support as both row annotations and column annotations and they are are all subsettable.
+#
+# == seealso
+# The build-in annotation functions are already enough for most of the analysis, nevertheless, if users
+# want to know more about how to construct the AnnotationFunction class manually, they can refer to
+# ComplexHeatmap Complete Reference ().
 AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), 
 	var_import = list(), n = NA, data_scale = c(0, 1), subset_rule = list(), 
-	subsetable = FALSE, show_name = TRUE, width = NULL, height = NULL) {
+	subsetable = length(subset_rule) > 0, show_name = TRUE, width = NULL, height = NULL) {
 
 	which = match.arg(which)[1]
 
@@ -263,7 +288,7 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 # -i A vector of indices.
 #
 # == details
-# One good thing for designing the `AnnotationFunction-class` object is it can be subsetted,
+# One good thing for designing the `AnnotationFunction-class` is it can be subsetted,
 # and this is the base for the splitting of the annotations.
 #
 # == example
@@ -368,17 +393,20 @@ setMethod(f = "draw",
 })
 
 # == title
-# Copy the AnnotationFunction object
+# Copy the AnnotationFunction Object
 #
 # == param
 # -object The `AnnotationFunction-class` object.
 #
-# == detail
-# In `AnnotationFunction-class`, there is an environment which stores some external variables
-# for the annotation function. This `copy_all,AnnotationFunction-method` hard copy all the variables
-# in that environment to a new environment.
+# == detail 
+# In `AnnotationFunction-class`, there is an environment which
+# stores some external variables for the annotation function (specified by the
+# ``var_import`` argument by constructing the `AnnotationFunction-class`
+# object. This `copy_all,AnnotationFunction-method` hard copies all the
+# variables into a new isolated environment.
 #
 # The environment is at ``object@var_env``.
+#
 setMethod(f = "copy_all",
 	signature = "AnnotationFunction",
 	definition = function(object) {
@@ -392,7 +420,7 @@ setMethod(f = "copy_all",
 })
 
 # == title
-# Print the AnnotationFunction object
+# Print the AnnotationFunction Object
 #
 # == param
 # -object The `AnnotationFunction-class` object.
@@ -434,10 +462,10 @@ setMethod(f = "show",
 #
 # == param
 # -object The `AnnotationFunction-class` object.
-# -... other arguments
+# -... Other arguments.
 #
-# == details
-# It returns the ``n`` slot in the object. If there does not exist, it returns ``NA``.
+# == details It returns the ``n`` slot in the object. If it does not exist, it
+# returns ``NA``.
 #
 # == example
 # anno = anno_points(1:10)

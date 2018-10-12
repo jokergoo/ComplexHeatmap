@@ -68,19 +68,19 @@ Heatmap(matrix, col, name,
     row_split = split,
     column_km = 1,
     column_split = NULL,
-    gap = unit(0.5, "mm"),
-    row_gap = unit(0.5, "mm"),
-    column_gap = unit(0.5, "mm"),
+    gap = unit(1, "mm"),
+    row_gap = unit(1, "mm"),
+    column_gap = unit(1, "mm"),
     
-    width = unit(1, "npc"),
-    heatmap_body_width = NULL,
-    height = unit(1, "npc"),
-    heatmap_body_height = NULL,
+    heatmap_width = unit(1, "npc"),
+    width = NULL,
+    heatmap_height = unit(1, "npc"),
+    height = NULL,
     
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
     
-    use_raster = nrow(matrix) > 5000,
+    use_raster = nrow(matrix) > 2000 || ncol(matrix) > 2000,
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
     raster_device_param = list(),
@@ -95,9 +95,9 @@ Heatmap(matrix, col, name,
   \item{na_col}{color for \code{NA} values.}
   \item{rect_gp}{graphic parameters for drawing rectangles (for heatmap body).}
   \item{color_space}{the color space in which colors are interpolated. Only used if \code{matrix} is numeric and  \code{col} is a vector of colors. Pass to \code{\link[circlize]{colorRamp2}}.}
-  \item{border}{border}
+  \item{border}{whether draw border or the color of border.}
   \item{cell_fun}{self-defined function to add graphics on each cell. Seven parameters will be passed into  this function: \code{i}, \code{j}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are row index, column index in \code{matrix}, coordinate of the middle points in the heatmap body viewport, the width and height of the cell and the filled color. \code{x}, \code{y}, \code{width} and \code{height} are all \code{\link[grid]{unit}} objects.}
-  \item{layer_fun}{layer fun}
+  \item{layer_fun}{similar as \code{cell_fun}, but is vectorized. }
   \item{row_title}{title on row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap?}
   \item{row_title_gp}{graphic parameters for drawing text.}
@@ -149,10 +149,10 @@ Heatmap(matrix, col, name,
   \item{gap}{gap between row-slices if the heatmap is split by rows, should be \code{\link[grid]{unit}} object. If it is a vector, the order corresponds to top to bottom in the heatmap}
   \item{row_gap}{row gap}
   \item{column_gap}{column gap}
-  \item{width}{width}
-  \item{height}{height}
-  \item{heatmap_body_width}{width}
-  \item{heatmap_body_height}{height}
+  \item{width}{width of the heatmap body}
+  \item{height}{height of the heatmap body}
+  \item{heatmap_width}{width of the whole heatmap (including heatmap components)}
+  \item{heatmap_height}{height of the whole heatmap (including heatmap components)}
   \item{show_heatmap_legend}{whether show heatmap legend?}
   \item{heatmap_legend_param}{a list contains parameters for the heatmap legend. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
   \item{use_raster}{whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if \code{cell_fun} is set, \code{use_raster} is enforced to be \code{FALSE}.}
@@ -163,15 +163,14 @@ Heatmap(matrix, col, name,
 
 }
 \details{
-The initialization function only applies parameter checking and fill values to each slot with proper ones.
-Then it will be ready for clustering and layout.
+The initialization function only applies parameter checking and fill values to the slots with proper values.
 
 Following methods can be applied on the \code{\link{Heatmap-class}} object:
 
 \itemize{
   \item \code{\link{show,Heatmap-method}}: draw a single heatmap with default parameters
   \item \code{\link{draw,Heatmap-method}}: draw a single heatmap.
-  \item \code{\link{add_heatmap,Heatmap-method}} append heatmaps and row annotations to a list of heatmaps.
+  \item \code{+} or \code{\link[=pct_v_pct]{\%v\%}} append heatmaps and row annotations to a list of heatmaps.
 }
 
 The constructor function pretends to be a high-level graphic function because the \code{show} method
@@ -186,5 +185,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }
