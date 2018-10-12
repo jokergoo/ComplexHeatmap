@@ -20,4 +20,5 @@ size(x, ...) <- value
 \examples{
 # There is no example
 NULL
+
 }

@@ -22,7 +22,7 @@
 # -heatmap_column_names_gp set ``column_names_gp`` in all `Heatmap`.
 # -heatmap_row_title_gp set ``row_title_gp`` in all `Heatmap`.
 # -heatmap_column_title_gp set ``column_title_gp`` in all `Heatmap`.
-# -heatmap_border set `border` in all `Heatmap`.
+# -heatmap_border set ``border`` in all `Heatmap`.
 #
 # Following parameters to control the legends: 
 #

@@ -320,7 +320,7 @@ columnAnnotation(
 	col = anno_col
 ) %v%
 Heatmap(mat_expr[1:40, ], name = "epxression", col = expr_col_fun,
-		row_km = 2, row_title = "Expression", heatmap_body_height = unit(6, "cm"))
+		row_km = 2, row_title = "Expression", heatmap_height = unit(6, "cm"))
 ```
 
 ## OncoPrint

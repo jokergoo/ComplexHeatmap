@@ -734,6 +734,8 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # == param
 # -... A list of objects returned by `Legend`.
 # -gap Gap between two neighbouring legends. The value is a `grid::unit` object with length of one.
+# -row_gap Horizontal gaps between legends.
+# -column_gap Vertical gaps between legends.
 # -direction The direction to arrange legends.
 # -max_width The maximal width of the total packed legends. It only works for horizontal arrangement.
 #           If the total width of the legends exceeds it, the legends will be arranged into several rows.

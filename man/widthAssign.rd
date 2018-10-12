@@ -20,4 +20,5 @@ width(x, ...) <- value
 \examples{
 # There is no example
 NULL
+
 }

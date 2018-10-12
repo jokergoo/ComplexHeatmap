@@ -97,8 +97,8 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # -show_name It is used to turn off the drawing of annotation names in `HeatmapAnnotation`. Annotations always have names
 #        associated and normally they will be drawn beside the annotation graphics to tell what the annotation is about.
 #        e.g. the annotation names put beside the points annotation graphics. However, for some of the annotations, the names
-#        are not necessarily to be drawn, such as text annotations drawn by `anno_text` or an empty annotation drawn by `anno_empty()`.
-#        In this case, when `show_names` is set to `FALSE`, there will be no annotation names drawn for the annotation.
+#        are not necessarily to be drawn, such as text annotations drawn by `anno_text` or an empty annotation drawn by `anno_empty`.
+#        In this case, when ``show_names`` is set to ``FALSE``, there will be no annotation names drawn for the annotation.
 # -width The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation,
 #        the width must be an absolute unit. Since the ``AnnotationFunction`` object is always contained by the `SingleAnnotation-class`object,
 #        you can only set the width of row annotations or height of column annotations, while e.g. the height of the row annotation is always ``unit(1, "npc")``
@@ -348,6 +348,9 @@ setMethod(f = "draw",
 	if(test2) {
         grid.newpage()
         pushViewport(viewport(width = 0.8, height = 0.8))
+        if(is.na(object@n)) {
+        	object@n = 1
+        }
     }
 
     verbose = ht_opt$verbose

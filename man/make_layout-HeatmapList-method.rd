@@ -82,6 +82,7 @@ Make layout for the complete plot
   \item{ht_gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
   \item{main_heatmap}{name or index for the main heatmap}
   \item{padding}{padding of the plot}
+  \item{auto_adjust}{whether autoadjust}
   \item{row_dend_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
   \item{row_sub_title_side}{row sub title}
   \item{column_dend_side}{column dend}
@@ -132,4 +133,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
+
 }

@@ -73,6 +73,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -name_offset Offset to the annotation, a `grid::unit` object.
 # -name_side 'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations
 # -name_rot Rotation of the annotation name, it can only take values in ``c(0, 90, 180, 270)``.
+# -anno_simple_size size of the simple annotation.
 # -width The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation,
 #        the width must be an absolute unit.
 # -height The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation,

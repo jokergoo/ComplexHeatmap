@@ -26,4 +26,5 @@ The environment is at \code{object@var_env}.
 \examples{
 # There is no example
 NULL
+
 }

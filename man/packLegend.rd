@@ -15,6 +15,8 @@ packLegend(...,gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2
 
   \item{...}{A list of objects returned by \code{\link{Legend}}.}
   \item{gap}{Gap between two neighbouring legends. The value is a \code{\link[grid]{unit}} object with length of one.}
+  \item{row_gap}{Horizontal gaps between legends.}
+  \item{column_gap}{Vertical gaps between legends.}
   \item{direction}{The direction to arrange legends.}
   \item{max_width}{The maximal width of the total packed legends. It only works for horizontal arrangement. If the total width of the legends exceeds it, the legends will be arranged into several rows.}
   \item{max_height}{Similar as \code{max_width}, but for the vertical arrangment of legends.}

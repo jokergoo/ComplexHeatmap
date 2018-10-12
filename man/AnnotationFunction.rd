@@ -21,7 +21,7 @@ AnnotationFunction(fun, fun_name = "", which = c("column", "row"),
   \item{data_scale}{The data scale on the data axis (y-axis for column annotation and x-axis for row annotation). It is only used when \code{\link{decorate_annotation}} is used with "native" unit coordinates.}
   \item{subset_rule}{The rule of subsetting variables in \code{var_import}. It should be set when users want the final object to be subsetable. See **Details** section.}
   \item{subsetable}{Whether the object is subsetable?}
-  \item{show_name}{It is used to turn off the drawing of annotation names in \code{\link{HeatmapAnnotation}}. Annotations always have names associated and normally they will be drawn beside the annotation graphics to tell what the annotation is about. e.g. the annotation names put beside the points annotation graphics. However, for some of the annotations, the names are not necessarily to be drawn, such as text annotations drawn by \code{\link{anno_text}} or an empty annotation drawn by \code{\link{anno_empty()}}. In this case, when \code{\link{show_names}} is set to \code{\link{FALSE}}, there will be no annotation names drawn for the annotation.}
+  \item{show_name}{It is used to turn off the drawing of annotation names in \code{\link{HeatmapAnnotation}}. Annotations always have names associated and normally they will be drawn beside the annotation graphics to tell what the annotation is about. e.g. the annotation names put beside the points annotation graphics. However, for some of the annotations, the names are not necessarily to be drawn, such as text annotations drawn by \code{\link{anno_text}} or an empty annotation drawn by \code{\link{anno_empty}}. In this case, when \code{show_names} is set to \code{FALSE}, there will be no annotation names drawn for the annotation.}
   \item{width}{The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation, the width must be an absolute unit. Since the \code{AnnotationFunction} object is always contained by the \code{\link{SingleAnnotation-class}}object, you can only set the width of row annotations or height of column annotations, while e.g. the height of the row annotation is always \code{unit(1, "npc")} which means it always fully filled in the parent \code{SingleAnnotation} and only in \code{\link{SingleAnnotation}} or even \code{\link{HeatmapAnnotation}} can adjust the height of the row annotations.}
   \item{height}{The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation, the width must be an absolute unit.}
 
@@ -121,4 +121,5 @@ ComplexHeatmap Complete Reference ().
 \examples{
 # There is no example
 NULL
+
 }

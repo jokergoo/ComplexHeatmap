@@ -30,7 +30,7 @@ There are following parameters to control all heatmaps:
   \item{heatmap_column_names_gp}{set \code{column_names_gp} in all \code{\link{Heatmap}}.}
   \item{heatmap_row_title_gp}{set \code{row_title_gp} in all \code{\link{Heatmap}}.}
   \item{heatmap_column_title_gp}{set \code{column_title_gp} in all \code{\link{Heatmap}}.}
-  \item{heatmap_border}{set \code{\link{border}} in all \code{\link{Heatmap}}.}
+  \item{heatmap_border}{set \code{border} in all \code{\link{Heatmap}}.}
 }
 
 Following parameters to control the legends:

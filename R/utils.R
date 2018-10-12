@@ -290,7 +290,7 @@ rep.list = function(x, n) {
 # A vector of viewport names.
 #
 list_component = function() {
-    vp = grid.ls(viewports = TRUE, grob = FALSE, flatten = FALSE, print = FALSE)
+    vp = grid.ls(viewports = TRUE, grobs = FALSE, flatten = FALSE, print = FALSE)
     vp = unlist(vp)
     attributes(vp) = NULL
     vp = vp[!grepl("^\\d+$", vp)]

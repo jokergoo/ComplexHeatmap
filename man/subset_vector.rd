@@ -18,4 +18,5 @@ subset_vector(x, i)
 \examples{
 # There is no example
 NULL
+
 }

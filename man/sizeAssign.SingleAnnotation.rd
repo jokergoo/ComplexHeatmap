@@ -23,4 +23,5 @@ It assigns to the width if it is a row annotation and the height if it is a colu
 \examples{
 # There is no example
 NULL
+
 }

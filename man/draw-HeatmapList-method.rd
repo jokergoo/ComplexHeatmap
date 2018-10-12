@@ -89,7 +89,7 @@ Draw a list of heatmaps
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object.}
-  \item{newpage}{whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use \code{\link[grid]{grabExpr}}.}
+  \item{newpage}{whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use \code{\link[grid]{grid.grabExpr}}.}
   \item{row_title}{title on the row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap.}
   \item{row_title_gp}{graphic parameters for drawing text.}
@@ -109,7 +109,8 @@ Draw a list of heatmaps
   \item{ht_gap}{same as \code{gap}.}
   \item{main_heatmap}{index of main heatmap. The value can be a numeric index or the heatmap name}
   \item{padding}{padding of the whole plot. The value is a unit vector of length 4, which corresponds to bottom, left, top and right.}
-  \item{adjust_annotation_name}{whether take annotation name into account when calculating positions of graphic elements.}
+  \item{adjust_annotation_extension}{whether take annotation name into account when calculating positions of graphic elements.}
+  \item{auto_adjust}{whether auto adjust}
   \item{row_dend_side}{side of the dendrogram from the main heatmap}
   \item{row_sub_title_side}{side of the row title from the main heatmap}
   \item{column_dend_side}{side of the dendrogram from the main heatmap}
@@ -127,7 +128,8 @@ Draw a list of heatmaps
   \item{split}{this modifies \code{split} of the main heatmap}
   \item{row_km}{this modifies \code{row_km} of the main heatmap}
   \item{row_split}{this modifies \code{row_split} of the main heatmap}
-  \item{heatmap_body_height}{this modifies \code{heatmap_body_height} of the main heatmap}
+  \item{height}{this modifies \code{height} of the main heatmap}
+  \item{heatmap_height}{this modifies \code{heatmap_height} of the main heatmap}
   \item{column_gap}{this modifies \code{column_gap} of the main heatmap}
   \item{cluster_columns}{this modifies \code{cluster_columns} of the main heatmap}
   \item{clustering_distance_columns}{this modifies \code{clustering_distance_columns} of the main heatmap}
@@ -139,7 +141,8 @@ Draw a list of heatmaps
   \item{column_order}{this modifies \code{column_order} of the main heatmap}
   \item{column_km}{this modifies \code{column_km} of the main heatmap}
   \item{column_split}{this modifies \code{column_split} of the main heatmap}
-  \item{heatmap_body_width}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
+  \item{width}{this modifies \code{width} of the main heatmap}
+  \item{heatmap_width}{this modifies \code{heatmap_width} of the main heatmap}
   \item{heatmap_row_names_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{heatmap_column_names_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{heatmap_row_title_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
@@ -171,4 +174,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
+
 }

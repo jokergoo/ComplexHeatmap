@@ -20,4 +20,5 @@ Assign the Width to the AnnotationFunction Object
 \examples{
 # There is no example
 NULL
+
 }

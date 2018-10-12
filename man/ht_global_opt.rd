@@ -25,4 +25,5 @@ will also be sychronized in \code{\link{ht_opt}}.
 \examples{
 # There is no example
 NULL
+
 }

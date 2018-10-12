@@ -17,4 +17,5 @@ dend_heights(x)
 \examples{
 # There is no example
 NULL
+
 }

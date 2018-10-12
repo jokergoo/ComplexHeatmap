@@ -170,7 +170,7 @@ setMethod(f = "add_heatmap",
 #
 # == param
 # -object a `HeatmapList-class` object.
-# -newpage whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use `grid::grabExpr`.
+# -newpage whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use `grid::grid.grabExpr`.
 # -row_title title on the row.
 # -row_title_side will the title be put on the left or right of the heatmap.
 # -row_title_gp graphic parameters for drawing text.
@@ -190,7 +190,8 @@ setMethod(f = "add_heatmap",
 # -ht_gap same as ``gap``.
 # -main_heatmap index of main heatmap. The value can be a numeric index or the heatmap name
 # -padding padding of the whole plot. The value is a unit vector of length 4, which corresponds to bottom, left, top and right.
-# -adjust_annotation_name whether take annotation name into account when calculating positions of graphic elements.
+# -adjust_annotation_extension whether take annotation name into account when calculating positions of graphic elements.
+# -auto_adjust whether auto adjust
 # -row_dend_side side of the dendrogram from the main heatmap
 # -row_sub_title_side side of the row title from the main heatmap
 # -column_dend_side side of the dendrogram from the main heatmap
@@ -208,7 +209,8 @@ setMethod(f = "add_heatmap",
 # -split this modifies ``split`` of the main heatmap
 # -row_km this modifies ``row_km`` of the main heatmap
 # -row_split this modifies ``row_split`` of the main heatmap
-# -heatmap_body_height this modifies ``heatmap_body_height`` of the main heatmap
+# -height this modifies ``height`` of the main heatmap
+# -heatmap_height this modifies ``heatmap_height`` of the main heatmap
 # -column_gap this modifies ``column_gap`` of the main heatmap
 # -cluster_columns this modifies ``cluster_columns`` of the main heatmap
 # -clustering_distance_columns this modifies ``clustering_distance_columns`` of the main heatmap
@@ -220,7 +222,8 @@ setMethod(f = "add_heatmap",
 # -column_order this modifies ``column_order`` of the main heatmap
 # -column_km this modifies ``column_km`` of the main heatmap
 # -column_split this modifies ``column_split`` of the main heatmap
-# -heatmap_body_width this set the value in `ht_opt` and reset back after the plot is done
+# -width this modifies ``width`` of the main heatmap
+# -heatmap_width this modifies ``heatmap_width`` of the main heatmap
 # -heatmap_row_names_gp  this set the value in `ht_opt` and reset back after the plot is done
 # -heatmap_column_names_gp this set the value in `ht_opt` and reset back after the plot is done
 # -heatmap_row_title_gp this set the value in `ht_opt` and reset back after the plot is done

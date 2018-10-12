@@ -20,6 +20,7 @@
 # -ht_gap gap between heatmaps, should be a `grid::unit` object.
 # -main_heatmap name or index for the main heatmap
 # -padding padding of the plot
+# -auto_adjust whether autoadjust
 # -row_dend_side if auto adjust, where to put the row dendrograms for the main heatmap
 # -row_sub_title_side row sub title
 # -column_dend_side column dend
@@ -140,7 +141,7 @@ setMethod(f = "make_layout",
         grid::upViewport()
         object@layout$page_size = unit.c(convertWidth(unit(1, "npc"), "mm"),
                                          convertHeight(unit(1, "npc"), "mm"))
-        grid::downViewport()
+        grid::downViewport(current_vp)
 
     }
     object@ht_list_param$padding = padding
@@ -283,7 +284,7 @@ setMethod(f = "make_layout",
             if(row_dend_width[[1]] == 0) {
                 object@ht_list[[i_main]]@row_dend_param$width = unit(0, "mm")
             } else {
-                object@ht_list[[i_main]]@row_dend_param$width = row_dend_width + DENDROGRAM_PADDING  # append the gap
+                object@ht_list[[i_main]]@row_dend_param$width = row_dend_width + ht_opt$DENDROGRAM_PADDING  # append the gap
             }
         }
         if(!is.null(show_row_dend)) {
@@ -402,7 +403,7 @@ setMethod(f = "make_layout",
             if(column_dend_width[[1]] == 0) {
                 object@ht_list[[i_main]]@column_dend_param$width = unit(0, "mm")
             } else {
-                object@ht_list[[i_main]]@column_dend_param$width = column_dend_width + DENDROGRAM_PADDING  # append the gap
+                object@ht_list[[i_main]]@column_dend_param$width = column_dend_width + ht_opt$DENDROGRAM_PADDING  # append the gap
             }
         }
         if(!is.null(show_column_dend)) {
