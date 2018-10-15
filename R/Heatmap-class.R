@@ -267,7 +267,7 @@ Heatmap = function(matrix, col, name,
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
 
-    use_raster = nrow(matrix) > 2000 || ncol(matrix) > 2000, 
+    use_raster = (nrow(matrix) > 2000 && ncol(matrix) > 1) || (ncol(matrix) > 2000 && nrow(matrix) > 1), 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
     raster_device_param = list(),
@@ -762,6 +762,7 @@ Heatmap = function(matrix, col, name,
     .Object@heatmap_param$raster_device_param = raster_device_param
     .Object@heatmap_param$verbose = verbose
     .Object@heatmap_param$post_fun = post_fun
+    .Object@heatmap_param$calling_env = parent.frame()
 
     if(nrow(matrix) == 0) {
         .Object@matrix_param$height = unit(0, "mm")
@@ -1012,7 +1013,14 @@ make_cluster = function(object, which = c("row", "column")) {
                         } else if(grepl("@\\{.+\\}", title)) {
                             title = apply(unique(split), 1, function(x) {
                                 x = x
-                                GetoptLong::qq(title)
+                                envir = environment()
+                                title = get("title")
+                                op = parent.env(envir)
+                                calling_env = object@heatmap_param$calling_env
+                                parent.env(envir) = calling_env
+                                title = GetoptLong::qq(title, envir = envir)
+                                parent.env(envir) = op
+                                return(title)
                             })
                         } else if(grepl("\\{.+\\}", title)) {
                             if(!requireNamespace("glue")) {
@@ -1020,7 +1028,14 @@ make_cluster = function(object, which = c("row", "column")) {
                             }
                             title = apply(unique(split), 1, function(x) {
                                 x = x
-                                glue::glue(title)
+                                envir = environment()
+                                title = get("title")
+                                op = parent.env(envir)
+                                calling_env = object@heatmap_param$calling_env
+                                parent.env(envir) = calling_env
+                                title = glue::glue(title, envir = calling_env)
+                                parent.env(envir) = op
+                                return(title)
                             })
                         }
                     }
@@ -1275,7 +1290,14 @@ make_cluster = function(object, which = c("row", "column")) {
             } else if(grepl("@\\{.+\\}", title)) {
                 title = apply(unique(split), 1, function(x) {
                     x = x
-                    GetoptLong::qq(title)
+                    envir = environment()
+                    title = get("title")
+                    op = parent.env(envir)
+                    calling_env = object@heatmap_param$calling_env
+                    parent.env(envir) = calling_env
+                    title = GetoptLong::qq(title, envir = envir)
+                    parent.env(envir) = op
+                    return(title)
                 })
             } else if(grepl("\\{.+\\}", title)) {
                 if(!requireNamespace("glue")) {
@@ -1283,7 +1305,14 @@ make_cluster = function(object, which = c("row", "column")) {
                 }
                 title = apply(unique(split), 1, function(x) {
                     x = x
-                    glue::glue(title)
+                    envir = environment()
+                    title = get("title")
+                    op = parent.env(envir)
+                    calling_env = object@heatmap_param$calling_env
+                    parent.env(envir) = calling_env
+                    title = glue::glue(title, envir = calling_env)
+                    parent.env(envir) = op
+                    return(title)
                 })
             }
         }
