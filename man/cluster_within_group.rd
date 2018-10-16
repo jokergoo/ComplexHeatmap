@@ -18,7 +18,7 @@ cluster_within_group(mat, factor)
 \details{
 The clustering is firstly applied in each group, then clustering is applied
 to group means. The within-group dendrograms and between-group dendrogram
-are finally connected by \code{\link{merge.dendrogram}}.
+are finally connected by \code{\link{merge_dendrogram}}.
 
 In the final dendrogram, the within group dendrograms are enforced to be 
 flat lines to emphasize that the within group dendrograms have no sense to 

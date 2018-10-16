@@ -129,14 +129,23 @@ HeatmapAnnotation = function(...,
 	n_anno = 0
 
 	#### check system calls ####
+
+	# HeatmapAnnotation is either called by `HeatmapAnnotation()` or by `rowAnnotation()`/`columnAnnotation()`
 	sc = sys.calls()
-	for(i in seq_along(sc)) {
-		scl = as.list(sc[[i]])
+	nsc = length(sc)
+	if(nsc == 1) {
+		scl = as.list(sc[[1]])
+		arg_list = scl[-1]
+	} else {
+		scl = as.list(sc[[nsc-1]])
 		if(any(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation"))) {
 			arg_list = scl[-1]
-			break
+		} else {
+			scl = as.list(sc[[nsc]])
+			arg_list = scl[-1]
 		}
 	}
+
     called_args = names(arg_list)
     anno_args = setdiff(called_args, fun_args)
     if(any(anno_args == "")) stop("annotations should have names.")

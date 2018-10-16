@@ -1,5 +1,5 @@
-\name{merge.dendrogram}
-\alias{merge.dendrogram}
+\name{merge_dendrogram}
+\alias{merge_dendrogram}
 \title{
 Merge Dendrograms
 }
@@ -7,7 +7,7 @@ Merge Dendrograms
 Merge Dendrograms
 }
 \usage{
-\method{merge}{dendrogram}(x, y, only_parent = FALSE, ...)
+merge_dendrogram(x, y, only_parent = FALSE, ...)
 }
 \arguments{
 
@@ -28,10 +28,10 @@ dend1 = as.dendrogram(hclust(dist(m1)))
 dend2 = as.dendrogram(hclust(dist(m2)))
 dend3 = as.dendrogram(hclust(dist(m3)))
 dend_p = as.dendrogram(hclust(dist(rbind(colMeans(m1), colMeans(m2), colMeans(m3)))))
-dend_m = merge(dend_p, list(dend1, dend2, dend3))
+dend_m = merge_dendrogram(dend_p, list(dend1, dend2, dend3))
 grid.dendrogram(dend_m, test = TRUE)
 
-dend_m = merge(dend_p, list(dend1, dend2, dend3), only_parent = TRUE)
+dend_m = merge_dendrogram(dend_p, list(dend1, dend2, dend3), only_parent = TRUE)
 grid.dendrogram(dend_m, test = TRUE)
 
 require(dendextend)
@@ -39,6 +39,6 @@ dend1 = color_branches(dend1, k = 1, col = "red")
 dend2 = color_branches(dend2, k = 1, col = "blue")
 dend3 = color_branches(dend3, k = 1, col = "green")
 dend_p = color_branches(dend_p, k = 1, col = "orange")
-dend_m = merge(dend_p, list(dend1, dend2, dend3))
+dend_m = merge_dendrogram(dend_p, list(dend1, dend2, dend3))
 grid.dendrogram(dend_m, test = TRUE)
 }
