@@ -1016,7 +1016,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		baseline = max(x)
 	} else {
 		if(is.numeric(baseline)) {
-			if(baseline == 0 && all(rowSums(x) == 1)) {
+			if(baseline == 0 && all(abs(rowSums(x) - 1) < 1e-6)) {
 				data_scale = c(0, 1)
 			} else if(baseline <= min(x)) {
 				data_scale = c(baseline, extend*(data_scale[2] - baseline) + data_scale[2])
@@ -2074,7 +2074,7 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 # -n_slice Number of slices on y-axis.
 # -slice_size Height of the slice. If the value is not ``NULL``, ``n_slice`` will be recalculated. 
 # -negative_from_top Whether the areas for negative values start from the top or the bottom of the plotting region?
-# -normalize Whether normalize ``x`` to let data range of each observation in (0, 1)?
+# -normalize Whether normalize ``x`` by max(abs(x)).
 # -gap Gap size of neighbouring horizon chart.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.

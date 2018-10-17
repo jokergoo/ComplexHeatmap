@@ -649,7 +649,7 @@ setMethod(f = "show",
 	cat("  items:", ifelse(length(len), len[1], "unknown"), "\n")
 	cat("  width:", as.character(object@width), "\n")
 	cat("  height:", as.character(object@height), "\n")
-    cat("  this object is", ifelse(object@subsetable, "\b", "not"), "subsetable\n")
+    cat("  this object is", ifelse(object@subsetable, "", "not"), "subsetable\n")
     dirt = c("bottom", "left", "top", "right")
     for(i in 1:4) {
         if(!identical(unit(0, "mm"), object@extended[i])) {

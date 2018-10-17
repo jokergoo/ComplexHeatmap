@@ -47,11 +47,10 @@ oncoPrint = function(mat,
 	alter_fun_is_vectorized = NULL,
 	col, 
 
-	top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot(),
-		show_annotation_name = FALSE),
+	top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot()),
 	right_annotation = rowAnnotation(row_barplot = anno_oncoprint_barplot(
-			axis_param = list(side = "top", labels_rot = 0)),
-		show_annotation_name = FALSE),
+			axis_param = list(side = "top", labels_rot = 0))),
+	bottom_annotation = NULL,
 
 	show_pct = TRUE, 
 	pct_gp = gpar(fontsize = 10), 
@@ -70,10 +69,12 @@ oncoPrint = function(mat,
 	heatmap_legend_param = list(title = "Alterations"),
 	...) {
 
-	.in_oncoprint = TRUE
-
 	arg_list = list(...)
 	arg_names = names(arg_list)
+
+	oe = environment(anno_oncoprint_barplot)
+	environment(anno_oncoprint_barplot) = environment()
+	on.exit(environment(anno_oncoprint_barplot) <- oe)
 
 	# convert mat to mat_list
 	if(inherits(mat, "data.frame")) {
@@ -247,17 +248,16 @@ oncoPrint = function(mat,
 
 	col = col[intersect(names(col), all_type)]
 
-
 	count_matrix = apply(arr, c(1, 2), sum)
 	n_mut = rowSums(apply(arr, 1:2, any))
 
-	if(!"row_order" %in% arg_names) {
+	if(is.null(row_order)) {
 		row_order = oncoprint_row_order()
 	}
-	if(!"column_order" %in% arg_names) {
+	if(is.null(column_order)) {
 		column_order = oncoprint_column_order()
 	}
-	
+
 	if(is.null(row_order)) row_order = seq_len(nrow(count_matrix))
 	if(is.null(column_order)) column_order = seq_len(ncol(count_matrix))
 	if(is.character(column_order)) {
@@ -286,6 +286,12 @@ oncoPrint = function(mat,
 	pct = paste0(round(pct_num * 100, digits = pct_digits), "%")
 
 	### now the annotations
+	err = try(top_annotation <- eval(substitute(top_annotation)), silent = TRUE)
+	if(inherits(err, "try-error")) {
+		stop_wrap("find an error when executing top_annotation. ")
+	}
+	right_annotation = eval(substitute(right_annotation))
+
 	if("left_annotation" %in% arg_names) {
 		stop("'left_annotation' are not allowed to specify, you can add...")
 	}
@@ -297,7 +303,7 @@ oncoPrint = function(mat,
 	if(show_row_names) {
 		ha_row_names = rowAnnotation(rownames = anno_text(dimnames(arr)[[1]], gp = pct_gp, just = "left", location = unit(0, "npc")),
 			show_annotation_name = FALSE)
-		right_annotation = c(ha_row_names, right_annotation)
+		right_annotation = c(ha_row_names, right_annotation, gap = unit(2, "mm"))
 	}
 
 	#####################################################################
@@ -388,18 +394,17 @@ anno_oncoprint_barplot = function(type = all_type, which = c("column", "row"),
 	}
 
 	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
-
 	# get variables fron oncoPrint() function
-	pf = parent.frame()
-	if(!exists(".in_oncoprint", envir = pf, inherits = FALSE)) {
-		stop_wrap("`anno_oncoprint_barplot()` should only be used with `oncoPrint()`.")
-	}
-	arr = get("arr", envir = pf, inherits = FALSE)
-	all_type = get("all_type", envir = pf, inherits = FALSE)
-	col = get("col", envir = pf, inherits = FALSE)
+	pf = parent.env(environment())
+	arr = pf$arr
+	all_type = pf$all_type
+	col = pf$col
 
 	type = type
 	all_type = intersect(all_type, type)
+	if(length(all_type) == 0) {
+		stop_wrap("find no overlap, check your `type` argument.")
+	}
 	arr = arr[, , all_type, drop = FALSE]
 	col = col[all_type]
 
@@ -416,6 +421,7 @@ anno_oncoprint_barplot = function(type = all_type, which = c("column", "row"),
 	fun@show_name = FALSE
 	return(fun)
 }
+
 
 guess_alter_fun_is_vectorized = function(alter_fun) {
 	n = 50
