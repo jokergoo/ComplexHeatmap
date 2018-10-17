@@ -25,5 +25,4 @@ See help page of \code{\link{anno_link}}
 \examples{
 # There is no example
 NULL
-
 }

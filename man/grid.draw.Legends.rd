@@ -22,5 +22,4 @@ general method. It applies \code{\link[grid]{grid.draw}} on the \code{grob} slot
 \examples{
 # There is no example
 NULL
-
 }

@@ -1,6 +1,5 @@
 \name{draw_dimnames-Heatmap-method}
 \alias{draw_dimnames,Heatmap-method}
-\alias{draw_dimnames}
 \title{
 Draw row names or column names
 }
@@ -30,8 +29,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{draw_dimnames}
 \examples{
 # There is no example
 NULL
-
 }

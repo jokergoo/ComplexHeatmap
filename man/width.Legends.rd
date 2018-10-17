@@ -21,5 +21,4 @@ The returned unit x is always in \code{mm}.
 \examples{
 # There is no example
 NULL
-
 }

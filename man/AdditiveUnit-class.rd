@@ -15,5 +15,4 @@ method so that above three classes can be appended to each other.
 \examples{
 # There is no example
 NULL
-
 }

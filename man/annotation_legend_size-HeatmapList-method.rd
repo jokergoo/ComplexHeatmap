@@ -1,6 +1,5 @@
 \name{annotation_legend_size-HeatmapList-method}
 \alias{annotation_legend_size,HeatmapList-method}
-\alias{annotation_legend_size}
 \title{
 Size of the annotation legend viewport
 }
@@ -29,8 +28,8 @@ A \code{\link[grid]{unit}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{annotation_legend_size}
 \examples{
 # There is no example
 NULL
-
 }

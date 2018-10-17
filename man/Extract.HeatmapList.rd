@@ -23,5 +23,4 @@ If the heatmap list is horizontal, \code{i} is the real row indices and \code{j}
 \examples{
 # There is no example
 NULL
-
 }

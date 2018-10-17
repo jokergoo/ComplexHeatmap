@@ -1,5 +1,5 @@
-\name{list_component}
-\alias{list_component}
+\name{list_components}
+\alias{list_components}
 \title{
 List All Heatmap Components
 }
@@ -7,7 +7,7 @@ List All Heatmap Components
 List All Heatmap Components
 }
 \usage{
-list_component()
+list_components()
 }
 \value{
 A vector of viewport names.
@@ -15,5 +15,4 @@ A vector of viewport names.
 \examples{
 # There is no example
 NULL
-
 }

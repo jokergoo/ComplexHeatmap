@@ -289,7 +289,7 @@ rep.list = function(x, n) {
 # == value
 # A vector of viewport names.
 #
-list_component = function() {
+list_components = function() {
     vp = grid.ls(viewports = TRUE, grobs = FALSE, flatten = FALSE, print = FALSE)
     vp = unlist(vp)
     attributes(vp) = NULL

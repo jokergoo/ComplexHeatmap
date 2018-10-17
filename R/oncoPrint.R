@@ -405,13 +405,16 @@ anno_oncoprint_barplot = function(type = all_type, which = c("column", "row"),
 
 	if(which == "column") {
 		count = apply(arr, c(2, 3), sum)
-		anno_barplot(count, gp = gpar(fill = col, col = NA), which = "column",
+		fun = anno_barplot(count, gp = gpar(fill = col, col = NA), which = "column",
 			baseline = 0, height = anno_size$height, border = border, ...)
 	} else {
 		count = apply(arr, c(1, 3), sum)
-		anno_barplot(count, gp = gpar(fill = col, col = NA), which = "row",
+		fun = anno_barplot(count, gp = gpar(fill = col, col = NA), which = "row",
 			baseline = 0, width = anno_size$width, border = border, ...)
 	}
+	
+	fun@show_name = FALSE
+	return(fun)
 }
 
 guess_alter_fun_is_vectorized = function(alter_fun) {

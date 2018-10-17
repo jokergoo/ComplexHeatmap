@@ -18,5 +18,4 @@ Height of the SingleAnnotation object
 \examples{
 # There is no example
 NULL
-
 }
