@@ -653,10 +653,10 @@ grid.boxplot = function(value, pos, outline = TRUE, box_width = 0.6,
                       default.units = "native", gp = gp)
         if(outline) {   
             l1 = value > boxplot_stats[5, 1]
-            if(sum(l1)) grid.points(x = pos, y = value[l1], 
+            if(sum(l1)) grid.points(x = rep(pos, sum(l1)), y = value[l1], 
                 default.units = "native", gp = gp, pch = pch, size = size)
             l2 = value < boxplot_stats[1, 1]
-            if(sum(l2)) grid.points(x = pos, y = value[l2], 
+            if(sum(l2)) grid.points(x = rep(pos, sum(l2)), y = value[l2], 
                 default.units = "native", gp = gp, pch = pch, size = size) 
         }
     } else {
@@ -681,10 +681,10 @@ grid.boxplot = function(value, pos, outline = TRUE, box_width = 0.6,
                       default.units = "native", gp = gp)
         if(outline) {   
             l1 = value > boxplot_stats[5, 1]
-            if(sum(l1)) grid.points(y = pos, x = value[l1], 
+            if(sum(l1)) grid.points(y = rep(pos, sum(l1)), x = value[l1], 
                 default.units = "native", gp = gp, pch = pch, size = size)
             l2 = value < boxplot_stats[1, 1]
-            if(sum(l2)) grid.points(y = pos, x = value[l2], 
+            if(sum(l2)) grid.points(y = rep(pos, sum(l2)), x = value[l2], 
                 default.units = "native", gp = gp, pch = pch, size = size) 
         }
     }

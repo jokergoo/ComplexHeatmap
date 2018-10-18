@@ -2823,3 +2823,63 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 	return(anno)
 }
 
+# == title
+# Block annotation
+#
+# == param
+# -gp Graphic parameters
+# -labels
+# -labels_gp
+# -labels_rot
+# -which
+# -width
+# -height
+#
+anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot = ifelse(which == "row", 90, 0),
+	which = c("column", "row"), width = NULL, height = NULL) {
+
+	if(is.null(.ENV$current_annotation_which)) {
+		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
+	}
+	if(length(labels)) {
+		if(which == "column") {
+			height = grobHeight(textGrob(labels, rot = labels_rot, gp = labels_gp))
+			height = convertHeight(height, "mm") + unit(5, "mm")
+		} else {
+			width = grobWidth(textGrob(labels, rot = labels_rot, gp = labels_gp))
+			width = convertWidth(width, "mm") + unit(5, "mm")
+		}
+	}
+
+	anno_size = anno_width_and_height(which, width, height, unit(5, "mm"))
+	
+	fun = function(index, k, n) {
+		gp = subset_gp(recycle_gp(gp, n), k)
+		
+		grid.rect(gp = gp)
+		if(length(labels)) {
+			if(length(labels) != n) {
+				stop_wrap("Length of `labels` should be as same as number of slices.")
+			}
+			label = labels[k]
+			labels_gp = subset_gp(recycle_gp(labels_gp, n), k)
+			grid.text(label, gp = labels_gp, rot = labels_rot)
+		}
+	}
+
+	anno = AnnotationFunction(
+		fun = fun,
+		n = NA,
+		fun_name = "anno_block",
+		which = which,
+		var_import = list(gp, labels, labels_gp, labels_rot),
+		subset_rule = list(),
+		subsetable = TRUE,
+		height = anno_size$height,
+		width = anno_size$width,
+		show_name = FALSE
+	)
+	return(anno) 
+}

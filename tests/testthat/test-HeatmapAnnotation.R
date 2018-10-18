@@ -84,3 +84,10 @@ ha = HeatmapAnnotation(summary = anno_summary(gp = gpar(fill = 2:3), height = un
 v = rnorm(50)
 Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
 
+
+
+### auto adjust
+m = matrix(rnorm(100), 10)
+Heatmap(m, top_annotation = HeatmapAnnotation(foo = 1:10), column_dend_height = unit(4, "cm")) +
+Heatmap(m, top_annotation = HeatmapAnnotation(bar = anno_points(1:10)),
+	cluster_columns = FALSE)

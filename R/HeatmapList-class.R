@@ -479,27 +479,29 @@ setMethod(f = "draw",
         heatmap_width = heatmap_width
     )
 
-    layout = grid.layout(nrow = length(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT), 
-        ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), 
-        widths = component_width(object), 
-        heights = component_height(object))
     ht_list_width = sum(component_width(object)) + padding[2] + padding[4]
     ht_list_height = sum(component_height(object)) + padding[1] + padding[3]
 
     if(is_abs_unit(ht_list_width)) {
-        ht_list_width = unit(round(convertWidth(ht_list_width, "mm", valueOnly = TRUE)), "mm")
+        ht_list_width = unit(ceiling(convertWidth(ht_list_width, "mm", valueOnly = TRUE)), "mm")
         qqcat("Since all heatmaps/annotations have absolute units, the total width of the plot is @{ht_list_width}\n")
         w = ht_list_width
     } else {
         w = unit(1, "npc")
     }
     if(is_abs_unit(ht_list_height)) {
-        ht_list_height = unit(round(convertHeight(ht_list_height, "mm", valueOnly = TRUE)), "mm")
+        ht_list_height = unit(ceiling(convertHeight(ht_list_height, "mm", valueOnly = TRUE)), "mm")
         qqcat("Since all heatmaps/annotations have absolute units, the total height of the plot is @{ht_list_height}\n")
         h = ht_list_height
     } else {
         h = unit(1, "npc")
     }
+
+    layout = grid.layout(nrow = length(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT), 
+        ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), 
+        widths = component_width(object), 
+        heights = component_height(object))
+    
 
     pushViewport(viewport(name = "global", width = w, height = h))
     pushViewport(viewport(layout = layout, name = "global_layout", x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],

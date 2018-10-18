@@ -260,3 +260,18 @@ Heatmap(m) + rowAnnotation(mark = anno)
 
 ht_list = Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark = anno)
 draw(ht_list, row_split = c(rep("a", 95), rep("b", 5)))
+
+
+### anno_block
+
+anno = anno_block(gp = gpar(fill = 1:4))
+draw(anno, index = 1:10, k = 1, n = 4, test = "anno_block")
+draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
+
+anno = anno_block(gp = gpar(fill = 1:4), labels = letters[1:4], labels_gp = gpar(col = "white"))
+draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
+draw(anno, index = 1:10, k = 4, n = 4, test = "anno_block")
+draw(anno, index = 1:10, k = 2, n = 2, test = "anno_block")
+
+anno = anno_block(gp = gpar(fill = 1:4), labels = letters[1:4], labels_gp = gpar(col = "white"), which = "row")
+draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
