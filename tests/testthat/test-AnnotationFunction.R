@@ -115,6 +115,10 @@ draw(anno, test = "anno_points")
 anno = anno_points(cbind(c(1:5, 1:5), c(5:1, 5:1)), gp = gpar(col = 2:3))
 draw(anno, test = "matrix")
 
+anno = anno_points(1:10, gp = gpar(col = rep(2:3, each = 5)), pch = rep(2:3, each = 5))
+draw(anno, test = "anno_points")
+draw(anno, index = c(1, 3, 5, 7, 9, 2, 4, 6, 8, 10), test = "anno_points")
+
 ##### test anno_lines ###
 anno = anno_lines(runif(10))
 draw(anno, test = "anno_lines")
@@ -260,3 +264,85 @@ Heatmap(m) + rowAnnotation(mark = anno)
 
 ht_list = Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark = anno)
 draw(ht_list, row_split = c(rep("a", 95), rep("b", 5)))
+
+
+### graphic parameters after reordering
+index = c(1, 3, 5, 7, 9, 2, 4, 6, 8, 10)
+anno = anno_simple(1:10, pch = 1:10, pt_gp = gpar(col = rep(c(1, 2), each = 5)),
+	pt_size = unit(1:10, "mm"))
+draw(anno, index, test = "a numeric vector")
+anno = anno_simple(1:10, pch = 1:10, pt_gp = gpar(col = rep(c(1, 2), each = 5)),
+	pt_size = unit(1:10, "mm"), which = "row")
+draw(anno, index, test = "a numeric vector")
+
+
+anno = anno_points(1:10, pch = 1:10, gp = gpar(col = rep(c(1, 2), each = 5)),
+	size = unit(1:10, "mm"))
+draw(anno, index, test = "a numeric vector")
+anno = anno_points(1:10, pch = 1:10, gp = gpar(col = rep(c(1, 2), each = 5)),
+	size = unit(1:10, "mm"), which = "row")
+draw(anno, index, test = "a numeric vector")
+
+
+anno = anno_lines(sort(runif(10)), pch = 1:10, pt_gp = gpar(col = rep(c(1, 2), each = 5)),
+	size = unit(1:10, "mm"), add_points = TRUE)
+draw(anno, index, test = "a numeric vector")
+anno = anno_lines(sort(runif(10)), pch = 1:10, pt_gp = gpar(col = rep(c(1, 2), each = 5)),
+	size = unit(1:10, "mm"), add_points = TRUE, which = "row")
+draw(anno, index, test = "a numeric vector")
+
+
+anno = anno_barplot(1:10, gp = gpar(fill = rep(c(1, 2), each = 5)))
+draw(anno, index, test = "a numeric vector")
+anno = anno_barplot(1:10, gp = gpar(fill = rep(c(1, 2), each = 5)), which = "row")
+draw(anno, index, test = "a numeric vector")
+
+anno = anno_barplot(cbind(1:10, 10:1), gp = gpar(fill = 1:2))
+draw(anno, index, test = "a numeric vector")
+anno = anno_barplot(cbind(1:10, 10:1), gp = gpar(fill = 1:2), which = "row")
+draw(anno, index, test = "a numeric vector")
+
+
+m = matrix(rnorm(100), 10)
+m = m[, order(apply(m, 2, median))]
+anno = anno_boxplot(m, pch = 1:10, gp = gpar(fill = rep(c(1, 2), each = 5)),
+	size = unit(1:10, "mm"), height = unit(4, "cm"))
+draw(anno, index, test = "a numeric vector")
+anno = anno_boxplot(t(m), pch = 1:10, gp = gpar(fill = rep(c(1, 2), each = 5)),
+	size = unit(1:10, "mm"), which = "row", width = unit(4, "cm"))
+draw(anno, index, test = "a numeric vector")
+
+anno = anno_histogram(m, gp = gpar(fill = rep(c(1, 2), each = 5)))
+draw(anno, index, test = "a numeric vector")
+anno = anno_histogram(t(m), gp = gpar(fill = rep(c(1, 2), each = 5)), which = "row")
+draw(anno, index, test = "a numeric vector")
+
+anno = anno_density(m, gp = gpar(fill = rep(c(1, 2), each = 5)))
+draw(anno, index, test = "a numeric vector")
+anno = anno_density(t(m), gp = gpar(fill = rep(c(1, 2), each = 5)), which = "row")
+draw(anno, index, test = "a numeric vector")
+
+
+anno = anno_density(m, type = "violin", gp = gpar(fill = rep(c(1, 2), each = 5)))
+draw(anno, index, test = "a numeric vector")
+anno = anno_density(t(m), type = "violin", gp = gpar(fill = rep(c(1, 2), each = 5)), which = "row")
+draw(anno, index, test = "a numeric vector")
+
+
+anno = anno_text(month.name, gp = gpar(col = rep(c(1, 2), each = 5)))
+draw(anno, index, test = "a numeric vector")
+anno = anno_text(month.name, gp = gpar(col = rep(c(1, 2), each = 5)), which= "row")
+draw(anno, index, test = "a numeric vector")
+
+lt = lapply(1:10, function(x) cumprod(1 + runif(1000, -x/100, x/100)) - 1)
+anno = anno_horizon(lt, gp = gpar(pos_fill = rep(c(1, 2), each = 5), neg_fill = rep(c(3, 4), each = 5)), which = "row")
+draw(anno, index, test = "a numeric vector")
+
+m = matrix(rnorm(1000), nc = 10)
+lt = apply(m, 2, function(x) data.frame(density(x)[c("x", "y")]))
+anno = anno_joyplot(lt, gp = gpar(fill = rep(c(1, 2), each = 5)), 
+	width = unit(4, "cm"), which = "row")
+draw(anno, index, test = "joyplot")
+
+
+

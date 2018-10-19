@@ -215,13 +215,16 @@ anno_simple = function(x, col, na_col = "grey",
                 if(!is.null(pch)) {
 					l = !is.na(pch[, i])
 					grid.points(x = rep((i-0.5)/nc, sum(l)), y = y[l], pch = pch[l, i], 
-						size = pt_size, gp = pt_gp)
+						size = pt_size[i], gp = subset_gp(pt_gp, i))
 				}
             }
         } else {
 			fill = map_to_colors(color_mapping, value[index])
 			grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
 			if(!is.null(pch)) {
+				pch = pch[index]
+				pt_size = pt_size[index]
+				pt_gp = subset_gp(pt_gp, index)
 				l = !is.na(pch)
 				grid.points(x = rep(0.5, sum(l)), y = y[l], pch = pch[l], size = pt_size[l], 
 					gp = subset_gp(pt_gp, which(l)))
@@ -242,7 +245,8 @@ anno_simple = function(x, col, na_col = "grey",
                 if(!is.null(pch)) {
                 	pch = pch[index, , drop = FALSE]
 					l = !is.na(pch[, i])
-					grid.points(x[l], y = rep((nc-i +0.5)/nc, sum(l)), pch = pch[l, i], size = pt_size, gp = pt_gp)
+					grid.points(x[l], y = rep((nc-i +0.5)/nc, sum(l)), pch = pch[l, i], 
+						size = pt_size[i], gp = subset_gp(pt_gp, i))
 				}
             }
         } else {
@@ -250,8 +254,11 @@ anno_simple = function(x, col, na_col = "grey",
 			grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
 			if(!is.null(pch)) {
 				pch = pch[index]
+				pt_size = pt_size[index]
+				pt_gp = subset_gp(pt_gp, index)
 				l = !is.na(pch)
-				grid.points(x[l], y = rep(0.5, sum(l)), pch = pch[l], size = pt_size[l], gp = subset_gp(pt_gp, which(l)))
+				grid.points(x[l], y = rep(0.5, sum(l)), pch = pch[l], size = pt_size[l], 
+					gp = subset_gp(pt_gp, which(l)))
 			}
         }
         if(border) grid.rect(gp = gpar(fill = "transparent"))
@@ -644,6 +651,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
+		
 		n = length(index)
 
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
@@ -653,7 +661,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 					default.units = "native", pch = pch[i], size = size[i])
 			}
 		} else {
-			grid.points(value[index], n - seq_along(index) + 1, gp = gp, default.units = "native", 
+			grid.points(value[index], n - seq_along(index) + 1, gp = subset_gp(gp, index), default.units = "native", 
 				pch = pch[index], size = size[index])
 		}
 		if(axis_param$side == "top") {
@@ -667,6 +675,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 	}
 
 	column_fun = function(index, k = 1, N = 1) {
+		
 		n = length(index)
 		
 		pushViewport(viewport(yscale = data_scale, xscale = c(0.5, n+0.5)))
@@ -675,7 +684,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 				grid.points(seq_along(index), value[index, i], gp = subset_gp(gp, i), default.units = "native", pch = pch[i], size = size[i])
 			}
 		} else {
-			grid.points(seq_along(index), value[index], gp = gp, default.units = "native", pch = pch[index], size = size[index])
+			grid.points(seq_along(index), value[index], gp = subset_gp(gp, index), default.units = "native", pch = pch[index], size = size[index])
 		}
 		if(axis_param$side == "left") {
 			if(k > 1) axis = FALSE
@@ -857,7 +866,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 				grid.lines(y, x, gp = gp, default.units = "native")
 			}
 			if(add_points) {
-				grid.points(y, x, gp = gp, default.units = "native", 
+				grid.points(y, x, gp = subset_gp(pt_gp, index), default.units = "native", 
 					pch = pch[index], size = size[index])
 			}
 		}
@@ -904,7 +913,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 				grid.lines(x, y, gp = gp, default.units = "native")
 			}
 			if(add_points) {
-				grid.points(seq_along(index), value[index], gp = pt_gp, default.units = "native", 
+				grid.points(seq_along(index), value[index], gp = subset_gp(pt_gp, index), default.units = "native", 
 					pch = pch[index], size = size[index])
 			}
 		}
@@ -1207,6 +1216,8 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		
 		n = length(index)
 		gp = subset_gp(gp, index)
+		pch = pch[index]
+		size = size[index]
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 		
 		grid.rect(x = boxplot_stats[2, ], y = n - seq_along(index) + 1,  
@@ -1253,6 +1264,8 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 		n = length(index)
 		gp = subset_gp(gp, index)
+		pch = pch[index]
+		size = size[index]
 		pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
 		grid.rect(x = seq_along(index), y = boxplot_stats[2, ], 
 			height = boxplot_stats[4, ] - boxplot_stats[2, ], width = 1*box_width, just = "bottom", 
@@ -1432,7 +1445,7 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 			pushViewport(viewport(y = unit(0, "npc"), x = unit(i/n, "npc"), width = unit(1/n, "npc"), 
 				just = c("right", "bottom"), xscale = xscale, yscale = yscale))
 			grid.rect(y = histogram_breaks[[i]][-1], x = 0, height = histogram_breaks[[i]][-1] - histogram_breaks[[i]][-n_breaks], 
-				width = histogram_counts[[i]], just = c("left", "top"), default.units = "native", gp = subset_gp(gp, index[i]))	
+				width = histogram_counts[[i]], just = c("left", "top"), default.units = "native", gp = subset_gp(gp, i))	
 			popViewport()
 		}
 		pushViewport(viewport(yscale = yscale))
@@ -1658,11 +1671,11 @@ anno_density = function(x, which = c("column", "row"),
 				just = c("right", "bottom"), xscale = xscale, yscale = yscale))
 			if(type == "lines") {
 				grid.polygon(y = density_x[[i]], x = density_y[[i]]*joyplot_scale, 
-					default.units = "native", gp = subset_gp(gp, index[i]))
+					default.units = "native", gp = subset_gp(gp, i))
 			} else if(type == "violin") {
 				grid.polygon(y = c(density_x[[i]], rev(density_x[[i]])), 
 					x = c(density_y[[i]], -rev(density_y[[i]])), default.units = "native", 
-					gp = subset_gp(gp, index[i]))
+					gp = subset_gp(gp, i))
 				box_stat = boxplot(value[[i]], plot = FALSE)$stat
 				grid.lines(y = box_stat[1:2, 1], x = c(0, 0), default.units = "native", 
 					gp = subset_gp(gp, i))
@@ -2007,7 +2020,7 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 		
 		n = length(index)
 		
-		gp = subset(gp, index)
+		gp = subset_gp(gp, index)
 
 		for(i in seq_len(n)) {
 			pushViewport(viewport(y = unit(0, "npc"), x = unit(i/n, "npc"), 
@@ -2155,7 +2168,7 @@ anno_horizon = function(x, which = c("column", "row"),
 	}
 
 	if(which == "column") {
-		stop_wrap("anno_horizon() does not support column annotation. If you want, please email me.")
+		stop_wrap("anno_horizon() does not support column annotation.")
 	}
 
 	if(normalize) {
