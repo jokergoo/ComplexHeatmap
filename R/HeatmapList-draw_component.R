@@ -435,6 +435,28 @@ setMethod(f = "adjust_heatmap_list",
     }
 
 
+    adjust_annotation_extension = object@ht_list_param$adjust_annotation_extension
+
+    # the padding of the heatmap list should be recorded because if the total wdith of e.g. heatmap body
+    # is a fixed value, the width should added by the padding
+    padding = unit(c(0, 0, 0, 0), "mm")
+    if(adjust_annotation_extension) {
+        if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
+            padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height
+        }
+        if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]]) {
+            padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width + GLOBAL_PADDING[2]
+        }
+            
+        if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]]) {
+            padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height + GLOBAL_PADDING[3]
+        }
+        if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
+            padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
+        }
+    }
+    object@layout$heatmap_list_padding = padding
+
     return(object)
 })
 
@@ -463,22 +485,7 @@ setMethod(f = "draw_heatmap_list",
     ht_gap = object@ht_list_param$ht_gap
     adjust_annotation_extension = object@ht_list_param$adjust_annotation_extension
 
-    padding = unit(c(0, 0, 0, 0), "mm")
-    if(adjust_annotation_extension) {
-        if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
-            padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height
-        }
-        if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]]) {
-            padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width + GLOBAL_PADDING[2]
-        }
-            
-        if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]]) {
-            padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height + GLOBAL_PADDING[3]
-        }
-        if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
-            padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
-        }
-    }
+    padding = object@layout$heatmap_list_padding
 
     pushViewport(viewport(x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
         height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
@@ -523,7 +530,7 @@ setMethod(f = "draw_heatmap_list",
             } else {
                 x = unit(0, "npc")
             }
-            
+
             pushViewport(viewport(x = x, y = unit(0, "npc"), width = heatmap_width[i], just = c("left", "bottom"), name = paste0("heatmap_", object@ht_list[[i]]@name)))
             if(inherits(ht, "Heatmap")) {
                 draw(ht, internal = TRUE)

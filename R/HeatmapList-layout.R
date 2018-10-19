@@ -1068,7 +1068,7 @@ setMethod(f = "component_width",
                     }
                 })))
             if(is_abs_unit(width)) {
-                width + sum(object@ht_list_param$ht_gap) - object@ht_list_param$ht_gap[length(object@ht_list_param$ht_gap)]
+                width + sum(object@ht_list_param$ht_gap) - object@ht_list_param$ht_gap[length(object@ht_list_param$ht_gap)] + object@layout$heatmap_list_padding[2] + object@layout$heatmap_list_padding[4]
             } else {
                 unit(1, "null") 
             }
@@ -1095,7 +1095,7 @@ setMethod(f = "component_width",
                 if(convertWidth(width, "mm", valueOnly = TRUE) == 0) {
                     unit(1, "null")
                 } else {
-                    width
+                    width + object@layout$heatmap_list_padding[2] + object@layout$heatmap_list_padding[4]
                 }
             } else {
                 unit(1, "null") 
@@ -1146,7 +1146,7 @@ setMethod(f = "component_height",
                     }
                 })))
             if(is_abs_unit(height)) {
-                height + sum(object@ht_list_param$ht_gap) - object@ht_list_param$ht_gap[length(object@ht_list_param$ht_gap)]
+                height + sum(object@ht_list_param$ht_gap) - object@ht_list_param$ht_gap[length(object@ht_list_param$ht_gap)] + object@layout$heatmap_list_padding[1] + object@layout$heatmap_list_padding[3]
             } else {
                 unit(1, "null") 
             }
@@ -1171,7 +1171,7 @@ setMethod(f = "component_height",
                 if(convertWidth(height, "mm", valueOnly = TRUE) == 0) {
                     unit(1, "null")
                 } else {
-                    height
+                    height + object@layout$heatmap_list_padding[1] + object@layout$heatmap_list_padding[3]
                 }
             } else {
                 unit(1, "null") 

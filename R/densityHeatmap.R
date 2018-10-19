@@ -77,21 +77,37 @@ densityHeatmap = function(data,
 	column_names_rot = 90,
 
 	cluster_columns = FALSE,
+	clustering_distance_columns = "ks",
+	clustering_method_columns = "complete",
+
 	...) {
+
+	arg_list = list(...)
+	if(length(arg_list)) {
+		if(any(c("row_km", "row_split", "split", "km") %in% names(arg_list))) {
+			stop_wrap("density heatmaps do not allow row splitting.")
+		}
+		if(grepl("row", names(arg_list))) {
+			stop_wrap("density heatmaps do not allow to set rows.")
+		}
+	}
+
+	ylab = ylab
+	column_title = column_title
 
 	density_param$na.rm = TRUE
 
-	if(is.matrix(data)) {
-		density_list = apply(data, 2, function(x) do.call(density, c(list(x = x), density_param)))
-		quantile_list = apply(data, 2, quantile, na.rm = TRUE)
-		mean_value = apply(data, 2, mean, na.rm = TRUE)
-	} else if(is.data.frame(data) || is.list(data)) {
-		density_list = lapply(data, function(x) do.call(density, c(list(x = x), density_param)))
-		quantile_list = sapply(data, quantile, na.rm = TRUE)
-		mean_value = sapply(data, mean, na.rm = TRUE)
-	} else {
+	if(!is.matrix(data) && !is.data.frame(matrix) && !is.list(matrix)) {
 		stop("only matrix and list are allowed.")
 	}
+	if(is.matrix(data)) {
+		data2 = as.list(as.data.frame(data))
+		names(data2) = colnames(data)
+		data = data2
+	}
+	density_list = lapply(data, function(x) do.call(density, c(list(x = x), density_param)))
+	quantile_list = sapply(data, quantile, na.rm = TRUE)
+	mean_value = sapply(data, mean, na.rm = TRUE)
 
 	n = length(density_list)
 	nm = names(density_list)
@@ -113,6 +129,25 @@ densityHeatmap = function(data,
 	mat = as.matrix(as.data.frame(mat))
 	colnames(mat) = nm
 
+	if(cluster_columns) {
+		if(clustering_distance_columns == "ks") {
+			nc = length(data)
+		    d = matrix(NA, nrow = nc, ncol = nc)
+		    rownames(d) = colnames(d) = rownames(d)
+
+		    for(i in 2:nc) {
+		        for(j in 1:(nc-1)) {
+		            suppressWarnings(d[i, j] <- ks.test(data[[i]], data[[j]])$stat)
+		        }
+		    }
+
+		    d = as.dist(d)
+
+			hc = hclust(d, clustering_method_columns)
+			cluster_columns = hc
+		}
+	}
+
 	col = colorRamp2(seq(0, max(mat, na.rm = TRUE), length = length(col)), col, space = color_space)
 
 	bb = grid.pretty(c(min_x, max_x))
@@ -121,6 +156,8 @@ densityHeatmap = function(data,
 		column_title_gp = title_gp,
 		cluster_rows = FALSE, 
 		cluster_columns = cluster_columns,
+		clustering_distance_columns = clustering_distance_columns,
+		clustering_method_columns = clustering_method_columns,
 		column_names_side = column_names_side,
 		show_column_names = show_column_names,
 		column_names_max_height = column_names_max_height,
@@ -143,26 +180,40 @@ densityHeatmap = function(data,
 
 	post_fun = function(ht) {
 		column_order = column_order(ht)
+		if(!is.list(column_order)) {
+			column_order = list(column_order)
+		}
+		n_slice = length(column_order)
 
 		decorate_annotation(paste0("axis_", random_str), {
 			grid.text(ylab, x = grobHeight(textGrob(ylab, gp = ylab_gp)), rot = 90)
-		})
+		}, slice = 1)
+
+		for(i_slice in 1:n_slice) {
+			decorate_heatmap_body(paste0("density_", random_str), {
+				n = length(column_order[[i_slice]])
+				pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = TRUE))
+				for(i in seq_len(5)) {
+					grid.lines(1:n, quantile_list[i, column_order[[i_slice]] ], default.units = "native", gp = gpar(lty = 2))
+				}
+				grid.lines(1:n, mean_value[ column_order[[i_slice]] ], default.units = "native", gp = gpar(lty = 2, col = "darkred"))
+				upViewport()
+			}, column_slice = i_slice)
+		}
 
 		decorate_heatmap_body(paste0("density_", random_str), {
-			pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = TRUE))
-			for(i in seq_len(5)) {
-				grid.lines(1:n, quantile_list[i, column_order], default.units = "native", gp = gpar(lty = 2))
-			}
-			grid.lines(1:n, mean_value[column_order], default.units = "native", gp = gpar(lty = 2, col = "darkred"))
-			upViewport()
-		})
-		decorate_heatmap_body(paste0("density_", random_str), {
-			pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = FALSE))
+			pushViewport(viewport(yscale = c(min_x, max_x), clip = FALSE))
 			grid.rect(gp = gpar(fill = NA))
 			grid.yaxis(gp = tick_label_gp)
+			upViewport()
+		}, column_slice = 1)
+
+		decorate_heatmap_body(paste0("density_", random_str), {
+			n = length(column_order[[n_slice]])
+			pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = FALSE))
 
 			labels = c(rownames(quantile_list), "mean")
-			y = c(quantile_list[, column_order[n]], mean_value[column_order[n]])
+			y = c(quantile_list[, column_order[[n_slice]][n] ], mean_value[ column_order[[n_slice]][n] ])
 			od = order(y)
 			y = y[od]
 			labels = labels[od]
@@ -180,7 +231,7 @@ densityHeatmap = function(data,
 	        grid.segments(unit(1, "npc") + rep(link_width * (2/3), n2), h, unit(1, "npc") + rep(link_width, n2), h, default.units = "native")
 
 			upViewport()
-		})
+		}, column_slice = n_slice)
 	}
 
 	ht@heatmap_param$post_fun = post_fun

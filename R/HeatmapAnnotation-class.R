@@ -150,7 +150,7 @@ HeatmapAnnotation = function(...,
     anno_args = setdiff(called_args, fun_args)
     if(any(anno_args == "")) stop("annotations should have names.")
     if(is.null(called_args)) {
-    	stop_wrap("It seems you are putting only one argument to the function. If it is a simple vector annotation, specify it as HeatmapAnnotation(name = value). If it is a data frame annotation, specify it as HeatmapAnnotation(df = value)")
+    	stop_wrap("It seems you are putting only one argument to the function. If it is a simple vector annotation or a function annotation (e.g. anno_*()), specify it as HeatmapAnnotation(name = value). If it is a data frame annotation, specify it as HeatmapAnnotation(df = value)")
     }
 
     ##### pull all annotation to `anno_value_list`####

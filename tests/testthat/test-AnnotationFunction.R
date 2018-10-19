@@ -266,6 +266,7 @@ ht_list = Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark
 draw(ht_list, row_split = c(rep("a", 95), rep("b", 5)))
 
 
+<<<<<<< HEAD
 ### graphic parameters after reordering
 index = c(1, 3, 5, 7, 9, 2, 4, 6, 8, 10)
 anno = anno_simple(1:10, pch = 1:10, pt_gp = gpar(col = rep(c(1, 2), each = 5)),
@@ -345,4 +346,15 @@ anno = anno_joyplot(lt, gp = gpar(fill = rep(c(1, 2), each = 5)),
 draw(anno, index, test = "joyplot")
 
 
+anno = anno_block(gp = gpar(fill = 1:4))
+draw(anno, index = 1:10, k = 1, n = 4, test = "anno_block")
+draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
+
+anno = anno_block(gp = gpar(fill = 1:4), labels = letters[1:4], labels_gp = gpar(col = "white"))
+draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
+draw(anno, index = 1:10, k = 4, n = 4, test = "anno_block")
+draw(anno, index = 1:10, k = 2, n = 2, test = "anno_block")
+
+anno = anno_block(gp = gpar(fill = 1:4), labels = letters[1:4], labels_gp = gpar(col = "white"), which = "row")
+draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
 
