@@ -121,4 +121,5 @@ ComplexHeatmap Complete Reference ().
 \examples{
 # There is no example
 NULL
+
 }

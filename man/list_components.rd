@@ -15,4 +15,5 @@ A vector of viewport names.
 \examples{
 # There is no example
 NULL
+
 }

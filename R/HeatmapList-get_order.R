@@ -361,9 +361,9 @@ setMethod(f = "column_dend",
 
 
 
-proper_format_lt = function(lt) {
+proper_format_lt = function(lt) {	
 	n_ht = length(lt)
-	# for a single heatmap 
+	
 	if(n_ht == 1) {
 		if(length(lt[[1]]) == 1) {
 			return(lt[[1]][[1]])
@@ -371,7 +371,13 @@ proper_format_lt = function(lt) {
 			return(lt[[1]])
 		}
 	} else {
-		has_splitting = any(sapply(lt, function(x) length(x) != 1))
+		l_empty = sapply(lt, function(x) length(x) == 0)
+		lt = lt[!l_empty]
+		if(length(lt) == 0) {
+			return(NULL)
+		}
+	
+		has_splitting = any(sapply(lt, function(x) length(x) > 1))
 		if(has_splitting) {
 			return(lt)
 		} else {

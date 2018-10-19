@@ -104,6 +104,9 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	title = "", title_gp = gpar(fontsize = 10, fontface = "bold"),
 	title_position = c("topleft", "topcenter", "leftcenter", "lefttop", "leftcenter-rot", "lefttop-rot")) {
 
+	dev.null()
+	on.exit(dev.off2())
+
 	if(missing(at) && !missing(labels)) {
 		at = seq_along(labels)
 	}
@@ -757,6 +760,9 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 packLegend = function(...,gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2, "mm"),
 	direction = c("vertical", "horizontal"),
 	max_width = NULL, max_height = NULL, list = NULL) {
+
+	dev.null()
+	on.exit(dev.off2())
 
 	if(!is.null(list)) {
 		legend_list = list

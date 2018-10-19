@@ -36,4 +36,5 @@ You can refer to the ComplexHeatmap Complete Reference for all the information o
 \examples{
 # There is no example
 NULL
+
 }

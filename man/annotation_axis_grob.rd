@@ -26,4 +26,5 @@ A \code{\link[grid]{grob}} object.
 \examples{
 # There is no example
 NULL
+
 }

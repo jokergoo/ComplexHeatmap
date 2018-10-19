@@ -18,4 +18,5 @@ subset_matrix_by_row(x, i)
 \examples{
 # There is no example
 NULL
+
 }

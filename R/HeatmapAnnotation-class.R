@@ -107,6 +107,9 @@ HeatmapAnnotation = function(...,
 	simple_anno_size_adjust = FALSE
 	) {
 
+	dev.null()
+	on.exit(dev.off2())
+
 	.ENV$current_annotation_which = NULL
 	which = match.arg(which)[1]
 	.ENV$current_annotation_which = which
@@ -271,7 +274,7 @@ HeatmapAnnotation = function(...,
     len = len[len > 0]
     if(length(len)) {
 	    if(length(unique(len)) > 1) {
-	    	stop_wrap("Length of annotations differs.")
+	    	stop_wrap(paste0("Length of annotations differs. ", paste(qq("@{names(len)}: @{len}", collapse = FALSE), collapse = ", ")))
 	    }
 	}
 

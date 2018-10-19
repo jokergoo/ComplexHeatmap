@@ -1,5 +1,6 @@
 \name{adjust_heatmap_list-HeatmapList-method}
 \alias{adjust_heatmap_list,HeatmapList-method}
+\alias{adjust_heatmap_list}
 \title{
 Adjust heatmap list
 }
@@ -22,8 +23,8 @@ This function is only for internal use.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\alias{adjust_heatmap_list}
 \examples{
 # There is no example
 NULL
+
 }

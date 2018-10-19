@@ -22,7 +22,7 @@ anno_horizon(x, which = c("column", "row"),
   \item{n_slice}{Number of slices on y-axis.}
   \item{slice_size}{Height of the slice. If the value is not \code{NULL}, \code{n_slice} will be recalculated. }
   \item{negative_from_top}{Whether the areas for negative values start from the top or the bottom of the plotting region?}
-  \item{normalize}{Whether normalize \code{x} to let data range of each observation in (0, 1)?}
+  \item{normalize}{Whether normalize \code{x} by max(abs(x)).}
   \item{gap}{Gap size of neighbouring horizon chart.}
   \item{axis}{Whether to add axis?}
   \item{axis_param}{parameters for controlling axis. See \code{\link{default_axis_param}} for all possible settings and default parameters.}

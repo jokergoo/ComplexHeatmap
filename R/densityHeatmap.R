@@ -23,6 +23,8 @@
 # -column_names_gp Pass to `Heatmap`.
 # -column_names_rot Pass to `Heatmap`.
 # -cluster_columns Whether cluster columns (here clustered by density values)? Normally we don't cluster columns.
+# - clustering_distance_columns
+# -clustering_method_columns
 # -... pass to `Heatmap`.
 #
 # == details
@@ -97,7 +99,7 @@ densityHeatmap = function(data,
 
 	density_param$na.rm = TRUE
 
-	if(!is.matrix(data) && !is.data.frame(matrix) && !is.list(matrix)) {
+	if(!is.matrix(data) && !is.data.frame(data) && !is.list(data)) {
 		stop("only matrix and list are allowed.")
 	}
 	if(is.matrix(data)) {

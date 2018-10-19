@@ -29,4 +29,5 @@ All the values are measured with \code{native} coordinate.
 \examples{
 # There is no example
 NULL
+
 }

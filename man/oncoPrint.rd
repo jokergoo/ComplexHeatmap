@@ -13,11 +13,10 @@ oncoPrint(mat,
     alter_fun_is_vectorized = NULL,
     col,
     
-    top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot(),
-    show_annotation_name = FALSE),
+    top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot()),
     right_annotation = rowAnnotation(row_barplot = anno_oncoprint_barplot(
-    axis_param = list(side = "top", labels_rot = 0)),
-    show_annotation_name = FALSE),
+    axis_param = list(side = "top", labels_rot = 0))),
+    bottom_annotation = NULL,
     
     show_pct = TRUE,
     pct_gp = gpar(fontsize = 10),
@@ -76,4 +75,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
+
 }

@@ -31,6 +31,9 @@ densityHeatmap(data,
     column_names_rot = 90,
     
     cluster_columns = FALSE,
+    clustering_distance_columns = "ks",
+    clustering_method_columns = "complete",
+    
     ...)
 }
 \arguments{
@@ -54,7 +57,8 @@ densityHeatmap(data,
   \item{column_names_max_height}{Pass to \code{\link{Heatmap}}.}
   \item{column_names_gp}{Pass to \code{\link{Heatmap}}.}
   \item{column_names_rot}{Pass to \code{\link{Heatmap}}.}
-  \item{cluster_columns}{Whether cluster columns (here clustered by density values)? Normally we don't cluster columns.}
+  \item{cluster_columns}{Whether cluster columns (here clustered by density values)? Normally we don't cluster columns. - clustering_distance_columns}
+  \item{clustering_method_columns}{-clustering_method_columns}
   \item{...}{pass to \code{\link{Heatmap}}.}
 
 }

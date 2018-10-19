@@ -215,7 +215,8 @@ anno_simple = function(x, col, na_col = "grey",
                 if(!is.null(pch)) {
 					l = !is.na(pch[, i])
 					grid.points(x = rep((i-0.5)/nc, sum(l)), y = y[l], pch = pch[l, i], 
-						size = pt_size[i], gp = subset_gp(pt_gp, i))
+						size = {if(length(pt_size) == 1) pt_size else pt_size[i]}, 
+						gp = subset_gp(pt_gp, i))
 				}
             }
         } else {
@@ -246,7 +247,8 @@ anno_simple = function(x, col, na_col = "grey",
                 	pch = pch[index, , drop = FALSE]
 					l = !is.na(pch[, i])
 					grid.points(x[l], y = rep((nc-i +0.5)/nc, sum(l)), pch = pch[l, i], 
-						size = pt_size[i], gp = subset_gp(pt_gp, i))
+						size = {if(length(pt_size) == 1) pt_size else pt_size[i]}, 
+						gp = subset_gp(pt_gp, i))
 				}
             }
         } else {

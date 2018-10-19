@@ -185,5 +185,3 @@ ht_global_opt = ht_opt
 
 GLOBAL_PADDING = unit(c(2, 2, 2, 2), "mm")
 
-
-

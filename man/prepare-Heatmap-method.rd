@@ -1,5 +1,6 @@
 \name{prepare-Heatmap-method}
 \alias{prepare,Heatmap-method}
+\alias{prepare}
 \title{
 Prepare the Heatmap
 }
@@ -33,8 +34,8 @@ The \code{\link{Heatmap-class}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\alias{prepare}
 \examples{
 # There is no example
 NULL
+
 }

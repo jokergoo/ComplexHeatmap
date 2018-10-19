@@ -375,7 +375,7 @@ setMethod(f = "make_layout",
     layout_size = object@layout$layout_size
     if(is_abs_unit(object@heatmap_param$width)) {
         # recalcualte the width of heatmap body
-        object@matrix_param$width = object@heatmap_param$width -
+        object@matrix_param$width = convertWidth(object@heatmap_param$width -
             sum(layout_size$row_title_left_width,
                 layout_size$row_dend_left_width,
                 layout_size$row_anno_left_width,
@@ -383,9 +383,12 @@ setMethod(f = "make_layout",
                 layout_size$row_dend_right_width,
                 layout_size$row_anno_right_width,
                 layout_size$row_names_right_width,
-                layout_size$row_title_right_width)   
+                layout_size$row_title_right_width), "mm")
+        if(object@matrix_param$width[[1]] <= 0) {
+            stop_wrap("width of the heatmap body is negative, maybe `heatmap_width` you set is too small. Note `heatmap_width` is the width of the complete heatmap.")
+        }
     } else if(is_abs_unit(object@matrix_param$width)) {  # e.g. unit(1, "npc")
-        object@heatmap_param$width = sum(
+        object@heatmap_param$width = convertWidth(sum(
             layout_size$row_title_left_width,
             layout_size$row_dend_left_width,
             layout_size$row_names_left_width,
@@ -394,7 +397,7 @@ setMethod(f = "make_layout",
             layout_size$row_title_right_width,
             layout_size$row_anno_left_width,
             layout_size$row_anno_right_width
-        ) + object@matrix_param$width
+        ) + object@matrix_param$width, "mm")
         if(nc_slice > 1) {
             object@heatmap_param$width = object@heatmap_param$width + sum(column_gap[seq_len(nc_slice-1)])
         }
@@ -403,7 +406,7 @@ setMethod(f = "make_layout",
     }
 
     if(is_abs_unit(object@heatmap_param$height)) {
-        object@matrix_param$height = object@heatmap_param$height - 
+        object@matrix_param$height = convertHeight(object@heatmap_param$height - 
             sum(layout_size$column_title_top_height,
                 layout_size$column_dend_top_height,
                 layout_size$column_anno_top_height,
@@ -411,9 +414,12 @@ setMethod(f = "make_layout",
                 layout_size$column_title_bottom_height,
                 layout_size$column_dend_bottom_height,
                 layout_size$column_anno_bottom_height,
-                layout_size$column_names_bottom_height)
+                layout_size$column_names_bottom_height), "mm")
+        if(object@matrix_param$height[[1]] <= 0) {
+            stop_wrap("height of the heatmap body is negative, maybe `heatmap_height` you set is too small. Note `heatmap_height` is the height of the complete heatmap.")
+        }
     } else if(is_abs_unit(object@matrix_param$height)) {
-        object@heatmap_param$height = sum(
+        object@heatmap_param$height = convertHeight(sum(
             layout_size$column_title_top_height,
             layout_size$column_dend_top_height,
             layout_size$column_anno_top_height,
@@ -422,7 +428,7 @@ setMethod(f = "make_layout",
             layout_size$column_dend_bottom_height,
             layout_size$column_anno_bottom_height,
             layout_size$column_names_bottom_height
-        ) + object@matrix_param$height
+        ) + object@matrix_param$height, "mm")
         if(nr_slice > 1) {
             object@heatmap_param$height = object@heatmap_param$height + sum(row_gap[seq_len(nr_slice-1)])
         }

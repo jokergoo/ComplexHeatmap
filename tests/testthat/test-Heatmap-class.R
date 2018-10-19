@@ -418,3 +418,7 @@ ra = rowAnnotation(foo = 1:24)
 Heatmap(mat, show_column_names = FALSE) + ra
 	left_annotation = ra)
 
+
+Heatmap(matrix(rnorm(100), 10), row_km = 2, row_title = "")
+
+Heatmap(matrix(rnorm(100), 10), heatmap_width = unit(5, "mm"))
