@@ -3,8 +3,9 @@
 # The Class for Legends
 #
 # == details
-# This is a very simple class for legends that it only has one slot which is the real `grid::grob` of the legends.
-# more information of the legends grob.
+# This is a very simple class for legends that it only has one slot which is the real `grid::grob` of the legends. 
+#
+# Construct a single legend by `Legend` and a group of legends by `packLegend`.
 # 
 # == example
 # lgd = Legend(at = 1:4)
@@ -22,7 +23,7 @@ Legends = setClass("Legends",
 # Constructor method for Legends class
 #
 # == param
-# -... arguments
+# -... arguments.
 #
 # == details
 # There is no public constructor method for the `Legends-class`.
@@ -73,10 +74,13 @@ Legends = function(...) {
 #     horizontal legend.
 #
 # == details
-# The ``Legend`` function supports very flexible legend settings. Please go to ...
+# Most of the argument can also be set in ``heatmap_legend_param`` argument in `Heatmap` or ``annotation_legend_param``
+# argument in `HeatmapAnnotation` to configure legend styles for heatmap and annotations.
 #
 # == seealso
 # `packLegend` packs multiple legends into one `Legends-class` object.
+#
+# See examples of configuring legends: https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html
 #
 # == value
 # A `Legends-class` object.
@@ -741,12 +745,15 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # -column_gap Vertical gaps between legends.
 # -direction The direction to arrange legends.
 # -max_width The maximal width of the total packed legends. It only works for horizontal arrangement.
-#           If the total width of the legends exceeds it, the legends will be arranged into several rows.
+#           If the total width of the legends exceeds it, the legends will be arranged into multiple rows.
 # -max_height Similar as ``max_width``, but for the vertical arrangment of legends.
 # -list The list of legends can be specified as a list.
 #
 # == value
 # A `Legends-class` object.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#a-list-of-legends
 #
 # == example
 # require(circlize)
@@ -1012,6 +1019,8 @@ valid_just = function(just) {
 # -test Only used for testing.
 #
 # == details
+# In the legend grob, there should always be a viewport attached which is like a wrapper of 
+# all the graphic elements in a legend.
 # If in the ``object``, there is already a viewport attached, it will modify the ``x``, ``y``
 # and ``valid.just`` of the viewport. If there is not viewport attached, a viewport
 # with specified ``x``, ``y`` and ``valid.just`` is created and attached.
@@ -1023,6 +1032,11 @@ valid_just = function(just) {
 # == example
 # lgd = Legend(at = 1:4, title = "foo")
 # draw(lgd, x = unit(0, "npc"), y = unit(0, "npc"), just = c("left", "bottom"))
+#
+# # and a similar version of grid.draw
+# pushViewport(viewport(x = unit(0, "npc"), y = unit(0, "npc"), just = c("left", "bottom")))
+# grid.draw(lgd)
+# popViewport()
 setMethod(f = "draw",
 	signature = "Legends",
 	definition = function(object, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre", test = FALSE) {
@@ -1058,6 +1072,11 @@ setMethod(f = "draw",
 # == details
 # This function is actually an S3 method of the ``Legends`` class for the `grid::grid.draw`
 # general method. It applies `grid::grid.draw` on the ``grob`` slot of the object.
+#
+# == example
+# pushViewport(viewport(x = unit(0, "npc"), y = unit(0, "npc"), just = c("left", "bottom")))
+# grid.draw(lgd)
+# popViewport()
 grid.draw.Legends = function(x, recording = TRUE) {
 	grid.draw(x@grob, recording =  recording)
 }
@@ -1066,7 +1085,7 @@ grid.draw.Legends = function(x, recording = TRUE) {
 # Grob width for legend_body
 #
 # == param
-# -x legend body
+# -x A legend_body object.
 #
 widthDetails.legend_body = function(x) {
 	attr(x, "width")
@@ -1076,7 +1095,7 @@ widthDetails.legend_body = function(x) {
 # Grob height for legend_body
 #
 # == param
-# -x legend body
+# -x A legend_body object.
 #
 heightDetails.legend_body = function(x) {
 	attr(x, "height")
@@ -1086,7 +1105,7 @@ heightDetails.legend_body = function(x) {
 # Grob width for packed_legends
 #
 # == param
-# -x legend body
+# -x A legend object.
 #
 widthDetails.legend = function(x) {
 	attr(x, "width")
@@ -1096,7 +1115,7 @@ widthDetails.legend = function(x) {
 # Grob height for packed_legends
 #
 # == param
-# -x legend body
+# -x A legend object.
 #
 heightDetails.legend = function(x) {
 	attr(x, "height")
@@ -1106,7 +1125,7 @@ heightDetails.legend = function(x) {
 # Grob width for packed_legends
 #
 # == param
-# -x legend body
+# -x A packed_legends object.
 #
 widthDetails.packed_legends = function(x) {
 	attr(x, "width")
@@ -1116,7 +1135,7 @@ widthDetails.packed_legends = function(x) {
 # Grob height for packed_legends
 #
 # == param
-# -x legend body
+# -x A packed_legends object.
 #
 heightDetails.packed_legends = function(x) {
 	attr(x, "height")

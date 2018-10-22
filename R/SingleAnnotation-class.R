@@ -234,7 +234,7 @@ SingleAnnotation = function(name, value, col, fun,
 
             if(!fun@show_name) show_name = fun@show_name
         } else {
-            fun = AnnotationFunction(fun = fun)
+            fun = AnnotationFunction(fun = fun, which = which)
             anno_fun_extend = fun@extended
             if(verbose) qqcat("@{name}: annotation is a user-defined function\n")
         }

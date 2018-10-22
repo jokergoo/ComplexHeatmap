@@ -1,4 +1,3 @@
-# -anno_simple_size size of the simple annotation.# -anno_simple_size size of the simple annotation.# -anno_simple_size size of the simple annotation.
 
 # == title
 # Empty Annotation
@@ -34,6 +33,9 @@
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#empty-annotation
 #
 # == examples
 # anno = anno_empty()
@@ -73,8 +75,11 @@ anno_empty = function(which = c("column", "row"), border = TRUE, width = NULL, h
 # Subset the Matrix by Rows
 #
 # == param
-# -x A matrix
+# -x A matrix.
 # -i The row indices.
+#
+# == details
+# Mainly used for constructing the `AnnotationFunction-class` object.
 #
 subset_matrix_by_row = function(x, i) x[i, , drop = FALSE]
 
@@ -82,8 +87,11 @@ subset_matrix_by_row = function(x, i) x[i, , drop = FALSE]
 # Subset the vector
 #
 # == param
-# -x A vector
-# -i The indices
+# -x A vector.
+# -i The indices.
+#
+# == details
+# Mainly used for constructing the `AnnotationFunction-class` object.
 #
 subset_vector = function(x, i) x[i]
 
@@ -123,6 +131,9 @@ subset_vector = function(x, i) x[i]
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#simple-annotation-as-an-annotation-function
 #
 # == example
 # anno = anno_simple(1:10)
@@ -328,6 +339,9 @@ anno_simple = function(x, col, na_col = "grey",
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#image-annotation
 #
 # == example
 # # download the free icons from https://github.com/Keyamoon/IcoMoon-Free
@@ -604,6 +618,9 @@ construct_axis_grob = function(axis_param, which, data_scale) {
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
 #
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#points-annotation
+#
 # == example
 # anno = anno_points(runif(10))
 # draw(anno, test = "anno_points")
@@ -780,6 +797,9 @@ update_anno_extend = function(anno, axis_grob, axis_param) {
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#lines-annotation
 #
 # == example
 # anno = anno_lines(runif(10))
@@ -998,6 +1018,9 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
 #
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#barplot_annotation
+#
 # == example
 # anno = anno_barplot(1:10)
 # draw(anno, test = "a vector")
@@ -1167,6 +1190,9 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#box-annotation
 #
 # == example
 # set.seed(123)
@@ -1364,6 +1390,9 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
 #
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#histogram-annotation
+#
 # == example
 # m = matrix(rnorm(1000), nc = 10)
 # anno = anno_histogram(t(m), which = "row")
@@ -1521,6 +1550,9 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#density-annotation
 #
 # == example
 # m = matrix(rnorm(100), 10)
@@ -1777,6 +1809,9 @@ anno_density = function(x, which = c("column", "row"),
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
 #
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#text-annotation
+#
 # == example
 # anno = anno_text(month.name)
 # draw(anno, test = "month names")
@@ -1920,6 +1955,9 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#joyplot-annotation
 #
 # == example
 # m = matrix(rnorm(1000), nc = 10)
@@ -2110,6 +2148,9 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#horizon-chart-annotation
 #
 # == example
 # lt = lapply(1:20, function(x) cumprod(1 + runif(1000, -x/100, x/100)) - 1)
@@ -2342,7 +2383,7 @@ split_vec_by_NA = function(x) {
 # Points as Row Annotation
 #
 # == param
-# -... pass to `anno_points`
+# -... pass to `anno_points`.
 #
 # == details
 # A wrapper of `anno_points` with pre-defined ``which`` to ``row``.
@@ -2350,11 +2391,11 @@ split_vec_by_NA = function(x) {
 # You can directly use `anno_points` for row annotation if you call it in `rowAnnotation`.
 #
 # == value
-# See help page of `anno_points`
+# See help page of `anno_points`.
 #
 row_anno_points = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_points()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From version 1.99.0, you can directly use `anno_points()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_points(..., which = "row")
 }
@@ -2364,7 +2405,7 @@ row_anno_points = function(...) {
 # Barplots as Row Annotation
 #
 # == param
-# -... pass to `anno_barplot`
+# -... pass to `anno_barplot`.
 #
 # == details
 # A wrapper of `anno_barplot` with pre-defined ``which`` to ``row``.
@@ -2372,11 +2413,11 @@ row_anno_points = function(...) {
 # You can directly use `anno_barplot` for row annotation if you call it in `rowAnnotation`.
 #
 # == value
-# See help page of `anno_barplot`
+# See help page of `anno_barplot`.
 #
 row_anno_barplot = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_barplot()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From version 1.99.0, you can directly use `anno_barplot()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_barplot(..., which = "row")
 }
@@ -2386,7 +2427,7 @@ row_anno_barplot = function(...) {
 # Boxplots as Row Annotation
 #
 # == param
-# -... pass to `anno_boxplot`
+# -... pass to `anno_boxplot`.
 #
 # == details
 # A wrapper of `anno_boxplot` with pre-defined ``which`` to ``row``.
@@ -2394,11 +2435,11 @@ row_anno_barplot = function(...) {
 # You can directly use `anno_boxplot` for row annotation if you call it in `rowAnnotation`.
 #
 # == value
-# See help page of `anno_boxplot`
+# See help page of `anno_boxplot`.
 #
 row_anno_boxplot = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_boxplot()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From version 1.99.0, you can directly use `anno_boxplot()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_boxplot(..., which = "row")
 }
@@ -2407,7 +2448,7 @@ row_anno_boxplot = function(...) {
 # Histograms as Row Annotation
 #
 # == param
-# -... pass to `anno_histogram`
+# -... pass to `anno_histogram`.
 #
 # == details
 # A wrapper of `anno_histogram` with pre-defined ``which`` to ``row``.
@@ -2415,11 +2456,11 @@ row_anno_boxplot = function(...) {
 # You can directly use `anno_histogram` for row annotation if you call it in `rowAnnotation`.
 #
 # == value
-# See help page of `anno_histogram`
+# See help page of `anno_histogram`.
 #
 row_anno_histogram = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_histogram()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From version 1.99.0, you can directly use `anno_histogram()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_histogram(..., which = "row")
 }
@@ -2428,7 +2469,7 @@ row_anno_histogram = function(...) {
 # Density as Row Annotation
 #
 # == param
-# -... pass to `anno_density`
+# -... pass to `anno_density`.
 #
 # == details
 # A wrapper of `anno_density` with pre-defined ``which`` to ``row``.
@@ -2436,11 +2477,11 @@ row_anno_histogram = function(...) {
 # You can directly use `anno_density` for row annotation if you call it in `rowAnnotation`.
 #
 # == value
-# See help page of `anno_density`
+# See help page of `anno_density`.
 #
 row_anno_density = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_density()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From version 1.99.0, you can directly use `anno_density()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_density(..., which = "row")
 }
@@ -2449,7 +2490,7 @@ row_anno_density = function(...) {
 # Text as Row Annotation
 #
 # == param
-# -... pass to `anno_text`
+# -... pass to `anno_text`.
 #
 # == details
 # A wrapper of `anno_text` with pre-defined ``which`` to ``row``.
@@ -2457,11 +2498,11 @@ row_anno_density = function(...) {
 # You can directly use `anno_text` for row annotation if you call it in `rowAnnotation`.
 #
 # == value
-# See help page of `anno_text`
+# See help page of `anno_text`.
 #
 row_anno_text = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_text()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From version 1.99.0, you can directly use `anno_text()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_text(..., which = "row")
 }
@@ -2491,6 +2532,9 @@ row_anno_text = function(...) {
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#mark-annotation
 #
 # == example
 # anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row")
@@ -2663,7 +2707,7 @@ anno_link = function(...) {
 # Label Markers as Row Annotation
 #
 # == param
-# -... pass to `anno_link`
+# -... pass to `anno_link`.
 #
 # == details
 # A wrapper of `anno_link` with pre-defined ``which`` to ``row``.
@@ -2671,11 +2715,11 @@ anno_link = function(...) {
 # You can directly use `anno_link` for row annotation if you call it in `rowAnnotation`.
 #
 # == value
-# See help page of `anno_link`
+# See help page of `anno_link`.
 #
 row_anno_link = function(...) {
 	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message_wrap("From this version of ComplexHeatmap, you can directly use `anno_mark()` for row annotation if you call it in `rowAnnotation()`.")
+		message_wrap("From version 1.99.0, you can directly use `anno_mark()` for row annotation if you call it in `rowAnnotation()`.")
 	}
 	anno_link(..., which = "row")
 }
@@ -2707,6 +2751,12 @@ row_anno_link = function(...) {
 #
 # In the barplot, the color schema is used as the same as the heatmap, while for the boxplot, the color needs
 # to be controlled by ``gp``.
+#
+# == value
+# An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#summary-annotation
 #
 # == example
 # ha = HeatmapAnnotation(summary = anno_summary(height = unit(4, "cm")))
@@ -2851,14 +2901,31 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 # Block annotation
 #
 # == param
-# -gp Graphic parameters
-# -labels
-# -labels_gp
-# -labels_rot
-# -which
-# -width
-# -height
+# -gp Graphic parameters.
+# -labels Labels put on blocks.
+# -labels_gp Graphic parameters for labels.
+# -labels_rot Rotation for labels.
+# -which Is it a row annotation or a column annotation?
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
+# == details
+# The block annotation is used for representing slices. The length of all arguments should be 1 or the number of slices.
+#
+# == value
+# An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#block-annotation
+#
+# == example
+# Heatmap(matrix(rnorm(100), 10), 
+#     top_annotation = HeatmapAnnotation(foo = anno_block(gp = gpar(fill = 2:4),
+#         labels = c("group1", "group2", "group3"), labels_gp = gpar(col = "white"))),
+#     column_km = 3,
+#     left_annotation = rowAnnotation(foo = anno_block(gp = gpar(fill = 2:4),
+#         labels = c("group1", "group2", "group3"), labels_gp = gpar(col = "white"))),
+#     row_km = 3)
 anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot = ifelse(which == "row", 90, 0),
 	which = c("column", "row"), width = NULL, height = NULL) {
 

@@ -375,7 +375,9 @@ HeatmapAnnotation = function(...,
     } else if(which == "row") {
 
 		anno_size = do.call("unit.c", lapply(anno_list, width))
-		width = sum(anno_size) + sum(gap) - gap[n_total_anno]
+		if(is.null(width)) {
+			width = sum(anno_size) + sum(gap) - gap[n_total_anno]
+		}
     	
     	if(is.null(height)) {
     		height = unit(1, "npc")

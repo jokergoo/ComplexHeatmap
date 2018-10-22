@@ -10,22 +10,23 @@
 # -ylab Label on y-axis.
 # -column_title Title of the heatmap.
 # -title Same as ``column_title``.
-# -ylim Ranges on the y-axis. By default the range is between 1th quantile and 99th quantile of the data.
+# -ylim Ranges on the y-axis.
 # -range Same as ``ylim``.
-# -title_gp = gpar(fontsize = 14),
-# -ylab_gp = gpar(fontsize = 12),
-# -tick_label_gp = gpar(fontsize = 10),
-# -quantile_gp = gpar(fontsize = 10),
-# -column_order column_order
+# -title_gp Graphic parameters for title.
+# -ylab_gp Graphic parameters for y-labels.
+# -tick_label_gp Graphic parameters for y-ticks.
+# -quantile_gp Graphic parameters for the quantiles.
+# -column_order Order of columns.
 # -column_names_side Pass to `Heatmap`.
 # -show_column_names Pass to `Heatmap`.
 # -column_names_max_height Pass to `Heatmap`.
 # -column_names_gp Pass to `Heatmap`.
 # -column_names_rot Pass to `Heatmap`.
-# -cluster_columns Whether cluster columns (here clustered by density values)? Normally we don't cluster columns.
-# -clustering_distance_columns
-# -clustering_method_columns
-# -... pass to `Heatmap`.
+# -cluster_columns Whether cluster columns?
+# -clustering_distance_columns There is a specific distance method ``ks`` which is the Kolmogorov-Smirnov statistic between two distributions.
+#          For other methods, the distance is calculated on the density matrix.
+# -clustering_method_columns Pass to `Heatmap`.
+# -... Pass to `Heatmap`.
 #
 # == details
 # To visualize data distribution in a matrix or in a list, we normally use
@@ -34,12 +35,13 @@
 # huge number of columns in ``data`` to visualize.
 #
 # The density matrix is generated with 500 rows ranging between the maximun
-# and minimal values in all densities. The density values in each row are
-# linearly intepolated between the two density values at the two nearest
-# bounds.
+# and minimal values in all densities. 
 #
 # == value
-# A `HeatmapList-class` object with only one heatmap, but it can only add other heatmaps/annotations vertically.
+# A `Heatmap-class` object. It can oly add other heatmaps/annotations vertically.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/other-high-level-plots.html#density-heatmap
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -89,7 +91,7 @@ densityHeatmap = function(data,
 		if(any(c("row_km", "row_split", "split", "km") %in% names(arg_list))) {
 			stop_wrap("density heatmaps do not allow row splitting.")
 		}
-		if(grepl("row", names(arg_list))) {
+		if(any(grepl("row", names(arg_list)))) {
 			stop_wrap("density heatmaps do not allow to set rows.")
 		}
 	}
