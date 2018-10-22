@@ -550,6 +550,16 @@ validate_axis_param = function(axis_param, which) {
 	for(nm in names(axis_param)) {
 		dft[[nm]] = axis_param[[nm]]
 	}
+	if(which == "row") {
+		if(dft$side %in% c("left", "right")) {
+			stop_wrap("axis side can only be set to 'top' or 'bottom' for row annotations.")
+		}
+	}
+	if(which == "column") {
+		if(dft$side %in% c("top", "bottom")) {
+			stop_wrap("axis side can only be set to 'left' or 'right' for row annotations.")
+		}
+	}
 	return(dft)
 }
 
@@ -569,7 +579,6 @@ construct_axis_grob = function(axis_param, which, data_scale) {
 		axis_param$labels = axis_param$at
 	}
 	axis_grob = do.call(annotation_axis_grob, axis_param)
-	
 	return(axis_grob)
 }
 

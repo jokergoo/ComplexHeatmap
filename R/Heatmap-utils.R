@@ -4,8 +4,8 @@
 #
 # == param
 # -x A `Heatmap-class` object.
-# -i Row indices
-# -j Column indices
+# -i Row indices.
+# -j Column indices.
 #
 # == details
 # This functionality is quite experimental. It should be applied before the layout is initialized.

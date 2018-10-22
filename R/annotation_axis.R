@@ -1,16 +1,104 @@
 # == title
-# Grob for annotation axis
+# Grob for Annotation Axis
 #
 # == param
-# -at Break values.
+# -at Break values. If it is not specified, it is inferred from data scale in current viewport.
 # -labels Corresponding labels.
 # -labels_rot Rotations of labels.
 # -gp Graphic parameters.
-# -side side of the axis to the annotation viewport.
+# -side side of the axis of the annotation viewport.
 # -facing Facing of the axis.
 #
 # == value
 # A `grid::grob` object.
+#
+# == examples
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 
+#     side = "left", facing = "outside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(x = unit(0, "npc"), width = grobWidth(gb), just = "right")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 
+#     side = "left", facing = "inside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(x = unit(0, "npc"), width = grobWidth(gb), just = "left")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 
+#     side = "right", facing = "outside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(x = unit(1, "npc"), width = grobWidth(gb), just = "left")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 
+#     side = "right", facing = "inside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(x = unit(1, "npc"), width = grobWidth(gb), just = "right")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 
+#     side = "top", facing = "outside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(y = unit(1, "npc"), height = grobHeight(gb), just = "bottom")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 90, 
+#     side = "top", facing = "outside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(y = unit(1, "npc"), height = grobHeight(gb), just = "bottom")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 45, 
+#     side = "top", facing = "outside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(y = unit(1, "npc"), height = grobHeight(gb), just = "bottom")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 
+#     side = "top", facing = "inside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(y = unit(1, "npc"), height = grobHeight(gb), just = "top")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 
+#     side = "bottom", facing = "outside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(y = unit(0, "npc"), height = grobHeight(gb), just = "top")
+# popViewport()
+#
+# gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 
+#     side = "bottom", facing = "inside")
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# grid.draw(gb)
+# grid.rect(y = unit(0, "npc"), height = grobHeight(gb), just = "bottom")
+# popViewport()
+#
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0, 6), yscale = c(0, 6), width = 0.6, height = 0.6))
+# gb = annotation_axis_grob(labels_rot = 0, side = "left", facing = "outside")
+# grid.draw(gb)
+# grid.rect(x = unit(0, "npc"), width = grobWidth(gb), just = "right")
+# popViewport()
 #
 annotation_axis_grob = function(at = NULL, labels = at, labels_rot = 0, gp = gpar(), 
 	side = "left", facing = "outside") {
@@ -136,20 +224,26 @@ annotation_axis_grob = function(at = NULL, labels = at, labels_rot = 0, gp = gpa
 
 
 # == title
-# Grob width for annotation_axis
+# Width for annotation_axis Grob
 #
 # == param
-# -x legend body
+# -x The ``annotation_axis`` grob returned by `annotation_axis_grob`.
+#
+# == details
+# The physical width of the grob can be get by ``convertWidth(grobWidth(axis_grob), "mm")``.
 #
 widthDetails.annotation_axis = function(x) {
 	attr(x, "width")
 }
 
 # == title
-# Grob width for annotation_axis
+# Height for annotation_axis Grob
 #
 # == param
-# -x legend body
+# -x The ``annotation_axis`` grob returned by `annotation_axis_grob`.
+#
+# == details
+# The physical height of the grob can be get by ``convertWidth(grobHeight(axis_grob), "mm")``.
 #
 heightDetails.annotation_axis = function(x) {
 	attr(x, "height")

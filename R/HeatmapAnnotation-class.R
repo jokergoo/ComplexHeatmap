@@ -108,12 +108,14 @@ HeatmapAnnotation = function(...,
 	) {
 
 	dev.null()
-	on.exit(dev.off2())
 
 	.ENV$current_annotation_which = NULL
 	which = match.arg(which)[1]
 	.ENV$current_annotation_which = which
-	on.exit(.ENV$current_annotation_which <- NULL)
+	on.exit({
+		.ENV$current_annotation_which <- NULL
+		dev.off2()
+	})
 
 	fun_args = names(as.list(environment()))
 
@@ -409,10 +411,10 @@ HeatmapAnnotation = function(...,
 
     ## adjust height/width if `width`/`annotation_width` is set
     if(which == "column") {
-	    .Object = resize(.Object, height = height, annotation_height = annotation_height,
+	    .Object = re_size(.Object, height = height, annotation_height = annotation_height,
 	    	anno_simple_size = anno_simple_size, simple_anno_size_adjust = simple_anno_size_adjust)
 	} else {
-		.Object = resize(.Object, width = width, annotation_width = annotation_width, 
+		.Object = re_size(.Object, width = width, annotation_width = annotation_width, 
 			anno_simple_size = anno_simple_size, simple_anno_size_adjust = simple_anno_size_adjust)
 	}
 
@@ -744,7 +746,7 @@ nobs.HeatmapAnnotation = function(object, ...) {
 # -direction Whether it is a horizontal add or a vertical add?
 #
 # == details
-# There is a helper function ``+.AdditiveUnit`` for horizontal add or `\%v\%` for vertical add.
+# Normally we directly use ``+`` for horizontal concatenation and `\%v\%` for vertical concatenation.
 #
 # == value
 # A `HeatmapList-class` object.
@@ -984,7 +986,7 @@ length.HeatmapAnnotation = function(x) {
 #      and ``anno_simple_size`` is disabled.
 # 6. If ``simple_anno_size_adjust`` is ``FALSE``, the size of the simple annotations will not change.
 #
-setMethod(f = "resize",
+setMethod(f = "re_size",
 	signature = "HeatmapAnnotation",
 	definition = function(object, 
 	annotation_height = NULL, 

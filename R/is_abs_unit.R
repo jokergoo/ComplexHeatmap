@@ -33,7 +33,7 @@
 }
 
 # == title
-# Whether the Unit is Absolute
+# Test Whether it is an Absolute Unit
 #
 # == param
 # -u A `grid::unit` object.

@@ -1,13 +1,19 @@
 
 # == title
-# Draw legends for all heatmaps
+# Draw legends for All Heatmaps
 #
 # == param
-# -object a `HeatmapList-class` object
-# -legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
-# -... graphic parameters passed to `color_mapping_legend,ColorMapping-method`.
+# -object A `HeatmapList-class` object.
+# -legend_list A list of self-defined legends, should be wrapped into `grid::grob` objects. It is
+#          normally constructed by `Legend`.
+# -... Other arguments.
 #
 # == details
+# Actually we call the "heatmap legends" as the main legends.
+# For horizontal heatmap list, the legends are those from heamtap/row annotation/left/right annotation.
+# For vertical heatmap list, the legends are those from heamtap/column annotation/top/bottom annotation.
+# if ``merge_legends`` is true in `draw,HeatmapList-method`, then it contains all legends shown on the plot.
+#
 # A viewport is created which contains heatmap legends.
 #
 # This function is only for internal use.
@@ -128,14 +134,19 @@ setMethod(f = "draw_heatmap_legend",
 })
 
 # == title
-# Draw legends for all column annotations
+# Draw legends for All Annotations
 #
 # == param
-# -object a `HeatmapList-class` object
-# -legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
-# -... graphic parameters passed to `color_mapping_legend,ColorMapping-method`.
+# -object A `HeatmapList-class` object.
+# -legend_list A list of self-defined legends, should be wrapped into `grid::grob` objects.
+#      It is normally constructed by `Legend`.
+# -... Other arguments.
 #
 # == details
+# We call the "annotation legends" as the secondary legends.
+# For horizontal heamtap list, the legends are those from all top/bottom annotations, and for vertical heatmap list, 
+# the legends are those from all left/right annotations.
+#
 # A viewport is created which contains annotation legends.
 #
 # This function is only for internal use.
@@ -212,14 +223,17 @@ setMethod(f = "draw_annotation_legend",
 })
 
 # == title
-# Size of the heatmap legend viewport
+# Size of the Heatmap Legends
 #
 # == param
-# -object a `HeatmapList-class` object
-# -legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
-# -... graphic parameters passed to `color_mapping_legend,ColorMapping-method`.
+# -object A `HeatmapList-class` object.
+# -legend_list A list of self-defined legend, should be wrapped into `grid::grob` objects.
+#     It is normally constructed by `Legend`.
+# -... Other arguments.
 #
 # == detail
+# Internally, all heatmap legends are packed by `packLegend` as a single `grid::grob` object.
+#
 # This function is only for internal use.
 #
 # == value
@@ -301,16 +315,16 @@ setMethod(f = "heatmap_legend_size",
 })
 
 # == title
-# Size of the annotation legend viewport
+# Size of the Annotation Legends
 #
 # == param
 # -object a `HeatmapList-class` object.
-# -legend_list a list of self-defined legend, should be wrapped into `grid::grob` objects.
-# -... graphic parameters passed to `color_mapping_legend,ColorMapping-method`.
+# -legend_list A list of self-defined legend, should be wrapped into `grid::grob` objects.
+#     It is normally constructed by `Legend`.
+# -... Other arguments.
 #
 # == detail
-# Legends for all heatmaps or legends for all annotations will be put in one viewport. This function
-# calculates the size of such viewport. Note graphic parameters for legends will affect the size.
+# Internally, all annotation legends are packed by `packLegend` as a single `grid::grob` object.
 #
 # This function is only for internal use.
 #

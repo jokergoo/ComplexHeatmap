@@ -95,7 +95,7 @@ default_col = function(x, main_matrix = FALSE) {
 # Calculate Pairwise Distance from a Matrix
 #
 # == param
-# -mat A matrix. The distance is calculated by rows.
+# -x A matrix or a list. If it is a matrix, the distance is calculated by rows.
 # -pairwise_fun A function which calculates distance between two vectors.
 # -... Pass to `stats::as.dist`.
 #
@@ -109,27 +109,49 @@ default_col = function(x, main_matrix = FALSE) {
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-dist2 = function(mat, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...) {
+# == example
+# lt = lapply(1:10, function(i) {
+#     sample(letters, sample(6:10, 1))
+# })
+# dist2(lt, function(x, y) {
+#     length(intersect(x, y))/length(union(x, y))
+# })
+dist2 = function(x, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...) {
 
-    if(!is.matrix(mat)) {
-        stop("`mat` should be a matrix.")
-    }
-
-    if(nrow(mat) < 2) {
-        stop("`mat` should have at least two rows.")
-    }
-
-    nr = nrow(mat)
-    mat2 = matrix(NA, nrow = nr, ncol = nr)
-    rownames(mat2) = colnames(mat2) = rownames(mat)
-
-    for(i in 2:nr) {
-        for(j in 1:(nr-1)) {
-            mat2[i, j] = pairwise_fun(mat[i, ], mat[j, ])
+    if(is.matrix(x)) {
+        if(nrow(x) < 2) {
+            stop_wrap("`x` should have at least two rows.")
         }
-    }
 
-    as.dist(mat2, ...)
+        nr = nrow(x)
+        mat2 = matrix(NA, nrow = nr, ncol = nr)
+        rownames(mat2) = colnames(mat2) = rownames(x)
+
+        for(i in 2:nr) {
+            for(j in 1:(nr-1)) {
+                mat2[i, j] = pairwise_fun(x[i, ], x[j, ])
+            }
+        }
+
+        as.dist(mat2, ...)
+    } else if(is.list(x)) {
+        if(length(x) < 2) {
+            stop_wrap("`x` should have at least length of 2.")
+        }
+
+        nr = length(x)
+        mat2 = matrix(NA, nrow = nr, ncol = nr)
+        rownames(mat2) = colnames(mat2) = names(x)
+
+        for(i in 2:nr) {
+            for(j in 1:(nr-1)) {
+                mat2[i, j] = pairwise_fun(x[[i]], x[[j]])
+            }
+        }
+        as.dist(mat2, ...)
+    } else {
+        stop_wrap("`x` can be a matrix or a list.")
+    }
 }
 
 
@@ -197,7 +219,7 @@ check_gp = function(gp) {
 
 
 # == title
-# Subset a gpar object
+# Subset a gpar Object
 #
 # == param
 # -gp A `gpar` object.
@@ -306,7 +328,7 @@ list_components = function() {
 # -gp Graphic parameters for text.
 #
 # == details
-# Simply calculate maximum width of a list of `grid::textGrob` objects.
+# It simply calculates maximum width of a list of `grid::textGrob` objects.
 #
 # Note it ignores the text rotation.
 #
@@ -342,7 +364,7 @@ max_text_width = function(text, gp = gpar()) {
 # -gp Graphic parameters for text.
 #
 # == details
-# Simply calculate maximum height of a list of `grid::textGrob` objects.
+# It simply calculates maximum height of a list of `grid::textGrob` objects.
 #
 # Note it ignores the text rotation.
 #
@@ -520,31 +542,65 @@ recycle_param = function(x, all_names, default) {
 }
 
 # == title
-# Convert XY in a parent viewport
+# Convert XY in a Parent Viewport
 #
 # == param
-# -u A list of two units which is x and y
-# -vp_name the name of the parent viewport
+# -u A list of two units which correspond to x and y.
+# -vp_name The name of the parent viewport.
 #
+# == details
+# It converts a coordinate measured in current viewport to the coordinate in a parent viewport.
+#
+# In the conversion, all units are recalculated as absolute units, so if you change the size
+# of the interactive graphic window, you need to rerun the function.
+#
+# == value
+# A list of two units.
+# 
 # == example
 # grid.newpage()
 # pushViewport(viewport(x = 0.5, y = 0.5, width = 0.5, height = 0.5, just = c("left", "bottom")))
+# grid.rect()
+# grid.points(x = unit(2, "cm"), y = unit(2, "cm"), pch = 1)
 # u = list(x = unit(2, "cm"), y = unit(2, "cm"))
-# convertXY_in_vp(u)
-convertXY_in_vp = function(u, vp_name = "ROOT") {
+# u2 = getXY_in_parent_vp(u)
+# popViewport()
+# grid.rect(gp = gpar(col = "red"))
+# grid.points(x = u2$x, u2$y, pch = 2)
+getXY_in_parent_vp = function(u, vp_name = "ROOT") {
+    if(inherits(u, "unit")) {
+        if(length(u) == 2) {
+            u = list(x = u[1], y = u[2])
+        } else {
+            stop_wrap("If `u` is a unit vector, it must have length of 2.")
+        }
+    }
+    if(length(u) != 2) {
+        stop_wrap("`u` should be a list of length of 2 (two elements: `x` and `y`).")
+    }
+    if(is.null(names(u))) {
+        names(u) = c("x", "y")
+    }
+
     vp = current.viewport()
     current_vp_name = vp$name
     original_vp_name = current_vp_name
+    on.exit(seekViewport(original_vp_name))
+
+    if(current_vp_name == "ROOT") {
+        return(u)
+    }
     while(current_vp_name != vp_name) {
 
         if(current_vp_name == "ROOT") {
-            return(u)
+            stop_wrap(qq("Cannot find a parent viewport with name \"@{vp_name}\"."))
         }
 
         u$x = convertX(u$x, "mm")
         u$y = convertX(u$y, "mm")
-        current_vp_x = convertX(vp$x - vp$width*vp$valid.just[1], "mm")
-        current_vp_y = convertY(vp$y - vp$height*vp$valid.just[2], "mm")
+        # vp is measured in parent vp
+        current_vp_x = vp$x - vp$width*vp$valid.just[1]
+        current_vp_y = vp$y - vp$height*vp$valid.just[2]
 
         upViewport(1)
         offset_x = convertX(current_vp_x, "mm")
@@ -555,18 +611,22 @@ convertXY_in_vp = function(u, vp_name = "ROOT") {
         vp = current.viewport()
         current_vp_name = vp$name
     }
-    seekViewport(original_vp_name)
 
     return(u)
 }
 
 # == title
-# Get values in a matrix by pair-wise indices
+# Get Values in a Matrix by Pair-wise Indices
 #
 # == param
-# -m a matrix or a 3d array
-# -i row indices
-# -j column indicies
+# -m A matrix or a 3-dimension array.
+# -i Row indices or the indices in the first dimension.
+# -j Column indicies or the indices in the second dimension.
+#
+# == value
+# If ``m`` is a matrix, the value returned is a vector ``c(m[i1, j1], m[i2, j2], ...)```. 
+#
+# If ``m`` is an array, the value returned is a matrix ``rbind(m[i1, j1, ], m[i2, j2, ], ...)```.
 #
 # == example
 # m = matrix(rnorm(100), 10)
@@ -584,6 +644,13 @@ convertXY_in_vp = function(u, vp_name = "ROOT") {
 # identical(pindex(arr, 1:2, 2:3),
 #    rbind(arr[1, 2, ], arr[2, 3, ]))
 pindex = function(m, i, j) {
+
+    if(length(i) == 1) i = rep(i, length(j))
+    if(length(j) == 1) j = rep(j, length(i))
+    if(length(i) != length(j)) {
+        stop_wrap("Length of index i and j should be the same.")
+    }
+
     nr = nrow(m)
     nc = ncol(m)
     ind = (j-1)*nr + i
@@ -614,7 +681,7 @@ unit_with_vp = function(..., vp = current.viewport()$name) {
 # == param
 # -value A vector of numeric values.
 # -pos Position of the boxplot.
-# -outline Whether draw outlines.
+# -outline Whether draw outlines?
 # -box_width width of the box.
 # -pch Point type.
 # -size Point size.
@@ -624,6 +691,13 @@ unit_with_vp = function(..., vp = current.viewport()$name) {
 # == details
 # All the values are measured with ``native`` coordinate.
 #
+# == example
+# lt = list(rnorm(100), rnorm(100))
+# grid.newpage()
+# pushViewport(viewport(xscale = c(0.5, 2.5), yscale = range(lt)))
+# grid.boxplot(lt[[1]], pos = 1, gp = gpar(fill = "red"))
+# grid.boxplot(lt[[2]], pos = 2, gp = gpar(fill = "green"))
+# popViewport()
 grid.boxplot = function(value, pos, outline = TRUE, box_width = 0.6,
     pch = 1, size = unit(2, "mm"), gp = gpar(fill = "#CCCCCC"), 
     direction = c("vertical", "horizontal")) {

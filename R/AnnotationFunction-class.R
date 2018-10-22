@@ -1,6 +1,6 @@
 
 # == title
-# The AnnotationFunction class
+# The AnnotationFunction Class
 #
 # == details
 # The heatmap annotation is basically graphics aligned to the heatmap columns

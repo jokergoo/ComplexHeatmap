@@ -44,6 +44,7 @@ oncoPrint(mat,
   \item{col}{a vector of color for which names correspond to alteration types.}
   \item{top_annotation}{Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes having the alteration in each sample.}
   \item{right_annotation}{Annotation put on the right of hte oncoPrint. By default it is barplto which shows the number of samples having the alteration in each gene.}
+  \item{bottom_annotation}{-bottom_annotation}
   \item{show_pct}{whether show percent values on the left of the oncoprint}
   \item{pct_gp}{graphic paramters for percent row annotation}
   \item{pct_digits}{digits for percent values}

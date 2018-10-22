@@ -22,6 +22,6 @@ It assigns to the width if it is a row annotation and the height if it is a colu
 }
 \examples{
 anno = anno_points(1:10)
-size(anno) = unit(4, "cm")
-size(anno)
+ComplexHeatmap:::size(anno) = unit(4, "cm")
+ComplexHeatmap:::size(anno)
 }

@@ -6,11 +6,11 @@
 # -object A `Heatmap-class` object.
 # 
 # == detail
-# The layout of the single heatmap will be established by setting the size of each heatmap components.
+# The layout of the single heatmap will be established by setting the size of each heatmap component.
 # Also how to make graphics for heatmap components will be recorded by saving as functions.
 #
 # Whether to apply row clustering or column clustering affects the layout, so clustering should be applied 
-# first before making the layout.
+# first by `prepare,Heatmap-method` before making the layout.
 #
 # This function is only for internal use.
 #
@@ -476,7 +476,7 @@ setMethod(f = "show",
 # -direction Whether the heatmap is added horizontal or vertically?
 #
 # == details
-# There is a shortcut function ``+.AdditiveUnit``.
+# Normally we directly use ``+`` for horizontal concatenation and `\%v\%` for vertical concatenation.
 #
 # == value
 # A `HeatmapList-class` object.

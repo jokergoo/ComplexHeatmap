@@ -358,3 +358,12 @@ draw(anno, index = 1:10, k = 2, n = 2, test = "anno_block")
 anno = anno_block(gp = gpar(fill = 1:4), labels = letters[1:4], labels_gp = gpar(col = "white"), which = "row")
 draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
 
+
+
+
+
+
+
+
+
+

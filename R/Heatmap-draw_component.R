@@ -1,6 +1,6 @@
 
 # == title
-# Draw the Heatmap Body
+# Draw Heatmap Body
 #
 # == param
 # -object A `Heatmap-class` object.
@@ -321,7 +321,7 @@ setMethod(f = "draw_dimnames",
 # -object A `Heatmap-class` object.
 # -which Is title put on the row or on the column of the heatmap?
 # -k Slice index.
-# -... Pass to `grid::viewport` which includes the complete heatmap title
+# -... Pass to `grid::viewport` which includes the complete heatmap title.
 #
 # == details
 # A viewport is created which contains heatmap title.

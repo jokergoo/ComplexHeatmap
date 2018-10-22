@@ -16,7 +16,7 @@ subset_dendrogram = function(x, ind) {
 # Adjust the Positions of nodes/leaves in the Dendrogram
 #
 # == param
-# -dend A `dendrogram` object
+# -dend A `dendrogram` object.
 # -leaf_pos A vector of positions of leaves. The value can also be a `grid::unit` object.
 #
 # == detail
@@ -188,18 +188,19 @@ construct_dend_segments = function(dend, gp) {
 # == param
 # -dend A `dendrogram` object.
 # -facing Facing of the dendrogram.
-# -order If it is set to ``reverse``, the first element is put on the right if the dendrogram
+# -order If it is set to ``reverse``, the first leaf is put on the right if the dendrogram
 #        is horizontal and it is put on the top if the dendrogram is vertical.
 # -gp Graphic parameters for the dendrogram segments. If any of ``col``, ``lwd`` or ``lty`` is set
 #     in the ``edgePar`` attribute of a node, the corresponding value defined in ``gp`` will be
-#     overwritten for this node, so ``gp`` is like a global graphic parameters for dendrogram segments.
+#     overwritten for this node, so ``gp`` is like global graphic parameters for dendrogram segments.
 #
 # == details
 # If ``dend`` has not been processed by `adjust_dend_by_x`, internally `adjust_dend_by_x` is called
-# to add ``x`` attributes of each node/leaf.
+# to add ``x`` attributes to each node/leaf.
 #
 # == value
-# A `grob` object which is generally contructed by `grid::segmentsGrob`.
+# A `grob` object which is contructed by `grid::segmentsGrob`.
+#
 dendrogramGrob = function(dend, facing = c("bottom", "top", "left", "right"),
     order = c("normal", "reverse"), gp = gpar()) {
 
@@ -481,10 +482,10 @@ dend_branches_heights = function(d, v = NULL) {
 
 
 # == title
-# Height of dendrograms
+# Height of the Dendrograms
 #
 # == param
-# -x a `dendrogram` object and a list of `dendrogram` objects.
+# -x a `dendrogram` object or a list of `dendrogram` objects.
 #
 dend_heights = function(x) {
     if(is.null(x)) return(0)
@@ -506,7 +507,7 @@ dend_heights = function(x) {
 # ``dend`` will be processed by `adjust_dend_by_x` if it is processed yet.
 #
 # == value
-# A list of leave positions and dendrogram height.
+# A list of leave positions (``x``) and dendrogram height (``y``).
 #
 # == example
 # m = matrix(rnorm(100), 10)
@@ -556,7 +557,7 @@ dend_xy = function(dend) {
 # compare to between-group dendrogram.
 #
 # == value
-# A `dendrogram` object. The order of columns can be retrieved by `order.dendrogram`.
+# A `dendrogram` object. The order of columns can be retrieved by `stat::order.dendrogram`.
 #
 # == example
 # m = matrix(rnorm(120), nc = 12)
@@ -594,5 +595,4 @@ cluster_within_group = function(mat, factor) {
     dend = merge_dendrogram(parent, dend_list)
     order.dendrogram(dend) = unlist(order_list)
     return(dend)
-   
 }

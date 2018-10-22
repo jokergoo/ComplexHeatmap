@@ -1,69 +1,24 @@
 
-# == title
-# Generic Method for width()
-#
-# == param
-# -x An object.
-# -... Other arguments.
-#
 width = function (x, ...) {
 	UseMethod("width", x)
 }
 
-# == title
-# Generic Method for height()
-#
-# == param
-# -x An object.
-# -... Other arguments.
-#
 height = function (x, ...) {
 	UseMethod("height", x)
 }
 
-# == title
-# Generic Method for size()
-#
-# == param
-# -x An object.
-# -... Other arguments.
-#
 size = function (x, ...) {
 	UseMethod("size", x)
 }
 
-# == title
-# Generic Assignment Method for width()
-#
-# == param
-# -x An object.
-# -value The value
-# -... Other arguments.
-#
 "width<-" = function (x, ..., value) {
 	UseMethod("width<-", x)
 }
 
-# == title
-# Generic Assignment Method for height()
-#
-# == param
-# -x An object.
-# -value The value
-# -... Other arguments.
-#
 "height<-" = function (x, ..., value) {
 	UseMethod("height<-", x)
 }
 
-# == title
-# Generic Assignment Method for size()
-#
-# == param
-# -x An object.
-# -value The value
-# -... Other arguments.
-#
 "size<-" = function (x, ..., value) {
 	UseMethod("size<-", x)
 }
@@ -73,13 +28,16 @@ size = function (x, ...) {
 #
 # == param
 # -x A `AnnotationFunction-class` object.
-# -... Other arguments
+# -... Other arguments.
+#
+# == detail
+# Internally used.
 #
 # == example
 # anno = anno_points(1:10)
-# width(anno)
+# ComplexHeatmap:::width(anno)
 # anno = anno_points(1:10, which = "row")
-# width(anno)
+# ComplexHeatmap:::width(anno)
 width.AnnotationFunction = function(x, ...) {
 	x@width
 }
@@ -92,6 +50,9 @@ width.AnnotationFunction = function(x, ...) {
 # -... Other arguments.
 # -value A `grid::unit` object.
 #
+# == detail
+# Internally used.
+#
 "width<-.AnnotationFunction" = function(x, ..., value) {
 	x@width = value
 	x
@@ -102,13 +63,16 @@ width.AnnotationFunction = function(x, ...) {
 #
 # == param
 # -x The `AnnotationFunction-class` object.
-# -... Other arguments
+# -... Other arguments.
+#
+# == detail
+# Internally used.
 #
 # == example
 # anno = anno_points(1:10)
-# height(anno)
+# ComplexHeatmap:::height(anno)
 # anno = anno_points(1:10, which = "row")
-# height(anno)
+# ComplexHeatmap:::height(anno)
 height.AnnotationFunction = function(x, ...) {
 	x@height
 }
@@ -120,6 +84,9 @@ height.AnnotationFunction = function(x, ...) {
 # -x The `AnnotationFunction-class` object.
 # -value A `grid::unit` object.
 # -... Other arguments.
+#
+# == detail
+# Internally used.
 #
 "height<-.AnnotationFunction" = function(x, ..., value) {
 	x@height = value
@@ -136,11 +103,13 @@ height.AnnotationFunction = function(x, ...) {
 # == detail
 # It returns the width if it is a row annotation and the height if it is a column annotation.
 #
+# Internally used.
+#
 # == example
 # anno = anno_points(1:10)
-# size(anno)
+# ComplexHeatmap:::size(anno)
 # anno = anno_points(1:10, which = "row")
-# size(anno)
+# ComplexHeatmap:::size(anno)
 size.AnnotationFunction = function(x, ...) {
 	if(x@which == "row") {
 		x@width
@@ -160,10 +129,12 @@ size.AnnotationFunction = function(x, ...) {
 # == detail
 # It assigns to the width if it is a row annotation and the height if it is a column annotation.
 #
+# Internally used.
+#
 # == example
 # anno = anno_points(1:10)
-# size(anno) = unit(4, "cm")
-# size(anno)
+# ComplexHeatmap:::size(anno) = unit(4, "cm")
+# ComplexHeatmap:::size(anno)
 "size<-.AnnotationFunction" = function(x, ..., value) {
 	if(x@which == "row") {
 		x@width = value
@@ -182,6 +153,9 @@ size.AnnotationFunction = function(x, ...) {
 # -x The `SingleAnnotation-class` object.
 # -... Other arguments.
 #
+# == detail
+# Internally used.
+#
 width.SingleAnnotation = function(x, ...) {
     x@width
 }
@@ -193,6 +167,9 @@ width.SingleAnnotation = function(x, ...) {
 # -x The `SingleAnnotation-class` object.
 # -value A `grid::unit` object.
 # -... Other arguments.
+#
+# == detail
+# Internally used.
 #
 "width<-.SingleAnnotation" = function(x, ..., value) {
     x@width = value
@@ -209,6 +186,9 @@ width.SingleAnnotation = function(x, ...) {
 # -x The `SingleAnnotation-class` object.
 # -... Other arguments.
 #
+# == detail
+# Internally used.
+#
 height.SingleAnnotation = function(x, ...) {
     x@height
 }
@@ -220,6 +200,9 @@ height.SingleAnnotation = function(x, ...) {
 # -x The `SingleAnnotation-class` object.
 # -value A `grid::unit` object.
 # -... Other arguments.
+#
+# == detail
+# Internally used.
 #
 "height<-.SingleAnnotation" = function(x, ..., value) {
     x@height = value
@@ -238,6 +221,8 @@ height.SingleAnnotation = function(x, ...) {
 #
 # == detail
 # It returns the width if it is a row annotation and the height if it is a column annotation.
+#
+# Internally used.
 #
 size.SingleAnnotation = function(x, ...) {
     if(x@which == "row") {
@@ -258,6 +243,8 @@ size.SingleAnnotation = function(x, ...) {
 # == detail
 # It assigns to the width if it is a row annotation and the height if it is a column annotation.
 #
+# Internally used.
+#
 "size<-.SingleAnnotation" = function(x, ..., value) {
     if(x@which == "row") {
         width(x) = value
@@ -276,6 +263,9 @@ size.SingleAnnotation = function(x, ...) {
 # -x The `HeatmapAnnotation-class` object.
 # -... Other arguments.
 #
+# == detail
+# Internally used.
+#
 width.HeatmapAnnotation = function(x, ...) {
     x@width
 }
@@ -288,6 +278,9 @@ width.HeatmapAnnotation = function(x, ...) {
 # -value A `grid::unit` object.
 # -... Other arguments.
 #
+# == detail
+# Internally used.
+#
 "width<-.HeatmapAnnotation" = function(x, ..., value) {
 
     if(x@which == "column") {
@@ -296,7 +289,7 @@ width.HeatmapAnnotation = function(x, ...) {
     		width(x@anno_list[[i]]) = value
     	}
     } else {
-    	x = resize(x, width = value)
+    	x = re_size(x, width = value)
     }
     x
 }
@@ -308,6 +301,9 @@ width.HeatmapAnnotation = function(x, ...) {
 # == param
 # -x The `HeatmapAnnotation-class` object.
 # -... Other arguments.
+#
+# == detail
+# Internally used.
 #
 height.HeatmapAnnotation = function(x, ...) {
     x@height
@@ -321,6 +317,9 @@ height.HeatmapAnnotation = function(x, ...) {
 # -value A `grid::unit` object.
 # -... Other arguments.
 #
+# == detail
+# Internally used.
+#
 "height<-.HeatmapAnnotation" = function(x, ..., value) {
 
     if(x@which == "row") {
@@ -329,7 +328,7 @@ height.HeatmapAnnotation = function(x, ...) {
     		height(x@anno_list[[i]]) = height
     	}
     } else {
-    	x = resize(x, height = value)
+    	x = re_size(x, height = value)
     }
     x
 }
@@ -343,6 +342,8 @@ height.HeatmapAnnotation = function(x, ...) {
 #
 # == detail
 # It returns the width if it is a row annotation and the height if it is a column annotation.
+#
+# Internally used.
 #
 size.HeatmapAnnotation = function(x, ...) {
     if(x@which == "row") {
@@ -362,6 +363,8 @@ size.HeatmapAnnotation = function(x, ...) {
 #
 # == detail
 # It assigns the width if it is a row annotation and the height if it is a column annotation.
+#
+# Internally used.
 #
 "size<-.HeatmapAnnotation" = function(x, ..., value) {
     if(x@which == "row") {
@@ -383,6 +386,10 @@ size.HeatmapAnnotation = function(x, ...) {
 # == value
 # The returned unit x is always in ``mm``.
 #
+# == example
+# lgd = Legend(labels = 1:10, title = "foo", gp = gpar(fill = "red"))
+# width(lgd)
+#
 width.Legends = function(x, ...) {
 	s = attr(x@grob, "width")
 	s
@@ -399,8 +406,68 @@ width.Legends = function(x, ...) {
 # == value
 # The returned unit x is always in ``mm``.
 #
+# == example
+# lgd = Legend(labels = 1:10, title = "foo", gp = gpar(fill = "red"))
+# height(lgd)
+#
 height.Legends = function(x, ...) {
 	s = attr(x@grob, "height")
 	s
+}
+
+
+# == title
+# Width of the Heatmap List
+#
+# == param
+# -x The `HeatmapList-class` object returned by `draw,HeatmapList-method`.
+# -... Other arguments.
+#
+width.HeatmapList = function(x, ...) {
+    if(object@layout$initialized) {
+        x@ht_list_param$width
+    } else {
+        stop_wrap("width() can only be applied to the heatmap list object returned by draw().")
+    }
+}
+
+
+# == title
+# Height of the Heatmap List
+#
+# == param
+# -x The `HeatmapList-class` object returned by `draw,HeatmapList-method`.
+# -... Other arguments.
+#
+height.HeatmapList = function(x, ...) {
+    if(object@layout$initialized) {
+        x@ht_list_param$height
+    } else {
+        stop_wrap("height() can only be applied to the heatmap list object returned by draw().")
+    }
+}
+
+
+# == title
+# Width of the Heatmap
+#
+# == param
+# -x The `HeatmapList-class` object returned by `draw,Heatmap-method`.
+# -... Other arguments.
+#
+width.Heatmap = function(x, ...) {
+    stop_wrap("width() can only be applied to the heatmap object returned by draw().")
+}
+
+
+# == title
+# Height of the Heatmap
+#
+# == param
+# -x The `HeatmapList-class` object returned by `draw,Heatmap-method`.
+# -... Other arguments.
+#
+height.Heatmap = function(x, ...) {
+    stop_wrap("height() can only be applied to the heatmap object returned by draw().")
 }
 

@@ -14,6 +14,7 @@
 # -col a vector of color for which names correspond to alteration types.
 # -top_annotation Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes having the alteration in each sample.
 # -right_annotation Annotation put on the right of hte oncoPrint. By default it is barplto which shows the number of samples having the alteration in each gene.
+# -bottom_annotation
 # -show_pct whether show percent values on the left of the oncoprint
 # -pct_gp graphic paramters for percent row annotation
 # -pct_digits digits for percent values

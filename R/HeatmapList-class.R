@@ -518,8 +518,8 @@ setMethod(f = "draw",
     upViewport()
     upViewport()
 
-    object@ht_list_param$width = ht_list_width
-    object@ht_list_param$height = ht_list_height
+    object@ht_list_param$width = w
+    object@ht_list_param$height = h
 
     for(i in seq_along(object@ht_list)) {
         if(inherits(object@ht_list[[i]], "Heatmap")) {

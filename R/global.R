@@ -1,15 +1,14 @@
 
 
 # == title
-# Global Options
+# Global Options for Heatmaps
 #
 # == param
-# -... options, see 'details' section
-# -RESET reset all the option values
-# -READ.ONLY ``TRUE`` means only to return read-only values, ``FALSE`` means only to return non-read-only
-#          values, ``NULL`` means to return both.
-# -LOCAL switch local mode
-# -ADD add new options
+# -... Options, see 'Details' section.
+# -RESET Reset all the option values.
+# -READ.ONLY Please ignore this argument.
+# -LOCAL Please ignore this argument.
+# -ADD Please ignore this argument.
 #
 # == details
 # You can set some parameters for all heatmaps/annotations simultaneously by this global function.
@@ -24,27 +23,27 @@
 # -heatmap_column_title_gp set ``column_title_gp`` in all `Heatmap`.
 # -heatmap_border set ``border`` in all `Heatmap`.
 #
-# Following parameters to control the legends: 
+# Following parameters control the legends: 
 #
-# -legend_title_gp set
-# -legend_title_position
-# -legend_labels_gp
-# -legend_grid_width
-# -legend_grid_height
-# -legend_border
+# -legend_title_gp set ``title_gp`` in all heatmap legends and annotation legends.
+# -legend_title_position set ``title_position`` in all heatmap legends and annotation legends.
+# -legend_labels_gp set ``labels_gp`` in all heatmap legends and annotation legends.
+# -legend_grid_width set ``grid_width`` in all heatmap legends and annotation legends.
+# -legend_grid_height set ``grid_height`` in all heatmap legends and annotation legends.
+# -legend_border set ``border`` in all heatmap legends and annotation legends.
 #
-# Following parameters to control annotations:
+# Following parameters control heatmap annotations:
 #
-# -annotation_border border of all annotations
+# -annotation_border ``border`` in all `HeatmapAnnotation`.
 # -anno_simple_size size for the simple annotation.
 #
-# Following parameters to control the space between heatmap components:
+# Following parameters control the space between heatmap components:
 #
-# -DENDROGRAM_PADDING space bewteen dendrograms and heatmap body
-# -DIMNAME_PADDING space between row/column names and heatmap body
-# -TITLE_PADDING space between row/column titles and heatmap body
-# -COLUMN_ANNO_PADDING space between column annotations and heatmap body
-# -ROW_ANNO_PADDING space between row annotations and heatmap body
+# -DENDROGRAM_PADDING space bewteen dendrograms and heatmap body.
+# -DIMNAME_PADDING space between row/column names and heatmap body.
+# -TITLE_PADDING space between row/column titles and heatmap body.
+# -COLUMN_ANNO_PADDING space between column annotations and heatmap body.
+# -ROW_ANNO_PADDING space between row annotations and heatmap body.
 #
 # Other parameters:
 #
@@ -66,8 +65,7 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 # == example
-# # no example for this function
-# NULL
+# ht_opt
 #
 ht_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE) {}
 ht_opt = setGlobalOptions(
@@ -154,15 +152,15 @@ ht_opt = setGlobalOptions(
 
 
 # == title
-# Global graphic options for heatmaps
+# Global Options for Heatmaps
 #
 # == param
-# -... options, see 'details' section
-# -RESET reset all the option values
+# -... Options.
+# -RESET Reset all the option values.
 # -READ.ONLY ``TRUE`` means only to return read-only values, ``FALSE`` means only to return non-read-only
 #          values, ``NULL`` means to return both.
-# -LOCAL switch local mode
-# -ADD add new options
+# -LOCAL Wwitch to local mode.
+# -ADD Add new options.
 #
 # == details
 # This function is deprecated. Please use `ht_opt` instead. However, changes by this function

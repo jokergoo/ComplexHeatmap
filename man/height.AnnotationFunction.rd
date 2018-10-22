@@ -17,7 +17,7 @@ Height of the AnnotationFunction Object
 }
 \examples{
 anno = anno_points(1:10)
-height(anno)
+ComplexHeatmap:::height(anno)
 anno = anno_points(1:10, which = "row")
-height(anno)
+ComplexHeatmap:::height(anno)
 }

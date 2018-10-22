@@ -1,6 +1,6 @@
-\name{resize-HeatmapAnnotation-method}
-\alias{resize,HeatmapAnnotation-method}
-\alias{resize}
+\name{re_size-HeatmapAnnotation-method}
+\alias{re_size,HeatmapAnnotation-method}
+\alias{re_size}
 \title{
 Resize the Width or Height of Heatmap Annotations
 }
@@ -8,7 +8,7 @@ Resize the Width or Height of Heatmap Annotations
 Resize the Width or Height of Heatmap Annotations
 }
 \usage{
-\S4method{resize}{HeatmapAnnotation}(object,
+\S4method{re_size}{HeatmapAnnotation}(object,
     annotation_height = NULL,
     annotation_width = NULL,
     height = NULL,

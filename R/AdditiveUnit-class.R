@@ -5,7 +5,7 @@
 # == detail 
 # This class is a super class for `Heatmap-class`, `HeatmapList-class` and
 # `HeatmapAnnotation-class` classes. It is only designed for ``+`` generic
-# method so that above three classes can be appended to each other.
+# method and the `\%v\%v` method so that above three classes can be appended to each other.
 #
 AdditiveUnit = setClass("AdditiveUnit")
 

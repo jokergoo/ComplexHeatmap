@@ -1,6 +1,6 @@
 
 # == title
-# Adjust heatmap list
+# Adjust Heatmap List
 #
 # == param
 # -object A `HeatmapList-class` object
@@ -38,12 +38,12 @@ setMethod(f = "adjust_heatmap_list",
         for(i in ht_index) {
             if(has_component(object@ht_list[[i]], "column_anno_top")) {
                 if(verbose) qqcat("adjust height of top annotation of heamtap @{object@ht_list[[i]]@name}\n")
-                object@ht_list[[i]]@top_annotation = resize(object@ht_list[[i]]@top_annotation, height = max_top_anno_height)
+                object@ht_list[[i]]@top_annotation = re_size(object@ht_list[[i]]@top_annotation, height = max_top_anno_height)
                 object@ht_list[[i]] = set_component_height(object@ht_list[[i]], "column_anno_top", object@ht_list[[i]]@top_annotation@height + ht_opt$COLUMN_ANNO_PADDING)
             }
             if(has_component(object@ht_list[[i]], "column_anno_bottom")) {   
                 if(verbose) qqcat("adjust height of bottom annotation of heamtap @{object@ht_list[[i]]@name}\n")
-                object@ht_list[[i]]@bottom_annotation = resize(object@ht_list[[i]]@bottom_annotation, height = max_bottom_anno_height)
+                object@ht_list[[i]]@bottom_annotation = re_size(object@ht_list[[i]]@bottom_annotation, height = max_bottom_anno_height)
                 object@ht_list[[i]] = set_component_height(object@ht_list[[i]], "column_anno_bottom", object@ht_list[[i]]@bottom_annotation@height + ht_opt$COLUMN_ANNO_PADDING)
             }
         }
@@ -240,12 +240,12 @@ setMethod(f = "adjust_heatmap_list",
         for(i in ht_index) {
             if(has_component(object@ht_list[[i]], "row_anno_left")) {
                 if(verbose) qqcat("adjust width of left annotation of heamtap @{object@ht_list[[i]]@name}\n")
-                object@ht_list[[i]]@left_annotation = resize(object@ht_list[[i]]@left_annotation, width = max_left_anno_width)
+                object@ht_list[[i]]@left_annotation = re_size(object@ht_list[[i]]@left_annotation, width = max_left_anno_width)
                 object@ht_list[[i]] = set_component_width(object@ht_list[[i]], "row_anno_left", object@ht_list[[i]]@left_annotation@width + ht_opt$ROW_ANNO_PADDING)
             }
             if(has_component(object@ht_list[[i]], "row_anno_right")) {   
                 if(verbose) qqcat("adjust width of right annotation of heamtap @{object@ht_list[[i]]@name}\n")
-                object@ht_list[[i]]@right_annotation = resize(object@ht_list[[i]]@right_annotation, width = max_right_anno_width)
+                object@ht_list[[i]]@right_annotation = re_size(object@ht_list[[i]]@right_annotation, width = max_right_anno_width)
                 object@ht_list[[i]] = set_component_width(object@ht_list[[i]], "row_anno_right", object@ht_list[[i]]@right_annotation@width + ht_opt$ROW_ANNO_PADDING)
             }
         }
@@ -537,16 +537,6 @@ setMethod(f = "draw_heatmap_list",
             } else if(inherits(ht, "HeatmapAnnotation")) {
                 # calcualte the position of the heatmap body
                 pushViewport(viewport(y = max_bottom_component_height, height = unit(1, "npc") - max_top_component_height - max_bottom_component_height, just = c("bottom")))
-                # if(length(ht) == 1 & n_slice > 1) {
-                #     if(inherits(ht@anno_list[[1]], "AnnotationFunction")) {
-                #         if(identical(ht@anno_list[[1]]@fun@fun_name, "anno_mark")) {
-                #             # adjust pos_map var
-                #             fun = ht@anno_list[[1]]@fun
-                #             draw(fun, index = ht_main@row_order)
-                #             next
-                #         }
-                #     }
-                # }
                 for(j in seq_len(n_slice)) {
                     draw(ht, index = ht_main@row_order_list[[j]], y = slice_y[j], height = slice_height[j], just = slice_just[2], k = j, n = n_slice)
                 }

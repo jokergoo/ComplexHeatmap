@@ -17,7 +17,7 @@ Width of the AnnotationFunction Object
 }
 \examples{
 anno = anno_points(1:10)
-width(anno)
+ComplexHeatmap:::width(anno)
 anno = anno_points(1:10, which = "row")
-width(anno)
+ComplexHeatmap:::width(anno)
 }

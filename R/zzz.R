@@ -5,7 +5,7 @@
 ", pkgname, " version ", version, "
 Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
 Github page: https://github.com/jokergoo/ComplexHeatmap
-Documentation: http://jokergoo.github.io/ComplexHeatmap_book
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
 
 If you use it in published research, please cite:
 Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 

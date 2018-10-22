@@ -24,7 +24,7 @@
 # row_order(ht_list)
 setMethod(f = "row_order",
 	signature = "HeatmapList",
-	definition = function(object) {
+	definition = function(object, name = NULL) {
 
 	object = make_layout(object)
 
