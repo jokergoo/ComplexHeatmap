@@ -245,6 +245,9 @@ setMethod(f = "add_heatmap",
 # then makes the plot by re-calling the graphic functions which are already recorded
 # in the layout.
 #
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html
+#
 # == value
 # This function returns a `HeatmapList-class` object for which the layout has been created.
 #
@@ -569,8 +572,25 @@ setMethod(f = "show",
 # -j column indices
 #
 # == details
-# If the heatmap list is horizontal, ``i`` is the real row indices and ``j`` corresponds to heatmap names and single annotation names.
+# If the heatmap list is horizontal, ``i`` is the row indices and ``j`` corresponds to heatmap names and single annotation names.
+# and if the heatlist is vertical, ``i`` corresponds to heatmap/annotation names and ``j`` is the column indices.
 #
+# == example
+# ht_list = Heatmap(matrix(rnorm(100), 10), name = "rnorm") +
+#   rowAnnotation(foo = 1:10, bar = anno_points(10:1)) + 
+#   Heatmap(matrix(runif(100), 10), name = "runif")
+# summary(ht_list[1:5, ])
+# summary(ht_list[1:5, 1])
+# summary(ht_list[1:5, "rnorm"])
+# summary(ht_list[1:5, c("rnorm", "foo")])
+#
+# ht_list = Heatmap(matrix(rnorm(100), 10), name = "rnorm") \%v\%
+#   columnAnnotation(foo = 1:10, bar = anno_points(10:1)) \%v\%
+#   Heatmap(matrix(runif(100), 10), name = "runif")
+# summary(ht_list[, 1:5])
+# summary(ht_list[1, 1:5])
+# summary(ht_list["rnorm", 1:5])
+# summary(ht_list[c("rnorm", "foo"), 1:5])
 "[.HeatmapList" = function(x, i, j) {
 
     direction = x@direction
@@ -581,18 +601,19 @@ setMethod(f = "show",
         }
     }
 
-    if(length(x@ht_list) == 1) {
-        if(inherits(x@ht_list[[1]], "Heatmap")) {
-            if(direction == "horizontal") {
-                return(x@ht_list[[1]][i, j] + NULL)
+    if(direction == "horizontal") {
+        if(nargs() == 2) {
+            subset_heatmap_list_by_row(x, i, direction)
+        } else {
+            if(missing(i)) {
+                subset_heatmap_list_by_column(x, j, direction)
+            } else if(missing(j)) {
+                subset_heatmap_list_by_row(x, i, direction)
             } else {
-                return(x@ht_list[[1]][i, j] %v% NULL)
+                x = subset_heatmap_list_by_row(x, i, direction)
+                subset_heatmap_list_by_column(x, j, direction)
             }
         }
-    }
-
-    if(nargs() == 2) {
-        subset_heatmap_list_by_row(x, i, direction)
     } else {
         if(missing(i)) {
             subset_heatmap_list_by_column(x, j, direction)
@@ -617,24 +638,28 @@ subset_heatmap_list_by_row = function(ht_list, ind, direction) {
             }
         }
     } else {
+        # if it is vertical heatmap list, `ind` corresponds to heatmap names and annotation names
         if(is.numeric(ind)) {
             ht_list@ht_list = ht_list@ht_list[ind]
         } else {
-            ht_list = NULL
+            hl = list()
             # also check annotation names
+            if(!all(ind %in% names(ht_list))) {
+                stop_wrap("Cannot find all name indices in the heatmap list.")
+            }
             for(nm in names(ht_list@ht_list)) {
                 if(inherits(ht_list@ht_list[[nm]], "Heatmap")) {
                     if(nm %in% ind) {
-                        ht_list[[nm]] = ht_list@ht_list[[nm]]
+                        hl[[nm]] = ht_list@ht_list[[nm]]
                     }
                 } else {
                     anno_nm = names(ht_list@ht_list[[nm]]@anno_list)
-                    if(anno_nm %in% ind) {
-                        ht_list[[nm]] = ht_list@ht_list[[nm]][, intersect(ind, anno_nm)]
+                    if(any(anno_nm %in% ind)) {
+                        hl[[nm]] = ht_list@ht_list[[nm]][, intersect(ind, anno_nm)]
                     }
                 }
             }
-            ht_list@ht_list = ht_list
+            ht_list@ht_list = hl
         }
     }
     return(ht_list)
@@ -642,24 +667,28 @@ subset_heatmap_list_by_row = function(ht_list, ind, direction) {
 
 subset_heatmap_list_by_column = function(ht_list, ind, direction) {
     if(direction == "horizontal") {
+        # if it is horizontal heatmap list, `ind` corresponds to heatmap names and annotation names
         if(is.numeric(ind)) {
             ht_list@ht_list = ht_list@ht_list[ind]
         } else {
-            ht_list = NULL
+            hl = list()
             # also check annotation names
+            if(!all(ind %in% names(ht_list))) {
+                stop_wrap("Cannot find all name indices in the heatmap list.")
+            }
             for(nm in names(ht_list@ht_list)) {
                 if(inherits(ht_list@ht_list[[nm]], "Heatmap")) {
                     if(nm %in% ind) {
-                        ht_list[[nm]] = ht_list@ht_list[[nm]]
+                        hl[[nm]] = ht_list@ht_list[[nm]]
                     }
                 } else {
                     anno_nm = names(ht_list@ht_list[[nm]]@anno_list)
-                    if(anno_nm %in% ind) {
-                        ht_list[[nm]] = ht_list@ht_list[[nm]][, intersect(ind, anno_nm)]
+                    if(any(anno_nm %in% ind)) {
+                        hl[[nm]] = ht_list@ht_list[[nm]][, intersect(ind, anno_nm)]
                     }
                 }
             }
-            ht_list@ht_list = ht_list
+            ht_list@ht_list = hl
         }
     } else {
         for(i in seq_along(ht_list@ht_list)) {
@@ -700,3 +729,37 @@ names.HeatmapList = function(x) {
 length.HeatmapList = function(x) {
     length(x@ht_list)
 }
+
+
+# == title
+# Summary of a Heatmap List
+#
+# == param
+# -object A `HeatmapList-class` object.
+# -... Other arguments.
+#
+summary.HeatmapList = function(object, ...) {
+    n_ht = length(object@ht_list)
+
+    direction = object@direction
+
+    qqcat("A @{direction} heamtap list with @{n_ht} heatmap/annotations.\n")
+
+    ht_name = names(object@ht_list)
+    for(i in seq_len(n_ht)) {
+        if(inherits(object@ht_list[[i]], "Heatmap")) {
+            qqcat("  @{ht_name[i]}: a matrix with @{nrow(object@ht_list[[i]]@matrix)} rows and @{ncol(object@ht_list[[i]]@matrix)} columns\n")
+        } else {
+            qqcat("  @{ht_name[i]}: a list of @{length(object@ht_list[[i]]@anno_list)} annotations\n")
+            for(j in seq_along(object@ht_list[[i]]@anno_list)) {
+                qqcat("    @{object@ht_list[[i]]@anno_list[[j]]@name}:")
+                if(is_simple_annotation(object@ht_list[[i]]@anno_list[[j]])) {
+                    qqcat("   a simple annotation.\n")
+                } else {
+                    qqcat("   a complex annotation.\n")
+                }
+            }
+        }
+    }
+}
+

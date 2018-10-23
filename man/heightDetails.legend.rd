@@ -11,7 +11,7 @@ Grob height for packed_legends
 }
 \arguments{
 
-  \item{x}{legend body}
+  \item{x}{A legend object.}
 
 }
 \examples{

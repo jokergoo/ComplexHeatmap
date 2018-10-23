@@ -34,6 +34,9 @@ Different image formats can be mixed in the \code{image} vector.
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#image-annotation}
+}
 \examples{
 # download the free icons from https://github.com/Keyamoon/IcoMoon-Free
 \dontrun{

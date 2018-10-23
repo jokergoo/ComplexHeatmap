@@ -28,6 +28,9 @@ anno_joyplot(x, which = c("column", "row"), gp = gpar(fill = "#000000"),
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#joyplot-annotation}
+}
 \examples{
 m = matrix(rnorm(1000), nc = 10)
 lt = apply(m, 2, function(x) data.frame(density(x)[c("x", "y")]))

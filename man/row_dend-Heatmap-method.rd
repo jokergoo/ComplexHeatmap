@@ -1,17 +1,17 @@
 \name{row_dend-Heatmap-method}
 \alias{row_dend,Heatmap-method}
 \title{
-Get row dendrograms from a heatmap
+Get Row Dendrograms from a Heatmap
 }
 \description{
-Get row dendrograms from a heatmap
+Get Row Dendrograms from a Heatmap
 }
 \usage{
 \S4method{row_dend}{Heatmap}(object)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
 
 }
 \value{

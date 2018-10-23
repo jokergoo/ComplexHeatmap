@@ -11,7 +11,7 @@ columnAnnotation(...)
 }
 \arguments{
 
-  \item{...}{Pass to \code{\link{HeatmapAnnotation}}}
+  \item{...}{Pass to \code{\link{HeatmapAnnotation}}.}
 
 }
 \details{

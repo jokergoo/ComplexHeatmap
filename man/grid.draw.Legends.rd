@@ -20,7 +20,8 @@ This function is actually an S3 method of the \code{Legends} class for the \code
 general method. It applies \code{\link[grid]{grid.draw}} on the \code{grob} slot of the object.
 }
 \examples{
-# There is no example
-NULL
-
+lgd = Legend(at = 1:4, title = "foo")
+pushViewport(viewport(x = unit(0, "npc"), y = unit(0, "npc"), just = c("left", "bottom")))
+grid.draw(lgd)
+popViewport()
 }

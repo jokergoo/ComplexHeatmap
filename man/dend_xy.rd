@@ -18,7 +18,7 @@ dend_xy(dend)
 \code{dend} will be processed by \code{\link{adjust_dend_by_x}} if it is processed yet.
 }
 \value{
-A list of leave positions and dendrogram height.
+A list of leave positions (\code{x}) and dendrogram height (\code{y}).
 }
 \examples{
 m = matrix(rnorm(100), 10)

@@ -11,9 +11,12 @@ subset_vector(x, i)
 }
 \arguments{
 
-  \item{x}{A vector}
-  \item{i}{The indices}
+  \item{x}{A vector.}
+  \item{i}{The indices.}
 
+}
+\details{
+Mainly used for constructing the \code{\link{AnnotationFunction-class}} object.
 }
 \examples{
 # There is no example

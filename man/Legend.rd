@@ -46,10 +46,13 @@ Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
 
 }
 \details{
-The \code{Legend} function supports very flexible legend settings. Please go to ...
+Most of the argument can also be set in \code{heatmap_legend_param} argument in \code{\link{Heatmap}} or \code{annotation_legend_param}
+argument in \code{\link{HeatmapAnnotation}} to configure legend styles for heatmap and annotations.
 }
 \seealso{
 \code{\link{packLegend}} packs multiple legends into one \code{\link{Legends-class}} object.
+
+See examples of configuring legends: \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html}
 }
 \value{
 A \code{\link{Legends-class}} object.

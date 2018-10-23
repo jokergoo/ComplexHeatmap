@@ -12,8 +12,11 @@ Width of the AnnotationFunction Object
 \arguments{
 
   \item{x}{A \code{\link{AnnotationFunction-class}} object.}
-  \item{...}{Other arguments}
+  \item{...}{Other arguments.}
 
+}
+\details{
+Internally used.
 }
 \examples{
 anno = anno_points(1:10)

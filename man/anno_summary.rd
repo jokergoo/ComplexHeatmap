@@ -40,6 +40,12 @@ is split into multiple slices, multiple bars are put in the annotation. If the v
 In the barplot, the color schema is used as the same as the heatmap, while for the boxplot, the color needs
 to be controlled by \code{gp}.
 }
+\value{
+An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
+}
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#summary-annotation}
+}
 \examples{
 ha = HeatmapAnnotation(summary = anno_summary(height = unit(4, "cm")))
 v = sample(letters[1:2], 50, replace = TRUE)

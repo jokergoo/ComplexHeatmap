@@ -1,0 +1,6 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{ComplexHeatmap vignette}
+-->
+
+Please go to http://jokergoo.github.io/ComplexHeatmap-reference/book/ for full vignette.

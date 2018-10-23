@@ -1,10 +1,10 @@
 \name{decorate_title}
 \alias{decorate_title}
 \title{
-Decorate the heatmap title
+Decorate Heatmap Titles
 }
 \description{
-Decorate the heatmap title
+Decorate Heatmap Titles
 }
 \usage{
 decorate_title(heatmap, code, slice = 1, which = c("column", "row"),
@@ -12,21 +12,24 @@ decorate_title(heatmap, code, slice = 1, which = c("column", "row"),
 }
 \arguments{
 
-  \item{heatmap}{name of the heatmap}
-  \item{code}{code that adds graphics in the selected heatmap body}
-  \item{slice}{index of row slice or column slice in the heatmap}
-  \item{which}{on rows or on columns?}
-  \item{envir}{where to look for variables inside \code{code}}
+  \item{heatmap}{Name of the heatmap.}
+  \item{code}{Code that adds graphics in the selected viewport.}
+  \item{slice}{Index of the row slice or column slice in the heatmap.}
+  \item{which}{Is it a row title or a column title?}
+  \item{envir}{Where to look for variables inside \code{code}.}
 
 }
 \details{
 There is a viewport for row titles and column title in the heatmap.
 This function contructs the name of the viewport,
-goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
-to that viewport.
+goes to the viewport by \code{\link[grid]{seekViewport}} , runs code
+to that viewport and finally goes back to the original viewport.
 }
 \value{
 The function returns no value.
+}
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html}
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

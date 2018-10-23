@@ -1,17 +1,18 @@
 \name{row_order-HeatmapList-method}
 \alias{row_order,HeatmapList-method}
 \title{
-Get row order from a heatmap list
+Get Row Order from a Heatmap List
 }
 \description{
-Get row order from a heatmap list
+Get Row Order from a Heatmap List
 }
 \usage{
-\S4method{row_order}{HeatmapList}(object)
+\S4method{row_order}{HeatmapList}(object, name = NULL)
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{object}{A \code{\link{HeatmapList-class}} object.}
+  \item{name}{Name of a specific heatmap.}
 
 }
 \value{
@@ -28,7 +29,7 @@ row_order(ht_list)
 ht_list = Heatmap(mat, row_km = 2) + Heatmap(mat)
 ht_list = draw(ht_list)
 row_order(ht_list)
-ht_list = Heatmap(mat, row_km = 2) %v% Heatmap(mat)
+ht_list = Heatmap(mat, row_km = 2) \%v\% Heatmap(mat)
 ht_list = draw(ht_list)
 row_order(ht_list)
 }

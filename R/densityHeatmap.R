@@ -56,7 +56,7 @@
 # ha = HeatmapAnnotation(points = anno_points(runif(10)),
 #     anno = rep(c("A", "B"), each = 5), col = list(anno = c("A" = "red", "B" = "blue")))
 # densityHeatmap(matrix, top_annotation = ha)
-# densityHeatmap(matrix, top_annotation = ha) %v% Heatmap(matrix, height = unit(6, "cm"))
+# densityHeatmap(matrix, top_annotation = ha) \%v\% Heatmap(matrix, height = unit(6, "cm"))
 densityHeatmap = function(data, 
 	density_param = list(na.rm = TRUE),
 	

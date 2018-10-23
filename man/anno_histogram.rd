@@ -28,6 +28,9 @@ anno_histogram(x, which = c("column", "row"), n_breaks = 11,
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#histogram-annotation}
+}
 \examples{
 m = matrix(rnorm(1000), nc = 10)
 anno = anno_histogram(t(m), which = "row")

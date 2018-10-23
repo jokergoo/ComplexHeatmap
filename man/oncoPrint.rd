@@ -37,35 +37,36 @@ oncoPrint(mat,
 }
 \arguments{
 
-  \item{mat}{a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary value representing the alteration is present or absent. When it is a list, the names of the list represent alteration types. You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
-  \item{get_type}{If different alterations are encoded in the matrix, this self-defined function determines how to extract them. Only work when \code{mat} is a matrix.}
-  \item{alter_fun}{a single function or a list of functions which define how to add graphics for different alterations. If it is a list, the names of the list should cover all alteration types.}
+  \item{mat}{The value should be a character matrix which encodes mulitple alterations  or a list of matrices for which every matrix contains binary value representing whether the alteration is present or absent.  When the value is a list, the names of the list represent alteration types. You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
+  \item{get_type}{If different alterations are encoded in the matrix as complex strings, this self-defined function determines how to extract them. It only works when \code{mat} is a matrix.}
+  \item{alter_fun}{A single function or a list of functions which defines how to add graphics for different alterations.}
   \item{alter_fun_is_vectorized}{Whether \code{alter_fun} is implemented vectorized. Internally the function will guess.}
-  \item{col}{a vector of color for which names correspond to alteration types.}
-  \item{top_annotation}{Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes having the alteration in each sample.}
-  \item{right_annotation}{Annotation put on the right of hte oncoPrint. By default it is barplto which shows the number of samples having the alteration in each gene.}
-  \item{bottom_annotation}{-bottom_annotation}
-  \item{show_pct}{whether show percent values on the left of the oncoprint}
-  \item{pct_gp}{graphic paramters for percent row annotation}
-  \item{pct_digits}{digits for percent values}
-  \item{pct_side}{side of pct}
+  \item{col}{A vector of color for which names correspond to alteration types.}
+  \item{top_annotation}{Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes with a certain alteration in each sample.}
+  \item{right_annotation}{Annotation put on the right of the oncoPrint. By default it is barplot which shows the number of samples with a certain alteration in each gene.}
+  \item{bottom_annotation}{Annotation put at the bottom of the oncoPrint.}
+  \item{show_pct}{whether show percent values on the left of the oncoprint?}
+  \item{pct_gp}{Graphic paramters for percent values}
+  \item{pct_digits}{Digits for the percent values.}
+  \item{pct_side}{Side of the percent values to the oncoPrint. This argument is currently disabled.}
   \item{show_row_names}{Whether show row names?}
-  \item{row_names_side}{side of the row names}
-  \item{row_names_gp}{Graphic parameters of row names.}
-  \item{row_order}{row order}
-  \item{column_order}{column order}
-  \item{remove_empty_columns}{if there is no alteration in that sample, whether remove it on the heatmap}
-  \item{remove_empty_rows}{if there is no alteration in that sample, whether remove it on the heatmap}
+  \item{row_names_side}{Side of the row names to the oncoPrint. This argument is currently disabled.}
+  \item{row_names_gp}{Graphic parameters for the row names.}
+  \item{row_order}{Order of rows. By default rows are sorted by the number of occurence of the alterations.}
+  \item{column_order}{Order of columns. By default the columns are sorted to show the mutual exclusivity of alterations.}
+  \item{remove_empty_columns}{If there is no alteration in some samples, whether remove them on the oncoPrint?}
+  \item{remove_empty_rows}{If there is no alteration in some samples, whether remove them on the oncoPrint?}
   \item{show_column_names}{Whether show column names?}
-  \item{heatmap_legend_param}{pass to \code{\link{Heatmap}}}
-  \item{...}{pass to \code{\link{Heatmap}}, so can set \code{bottom_annotation} here.}
+  \item{heatmap_legend_param}{pass to \code{\link{Heatmap}}.}
+  \item{...}{Pass to \code{\link{Heatmap}}.}
 
 }
 \details{
 The 'memo sort' method is from \url{https://gist.github.com/armish/564a65ab874a770e2c26} . Thanks to
 B. Arman Aksoy for contributing the code.
 
-For more explanation, please go to the vignette.
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/oncoprint.html} gives details for configuring
+a oncoPrint.
 }
 \value{
 A \code{\link{Heatmap-class}} object which means you can add other heatmaps or annotations to it.

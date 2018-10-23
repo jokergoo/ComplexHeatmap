@@ -1,10 +1,10 @@
 \name{add_heatmap-HeatmapAnnotation-method}
 \alias{add_heatmap,HeatmapAnnotation-method}
 \title{
-Add row annotations or heatmaps as a heatmap list
+Add Annotations or Heatmaps as a Heatmap List
 }
 \description{
-Add row annotations or heatmaps as a heatmap list
+Add Annotations or Heatmaps as a Heatmap List
 }
 \usage{
 \S4method{add_heatmap}{HeatmapAnnotation}(object, x, direction = c("horizontal", "vertical"))
@@ -13,11 +13,11 @@ Add row annotations or heatmaps as a heatmap list
 
   \item{object}{A \code{\link{HeatmapAnnotation-class}} object.}
   \item{x}{A \code{\link{Heatmap-class}} object, a \code{\link{HeatmapAnnotation-class}} object or a \code{\link{HeatmapList-class}} object.}
-  \item{direction}{Whether it is a horizontal add or a vertical add?}
+  \item{direction}{Whether it is horizontal list or a vertical list?}
 
 }
 \details{
-There is a helper function \code{+.AdditiveUnit} for horizontal add or \code{\link[=pct_v_pct]{\%v\%}} for vertical add.
+Normally we directly use \code{+} for horizontal concatenation and \code{\link[=pct_v_pct]{\%v\%}} for vertical concatenation.
 }
 \value{
 A \code{\link{HeatmapList-class}} object.

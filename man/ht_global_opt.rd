@@ -1,21 +1,21 @@
 \name{ht_global_opt}
 \alias{ht_global_opt}
 \title{
-Global graphic options for heatmaps
+Global Options for Heatmaps
 }
 \description{
-Global graphic options for heatmaps
+Global Options for Heatmaps
 }
 \usage{
 ht_global_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE)
 }
 \arguments{
 
-  \item{...}{options, see 'details' section}
-  \item{RESET}{reset all the option values}
+  \item{...}{Options.}
+  \item{RESET}{Reset all the option values.}
   \item{READ.ONLY}{\code{TRUE} means only to return read-only values, \code{FALSE} means only to return non-read-only values, \code{NULL} means to return both.}
-  \item{LOCAL}{switch local mode}
-  \item{ADD}{add new options}
+  \item{LOCAL}{Wwitch to local mode.}
+  \item{ADD}{Add new options.}
 
 }
 \details{

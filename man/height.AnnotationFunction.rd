@@ -12,8 +12,11 @@ Height of the AnnotationFunction Object
 \arguments{
 
   \item{x}{The \code{\link{AnnotationFunction-class}} object.}
-  \item{...}{Other arguments}
+  \item{...}{Other arguments.}
 
+}
+\details{
+Internally used.
 }
 \examples{
 anno = anno_points(1:10)

@@ -3,15 +3,15 @@
 # Class for Heatmap Annotations
 #
 # == details
-# A complex heatmap contains a list of annotations which are represented as different graphics
+# A complex heatmap contains a list of annotations which are represented as graphics
 # placed on rows and columns. The `HeatmapAnnotation-class` contains a list of single annotations which are
-# represented as a list of `SingleAnnotation-class` objects with same number of rows or columns.
+# represented as a list of `SingleAnnotation-class` objects.
 #
 # == methods
 # The `HeatmapAnnotation-class` provides following methods:
 #
-# - `HeatmapAnnotation`: constructor method
-# - `draw,HeatmapAnnotation-method`: draw the annotations
+# - `HeatmapAnnotation`: constructor method.
+# - `draw,HeatmapAnnotation-method`: draw the annotations.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -39,47 +39,53 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 )
 
 # == title
-# Constructor method for HeatmapAnnotation class
+# Constructor Method for HeatmapAnnotation class
 #
 # == param
 # -... Name-value pairs where the names correspond to annotation names and values can be a vector, a matrix and an
 #      annotation function. Each pair is sent to `SingleAnnotation` to contruct a single annotation.
 # -df A data frame. Each column will be treated as a simple annotation. The data frame must have column names.
 # -name Name of the heatmap annotation, optional.
-# -col A list of colors which contain color mapping to columns in ``df`` and simple annotations define din ``...``. 
+# -col A list of colors which contain color mapping to ``df`` or simple annotations defined in ``...``. 
 #      See `SingleAnnotation` for how to set colors.
 # -na_col Color for ``NA`` values in simple annotations.
 # -annotation_legend_param A list which contains parameters for annotation legends. See `color_mapping_legend,ColorMapping-method` for all possible options.
-# -show_legend Whether show annotation legend. The value can be one single value or a vector which corresponds to the simple annotations.
-# -which Are the annotations row annotations or column annotations?
+# -show_legend Whether show annotation legends. The value can be one single value or a vector which corresponds to simple annotations.
+# -which Are these row annotations or column annotations?
 # -gp Graphic parameters for simple annotations (with ``fill`` parameter ignored).
 # -border border of single annotations.
-# -gap Gap between each two annotation. It can be a single value or a vector of `grid::unit` objects.
+# -gap Gap between annotations. It can be a single value or a vector of `grid::unit` objects.
 # -show_annotation_name Whether show annotation names? For column annotation, annotation names are drawn either on the left
-#   or the right, and for row annotations, names are draw either on top to at bottom. The value can be a vector.
+#   or the right, and for row annotations, names are draw either on top or at the bottom. The value can be a vector.
 # -annotation_name_gp Graphic parameters for anntation names. Graphic paramters can be vectors.
 # -annotation_name_offset Offset to the annotations, `grid::unit` object. The value can be a vector.
 # -annotation_name_side Side of the annotation names.
-# -annotation_name_rot Rotation of the annotation names, can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
+# -annotation_name_rot Rotation of the annotation names, it can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
 # -annotation_height Height of each annotation if annotations are column annotations.
 # -annotation_width Width of each annotation if annotations are row annotations.
-# -height Height of the complete column annotations.
-# -width Width of the complete heatmap annotations.
-# -anno_simple_size size of the simple annotation.
-# -simple_anno_size_adjust whether also adjust the size of simple annotations when adjust the whole heatmap annotation.
+# -height Height of the whole column annotations.
+# -width Width of the whole heatmap annotations.
+# -anno_simple_size Size of the simple annotation.
+# -simple_anno_size_adjust Whether also adjust the size of simple annotations when adjusting the whole heatmap annotation.
 #
 # == details
+# For arguments ``border``, ``annotation_name_offset``, ``annotation_name_side``, ``annotation_name_rot``,
+# ``show_annotation_name``, they can be set as named vectors to modify values for some of the annotations,
+# e.g. assuming you have an annotation with name ``foo``, you can specify ``border = c(foo = TRUE)`` in `HeatmapAnnotation`.
+# 
 # There are three ways to specify heatmap annotations:
 #
-# 1. If the annotation is simply a vector or a matrix, it can be specified as ``HeatmapAnnotation(foo = 1:10)``.
-# 2. If the annotations are already stored as a data frame, it can be specified as ``HeatmapAnnotation(df = df)``.
-# 3. For complex annotation, users can use the pre-defined annotation functions such as `anno_points`: ``HeatmapAnnotation(foo = anno_points(1:10))``.
+# 1. If the annotation is simply a vector or a matrix, it can be specified like ``HeatmapAnnotation(foo = 1:10)``.
+# 2. If the annotations are already stored as a data frame, it can be specified like ``HeatmapAnnotation(df = df)``.
+# 3. For complex annotations, users can use the pre-defined annotation functions such as `anno_points`: ``HeatmapAnnotation(foo = anno_points(1:10))``.
+#
+# For more details and examples, please check https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html.
 #
 # == value
 # A `HeatmapAnnotation-class` object.
 #
 # == seealso
-# There are two shortcut functions: `rowAnnotation` and `columnAnnotation`.
+# There are two helper functions: `rowAnnotation` and `columnAnnotation`.
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -427,7 +433,7 @@ HeatmapAnnotation = function(...,
 # Construct Row Annotations
 #
 # == param
-# -... Pass to `HeatmapAnnotation`
+# -... Pass to `HeatmapAnnotation`.
 #
 # == details
 # The function is identical to 
@@ -448,7 +454,7 @@ rowAnnotation = function(...) {
 # Construct Column Annotations
 #
 # == param
-# -... Pass to `HeatmapAnnotation`
+# -... Pass to `HeatmapAnnotation`.
 #
 # == details
 # The function is identical to
@@ -721,6 +727,10 @@ setMethod(f = "show",
 # -object The `HeatmapAnnotation-class` object.
 # -... other arguments.
 #
+# == value
+# If there is no ``nobs`` information for any of its `SingleAnnotation-class` object,
+# it returns ``NA``.
+#
 nobs.HeatmapAnnotation = function(object, ...) {
 	n_anno = length(object@anno_list)
 	len = sapply(seq_len(n_anno), function(i) {
@@ -740,12 +750,12 @@ nobs.HeatmapAnnotation = function(object, ...) {
 }
 
 # == title
-# Add row annotations or heatmaps as a heatmap list
+# Add Annotations or Heatmaps as a Heatmap List
 #
 # == param
 # -object A `HeatmapAnnotation-class` object.
 # -x A `Heatmap-class` object, a `HeatmapAnnotation-class` object or a `HeatmapList-class` object.
-# -direction Whether it is a horizontal add or a vertical add?
+# -direction Whether it is horizontal list or a vertical list?
 #
 # == details
 # Normally we directly use ``+`` for horizontal concatenation and `\%v\%` for vertical concatenation.
@@ -776,10 +786,10 @@ setMethod(f = "add_heatmap",
 #
 # == param
 # -... `HeatmapAnnotation-class` objects.
-# -gap gap between the annotations.
+# -gap Gap between the groups of annotations.
 #
 # == details
-# The heatmap annotations should be same number of observations.
+# The heatmap annotations should have same number of observations.
 # 
 # == example
 # ha1 = HeatmapAnnotation(foo = 1:10)
@@ -977,14 +987,15 @@ length.HeatmapAnnotation = function(x) {
 # == details
 # The function only adjust height for column annotations and width for row annotations.
 #
-# the basic rule is:
-# 1. if ``annotation_height`` is set, it needs to be a vector and ``height`` is disabled. If all
+# The basic rules are (take ``height`` and ``annotation_height`` for example:
+#
+# 1. If ``annotation_height`` is set and all
 #    ``annotation_height`` are absolute units, ``height`` is ignored.
-# 2. if ``annotation_height`` contains non-absolute units, ``height`` also need to be set and the
-#    non-absolute unit should be set in a simple form such as 1:10 or ``unit(1, "null")``.
+# 2. If ``annotation_height`` contains non-absolute units, ``height`` also need to be set and the
+#    non-absolute units should be set in a simple form such as 1:10 or ``unit(1, "null")``.
 # 3. ``anno_simple_size`` is only used when ``annotation_height`` is NULL.
-# 4. if only ``height`` is set, non-simple annotation is adjusted while keep simple anntation unchanged.
-# 5. if only ``height`` is set and all annotations are simple annotations, all anntations are adjusted.
+# 4. If only ``height`` is set, non-simple annotation is adjusted while keeps simple anntation unchanged.
+# 5. If only ``height`` is set and all annotations are simple annotations, all anntations are adjusted,
 #      and ``anno_simple_size`` is disabled.
 # 6. If ``simple_anno_size_adjust`` is ``FALSE``, the size of the simple annotations will not change.
 #

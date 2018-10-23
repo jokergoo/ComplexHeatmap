@@ -17,7 +17,7 @@ Copy the AnnotationFunction Object
 \details{
 In \code{\link{AnnotationFunction-class}}, there is an environment which
 stores some external variables for the annotation function (specified by the
-\code{var_import} argument by constructing the \code{\link{AnnotationFunction-class}}
+\code{var_import} argument when constructing the \code{\link{AnnotationFunction-class}}
 object. This \code{\link{copy_all,AnnotationFunction-method}} hard copies all the
 variables into a new isolated environment.
 

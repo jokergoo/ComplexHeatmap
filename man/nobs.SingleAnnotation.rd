@@ -12,7 +12,7 @@ Number of Observations
 \arguments{
 
   \item{object}{The \code{\link{SingleAnnotation-class}} object.}
-  \item{...}{other arguments.}
+  \item{...}{Other arguments.}
 
 }
 \details{

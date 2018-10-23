@@ -387,8 +387,8 @@ size.HeatmapAnnotation = function(x, ...) {
 # The returned unit x is always in ``mm``.
 #
 # == example
-# lgd = Legend(labels = 1:10, title = "foo", gp = gpar(fill = "red"))
-# width(lgd)
+# lgd = Legend(labels = 1:10, title = "foo", legend_gp = gpar(fill = "red"))
+# ComplexHeatmap:::width(lgd)
 #
 width.Legends = function(x, ...) {
 	s = attr(x@grob, "width")
@@ -407,8 +407,8 @@ width.Legends = function(x, ...) {
 # The returned unit x is always in ``mm``.
 #
 # == example
-# lgd = Legend(labels = 1:10, title = "foo", gp = gpar(fill = "red"))
-# height(lgd)
+# lgd = Legend(labels = 1:10, title = "foo", legend_gp = gpar(fill = "red"))
+# ComplexHeatmap:::height(lgd)
 #
 height.Legends = function(x, ...) {
 	s = attr(x@grob, "height")
@@ -424,7 +424,7 @@ height.Legends = function(x, ...) {
 # -... Other arguments.
 #
 width.HeatmapList = function(x, ...) {
-    if(object@layout$initialized) {
+    if(x@layout$initialized) {
         x@ht_list_param$width
     } else {
         stop_wrap("width() can only be applied to the heatmap list object returned by draw().")
@@ -440,7 +440,7 @@ width.HeatmapList = function(x, ...) {
 # -... Other arguments.
 #
 height.HeatmapList = function(x, ...) {
-    if(object@layout$initialized) {
+    if(x@layout$initialized) {
         x@ht_list_param$height
     } else {
         stop_wrap("height() can only be applied to the heatmap list object returned by draw().")

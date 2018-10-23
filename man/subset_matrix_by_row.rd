@@ -11,9 +11,12 @@ subset_matrix_by_row(x, i)
 }
 \arguments{
 
-  \item{x}{A matrix}
+  \item{x}{A matrix.}
   \item{i}{The row indices.}
 
+}
+\details{
+Mainly used for constructing the \code{\link{AnnotationFunction-class}} object.
 }
 \examples{
 # There is no example

@@ -1,10 +1,10 @@
 \name{draw_title-HeatmapList-method}
 \alias{draw_title,HeatmapList-method}
 \title{
-Draw heatmap list title
+Draw Heatmap List Title
 }
 \description{
-Draw heatmap list title
+Draw Heatmap List Title
 }
 \usage{
 \S4method{draw_title}{HeatmapList}(object,
@@ -12,8 +12,8 @@ Draw heatmap list title
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList-class}} object}
-  \item{which}{dendrogram on the row or on the column of the heatmap}
+  \item{object}{A \code{\link{HeatmapList-class}} object.}
+  \item{which}{Is it a row title or a column title.}
 
 }
 \details{

@@ -1,17 +1,17 @@
 \name{row_order-Heatmap-method}
 \alias{row_order,Heatmap-method}
 \title{
-Get row order from a heatmap
+Get Row Order from a Heatmap
 }
 \description{
-Get row order from a heatmap
+Get Row Order from a Heatmap
 }
 \usage{
 \S4method{row_order}{Heatmap}(object)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
 
 }
 \value{

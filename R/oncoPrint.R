@@ -3,38 +3,40 @@
 # Make oncoPrint
 #
 # == param
-# -mat a character matrix which encodes mulitple alterations or a list of matrix for which every matrix contains binary
-#      value representing the alteration is present or absent. When it is a list, the names of the list represent alteration types.
+# -mat The value should be a character matrix which encodes mulitple alterations 
+#      or a list of matrices for which every matrix contains binary
+#      value representing whether the alteration is present or absent. 
+#      When the value is a list, the names of the list represent alteration types.
 #      You can use `unify_mat_list` to make all matrix having same row names and column names.
-# -get_type If different alterations are encoded in the matrix, this self-defined function
-#           determines how to extract them. Only work when ``mat`` is a matrix.
-# -alter_fun a single function or a list of functions which define how to add graphics for different alterations.
-#                 If it is a list, the names of the list should cover all alteration types.
+# -get_type If different alterations are encoded in the matrix as complex strings, this self-defined function
+#           determines how to extract them. It only works when ``mat`` is a matrix.
+# -alter_fun A single function or a list of functions which defines how to add graphics for different alterations.
 # -alter_fun_is_vectorized Whether ``alter_fun`` is implemented vectorized. Internally the function will guess.
-# -col a vector of color for which names correspond to alteration types.
-# -top_annotation Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes having the alteration in each sample.
-# -right_annotation Annotation put on the right of hte oncoPrint. By default it is barplto which shows the number of samples having the alteration in each gene.
-# -bottom_annotation
-# -show_pct whether show percent values on the left of the oncoprint
-# -pct_gp graphic paramters for percent row annotation
-# -pct_digits digits for percent values
-# -pct_side side of pct
+# -col A vector of color for which names correspond to alteration types.
+# -top_annotation Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes with a certain alteration in each sample.
+# -right_annotation Annotation put on the right of the oncoPrint. By default it is barplot which shows the number of samples with a certain alteration in each gene.
+# -bottom_annotation Annotation put at the bottom of the oncoPrint.
+# -show_pct whether show percent values on the left of the oncoprint?
+# -pct_gp Graphic paramters for percent values
+# -pct_digits Digits for the percent values.
+# -pct_side Side of the percent values to the oncoPrint. This argument is currently disabled.
 # -show_row_names Whether show row names?
-# -row_names_side side of the row names
-# -row_names_gp Graphic parameters of row names.
-# -row_order row order
-# -column_order column order
-# -remove_empty_columns if there is no alteration in that sample, whether remove it on the heatmap
-# -remove_empty_rows if there is no alteration in that sample, whether remove it on the heatmap
+# -row_names_side Side of the row names to the oncoPrint. This argument is currently disabled.
+# -row_names_gp Graphic parameters for the row names.
+# -row_order Order of rows. By default rows are sorted by the number of occurence of the alterations.
+# -column_order Order of columns. By default the columns are sorted to show the mutual exclusivity of alterations.
+# -remove_empty_columns If there is no alteration in some samples, whether remove them on the oncoPrint?
+# -remove_empty_rows If there is no alteration in some samples, whether remove them on the oncoPrint?
 # -show_column_names Whether show column names?
-# -heatmap_legend_param pass to `Heatmap`
-# -... pass to `Heatmap`, so can set ``bottom_annotation`` here.
+# -heatmap_legend_param pass to `Heatmap`.
+# -... Pass to `Heatmap`.
 #
 # == details
 # The 'memo sort' method is from https://gist.github.com/armish/564a65ab874a770e2c26 . Thanks to
 # B. Arman Aksoy for contributing the code.
 #
-# For more explanation, please go to the vignette.
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/oncoprint.html gives details for configuring
+# a oncoPrint.
 #
 # == value
 # A `Heatmap-class` object which means you can add other heatmaps or annotations to it.
@@ -337,14 +339,14 @@ oncoPrint = function(mat,
 }
 
 # == title
-# Unify a list of matrix 
+# Unify a List of Matrix 
 #
 # == param
-# -mat_list a list of matrix, all of them should have dimension names
-# -default default values for the newly added rows and columns
+# -mat_list A list of matrix. All of them should have dimension names.
+# -default Default values for the newly added rows and columns.
 #
 # == details
-# All matrix will be unified to have same row names and column names
+# All matrix will be unified to have same row names and column names.
 #
 # == value
 # A list of matrix
@@ -369,18 +371,18 @@ unify_mat_list = function(mat_list, default = 0) {
 
 
 # == title
-# Barplot annotation for oncoPrint
+# Barplot Annotation for oncoPrint
 #
 # == param
-# -type A vector of the alteration types in your data. It can be a subset of all alteration types if you don't want to show them all.
-# -which Is ti a row annotation or a column annotation?
+# -type A vector of the alteration types in the data. It can be a subset of all alteration types if you don't want to show them all.
+# -which Is it a row annotation or a column annotation?
 # -width Wisth of the annotation.
 # -height Height of the annotation.
 # -border Whether draw the border?
 # -... Other parameters passed to `anno_barplot`.
 #
 # == detail
-# This annotation function should always use with `oncoPrint`.
+# This annotation function should always be used with `oncoPrint`.
 # 
 # == author
 # Zuguang Gu <z.gu@dkfz.de>

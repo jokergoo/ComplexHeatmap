@@ -15,7 +15,7 @@ grid.boxplot(value, pos, outline = TRUE, box_width = 0.6,
 
   \item{value}{A vector of numeric values.}
   \item{pos}{Position of the boxplot.}
-  \item{outline}{Whether draw outlines.}
+  \item{outline}{Whether draw outlines?}
   \item{box_width}{width of the box.}
   \item{pch}{Point type.}
   \item{size}{Point size.}
@@ -27,7 +27,10 @@ grid.boxplot(value, pos, outline = TRUE, box_width = 0.6,
 All the values are measured with \code{native} coordinate.
 }
 \examples{
-# There is no example
-NULL
-
+lt = list(rnorm(100), rnorm(100))
+grid.newpage()
+pushViewport(viewport(xscale = c(0.5, 2.5), yscale = range(lt)))
+grid.boxplot(lt[[1]], pos = 1, gp = gpar(fill = "red"))
+grid.boxplot(lt[[2]], pos = 2, gp = gpar(fill = "green"))
+popViewport()
 }

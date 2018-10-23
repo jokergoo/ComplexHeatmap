@@ -1,20 +1,25 @@
 \name{pindex}
 \alias{pindex}
 \title{
-Get values in a matrix by pair-wise indices
+Get Values in a Matrix by Pair-wise Indices
 }
 \description{
-Get values in a matrix by pair-wise indices
+Get Values in a Matrix by Pair-wise Indices
 }
 \usage{
 pindex(m, i, j)
 }
 \arguments{
 
-  \item{m}{a matrix or a 3d array}
-  \item{i}{row indices}
-  \item{j}{column indicies}
+  \item{m}{A matrix or a 3-dimension array.}
+  \item{i}{Row indices or the indices in the first dimension.}
+  \item{j}{Column indicies or the indices in the second dimension.}
 
+}
+\value{
+If \code{m} is a matrix, the value returned is a vector \code{c(m[i1, j1], m[i2, j2], ...)}`.
+
+If \code{m} is an array, the value returned is a matrix \code{rbind(m[i1, j1, ], m[i2, j2, ], ...)}`.
 }
 \examples{
 m = matrix(rnorm(100), 10)

@@ -11,7 +11,7 @@ row_anno_histogram(...)
 }
 \arguments{
 
-  \item{...}{pass to \code{\link{anno_histogram}}}
+  \item{...}{pass to \code{\link{anno_histogram}}.}
 
 }
 \details{
@@ -20,7 +20,7 @@ A wrapper of \code{\link{anno_histogram}} with pre-defined \code{which} to \code
 You can directly use \code{\link{anno_histogram}} for row annotation if you call it in \code{\link{rowAnnotation}}.
 }
 \value{
-See help page of \code{\link{anno_histogram}}
+See help page of \code{\link{anno_histogram}}.
 }
 \examples{
 # There is no example

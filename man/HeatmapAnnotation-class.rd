@@ -8,16 +8,16 @@ Class for Heatmap Annotations
 Class for Heatmap Annotations
 }
 \details{
-A complex heatmap contains a list of annotations which are represented as different graphics
+A complex heatmap contains a list of annotations which are represented as graphics
 placed on rows and columns. The \code{\link{HeatmapAnnotation-class}} contains a list of single annotations which are
-represented as a list of \code{\link{SingleAnnotation-class}} objects with same number of rows or columns.
+represented as a list of \code{\link{SingleAnnotation-class}} objects.
 }
 \section{Methods}{
 The \code{\link{HeatmapAnnotation-class}} provides following methods:
 
 \itemize{
-  \item \code{\link{HeatmapAnnotation}}: constructor method
-  \item \code{\link{draw,HeatmapAnnotation-method}}: draw the annotations
+  \item \code{\link{HeatmapAnnotation}}: constructor method.
+  \item \code{\link{draw,HeatmapAnnotation-method}}: draw the annotations.
 }}
 \author{
 Zuguang Gu <z.gu@dkfz.de>

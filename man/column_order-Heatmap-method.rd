@@ -1,17 +1,17 @@
 \name{column_order-Heatmap-method}
 \alias{column_order,Heatmap-method}
 \title{
-Get column order from a heatmap list
+Get Column Order from a Aeatmap List
 }
 \description{
-Get column order from a heatmap list
+Get Column Order from a Aeatmap List
 }
 \usage{
 \S4method{column_order}{Heatmap}(object)
 }
 \arguments{
 
-  \item{object}{a \code{\link{Heatmap-class}} object}
+  \item{object}{A \code{\link{Heatmap-class}} object.}
 
 }
 \value{

@@ -11,7 +11,7 @@ adjust_dend_by_x(dend, leaf_pos = 1:nobs(dend)-0.5)
 }
 \arguments{
 
-  \item{dend}{A \code{\link{dendrogram}} object}
+  \item{dend}{A \code{\link{dendrogram}} object.}
   \item{leaf_pos}{A vector of positions of leaves. The value can also be a \code{\link[grid]{unit}} object.}
 
 }

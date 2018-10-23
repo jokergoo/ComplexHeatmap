@@ -1074,6 +1074,7 @@ setMethod(f = "draw",
 # general method. It applies `grid::grid.draw` on the ``grob`` slot of the object.
 #
 # == example
+# lgd = Legend(at = 1:4, title = "foo")
 # pushViewport(viewport(x = unit(0, "npc"), y = unit(0, "npc"), just = c("left", "bottom")))
 # grid.draw(lgd)
 # popViewport()

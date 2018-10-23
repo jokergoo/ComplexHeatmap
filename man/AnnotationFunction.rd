@@ -27,99 +27,35 @@ AnnotationFunction(fun, fun_name = "", which = c("column", "row"),
 
 }
 \details{
-We use a normal R function defines how to draw the annotation graphics. As
-expected, the main part of the AnnotationFunction class is this function.
-The function defines how to draw at specific positions which correspond to
-rows or columns in the heatmap. The function should have three arguments:
-\code{index}, \code{k} and \code{n} (the names of the arguments can be arbitory)
-where \code{k} and \code{n} are optional. \code{index} corresponds to the indices of
-rows or columns of the heatmap. The value of \code{index} is not necessarily to
-be the whole row indices or column indices of the heatmap. It can be a
-subset of the indices if the annotation is split into slices according to
-the split of the heatmap. \code{index} is always reordered according to the
-reordering of heatmap rows or columns (e.g. by clustering). So, \code{index}
-actually contains a list of row or column indices for the current slice
-after row or column reordering.
-
-As mentioned, annotation can be split into slices. \code{k} corresponds to the
-current slice and \code{n} corresponds to the total number of slices. As you can image, 
-when \code{n > 1}, the annotation function will be executed for all \code{k}s. The
-information of \code{k} and \code{n} sometimes can be useful, for example, we want
-to add axis ot the right side of a column annotation, if this column annotation
-is split into several slices, the axis is only drawn when\code{k == n}.
-
-Since the function only allows \code{index}, \code{k} and \code{n}, the function
-sometimes uses several external variables which can not be defined inside
-the function, e.g. the data points for the annotation. These variables
-should be imported into the AnnotationFunction class so that the function
-can correctly find these variables (by \code{var_import} argument).
-
-One important feature for AnnotationFunction class is it can be subsetable.
-To allow subsetting of the object, users need to define the rules for the
-imported variables. The rules are simple function which
-accpets the variable and indices, and returns the subset of the variable.
-The subset rule functions implemented in this package are \code{\link{subset_gp}},
-\code{\link{subset_matrix_by_row}} and \code{\link{subset_vector}}. These three functions are enough
-for most of the cases.
-
-In following, we defined three AnnotationFunction objects:
-
-1. It needs external variable and support subsetting
-
-x = 1:10
-anno1 = AnnotationFunction(
-	fun = function(index) {
-		n = length(index)
-		pushViewport(viewport())
-		grid.points(1:n, x[index])
-		popViewport()
-	},
-	var_imported = list(x = x),
-	n = 10,
-	subset_rule = list(x = subset_vector),
-	subsetable = TRUE
-)
-
-2. The data variable is defined inside the function and no need to import other variables.
-
-anno2 = AnnotationFunction(
-	fun = function(index) {
-		x = 1:10
-		n = length(index)
-		pushViewport(viewport())
-		grid.points(1:n, x[index])
-		popViewport()
-	},
-	n = 10,
-	subsetable = TRUE
-)
-
-3. Only specify the function to the constructor. \code{anno3} is not subsettable.
-
-anno3 = AnnotationFunction(
-	fun = function(index) {
-		x = 1:10
-		n = length(index)
-		pushViewport(viewport())
-		grid.points(1:n, x[index])
-		popViewport()
-	}
-)
-
-As you can see from the examples, you need to push a viewport for graphics and finally pop the viewport.
-
-In the package, we have implemted quite a lot annotation function by \code{\link{AnnotationFunction}} constructor:
+In the package, we have implemted quite a lot annotation functions by \code{\link{AnnotationFunction}} constructor:
 \code{\link{anno_empty}}, \code{\link{anno_image}}, \code{\link{anno_points}}, \code{\link{anno_lines}}, \code{\link{anno_barplot}}, \code{\link{anno_boxplot}}, \code{\link{anno_histogram}},
 \code{\link{anno_density}}, \code{\link{anno_joyplot}}, \code{\link{anno_horizon}}, \code{\link{anno_text}} and \code{\link{anno_mark}}. These built-in annotation functions
 support as both row annotations and column annotations and they are are all subsettable.
-}
-\seealso{
+
 The build-in annotation functions are already enough for most of the analysis, nevertheless, if users
 want to know more about how to construct the AnnotationFunction class manually, they can refer to
-ComplexHeatmap Complete Reference ().
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#implement-new-annotation-functions.}
+}
+\value{
+A \code{\link{AnnotationFunction-class}} object which can be used in \code{\link{HeatmapAnnotation}}.
 }
 \examples{
-# There is no example
-NULL
-
+x = 1:10
+anno1 = AnnotationFunction(
+    fun = function(index, k, n) {
+        n = length(index)
+        pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(0, 10)))
+        grid.rect()
+        grid.points(1:n, x[index], default.units = "native")
+        if(k == 1) grid.yaxis()
+        popViewport()
+    },
+    var_import = list(x = x),
+    n = 10,
+    subsetable = TRUE,
+    height = unit(2, "cm")
+)
+m = rbind(1:10, 11:20)
+Heatmap(m, top_annotation = HeatmapAnnotation(foo = anno1))
+Heatmap(m, top_annotation = HeatmapAnnotation(foo = anno1), column_km = 2)
 }

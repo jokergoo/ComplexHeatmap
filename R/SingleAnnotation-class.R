@@ -770,7 +770,7 @@ setMethod(f = "copy_all",
 #
 # == param
 # -object The `SingleAnnotation-class` object.
-# -... other arguments.
+# -... Other arguments.
 #
 # == details
 # It returns the ``n`` slot of the annotaton function. If it does not exist, it returns ``NA``.

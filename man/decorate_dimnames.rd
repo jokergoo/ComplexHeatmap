@@ -1,10 +1,10 @@
 \name{decorate_dimnames}
 \alias{decorate_dimnames}
 \title{
-Decorate the heatmap dimension names
+Decorate Heatmap Dimension Names
 }
 \description{
-Decorate the heatmap dimension names
+Decorate Heatmap Dimension Names
 }
 \usage{
 decorate_dimnames(heatmap, code, slice = 1, which = c("column", "row"),
@@ -12,25 +12,20 @@ decorate_dimnames(heatmap, code, slice = 1, which = c("column", "row"),
 }
 \arguments{
 
-  \item{heatmap}{name of the heatmap}
-  \item{code}{code that adds graphics in the selected heatmap body}
-  \item{slice}{index of row slice or column slice in the heatmap}
+  \item{heatmap}{Name of the heatmap.}
+  \item{code}{Code that adds graphics in the selected viewport.}
+  \item{slice}{Index of the row slice or column slice in the heatmap.}
   \item{which}{on rows or on columns?}
-  \item{envir}{where to look for variables inside \code{code}}
+  \item{envir}{where to look for variables inside \code{code}.}
 
 }
 \details{
-There is a viewport for row names and column names in the heatmap.
-This function contructs the name of the viewport,
-goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
-to that viewport.
-
 If you know the dimensions of the matrix, it is
 simple to calculate the position of every row name or column name in the heatmap.
 E.g., for the column column, the i^th name is located at:
 
   \preformatted{
-    # assume nc is the number of columns 
+    # assume nc is the number of columns in the column slice
     unit((i-0.5)/nc, "npc")  }
 }
 \value{

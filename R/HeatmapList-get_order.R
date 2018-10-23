@@ -1,9 +1,10 @@
 
 # == title
-# Get row order from a heatmap list
+# Get Row Order from a Heatmap List
 #
 # == param
-# -object a `HeatmapList-class` object
+# -object A `HeatmapList-class` object.
+# -name Name of a specific heatmap.
 #
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -19,7 +20,7 @@
 # ht_list = Heatmap(mat, row_km = 2) + Heatmap(mat)
 # ht_list = draw(ht_list)
 # row_order(ht_list)
-# ht_list = Heatmap(mat, row_km = 2) %v% Heatmap(mat)
+# ht_list = Heatmap(mat, row_km = 2) \%v\% Heatmap(mat)
 # ht_list = draw(ht_list)
 # row_order(ht_list)
 setMethod(f = "row_order",
@@ -27,6 +28,10 @@ setMethod(f = "row_order",
 	definition = function(object, name = NULL) {
 
 	object = make_layout(object)
+
+	if(!is.null(name)) {
+		return(row_order(object@ht_list[[ name[1] ]]))
+	}
 
 	n = length(object@ht_list)
 	ht_index = which(sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap")))
@@ -53,10 +58,10 @@ setMethod(f = "row_order",
 })
 
 # == title
-# Get row order from a heatmap
+# Get Row Order from a Heatmap
 #
 # == param
-# -object a `Heatmap-class` object
+# -object A `Heatmap-class` object.
 #
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -88,10 +93,11 @@ setMethod(f = "row_order",
 })
 
 # == title
-# Get column order from a heatmap list
+# Get Column Order from a Heatmap List
 #
 # == param
-# -object a `HeatmapList-class` object
+# -object A `HeatmapList-class` object.
+# -name Name of a specific heatmap.
 #
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -107,17 +113,21 @@ setMethod(f = "row_order",
 # ht_list = Heatmap(mat, column_km = 2) + Heatmap(mat, column_km = 2)
 # ht_list = draw(ht_list)
 # column_order(ht_list)
-# ht_list = Heatmap(mat) %v% Heatmap(mat)
+# ht_list = Heatmap(mat) \%v\% Heatmap(mat)
 # ht_list = draw(ht_list)
 # column_order(ht_list)
-# ht_list = Heatmap(mat, column_km = 2) %v% Heatmap(mat)
+# ht_list = Heatmap(mat, column_km = 2) \%v\% Heatmap(mat)
 # ht_list = draw(ht_list)
 # column_order(ht_list)
 setMethod(f = "column_order",
 	signature = "HeatmapList",
-	definition = function(object) {
+	definition = function(object, name = NULL) {
 
 	object = make_layout(object)
+
+	if(!is.null(name)) {
+		return(column_order(object@ht_list[[ name[1] ]]))
+	}
 
 	n = length(object@ht_list)
 	ht_index = which(sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap")))
@@ -144,10 +154,10 @@ setMethod(f = "column_order",
 })
 
 # == title
-# Get column order from a heatmap list
+# Get Column Order from a Aeatmap List
 #
 # == param
-# -object a `Heatmap-class` object
+# -object A `Heatmap-class` object.
 #
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -179,10 +189,11 @@ setMethod(f = "column_order",
 })
 
 # == title
-# Get row dendrograms from a heatmap list
+# Get Row Dendrograms from a Heatmap List
 #
 # == param
-# -object a `HeatmapList-class` object
+# -object A `HeatmapList-class` object.
+# -name Name of a specific heatmap.
 # 
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -198,14 +209,18 @@ setMethod(f = "column_order",
 # ht_list = Heatmap(mat, row_km = 2) + Heatmap(mat)
 # ht_list = draw(ht_list)
 # row_dend(ht_list)
-# ht_list = Heatmap(mat, row_km = 2) %v% Heatmap(mat)
+# ht_list = Heatmap(mat, row_km = 2) \%v\% Heatmap(mat)
 # ht_list = draw(ht_list)
 # row_dend(ht_list)
 setMethod(f = "row_dend",
 	signature = "HeatmapList",
-	definition = function(object) {
+	definition = function(object, name = NULL) {
 
 	object = make_layout(object)
+
+	if(!is.null(name)) {
+		return(row_dend(object@ht_list[[ name[1] ]]))
+	}
 
 	n = length(object@ht_list)
 	ht_index = which(sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap")))
@@ -233,10 +248,10 @@ setMethod(f = "row_dend",
 
 
 # == title
-# Get row dendrograms from a heatmap
+# Get Row Dendrograms from a Heatmap
 #
 # == param
-# -object a `Heatmap-class` object
+# -object A `Heatmap-class` object.
 # 
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -268,10 +283,11 @@ setMethod(f = "row_dend",
 })
 
 # == title
-# Get column dendrograms from a heatmap list
+# Get Column Dendrograms from a hHeatmap List
 #
 # == param
-# -object a `HeatmapList-class` object
+# -object A `HeatmapList-class` object.
+# -name Name of a specific heatmap.
 # 
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -287,17 +303,21 @@ setMethod(f = "row_dend",
 # ht_list = Heatmap(mat, column_km = 2) + Heatmap(mat, column_km = 2)
 # ht_list = draw(ht_list)
 # column_dend(ht_list)
-# ht_list = Heatmap(mat) %v% Heatmap(mat)
+# ht_list = Heatmap(mat) \%v\% Heatmap(mat)
 # ht_list = draw(ht_list)
 # column_dend(ht_list)
-# ht_list = Heatmap(mat, column_km = 2) %v% Heatmap(mat)
+# ht_list = Heatmap(mat, column_km = 2) \%v\% Heatmap(mat)
 # ht_list = draw(ht_list)
 # column_dend(ht_list)
 setMethod(f = "column_dend",
 	signature = "HeatmapList",
-	definition = function(object) {
+	definition = function(object, name = NULL) {
 
 	object = make_layout(object)
+
+	if(!is.null(name)) {
+		return(column_dend(object@ht_list[[ name[1] ]]))
+	}
 
 	n = length(object@ht_list)
 	ht_index = which(sapply(seq_along(object@ht_list), function(i) inherits(object@ht_list[[i]], "Heatmap")))
@@ -325,10 +345,10 @@ setMethod(f = "column_dend",
 
 
 # == title
-# Get column dendrograms from a heatmap
+# Get Column Dendrograms from a Heatmap
 #
 # == param
-# -object a `Heatmap-class` object
+# -object A `Heatmap-class` object.
 # 
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.

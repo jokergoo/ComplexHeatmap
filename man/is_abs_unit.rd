@@ -1,10 +1,10 @@
 \name{is_abs_unit}
 \alias{is_abs_unit}
 \title{
-Whether the Unit is Absolute
+Test Whether it is an Absolute Unit
 }
 \description{
-Whether the Unit is Absolute
+Test Whether it is an Absolute Unit
 }
 \usage{
 is_abs_unit(u)

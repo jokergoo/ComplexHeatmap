@@ -3,10 +3,11 @@
 # Adjust Heatmap List
 #
 # == param
-# -object A `HeatmapList-class` object
+# -object A `HeatmapList-class` object.
 #
 # == details
-# This function adjust heatmap components for all heatmaps to align them nicely.
+# This function adjusts settings in all other heatmaps according to the main heatmap.
+# It also adjust the size of heatmap annotations to make them aligned nicely.
 #
 # This function is only for internal use.
 #
@@ -461,13 +462,13 @@ setMethod(f = "adjust_heatmap_list",
 })
 
 # == title
-# Draw the list of heatmaps
+# Draw the List of Heatmaps
 #
 # == param
-# -object a `HeatmapList-class` object
+# -object A `HeatmapList-class` object.
 #
 # == details
-# A viewport is created which contains heatmaps.
+# It only draws the list of heatmaps without legends and titles.
 #
 # This function is only for internal use.
 #
@@ -607,11 +608,11 @@ setMethod(f = "draw_heatmap_list",
 })
 
 # == title
-# Draw heatmap list title
+# Draw Heatmap List Title
 #
 # == param
-# -object a `HeatmapList-class` object
-# -which dendrogram on the row or on the column of the heatmap
+# -object A `HeatmapList-class` object.
+# -which Is it a row title or a column title.
 #
 # == details
 # A viewport is created which contains heatmap list title.

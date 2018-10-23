@@ -92,4 +92,22 @@ Heatmap(mat1, width = unit(6, "cm")) + ha
 Heatmap(mat1, width = unit(6, "cm"), row_km = 2) + ha
 
 
+ht_list = Heatmap(matrix(rnorm(100), 10), name = "rnorm") +
+  rowAnnotation(foo = 1:10, bar = anno_points(10:1)) + 
+  Heatmap(matrix(runif(100), 10), name = "runif")
+summary(ht_list[1:5, ])
+summary(ht_list[1:5, 1])
+summary(ht_list[1:5, "rnorm"])
+summary(ht_list[1:5, c("rnorm", "foo")])
+
+ht_list = Heatmap(matrix(rnorm(100), 10), name = "rnorm") %v%
+  columnAnnotation(foo = 1:10, bar = anno_points(10:1)) %v%
+  Heatmap(matrix(runif(100), 10), name = "runif")
+summary(ht_list[, 1:5])
+summary(ht_list[1, 1:5])
+summary(ht_list["rnorm", 1:5])
+summary(ht_list[c("rnorm", "foo"), 1:5])
+
+
+
 

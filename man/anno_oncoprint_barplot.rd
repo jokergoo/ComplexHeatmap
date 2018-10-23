@@ -1,10 +1,10 @@
 \name{anno_oncoprint_barplot}
 \alias{anno_oncoprint_barplot}
 \title{
-Barplot annotation for oncoPrint
+Barplot Annotation for oncoPrint
 }
 \description{
-Barplot annotation for oncoPrint
+Barplot Annotation for oncoPrint
 }
 \usage{
 anno_oncoprint_barplot(type = all_type, which = c("column", "row"),
@@ -12,8 +12,8 @@ anno_oncoprint_barplot(type = all_type, which = c("column", "row"),
 }
 \arguments{
 
-  \item{type}{A vector of the alteration types in your data. It can be a subset of all alteration types if you don't want to show them all.}
-  \item{which}{Is ti a row annotation or a column annotation?}
+  \item{type}{A vector of the alteration types in the data. It can be a subset of all alteration types if you don't want to show them all.}
+  \item{which}{Is it a row annotation or a column annotation?}
   \item{width}{Wisth of the annotation.}
   \item{height}{Height of the annotation.}
   \item{border}{Whether draw the border?}
@@ -21,7 +21,7 @@ anno_oncoprint_barplot(type = all_type, which = c("column", "row"),
 
 }
 \details{
-This annotation function should always use with \code{\link{oncoPrint}}.
+This annotation function should always be used with \code{\link{oncoPrint}}.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

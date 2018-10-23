@@ -35,6 +35,9 @@ with links.
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#mark-annotation}
+}
 \examples{
 anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row")
 draw(anno, index = 1:100, test = "anno_mark")

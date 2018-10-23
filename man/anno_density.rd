@@ -32,6 +32,9 @@ anno_density(x, which = c("column", "row"),
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#density-annotation}
+}
 \examples{
 m = matrix(rnorm(100), 10)
 anno = anno_density(m, which = "row")

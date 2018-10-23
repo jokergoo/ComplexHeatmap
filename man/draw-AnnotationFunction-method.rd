@@ -13,13 +13,13 @@ Draw the AnnotationFunction Object
 
   \item{object}{The \code{\link{AnnotationFunction-class}} object.}
   \item{index}{Index of observations.}
-  \item{k}{Current index of slice.}
+  \item{k}{Current slice index.}
   \item{n}{Total number of slices.}
   \item{test}{Is it in test mode? The value can be logical or a text which is plotted as the title of plot.}
 
 }
 \details{
-Normally it is called internally by the \code{\link{SingleAnnotation}} class.
+Normally it is called internally by the \code{\link{SingleAnnotation-class}}.
 
 When \code{test} is set to \code{TRUE}, the annotation graphic is directly drawn,
 which is generally for testing purpose.

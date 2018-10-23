@@ -15,6 +15,10 @@ Number of Observations
   \item{...}{other arguments.}
 
 }
+\value{
+If there is no \code{nobs} information for any of its \code{\link{SingleAnnotation-class}} object,
+it returns \code{NA}.
+}
 \examples{
 # There is no example
 NULL

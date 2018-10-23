@@ -15,11 +15,11 @@ Make the Layout of a Single Heatmap
 
 }
 \details{
-The layout of the single heatmap will be established by setting the size of each heatmap components.
+The layout of the single heatmap will be established by setting the size of each heatmap component.
 Also how to make graphics for heatmap components will be recorded by saving as functions.
 
 Whether to apply row clustering or column clustering affects the layout, so clustering should be applied 
-first before making the layout.
+first by \code{\link{prepare,Heatmap-method}} before making the layout.
 
 This function is only for internal use.
 }

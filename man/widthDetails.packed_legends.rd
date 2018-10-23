@@ -11,7 +11,7 @@ Grob width for packed_legends
 }
 \arguments{
 
-  \item{x}{legend body}
+  \item{x}{A packed_legends object.}
 
 }
 \examples{

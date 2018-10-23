@@ -19,6 +19,8 @@ Assign the Size to the SingleAnnotation Object
 }
 \details{
 It assigns to the width if it is a row annotation and the height if it is a column annotation.
+
+Internally used.
 }
 \examples{
 # There is no example

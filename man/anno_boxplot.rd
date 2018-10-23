@@ -33,6 +33,9 @@ anno_boxplot(x, which = c("column", "row"), border = TRUE,
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#box-annotation}
+}
 \examples{
 set.seed(123)
 m = matrix(rnorm(100), 10)

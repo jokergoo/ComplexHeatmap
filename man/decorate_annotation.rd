@@ -1,30 +1,33 @@
 \name{decorate_annotation}
 \alias{decorate_annotation}
 \title{
-Decorate the heatmap annotation
+Decorate Heatmap Annotation
 }
 \description{
-Decorate the heatmap annotation
+Decorate Heatmap Annotation
 }
 \usage{
 decorate_annotation(annotation, code, slice = 1, envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
-  \item{annotation}{name of the annotation}
-  \item{code}{code that adds graphics in the selected heatmap body}
-  \item{slice}{index of row slices in the heatmap}
-  \item{envir}{where to look for variables inside \code{code}}
+  \item{annotation}{Name of the annotation.}
+  \item{code}{Code that adds graphics in the selected heatmap annotation.}
+  \item{slice}{Index of the row slices or the column slice in the heatmap.}
+  \item{envir}{Where to look for variables inside \code{code}.}
 
 }
 \details{
 There is a viewport for every column annotation and row annotation.
 This function contructs the name of the viewport,
-goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
-to that viewport.
+goes to the viewport by \code{\link[grid]{seekViewport}}, runs code
+to that viewport, and finally goes back to the original viewport.
 }
 \value{
 The function returns no value.
+}
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html}
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

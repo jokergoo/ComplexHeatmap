@@ -15,7 +15,7 @@ Draw Heatmap Title
   \item{object}{A \code{\link{Heatmap-class}} object.}
   \item{which}{Is title put on the row or on the column of the heatmap?}
   \item{k}{Slice index.}
-  \item{...}{Pass to \code{\link[grid]{viewport}} which includes the complete heatmap title}
+  \item{...}{Pass to \code{\link[grid]{viewport}} which includes the complete heatmap title.}
 
 }
 \details{

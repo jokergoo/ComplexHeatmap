@@ -1,22 +1,25 @@
 # == title
-# Decorate the heatmap body
+# Decorate Heatmap Bodies
 #
 # == param
-# -heatmap name of the heatmap which is set as ``name`` argument in `Heatmap` function.
-# -code code that adds graphics in the selected heatmap body.
-# -slice index of row slices in the heatmap.
-# -row_slice index of row slices in the heatmap.
-# -column_slice index of column slices in the heatmap.
-# -envir where to look for variables inside ``code``
+# -heatmap Name of the heatmap which is set as ``name`` argument in `Heatmap` function.
+# -code Code that adds graphics in the selected heatmap body.
+# -slice Index of the row slice in the heatmap.
+# -row_slice Index of the row slice in the heatmap.
+# -column_slice Index of the column slice in the heatmap.
+# -envir Where to look for variables inside ``code``.
 #
 # == details
-# There is a viewport for each row slice and each column slice in each heatmap.
+# There is a viewport for each slice in each heatmap.
 # This function contructs the name of the viewport,
-# goes to the viewport by `grid::seekViewport` and applies code
-# to that viewport.
+# goes to the viewport by `grid::seekViewport`, runs the code
+# to that viewport and finally goes back to the original viewport.
 #
 # == value
 # This function returns no value.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -46,31 +49,30 @@ decorate_heatmap_body = function(heatmap, code,
 }
 
 # == title
-# Decorate the heatmap dendrogram
+# Decorate Heatmap Dendrograms
 #
 # == param
-# -heatmap name of the heatmap
-# -code code that adds graphics in the selected heatmap body
-# -slice index of row slice or column slice in the heatmap
-# -which on rows or on columns?
-# -envir where to look for variables inside ``code``
+# -heatmap Name of the heatmap.
+# -code Code that adds graphics in the selected heatmap dendrogram.
+# -slice Index of the row slice or column slice in the heatmap.
+# -which Is the dendrogram on rows or on columns?
+# -envir Where to look for variables inside ``code``.
 #
 # == details
-# There is a viewport for each dendrogram in the heatmap.
-# This function contructs the name of the viewport,
-# goes to the viewport by `grid::seekViewport` and applies code
-# to that viewport.
 #
 # If you know the number of leaves in the dendrogram, it is
 # simple to calculate the position of every leave in the dendrogram.
 # E.g., for the column dendrogram, the i^th leave is located at:
 #
-#     # assume nc is the number of columns 
+#     # assume nc is the number of columns in the column slice
 #     unit((i-0.5)/nc, "npc")
 #
 #
 # == value
 # This function returns no value.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -100,11 +102,11 @@ decorate_dend = function(heatmap, code, slice = 1, which = c("column", "row"),
 }
 
 # == title
-# Decorate heatmap dendrogram on columns
+# Decorate Heatmap Column Dendrograms
 #
 # == param
-# -... pass to `decorate_dend`
-# -envir where to look for variables inside ``code``
+# -... Pass to `decorate_dend`.
+# -envir Where to look for variables inside ``code``.
 #
 # == details
 # This is a wrapper function which pre-defined ``which`` argument in `decorate_dend`.
@@ -115,20 +117,16 @@ decorate_dend = function(heatmap, code, slice = 1, which = c("column", "row"),
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-# == example
-# # No example for this function
-# NULL
-#
 decorate_column_dend = function(..., envir = new.env(parent = parent.frame())) {
 	decorate_dend(..., which = "column", envir = envir)
 }
 
 # == title
-# Decorate heatmap dendrogram on rows
+# Decorate Heatmap Row Dendrograms
 #
 # == param
-# -... pass to `decorate_dend`
-# -envir where to look for variables inside ``code``
+# -... Pass to `decorate_dend`.
+# -envir Where to look for variables inside ``code``?
 #
 # == details
 # This is a helper function which pre-defined ``which`` argument in `decorate_dend`.
@@ -139,36 +137,27 @@ decorate_column_dend = function(..., envir = new.env(parent = parent.frame())) {
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-# == example
-# # No example for this function
-# NULL
-#
 decorate_row_dend = function(..., envir = new.env(parent = parent.frame())) {
 	decorate_dend(..., which = "row", envir = envir)
 }
 
 
 # == title
-# Decorate the heatmap dimension names
+# Decorate Heatmap Dimension Names
 #
 # == param
-# -heatmap name of the heatmap
-# -code code that adds graphics in the selected heatmap body
-# -slice index of row slice or column slice in the heatmap
+# -heatmap Name of the heatmap.
+# -code Code that adds graphics in the selected viewport.
+# -slice Index of the row slice or column slice in the heatmap.
 # -which on rows or on columns?
-# -envir where to look for variables inside ``code``
+# -envir where to look for variables inside ``code``.
 #
 # == details
-# There is a viewport for row names and column names in the heatmap.
-# This function contructs the name of the viewport,
-# goes to the viewport by `grid::seekViewport` and applies code
-# to that viewport.
-#
 # If you know the dimensions of the matrix, it is
 # simple to calculate the position of every row name or column name in the heatmap.
 # E.g., for the column column, the i^th name is located at:
 #
-#     # assume nc is the number of columns 
+#     # assume nc is the number of columns in the column slice
 #     unit((i-0.5)/nc, "npc")
 #
 #
@@ -205,11 +194,11 @@ decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"
 }
 
 # == title
-# Decorate heatmap row names
+# Decorate Heatmap Row Names
 #
 # == param
-# -... pass to `decorate_dimnames`
-# -envir where to look for variables inside ``code``
+# -... Pass to `decorate_dimnames`.
+# -envir wWhere to look for variables inside ``code``.
 #
 # == details
 # This is a helper function which pre-defined ``which`` argument in `decorate_dimnames`.
@@ -219,21 +208,17 @@ decorate_dimnames = function(heatmap, code, slice = 1, which = c("column", "row"
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
-#
-# == example
-# # No example for this function
-# NULL
 #
 decorate_row_names = function(..., envir = new.env(parent = parent.frame())) {
 	decorate_dimnames(..., which = "row", envir = envir)
 }
 
 # == title
-# Decorate heatmap column names
+# Decorate Heatmap Column Names
 #
 # == param
-# -... pass to `decorate_dimnames`
-# -envir where to look for variables inside ``code``
+# -... Pass to `decorate_dimnames`.
+# -envir Where to look for variables inside ``code``.
 #
 # == details
 # This is a helper function which pre-defined ``which`` argument in `decorate_dimnames`.
@@ -243,10 +228,6 @@ decorate_row_names = function(..., envir = new.env(parent = parent.frame())) {
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
-#
-# == example
-# # No example for this function
-# NULL
 #
 decorate_column_names = function(..., envir = new.env(parent = parent.frame())) {
 	decorate_dimnames(..., which = "column", envir = envir)
@@ -254,23 +235,26 @@ decorate_column_names = function(..., envir = new.env(parent = parent.frame())) 
 
 
 # == title
-# Decorate the heatmap title
+# Decorate Heatmap Titles
 #
 # == param
-# -heatmap name of the heatmap
-# -code code that adds graphics in the selected heatmap body
-# -slice index of row slice or column slice in the heatmap
-# -which on rows or on columns?
-# -envir where to look for variables inside ``code``
+# -heatmap Name of the heatmap.
+# -code Code that adds graphics in the selected viewport.
+# -slice Index of the row slice or column slice in the heatmap.
+# -which Is it a row title or a column title?
+# -envir Where to look for variables inside ``code``.
 #
 # == details
 # There is a viewport for row titles and column title in the heatmap.
 # This function contructs the name of the viewport,
-# goes to the viewport by `grid::seekViewport` and applies code
-# to that viewport.
+# goes to the viewport by `grid::seekViewport` , runs code
+# to that viewport and finally goes back to the original viewport.
 #
 # == value
 # The function returns no value.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -298,11 +282,11 @@ decorate_title = function(heatmap, code, slice = 1, which = c("column", "row"),
 }
 
 # == title
-# Decorate heatmap row title
+# Decorate Heatmap Row Titles
 #
 # == param
-# -... pass to `decorate_title`
-# -envir where to look for variables inside ``code``
+# -... Pass to `decorate_title`.
+# -envir Where to look for variables inside ``code``.
 #
 # == details
 # This is a helper function which pre-defined ``which`` argument in `decorate_title`.
@@ -312,21 +296,17 @@ decorate_title = function(heatmap, code, slice = 1, which = c("column", "row"),
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
-#
-# == example
-# # No example for this function
-# NULL
 #
 decorate_row_title = function(..., envir = new.env(parent = parent.frame())) {
 	decorate_title(..., which = "row", envir = envir)
 }
 
 # == title
-# Decorate heatmap column title
+# Decorate Heatmap Column Titles
 #
 # == param
-# -... pass to `decorate_title`
-# -envir where to look for variables inside ``code``
+# -... Pass to `decorate_title`.
+# -envir Where to look for variables inside ``code``.
 #
 # == details
 # This is a helper function which pre-defined ``which`` argument in `decorate_title`.
@@ -337,31 +317,30 @@ decorate_row_title = function(..., envir = new.env(parent = parent.frame())) {
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-# == example
-# # No example for this function
-# NULL
-#
 decorate_column_title = function(..., envir = new.env(parent = parent.frame())) {
 	decorate_title(..., which = "column", envir = envir)
 }
 
 # == title
-# Decorate the heatmap annotation
+# Decorate Heatmap Annotation
 #
 # == param
-# -annotation name of the annotation
-# -code code that adds graphics in the selected heatmap body
-# -slice index of row slices in the heatmap
-# -envir where to look for variables inside ``code``
+# -annotation Name of the annotation.
+# -code Code that adds graphics in the selected heatmap annotation.
+# -slice Index of the row slices or the column slice in the heatmap.
+# -envir Where to look for variables inside ``code``.
 #
 # == details
 # There is a viewport for every column annotation and row annotation.
 # This function contructs the name of the viewport,
-# goes to the viewport by `grid::seekViewport` and applies code
-# to that viewport.
+# goes to the viewport by `grid::seekViewport`, runs code
+# to that viewport, and finally goes back to the original viewport.
 #
 # == value
 # The function returns no value.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html
 #
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
@@ -379,7 +358,7 @@ decorate_column_title = function(..., envir = new.env(parent = parent.frame())) 
 # decorate_annotation("point", {
 #     grid.rect(gp = gpar(fill = "#FF000080"))
 # }, slice = 2)
-
+#
 decorate_annotation = function(annotation, code, slice = 1, envir = new.env(parent = parent.frame())) {
 
 	current_vp = current.viewport()$name

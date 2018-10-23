@@ -34,6 +34,9 @@ anno_lines(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#lines-annotation}
+}
 \examples{
 anno = anno_lines(runif(10))
 draw(anno, test = "anno_lines")

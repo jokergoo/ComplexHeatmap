@@ -28,6 +28,9 @@ anno_text(x, which = c("column", "row"), gp = gpar(),
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#text-annotation}
+}
 \examples{
 anno = anno_text(month.name)
 draw(anno, test = "month names")

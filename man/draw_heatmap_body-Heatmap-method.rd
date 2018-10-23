@@ -2,10 +2,10 @@
 \alias{draw_heatmap_body,Heatmap-method}
 \alias{draw_heatmap_body}
 \title{
-Draw the Heatmap Body
+Draw Heatmap Body
 }
 \description{
-Draw the Heatmap Body
+Draw Heatmap Body
 }
 \usage{
 \S4method{draw_heatmap_body}{Heatmap}(object, kr = 1, kc = 1, ...)

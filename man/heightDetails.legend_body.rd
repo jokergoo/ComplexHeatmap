@@ -11,7 +11,7 @@ Grob height for legend_body
 }
 \arguments{
 
-  \item{x}{legend body}
+  \item{x}{A legend_body object.}
 
 }
 \examples{

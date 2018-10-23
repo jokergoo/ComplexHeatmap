@@ -165,6 +165,9 @@ the layout of the heatmap list and the layout of every single heatmap,
 then makes the plot by re-calling the graphic functions which are already recorded
 in the layout.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html}
+}
 \value{
 This function returns a \code{\link{HeatmapList-class}} object for which the layout has been created.
 }

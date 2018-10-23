@@ -1,17 +1,18 @@
 \name{column_dend-HeatmapList-method}
 \alias{column_dend,HeatmapList-method}
 \title{
-Get column dendrograms from a heatmap list
+Get Column Dendrograms from a hHeatmap List
 }
 \description{
-Get column dendrograms from a heatmap list
+Get Column Dendrograms from a hHeatmap List
 }
 \usage{
-\S4method{column_dend}{HeatmapList}(object)
+\S4method{column_dend}{HeatmapList}(object, name = NULL)
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{object}{A \code{\link{HeatmapList-class}} object.}
+  \item{name}{Name of a specific heatmap.}
 
 }
 \value{
@@ -28,10 +29,10 @@ column_dend(ht_list)
 ht_list = Heatmap(mat, column_km = 2) + Heatmap(mat, column_km = 2)
 ht_list = draw(ht_list)
 column_dend(ht_list)
-ht_list = Heatmap(mat) %v% Heatmap(mat)
+ht_list = Heatmap(mat) \%v\% Heatmap(mat)
 ht_list = draw(ht_list)
 column_dend(ht_list)
-ht_list = Heatmap(mat, column_km = 2) %v% Heatmap(mat)
+ht_list = Heatmap(mat, column_km = 2) \%v\% Heatmap(mat)
 ht_list = draw(ht_list)
 column_dend(ht_list)
 }

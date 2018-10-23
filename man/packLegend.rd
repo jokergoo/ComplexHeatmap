@@ -18,13 +18,16 @@ packLegend(...,gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2
   \item{row_gap}{Horizontal gaps between legends.}
   \item{column_gap}{Vertical gaps between legends.}
   \item{direction}{The direction to arrange legends.}
-  \item{max_width}{The maximal width of the total packed legends. It only works for horizontal arrangement. If the total width of the legends exceeds it, the legends will be arranged into several rows.}
+  \item{max_width}{The maximal width of the total packed legends. It only works for horizontal arrangement. If the total width of the legends exceeds it, the legends will be arranged into multiple rows.}
   \item{max_height}{Similar as \code{max_width}, but for the vertical arrangment of legends.}
   \item{list}{The list of legends can be specified as a list.}
 
 }
 \value{
 A \code{\link{Legends-class}} object.
+}
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#a-list-of-legends}
 }
 \examples{
 require(circlize)

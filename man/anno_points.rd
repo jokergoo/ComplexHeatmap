@@ -30,6 +30,9 @@ anno_points(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16,
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#points-annotation}
+}
 \examples{
 anno = anno_points(runif(10))
 draw(anno, test = "anno_points")

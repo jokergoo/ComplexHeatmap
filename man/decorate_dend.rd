@@ -1,10 +1,10 @@
 \name{decorate_dend}
 \alias{decorate_dend}
 \title{
-Decorate the heatmap dendrogram
+Decorate Heatmap Dendrograms
 }
 \description{
-Decorate the heatmap dendrogram
+Decorate Heatmap Dendrograms
 }
 \usage{
 decorate_dend(heatmap, code, slice = 1, which = c("column", "row"),
@@ -12,29 +12,27 @@ decorate_dend(heatmap, code, slice = 1, which = c("column", "row"),
 }
 \arguments{
 
-  \item{heatmap}{name of the heatmap}
-  \item{code}{code that adds graphics in the selected heatmap body}
-  \item{slice}{index of row slice or column slice in the heatmap}
-  \item{which}{on rows or on columns?}
-  \item{envir}{where to look for variables inside \code{code}}
+  \item{heatmap}{Name of the heatmap.}
+  \item{code}{Code that adds graphics in the selected heatmap dendrogram.}
+  \item{slice}{Index of the row slice or column slice in the heatmap.}
+  \item{which}{Is the dendrogram on rows or on columns?}
+  \item{envir}{Where to look for variables inside \code{code}.}
 
 }
 \details{
-There is a viewport for each dendrogram in the heatmap.
-This function contructs the name of the viewport,
-goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
-to that viewport.
-
 If you know the number of leaves in the dendrogram, it is
 simple to calculate the position of every leave in the dendrogram.
 E.g., for the column dendrogram, the i^th leave is located at:
 
   \preformatted{
-    # assume nc is the number of columns 
+    # assume nc is the number of columns in the column slice
     unit((i-0.5)/nc, "npc")  }
 }
 \value{
 This function returns no value.
+}
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html}
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

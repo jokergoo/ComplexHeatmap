@@ -38,6 +38,9 @@ on top of the grids where the it can be normal point (when \code{pch} is set as 
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#simple-annotation-as-an-annotation-function}
+}
 \examples{
 anno = anno_simple(1:10)
 draw(anno, test = "a numeric vector")

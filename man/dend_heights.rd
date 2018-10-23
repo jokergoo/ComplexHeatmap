@@ -1,17 +1,17 @@
 \name{dend_heights}
 \alias{dend_heights}
 \title{
-Height of dendrograms
+Height of the Dendrograms
 }
 \description{
-Height of dendrograms
+Height of the Dendrograms
 }
 \usage{
 dend_heights(x)
 }
 \arguments{
 
-  \item{x}{a \code{\link{dendrogram}} object and a list of \code{\link{dendrogram}} objects.}
+  \item{x}{a \code{\link{dendrogram}} object or a list of \code{\link{dendrogram}} objects.}
 
 }
 \examples{

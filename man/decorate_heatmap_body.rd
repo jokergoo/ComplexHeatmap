@@ -1,10 +1,10 @@
 \name{decorate_heatmap_body}
 \alias{decorate_heatmap_body}
 \title{
-Decorate the heatmap body
+Decorate Heatmap Bodies
 }
 \description{
-Decorate the heatmap body
+Decorate Heatmap Bodies
 }
 \usage{
 decorate_heatmap_body(heatmap, code,
@@ -13,22 +13,25 @@ decorate_heatmap_body(heatmap, code,
 }
 \arguments{
 
-  \item{heatmap}{name of the heatmap which is set as \code{name} argument in \code{\link{Heatmap}} function.}
-  \item{code}{code that adds graphics in the selected heatmap body.}
-  \item{slice}{index of row slices in the heatmap.}
-  \item{row_slice}{index of row slices in the heatmap.}
-  \item{column_slice}{index of column slices in the heatmap.}
-  \item{envir}{where to look for variables inside \code{code}}
+  \item{heatmap}{Name of the heatmap which is set as \code{name} argument in \code{\link{Heatmap}} function.}
+  \item{code}{Code that adds graphics in the selected heatmap body.}
+  \item{slice}{Index of the row slice in the heatmap.}
+  \item{row_slice}{Index of the row slice in the heatmap.}
+  \item{column_slice}{Index of the column slice in the heatmap.}
+  \item{envir}{Where to look for variables inside \code{code}.}
 
 }
 \details{
-There is a viewport for each row slice and each column slice in each heatmap.
+There is a viewport for each slice in each heatmap.
 This function contructs the name of the viewport,
-goes to the viewport by \code{\link[grid]{seekViewport}} and applies code
-to that viewport.
+goes to the viewport by \code{\link[grid]{seekViewport}}, runs the code
+to that viewport and finally goes back to the original viewport.
 }
 \value{
 This function returns no value.
+}
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html}
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

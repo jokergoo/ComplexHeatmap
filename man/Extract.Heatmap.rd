@@ -13,8 +13,8 @@ Subset a Heatmap
 \arguments{
 
   \item{x}{A \code{\link{Heatmap-class}} object.}
-  \item{i}{Row indices}
-  \item{j}{Column indices}
+  \item{i}{Row indices.}
+  \item{j}{Column indices.}
 
 }
 \details{

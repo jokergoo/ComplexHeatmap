@@ -557,7 +557,7 @@ dend_xy = function(dend) {
 # compare to between-group dendrogram.
 #
 # == value
-# A `dendrogram` object. The order of columns can be retrieved by `stat::order.dendrogram`.
+# A `dendrogram` object. The order of columns can be retrieved by `stats::order.dendrogram`.
 #
 # == example
 # m = matrix(rnorm(120), nc = 12)

@@ -31,6 +31,9 @@ anno_barplot(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_wid
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#barplot_annotation}
+}
 \examples{
 anno = anno_barplot(1:10)
 draw(anno, test = "a vector")

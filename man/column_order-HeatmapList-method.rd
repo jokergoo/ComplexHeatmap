@@ -1,17 +1,18 @@
 \name{column_order-HeatmapList-method}
 \alias{column_order,HeatmapList-method}
 \title{
-Get column order from a heatmap list
+Get Column Order from a Heatmap List
 }
 \description{
-Get column order from a heatmap list
+Get Column Order from a Heatmap List
 }
 \usage{
-\S4method{column_order}{HeatmapList}(object)
+\S4method{column_order}{HeatmapList}(object, name = NULL)
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{object}{A \code{\link{HeatmapList-class}} object.}
+  \item{name}{Name of a specific heatmap.}
 
 }
 \value{
@@ -28,10 +29,10 @@ column_order(ht_list)
 ht_list = Heatmap(mat, column_km = 2) + Heatmap(mat, column_km = 2)
 ht_list = draw(ht_list)
 column_order(ht_list)
-ht_list = Heatmap(mat) %v% Heatmap(mat)
+ht_list = Heatmap(mat) \%v\% Heatmap(mat)
 ht_list = draw(ht_list)
 column_order(ht_list)
-ht_list = Heatmap(mat, column_km = 2) %v% Heatmap(mat)
+ht_list = Heatmap(mat, column_km = 2) \%v\% Heatmap(mat)
 ht_list = draw(ht_list)
 column_order(ht_list)
 }

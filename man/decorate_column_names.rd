@@ -1,18 +1,18 @@
 \name{decorate_column_names}
 \alias{decorate_column_names}
 \title{
-Decorate heatmap column names
+Decorate Heatmap Column Names
 }
 \description{
-Decorate heatmap column names
+Decorate Heatmap Column Names
 }
 \usage{
 decorate_column_names(..., envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
-  \item{...}{pass to \code{\link{decorate_dimnames}}}
-  \item{envir}{where to look for variables inside \code{code}}
+  \item{...}{Pass to \code{\link{decorate_dimnames}}.}
+  \item{envir}{Where to look for variables inside \code{code}.}
 
 }
 \details{
@@ -25,6 +25,7 @@ The function returns no value.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# No example for this function
+# There is no example
 NULL
+
 }

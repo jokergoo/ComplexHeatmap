@@ -1,18 +1,18 @@
 \name{decorate_column_dend}
 \alias{decorate_column_dend}
 \title{
-Decorate heatmap dendrogram on columns
+Decorate Heatmap Column Dendrograms
 }
 \description{
-Decorate heatmap dendrogram on columns
+Decorate Heatmap Column Dendrograms
 }
 \usage{
 decorate_column_dend(..., envir = new.env(parent = parent.frame()))
 }
 \arguments{
 
-  \item{...}{pass to \code{\link{decorate_dend}}}
-  \item{envir}{where to look for variables inside \code{code}}
+  \item{...}{Pass to \code{\link{decorate_dend}}.}
+  \item{envir}{Where to look for variables inside \code{code}.}
 
 }
 \details{
@@ -25,6 +25,7 @@ The function returns no value.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# No example for this function
+# There is no example
 NULL
+
 }

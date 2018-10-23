@@ -12,11 +12,11 @@ Concatenate Heatmap Annotations
 \arguments{
 
   \item{...}{\code{\link{HeatmapAnnotation-class}} objects.}
-  \item{gap}{gap between the annotations.}
+  \item{gap}{Gap between the groups of annotations.}
 
 }
 \details{
-The heatmap annotations should be same number of observations.
+The heatmap annotations should have same number of observations.
 }
 \examples{
 ha1 = HeatmapAnnotation(foo = 1:10)

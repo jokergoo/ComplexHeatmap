@@ -7,11 +7,11 @@ Calculate Pairwise Distance from a Matrix
 Calculate Pairwise Distance from a Matrix
 }
 \usage{
-dist2(mat, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...)
+dist2(x, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...)
 }
 \arguments{
 
-  \item{mat}{A matrix. The distance is calculated by rows.}
+  \item{x}{A matrix or a list. If it is a matrix, the distance is calculated by rows.}
   \item{pairwise_fun}{A function which calculates distance between two vectors.}
   \item{...}{Pass to \code{\link[stats]{as.dist}}.}
 
@@ -27,7 +27,10 @@ A \code{\link[stats]{dist}} object.
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-# There is no example
-NULL
-
+lt = lapply(1:10, function(i) {
+    sample(letters, sample(6:10, 1))
+})
+dist2(lt, function(x, y) {
+    length(intersect(x, y))/length(union(x, y))
+})
 }

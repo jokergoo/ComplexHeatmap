@@ -1,10 +1,10 @@
 \name{subset_gp}
 \alias{subset_gp}
 \title{
-Subset a gpar object
+Subset a gpar Object
 }
 \description{
-Subset a gpar object
+Subset a gpar Object
 }
 \usage{
 subset_gp(gp, i)

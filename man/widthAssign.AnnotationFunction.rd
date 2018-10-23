@@ -17,6 +17,9 @@ Assign the Width to the AnnotationFunction Object
   \item{value}{A \code{\link[grid]{unit}} object.}
 
 }
+\details{
+Internally used.
+}
 \examples{
 # There is no example
 NULL

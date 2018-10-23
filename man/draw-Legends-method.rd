@@ -19,6 +19,8 @@ Draw the Legends
 
 }
 \details{
+In the legend grob, there should always be a viewport attached which is like a wrapper of 
+all the graphic elements in a legend.
 If in the \code{object}, there is already a viewport attached, it will modify the \code{x}, \code{y}
 and \code{valid.just} of the viewport. If there is not viewport attached, a viewport
 with specified \code{x}, \code{y} and \code{valid.just} is created and attached.
@@ -30,4 +32,9 @@ the position of the parent viewport.
 \examples{
 lgd = Legend(at = 1:4, title = "foo")
 draw(lgd, x = unit(0, "npc"), y = unit(0, "npc"), just = c("left", "bottom"))
+
+# and a similar version of grid.draw
+pushViewport(viewport(x = unit(0, "npc"), y = unit(0, "npc"), just = c("left", "bottom")))
+grid.draw(lgd)
+popViewport()
 }

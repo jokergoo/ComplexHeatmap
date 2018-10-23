@@ -25,7 +25,7 @@ flat lines to emphasize that the within group dendrograms have no sense to
 compare to between-group dendrogram.
 }
 \value{
-A \code{\link{dendrogram}} object. The order of columns can be retrieved by \code{\link{order.dendrogram}}.
+A \code{\link{dendrogram}} object. The order of columns can be retrieved by \code{\link[stats]{order.dendrogram}}.
 }
 \examples{
 m = matrix(rnorm(120), nc = 12)

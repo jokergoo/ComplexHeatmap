@@ -91,3 +91,8 @@ m = matrix(rnorm(100), 10)
 Heatmap(m, top_annotation = HeatmapAnnotation(foo = 1:10), column_dend_height = unit(4, "cm")) +
 Heatmap(m, top_annotation = HeatmapAnnotation(bar = anno_points(1:10)),
 	cluster_columns = FALSE)
+
+fun = function(index) {
+	grid.rect()
+}
+ha = HeatmapAnnotation(fun = fun, height = unit(4, "cm"))

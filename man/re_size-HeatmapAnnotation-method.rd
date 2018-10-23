@@ -30,14 +30,15 @@ Resize the Width or Height of Heatmap Annotations
 \details{
 The function only adjust height for column annotations and width for row annotations.
 
-the basic rule is:
-1. if \code{annotation_height} is set, it needs to be a vector and \code{height} is disabled. If all
+The basic rules are (take \code{height} and \code{annotation_height} for example:
+
+1. If \code{annotation_height} is set and all
    \code{annotation_height} are absolute units, \code{height} is ignored.
-2. if \code{annotation_height} contains non-absolute units, \code{height} also need to be set and the
-   non-absolute unit should be set in a simple form such as 1:10 or \code{unit(1, "null")}.
+2. If \code{annotation_height} contains non-absolute units, \code{height} also need to be set and the
+   non-absolute units should be set in a simple form such as 1:10 or \code{unit(1, "null")}.
 3. \code{anno_simple_size} is only used when \code{annotation_height} is NULL.
-4. if only \code{height} is set, non-simple annotation is adjusted while keep simple anntation unchanged.
-5. if only \code{height} is set and all annotations are simple annotations, all anntations are adjusted.
+4. If only \code{height} is set, non-simple annotation is adjusted while keeps simple anntation unchanged.
+5. If only \code{height} is set and all annotations are simple annotations, all anntations are adjusted,
      and \code{anno_simple_size} is disabled.
 6. If \code{simple_anno_size_adjust} is \code{FALSE}, the size of the simple annotations will not change.
 }

@@ -45,6 +45,9 @@ And it is similar as using \code{\link{anno_points}}:
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#empty-annotation}
+}
 \examples{
 anno = anno_empty()
 draw(anno, test = "anno_empty")

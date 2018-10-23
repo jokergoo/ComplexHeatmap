@@ -17,7 +17,7 @@ Add Heatmap to the Heatmap List
 
 }
 \details{
-There is a shortcut function \code{+.AdditiveUnit}.
+Normally we directly use \code{+} for horizontal concatenation and \code{\link[=pct_v_pct]{\%v\%}} for vertical concatenation.
 }
 \value{
 A \code{\link{HeatmapList-class}} object.

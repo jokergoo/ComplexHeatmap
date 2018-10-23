@@ -36,6 +36,9 @@ Horizon chart as row annotation is only supported.
 \value{
 An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 }
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#horizon-chart-annotation}
+}
 \examples{
 lt = lapply(1:20, function(x) cumprod(1 + runif(1000, -x/100, x/100)) - 1)
 anno = anno_horizon(lt, which = "row")

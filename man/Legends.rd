@@ -11,7 +11,7 @@ Legends(...)
 }
 \arguments{
 
-  \item{...}{arguments}
+  \item{...}{arguments.}
 
 }
 \details{

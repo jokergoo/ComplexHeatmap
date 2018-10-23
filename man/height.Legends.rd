@@ -19,7 +19,6 @@ Height of the Legends
 The returned unit x is always in \code{mm}.
 }
 \examples{
-# There is no example
-NULL
-
+lgd = Legend(labels = 1:10, title = "foo", legend_gp = gpar(fill = "red"))
+ComplexHeatmap:::height(lgd)
 }

@@ -2,21 +2,21 @@
 \alias{draw_heatmap_list,HeatmapList-method}
 \alias{draw_heatmap_list}
 \title{
-Draw the list of heatmaps
+Draw the List of Heatmaps
 }
 \description{
-Draw the list of heatmaps
+Draw the List of Heatmaps
 }
 \usage{
 \S4method{draw_heatmap_list}{HeatmapList}(object)
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList-class}} object}
+  \item{object}{A \code{\link{HeatmapList-class}} object.}
 
 }
 \details{
-A viewport is created which contains heatmaps.
+It only draws the list of heatmaps without legends and titles.
 
 This function is only for internal use.
 }

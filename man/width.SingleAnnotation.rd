@@ -15,6 +15,9 @@ Width of the SingleAnnotation Object
   \item{...}{Other arguments.}
 
 }
+\details{
+Internally used.
+}
 \examples{
 # There is no example
 NULL

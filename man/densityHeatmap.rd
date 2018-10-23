@@ -45,22 +45,22 @@ densityHeatmap(data,
   \item{ylab}{Label on y-axis.}
   \item{column_title}{Title of the heatmap.}
   \item{title}{Same as \code{column_title}.}
-  \item{ylim}{Ranges on the y-axis. By default the range is between 1th quantile and 99th quantile of the data.}
+  \item{ylim}{Ranges on the y-axis.}
   \item{range}{Same as \code{ylim}.}
-  \item{title_gp}{= gpar(fontsize = 14),}
-  \item{ylab_gp}{= gpar(fontsize = 12),}
-  \item{tick_label_gp}{= gpar(fontsize = 10),}
-  \item{quantile_gp}{= gpar(fontsize = 10),}
-  \item{column_order}{column_order}
+  \item{title_gp}{Graphic parameters for title.}
+  \item{ylab_gp}{Graphic parameters for y-labels.}
+  \item{tick_label_gp}{Graphic parameters for y-ticks.}
+  \item{quantile_gp}{Graphic parameters for the quantiles.}
+  \item{column_order}{Order of columns.}
   \item{column_names_side}{Pass to \code{\link{Heatmap}}.}
   \item{show_column_names}{Pass to \code{\link{Heatmap}}.}
   \item{column_names_max_height}{Pass to \code{\link{Heatmap}}.}
   \item{column_names_gp}{Pass to \code{\link{Heatmap}}.}
   \item{column_names_rot}{Pass to \code{\link{Heatmap}}.}
-  \item{cluster_columns}{Whether cluster columns (here clustered by density values)? Normally we don't cluster columns.}
-  \item{clustering_distance_columns}{-clustering_distance_columns}
-  \item{clustering_method_columns}{-clustering_method_columns}
-  \item{...}{pass to \code{\link{Heatmap}}.}
+  \item{cluster_columns}{Whether cluster columns?}
+  \item{clustering_distance_columns}{There is a specific distance method \code{ks} which is the Kolmogorov-Smirnov statistic between two distributions. For other methods, the distance is calculated on the density matrix.}
+  \item{clustering_method_columns}{Pass to \code{\link{Heatmap}}.}
+  \item{...}{Pass to \code{\link{Heatmap}}.}
 
 }
 \details{
@@ -70,12 +70,13 @@ visualize distribution of values through a heatmap. It is useful if you have
 huge number of columns in \code{data} to visualize.
 
 The density matrix is generated with 500 rows ranging between the maximun
-and minimal values in all densities. The density values in each row are
-linearly intepolated between the two density values at the two nearest
-bounds.
+and minimal values in all densities.
 }
 \value{
-A \code{\link{HeatmapList-class}} object with only one heatmap, but it can only add other heatmaps/annotations vertically.
+A \code{\link{Heatmap-class}} object. It can oly add other heatmaps/annotations vertically.
+}
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/other-high-level-plots.html#density-heatmap}
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
@@ -90,5 +91,5 @@ densityHeatmap(lt)
 ha = HeatmapAnnotation(points = anno_points(runif(10)),
     anno = rep(c("A", "B"), each = 5), col = list(anno = c("A" = "red", "B" = "blue")))
 densityHeatmap(matrix, top_annotation = ha)
-densityHeatmap(matrix, top_annotation = ha) %v% Heatmap(matrix, height = unit(6, "cm"))
+densityHeatmap(matrix, top_annotation = ha) \%v\% Heatmap(matrix, height = unit(6, "cm"))
 }

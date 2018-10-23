@@ -1,10 +1,10 @@
 \name{make_layout-HeatmapList-method}
 \alias{make_layout,HeatmapList-method}
 \title{
-Make layout for the complete plot
+Make Layout for the Heatmap List
 }
 \description{
-Make layout for the complete plot
+Make Layout for the Heatmap List
 }
 \usage{
 \S4method{make_layout}{HeatmapList}(object,
@@ -65,67 +65,64 @@ Make layout for the complete plot
 }
 \arguments{
 
-  \item{object}{a \code{\link{HeatmapList-class}} object.}
-  \item{row_title}{title on the row.}
-  \item{row_title_side}{will the title be put on the left or right of the heatmap.}
-  \item{row_title_gp}{graphic parameters for drawing text.}
-  \item{column_title}{title on the column.}
-  \item{column_title_side}{will the title be put on the top or bottom of the heatmap.}
-  \item{column_title_gp}{graphic parameters for drawing text.}
-  \item{heatmap_legend_side}{side of the heatmap legend.}
-  \item{merge_legends}{whether put heatmap legends and annotation legends in a same column}
-  \item{show_heatmap_legend}{whether show heatmap legend.}
-  \item{heatmap_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
-  \item{annotation_legend_side}{side of annotation legend.}
-  \item{show_annotation_legend}{whether show annotation legend.}
-  \item{annotation_legend_list}{a list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects.}
-  \item{ht_gap}{gap between heatmaps, should be a \code{\link[grid]{unit}} object.}
-  \item{main_heatmap}{name or index for the main heatmap}
-  \item{padding}{padding of the plot}
-  \item{auto_adjust}{whether autoadjust}
-  \item{row_dend_side}{if auto adjust, where to put the row dendrograms for the main heatmap}
-  \item{row_sub_title_side}{row sub title}
-  \item{column_dend_side}{column dend}
-  \item{column_sub_title_side}{column sub title}
-  \item{row_gap}{gap between row clusters if rows are split}
-  \item{cluster_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{cluster_rows} in main heatmap is ignored.}
-  \item{clustering_distance_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{clustering_distance_rows} in main heatmap is ignored.}
-  \item{clustering_method_rows}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{clustering_method_rows} in main heatmap is ignored.}
-  \item{row_dend_width}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_dend_width} in main heatmap is ignored.}
-  \item{show_row_dend}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{show_row_dend} in main heatmap is ignored.}
-  \item{row_dend_reorder}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_dend_reorder} in main heatmap is ignored.}
-  \item{row_dend_gp}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_dend_gp} in main heatmap is ignored.}
-  \item{row_order}{same setting as in \code{\link{Heatmap}}, if it is specified, \code{row_order} in main heatmap is ignored.}
-  \item{row_km}{row km}
-  \item{row_split}{row split}
-  \item{height}{height of the heatmap body}
-  \item{heatmap_height}{height of the complete heatmap}
-  \item{column_gap}{column gap}
-  \item{cluster_columns}{cluster columns}
-  \item{clustering_distance_columns}{clustering distance columns}
-  \item{clustering_method_columns}{clustering method columns}
-  \item{column_dend_width}{column dend width}
-  \item{show_column_dend}{show column dendrogram}
-  \item{column_dend_reorder}{column dend reorder}
-  \item{column_dend_gp}{column dendrogram gp}
-  \item{column_order}{column order}
-  \item{column_km}{column km}
-  \item{column_split}{column split}
-  \item{width}{width of the heatmap body}
-  \item{heatmap_width}{width of the complete heatmap}
+  \item{object}{A \code{\link{HeatmapList-class}} object.}
+  \item{row_title}{Title on the row.}
+  \item{row_title_side}{Will the title be put on the left or right of the heatmap list?}
+  \item{row_title_gp}{Graphic parameters for the row title.}
+  \item{column_title}{Title on the column.}
+  \item{column_title_side}{Will the title be put on the top or bottom of the heatmap?}
+  \item{column_title_gp}{Graphic parameters for the column title.}
+  \item{heatmap_legend_side}{Side of the heatmap legends.}
+  \item{merge_legends}{Whether to put heatmap legends and annotation legends together. By default they are put in different viewports.}
+  \item{show_heatmap_legend}{Whether show heatmap legends.}
+  \item{heatmap_legend_list}{A list of self-defined legends, should be wrapped into a list of \code{\link[grid]{grob}} objects. Normally they are constructed by \code{\link{Legend}}. }
+  \item{annotation_legend_side}{Side of annotation legends.}
+  \item{show_annotation_legend}{Whether show annotation legends.}
+  \item{annotation_legend_list}{A list of self-defined legends, should be wrapped into a list of \code{\link[grid]{grob}} objects. Normally they are constructed by \code{\link{Legend}}.}
+  \item{ht_gap}{Gap between heatmaps, should be a \code{\link[grid]{unit}} object. It can be a vector of length 1 or the number of heamtaps/annotations.}
+  \item{main_heatmap}{Name or index for the main heatmap.}
+  \item{padding}{Padding of the whole plot. The four values correspond to the bottom, left, top and right paddings.}
+  \item{auto_adjust}{whether apply automatic adjustment? The auto-adjustment includes turning off dendrograms, titles and row/columns for non-main heatmaps.}
+  \item{row_dend_side}{If auto-adjustment is on, to put the row dendrograms of the main heatmap to the most left side of the heatmap list or the most right side?}
+  \item{row_sub_title_side}{There can be sub titles generated by the splitting of heatmaps. Similar setting as \code{row_dend_side}.}
+  \item{column_dend_side}{Similar setting as \code{row_dend_side}.}
+  \item{column_sub_title_side}{Similar setting as \code{row_sub_title_side}.}
+  \item{row_gap}{Overwrite the corresponding setting in the main heatmap.}
+  \item{cluster_rows}{Overwrite the corresponding setting in the main heatmap.}
+  \item{clustering_distance_rows}{Overwrite the corresponding setting in the main heatmap.}
+  \item{clustering_method_rows}{Overwrite the corresponding setting in the main heatmap.same setting as in \code{\link{Heatmap}}, if it is specified, \code{clustering_method_rows} in main heatmap is ignored.}
+  \item{row_dend_width}{Overwrite the corresponding setting in the main heatmap.}
+  \item{show_row_dend}{same Overwrite the corresponding setting in the main heatmap.}
+  \item{row_dend_reorder}{Overwrite the corresponding setting in the main heatmap.}
+  \item{row_dend_gp}{Overwrite the corresponding setting in the main heatmap.}
+  \item{row_order}{Overwrite the corresponding setting in the main heatmap.}
+  \item{row_km}{Overwrite the corresponding setting in the main heatmap.}
+  \item{row_split}{Overwrite the corresponding setting in the main heatmap.}
+  \item{height}{Overwrite the corresponding setting in the main heatmap.}
+  \item{heatmap_height}{Overwrite the corresponding setting in the main heatmap.}
+  \item{column_gap}{Overwrite the corresponding setting in the main heatmap.}
+  \item{cluster_columns}{Overwrite the corresponding setting in the main heatmap.}
+  \item{clustering_distance_columns}{Overwrite the corresponding setting in the main heatmap.}
+  \item{clustering_method_columns}{Overwrite the corresponding setting in the main heatmap.}
+  \item{column_dend_width}{column Overwrite the corresponding setting in the main heatmap.}
+  \item{show_column_dend}{Overwrite the corresponding setting in the main heatmap.}
+  \item{column_dend_reorder}{Overwrite the corresponding setting in the main heatmap.}
+  \item{column_dend_gp}{Overwrite the corresponding setting in the main heatmap.}
+  \item{column_order}{Overwrite the corresponding setting in the main heatmap.}
+  \item{column_km}{Overwrite the corresponding setting in the main heatmap.}
+  \item{column_split}{Overwrite the corresponding setting in the main heatmap.}
+  \item{width}{Overwrite the corresponding setting in the main heatmap.}
+  \item{heatmap_width}{Overwrite the corresponding setting in the main heatmap.}
 
 }
 \details{
 It sets the size of each component of the heatmap list and adjusts graphic
 parameters for each heatmap if necessary.
 
-The layout for the heatmap list and layout for each heatmap are calculated
-when drawing the heatmap list.
-
 This function is only for internal use.
 }
 \value{
-A \code{\link{HeatmapList-class}} object in which settings for each heatmap are adjusted.
+A \code{\link{HeatmapList-class}} object in which settings for all heatmap are adjusted.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>

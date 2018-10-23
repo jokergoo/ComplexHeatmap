@@ -17,6 +17,8 @@ Size of the AnnotationFunction Object
 }
 \details{
 It returns the width if it is a row annotation and the height if it is a column annotation.
+
+Internally used.
 }
 \examples{
 anno = anno_points(1:10)
