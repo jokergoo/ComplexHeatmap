@@ -136,6 +136,7 @@ Sometimes you need to try several color spaces to determine one which can best r
 
 ```{r, fig.width = 14, fig.height = 14/5, echo = FALSE, message = FALSE}
 suppressPackageStartupMessages(library(HilbertCurve))
+suppressPackageStartupMessages(library(IRanges))
 space = c("RGB", "LAB", "XYZ", "sRGB", "LUV")
 pushViewport(viewport(layout = grid.layout(nr = 1, nc = length(space))))
 for(i in seq_along(space)) {
