@@ -12,17 +12,15 @@ r-packages:
 - knitr
 - markdown
 - dendextend
+- GlobalOptions
+- circlize
+- GetoptLong
+- covr
 
 bioc_packages:
 - GenomicRanges
 - HilbertVis
-
-r_github_packages:
-- jokergoo/GlobalOptions
-- jokergoo/circlize
-- jokergoo/GetoptLong
-- jokergoo/HilbertCurve
-- jimhester/covr
+- HilbertCurve
 
 r_check_args: --no-build-vignettes --no-vignettes
 
