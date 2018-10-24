@@ -35,7 +35,7 @@ adjust_dend_by_x = function(dend, leaf_pos = 1:nobs(dend)-0.5) {
     n = nobs(dend)
 
     if(length(leaf_pos) != n) {
-        stop("`leaf_pos` should be a vector with same length as `dend`.")
+        stop_wrap("`leaf_pos` should be a vector with same length as `dend`.")
     }
 
     dend_order = order.dendrogram(dend)
@@ -341,7 +341,7 @@ merge_dendrogram = function(x, y, only_parent = FALSE, ...) {
 
     n = nobs(parent)
     if(n != length(children)) {
-        stop("Number of children dendrograms should be same as leaves in parent.")
+        stop_wrap("Number of children dendrograms should be same as leaves in parent.")
     }
 
     # adjust height of parent dendrogram

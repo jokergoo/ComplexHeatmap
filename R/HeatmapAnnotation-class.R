@@ -159,7 +159,7 @@ HeatmapAnnotation = function(...,
 
     called_args = names(arg_list)
     anno_args = setdiff(called_args, fun_args)
-    if(any(anno_args == "")) stop("annotations should have names.")
+    if(any(anno_args == "")) stop_wrap("annotations should have names.")
     if(is.null(called_args)) {
     	stop_wrap("It seems you are putting only one argument to the function. If it is a simple vector annotation or a function annotation (e.g. anno_*()), specify it as HeatmapAnnotation(name = value). If it is a data frame annotation, specify it as HeatmapAnnotation(df = value)")
     }
@@ -368,7 +368,9 @@ HeatmapAnnotation = function(...,
     global_width = NULL
     if(which == "column") {
 		anno_size = do.call("unit.c", lapply(anno_list, height))
-		height = sum(anno_size) + sum(gap) - gap[n_total_anno]
+		if(is.null(height)) {
+			height = sum(anno_size) + sum(gap) - gap[n_total_anno]
+    	}
     	
     	# for width, only look at `width`
     	if(is.null(width)) {
@@ -587,7 +589,7 @@ setMethod(f = "draw",
 			index = seq_len(len[1])
 		} 
 		if(!length(index)) {
-			stop("Cannot infer the number of observations of the annotation.")
+			stop_wrap("Cannot infer the number of observations of the annotation.")
 		}
     }
 
@@ -803,7 +805,7 @@ c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
 	anno_list = list(...)
 	n = length(anno_list)
 	if(length(unique(sapply(anno_list, function(x) x@which))) != 1) {
-		stop("All annotations should be all row annotation or all column annotation.")
+		stop_wrap("All annotations should be all row annotation or all column annotation.")
 	}
 	if(length(gap) == 1) gap = rep(gap, n)
 	if(length(gap) == n - 1) gap = unit.c(gap, unit(0, "mm"))
@@ -830,7 +832,7 @@ c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
 	ld = duplicated(nm)
 	if(any(ld)) {
 		dup = unique(nm[ld])
-		warning(paste0("Following annotation names are duplicated:\n  ", paste(dup, collapse = ", ")))
+		warning_wrap(paste0("Following annotation names are duplicated:\n  ", paste(dup, collapse = ", ")))
 		nm2 = nm
 		nm2[unlist(split(seq_along(nm), nm))] = unlist(lapply(split(nm, nm), seq_along))
 		l = nm %in% dup
@@ -875,10 +877,10 @@ names.HeatmapAnnotation = function(x) {
 # names(ha)
 "names<-.HeatmapAnnotation" = function(x, value) {
 	if(length(value) != length(x@anno_list)) {
-		stop("Length of `value` should be same as number of annotations.")
+		stop_wrap("Length of `value` should be same as number of annotations.")
 	}
 	if(any(duplicated(value))) {
-		stop("Annotation names should be unique.")
+		stop_wrap("Annotation names should be unique.")
 	}
 	names(x@anno_list) = value
 	for(i in seq_along(value)) {
@@ -1011,12 +1013,12 @@ setMethod(f = "re_size",
 
 	if(object@which == "column") {
 		if(!missing(width) || !missing(annotation_width)) {
-			stop("Please use width() directly")
+			stop_wrap("Please use ComplexHeatmap:::width() directly")
 		}
 	}
 	if(object@which == "colrowumn") {
 		if(!missing(height) || !missing(annotation_height)) {
-			stop("Please use height() directly")
+			stop_wrap("Please use ComplexHeatmap:::height() directly")
 		}
 	}
 
@@ -1032,10 +1034,10 @@ setMethod(f = "re_size",
 			is_size_set = FALSE
 		} else {
 			if(!inherits(height, "unit")) {
-				stop("`height` should be a `unit` object")
+				stop_wrap("`height` should be a `unit` object")
 			}
 			if(!is_abs_unit(height)) {
-				stop("`height` should be an absolute unit.")
+				stop_wrap("`height` should be an absolute unit.")
 			}
 			is_size_set = TRUE
 		}
@@ -1052,10 +1054,10 @@ setMethod(f = "re_size",
 			is_size_set = FALSE
 		} else {
 			if(!inherits(width, "unit")) {
-				stop("`width` should be a `unit` object")
+				stop_wrap("`width` should be a `unit` object")
 			}
 			if(!is_abs_unit(width)) {
-				stop("`width` should be an absolute unit.")
+				stop_wrap("`width` should be an absolute unit.")
 			}
 			is_size_set = TRUE
 		}
@@ -1096,7 +1098,7 @@ setMethod(f = "re_size",
 			annotation_size_adjusted = rep(1, n)
 		}
 		if(length(annotation_size_adjusted) != n) {
-			stop(paste0("Length of annotation_", size_name, " should be same as number of annotations.", sep = ""))
+			stop_wrap(paste0("Length of annotation_", size_name, " should be same as number of annotations.", sep = ""))
 		}
 
 		if(!inherits(annotation_size_adjusted, "unit")) {
@@ -1111,10 +1113,10 @@ setMethod(f = "re_size",
 					rel_num = sapply(which(l_rel_unit), function(i) {
 						if(identical(class(annotation_size_adjusted[i]), "unit")) {
 							if(attr(annotation_size_adjusted[i], "unit") != "null") {
-								stop("relative unit should be defined as `unit(..., 'null')")
+								stop_wrap("relative unit should be defined as `unit(..., 'null')")
 							}
 						} else {
-							stop("relative unit should be defined as `unit(..., 'null')")
+							stop_wrap("relative unit should be defined as `unit(..., 'null')")
 						}
 						annotation_size_adjusted[i][[1]]
 					})
@@ -1125,17 +1127,17 @@ setMethod(f = "re_size",
 						ts = size_adjusted - sum(gap)
 					}
 					if(convertUnitFun(ts, "mm", valueOnly = TRUE) <= 0) {
-						stop(paste0(size_name, "is too small."))
+						stop_wrap(paste0(size_name, "is too small."))
 					}
 					ind = which(l_rel_unit)
 					for(i in seq_along(ind)) {
 						annotation_size_adjusted[ ind[i] ] = ts*rel_num[i]
 					}
 				} else {
-					stop(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set as an absolute unit."))
+					stop_wrap(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set as an absolute unit."))
 				}
 			} else {
-				stop(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set."))
+				stop_wrap(paste0("Since annotation_", size_name, " contains relative units, ", size_name, " must be set."))
 			}
 		}
 	}
@@ -1177,13 +1179,13 @@ setMethod(f = "re_size",
 				anno_simple_size = convertUnitFun(anno_simple_size, "mm", valueOnly = TRUE)
 			}
 			if(size_adjusted <= sum(gap)) {
-				stop(paste0(size_name, " you set is smaller than sum of gaps."))
+				stop_wrap(paste0(size_name, " you set is smaller than sum of gaps."))
 			}
 
 			## fix the size of simple annotation and zoom function annotations
 			ts = size_adjusted - sum(gap) - sum(anno_size[l_simple_anno]*anno_simple_size/5)
 			if(ts < 0) {
-				stop(paste0(size_name, " you set is too small."))
+				stop_wrap(paste0(size_name, " you set is too small."))
 			}
 			anno_size2[!l_simple_anno] = anno_size[!l_simple_anno]/sum(anno_size[!l_simple_anno]) * ts
 			anno_size2[l_simple_anno] = anno_size[l_simple_anno]*anno_simple_size/5

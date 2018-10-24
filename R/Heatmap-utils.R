@@ -38,7 +38,7 @@
 subset_heatmap_by_row = function(ht, ind) {
     ht@row_order = order(intersect(ht@row_order, ind))
     if(!is.null(ht@row_dend_param$obj)) {
-        stop("row dend is specified as a clustering object, cannot do subsetting.")
+        stop_wrap("row dend is specified as a clustering object, cannot do subsetting.")
     }
     ht@matrix = ht@matrix[ind, , drop = FALSE]
     if(!is.null(ht@row_names_param$labels)) {
@@ -58,7 +58,7 @@ subset_heatmap_by_row = function(ht, ind) {
 subset_heatmap_by_column = function(ht, ind) {
     ht@column_order = order(intersect(ht@column_order, ind))
     if(!is.null(ht@column_dend_param$obj)) {
-        stop("column dend is specified as a clustering object, cannot do subsetting.")
+        stop_wrap("column dend is specified as a clustering object, cannot do subsetting.")
     }
     ht@matrix = ht@matrix[, ind, drop = FALSE]
     if(!is.null(ht@column_names_param$labels)) {

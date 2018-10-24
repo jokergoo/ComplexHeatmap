@@ -1856,7 +1856,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 	rot = rot[1] %% 360
 	just = just[1]
 	if(!missing(offset)) {
-		warning("`offset` is deprecated, use `location` instead.")
+		warning_wrap("`offset` is deprecated, use `location` instead.")
 		if(missing(location)) {
 			location = offset
 		}

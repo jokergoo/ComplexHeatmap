@@ -67,16 +67,16 @@ setMethod(f = "draw_heatmap_body",
             CairoTIFF = c("Cairo", "tiff", "readTIFF")
         )
         if(!requireNamespace(device_info[1])) {
-            stop(paste0("Need ", device_info[1], " package to write image."))
+            stop_wrap(paste0("Need ", device_info[1], " package to write image."))
         }
         if(!requireNamespace(device_info[2])) {
-            stop(paste0("Need ", device_info[2], " package to read image."))
+            stop_wrap(paste0("Need ", device_info[2], " package to read image."))
         }
         # can we get the size of the heatmap body?
         heatmap_width = convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE)
         heatmap_height = convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)
         if(heatmap_width <= 0 || heatmap_height <= 0) {
-            stop("The width or height of the raster image is zero, maybe you forget to turn off the previous graphic device or it was corrupted. Run `dev.off()` to close it.")
+            stop_wrap("The width or height of the raster image is zero, maybe you forget to turn off the previous graphic device or it was corrupted. Run `dev.off()` to close it.")
         }
         
         temp_dir = tempdir()

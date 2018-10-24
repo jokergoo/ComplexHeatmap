@@ -172,11 +172,11 @@ setMethod(f = "make_layout",
         } else if(length(ht_gap) == n_ht - 1) {
             ht_gap = unit.c(ht_gap, unit(0, "mm"))
         } else if(length(ht_gap) > n_ht) {
-            stop(paste0("length of `ht_gap` can only be 1 or ", n_ht-1, "."))
+            stop_wrap(paste0("length of `ht_gap` can only be 1 or ", n_ht-1, "."))
         }
     } else {
         if(!is.unit(ht_gap)) {
-            warning("`ht_gap` should be a unit object, reset it to unit(0, 'mm').")
+            warning_wrap("`ht_gap` should be a unit object, reset it to unit(0, 'mm').")
             ht_gap = unit(rep(0, n_ht), "mm")    
         }
     }
@@ -521,7 +521,7 @@ setMethod(f = "make_layout",
         } else if(length(padding) == 2) {
             padding = rep(padding, 2)
         } else if(length(padding) != 4) {
-            stop("`padding` can only have length of 1, 2, 4")
+            stop_wrap("`padding` can only have length of 1, 2, 4")
         }
     }
     object@ht_list_param$padding = padding
@@ -955,7 +955,7 @@ setMethod(f = "make_layout",
                         # if same set but different order
                         if(setequal(main_matrix_rn, matrix_rn)) {
                             if(!identical(main_matrix_rn, matrix_rn)) {
-                                warning("Row names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
+                                warning_wrap("Row names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
                             }
                         }
                     }
@@ -973,7 +973,7 @@ setMethod(f = "make_layout",
                         # if same set but different order
                         if(setequal(main_matrix_cn, matrix_cn)) {
                             if(!identical(main_matrix_cn, matrix_cn)) {
-                                warning("Column names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
+                                warning_wrap("Column names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
                             }
                         }
                     }

@@ -101,7 +101,7 @@ oncoPrint = function(mat,
 		all_type = names(mat_list)
 		mat_list = lapply(mat_list, function(x) {
 				if(!is.matrix(x)) {
-					stop("Expect a list of matrix (not data frames).")
+					stop_wrap("Expect a list of matrix (not data frames).")
 				}
 				oattr = attributes(x)
 				x = as.logical(x)
@@ -110,14 +110,14 @@ oncoPrint = function(mat,
 			})
 
 		if(length(unique(sapply(mat_list, nrow))) > 1) {
-			stop("All matrix in 'mat_list' should have same number of rows.")
+			stop_wrap("All matrix in 'mat_list' should have same number of rows.")
 		}
 
 		if(length(unique(sapply(mat_list, ncol))) > 1) {
-			stop("All matrix in 'mat_list' should have same number of columns.")
+			stop_wrap("All matrix in 'mat_list' should have same number of columns.")
 		}
 	} else {
-		stop("Incorrect type of 'mat'")
+		stop_wrap("Incorrect type of 'mat'")
 	}
 
 	cat("All mutation types:", paste(all_type, collapse = ", "), "\n")
@@ -176,10 +176,10 @@ oncoPrint = function(mat,
 			names(af) = c("background", names(mat_list))
 			col = c("red", "blue")
 		} else {
-			stop("`alter_fun` should be specified.")
+			stop_wrap("`alter_fun` should be specified.")
 		}
 		names(col) = names(mat_list)
-		warning("Using default `alter_fun` graphics and reset `col`.")
+		warning_wrap("Using default `alter_fun` graphics and reset `col`.")
 	}
 
 	if(is.list(alter_fun)) {
@@ -188,7 +188,7 @@ oncoPrint = function(mat,
 		if(is.null(alter_fun$background)) alter_fun$background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
 		sdf = setdiff(all_type, names(alter_fun))
 		if(length(sdf) > 0) {
-			stop(paste0("You should define graphic function for: ", paste(sdf, collapse = ", ")))
+			stop_wrap(paste0("You should define graphic function for: ", paste(sdf, collapse = ", ")))
 		}
 
 		alter_fun = alter_fun[unique(c("background", intersect(names(alter_fun), all_type)))]
@@ -246,7 +246,7 @@ oncoPrint = function(mat,
 			}
 		}
 	} else {
-		stop("You need to set `alter_fun`.")
+		stop_wrap("You need to set `alter_fun`.")
 	}
 
 	col = col[intersect(names(col), all_type)]
@@ -281,7 +281,7 @@ oncoPrint = function(mat,
 	# validate col
 	sdf = setdiff(all_type, names(col))
 	if(length(sdf) > 0) {
-		stop(paste0("You should define colors for:", paste(sdf, collapse = ", ")))
+		stop_wrap(paste0("You should define colors for:", paste(sdf, collapse = ", ")))
 	}
 
 	# for each gene, percent of samples that have alterations
@@ -296,7 +296,7 @@ oncoPrint = function(mat,
 	right_annotation = eval(substitute(right_annotation))
 
 	if("left_annotation" %in% arg_names) {
-		stop("'left_annotation' are not allowed to specify, you can add...")
+		stop_wrap("'left_annotation' are not allowed to specify, you can add...")
 	}
 	left_annotation = NULL
 	if(show_pct) {
@@ -317,7 +317,7 @@ oncoPrint = function(mat,
 	
 	if(length(arg_list)) {
 		if(any(arg_names %in% c("rect_gp", "cluster_rows", "cluster_columns", "cell_fun"))) {
-			stop("'rect_gp', 'cluster_rows', 'cluster_columns', 'cell_fun' are not allowed to use in `oncoPrint()`.")
+			stop_wrap("'rect_gp', 'cluster_rows', 'cluster_columns', 'cell_fun' are not allowed to use in `oncoPrint()`.")
 		}
 	}
 

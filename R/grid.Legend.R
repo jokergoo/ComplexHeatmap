@@ -133,7 +133,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 		if(!missing(col_fun) && missing(at)) {
 			breaks = attr(col_fun, "breaks")
 			if(is.null(breaks)) {
-				stop("You should provide `at` for color mapping function\n")
+				stop_wrap("You should provide `at` for color mapping function\n")
 			}
 		
 			le1 = grid.pretty(range(breaks))
@@ -191,12 +191,12 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	if(!missing(col_fun)) {
 		if(direction == "vertical") {
 			if(title_position %in% c("leftcenter", "lefttop")) {
-				stop("'topleft', 'topcenter', 'leftcenter-rot' and 'lefttop-rot' are only allowd for vertical continuous legend")
+				stop_wrap("'topleft', 'topcenter', 'leftcenter-rot' and 'lefttop-rot' are only allowd for vertical continuous legend")
 			}
 		}
 		if(direction == "horizontal") {
 			if(title_position %in% c('leftcenter-rot', 'lefttop-rot')) {
-				stop("'topleft', 'topcenter', 'lefttop' and 'leftcenter' are only allowd for horizontal continuous legend")
+				stop_wrap("'topleft', 'topcenter', 'lefttop' and 'leftcenter' are only allowd for horizontal continuous legend")
 			}
 		}
 	}
@@ -451,7 +451,7 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	min_legend_height = length(at)*(grid_height)
 	if(is.null(legend_height)) legend_height = min_legend_height
 	if(convertHeight(legend_height, "mm", valueOnly = TRUE) < convertHeight(min_legend_height, "mm", valueOnly = TRUE)) {
-		warning("`legend_height` you specified is too small, use the default minimal height.")
+		warning_wrap("`legend_height` you specified is too small, use the default minimal height.")
 		legend_height = min_legend_height
 	}
 
@@ -797,10 +797,10 @@ packLegend = function(...,gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_g
 		}
 	}
 	if(length(row_gap) != 1) {
-		stop("Length of `row_gap` must be one.")
+		stop_wrap("Length of `row_gap` must be one.")
 	}
 	if(length(column_gap) != 1) {
-		stop("Length of `column_gap` must be one.")
+		stop_wrap("Length of `column_gap` must be one.")
 	}
     n_lgd = length(legend_list)
     if(direction == "vertical") {
@@ -997,13 +997,13 @@ valid_just = function(just) {
 			c("center", "center"))
 	}
 	if(length(just) != 2) {
-		stop("`just` should be a single character or a vector of length 2.")
+		stop_wrap("`just` should be a single character or a vector of length 2.")
 	}
 	j = c("center" = 0.5, "left" = 0, "right" = 1, "top" = 1, "bottom" = 0)
 	if(is.character(just)) {
 		just = j[just]
 	} else if(!is.numeric(just)) {
-		stop("`just` can only be character or numeric.")
+		stop_wrap("`just` can only be character or numeric.")
 	}
 	return(unname(just))
 }

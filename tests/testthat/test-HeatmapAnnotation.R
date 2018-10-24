@@ -96,3 +96,8 @@ fun = function(index) {
 	grid.rect()
 }
 ha = HeatmapAnnotation(fun = fun, height = unit(4, "cm"))
+draw(ha, 1:10, test = TRUE)
+
+ha = rowAnnotation(fun = fun, width = unit(4, "cm"))
+draw(ha, 1:10, test = TRUE)
+

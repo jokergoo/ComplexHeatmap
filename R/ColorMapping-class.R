@@ -73,12 +73,12 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 	if(!is.null(colors)) {
 		if(is.null(levels)) {
 			if(is.null(names(colors))) {
-				stop("either provide `levels` or provide named `colors`.\n")
+				stop_wrap("either provide `levels` or provide named `colors`.\n")
 			}
 			levels = names(colors)
 		}
 		if(length(colors) != length(levels)) {
-			stop("length of colors and length of levels should be the same.\n")
+			stop_wrap("length of colors and length of levels should be the same.\n")
 		}
 		colors = t(col2rgb(colors, alpha = TRUE))
 		colors = rgb(colors[, 1:3, drop = FALSE], alpha = colors[, 4], maxColorValue = 255)
@@ -95,7 +95,7 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 		if(is.null(breaks)) {
 			breaks = attr(col_fun, "breaks")
 			if(is.null(breaks)) {
-				stop("You should provide breaks.\n")
+				stop_wrap("You should provide breaks.\n")
 			}
 		
 
@@ -115,7 +115,7 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 		.Object@col_fun = col_fun
 		.Object@type = "continuous"
 	} else {
-		stop("initialization failed. Either specify `colors` + `levels` or `col_fun` + `breaks`\n")
+		stop_wrap("initialization failed. Either specify `colors` + `levels` or `col_fun` + `breaks`\n")
 	}
 
 	.Object@name = name
@@ -204,7 +204,7 @@ setMethod(f = "map_to_colors",
 		if(is.numeric(x)) x = as.character(x)
 		if(any(! x[!lna] %in% object@levels)) {
 			msg = paste0(object@name, ": cannot map colors to some of the levels:\n", paste(setdiff(x[!lna], object@levels), sep = ", ", collapse = ", "))
-			stop(msg)
+			stop_wrap(msg)
 		}
 
 		x2[lna] = object@na_col
@@ -293,12 +293,12 @@ setMethod(f = "color_mapping_legend",
 	labels_gp = check_gp(labels_gp)
 
 	if(object@type == "discrete" && color_bar == "continuous") {
-		stop("'color_bar' can only be set to 'discrete' only if the color mapping is discrete")
+		stop_wrap("'color_bar' can only be set to 'discrete' only if the color mapping is discrete")
 	}
 
 	# get labels
 	if(length(at) != length(labels)) {
-		stop("Length of 'at' should be same as length of 'labels'.")
+		stop_wrap("Length of 'at' should be same as length of 'labels'.")
 	}
 	# if it is character color mapping, remove items in `at` which are not in the available optinos
 	if(color_bar == "discrete" && is.character(at)) {

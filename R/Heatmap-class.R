@@ -426,7 +426,7 @@ Heatmap = function(matrix, col, name,
             } else {
                 if(!is.data.frame(column_split)) column_split = data.frame(column_split)
                 if(nrow(column_split) != ncol(matrix)) {
-                    stop("Length or ncol of `column_split` should be same as ncol of `matrix`.")
+                    stop_wrap("Length or ncol of `column_split` should be same as ncol of `matrix`.")
                 }
             }
         }
@@ -868,6 +868,8 @@ make_cluster = function(object, which = c("row", "column")) {
 
     names_param = slot(object, paste0(which, "_names_param"))
 
+    dend_param$split_by_cutree = FALSE
+
     if(cluster) {
 
         if(is.numeric(split) && length(split) == 1) {
@@ -900,8 +902,9 @@ make_cluster = function(object, which = c("row", "column")) {
                     stop_wrap(qq("Since you specified a clustering object, you can only split @{which}s by providing a number (number of @{which} slices)."))
                 }
                 if(split < 2) {
-                    stop_wrap("Here `split` should be equal or larger than 2.")
+                    stop_wrap(qq("`@{which}_split` should be >= 2."))
                 }
+                dend_param$split_by_cutree = TRUE
                 
                 ct = cut_dendrogram(dend_param$obj, split)
                 dend_list = ct$lower

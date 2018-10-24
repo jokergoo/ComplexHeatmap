@@ -163,7 +163,7 @@ get_dist = function(matrix, method) {
         } else if(nargs == 3) {
             dst = dist2(matrix, method)
         } else {
-            stop("Since your distance method is a funciton, it can only accept one or two arguments.")
+            stop_wrap("Since your distance method is a funciton, it can only accept one or two arguments.")
         }
     } else if(method %in% c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")) {
         # if(any(is.na(matrix))) {
@@ -185,7 +185,7 @@ get_dist = function(matrix, method) {
                     y = y[!l]
                     1 - cor(x, y, method = method)
                 })
-            warning("NA exists in the matrix, calculating distance by removing NA values.")
+            warning_wrap("NA exists in the matrix, calculating distance by removing NA values.")
         } else {
             dst = switch(method,
                          pearson = as.dist(1 - cor(t(matrix), method = "pearson")),
@@ -212,7 +212,7 @@ recycle_gp = function(gp, n = 1) {
 
 check_gp = function(gp) {
     if(!inherits(gp, "gpar")) {
-        stop("Graphic parameters should be specified by `gpar()`.")
+        stop_wrap("Graphic parameters should be specified by `gpar()`.")
     }
     return(gp)
 }
@@ -244,7 +244,7 @@ subset_gp = function(gp, i) {
 get_text_just = function(rot, side) {
     rot = rot %% 360
     if(! rot %in% c(0, 90, 270)) {
-        stop("Only support horizontal or vertical rotations for text.\n")
+        stop_wrap("Only support horizontal or vertical rotations for text.\n")
     }
     if(side == "left") {
         if(rot == 0) {
@@ -416,7 +416,7 @@ message_wrap = function (...) {
 
 generate_param_list_fun = function(default) {
     if(!is.list(default)) {
-        stop("`default` needs to be a list.")
+        stop_wrap("`default` needs to be a list.")
     }
     lt = default
     function(..., list = NULL) {
@@ -475,20 +475,20 @@ unit.c = function(...) {
 
 ">.unit" = function(x, y) {
     if(!identical(attr(x, "unit"), "mm")) {
-        stop("x should be in mm unit")
+        stop_wrap("x should be in mm unit")
     }
     if(!identical(attr(y, "unit"), "mm")) {
-        stop("y should be in mm unit")
+        stop_wrap("y should be in mm unit")
     }
     x[[1]] > y[[1]]
 }
 
 "<.unit" = function(x, y) {
     if(!identical(attr(x, "unit"), "mm")) {
-        stop("x should be in mm unit")
+        stop_wrap("x should be in mm unit")
     }
     if(!identical(attr(y, "unit"), "mm")) {
-        stop("y should be in mm unit")
+        stop_wrap("y should be in mm unit")
     }
     x[[1]] < y[[1]]
 }

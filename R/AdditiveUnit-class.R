@@ -60,12 +60,12 @@ AdditiveUnit = function(...) {
 "+.AdditiveUnit" = function(x, y) {
     if(inherits(x, "HeatmapAnnotation")) {
     	if(x@which != "row") {
-    		stop("You should specify `which` to `row` or use `rowAnnotation()` directly if you want to add row annotations.")
+    		stop_wrap("You should specify `which = row` or use `rowAnnotation()` directly if you want to add row annotations horizontally.")
     	}
     }
     if(inherits(y, "HeatmapAnnotation")) {
     	if(y@which != "row") {
-            stop("You should specify `which` to `row` or use `rowAnnotation()` directly if you want to add row annotations.")
+            stop_wrap("You should specify `which = row` or use `rowAnnotation()` directly if you want to add row annotations horizontally.")
     	}
     }
     if(is.null(x)) {
@@ -112,12 +112,12 @@ AdditiveUnit = function(...) {
 "%v%" = function(x, y) {
     if(inherits(x, "HeatmapAnnotation")) {
         if(x@which != "column") {
-            stop("You should specify `which` to `column` or use `columnAnnotation()` directly if you want to add column annotations vertically.")
+            stop_wrap("You should specify `which = column` or use `columnAnnotation()` directly if you want to add column annotations vertically.")
         }
     }
     if(inherits(y, "HeatmapAnnotation")) {
         if(y@which != "column") {
-            stop("You should specify `which` to `column` or use `columnAnnotation()` directly if you want to add column annotations vertically.")
+            stop_wrap("You should specify `which = column` or use `columnAnnotation()` directly if you want to add column annotations vertically.")
         }
     }
     if(is.null(x)) {

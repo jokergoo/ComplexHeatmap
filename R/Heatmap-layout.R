@@ -163,7 +163,11 @@ setMethod(f = "make_layout",
             object@layout$layout_size$row_dend_right_width = row_dend_width
             object@layout$layout_index = rbind(object@layout$layout_index, row_dend_right = heatmap_layout_index("row_dend_right"))
         }
-        row_dend_max_height = dend_heights(row_dend_slice) + max(dend_heights(object@row_dend_list))
+        if(object@row_dend_param$split_by_cutree) {
+            row_dend_max_height = dend_heights(row_dend_slice)
+        } else {
+            row_dend_max_height = dend_heights(row_dend_slice) + max(dend_heights(object@row_dend_list))
+        }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             
             if(row_dend_side == "left") {
@@ -192,9 +196,27 @@ setMethod(f = "make_layout",
                 for(i in seq_len(nr_slice)) {
                     slice_leaf_pos[i] = slice_leaf_pos[i] - slice_height[i]*p[i]
                 }
-                row_dend_slice = merge_dendrogram(row_dend_slice, object@row_dend_list, only_parent = TRUE)
+                if(!object@row_dend_param$split_by_cutree) {
+                    row_dend_slice = merge_dendrogram(row_dend_slice, object@row_dend_list, only_parent = TRUE)
+                }
                 row_dend_slice = adjust_dend_by_x(row_dend_slice, slice_leaf_pos)
-                grid.dendrogram(row_dend_slice, facing = ifelse(row_dend_side == "left", "right", "left"))
+                grid.dendrogram(row_dend_slice, facing = ifelse(row_dend_side == "left", "right", "left"), gp = object@row_dend_param$gp)
+                if(!object@row_dend_param$split_by_cutree) {
+                    dh = dend_heights(object@row_dend_list)
+                    if(row_dend_side == "left") {
+                        grid.segments(unit(row_dend_max_height - max(dh), "native") - unit(0.5, "mm"), 
+                            slice_leaf_pos[1] + unit(5, "mm"), 
+                            unit(row_dend_max_height - max(dh), "native") - unit(0.5, "mm"), 
+                            slice_leaf_pos[length(slice_leaf_pos)] - unit(5, "mm"),
+                            gp = gpar(lty = 3, col = "#666666"))
+                    } else {
+                        grid.segments(unit(max(dh), "native") + unit(0.5, "mm"), 
+                            slice_leaf_pos[1] + unit(5, "mm"), 
+                            unit(max(dh), "native") + unit(0.5, "mm"), 
+                            slice_leaf_pos[length(slice_leaf_pos)] - unit(5, "mm"),
+                            gp = gpar(lty = 3, col = "#666666"))
+                    }
+                }
                 popViewport()
             }
             upViewport()
@@ -215,7 +237,11 @@ setMethod(f = "make_layout",
             object@layout$layout_size$column_dend_bottom_height = column_dend_height
             object@layout$layout_index = rbind(object@layout$layout_index, column_dend_bottom = heatmap_layout_index("column_dend_bottom"))
         }
-        column_dend_max_height = dend_heights(column_dend_slice) + max(dend_heights(object@column_dend_list))
+        if(object@column_dend_param$split_by_cutree) {
+            column_dend_max_height = dend_heights(column_dend_slice)
+        } else {
+            column_dend_max_height = dend_heights(column_dend_slice) + max(dend_heights(object@column_dend_list))
+        }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             if(column_dend_side == "top") {
                 pushViewport(viewport(y = ht_opt$DENDROGRAM_PADDING, height = unit(1, "npc") - ht_opt$DENDROGRAM_PADDING, just = "bottom"))
@@ -243,9 +269,27 @@ setMethod(f = "make_layout",
                 for(i in seq_len(nc_slice)) {
                     slice_leaf_pos[i] = slice_leaf_pos[i] + slice_width[i]*p[i]
                 }
-                column_dend_slice = merge_dendrogram(column_dend_slice, object@column_dend_list, only_parent = TRUE)
+                if(!object@column_dend_param$split_by_cutree) {
+                    column_dend_slice = merge_dendrogram(column_dend_slice, object@column_dend_list, only_parent = TRUE)
+                }
                 column_dend_slice = adjust_dend_by_x(column_dend_slice, slice_leaf_pos)
-                grid.dendrogram(column_dend_slice, facing = ifelse(column_dend_side == "top", "bottom", "top"))
+                grid.dendrogram(column_dend_slice, facing = ifelse(column_dend_side == "top", "bottom", "top"), gp = object@column_dend_param$gp)
+                if(!object@column_dend_param$split_by_cutree) {
+                    dh = dend_heights(object@column_dend_list)
+                    if(row_dend_side == "bottom") {
+                        grid.segments(slice_leaf_pos[1] - unit(5, "mm"), 
+                            unit(column_dend_max_height - max(dh), "native") - unit(0.5, "mm"), 
+                            slice_leaf_pos[length(slice_leaf_pos)] + unit(5, "mm"),
+                            unit(column_dend_max_height - max(dh), "native") - unit(0.5, "mm"), 
+                            gp = gpar(lty = 3, col = "#666666"))
+                    } else {
+                        grid.segments(slice_leaf_pos[1] - unit(5, "mm"), 
+                            unit(max(dh), "native") + unit(0.5, "mm"), 
+                            slice_leaf_pos[length(slice_leaf_pos)] + unit(5, "mm"),
+                            unit(max(dh), "native") + unit(0.5, "mm"), 
+                            gp = gpar(lty = 3, col = "#666666"))
+                    }
+                }
                 popViewport()
             }
             upViewport()

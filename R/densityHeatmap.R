@@ -102,7 +102,7 @@ densityHeatmap = function(data,
 	density_param$na.rm = TRUE
 
 	if(!is.matrix(data) && !is.data.frame(data) && !is.list(data)) {
-		stop("only matrix and list are allowed.")
+		stop_wrap("only matrix and list are allowed.")
 	}
 	if(is.matrix(data)) {
 		data2 = as.list(as.data.frame(data))
@@ -214,13 +214,22 @@ densityHeatmap = function(data,
 
 		decorate_heatmap_body(paste0("density_", random_str), {
 			n = length(column_order[[n_slice]])
-			pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = FALSE))
+			
+			lq = !apply(quantile_list, 1, function(x) all(x > max_x) || all(x < min_x))
+			lq = c(lq, !(all(mean_value > max_x) || all(mean_value < min_x)))
+			if(sum(lq) == 0) {
+				return(NULL)
+			}
 
 			labels = c(rownames(quantile_list), "mean")
 			y = c(quantile_list[, column_order[[n_slice]][n] ], mean_value[ column_order[[n_slice]][n] ])
+			labels = labels[lq]
+			y = y[lq]
 			od = order(y)
 			y = y[od]
 			labels = labels[od]
+			
+			pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = FALSE))
 			text_height = convertHeight(grobHeight(textGrob(labels[1])) * (1 + 0.2), "native", valueOnly = TRUE)
 	        h1 = y - text_height*0.5
 	        h2 = y + text_height*0.5
@@ -230,10 +239,12 @@ densityHeatmap = function(data,
 	        n2 = length(labels)
 	        grid.text(labels, unit(1, "npc") + rep(link_width, n2), h, default.units = "native", just = "left", gp = quantile_gp)
 	        link_width = link_width - unit(1, "mm")
-	        grid.segments(unit(rep(1, n2), "npc"), y, unit(1, "npc") + rep(link_width * (1/3), n2), y, default.units = "native")
-	        grid.segments(unit(1, "npc") + rep(link_width * (1/3), n2), y, unit(1, "npc") + rep(link_width * (2/3), n2), h, default.units = "native")
-	        grid.segments(unit(1, "npc") + rep(link_width * (2/3), n2), h, unit(1, "npc") + rep(link_width, n2), h, default.units = "native")
-
+	        ly = y <= max_x & y >= min_x
+	        if(sum(ly)) {
+		        grid.segments(unit(rep(1, n2), "npc")[ly], y[ly], unit(1, "npc") + rep(link_width * (1/3), n2)[ly], y[ly], default.units = "native")
+		        grid.segments(unit(1, "npc") + rep(link_width * (1/3), n2)[ly], y[ly], unit(1, "npc") + rep(link_width * (2/3), n2)[ly], h[ly], default.units = "native")
+		        grid.segments(unit(1, "npc") + rep(link_width * (2/3), n2)[ly], h[ly], unit(1, "npc") + rep(link_width, n2)[ly], h[ly], default.units = "native")
+		    }
 			upViewport()
 		}, column_slice = n_slice)
 	}

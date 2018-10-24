@@ -4,6 +4,7 @@ This a major update of the package. The main changes are:
 * support column split
 * support align heatmaps vertically
 * add a naive `AnnotationFunction` class to handle annotation functions
+* add more annotation functions
 
 =======================
 

@@ -113,7 +113,7 @@ setMethod(f = "adjust_heatmap_list",
             total_fixed_width = total_fixed_width + sum(ht_gap[seq_len(n-1)])
         }
         if(!all(sapply(total_null_units_lt, is.unit))) {
-            warning("Since some of the heatmap_body_width is numeric, all heatmaps should explicitly specify heatmap_body_width as null units or numeric, or else the numeric width is treated as number of columns and will be normalized to other heatmaps.")
+            warning_wrap("Since some of the heatmap_body_width is numeric, all heatmaps should explicitly specify heatmap_body_width as null units or numeric, or else the numeric width is treated as number of columns and will be normalized to other heatmaps.")
         }
         total_null_units = sum(unlist(total_null_units_lt))
         if(total_null_units == 0) {
@@ -314,7 +314,7 @@ setMethod(f = "adjust_heatmap_list",
             total_fixed_height = total_fixed_height + sum(ht_gap[seq_len(n-1)])
         }
         if(!all(sapply(total_null_units_lt, is.unit))) {
-            warning("Since some of the heatmap_body_height is numeric, all heatmaps should explicitly specify heatmap_body_height as null units or numeric, or else the numeric height is treated as number of rows and will be normalized to other heatmaps.")
+            warning_wrap("Since some of the heatmap_body_height is numeric, all heatmaps should explicitly specify heatmap_body_height as null units or numeric, or else the numeric height is treated as number of rows and will be normalized to other heatmaps.")
         }
         total_null_units = sum(unlist(total_null_units_lt))
         if(total_null_units == 0) {
