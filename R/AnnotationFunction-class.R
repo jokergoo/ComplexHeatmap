@@ -390,7 +390,7 @@ setMethod(f = "show",
 			cat("  subsetable variable:", paste(var_subsetable, collapse = ", "), "\n")
 		}
 	}
-	cat("  this object is", ifelse(object@subsetable, "\b", "not"), "subsetable\n")
+	cat("  this object is ", ifelse(object@subsetable, "\b", "not "), "subsetable\n", sep = "")
 	dirt = c("bottom", "left", "top", "right")
 	for(i in 1:4) {
 		if(!identical(unit(0, "mm"), object@extended[i])) {

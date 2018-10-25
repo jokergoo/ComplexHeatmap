@@ -69,7 +69,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -simple_anno_size_adjust Whether also adjust the size of simple annotations when adjusting the whole heatmap annotation.
 #
 # == details
-# For arguments ``border``, ``annotation_name_offset``, ``annotation_name_side``, ``annotation_name_rot``,
+# For arguments ``show_legend``, ``border``, ``annotation_name_offset``, ``annotation_name_side``, ``annotation_name_rot``,
 # ``show_annotation_name``, they can be set as named vectors to modify values for some of the annotations,
 # e.g. assuming you have an annotation with name ``foo``, you can specify ``border = c(foo = TRUE)`` in `HeatmapAnnotation`.
 # 
@@ -202,7 +202,7 @@ HeatmapAnnotation = function(...,
 	
     # normalize `show_legend`
     if(length(show_legend) == 1) {
-		show_legend = rep(show_legend, n_simple_anno)
+		show_legend = recycle_param(show_legend, simple_anno_name, TRUE)
 	}
 
 	###### normalize `heatmap_legend_param` #######
@@ -322,7 +322,7 @@ HeatmapAnnotation = function(...,
 			arg_list$legend_param = annotation_legend_param[[i_simple + 1]]
 			arg_list$value = anno_value_list[[ag]]
 			arg_list$na_col = na_col
-			arg_list$anno_simple_size = anno_simple_size
+			# arg_list$anno_simple_size = anno_simple_size
 			if(missing(col)) {
 				anno_list[[ag]] = do.call(SingleAnnotation, arg_list)
 		    } else {
@@ -664,7 +664,7 @@ setMethod(f = "show",
 	cat("  items:", ifelse(length(len), len[1], "unknown"), "\n")
 	cat("  width:", as.character(object@width), "\n")
 	cat("  height:", as.character(object@height), "\n")
-    cat("  this object is", ifelse(object@subsetable, "", "not"), "subsetable\n")
+    cat("  this object is ", ifelse(object@subsetable, "", "not "), "subsetable\n", sep = "")
     dirt = c("bottom", "left", "top", "right")
     for(i in 1:4) {
         if(!identical(unit(0, "mm"), object@extended[i])) {
@@ -1022,13 +1022,20 @@ setMethod(f = "re_size",
 		}
 	}
 
+	which = object@which
 	if(!simple_anno_size_adjust) {
-		if(all(sapply(object@anno_list, is_simple_annotation))) {
+		if(all(sapply(object@anno_list, function(x) is_simple_annotation(x) || is_matrix_annotation(x)))) {
+			if(which == "column") {
+				height = sum(object@anno_size) + sum(object@gap) - object@gap[length(object@gap)]
+				object@height = convertHeight(height, "mm")
+			} else {
+				width = sum(object@anno_size) + sum(object@gap) - object@gap[length(object@gap)]
+				object@width = convertWidth(width, "mm")
+			}
 			return(object)
 		}
 	}
 
-	which = object@which
 	if(which == "column") {
 		if(is.null(height)) {
 			is_size_set = FALSE
