@@ -42,7 +42,8 @@
 # draw(anno, test = "anno_empty")
 # anno = anno_empty(border = FALSE)
 # draw(anno, test = "anno_empty without border")
-anno_empty = function(which = c("column", "row"), border = TRUE, width = NULL, height = NULL) {
+anno_empty = function(which = c("column", "row"), border = TRUE, zoom = FALSE,
+	width = NULL, height = NULL) {
 	
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
@@ -51,6 +52,7 @@ anno_empty = function(which = c("column", "row"), border = TRUE, width = NULL, h
 	}
 
 	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
+	
 	
 	fun = function(index) {
 		if(border) grid.rect()
@@ -61,13 +63,14 @@ anno_empty = function(which = c("column", "row"), border = TRUE, width = NULL, h
 		n = NA,
 		fun_name = "anno_empty",
 		which = which,
-		var_import = list(border),
+		var_import = list(border, zoom),
 		subset_rule = list(),
 		subsetable = TRUE,
 		height = anno_size$height,
 		width = anno_size$width,
 		show_name = FALSE
 	)
+	
 	return(anno) 
 }
 

@@ -30,7 +30,7 @@ Heatmap(matrix, col, name,
     row_dend_side = c("left", "right"),
     row_dend_width = unit(10, "mm"),
     show_row_dend = TRUE,
-    row_dend_reorder = TRUE,
+    row_dend_reorder = is.logical(cluster_rows) || is.function(cluster_rows),
     row_dend_gp = gpar(),
     cluster_columns = TRUE,
     clustering_distance_columns = "euclidean",
@@ -39,7 +39,7 @@ Heatmap(matrix, col, name,
     column_dend_height = unit(10, "mm"),
     show_column_dend = TRUE,
     column_dend_gp = gpar(),
-    column_dend_reorder = TRUE,
+    column_dend_reorder = is.logical(cluster_columns) || is.function(cluster_columns),
     
     row_order = NULL,
     column_order = NULL,
@@ -71,6 +71,7 @@ Heatmap(matrix, col, name,
     gap = unit(1, "mm"),
     row_gap = unit(1, "mm"),
     column_gap = unit(1, "mm"),
+    show_parent_dend_line = ht_opt$show_parent_dend_line,
     
     heatmap_width = unit(1, "npc"),
     width = NULL,
@@ -149,6 +150,7 @@ Heatmap(matrix, col, name,
   \item{gap}{Gap between row slices if the heatmap is split by rows. The value should be a \code{\link[grid]{unit}} object.}
   \item{row_gap}{Same as \code{gap}.}
   \item{column_gap}{Gap between column slices.}
+  \item{show_parent_dend_line}{When heatmap is split, whether to add a dashed line to mark parent dendrogram and children dendrograms?}
   \item{width}{Width of the heatmap body.}
   \item{height}{Height of the heatmap body.}
   \item{heatmap_width}{Width of the whole heatmap (including heatmap components)}

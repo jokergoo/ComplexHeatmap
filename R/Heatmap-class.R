@@ -156,6 +156,7 @@ Heatmap = setClass("Heatmap",
 # -gap Gap between row slices if the heatmap is split by rows. The value should be a `grid::unit` object.
 # -row_gap Same as ``gap``.
 # -column_gap Gap between column slices.
+# -show_parent_dend_line When heatmap is split, whether to add a dashed line to mark parent dendrogram and children dendrograms?
 # -width Width of the heatmap body.
 # -height Height of the heatmap body.
 # -heatmap_width Width of the whole heatmap (including heatmap components)
@@ -543,17 +544,25 @@ Heatmap = function(matrix, col, name,
     if(missing(cluster_rows) && !missing(row_order)) {
         cluster_rows = FALSE
     }
-    if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
+    if(is.logical(cluster_rows)) {
+        if(!cluster_rows) {
+            row_dend_width = unit(0, "mm")
+            show_row_dend = FALSE
+        }
+        .Object@row_dend_param$cluster = cluster_rows
+    } else if(inherits(cluster_rows, "dendrogram") || inherits(cluster_rows, "hclust")) {
         .Object@row_dend_param$obj = cluster_rows
         .Object@row_dend_param$cluster = TRUE
     } else if(inherits(cluster_rows, "function")) {
         .Object@row_dend_param$fun = cluster_rows
         .Object@row_dend_param$cluster = TRUE
     } else {
-        .Object@row_dend_param$cluster = cluster_rows
-        if(!cluster_rows) {
-            row_dend_width = unit(0, "mm")
-            show_row_dend = FALSE
+        oe = try(cluster_rows <- as.dendrogram(cluster_rows), silent = TRUE)
+        if(!inherits(oe, "try-error")) {
+            .Object@row_dend_param$obj = cluster_rows
+            .Object@row_dend_param$cluster = TRUE
+        } else {
+            stop_wrap("`cluster_rows` should be a logical value, a clustering function or a clustering object.")
         }
     }
     if(!show_row_dend) {
@@ -580,17 +589,25 @@ Heatmap = function(matrix, col, name,
     if(missing(cluster_columns) && !missing(column_order)) {
         cluster_columns = FALSE
     }
-    if(inherits(cluster_columns, "dendrogram") || inherits(cluster_columns, "hclust")) {
+    if(is.logical(cluster_columns)) {
+        if(!cluster_columns) {
+            column_dend_height = unit(0, "mm")
+            show_column_dend = FALSE
+        }
+        .Object@column_dend_param$cluster = cluster_columns
+    } else if(inherits(cluster_columns, "dendrogram") || inherits(cluster_columns, "hclust")) {
         .Object@column_dend_param$obj = cluster_columns
         .Object@column_dend_param$cluster = TRUE
     } else if(inherits(cluster_columns, "function")) {
         .Object@column_dend_param$fun = cluster_columns
         .Object@column_dend_param$cluster = TRUE
     } else {
-        .Object@column_dend_param$cluster = cluster_columns
-        if(!cluster_columns) {
-            column_dend_height = unit(0, "mm")
-            show_column_dend = FALSE
+        oe = try(cluster_columns <- as.dendrogram(cluster_columns), silent = TRUE)
+        if(!inherits(oe, "try-error")) {
+            .Object@column_dend_param$obj = cluster_columns
+            .Object@column_dend_param$cluster = TRUE
+        } else {
+            stop_wrap("`cluster_columns` should be a logical value, a clustering function or a clustering object.")
         }
     }
     if(!show_column_dend) {

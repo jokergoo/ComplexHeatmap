@@ -192,6 +192,8 @@ oncoPrint = function(mat,
 		}
 
 		alter_fun = alter_fun[unique(c("background", intersect(names(alter_fun), all_type)))]
+		all_type = setdiff(names(alter_fun), "background")
+		arr = arr[, , all_type, drop = FALSE]
 
 		if(is.null(alter_fun_is_vectorized)) {
 			alter_fun_is_vectorized = guess_alter_fun_is_vectorized(alter_fun)

@@ -84,7 +84,8 @@ Draw a list of heatmaps
     heatmap_border = NULL,
     annotation_border = NULL,
     fastcluster = NULL,
-    anno_simple_size = NULL)
+    anno_simple_size = NULL,
+    show_parent_dend_line = NULL)
 }
 \arguments{
 
@@ -157,6 +158,7 @@ Draw a list of heatmaps
   \item{annotation_border}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{fastcluster}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{anno_simple_size}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
+  \item{show_parent_dend_line}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
 
 }
 \details{

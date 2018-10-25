@@ -348,7 +348,21 @@ HeatmapAnnotation = function(...,
 		}
 	}
 
+
 	n_total_anno = length(anno_list)
+
+	## check whether anno_list contains zoomed anno_empty
+	if(n_total_anno > 1) {
+		for(i in seq_len(n_total_anno)) {
+			anno = anno_list[[i]]@fun
+			if(identical(anno@fun_name, "anno_empty")) {
+				if(anno@var_env$zoom) {
+					stop_wrap("You set `zoom = TRUE` in `anno_empty()` for the empty annotation. The HeatmapAnnotation object only allows to contain one single annotation if it is a zoomed empty annotation.")
+				}
+			}
+		}
+	}
+
 
 	if(is.null(gap)) gap = unit(0, "mm")
 
@@ -559,6 +573,7 @@ setMethod(f = "draw",
 	n_anno = length(object@anno_list)
 	anno_size = object@anno_size
 	gap = object@gap
+	vp_param = list(...)
 
 	if(is.character(test)) {
         test2 = TRUE
@@ -572,7 +587,7 @@ setMethod(f = "draw",
     	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(3, "cm"), height = object@height))
     	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(3, "cm"), width = object@width))
     } else {
-		pushViewport(viewport(...))
+		pushViewport(do.call(viewport, vp_param))
 	}
 
 	if(missing(index)) {
@@ -1215,3 +1230,15 @@ setMethod(f = "re_size",
 	return(object)
 })
 
+
+has_zoomed_anno_empty = function(ha) {
+	if(length(ha@anno_list) == 1) {
+		anno = ha@anno_list[[1]]@fun
+		if(identical(anno@fun_name, "anno_empty")) {
+			if(anno@var_env$zoom) {
+				return(TRUE)
+			}
+		}
+	}
+	return(FALSE)
+}

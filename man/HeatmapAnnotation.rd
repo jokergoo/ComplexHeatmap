@@ -56,7 +56,7 @@ HeatmapAnnotation(...,
 
 }
 \details{
-For arguments \code{border}, \code{annotation_name_offset}, \code{annotation_name_side}, \code{annotation_name_rot},
+For arguments \code{show_legend}, \code{border}, \code{annotation_name_offset}, \code{annotation_name_side}, \code{annotation_name_rot},
 \code{show_annotation_name}, they can be set as named vectors to modify values for some of the annotations,
 e.g. assuming you have an annotation with name \code{foo}, you can specify \code{border = c(foo = TRUE)} in \code{\link{HeatmapAnnotation}}.
 

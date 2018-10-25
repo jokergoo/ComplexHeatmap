@@ -65,6 +65,7 @@ Other parameters:
 
 \describe{
   \item{fast_hclust}{whether use \code{\link[fastcluster]{hclust}} to speed up clustering?}
+  \item{show_parent_dend_line}{when heatmap is split, whether to add a dashed line to mark parent dendrogram and children dendrograms?}
 }
 
 You can get or set option values by the traditional way (like \code{\link[base]{options}}) or by \code{$} operator:
