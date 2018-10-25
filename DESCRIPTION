@@ -13,7 +13,7 @@ Suggests: testthat (>= 0.3), knitr, markdown, cluster, MASS, pvclust,
     dendextend (>= 1.0.1), grImport, grImport2, rsvg, glue
 VignetteBuilder: knitr
 Description: Complex heatmaps are efficient to visualize associations 
-    between different sources of data sets and reveal potential structures. 
+    between different sources of data sets and reveal potential patterns. 
     Here the ComplexHeatmap package provides a highly flexible way to arrange 
     multiple heatmaps and supports various annotation graphics.
 biocViews: Software, Visualization, Sequencing

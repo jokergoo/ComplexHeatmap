@@ -213,7 +213,7 @@ Heatmap = function(matrix, col, name,
     row_dend_side = c("left", "right"),
     row_dend_width = unit(10, "mm"), 
     show_row_dend = TRUE, 
-    row_dend_reorder = is.logical(cluster_rows),
+    row_dend_reorder = is.logical(cluster_rows) || is.function(cluster_rows),
     row_dend_gp = gpar(), 
     cluster_columns = TRUE, 
     clustering_distance_columns = "euclidean", 
@@ -222,7 +222,7 @@ Heatmap = function(matrix, col, name,
     column_dend_height = unit(10, "mm"), 
     show_column_dend = TRUE, 
     column_dend_gp = gpar(), 
-    column_dend_reorder = is.logical(cluster_columns),
+    column_dend_reorder = is.logical(cluster_columns) || is.function(cluster_columns),
 
     row_order = NULL, 
     column_order = NULL,
@@ -254,6 +254,7 @@ Heatmap = function(matrix, col, name,
     gap = unit(1, "mm"),
     row_gap = unit(1, "mm"),
     column_gap = unit(1, "mm"),
+    show_parent_dend_line = ht_opt$show_parent_dend_line,
 
     heatmap_width = unit(1, "npc"),
     width = NULL,
@@ -759,6 +760,7 @@ Heatmap = function(matrix, col, name,
     .Object@heatmap_param$verbose = verbose
     .Object@heatmap_param$post_fun = post_fun
     .Object@heatmap_param$calling_env = parent.frame()
+    .Object@heatmap_param$show_parent_dend_line = show_parent_dend_line
 
     if(nrow(matrix) == 0) {
         .Object@matrix_param$height = unit(0, "mm")
@@ -954,7 +956,7 @@ make_cluster = function(object, which = c("row", "column")) {
                 for(i in seq_along(dend_list)) {
                     if(length(order_list[[i]]) > 1) {
                         sub_ind = sort(order_list[[i]])
-                        dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind])
+                        dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind], mean)
                         # the order of object@row_dend_list[[i]] is the order corresponding to the big dendrogram
                         order_list[[i]] = order.dendrogram(dend_list[[i]])
                     }
@@ -1068,7 +1070,7 @@ make_cluster = function(object, which = c("row", "column")) {
         meanmat = as.matrix(as.data.frame(meanmat))
         hc = hclust(dist(t(meanmat)))
         weight = colMeans(meanmat)
-        hc = as.hclust(reorder(as.dendrogram(hc), -weight))
+        hc = as.hclust(reorder(as.dendrogram(hc), -weight, mean))
         cl2 = numeric(length(cl))
         for(i in seq_along(hc$order)) {
             cl2[cl == hc$order[i]] = i
@@ -1209,7 +1211,7 @@ make_cluster = function(object, which = c("row", "column")) {
             for(i in seq_along(dend_list)) {
                 if(length(order_list[[i]]) > 1) {
                     sub_ind = sort(order_list[[i]])
-                    dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind])
+                    dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind], mean)
                     order_list[[i]] = sub_ind[ order.dendrogram(dend_list[[i]]) ]
                 }
             }

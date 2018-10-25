@@ -462,8 +462,17 @@ popViewport = function(...) {
 dev.off2 = function () {
     i1 = dev.prev()
     i2 = dev.cur()
-    if (i1 > 1)
+
+    if (i1 == 2) {
         dev.set(i1)
+    } else if(i1 > 2) {
+        i11 = dev.prev(i1)
+        if(names(i11) == "RStudioGD") {
+            dev.set(i11)
+        } else {
+            dev.set(i1)
+        }
+    }
     dev.off(i2)
 }
 

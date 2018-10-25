@@ -238,6 +238,7 @@ setMethod(f = "add_heatmap",
 # -annotation_border  this set the value in `ht_opt` and reset back after the plot is done
 # -fastcluster this set the value in `ht_opt` and reset back after the plot is done
 # -anno_simple_size  this set the value in `ht_opt` and reset back after the plot is done
+# -show_parent_dend_line this set the value in `ht_opt` and reset back after the plot is done
 #
 # == detail
 # The function first calls `make_layout,HeatmapList-method` to calculate
@@ -333,7 +334,8 @@ setMethod(f = "draw",
     heatmap_border = NULL,
     annotation_border = NULL,
     fastcluster = NULL,
-    anno_simple_size = NULL
+    anno_simple_size = NULL,
+    show_parent_dend_line = NULL
     ) {
 
     verbose = ht_opt$verbose
@@ -352,7 +354,8 @@ setMethod(f = "draw",
                     "heatmap_border",
                     "annotation_border",
                     "fastcluster",
-                    "anno_simple_size")) {
+                    "anno_simple_size",
+                    "show_parent_dend_line")) {
         v = get(opt_nm, inherits = FALSE)
         if(!is.null(v)) {
             ovl[[opt_nm]] = ht_opt[[opt_nm]]
@@ -486,15 +489,15 @@ setMethod(f = "draw",
     ht_list_height = sum(component_height(object)) + padding[1] + padding[3]
 
     if(is_abs_unit(ht_list_width)) {
-        ht_list_width = unit(ceiling(convertWidth(ht_list_width, "mm", valueOnly = TRUE)), "mm")
-        qqcat("Since all heatmaps/annotations have absolute units, the total width of the plot is @{ht_list_width}\n")
+        ht_list_width = unit(convertWidth(ht_list_width, "mm", valueOnly = TRUE), "mm")
+        # qqcat("Since all heatmaps/annotations have absolute units, the total width of the plot is @{ht_list_width}\n")
         w = ht_list_width
     } else {
         w = unit(1, "npc")
     }
     if(is_abs_unit(ht_list_height)) {
-        ht_list_height = unit(ceiling(convertHeight(ht_list_height, "mm", valueOnly = TRUE)), "mm")
-        qqcat("Since all heatmaps/annotations have absolute units, the total height of the plot is @{ht_list_height}\n")
+        ht_list_height = unit(convertHeight(ht_list_height, "mm", valueOnly = TRUE), "mm")
+        # qqcat("Since all heatmaps/annotations have absolute units, the total height of the plot is @{ht_list_height}\n")
         h = ht_list_height
     } else {
         h = unit(1, "npc")
@@ -504,14 +507,13 @@ setMethod(f = "draw",
         ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), 
         widths = component_width(object), 
         heights = component_height(object))
-    
 
     pushViewport(viewport(name = "global", width = w, height = h))
     pushViewport(viewport(layout = layout, name = "global_layout", x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
         height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
     ht_layout_index = object@layout$layout_index
     ht_graphic_fun_list = object@layout$graphic_fun_list
-    
+
     for(j in seq_len(nrow(ht_layout_index))) {
         pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
         ht_graphic_fun_list[[j]](object)
