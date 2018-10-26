@@ -392,7 +392,7 @@ size.HeatmapAnnotation = function(x, ...) {
 #
 width.Legends = function(x, ...) {
 	s = attr(x@grob, "width")
-	s
+	convertWidth(s, "mm")
 }
 
 
@@ -412,7 +412,7 @@ width.Legends = function(x, ...) {
 #
 height.Legends = function(x, ...) {
 	s = attr(x@grob, "height")
-	s
+	convertHeight(s, "mm")
 }
 
 
