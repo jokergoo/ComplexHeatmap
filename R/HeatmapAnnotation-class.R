@@ -300,12 +300,12 @@ HeatmapAnnotation = function(...,
 	        	name_side = annotation_name_side[i_anno], 
 	        	name_rot = annotation_name_rot[i_anno],
 	        	border = border[i_anno])
-		if(!is_name_offset_called) {
-			arg_list$name_rot = NULL
-		}
-		if(!is_name_rot_called) {
-			arg_list$name_offset = NULL
-		}
+		# if(!is_name_offset_called) {
+		# 	arg_list$name_rot = NULL
+		# }
+		# if(!is_name_rot_called) {
+		# 	arg_list$name_offset = NULL
+		# }
 		if(inherits(anno_value_list[[ag]], c("function", "AnnotationFunction"))) {
 			arg_list$fun = anno_value_list[[ag]]
 			if(inherits(anno_value_list[[ag]], "function")) {

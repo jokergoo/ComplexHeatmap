@@ -435,7 +435,6 @@ setMethod(f = "adjust_heatmap_list",
         }
     }
 
-
     adjust_annotation_extension = object@ht_list_param$adjust_annotation_extension
 
     # the padding of the heatmap list should be recorded because if the total wdith of e.g. heatmap body
@@ -506,11 +505,13 @@ setMethod(f = "draw_heatmap_list",
         }))) {
             if(has_heatmap_list_component(object, "annotation_legend_top") || 
                has_heatmap_list_component(object, "heatmap_legend_top")) {
-                max_top_component_height = object@layout$row_anno_max_top_extended
+                # max_top_component_height = object@layout$row_anno_max_top_extended
+                max_top_component_height = unit(0, "mm")
             }
             if(has_heatmap_list_component(object, "annotation_legend_bottom") || 
                has_heatmap_list_component(object, "heatmap_legend_bottom")) {
-                max_bottom_component_height = object@layout$row_anno_max_bottom_extended
+                # max_bottom_component_height = object@layout$row_anno_max_bottom_extended
+                max_bottom_component_height = unit(0, "mm")
             }
         }
 
@@ -561,11 +562,13 @@ setMethod(f = "draw_heatmap_list",
         }))) {
             if(has_heatmap_list_component(object, "annotation_legend_right") || 
                has_heatmap_list_component(object, "heatmap_legend_right")) {
-                max_right_component_width = object@layout$column_anno_max_right_extended
+                # max_right_component_width = object@layout$column_anno_max_right_extended
+                max_right_component_width = unit(0, "mm") 
             }
             if(has_heatmap_list_component(object, "annotation_legend_left") || 
                has_heatmap_list_component(object, "heatmap_legend_left")) {
-                max_left_component_width = object@layout$column_anno_max_left_extended
+                # max_left_component_width = object@layout$column_anno_max_left_extended
+                max_left_component_width = unit(0, "mm")
             }
         }
 

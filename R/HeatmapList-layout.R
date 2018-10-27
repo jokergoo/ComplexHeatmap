@@ -454,7 +454,6 @@ setMethod(f = "make_layout",
 
     if(verbose) qqcat("auto adjust all heatmap/annotations by the main heatmap\n")
 
-
     ######## auto adjust ##########
     ht_main = object@ht_list[[i_main]]
     if(direction == "horizontal") {
@@ -474,7 +473,7 @@ setMethod(f = "make_layout",
             # if the first one is a HeatmapAnnotation object
             # add a heatmap with zero column so that we can put titles and dend on the most left
             if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
-                object = Heatmap(matrix(nrow = nr, ncol = 0)) + object
+                object@ht_list = c(list(Heatmap(matrix(nrow = nr, ncol = 0))), object@ht_list)
                 ht_gap = unit.c(unit(0, "mm"), ht_gap)
                 i_main = i_main + 1
                 if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very left\n")
@@ -485,7 +484,7 @@ setMethod(f = "make_layout",
         if(row_dend_side == "right" || row_sub_title_side == "right") {
             # if the last one is a HeatmapAnnotation object
             if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
-                object = object + Heatmap(matrix(nrow = nr, ncol = 0))
+                object@ht_list = c(object@ht_list, list(Heatmap(matrix(nrow = nr, ncol = 0))))
                 ht_gap = unit.c(ht_gap, unit(0, "mm"))
                 if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very right\n")
             }
@@ -496,7 +495,7 @@ setMethod(f = "make_layout",
 
         if(column_dend_side == "top" || column_sub_title_side == "top") {
             if(inherits(object@ht_list[[1]], "HeatmapAnnotation")) {
-                object = Heatmap(matrix(nrow = 0, ncol = nc)) %v% object
+                object@ht_list = c(list(Heatmap(matrix(nrow = 0, ncol = nc))), object@ht_list)
                 ht_gap = unit.c(unit(0, "mm"), ht_gap)
                 i_main = i_main + 1
                 if(verbose) qqcat("add a zero-row heatmap for column dend/title on the very top\n")
@@ -505,7 +504,7 @@ setMethod(f = "make_layout",
 
         if(column_dend_side == "bottom" || column_sub_title_side == "bottom") {
             if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
-                object = object %v% Heatmap(matrix(nrow = 0, ncol = nc))
+                object@ht_list = c(object@ht_list, list(Heatmap(matrix(nrow = 0, ncol = nc))))
                 ht_gap = unit.c(ht_gap, unit(0, "mm"))
                 if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very bottom\n")
             }
@@ -695,7 +694,7 @@ setMethod(f = "make_layout",
         }
         if(verbose) qqcat("adjust column_gap for all other heatmaps\n")
     }
-    
+
     if(direction == "horizontal") {
         for(i in seq_len(n_ht)) {
             # supress row clustering because all rows in all heatmaps are adjusted

@@ -370,8 +370,7 @@ setMethod(f = "draw",
 
     direction = object@direction
 
-    l = sapply(object@ht_list, inherits, "Heatmap")
-    if(! any(l)) {
+    if(!has_heatmap(object)) {
         ob = sapply(object@ht_list, nobs)
         ob = ob[!is.na(ob)]
         if(length(ob) == 0) {
@@ -389,9 +388,9 @@ setMethod(f = "draw",
             })))
             max_height = convertHeight(max_height, "mm")
             if(max_height[[1]] == 0) {
-                object = object + Heatmap(matrix(ncol = 0, nrow = nr))
+                object = object + Heatmap(matrix(ncol = 0, nrow = nr), row_title = NULL, show_heatmap_legend = FALSE)
             } else {
-                object = object + Heatmap(matrix(ncol = 0, nrow = nr), height = max_height)
+                object = object + Heatmap(matrix(ncol = 0, nrow = nr), height = max_height, row_title = NULL, show_heatmap_legend = FALSE)
             }
             
         } else {
@@ -406,11 +405,15 @@ setMethod(f = "draw",
             })))
             max_width = convertWidth(max_width, "mm")
             if(max_width[[1]] == 0) {
-                object = object %v% Heatmap(matrix(nrow = 0, ncol = nc))
+                object = object %v% Heatmap(matrix(nrow = 0, ncol = nc), column_title = NULL, show_heatmap_legend = FALSE)
             } else {
-                object = object %v% Heatmap(matrix(nrow = 0, ncol = nc), width = max_width)
+                object = object %v% Heatmap(matrix(nrow = 0, ncol = nc), width = max_width, column_title = NULL, show_heatmap_legend = FALSE)
             }
         }
+        row_sub_title_side = "original"
+        row_dend_side = "original"
+        column_sub_title_side = "original"
+        column_dend_side = "original"
     }
 
     if(newpage) {
@@ -537,6 +540,10 @@ setMethod(f = "draw",
 
     return(invisible(object))
 })
+
+has_heatmap = function(ht_list) {
+    any(sapply(ht_list@ht_list, inherits, "Heatmap"))
+}
 
 # == title
 # Draw a list of heatmaps with default parameters
