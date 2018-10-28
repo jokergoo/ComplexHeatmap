@@ -773,4 +773,7 @@ grid.boxplot = function(value, pos, outline = TRUE, box_width = 0.6,
     }
 }
 
+random_str = function() {
+    paste(sample(c(letters, LETTERS, 0:9), 8), collapse = "")
+}
 

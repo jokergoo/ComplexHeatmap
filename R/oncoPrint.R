@@ -15,14 +15,20 @@
 # -col A vector of color for which names correspond to alteration types.
 # -top_annotation Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes with a certain alteration in each sample.
 # -right_annotation Annotation put on the right of the oncoPrint. By default it is barplot which shows the number of samples with a certain alteration in each gene.
+# -left_annotation
 # -bottom_annotation Annotation put at the bottom of the oncoPrint.
 # -show_pct whether show percent values on the left of the oncoprint?
 # -pct_gp Graphic paramters for percent values
 # -pct_digits Digits for the percent values.
 # -pct_side Side of the percent values to the oncoPrint. This argument is currently disabled.
+# -row_labels
 # -show_row_names Whether show row names?
 # -row_names_side Side of the row names to the oncoPrint. This argument is currently disabled.
 # -row_names_gp Graphic parameters for the row names.
+# -row_split
+# -column_labels
+# -column_names_gp
+# -column_split
 # -row_order Order of rows. By default rows are sorted by the number of occurence of the alterations.
 # -column_order Order of columns. By default the columns are sorted to show the mutual exclusivity of alterations.
 # -remove_empty_columns If there is no alteration in some samples, whether remove them on the oncoPrint?
@@ -50,18 +56,25 @@ oncoPrint = function(mat,
 	alter_fun_is_vectorized = NULL,
 	col, 
 
-	top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot()),
-	right_annotation = rowAnnotation(row_barplot = anno_oncoprint_barplot(
-			axis_param = list(side = "top", labels_rot = 0))),
+	top_annotation = HeatmapAnnotation(cbar = anno_oncoprint_barplot()),
+	right_annotation = rowAnnotation(rbar = anno_oncoprint_barplot()),
+	left_annotation = NULL,
 	bottom_annotation = NULL,
 
 	show_pct = TRUE, 
 	pct_gp = gpar(fontsize = 10), 
 	pct_digits = 0,
 	pct_side = "left",
+
+	row_labels = NULL,
 	show_row_names = TRUE,
 	row_names_side = "right",
 	row_names_gp = pct_gp,
+	row_split = NULL,
+
+	column_labels = NULL,
+	column_names_gp = gpar(fontsize = 10),
+	column_split = NULL,
 
 	row_order = NULL,
 	column_order = NULL,
@@ -72,12 +85,8 @@ oncoPrint = function(mat,
 	heatmap_legend_param = list(title = "Alterations"),
 	...) {
 
-	arg_list = list(...)
+	arg_list = as.list(match.call())[-1]
 	arg_names = names(arg_list)
-
-	oe = environment(anno_oncoprint_barplot)
-	environment(anno_oncoprint_barplot) = environment()
-	on.exit(environment(anno_oncoprint_barplot) <- oe)
 
 	# convert mat to mat_list
 	if(inherits(mat, "data.frame")) {
@@ -269,15 +278,31 @@ oncoPrint = function(mat,
 		column_order = structure(seq_len(dim(arr)[2]), names = dimnames(arr)[[2]])[column_order]
 	}
 	names(column_order) = as.character(column_order)
+
+	l_non_empty_column = rowSums(apply(arr, c(2, 3), sum)) > 0
+	l_non_empty_row = rowSums(apply(arr, c(1, 3), sum)) > 0
+
+	if(is.null(row_labels)) row_labels = dimnames(arr)[[1]]
 	if(remove_empty_columns) {
-		l = rowSums(apply(arr, c(2, 3), sum)) > 0
-		arr = arr[, l, , drop = FALSE]
-		column_order = structure(seq_len(sum(l)), names = which(l))[as.character(intersect(column_order, which(l)))]
+		arr = arr[, l_non_empty_column, , drop = FALSE]
+		column_order = structure(seq_len(sum(l_non_empty_column)), names = which(l_non_empty_column))[as.character(intersect(column_order, which(l_non_empty_column)))]
+		if(!is.null(column_labels)) column_labels = column_labels[l_non_empty_column]
+		if(!is.null(column_split)) {
+			if(is.atomic(column_split)) column_split = data.frame(column_split)
+			column_split = column_split[l_non_empty_column, , drop = FALSE]
+		}
+		column_names_gp = subset_gp(column_names_gp, l_non_empty_column)
 	}
+	if(is.null(column_labels)) column_labels = dimnames(arr)[[2]]
 	if(remove_empty_rows) {
-		l = rowSums(apply(arr, c(1, 3), sum)) > 0
-		arr = arr[l, , , drop = FALSE]
-		row_order = structure(seq_len(sum(l)), names = which(l))[as.character(intersect(row_order, which(l)))]
+		arr = arr[l_non_empty_row, , , drop = FALSE]
+		row_order = structure(seq_len(sum(l_non_empty_row)), names = which(l_non_empty_row))[as.character(intersect(row_order, which(l_non_empty_row)))]
+		if(!is.null(row_labels)) row_labels = row_labels[l_non_empty_row]
+		if(!is.null(row_split)) {
+			if(is.atomic(row_split)) row_split = data.frame(row_split)
+			row_split = row_split[l_non_empty_row, , drop = FALSE]
+		}
+		row_names_gp = subset_gp(row_names_gp, l_non_empty_row)
 	}
 
 	# validate col
@@ -291,26 +316,68 @@ oncoPrint = function(mat,
 	pct = paste0(round(pct_num * 100, digits = pct_digits), "%")
 
 	### now the annotations
-	err = try(top_annotation <- eval(substitute(top_annotation)), silent = TRUE)
-	if(inherits(err, "try-error")) {
-		stop_wrap("find an error when executing top_annotation. ")
-	}
-	right_annotation = eval(substitute(right_annotation))
+	top_annotation = top_annotation
+	right_annotation = right_annotation
 
-	if("left_annotation" %in% arg_names) {
-		stop_wrap("'left_annotation' are not allowed to specify, you can add...")
+	if(show_pct && show_row_names) {
+		if(pct_side == row_names_side) {
+			stop_wrap("Percent values and row names should be at different side of the oncoPrint.")
+		}
 	}
-	left_annotation = NULL
+
 	if(show_pct) {
-		left_annotation = rowAnnotation(pct = anno_text(pct, just = "right", location = unit(1, "npc"), gp = pct_gp),
-			show_annotation_name = FALSE)
+		pct_ha = rowAnnotation(pct = anno_text(pct, just = "right", location = unit(1, "npc"), gp = pct_gp),
+				show_annotation_name = FALSE)
+		names(pct_ha) = paste0("pct_", random_str())
+	} else {
+		pct_ha = NULL
 	}
 	if(show_row_names) {
-		ha_row_names = rowAnnotation(rownames = anno_text(dimnames(arr)[[1]], gp = pct_gp, just = "left", location = unit(0, "npc")),
+		rn_ha = rowAnnotation(rownames = anno_text(row_labels, gp = pct_gp, just = "left", location = unit(0, "npc")),
 			show_annotation_name = FALSE)
-		right_annotation = c(ha_row_names, right_annotation, gap = unit(2, "mm"))
+		names(rn_ha) = paste0("rownames_", random_str())
+	} else {
+		rn_ha = NULL
+	}
+	
+	if(is.null(left_annotation)) {
+		if(pct_side == "left") {
+			left_annotation = pct_ha
+		}
+		if(row_names_side == "left") {
+			left_annotation = rn_ha
+		}
+	} else {
+		if(remove_empty_rows) {
+			left_annotation = left_annotation[l_non_empty_row, ]
+		}
+		if(pct_side == "left") {
+			left_annotation = c(left_annotation, pct_ha)
+		}
+		if(row_names_side == "left") {
+			left_annotation = c(left_annotation, rn_ha)
+		}
 	}
 
+	if(is.null(right_annotation)) {
+		if(pct_side == "right") {
+			right_annotation = pct_ha
+		}
+		if(row_names_side == "right") {
+			right_annotation = rn_ha
+		}
+	} else {
+		if(remove_empty_rows) {
+			right_annotation = right_annotation[l_non_empty_row, ]
+		}
+		if(pct_side == "right") {
+			right_annotation = c(pct_ha, right_annotation)
+		}
+		if(row_names_side == "right") {
+			right_annotation = c(rn_ha, right_annotation)
+		}
+	}
+	
 	#####################################################################
 	# the main matrix
 	pheudo = c(all_type, rep(NA, nrow(arr)*ncol(arr) - length(all_type)))
@@ -336,9 +403,13 @@ oncoPrint = function(mat,
 		heatmap_legend_param = heatmap_legend_param,
 		...
 	)
+	ht@heatmap_param$oncoprint_env = environment()
 
 	return(ht)
 }
+
+ONCOPRINT_ENV = new.env()
+ONCOPRINT_ENV$fun_env = NULL
 
 # == title
 # Unify a List of Matrix 
@@ -389,7 +460,9 @@ unify_mat_list = function(mat_list, default = 0) {
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-anno_oncoprint_barplot = function(type = all_type, which = c("column", "row"),
+anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
+	bar_width = 0.6, axis = TRUE, 
+	axis_param = if(which == "column") default_axis_param("column") else list(side = "top", labels_rot = 0),
 	width = NULL, height = NULL, border = FALSE, ...) {
 
 	if(is.null(.ENV$current_annotation_which)) {
@@ -399,34 +472,74 @@ anno_oncoprint_barplot = function(type = all_type, which = c("column", "row"),
 	}
 
 	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
-	# get variables fron oncoPrint() function
-	pf = parent.env(environment())
-	arr = pf$arr
-	all_type = pf$all_type
-	col = pf$col
 
-	type = type
-	all_type = intersect(all_type, type)
-	if(length(all_type) == 0) {
-		stop_wrap("find no overlap, check your `type` argument.")
-	}
-	arr = arr[, , all_type, drop = FALSE]
-	col = col[all_type]
+	column_fun = function(index, k, n) {
+		pf = get("object", envir = parent.frame(7))@heatmap_param$oncoprint_env
+		arr = pf$arr
+		all_type = pf$all_type
+		col = pf$col
 
-	if(which == "column") {
+		if(is.null(type)) type = all_type
+
+		all_type = intersect(all_type, type)
+		if(length(all_type) == 0) {
+			stop_wrap("find no overlap, check your `type` argument.")
+		}
+		arr = arr[, , all_type, drop = FALSE]
+		col = col[all_type]
+
 		count = apply(arr, c(2, 3), sum)
 		fun = anno_barplot(count, gp = gpar(fill = col, col = NA), which = "column",
-			baseline = 0, height = anno_size$height, border = border, ...)
-	} else {
+			baseline = 0, height = anno_size$height, border = border, bar_width = bar_width,
+			axis = axis, axis_param = axis_param)@fun
+		fun(index, k, n)
+	}
+	row_fun = function(index, k, n) {
+		pf = get("object", envir = parent.frame(7))@heatmap_param$oncoprint_env
+		arr = pf$arr
+		all_type = pf$all_type
+		col = pf$col
+
+		if(is.null(type)) type = all_type
+
+		all_type = intersect(all_type, type)
+		if(length(all_type) == 0) {
+			stop_wrap("find no overlap, check your `type` argument.")
+		}
+		arr = arr[, , all_type, drop = FALSE]
+		col = col[all_type]
+
 		count = apply(arr, c(1, 3), sum)
 		fun = anno_barplot(count, gp = gpar(fill = col, col = NA), which = "row",
-			baseline = 0, width = anno_size$width, border = border, ...)
+			baseline = 0, width = anno_size$width, border = border, bar_width = bar_width,
+			axis = axis, axis_param = axis_param)@fun
+		fun(index, k, n)
 	}
 	
-	fun@show_name = FALSE
-	return(fun)
-}
+	if(which == "row") {
+		fun = row_fun
+	} else if(which == "column") {
+		fun = column_fun
+	}
 
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_oncoprint_barplot",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		var_import = list(border, type, bar_width, axis, axis_param, anno_size)
+	)
+		
+	anno@subsetable = TRUE
+	anno@show_name = FALSE
+
+	axis_param = validate_axis_param(axis_param, which)
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, c(0, 100)) else NULL
+	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+
+	return(anno) 
+}
 
 guess_alter_fun_is_vectorized = function(alter_fun) {
 	n = 50

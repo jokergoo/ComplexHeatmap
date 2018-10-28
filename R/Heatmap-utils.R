@@ -20,6 +20,7 @@
 # ht[, 1:5]
 # ht[1:5, 1:5]
 "[.Heatmap" = function(x, i, j) {
+    
     if(nargs() == 2) {
         subset_heatmap_by_row(x, i)
     } else {
@@ -46,6 +47,9 @@ subset_heatmap_by_row = function(ht, ind) {
         ht@row_names_param$anno = ht@row_names_param$anno[ind]
     }
     ht@row_names_param$gp = subset_gp(ht@row_names_param$gp, ind)
+    if(!is.null(ht@matrix_param$row_split)) {
+        ht@matrix_param$row_split = ht@matrix_param$row_split[ind, , drop = FALSE]
+    }
     if(length(ht@left_annotation)) {
         ht@left_annotation = ht@left_annotation[ind]
     }
@@ -66,6 +70,9 @@ subset_heatmap_by_column = function(ht, ind) {
         ht@column_names_param$anno = ht@column_names_param$anno[ind]
     }
     ht@column_names_param$gp = subset_gp(ht@column_names_param$gp, ind)
+    if(!is.null(ht@matrix_param$column_split)) {
+        ht@matrix_param$column_split = ht@matrix_param$column_split[, ind, drop = FALSE]
+    }
     if(length(ht@top_annotation)) {
         ht@top_annotation = ht@top_annotation[ind]
     }

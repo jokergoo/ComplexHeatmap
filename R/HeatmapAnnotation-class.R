@@ -818,7 +818,17 @@ setMethod(f = "add_heatmap",
 # ha
 c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
 	anno_list = list(...)
+	if(length(anno_list) == 1) {
+		return(anno_list[[1]])
+	}
+	# remove NULL
+	anno_list = anno_list[ !sapply(anno_list, is.null) ]
+	if(length(anno_list) == 1) {
+		return(anno_list[[1]])
+	}
+
 	n = length(anno_list)
+
 	if(length(unique(sapply(anno_list, function(x) x@which))) != 1) {
 		stop_wrap("All annotations should be all row annotation or all column annotation.")
 	}
