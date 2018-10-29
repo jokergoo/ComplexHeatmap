@@ -21,7 +21,7 @@ oncoPrint(mat, get_type = get_type_fun,
 ## turn off row names while turn on column names
 oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col, 
-    show_column_names = TRUE, show_row_names = FALSE)
+    show_column_names = TRUE, show_row_names = FALSE, show_pct = FALSE)
 
 oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col, pct_side = "right", 
@@ -51,5 +51,20 @@ oncoPrint(mat, get_type = get_type_fun,
 )
 
 
+oncoPrint(mat, get_type = get_type_fun,
+    alter_fun = alter_fun, col = col,
+    top_annotation = HeatmapAnnotation(
+        cbar = anno_oncoprint_barplot(border = TRUE),
+        foo1 = 1:3,
+        annotation_name_side = "left"),
+    left_annotation = rowAnnotation(foo2 = 1:3),
+    right_annotation = rowAnnotation(
+        cbar = anno_oncoprint_barplot(border = TRUE), 
+        foo3 = 1:3),
+)
 
+oncoPrint(mat, get_type = get_type_fun,
+    alter_fun = alter_fun, col = col,
+    right_annotation = rowAnnotation(rbar = anno_oncoprint_barplot(axis_param = list(side = "bottom", labels_rot = 90)))
+)
 

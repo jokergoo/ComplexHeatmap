@@ -97,7 +97,7 @@ HeatmapAnnotation = function(...,
 	which = c("column", "row"), 
 	gp = gpar(col = NA),
 	border = FALSE,
-	gap = unit(0, "mm"),
+	gap = unit(1, "points"),
 	
 	show_annotation_name = TRUE,
 	annotation_name_gp = gpar(),

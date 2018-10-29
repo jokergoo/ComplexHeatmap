@@ -15,20 +15,20 @@
 # -col A vector of color for which names correspond to alteration types.
 # -top_annotation Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes with a certain alteration in each sample.
 # -right_annotation Annotation put on the right of the oncoPrint. By default it is barplot which shows the number of samples with a certain alteration in each gene.
-# -left_annotation
+# -left_annotation Annotation put on the left of teh oncoPrint.
 # -bottom_annotation Annotation put at the bottom of the oncoPrint.
 # -show_pct whether show percent values on the left of the oncoprint?
 # -pct_gp Graphic paramters for percent values
 # -pct_digits Digits for the percent values.
 # -pct_side Side of the percent values to the oncoPrint. This argument is currently disabled.
-# -row_labels
+# -row_labels Labels as the row names of the oncoPrint.
 # -show_row_names Whether show row names?
 # -row_names_side Side of the row names to the oncoPrint. This argument is currently disabled.
 # -row_names_gp Graphic parameters for the row names.
-# -row_split
-# -column_labels
-# -column_names_gp
-# -column_split
+# -row_split Pass to `Heatmap`.
+# -column_labels Pass to `Heatmap`.
+# -column_names_gp Pass to `Heatmap`.
+# -column_split Pass to `Heatmap`.
 # -row_order Order of rows. By default rows are sorted by the number of occurence of the alterations.
 # -column_order Order of columns. By default the columns are sorted to show the mutual exclusivity of alterations.
 # -remove_empty_columns If there is no alteration in some samples, whether remove them on the oncoPrint?
@@ -371,10 +371,10 @@ oncoPrint = function(mat,
 			right_annotation = right_annotation[l_non_empty_row, ]
 		}
 		if(pct_side == "right") {
-			right_annotation = c(pct_ha, right_annotation)
+			if(!is.null(pct_ha)) right_annotation = c(pct_ha, right_annotation)
 		}
 		if(row_names_side == "right") {
-			right_annotation = c(rn_ha, right_annotation)
+			if(!is.null(rn_ha)) right_annotation = c(rn_ha, right_annotation)
 		}
 	}
 	
