@@ -1,0 +1,5 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Most probably asked questions}
+-->
+

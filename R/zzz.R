@@ -11,6 +11,17 @@ If you use it in published research, please cite:
 Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
   genomic data. Bioinformatics 2016.
 ========================================
+
+This version is a major update of the package. The major new features are:
+
+1. Support splitting heatmaps by columns.
+2. Support concatenating heatmaps/annotations vertically.
+3. Provide more types of heatmap annotations.
+
+Note this version is not 100% compatible with the older versions (<= 1.*.*).
+Please check for the differences and suggestions of how to adjust your code.
+
+Above messages will be removed in the future.
 ")	
 
     packageStartupMessage(msg)

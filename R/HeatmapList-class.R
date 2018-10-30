@@ -178,12 +178,10 @@ setMethod(f = "add_heatmap",
 # -column_title_side will the title be put on the top or bottom of the heatmap.
 # -column_title_gp graphic parameters for drawing text.
 # -heatmap_legend_side side to put heatmap legend
-# -heatmap_legend_offset currently disabled
 # -merge_legends merge heatmap legends and annotation legends to put into one column.
 # -show_heatmap_legend whether show all heatmap legends
 # -heatmap_legend_list use-defined legends which are put after the heatmap legends
 # -annotation_legend_side side of the annotation legends
-# -annotation_legend_offset currently disabled
 # -show_annotation_legend whether show annotation legends
 # -annotation_legend_list user-defined legends which are put after the annotation legends
 # -gap gap between heatmaps/annotations
@@ -268,12 +266,10 @@ setMethod(f = "draw",
     column_title_gp = gpar(fontsize = 14), 
 
     heatmap_legend_side = c("right", "left", "bottom", "top"), 
-    heatmap_legend_offset = unit(0, "mm"),
     merge_legends = FALSE,
     show_heatmap_legend = TRUE, 
     heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"), 
-    annotation_legend_offset = unit(0, "mm"),
     show_annotation_legend = TRUE, 
     annotation_legend_list = list(),
 
@@ -420,14 +416,14 @@ setMethod(f = "draw",
         grid.newpage()
     }
 
-    if(!missing(heatmap_legend_offset) && missing(annotation_legend_offset)) {
-        annotation_legend_offset = heatmap_legend_offset
-    } else if(missing(heatmap_legend_offset) && !missing(annotation_legend_offset)) {
-        heatmap_legend_offset = annotation_legend_offset
-    }
+    # if(!missing(heatmap_legend_offset) && missing(annotation_legend_offset)) {
+    #     annotation_legend_offset = heatmap_legend_offset
+    # } else if(missing(heatmap_legend_offset) && !missing(annotation_legend_offset)) {
+    #     heatmap_legend_offset = annotation_legend_offset
+    # }
 
-    object@heatmap_legend_param$offset = heatmap_legend_offset
-    object@annotation_legend_param$offset = annotation_legend_offset
+    object@heatmap_legend_param$offset = unit(0, "mm") #heatmap_legend_offset
+    object@annotation_legend_param$offset = unit(0, "mm") #annotation_legend_offset
 
     object@ht_list_param$adjust_annotation_extension = adjust_annotation_extension
 

@@ -15,7 +15,7 @@
 # -col A vector of color for which names correspond to alteration types.
 # -top_annotation Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes with a certain alteration in each sample.
 # -right_annotation Annotation put on the right of the oncoPrint. By default it is barplot which shows the number of samples with a certain alteration in each gene.
-# -left_annotation Annotation put on the left of teh oncoPrint.
+# -left_annotation Annotation put on the left of the oncoPrint.
 # -bottom_annotation Annotation put at the bottom of the oncoPrint.
 # -show_pct whether show percent values on the left of the oncoprint?
 # -pct_gp Graphic paramters for percent values
@@ -377,6 +377,14 @@ oncoPrint = function(mat,
 			if(!is.null(rn_ha)) right_annotation = c(rn_ha, right_annotation)
 		}
 	}
+	if(remove_empty_columns) {
+		if(!is.null(top_annotation)) {
+			top_annotation = top_annotation[l_non_empty_column, ]
+		}
+		if(!is.null(bottom_annotation)) {
+			bottom_annotation = bottom_annotation[l_non_empty_column, ]
+		}
+	}
 	
 	#####################################################################
 	# the main matrix
@@ -449,10 +457,12 @@ unify_mat_list = function(mat_list, default = 0) {
 # == param
 # -type A vector of the alteration types in the data. It can be a subset of all alteration types if you don't want to show them all.
 # -which Is it a row annotation or a column annotation?
+# -bar_width Width of the bars.
+# -axis Whether draw axis?
+# -axis_param Parameters for controlling axis.
 # -width Wisth of the annotation.
 # -height Height of the annotation.
 # -border Whether draw the border?
-# -... Other parameters passed to `anno_barplot`.
 #
 # == detail
 # This annotation function should always be used with `oncoPrint`.
@@ -463,7 +473,7 @@ unify_mat_list = function(mat_list, default = 0) {
 anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 	bar_width = 0.6, axis = TRUE, 
 	axis_param = if(which == "column") default_axis_param("column") else list(side = "top", labels_rot = 0),
-	width = NULL, height = NULL, border = FALSE, ...) {
+	width = NULL, height = NULL, border = FALSE) {
 
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]

@@ -7,17 +7,21 @@ Barplot Annotation for oncoPrint
 Barplot Annotation for oncoPrint
 }
 \usage{
-anno_oncoprint_barplot(type = all_type, which = c("column", "row"),
-    width = NULL, height = NULL, border = FALSE, ...)
+anno_oncoprint_barplot(type = NULL, which = c("column", "row"),
+    bar_width = 0.6, axis = TRUE,
+    axis_param = if(which == "column") default_axis_param("column") else list(side = "top", labels_rot = 0),
+    width = NULL, height = NULL, border = FALSE)
 }
 \arguments{
 
   \item{type}{A vector of the alteration types in the data. It can be a subset of all alteration types if you don't want to show them all.}
   \item{which}{Is it a row annotation or a column annotation?}
+  \item{bar_width}{Width of the bars.}
+  \item{axis}{Whether draw axis?}
+  \item{axis_param}{Parameters for controlling axis.}
   \item{width}{Wisth of the annotation.}
   \item{height}{Height of the annotation.}
   \item{border}{Whether draw the border?}
-  \item{...}{Other parameters passed to \code{\link{anno_barplot}}.}
 
 }
 \details{

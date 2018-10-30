@@ -13,18 +13,25 @@ oncoPrint(mat,
     alter_fun_is_vectorized = NULL,
     col,
     
-    top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot()),
-    right_annotation = rowAnnotation(row_barplot = anno_oncoprint_barplot(
-    axis_param = list(side = "top", labels_rot = 0))),
+    top_annotation = HeatmapAnnotation(cbar = anno_oncoprint_barplot()),
+    right_annotation = rowAnnotation(rbar = anno_oncoprint_barplot()),
+    left_annotation = NULL,
     bottom_annotation = NULL,
     
     show_pct = TRUE,
     pct_gp = gpar(fontsize = 10),
     pct_digits = 0,
     pct_side = "left",
+    
+    row_labels = NULL,
     show_row_names = TRUE,
     row_names_side = "right",
     row_names_gp = pct_gp,
+    row_split = NULL,
+    
+    column_labels = NULL,
+    column_names_gp = gpar(fontsize = 10),
+    column_split = NULL,
     
     row_order = NULL,
     column_order = NULL,
@@ -44,14 +51,20 @@ oncoPrint(mat,
   \item{col}{A vector of color for which names correspond to alteration types.}
   \item{top_annotation}{Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes with a certain alteration in each sample.}
   \item{right_annotation}{Annotation put on the right of the oncoPrint. By default it is barplot which shows the number of samples with a certain alteration in each gene.}
+  \item{left_annotation}{Annotation put on the left of the oncoPrint.}
   \item{bottom_annotation}{Annotation put at the bottom of the oncoPrint.}
   \item{show_pct}{whether show percent values on the left of the oncoprint?}
   \item{pct_gp}{Graphic paramters for percent values}
   \item{pct_digits}{Digits for the percent values.}
   \item{pct_side}{Side of the percent values to the oncoPrint. This argument is currently disabled.}
+  \item{row_labels}{Labels as the row names of the oncoPrint.}
   \item{show_row_names}{Whether show row names?}
   \item{row_names_side}{Side of the row names to the oncoPrint. This argument is currently disabled.}
   \item{row_names_gp}{Graphic parameters for the row names.}
+  \item{row_split}{Pass to \code{\link{Heatmap}}.}
+  \item{column_labels}{Pass to \code{\link{Heatmap}}.}
+  \item{column_names_gp}{Pass to \code{\link{Heatmap}}.}
+  \item{column_split}{Pass to \code{\link{Heatmap}}.}
   \item{row_order}{Order of rows. By default rows are sorted by the number of occurence of the alterations.}
   \item{column_order}{Order of columns. By default the columns are sorted to show the mutual exclusivity of alterations.}
   \item{remove_empty_columns}{If there is no alteration in some samples, whether remove them on the oncoPrint?}

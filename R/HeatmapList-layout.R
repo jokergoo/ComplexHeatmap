@@ -833,7 +833,6 @@ setMethod(f = "make_layout",
     #     max_legend_width = unit(dev.size("cm")[1], "cm")
     # }
 
-
     object@heatmap_legend_param$show = show_heatmap_legend
     heatmap_legend_side = match.arg(heatmap_legend_side)[1]
     object@heatmap_legend_param$side = heatmap_legend_side   

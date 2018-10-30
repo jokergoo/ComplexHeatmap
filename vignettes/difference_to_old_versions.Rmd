@@ -1,0 +1,5 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Difference to older versions}
+-->
+

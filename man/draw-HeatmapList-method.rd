@@ -18,12 +18,10 @@ Draw a list of heatmaps
     column_title_gp = gpar(fontsize = 14),
     
     heatmap_legend_side = c("right", "left", "bottom", "top"),
-    heatmap_legend_offset = unit(0, "mm"),
     merge_legends = FALSE,
     show_heatmap_legend = TRUE,
     heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"),
-    annotation_legend_offset = unit(0, "mm"),
     show_annotation_legend = TRUE,
     annotation_legend_list = list(),
     
@@ -98,12 +96,10 @@ Draw a list of heatmaps
   \item{column_title_side}{will the title be put on the top or bottom of the heatmap.}
   \item{column_title_gp}{graphic parameters for drawing text.}
   \item{heatmap_legend_side}{side to put heatmap legend}
-  \item{heatmap_legend_offset}{currently disabled}
   \item{merge_legends}{merge heatmap legends and annotation legends to put into one column.}
   \item{show_heatmap_legend}{whether show all heatmap legends}
   \item{heatmap_legend_list}{use-defined legends which are put after the heatmap legends}
   \item{annotation_legend_side}{side of the annotation legends}
-  \item{annotation_legend_offset}{currently disabled}
   \item{show_annotation_legend}{whether show annotation legends}
   \item{annotation_legend_list}{user-defined legends which are put after the annotation legends}
   \item{gap}{gap between heatmaps/annotations}
