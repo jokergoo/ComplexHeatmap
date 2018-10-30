@@ -8,9 +8,7 @@ Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.2), methods, grid, graphics, stats, grDevices
 Imports: circlize (>= 0.4.1), GetoptLong, colorspace,
     RColorBrewer, GlobalOptions (>= 0.1.0)
-Suggests: testthat (>= 0.3), knitr, markdown, cluster, MASS, pvclust, 
-    dendsort, HilbertCurve (>= 1.11.1), Cairo, png, jpeg, tiff, fastcluster,
-    dendextend (>= 1.0.1), grImport, grImport2, rsvg, glue
+Suggests: testthat (>= 0.3), knitr, markdown
 VignetteBuilder: knitr
 Description: Complex heatmaps are efficient to visualize associations 
     between different sources of data sets and reveal potential patterns. 
