@@ -37,7 +37,7 @@ In this case, you need to use `draw()` function explicitly. See https://jokergoo
 
 For retrieving orders and dendrograms from a single heatmap, see https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#get-orders-and-dendrograms-from-heatmap.
 
-For retrieving orders and dendrograms from a list of heatmaps, see https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#get-orders-and-dendrograms
+For retrieving orders and dendrograms from a list of heatmaps, see https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#get-orders-and-dendrograms.
 
 ## How to control the style of legends.
 
@@ -66,4 +66,3 @@ methematical expression.
 You can set `newpage = FALSE` in `draw()` function and use `grid.layout()` to manage the layout of
 your panels. But I suggest more to use `grid.grabExpr()` to directly capture the output of the
 heatmap and later draw the whole plot as a single graphic element by `grid.draw()`.
- 
