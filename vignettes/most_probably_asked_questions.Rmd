@@ -61,7 +61,7 @@ Yes, use `%v%` instead of `+`.
 Yes, all the text-related elements (e.g. titles, row names, legend titles, legend labels, ...) allow
 methematical expression.
 
-## I have many heatmaps and I want to them into panels for a big figure for my paper.
+## I have many heatmaps and I want to put them into panels for a big figure for my paper.
 
 You can set `newpage = FALSE` in `draw()` function and use `grid.layout()` to manage the layout of
 your panels. But I suggest more to use `grid.grabExpr()` to directly capture the output of the

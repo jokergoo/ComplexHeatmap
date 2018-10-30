@@ -255,3 +255,29 @@ pretty_breaks = function(x) {
 	at = at[at >= x[1] & at <= x[2]]
 	at
 }
+
+# == title
+# Draw Annotation Axis
+#
+# == param
+# -at Break values. If it is not specified, it is inferred from data scale in current viewport.
+# -labels Corresponding labels.
+# -labels_rot Rotations of labels.
+# -gp Graphic parameters.
+# -side side of the axis of the annotation viewport.
+# -facing Facing of the axis.
+#
+# == details
+# It uses `annotation_axis_grob` to construct the grob object, then use `grid::grid.draw`
+# to draw the axis.
+#
+# == example
+# # See examples in `annotation_axis_grob`
+# NULL
+#
+grid.annotation_axis = function(at = NULL, labels = at, labels_rot = 0, gp = gpar(), 
+	side = "left", facing = "outside") {
+	grob = annotation_axis_grob(at = at, labels = labels, labels_rot = labels_rot, gp = gp,
+		side = side, facing = facing)
+	grid.draw(grob)
+}
