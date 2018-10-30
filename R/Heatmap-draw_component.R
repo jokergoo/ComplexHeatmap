@@ -310,7 +310,28 @@ setMethod(f = "draw_dimnames",
         "column" = object@column_order_list[[k]])
     
     pushViewport(viewport(name = paste(object@name, which, "names", k, sep = "_"), ...))
-    draw(anno, index = ind)
+    if(which == "row") {
+        if(object@row_names_param$side == "right" ) {
+            x = unit(0, "npc")
+            y = unit(0.5, "npc")
+            just = "left"
+        } else {
+            x = unit(1, "npc")
+            y = unit(0.5, "npc")
+            just = "right"
+        }
+    } else {
+        if(object@column_names_param$side == "top") {
+            x = unit(0.5, "npc")
+            y = unit(0, "npc")
+            just = "bottom"
+        } else {
+            x = unit(0.5, "npc")
+            y = unit(1, "npc")
+            just = "top"
+        }
+    }
+    draw(anno, index = ind, x = x, y = y, just = just)
     upViewport()
 })
 

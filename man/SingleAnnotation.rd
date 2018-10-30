@@ -71,7 +71,7 @@ are those created by annotation names and axes.
 \seealso{
 There are following built-in annotation functions that can be directly used to generate complex annotations: 
 \code{\link{anno_simple}}, \code{\link{anno_points}}, \code{\link{anno_lines}}, \code{\link{anno_barplot}}, \code{\link{anno_histogram}}, \code{\link{anno_boxplot}}, \code{\link{anno_density}}, \code{\link{anno_text}},
-\code{\link{anno_joyplot}}, \code{\link{anno_horizon}}, \code{\link{anno_image}}, \code{\link{anno_lines}} and \code{\link{anno_mark}}.
+\code{\link{anno_joyplot}}, \code{\link{anno_horizon}}, \code{\link{anno_image}}, \code{\link{anno_block}}, \code{\link{anno_summary}} and \code{\link{anno_mark}}.
 }
 \value{
 A \code{\link{SingleAnnotation-class}} object.

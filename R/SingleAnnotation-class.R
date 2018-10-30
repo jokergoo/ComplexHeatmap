@@ -106,7 +106,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # == seealso
 # There are following built-in annotation functions that can be directly used to generate complex annotations: 
 # `anno_simple`, `anno_points`, `anno_lines`, `anno_barplot`, `anno_histogram`, `anno_boxplot`, `anno_density`, `anno_text`,
-# `anno_joyplot`, `anno_horizon`, `anno_image`, `anno_lines` and `anno_mark`.
+# `anno_joyplot`, `anno_horizon`, `anno_image`, `anno_block`, `anno_summary` and `anno_mark`.
 # 
 # == value
 # A `SingleAnnotation-class` object.

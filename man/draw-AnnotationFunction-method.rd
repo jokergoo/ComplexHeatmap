@@ -7,7 +7,7 @@ Draw the AnnotationFunction Object
 Draw the AnnotationFunction Object
 }
 \usage{
-\S4method{draw}{AnnotationFunction}(object, index, k = 1, n = 1, test = FALSE)
+\S4method{draw}{AnnotationFunction}(object, index, k = 1, n = 1, test = FALSE, ...)
 }
 \arguments{
 
@@ -16,6 +16,7 @@ Draw the AnnotationFunction Object
   \item{k}{Current slice index.}
   \item{n}{Total number of slices.}
   \item{test}{Is it in test mode? The value can be logical or a text which is plotted as the title of plot.}
+  \item{...}{Pass to \code{\link[grid]{viewport}}.}
 
 }
 \details{

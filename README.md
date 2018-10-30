@@ -23,7 +23,7 @@ The full documentations are available at https://jokergoo.github.io/ComplexHeatm
 
 ### Install
 
-`ComplexHeatmap` is available on [Bioconductor](http://www.bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html), you can intall it by:
+`ComplexHeatmap` is available on [Bioconductor](http://www.bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html), you can install it by:
 
 ```{r}
 source("http://bioconductor.org/biocLite.R")

@@ -14,55 +14,66 @@ Most Probably Asked Questions
 
 ---------------------------------------
 
-```{r, echo = FALSE, message = FALSE}
-library(markdown)
-options(markdown.HTML.options = c(options('markdown.HTML.options')[[1]], "toc"))
-library(knitr)
-knitr::opts_chunk$set(
-    error = FALSE,
-    tidy  = FALSE,
-    message = FALSE,
-    fig.align = "center",
-    fig.width = 6,
-    fig.height = 6)
-options(markdown.HTML.stylesheet = "custom.css")
-options(width = 100)
-```
+<style type="text/css">
+h1, h2, h3, h4, h5 {
+    line-height: 120%;
+}
+</style>
 
-## There is no plot comming out after running `Heatmap()` function.
+### There is no plot comming out after running Heatmap() function.
 
 In this case, you need to use `draw()` function explicitly. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#plot-the-heatmap.
 
-## Retrieve orders and dendrograms.
+### Retrieve orders and dendrograms.
 
-For retrieving orders and dendrograms from a single heatmap, see https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#get-orders-and-dendrograms-from-heatmap.
+For retrieving orders and dendrograms from a single heatmap. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#get-orders-and-dendrograms-from-heatmap.
 
-For retrieving orders and dendrograms from a list of heatmaps, see https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#get-orders-and-dendrograms.
+For retrieving orders and dendrograms from a list of heatmaps. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#get-orders-and-dendrograms-from-a-list-of-heatmaps.
 
-## How to control the style of legends.
+### How to control the style of legends?
 
 The style of legends can be controlled by `heatmap_legend_param` in `Heatmap()`, or
 `annotation_legend_param` in `HeatmapAnnotation()`. The parameters for controlling legends are those
-arguments in `Legend()` function, see
+arguments in `Legend()` function. See
 https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#heatmap-and-annotation-legends.
 
-## Some text are cut by the plotting region
+### Some text are cut by the plotting region.
 
 The layout of the **ComplexHeatmap** is not perfect that it is still possible some of the text are
-drawn out of the plotting region. In this case, you set the `padding` argument in `draw()` function
-to increase the blank areas around the final plot.
+drawn out of the plotting region. In this case, you can set the `padding` argument in `draw()` function
+to increase the blank areas around the final plot. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#manually-increase-space-around-the-plot.
 
-## Can the heatmaps be added vertically?
+### Can the heatmaps be added vertically?
 
-Yes, use `%v%` instead of `+`.
+Yes, use `%v%` instead of `+`. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#vertical-concatenation.
 
-## Does Heatmap titles supports mathematical expression?
+### Does Heatmap title supports mathematical expression?
 
 Yes, all the text-related elements (e.g. titles, row names, legend titles, legend labels, ...) allow
 methematical expression.
 
-## I have many heatmaps and I want to put them into panels for a big figure for my paper.
+### I have many heatmaps and I want to put them into different panels for a big figure for my paper.
 
 You can set `newpage = FALSE` in `draw()` function and use `grid.layout()` to manage the layout of
-your panels. But I suggest more to use `grid.grabExpr()` to directly capture the output of the
+your panels. 
+
+```{r, eval = FALSE}
+pushViewport(viewport(layout = grid.layout(...)))
+pushViewport(viewport(layout.pos.row = ..., layout.pos.col = ...))
+draw(ht, newpage = FALSE) # or draw(ht_list, newpage = FALSE)
+popViewport()
+...
+```
+
+But I more suggest to use `grid.grabExpr()` to directly capture the output of the
 heatmap and later draw the whole plot as a single graphic element by `grid.draw()`.
+
+```{r, eval = FALSE}
+ht_grob = grid.grabExpr(draw(ht, ...))
+
+pushViewport(viewport(layout = grid.layout(...)))
+pushViewport(viewport(layout.pos.row = ..., layout.pos.col = ...))
+grid.draw(ht_grob)
+popViewport()
+...
+```

@@ -268,6 +268,7 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 # -k Current slice index.
 # -n Total number of slices.
 # -test Is it in test mode? The value can be logical or a text which is plotted as the title of plot.
+# -... Pass to `grid::viewport`.
 #
 # == detail
 # Normally it is called internally by the `SingleAnnotation-class`.
@@ -277,7 +278,7 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 # 
 setMethod(f = "draw",
 	signature = "AnnotationFunction",
-	definition = function(object, index, k = 1, n = 1, test = FALSE) {
+	definition = function(object, index, k = 1, n = 1, test = FALSE, ...) {
 		
 	if(is.character(test)) {
 		test2 = TRUE
@@ -302,7 +303,7 @@ setMethod(f = "draw",
     anno_width = object@width
 
     # names should be passed to the data viewport
-	pushViewport(viewport(width = anno_width, height = anno_height))
+	pushViewport(viewport(width = anno_width, height = anno_height, ...))
 	vp_name1 = current.viewport()$name
 	object@fun(index, k, n)
 	if(test2) {
