@@ -22,13 +22,17 @@ h1, h2, h3, h4, h5 {
 
 ### There is no plot comming out after running Heatmap() function.
 
-In this case, you need to use `draw()` function explicitly. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#plot-the-heatmap.
+In this case, you need to use `draw()` function explicitly. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#plot-the-heatmap and https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#plot-the-heamtap-list.
 
 ### Retrieve orders and dendrograms.
 
 For retrieving orders and dendrograms from a single heatmap. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#get-orders-and-dendrograms-from-heatmap.
 
 For retrieving orders and dendrograms from a list of heatmaps. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#get-orders-and-dendrograms-from-a-list-of-heatmaps.
+
+### How should I control the height or width of the heatmap annotations?
+
+### How should I control the axes of the annotations?
 
 ### How to control the style of legends?
 

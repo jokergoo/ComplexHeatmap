@@ -522,9 +522,18 @@ normalize_graphic_param_to_mat = function(x, nc, nr, name) {
     }
 }
 
-recycle_param = function(x, all_names, default) {
+recycle_param = function(x, all_names, default, as.list = FALSE) {
     n = length(all_names)
-    if(length(x) == n) {
+    if(length(x) == 0) {
+        if(as.list) {
+            rep(list(default), n)
+        } else {
+            rep(default, n)
+        }
+    } else if(length(x) == n) {
+        if(as.list) {
+            x = lapply(1:n, x[i])
+        }
         return(x)
     } else {
         nm = names(x)
@@ -533,18 +542,39 @@ recycle_param = function(x, all_names, default) {
         }
         if(is.null(nm)) {
             if(length(x) == 1) {
-                x = rep(x, n)
+                if(as.list) {
+                    x = lapply(1:n , function(x) x)
+                } else {
+                    x = rep(x, n)
+                }
             } else {
                 if(length(x) > n) {
                     x = x[1:n]
+                    if(as.list) {
+                        x = lapply(1:n, x[i])
+                    }
                 } else {
-                    x = c(x, rep(default, n - length(x)))
+                    if(as.list) {
+                        x = c(lapply(seq_along(x), function(i) x[i], 
+                              rep(list(default), n - length(x))))
+                    } else {
+                        x = c(x, rep(default, n - length(x)))
+                    }
                 }
             }
         } else {
-            x2 = structure(rep(default, n), names = all_names)
-            x2[intersect(nm, all_names)] = x[intersect(nm, all_names)]
-            x = x2
+            if(as.list) {
+                x2 = rep(list(default), n)
+                names(x2) = all_names
+                for(cn in intersect(nm, all_names)) {
+                    x2[[cn]] = x[cn]
+                }
+                x = x2
+            } else {
+                x2 = structure(rep(default, n), names = all_names)
+                x2[intersect(nm, all_names)] = x[intersect(nm, all_names)]
+                x = x2
+            }
         }
         return(x)
     }
@@ -776,4 +806,18 @@ grid.boxplot = function(value, pos, outline = TRUE, box_width = 0.6,
 random_str = function() {
     paste(sample(c(letters, LETTERS, 0:9), 8), collapse = "")
 }
+
+
+
+to_unit_str = function(unit) {
+    as.character(unit)
+}
+
+to_unit = function(str) {
+    d = gsub("[^\\d]+$", "", str, perl = TRUE)
+    u = gsub("[\\d.]", "", str, perl = TRUE)
+    unit(as.numeric(d), u)
+}
+
+
 

@@ -149,9 +149,9 @@ SingleAnnotation = function(name, value, col, fun,
 	legend_param = list(),
 	show_name = TRUE, 
 	name_gp = gpar(fontsize = 12),
-	name_offset = unit(1, "mm"),
+	name_offset = NULL,
 	name_side = ifelse(which == "column", "right", "bottom"),
-    name_rot = ifelse(which == "column", 0, 90),
+    name_rot = NULL,
     anno_simple_size = ht_opt$anno_simple_size,
     width = NULL, height = NULL) {
 
@@ -188,8 +188,10 @@ SingleAnnotation = function(name, value, col, fun,
     }
     .Object@name = name
 
-    if(!name_rot %in% c(0, 90, 180, 270)) {
-        stop_wrap(qq("@{name}: `name_rot` can only take values in c(0, 90, 180, 270)"))
+    if(!is.null(name_rot)) {
+        if(!name_rot %in% c(0, 90, 180, 270)) {
+            stop_wrap(qq("@{name}: `name_rot` can only take values in c(0, 90, 180, 270)"))
+        }
     }
 
     if(verbose) qqcat("create a SingleAnnotation with name '@{name}'\n")
@@ -224,8 +226,9 @@ SingleAnnotation = function(name, value, col, fun,
         }
     }
 
-    is_name_offset_called = !missing(name_offset)
-    is_name_rot_called = !missing(name_rot)
+    # if SingleAnnotation is called by HeatmapAnnotation, following two variables are all TRUE
+    is_name_offset_called = !is.null(name_offset)
+    is_name_rot_called = !is.null(name_rot)
     anno_fun_extend = unit(c(0, 0, 0, 0), "mm")
     if(!missing(fun)) {
         if(inherits(fun, "AnnotationFunction")) {
@@ -239,6 +242,15 @@ SingleAnnotation = function(name, value, col, fun,
             if(verbose) qqcat("@{name}: annotation is a user-defined function\n")
         }
     }
+
+    if(!is.null(name_offset)) {
+        if(is.character(name_offset)) {
+            name_offset = to_unit(name_offset)
+        }
+    } else {
+        name_offset = unit(1, "mm")
+    }
+    name_rot = ifelse(which == "column", 0, 90)
 
     anno_name = name
     if(which == "column") {

@@ -326,15 +326,25 @@ oncoPrint = function(mat,
 	}
 
 	if(show_pct) {
-		pct_ha = rowAnnotation(pct = anno_text(pct, just = "right", location = unit(1, "npc"), gp = pct_gp),
-				show_annotation_name = FALSE)
+		if(pct_side == "left") {
+			pct_ha = rowAnnotation(pct = anno_text(pct, just = "right", location = unit(1, "npc"), gp = pct_gp, width = max_text_width(pct, gp = pct_gp) + unit(1, "mm")),
+					show_annotation_name = FALSE)
+		} else {
+			pct_ha = rowAnnotation(pct = anno_text(pct, just = "left", location = unit(0, "npc"), gp = pct_gp, width = max_text_width(pct, gp = pct_gp) + unit(1, "mm")),
+					show_annotation_name = FALSE)
+		}
 		names(pct_ha) = paste0("pct_", random_str())
 	} else {
 		pct_ha = NULL
 	}
 	if(show_row_names) {
-		rn_ha = rowAnnotation(rownames = anno_text(row_labels, gp = pct_gp, just = "left", location = unit(0, "npc")),
-			show_annotation_name = FALSE)
+		if(row_names_side == "right") {
+			rn_ha = rowAnnotation(rownames = anno_text(row_labels, gp = row_names_gp, just = "left", location = unit(0, "npc"), width = max_text_width(pct, gp = row_names_gp) + unit(1, "mm")),
+				show_annotation_name = FALSE)
+		} else {
+			rn_ha = rowAnnotation(rownames = anno_text(row_labels, gp = row_names_gp, just = "right", location = unit(1, "npc"), width = max_text_width(pct, gp = row_names_gp) + unit(1, "mm")),
+				show_annotation_name = FALSE)
+		}
 		names(rn_ha) = paste0("rownames_", random_str())
 	} else {
 		rn_ha = NULL

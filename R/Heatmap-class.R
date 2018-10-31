@@ -1073,21 +1073,22 @@ make_cluster = function(object, which = c("row", "column")) {
         if(which == "row") {
             km.fit = kmeans(mat, centers = km)
             cl = km.fit$cluster
-            meanmat = lapply(unique(cl), function(i) {
+            meanmat = lapply(sort(unique(cl)), function(i) {
                 colMeans(mat[cl == i, , drop = FALSE])
             })
         } else {
             km.fit = kmeans(t(mat), centers = km)
             cl = km.fit$cluster
-            meanmat = lapply(unique(cl), function(i) {
+            meanmat = lapply(sort(unique(cl)), function(i) {
                 rowMeans(mat[, cl == i, drop = FALSE])
             })
         }
-        
-        meanmat = as.matrix(as.data.frame(meanmat))
+
+        meanmat = do.call("cbind", meanmat)
         hc = hclust(dist(t(meanmat)))
         weight = colMeans(meanmat)
-        hc = as.hclust(reorder(as.dendrogram(hc), -weight, mean))
+        hc = as.hclust(reorder(as.dendrogram(hc), weight, mean))
+
         cl2 = numeric(length(cl))
         for(i in seq_along(hc$order)) {
             cl2[cl == hc$order[i]] = i

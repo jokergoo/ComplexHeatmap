@@ -101,9 +101,9 @@ HeatmapAnnotation = function(...,
 	
 	show_annotation_name = TRUE,
 	annotation_name_gp = gpar(),
-	annotation_name_offset = unit(1, "mm"),
+	annotation_name_offset = NULL,
 	annotation_name_side = ifelse(which == "column", "right", "bottom"),
-	annotation_name_rot = ifelse(which == "column", 0, 90),
+	annotation_name_rot = NULL,
 	
 	annotation_height = NULL, 
 	annotation_width = NULL, 
@@ -242,9 +242,10 @@ HeatmapAnnotation = function(...,
 
     an = names(anno_value_list)
     show_annotation_name = recycle_param(show_annotation_name, an, TRUE)
-    annotation_name_offset = recycle_param(annotation_name_offset, an, TRUE)
-    annotation_name_side = recycle_param(annotation_name_side, an, TRUE)
-    annotation_name_rot = recycle_param(annotation_name_rot, an, TRUE)
+    annotation_name_side = recycle_param(annotation_name_side, an, ifelse(which == "column", "right", "bottom"))
+    if(inherits(annotation_name_offset, "unit")) annotation_name_offset = unit_to_str(annotation_name_offset)
+    annotation_name_offset = recycle_param(annotation_name_offset, an, NULL, as.list = TRUE)
+    annotation_name_rot = recycle_param(annotation_name_rot, an, NULL, as.list = TRUE)
     if(missing(border)) {
     	if(!is.null(ht_opt$annotation_border)) border = ht_opt$annotation_border
     }
@@ -296,16 +297,11 @@ HeatmapAnnotation = function(...,
 		arg_list = list(name = ag, which = which,
 				show_name = show_annotation_name[i_anno], 
 				name_gp = subset_gp(annotation_name_gp, i_anno), 
-	        	name_offset = annotation_name_offset[i_anno], 
+	        	name_offset = annotation_name_offset[[i_anno]], 
 	        	name_side = annotation_name_side[i_anno], 
-	        	name_rot = annotation_name_rot[i_anno],
+	        	name_rot = annotation_name_rot[[i_anno]],
 	        	border = border[i_anno])
-		# if(!is_name_offset_called) {
-		# 	arg_list$name_rot = NULL
-		# }
-		# if(!is_name_rot_called) {
-		# 	arg_list$name_offset = NULL
-		# }
+
 		if(inherits(anno_value_list[[ag]], c("function", "AnnotationFunction"))) {
 			arg_list$fun = anno_value_list[[ag]]
 			if(inherits(anno_value_list[[ag]], "function")) {

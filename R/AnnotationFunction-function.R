@@ -2599,13 +2599,12 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		link_gp = subset_gp(link_gp, labels2index[labels])
 
 		pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
-		# go to the parent viewport
-
+		if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
 		text_height = convertHeight(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
 		i2 = rev(which(index %in% at))
 		h1 = n-i2+1 - text_height*0.5
 		h2 = n-i2+1 + text_height*0.5
-		pos = rev(smartAlign(h1, h2, c(0.5, n+0.5)))
+		pos = rev(smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2])))
 		h = (pos[, 1] + pos[, 2])/2
 
 		n2 = length(labels)
