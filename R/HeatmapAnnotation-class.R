@@ -653,6 +653,9 @@ setMethod(f = "show",
 	signature = "HeatmapAnnotation",
 	definition = function(object) {
 
+	dev.null()
+	on.exit(dev.off2())
+
 	n = length(object@anno_list)
 
 	if(n == 1) {
