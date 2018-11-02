@@ -163,7 +163,7 @@ get_dist = function(matrix, method) {
         } else if(nargs == 3) {
             dst = dist2(matrix, method)
         } else {
-            stop_wrap("Since your distance method is a funciton, it can only accept one or two arguments.")
+            stop_wrap("Since your distance method is a function, it can only accept one or two arguments.")
         }
     } else if(method %in% c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")) {
         # if(any(is.na(matrix))) {
@@ -532,7 +532,7 @@ recycle_param = function(x, all_names, default, as.list = FALSE) {
         }
     } else if(length(x) == n) {
         if(as.list) {
-            x = lapply(1:n, x[i])
+            x = lapply(1:n, function(i) x[i])
         }
         return(x)
     } else {
@@ -543,7 +543,7 @@ recycle_param = function(x, all_names, default, as.list = FALSE) {
         if(is.null(nm)) {
             if(length(x) == 1) {
                 if(as.list) {
-                    x = lapply(1:n , function(x) x)
+                    x = rep(list(x), n)
                 } else {
                     x = rep(x, n)
                 }
@@ -551,7 +551,7 @@ recycle_param = function(x, all_names, default, as.list = FALSE) {
                 if(length(x) > n) {
                     x = x[1:n]
                     if(as.list) {
-                        x = lapply(1:n, x[i])
+                        x = lapply(1:n, function(i) x[i])
                     }
                 } else {
                     if(as.list) {

@@ -156,7 +156,7 @@ densityHeatmap = function(data,
 
 	bb = grid.pretty(c(min_x, max_x))
 	ht = Heatmap(mat, col = col, name = "density", 
-		column_title = column_title,
+		column_title = title,
 		column_title_gp = title_gp,
 		cluster_rows = FALSE, 
 		cluster_columns = cluster_columns,

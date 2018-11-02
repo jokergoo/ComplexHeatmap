@@ -362,10 +362,10 @@ oncoPrint = function(mat,
 			left_annotation = left_annotation[l_non_empty_row, ]
 		}
 		if(pct_side == "left") {
-			left_annotation = c(left_annotation, pct_ha)
+			left_annotation = c(left_annotation, pct_ha, gap = unit(1, "mm"))
 		}
 		if(row_names_side == "left") {
-			left_annotation = c(left_annotation, rn_ha)
+			left_annotation = c(left_annotation, rn_ha, gap = unit(1, "mm"))
 		}
 	}
 
@@ -381,10 +381,10 @@ oncoPrint = function(mat,
 			right_annotation = right_annotation[l_non_empty_row, ]
 		}
 		if(pct_side == "right") {
-			if(!is.null(pct_ha)) right_annotation = c(pct_ha, right_annotation)
+			if(!is.null(pct_ha)) right_annotation = c(pct_ha, right_annotation, gap = unit(1, "mm"))
 		}
 		if(row_names_side == "right") {
-			if(!is.null(rn_ha)) right_annotation = c(rn_ha, right_annotation)
+			if(!is.null(rn_ha)) right_annotation = c(rn_ha, right_annotation, gap = unit(1, "mm"))
 		}
 	}
 	if(remove_empty_columns) {

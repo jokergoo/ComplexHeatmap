@@ -16,9 +16,9 @@ SingleAnnotation(name, value, col, fun,
     legend_param = list(),
     show_name = TRUE,
     name_gp = gpar(fontsize = 12),
-    name_offset = unit(1, "mm"),
+    name_offset = NULL,
     name_side = ifelse(which == "column", "right", "bottom"),
-    name_rot = ifelse(which == "column", 0, 90),
+    name_rot = NULL,
     anno_simple_size = ht_opt$anno_simple_size,
     width = NULL, height = NULL)
 }

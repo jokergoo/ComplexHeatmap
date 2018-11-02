@@ -18,9 +18,9 @@ HeatmapAnnotation(...,
     
     show_annotation_name = TRUE,
     annotation_name_gp = gpar(),
-    annotation_name_offset = unit(1, "mm"),
+    annotation_name_offset = NULL,
     annotation_name_side = ifelse(which == "column", "right", "bottom"),
-    annotation_name_rot = ifelse(which == "column", 0, 90),
+    annotation_name_rot = NULL,
     
     annotation_height = NULL,
     annotation_width = NULL,

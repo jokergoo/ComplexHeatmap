@@ -243,7 +243,7 @@ HeatmapAnnotation = function(...,
     an = names(anno_value_list)
     show_annotation_name = recycle_param(show_annotation_name, an, TRUE)
     annotation_name_side = recycle_param(annotation_name_side, an, ifelse(which == "column", "right", "bottom"))
-    if(inherits(annotation_name_offset, "unit")) annotation_name_offset = unit_to_str(annotation_name_offset)
+    if(inherits(annotation_name_offset, "unit")) annotation_name_offset = to_unit_str(annotation_name_offset)
     annotation_name_offset = recycle_param(annotation_name_offset, an, NULL, as.list = TRUE)
     annotation_name_rot = recycle_param(annotation_name_rot, an, NULL, as.list = TRUE)
     if(missing(border)) {
