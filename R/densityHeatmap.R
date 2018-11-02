@@ -94,6 +94,9 @@ densityHeatmap = function(data,
 		if(any(grepl("row", names(arg_list)))) {
 			stop_wrap("density heatmaps do not allow to set rows.")
 		}
+		if("anno" %in% names(arg_list)) {
+			stop_wrap("`anno` is removed from the argument. Please directly construct a `HeatmapAnnotation` object and set to `top_annotation` or `bottom_annotation`.")
+		}
 	}
 
 	ylab = ylab

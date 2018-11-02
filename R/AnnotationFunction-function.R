@@ -620,6 +620,7 @@ construct_axis_grob = function(axis_param, which, data_scale) {
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+# -... Other arguments.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -634,7 +635,17 @@ construct_axis_grob = function(axis_param, which, data_scale) {
 # draw(anno, test = "matrix")
 anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar(), pch = 16, 
 	size = unit(2, "mm"), ylim = NULL, extend = 0.05, axis = TRUE,
-	axis_param = default_axis_param(which), width = NULL, height = NULL) {
+	axis_param = default_axis_param(which), width = NULL, height = NULL, ...) {
+
+	other_args = list(...)
+	if(length(other_args)) {
+		if("axis_gp" %in% names(other_args)) {
+			stop_wrap("`axis_gp` is removed from the arguments. Use `axis_param = list(gp = ...)` instead.")
+		}
+		if("axis_direction" %in% names(other_args)) {
+			stop_wrap("`axis_direction` is not supported any more.")
+		}
+	}
 
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
@@ -1020,6 +1031,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+# -... Other arguments.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -1038,7 +1050,20 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6,
 	gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, axis = TRUE, 
 	axis_param = default_axis_param(which),
-	width = NULL, height = NULL) {
+	width = NULL, height = NULL, ...) {
+
+	other_args = list(...)
+	if(length(other_args)) {
+		if("axis_gp" %in% names(other_args)) {
+			stop_wrap("`axis_gp` is removed from the arguments. Use `axis_param = list(gp = ...)` instead.")
+		}
+		if("axis_side" %in% names(other_args)) {
+			stop_wrap("`axis_side` is removed from the arguments. Use `axis_param = list(side = ...)` instead.")
+		}
+		if("axis_direction" %in% names(other_args)) {
+			stop_wrap("`axis_direction` is not supported any more.")
+		}
+	}
 
 	if(inherits(x, "list")) x = do.call("cbind", x)
 	if(inherits(x, "data.frame")) x = as.matrix(x)
@@ -1193,6 +1218,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+# -... Other arguments.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -1210,7 +1236,20 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 	gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, outline = TRUE, box_width = 0.6,
 	pch = 1, size = unit(2, "mm"), axis = TRUE, axis_param = default_axis_param(which),
-	width = NULL, height = NULL) {
+	width = NULL, height = NULL, ...) {
+
+	other_args = list(...)
+	if(length(other_args)) {
+		if("axis_gp" %in% names(other_args)) {
+			stop_wrap("`axis_gp` is removed from the arguments. Use `axis_param = list(gp = ...)` instead.")
+		}
+		if("axis_side" %in% names(other_args)) {
+			stop_wrap("`axis_side` is removed from the arguments. Use `axis_param = list(side = ...)` instead.")
+		}
+		if("axis_direction" %in% names(other_args)) {
+			stop_wrap("`axis_direction` is not supported any more.")
+		}
+	}
 
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]

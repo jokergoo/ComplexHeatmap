@@ -293,6 +293,16 @@ Heatmap = function(matrix, col, name,
         }
     }
 
+    if("top_annotation_height" %in% called_args) {
+        stop_wrap("`top_annotation_height` is removed. Set the height directly in `HeatmapAnnotation()`.")
+    }
+    if("bottom_annotation_height" %in% called_args) {
+        stop_wrap("`bottom_annotation_height` is removed. Set the height directly in `HeatmapAnnotation()`.")
+    }
+    if("combined_name_fun" %in% called_args) {
+        stop_wrap("`combined_name_fun` is removed. Please directly set `row_names_title`. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#titles-for-splitting")
+    }
+
     if("heatmap_legend_param" %in% called_args) {
         for(opt_name in setdiff(c("title_gp", "title_position", "labels_gp", "grid_width", "grid_height", "border"), names(heatmap_legend_param))) {
             opt_name2 = paste0("legend_", opt_name)

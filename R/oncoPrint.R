@@ -88,6 +88,28 @@ oncoPrint = function(mat,
 	arg_list = as.list(match.call())[-1]
 	arg_names = names(arg_list)
 
+	if("alter_fun_list" %in% arg_names) {
+		stop_wrap("`alter_fun_list` is removed from the arguments.")
+	}
+	if("axis_gp" %in% arg_names) {
+		stop_wrap("`axis_gp` is removed from the arguments. Please set `axis_param(gp = ...)` in `anno_oncoprint_barplot()` when you define the `top_annotation` or `right_annotation`.")
+	}
+	if("show_row_names" %in% arg_names) {
+		stop_wrap("`show_row_names` is removed from the arguments. Please directly remove `anno_oncoprint_barplot()` in `right_annotation` to remove barplots on the left of the oncoPrint.")
+	}
+	if("row_barplot_width" %in% arg_names) {
+		stop_wrap("`row_barplot_width` is removed from the arguments. Please directly set `width` in `anno_oncoprint_barplot()` in `right_annotation`.")
+	}
+	if("top_annotation_height" %in% arg_names) {
+		stop_wrap("`top_annotation_height` is removed from the arguments. Please directly set `height` in `anno_oncoprint_barplot()` in `top_annotation`.")
+	}
+	if("bottom_annotation_height" %in% arg_names) {
+		stop_wrap("`bottom_annotation_height` is removed from the arguments. Please directly set `height` in `bottom_annotation`.")
+	}
+	if("barplot_ignore" %in% arg_names) {
+		stop_wrap("`barplot_ignore` is removed from the arguments. The subset of alterations now can be controlled in `anno_oncoprint_barplot()`.")
+	}
+
 	# convert mat to mat_list
 	if(inherits(mat, "data.frame")) {
 		mat = as.matrix(mat)

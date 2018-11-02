@@ -250,7 +250,7 @@ SingleAnnotation = function(name, value, col, fun,
     } else {
         name_offset = unit(1, "mm")
     }
-    name_rot = ifelse(which == "column", 0, 90)
+    if(is.null(name_rot)) name_rot = ifelse(which == "column", 0, 90)
 
     anno_name = name
     if(which == "column") {
