@@ -819,5 +819,3 @@ to_unit = function(str) {
     unit(as.numeric(d), u)
 }
 
-
-

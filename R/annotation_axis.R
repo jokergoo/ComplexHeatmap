@@ -164,9 +164,7 @@ annotation_axis_grob = function(at = NULL, labels = at, labels_rot = 0, gp = gpa
 		h = unit(1, "npc")
 		attr(gb, "width") = w
 		attr(gb, "height") = h
-	}
-
-	if(side == "top" && facing == "inside") {
+	} else if(side == "top" && facing == "inside") {
 		gl = gList(
 			linesGrob(unit(c(0, 1), "npc"), unit(c(1, 1), "npc"), gp = gp),
 			segmentsGrob(at, unit(1, "npc") - unit(1, "mm"), at, unit(1, "npc"), 

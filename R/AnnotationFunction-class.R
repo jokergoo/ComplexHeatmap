@@ -53,7 +53,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 			if(!is_abs_unit(height)) {
 				stop_wrap("height of the annotation can only be an absolute unit.")
 			} else {
-				height = convertHeight(height, "mm")
+				# height = convertHeight(height, "mm")
 			}
 		}
 		if(is.null(width)) {
@@ -67,7 +67,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 			if(!is_abs_unit(width)) {
 				stop_wrap("width of the annotation can only be an absolute unit.")
 			} else {
-				width = convertWidth(width, "mm")
+				# width = convertWidth(width, "mm")
 			}
 		}
 		if(is.null(height)) {
@@ -398,7 +398,6 @@ setMethod(f = "show",
 			cat(" ", as.character(object@extended[i]), "extension on the", dirt[i], "\n")
 		}
 	}
-	
 })
 
 # == title

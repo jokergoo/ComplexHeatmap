@@ -272,6 +272,9 @@ Heatmap = function(matrix, col, name,
 
     post_fun = NULL) {
 
+    dev.null()
+    on.exit(dev.off2())
+
     verbose = ht_opt("verbose")
 
     .Object = new("Heatmap")

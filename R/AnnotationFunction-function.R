@@ -647,11 +647,16 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		}
 	}
 
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	if(is.data.frame(x)) x = as.matrix(x)
 	if(is.matrix(x)) {
@@ -831,11 +836,16 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 	extend = 0.05, axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	if(is.data.frame(x)) x = as.matrix(x)
 	if(is.matrix(x)) {
@@ -1102,11 +1112,16 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		}
 	}
 
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	anno_size = anno_width_and_height(which, width, height, unit(1, "cm"))
 
@@ -1251,11 +1266,16 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		}
 	}
 
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
 
@@ -1451,11 +1471,16 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 	axis = TRUE, axis_param = default_axis_param(which), 
 	width = NULL, height = NULL) {
 	
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	anno_size = anno_width_and_height(which, width, height, unit(4, "cm"))
 
@@ -1617,11 +1642,16 @@ anno_density = function(x, which = c("column", "row"),
 	axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 	
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	anno_size = anno_width_and_height(which, width, height, unit(4, "cm"))
 
@@ -1877,11 +1907,16 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 	offset = guess_location(), location = guess_location(),
 	width = NULL, height = NULL) {
 	
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	n = length(x)
 	gp = recycle_gp(gp, n)
@@ -2023,11 +2058,16 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 	axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 	
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	anno_size = anno_width_and_height(which, width, height, unit(4, "cm"))
 
@@ -2219,11 +2259,16 @@ anno_horizon = function(x, which = c("column", "row"),
 	axis = TRUE, axis_param = default_axis_param(which),
 	width = NULL, height = NULL) {
 
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	anno_size = anno_width_and_height(which, width, height, unit(4, "cm"))
 
@@ -2818,11 +2863,16 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 	pch = 1, size = unit(2, "mm"), gp = gpar(),
 	width = NULL, height = NULL) {
 
+	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
+		dev.null()
+		ef = dev.off2
 	} else {
 		which = .ENV$current_annotation_which
 	}
+
+	on.exit(ef())
 
 	anno_size = anno_width_and_height(which, width, height, unit(2, "cm"))
 
@@ -2981,10 +3031,10 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 	if(length(labels)) {
 		if(which == "column") {
 			height = grobHeight(textGrob(labels, rot = labels_rot, gp = labels_gp))
-			height = convertHeight(height, "mm") + unit(5, "mm")
+			height = height + unit(5, "mm")
 		} else {
 			width = grobWidth(textGrob(labels, rot = labels_rot, gp = labels_gp))
-			width = convertWidth(width, "mm") + unit(5, "mm")
+			width = width + unit(5, "mm")
 		}
 	}
 
