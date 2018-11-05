@@ -19,7 +19,7 @@ This version is a major update of the package. The major new features are:
 3. Provide more types of heatmap annotations.
 
 Note this version is not 100% compatible with the older versions (<= 1.*.*).
-Please check for the differences and suggestions of how to adjust your code.
+Please check by `vignette('difference_to_old_versions', package = 'ComplexHeatmap')`.
 
 Above messages will be removed in the future.
 ")	
