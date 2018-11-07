@@ -18,7 +18,7 @@ This version is a major update of the package. The major new features are:
 2. Support concatenating heatmaps/annotations vertically.
 3. Provide more types of heatmap annotations.
 
-Note this version is not 100% compatible with the older versions (<= 1.*.*).
+Note this version is not 100% compatible with the older versions (< 1.99.0).
 Please check by `vignette('difference_to_old_versions', package = 'ComplexHeatmap')`.
 
 Above messages will be removed in the future.
