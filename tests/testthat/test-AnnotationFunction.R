@@ -266,7 +266,6 @@ ht_list = Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark
 draw(ht_list, row_split = c(rep("a", 95), rep("b", 5)))
 
 
-<<<<<<< HEAD
 ### graphic parameters after reordering
 index = c(1, 3, 5, 7, 9, 2, 4, 6, 8, 10)
 anno = anno_simple(1:10, pch = 1:10, pt_gp = gpar(col = rep(c(1, 2), each = 5)),

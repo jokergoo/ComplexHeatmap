@@ -711,11 +711,7 @@ setMethod(f = "make_layout",
             }
         }
     }
-
-    object = adjust_heatmap_list(object)
-    object@layout$layout_index = rbind(heatmaplist = heatmap_list_layout_index("heatmap_list"))
-    object@layout$graphic_fun_list = list(function(object) draw_heatmap_list(object))
-
+    
     ############################################
     ## title on top or bottom
     column_title_side = match.arg(column_title_side)[1]
@@ -941,6 +937,10 @@ setMethod(f = "make_layout",
     } else {
         object@annotation_legend_param$size = unit(c(0, 0), "null")
     }
+
+    object = adjust_heatmap_list(object)
+    object@layout$layout_index = rbind(heatmaplist = heatmap_list_layout_index("heatmap_list"), object@layout$layout_index)
+    object@layout$graphic_fun_list = c(function(object) draw_heatmap_list(object), object@layout$graphic_fun_list)
 
     if(direction == "horizontal") {
         main_matrix_rn = rownames(object@ht_list[[i_main]]@matrix)

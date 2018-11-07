@@ -278,7 +278,7 @@ setMethod(f = "draw",
 
     main_heatmap = which(sapply(object@ht_list, inherits, "Heatmap"))[1],
     padding = GLOBAL_PADDING,
-    adjust_annotation_extension = TRUE,
+    adjust_annotation_extension = NULL,
     
     auto_adjust = TRUE,
     row_dend_side = c("original", "left", "right"),

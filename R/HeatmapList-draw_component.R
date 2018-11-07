@@ -436,10 +436,70 @@ setMethod(f = "adjust_heatmap_list",
     }
 
     adjust_annotation_extension = object@ht_list_param$adjust_annotation_extension
-
+browser()
     # the padding of the heatmap list should be recorded because if the total wdith of e.g. heatmap body
     # is a fixed value, the width should added by the padding
     padding = unit(c(0, 0, 0, 0), "mm")
+    if(is.null(adjust_annotation_extension)) {
+        if(direction == "horizontal") {
+            if(inherits(object@ht_list[[n]], "Heatmap")) {
+                # if the last heatmap has nothing on the right while something on the right of heatmap list
+                if(!(has_component(object@ht_list[[n]], "row_anno_right") ||
+                     has_component(object@ht_list[[n]], "row_names_right") ||
+                     has_component(object@ht_list[[n]], "row_dend_right") ||
+                     has_component(object@ht_list[[n]], "row_title_right"))) {
+                    if(has_heatmap_list_component(object, "row_title_right") || 
+                       has_heatmap_list_component(object, "heatmap_legend_right") || 
+                       has_heatmap_list_component(object, "annotation_legend_right")) {
+                        object@layout$column_anno_max_right_extended = unit(0, "mm")
+                        adjust_annotation_extension = TRUE
+                    }
+                }
+            }
+            if(inherits(object@ht_list[[1]], "Heatmap")) {
+                if(!(has_component(object@ht_list[[1]], "row_anno_left") ||
+                     has_component(object@ht_list[[1]], "row_names_left") ||
+                     has_component(object@ht_list[[1]], "row_dend_left") ||
+                     has_component(object@ht_list[[1]], "row_title_left"))) {
+                    if(has_heatmap_list_component(object, "row_title_left") || 
+                       has_heatmap_list_component(object, "heatmap_legend_left") || 
+                       has_heatmap_list_component(object, "annotation_legend_left")) {
+                        object@layout$column_anno_max_left_extended = unit(0, "mm")
+                        adjust_annotation_extension = TRUE
+                    }
+                }
+            }
+        } else {
+            if(inherits(object@ht_list[[n]], "Heatmap")) {
+                # if the last heatmap has nothing on the right while something on the right of heatmap list
+                if(!(has_component(object@ht_list[[n]], "column_anno_bottom") ||
+                     has_component(object@ht_list[[n]], "column_names_bottom") ||
+                     has_component(object@ht_list[[n]], "column_dend_bottom") ||
+                     has_component(object@ht_list[[n]], "column_title_bottom"))) {
+                    if(has_heatmap_list_component(object, "column_title_bottom") || 
+                       has_heatmap_list_component(object, "heatmap_legend_bottom") || 
+                       has_heatmap_list_component(object, "annotation_legend_bottom")) {
+                        object@layout$row_anno_max_bottom_extended = unit(0, "mm")
+                        adjust_annotation_extension = TRUE
+                    }
+                }
+            }
+            if(inherits(object@ht_list[[1]], "Heatmap")) {
+                if(!(has_component(object@ht_list[[1]], "column_anno_top") ||
+                     has_component(object@ht_list[[1]], "column_names_top") ||
+                     has_component(object@ht_list[[1]], "column_dend_top") ||
+                     has_component(object@ht_list[[1]], "column_title_top"))) {
+                    if(has_heatmap_list_component(object, "column_title_top") || 
+                       has_heatmap_list_component(object, "heatmap_legend_top") || 
+                       has_heatmap_list_component(object, "annotation_legend_top")) {
+                        object@layout$row_anno_max_top_extended = unit(0, "mm")
+                        adjust_annotation_extension = TRUE
+                    }
+                }
+            }
+        }
+    }
+    if(is.null(adjust_annotation_extension)) adjust_annotation_extension = TRUE
     if(adjust_annotation_extension) {
         if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
             padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height
@@ -483,7 +543,6 @@ setMethod(f = "draw_heatmap_list",
 
     n = length(object@ht_list)
     ht_gap = object@ht_list_param$ht_gap
-    adjust_annotation_extension = object@ht_list_param$adjust_annotation_extension
 
     padding = object@layout$heatmap_list_padding
 
