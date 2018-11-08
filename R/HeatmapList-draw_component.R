@@ -436,7 +436,7 @@ setMethod(f = "adjust_heatmap_list",
     }
 
     adjust_annotation_extension = object@ht_list_param$adjust_annotation_extension
-browser()
+
     # the padding of the heatmap list should be recorded because if the total wdith of e.g. heatmap body
     # is a fixed value, the width should added by the padding
     padding = unit(c(0, 0, 0, 0), "mm")
