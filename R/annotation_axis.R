@@ -103,6 +103,13 @@
 annotation_axis_grob = function(at = NULL, labels = at, labels_rot = 0, gp = gpar(), 
 	side = "left", facing = "outside") {
 
+	if(!side %in% c("left", "right", "top", "bottom")) {
+		stop_wrap("`side` can only be in 'left', 'right', 'top' and 'bottom'.")
+	}
+	if(!facing %in% c("inside", "outside")) {
+		stop_wrap("`facing` can only be in 'inside' and 'outside'.")
+	}
+
 	if(is.null(at)) {
 		scale = current.viewport()$xscale
 		at = pretty_breaks(scale)
