@@ -2959,7 +2959,7 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 				x = i
 				v = vl[[i]]
 				grid.boxplot(v, pos = x, box_width = box_width, gp = subset_gp(gp, i),
-					pch = pch, size = size)
+					pch = pch, size = size, outline = outline)
 			}
 			if(axis) grid.draw(axis_grob)
 			if(border) grid.rect(gp = gpar(fill = "transparent"))
