@@ -95,3 +95,21 @@ grid.draw(ht_grob)
 popViewport()
 ...
 ```
+
+### I have a matrix with too many rows and I want to simplify the row dendrogram.
+
+You can first group your rows into several groups and make a group-level dendrogram on it. See following example:
+
+```{r}
+m = matrix(rnorm(1000*10), nr = 1000)
+hc = hclust(dist(m))
+group = cutree(hc, k = 6)
+Heatmap(m, cluster_rows = cluster_within_group(t(m), group), 
+	row_split = 6, border = TRUE) # it would be better if also set row_split
+```
+
+### I have a matrix with huge nunmber of rows or columns, what is the efficient way to visualize it?
+
+Heatmap is used to visualize the global patterns of your matrix which not every single row or column. I would suggest
+to random sample rows or columns into a reasonable small number, and the final heatmap should be the same as if you
+still insist to use the full matrix.
