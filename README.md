@@ -26,8 +26,9 @@ The full documentations are available at https://jokergoo.github.io/ComplexHeatm
 `ComplexHeatmap` is available on [Bioconductor](http://www.bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html), you can install it by:
 
 ```{r}
-source("http://bioconductor.org/biocLite.R")
-biocLite("ComplexHeatmap")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("ComplexHeatmap")
 ```
 
 If you want the latest version, install it directly from GitHub:
