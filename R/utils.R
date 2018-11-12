@@ -317,7 +317,8 @@ list_components = function() {
     attributes(vp) = NULL
     vp = vp[!grepl("^\\d+$", vp)]
     vp = vp[!grepl("GRID.VP", vp)]
-    unique(vp)
+    # unique(vp)
+    vp
 }
 
 # == title
