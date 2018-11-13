@@ -361,10 +361,10 @@ oncoPrint = function(mat,
 	}
 	if(show_row_names) {
 		if(row_names_side == "right") {
-			rn_ha = rowAnnotation(rownames = anno_text(row_labels, gp = row_names_gp, just = "left", location = unit(0, "npc"), width = max_text_width(pct, gp = row_names_gp) + unit(1, "mm")),
+			rn_ha = rowAnnotation(rownames = anno_text(row_labels, gp = row_names_gp, just = "left", location = unit(0, "npc"), width = max_text_width(row_labels, gp = row_names_gp) + unit(1, "mm")),
 				show_annotation_name = FALSE)
 		} else {
-			rn_ha = rowAnnotation(rownames = anno_text(row_labels, gp = row_names_gp, just = "right", location = unit(1, "npc"), width = max_text_width(pct, gp = row_names_gp) + unit(1, "mm")),
+			rn_ha = rowAnnotation(rownames = anno_text(row_labels, gp = row_names_gp, just = "right", location = unit(1, "npc"), width = max_text_width(row_labels, gp = row_names_gp) + unit(1, "mm")),
 				show_annotation_name = FALSE)
 		}
 		names(rn_ha) = paste0("rownames_", random_str())
