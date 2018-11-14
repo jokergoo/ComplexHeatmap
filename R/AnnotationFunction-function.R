@@ -782,6 +782,10 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 
 update_anno_extend = function(anno, axis_grob, axis_param) {
 	extended = anno@extended
+	if(is.null(axis_grob)) {
+		return(extended)
+	}
+
 	if(axis_param$facing == "outside") {
 		if(axis_param$side == "left") {
 			extended[[2]] = convertWidth(grobWidth(axis_grob), "mm", valueOnly = TRUE)
