@@ -20,6 +20,10 @@ h1, h2, h3, h4, h5 {
 }
 </style>
 
+```{r, message = FALSE, echo = FALSE}
+library(ComplexHeatmap)
+```
+
 ### There is no plot comming out after running Heatmap() function.
 
 In this case, you need to use `draw()` function explicitly. See https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#plot-the-heatmap and https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html#plot-the-heamtap-list.
