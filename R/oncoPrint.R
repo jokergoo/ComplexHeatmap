@@ -180,7 +180,7 @@ oncoPrint = function(mat,
 
 	if(missing(alter_fun)) {
 		if(length(mat_list) == 1) {
-			af = list(
+			alter_fun = list(
 				background = function(x, y, w, h, j, i) {
 					grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
 				},
@@ -189,10 +189,10 @@ oncoPrint = function(mat,
 				}
 			)
 			alter_fun_is_vectorized = TRUE
-			names(af) = c("background", names(mat_list))
+			names(alter_fun) = c("background", names(mat_list))
 			col = "red"
 		} else if(length(mat_list) == 2) {
-			af = list(
+			alter_fun = list(
 				background = function(x, y, w, h, j, i) {
 					grid.rect(x, y, w, h, gp = gpar(fill = "#CCCCCC", col = NA))
 				},
@@ -204,7 +204,7 @@ oncoPrint = function(mat,
 				}
 			)
 			alter_fun_is_vectorized = TRUE
-			names(af) = c("background", names(mat_list))
+			names(alter_fun) = c("background", names(mat_list))
 			col = c("red", "blue")
 		} else {
 			stop_wrap("`alter_fun` should be specified.")
@@ -234,7 +234,7 @@ oncoPrint = function(mat,
 			layer_fun = function(j, i, x, y, w, h, fill) {
 				alter_fun$background(x, y, w, h)
 				for(nm in all_type) {
-					m = arr[, , nm]
+					m = arr[, , nm, drop = FALSE]
 					l = pindex(m, i, j)
 					if(sum(l)) {
 						alter_fun[[nm]](x[l], y[l], w[l], h[l])
