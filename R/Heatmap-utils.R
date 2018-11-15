@@ -37,6 +37,8 @@
 
 
 subset_heatmap_by_row = function(ht, ind) {
+    if(is.logical(ind)) ind = which(ind)
+    if(is.character(ind)) stop_wrap("Indices can only be numeric or logical.")
     ht@row_order = order(intersect(ht@row_order, ind))
     if(!is.null(ht@row_dend_param$obj)) {
         stop_wrap("row dend is specified as a clustering object, cannot do subsetting.")
@@ -60,6 +62,8 @@ subset_heatmap_by_row = function(ht, ind) {
 }
 
 subset_heatmap_by_column = function(ht, ind) {
+    if(is.logical(ind)) ind = which(ind)
+    if(is.character(ind)) stop_wrap("Indices can only be numeric or logical.")
     ht@column_order = order(intersect(ht@column_order, ind))
     if(!is.null(ht@column_dend_param$obj)) {
         stop_wrap("column dend is specified as a clustering object, cannot do subsetting.")
