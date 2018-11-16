@@ -1103,7 +1103,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		data_scale = data_scale + c(-extend, 0)*(data_scale[2] - data_scale[1])
 		baseline = max(x)
 	} else {
-		if(is.numeric(baseline)) {
+		if(is.numeric(baseline) && is.null(ylim)) {
 			if(baseline == 0 && all(abs(rowSums(x) - 1) < 1e-6)) {
 				data_scale = c(0, 1)
 			} else if(baseline <= min(x)) {
