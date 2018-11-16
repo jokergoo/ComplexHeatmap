@@ -521,7 +521,7 @@ Heatmap = function(matrix, col, name,
     .Object@row_names_param$rot = row_names_rot
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
     # we use anno_text to draw row/column names because it already takes care of text rotation
-    if(length(row_labels)) {
+    if(show_row_names) {
         if(length(row_labels) != nrow(matrix)) {
             stop_wrap("Length of `row_labels` should be the same as the nrow of matrix.")
         }
@@ -540,7 +540,7 @@ Heatmap = function(matrix, col, name,
     .Object@column_names_param$gp = check_gp(column_names_gp)
     .Object@column_names_param$rot = column_names_rot
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
-    if(length(column_labels)) {
+    if(show_column_names) {
         if(length(column_labels) != ncol(matrix)) {
             stop_wrap("Length of `column_labels` should be the same as the ncol of matrix.")
         }
