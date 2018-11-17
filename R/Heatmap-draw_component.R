@@ -81,15 +81,17 @@ setMethod(f = "draw_heatmap_body",
         }
 
         matrix_is_resized = FALSE
-        if(heatmap_width < nc && heatmap_height < nr) {
-            mat2 = resize_matrix(mat, nr = heatmap_height, nc = heatmap_width)
-            matrix_is_resized = TRUE
-        } else if(heatmap_width < nc) {
-            mat2 = resize_matrix(mat, nr = nr, nc = heatmap_width)
-            matrix_is_resized = TRUE
-        } else if(heatmap_height < nr) {
-            mat2 = resize_matrix(mat, nr = heatmap_height, nc = nc)
-            matrix_is_resized = TRUE
+        if(object@heatmap_param$raster_resize) {
+            if(heatmap_width < nc && heatmap_height < nr) {
+                mat2 = resize_matrix(mat, nr = heatmap_height, nc = heatmap_width)
+                matrix_is_resized = TRUE
+            } else if(heatmap_width < nc) {
+                mat2 = resize_matrix(mat, nr = nr, nc = heatmap_width)
+                matrix_is_resized = TRUE
+            } else if(heatmap_height < nr) {
+                mat2 = resize_matrix(mat, nr = heatmap_height, nc = nc)
+                matrix_is_resized = TRUE
+            }
         }
 
         temp_dir = tempdir()

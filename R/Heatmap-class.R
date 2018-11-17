@@ -168,6 +168,7 @@ Heatmap = setClass("Heatmap",
 # -raster_device Graphic device which is used to generate the raster image.
 # -raster_quality A value set to larger than 1 will improve the quality of the raster image.
 # -raster_device_param A list of further parameters for the selected graphic device. For raster image support, please check https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-as-raster-image .
+# -raster_resize Whether resize the matrix to let the dimension of the matrix the same as the dimension of the raster image?
 # -post_fun A function which will be executed after the heatmap list is drawn.
 #
 # == details
@@ -269,6 +270,7 @@ Heatmap = function(matrix, col, name,
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
     raster_device_param = list(),
+    raster_resize = FALSE,
 
     post_fun = NULL) {
 
@@ -787,6 +789,7 @@ Heatmap = function(matrix, col, name,
     .Object@heatmap_param$raster_device = match.arg(raster_device)[1]
     .Object@heatmap_param$raster_quality = raster_quality
     .Object@heatmap_param$raster_device_param = raster_device_param
+    .Object@heatmap_param$raster_resize = raster_resize
     .Object@heatmap_param$verbose = verbose
     .Object@heatmap_param$post_fun = post_fun
     .Object@heatmap_param$calling_env = parent.frame()
