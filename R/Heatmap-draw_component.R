@@ -55,8 +55,9 @@ setMethod(f = "draw_heatmap_body",
     if(!is.null(cell_fun)) {
         use_raster = FALSE
     }
-        
+   
     if(use_raster) {
+
         # write the image into a temporary file and read it back
         device_info = switch(raster_device,
             png = c("grDevices", "png", "readPNG"),
@@ -78,7 +79,19 @@ setMethod(f = "draw_heatmap_body",
         if(heatmap_width <= 0 || heatmap_height <= 0) {
             stop_wrap("The width or height of the raster image is zero, maybe you forget to turn off the previous graphic device or it was corrupted. Run `dev.off()` to close it.")
         }
-        
+
+        matrix_is_resized = FALSE
+        if(heatmap_width < nc && heatmap_height < nr) {
+            mat2 = resize_matrix(mat, nr = heatmap_height, nc = heatmap_width)
+            matrix_is_resized = TRUE
+        } else if(heatmap_width < nc) {
+            mat2 = resize_matrix(mat, nr = nr, nc = heatmap_width)
+            matrix_is_resized = TRUE
+        } else if(heatmap_height < nr) {
+            mat2 = resize_matrix(mat, nr = heatmap_height, nc = nc)
+            matrix_is_resized = TRUE
+        }
+
         temp_dir = tempdir()
                 # dir.create(tmp_dir, showWarnings = FALSE)
         temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
@@ -86,12 +99,32 @@ setMethod(f = "draw_heatmap_body",
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
 
         do.call(device_fun, c(list(filename = temp_image, width = max(c(heatmap_width*raster_quality, 1)), height = max(c(heatmap_height*raster_quality, 1))), raster_device_param))
-        grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
+        if(matrix_is_resized) {
+            if(object@heatmap_param$verbose) {
+                qqcat("resize the matrix from (@{nrow(mat)} x @{ncol(mat)}) to (@{nrow(mat2)} x @{ncol(mat2)}).\n")
+            }
+            col_matrix2 = map_to_colors(object@matrix_color_mapping, mat2)
+            nc2 = ncol(mat2)
+            nr2 = nrow(mat2)
+            x2 = (seq_len(nc2) - 0.5) / nc2
+            y2 = (rev(seq_len(nr2)) - 0.5) / nr2
+            expand_index2 = expand.grid(seq_len(nr2), seq_len(nc2))
+            grid.rect(x2[expand_index2[[2]]], y2[expand_index2[[1]]], width = unit(1/nc2, 'npc'), height = unit(1/nr2, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix2), gp)))
+        } else {
+            grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
+        }
         if(is.function(layer_fun)) {
-            layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
-                x[expand_index[[2]]], y[expand_index[[1]]],
-                unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
-                as.vector(col_matrix))
+            if(length(as.list(formals(fun))) == 7) {
+                layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
+                    x[expand_index[[2]]], y[expand_index[[1]]],
+                    unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
+                    as.vector(col_matrix))
+            } else {
+                layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
+                    x[expand_index[[2]]], y[expand_index[[1]]],
+                    unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
+                    as.vector(col_matrix), kr, kc)
+            }
         }
         dev.off2()
         
@@ -142,6 +175,7 @@ setMethod(f = "draw_heatmap_body",
         file.remove(temp_image)
 
     } else {
+
         if(any(names(gp) %in% c("type"))) {
             if(gp$type == "none") {
             } else {
@@ -161,10 +195,17 @@ setMethod(f = "draw_heatmap_body",
             }
         }
         if(is.function(layer_fun)) {
-            layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
+            if(length(as.list(formals(fun))) == 7) {
+                layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
+                    x[expand_index[[2]]], y[expand_index[[1]]],
+                    unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
+                    as.vector(col_matrix))
+            } else {
+                layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
                 x[expand_index[[2]]], y[expand_index[[1]]],
                 unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
-                as.vector(col_matrix))
+                as.vector(col_matrix), kr, kc)
+            }
         }
     }
 
