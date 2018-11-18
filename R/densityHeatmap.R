@@ -144,7 +144,7 @@ densityHeatmap = function(data,
 
 		    for(i in 2:nc) {
 		        for(j in 1:(nc-1)) {
-		            suppressWarnings(d[i, j] <- ks.test(data[[i]], data[[j]])$stat)
+		            suppressWarnings(d[i, j] <- ks_dist(data[[i]], data[[j]]))
 		        }
 		    }
 
@@ -257,4 +257,16 @@ densityHeatmap = function(data,
 
 	ht_list = ht %v% NULL
 	return(ht_list)
+}
+
+ks_dist = function(x, y) {
+	# if(length(x) > 5000) x = sample(x, 5000)
+	# if(length(y) > 5000) y = sample(y, 5000)
+	n <- length(x)
+    n.x <- as.double(n)
+    n.y <- length(y)
+    n <- n.x * n.y/(n.x + n.y)
+    w <- c(x, y)
+    z <- cumsum(ifelse(order(w) <= n.x, 1/n.x, -1/n.y))
+    max(abs(z))
 }
