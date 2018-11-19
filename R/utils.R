@@ -824,5 +824,5 @@ to_unit = function(str) {
 resize_matrix = function(mat, nr, nc) {
     w_ratio = nc/ncol(mat)
     h_ratio = nr/nrow(mat)
-    mat[ floor(1:nr / h_ratio), floor(1:nc / w_ratio), drop = FALSE]
+    mat[ ceiling(1:nr / h_ratio), ceiling(1:nc / w_ratio), drop = FALSE]
 }
