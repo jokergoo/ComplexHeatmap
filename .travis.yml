@@ -19,7 +19,6 @@ r-packages:
 
 bioc_packages:
 - GenomicRanges
-- HilbertVis
 - HilbertCurve
 
 r_check_args: --no-build-vignettes --no-vignettes
