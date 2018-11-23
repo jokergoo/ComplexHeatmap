@@ -104,6 +104,7 @@ Heatmap = setClass("Heatmap",
 # -cluster_rows If the value is a logical, it controls whether to make cluster on rows. The value can also
 #               be a `stats::hclust` or a `stats::dendrogram` which already contains clustering.
 #               Check https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#clustering .
+# -cluster_row_slices If rows are split into slices, whether perform clustering on the slice means?
 # -clustering_distance_rows It can be a pre-defined character which is in 
 #                ("euclidean", "maximum", "manhattan", "canberra", "binary", 
 #                "minkowski", "pearson", "spearman", "kendall"). It can also be a function.
@@ -120,6 +121,7 @@ Heatmap = setClass("Heatmap",
 # -row_dend_reorder Apply reordering on row dendrograms. The value can be a logical value or a vector which contains weight 
 #               which is used to reorder rows. The reordering is applied by `stats::reorder.dendrogram`.
 # -cluster_columns Whether make cluster on columns? Same settings as ``cluster_rows``.
+# -cluster_column_slices If columns are split into slices, whether perform clustering on the slice means?
 # -clustering_distance_columns Same setting as ``clustering_distance_rows``.
 # -clustering_method_columns Method to perform hierarchical clustering, pass to `stats::hclust`.
 # -column_dend_side Should the column dendrogram be put on the top or bottom of the heatmap?
@@ -210,6 +212,7 @@ Heatmap = function(matrix, col, name,
     column_title_rot = 0,
 
     cluster_rows = TRUE, 
+    cluster_row_slices = TRUE,
     clustering_distance_rows = "euclidean",
     clustering_method_rows = "complete", 
     row_dend_side = c("left", "right"),
@@ -218,6 +221,7 @@ Heatmap = function(matrix, col, name,
     row_dend_reorder = is.logical(cluster_rows) || is.function(cluster_rows),
     row_dend_gp = gpar(), 
     cluster_columns = TRUE, 
+    cluster_column_slices = TRUE,
     clustering_distance_columns = "euclidean", 
     clustering_method_columns = "complete",
     column_dend_side = c("top", "bottom"), 
@@ -600,6 +604,7 @@ Heatmap = function(matrix, col, name,
         }
         .Object@row_order = row_order
     }
+    .Object@row_dend_param$cluster_slices = cluster_row_slices
 
     if(missing(cluster_columns) && !missing(column_order)) {
         cluster_columns = FALSE
@@ -644,6 +649,7 @@ Heatmap = function(matrix, col, name,
         }
         .Object@column_order = column_order
     }
+    .Object@column_dend_param$cluster_slices = cluster_column_slices
 
     ######### annotations #############
     .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
@@ -893,6 +899,7 @@ make_cluster = function(object, which = c("row", "column")) {
     split = getElement(object@matrix_param, paste0(which, "_split"))
     reorder = slot(object, paste0(which, "_dend_param"))$reorder
     cluster = slot(object, paste0(which, "_dend_param"))$cluster
+    cluster_slices = slot(object, paste0(which, "_dend_param"))$cluster_slices
     gap = getElement(object@matrix_param, paste0(which, "_gap"))
 
     dend_param = slot(object, paste0(which, "_dend_param"))
@@ -1252,7 +1259,7 @@ make_cluster = function(object, which = c("row", "column")) {
             if(verbose) qqcat("reorder dendrograms in each @{which} slice\n")
         }
 
-        if(length(order_list) > 1) {
+        if(length(order_list) > 1 && cluster_slices) {
             if(which == "row") {
                 slice_mean = sapply(order_list, function(ind) colMeans(mat[ind, , drop = FALSE]))
             } else {
@@ -1263,6 +1270,10 @@ make_cluster = function(object, which = c("row", "column")) {
             }
             dend_slice = as.dendrogram(hclust(dist(t(slice_mean))))
             if(verbose) qqcat("perform clustering on mean of @{which} slices\n")
+
+            slice_od = order.dendrogram(dend_slice)
+            order_list = order_list[slice_od]
+            dend_list = dend_list[slice_od]
         }
     }
 

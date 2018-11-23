@@ -25,6 +25,7 @@ Heatmap(matrix, col, name,
     column_title_rot = 0,
     
     cluster_rows = TRUE,
+    cluster_row_slices = TRUE,
     clustering_distance_rows = "euclidean",
     clustering_method_rows = "complete",
     row_dend_side = c("left", "right"),
@@ -33,6 +34,7 @@ Heatmap(matrix, col, name,
     row_dend_reorder = is.logical(cluster_rows) || is.function(cluster_rows),
     row_dend_gp = gpar(),
     cluster_columns = TRUE,
+    cluster_column_slices = TRUE,
     clustering_distance_columns = "euclidean",
     clustering_method_columns = "complete",
     column_dend_side = c("top", "bottom"),
@@ -85,6 +87,7 @@ Heatmap(matrix, col, name,
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
     raster_device_param = list(),
+    raster_resize = FALSE,
     
     post_fun = NULL)
 }
@@ -108,6 +111,7 @@ Heatmap(matrix, col, name,
   \item{column_title_gp}{Graphic parameters for column title.}
   \item{column_title_rot}{Rotation of column titles. Only 0, 90, 270 are allowed to set.}
   \item{cluster_rows}{If the value is a logical, it controls whether to make cluster on rows. The value can also be a \code{\link[stats]{hclust}} or a \code{\link[stats]{dendrogram}} which already contains clustering. Check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#clustering} .}
+  \item{cluster_row_slices}{If rows are split into slices, whether perform clustering on the slice means?}
   \item{clustering_distance_rows}{It can be a pre-defined character which is in  ("euclidean", "maximum", "manhattan", "canberra", "binary",  "minkowski", "pearson", "spearman", "kendall"). It can also be a function. If the function has one argument, the input argument should be a matrix and  the returned value should be a \code{\link[stats]{dist}} object. If the function has two arguments, the input arguments are two vectors and the function calculates distance between these two vectors.}
   \item{clustering_method_rows}{Method to perform hierarchical clustering, pass to \code{\link[stats]{hclust}}.}
   \item{row_dend_side}{Should the row dendrogram be put on the left or right of the heatmap?}
@@ -116,6 +120,7 @@ Heatmap(matrix, col, name,
   \item{row_dend_gp}{Graphic parameters for the dendrogram segments. If users already provide a \code{\link[stats]{dendrogram}} object with edges rendered, this argument will be ignored.}
   \item{row_dend_reorder}{Apply reordering on row dendrograms. The value can be a logical value or a vector which contains weight  which is used to reorder rows. The reordering is applied by \code{\link[stats]{reorder.dendrogram}}.}
   \item{cluster_columns}{Whether make cluster on columns? Same settings as \code{cluster_rows}.}
+  \item{cluster_column_slices}{If columns are split into slices, whether perform clustering on the slice means?}
   \item{clustering_distance_columns}{Same setting as \code{clustering_distance_rows}.}
   \item{clustering_method_columns}{Method to perform hierarchical clustering, pass to \code{\link[stats]{hclust}}.}
   \item{column_dend_side}{Should the column dendrogram be put on the top or bottom of the heatmap?}
@@ -161,6 +166,7 @@ Heatmap(matrix, col, name,
   \item{raster_device}{Graphic device which is used to generate the raster image.}
   \item{raster_quality}{A value set to larger than 1 will improve the quality of the raster image.}
   \item{raster_device_param}{A list of further parameters for the selected graphic device. For raster image support, please check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-as-raster-image} .}
+  \item{raster_resize}{Whether resize the matrix to let the dimension of the matrix the same as the dimension of the raster image?}
   \item{post_fun}{A function which will be executed after the heatmap list is drawn.}
 
 }
