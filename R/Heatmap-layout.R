@@ -155,6 +155,7 @@ setMethod(f = "make_layout",
     row_dend_side = object@row_dend_param$side
     row_dend_width = object@row_dend_param$width
     row_dend_slice = object@row_dend_slice
+    cluster_dend_slices = object@row_dend_param$cluster_slices
     if(show_row_dend) {
         if(row_dend_side == "left") {
             object@layout$layout_size$row_dend_left_width = row_dend_width
@@ -180,7 +181,7 @@ setMethod(f = "make_layout",
                     max_height = row_dend_max_height)
             }
 
-            if(nr_slice > 1) {
+            if(nr_slice > 1 && cluster_dend_slices) {
                 if(row_dend_side == "left") {
                     pushViewport(viewport(xscale = c(0, row_dend_max_height)))
                 } else {
@@ -229,6 +230,7 @@ setMethod(f = "make_layout",
     column_dend_side = object@column_dend_param$side
     column_dend_height = object@column_dend_param$height
     column_dend_slice = object@column_dend_slice
+    cluster_column_slices = object@column_dend_param$cluster_slices
     if(show_column_dend) {
         if(column_dend_side == "top") {
             object@layout$layout_size$column_dend_top_height = column_dend_height
@@ -253,7 +255,7 @@ setMethod(f = "make_layout",
                     max_height = column_dend_max_height)
             }
 
-            if(nc_slice > 1) {
+            if(nc_slice > 1 && cluster_column_slices) {
                 if(column_dend_side == "top") {
                     pushViewport(viewport(yscale = c(0, column_dend_max_height)))
                 } else {

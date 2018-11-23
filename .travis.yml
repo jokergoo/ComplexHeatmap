@@ -16,13 +16,24 @@ r-packages:
 - circlize
 - GetoptLong
 - covr
+<<<<<<< HEAD
 
 bioc_packages:
 - GenomicRanges
 - HilbertCurve
+=======
+- dendsort
+- Cairo
+- png
+- jpeg
+- tiff
+- fastcluster
+- grImport
+- grImport2
+- rsvg
+- glue
 
 r_check_args: --no-build-vignettes --no-vignettes
 
 after_success:
   - Rscript -e 'library(covr);codecov()'
-  
