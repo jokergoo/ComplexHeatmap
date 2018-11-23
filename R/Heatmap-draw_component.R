@@ -116,7 +116,7 @@ setMethod(f = "draw_heatmap_body",
             grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
         }
         if(is.function(layer_fun)) {
-            if(length(as.list(formals(fun))) == 7) {
+            if(length(as.list(formals(layer_fun))) == 7) {
                 layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
                     x[expand_index[[2]]], y[expand_index[[1]]],
                     unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
@@ -197,7 +197,7 @@ setMethod(f = "draw_heatmap_body",
             }
         }
         if(is.function(layer_fun)) {
-            if(length(as.list(formals(fun))) == 7) {
+            if(length(as.list(formals(layer_fun))) == 7) {
                 layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
                     x[expand_index[[2]]], y[expand_index[[1]]],
                     unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
