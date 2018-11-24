@@ -1075,8 +1075,23 @@ setMethod(f = "re_size",
 		if(is.null(annotation_height)) {
 			is_annotation_size_set = FALSE
 		} else {
-			is_annotation_size_set = TRUE
-			annotation_size_adjusted = annotation_height
+			if(length(annotation_height) == 1) {
+				if(length(object@anno_list) > 1) {
+					warning_wrap("`annotation_height` is set with length of one while with multiplt annotations, `annotation_height` is treated as `height`.")
+				}
+				height = annotation_height[1]
+				if(!inherits(height, "unit")) {
+					stop_wrap("`height` should be a `unit` object")
+				}
+				if(!is_abs_unit(height)) {
+					stop_wrap("`height` should be an absolute unit.")
+				}
+				is_size_set = TRUE
+				is_annotation_size_set = FALSE
+			} else {
+				is_annotation_size_set = TRUE
+				annotation_size_adjusted = annotation_height
+			}
 		}
 		size_adjusted = height
 		size_name = "height"
@@ -1095,8 +1110,23 @@ setMethod(f = "re_size",
 		if(is.null(annotation_width)) {
 			is_annotation_size_set = FALSE
 		} else {
-			is_annotation_size_set = TRUE
-			annotation_size_adjusted = annotation_width
+			if(length(annotation_width) == 1) {
+				if(length(object@anno_list) > 1) {
+					warning_wrap("`annotation_width` is set with length of one while with multiplt annotations, `annotation_width` is treated as `width`.")
+				}
+				width = annotation_width[1]
+				if(!inherits(width, "unit")) {
+					stop_wrap("`width` should be a `unit` object")
+				}
+				if(!is_abs_unit(width)) {
+					stop_wrap("`width` should be an absolute unit.")
+				}
+				is_size_set = TRUE
+				is_annotation_size_set = FALSE
+			} else {
+				is_annotation_size_set = TRUE
+				annotation_size_adjusted = annotation_width
+			}
 		}
 		size_adjusted = width
 		size_name = "width"
