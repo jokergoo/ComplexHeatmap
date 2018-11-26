@@ -2,6 +2,8 @@ CHANGES in VERSION 1.99.1
 
 * add `cluster_row_slices` and `cluster_column_slices` arguments in `Heatmap()`.
 * fixed a bug when annotation_height with only one annotation
+* order of k-means slices are reordered by slice mean of `row_reorder`/`column_reorder`
+  if they are provided as vectors.
 
 =======================
 

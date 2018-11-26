@@ -1089,7 +1089,7 @@ make_cluster = function(object, which = c("row", "column")) {
     } else {
         if(verbose) qqcat("no clustering is applied/exists on @{which}s\n")
     }
-    
+
     if(verbose) qq("clustering object is not pre-defined, clustering is applied to each @{which} slice\n")
     # make k-means clustering to add a split column
     if(km > 1 && is.numeric(mat)) {
@@ -1109,7 +1109,13 @@ make_cluster = function(object, which = c("row", "column")) {
 
         meanmat = do.call("cbind", meanmat)
         hc = hclust(dist(t(meanmat)))
-        weight = colMeans(meanmat)
+        # if `reorder` is a vector, the slice dendrogram is reordered by the mean of reorder in each slice
+        # or else, weighted by the mean of `meanmat`.
+        if(length(reorder) > 1) {
+            weight = tapply(reorder, cl, mean)
+        } else {
+            weight = colMeans(meanmat)
+        }
         hc = as.hclust(reorder(as.dendrogram(hc), weight, mean))
 
         cl2 = numeric(length(cl))
