@@ -337,7 +337,7 @@ anno_simple = function(x, col, na_col = "grey",
 # == details
 # This function supports image formats in ``png``, ``svg``, ``pdf``, ``eps``, ``jpeg/jpg``, ``tiff``. 
 # ``png``, ``jpeg/jpg`` and ``tiff`` images are imported by `png::readPNG`, `jpeg::readJPEG` and 
-# `tiff::readTIFF`, and drawn by `grid::grid.raster`. ``svg`` images are firstly reformatted by `rsvg::rsvg_svg`
+# `tiff::readTIFF`, and drawn by `grid::grid.raster`. ``svg`` images are firstly reformatted by ``rsvg::rsvg_svg``
 # and then imported by `grImport2::readPicture` and drawn by `grImport2::grid.picture`. ``pdf`` and ``eps``
 # images are imported by `grImport::PostScriptTrace` and `grImport::readPicture`, later drawn by `grImport::grid.picture`.
 #
@@ -416,11 +416,15 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 			if(!requireNamespace("grImport2")) {
 				stop_wrap("Need grImport2 package to read svg images.")
 			}
-			if(!requireNamespace("rsvg")) {
+			# if(!requireNamespace("rsvg")) {
+			# 	stop_wrap("Need rsvg package to convert svg images.")
+			# }
+			temp_file = tempfile()
+			# get it work on bioconductor build server
+			oe = try(getFromNamespace("rsvg_svg", ns = "rsvg")(image[i], temp_file))
+			if(inherits(oe, "try-error")) {
 				stop_wrap("Need rsvg package to convert svg images.")
 			}
-			temp_file = tempfile()
-			rsvg::rsvg_svg(image[i], temp_file)
 			image_list[[i]] = grImport2::readPicture(temp_file)
 			file.remove(temp_file)
 			image_class[i] = "grImport2::Picture"

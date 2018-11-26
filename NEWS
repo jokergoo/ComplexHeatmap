@@ -4,6 +4,7 @@ CHANGES in VERSION 1.99.1
 * fixed a bug when annotation_height with only one annotation
 * order of k-means slices are reordered by slice mean of `row_reorder`/`column_reorder`
   if they are provided as vectors.
+* remove **rsvg** from Suggests.
 
 =======================
 

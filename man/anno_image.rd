@@ -25,7 +25,7 @@ anno_image(image, which = c("column", "row"), border = TRUE,
 \details{
 This function supports image formats in \code{png}, \code{svg}, \code{pdf}, \code{eps}, \code{jpeg/jpg}, \code{tiff}. 
 \code{png}, \code{jpeg/jpg} and \code{tiff} images are imported by \code{\link[png]{readPNG}}, \code{\link[jpeg]{readJPEG}} and 
-\code{\link[tiff]{readTIFF}}, and drawn by \code{\link[grid]{grid.raster}}. \code{svg} images are firstly reformatted by \code{\link[rsvg]{rsvg_svg}}
+\code{\link[tiff]{readTIFF}}, and drawn by \code{\link[grid]{grid.raster}}. \code{svg} images are firstly reformatted by \code{rsvg::rsvg_svg}
 and then imported by \code{\link[grImport2]{readPicture}} and drawn by \code{\link[grImport2]{grid.picture}}. \code{pdf} and \code{eps}
 images are imported by \code{\link[grImport]{PostScriptTrace}} and \code{\link[grImport]{readPicture}}, later drawn by \code{\link[grImport]{grid.picture}}.
 
