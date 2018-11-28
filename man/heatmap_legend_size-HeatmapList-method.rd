@@ -13,12 +13,12 @@ Size of the Heatmap Legends
 \arguments{
 
   \item{object}{A \code{\link{HeatmapList-class}} object.}
-  \item{legend_list}{A list of self-defined legend, should be wrapped into \code{\link[grid]{grob}} objects. It is normally constructed by \code{\link{Legend}}.}
+  \item{legend_list}{A list of self-defined legend, should be wrapped into \code{\link[grid:grid.grob]{grob}} objects. It is normally constructed by \code{\link{Legend}}.}
   \item{...}{Other arguments.}
 
 }
 \details{
-Internally, all heatmap legends are packed by \code{\link{packLegend}} as a single \code{\link[grid]{grob}} object.
+Internally, all heatmap legends are packed by \code{\link{packLegend}} as a single \code{\link[grid:grid.grob]{grob}} object.
 
 This function is only for internal use.
 }

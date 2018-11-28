@@ -8,7 +8,7 @@ The Class for Legends
 The Class for Legends
 }
 \details{
-This is a very simple class for legends that it only has one slot which is the real \code{\link[grid]{grob}} of the legends.
+This is a very simple class for legends that it only has one slot which is the real \code{\link[grid:grid.grob]{grob}} of the legends.
 
 Construct a single legend by \code{\link{Legend}} and a group of legends by \code{\link{packLegend}}.
 }

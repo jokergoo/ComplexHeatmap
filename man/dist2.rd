@@ -13,7 +13,7 @@ dist2(x, pairwise_fun = function(x, y) sqrt(sum((x - y)^2)), ...)
 
   \item{x}{A matrix or a list. If it is a matrix, the distance is calculated by rows.}
   \item{pairwise_fun}{A function which calculates distance between two vectors.}
-  \item{...}{Pass to \code{\link[stats]{as.dist}}.}
+  \item{...}{Pass to \code{\link[stats:dist]{as.dist}}.}
 
 }
 \details{

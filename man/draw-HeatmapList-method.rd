@@ -88,7 +88,7 @@ Draw a list of heatmaps
 \arguments{
 
   \item{object}{a \code{\link{HeatmapList-class}} object.}
-  \item{newpage}{whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use \code{\link[grid]{grid.grabExpr}}.}
+  \item{newpage}{whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use \code{\link[grid:grid.grab]{grid.grabExpr}}.}
   \item{row_title}{title on the row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap.}
   \item{row_title_gp}{graphic parameters for drawing text.}

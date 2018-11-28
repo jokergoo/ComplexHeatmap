@@ -24,7 +24,7 @@ decorate_heatmap_body(heatmap, code,
 \details{
 There is a viewport for each slice in each heatmap.
 This function contructs the name of the viewport,
-goes to the viewport by \code{\link[grid]{seekViewport}}, runs the code
+goes to the viewport by \code{\link[grid:viewports]{seekViewport}}, runs the code
 to that viewport and finally goes back to the original viewport.
 }
 \value{

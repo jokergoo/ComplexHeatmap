@@ -11,7 +11,7 @@ Draw the Legends
 }
 \arguments{
 
-  \item{object}{The \code{\link[grid]{grob}} object returned by \code{\link{Legend}} or \code{\link{packLegend}}.}
+  \item{object}{The \code{\link[grid:grid.grob]{grob}} object returned by \code{\link{Legend}} or \code{\link{packLegend}}.}
   \item{x}{The x position of the legends, measured in current viewport.}
   \item{y}{The y position of the legends, measured in current viewport.}
   \item{just}{Justification of the legends.}

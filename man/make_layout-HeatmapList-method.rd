@@ -75,10 +75,10 @@ Make Layout for the Heatmap List
   \item{heatmap_legend_side}{Side of the heatmap legends.}
   \item{merge_legends}{Whether to put heatmap legends and annotation legends together. By default they are put in different viewports.}
   \item{show_heatmap_legend}{Whether show heatmap legends.}
-  \item{heatmap_legend_list}{A list of self-defined legends, should be wrapped into a list of \code{\link[grid]{grob}} objects. Normally they are constructed by \code{\link{Legend}}. }
+  \item{heatmap_legend_list}{A list of self-defined legends, should be wrapped into a list of \code{\link[grid:grid.grob]{grob}} objects. Normally they are constructed by \code{\link{Legend}}. }
   \item{annotation_legend_side}{Side of annotation legends.}
   \item{show_annotation_legend}{Whether show annotation legends.}
-  \item{annotation_legend_list}{A list of self-defined legends, should be wrapped into a list of \code{\link[grid]{grob}} objects. Normally they are constructed by \code{\link{Legend}}.}
+  \item{annotation_legend_list}{A list of self-defined legends, should be wrapped into a list of \code{\link[grid:grid.grob]{grob}} objects. Normally they are constructed by \code{\link{Legend}}.}
   \item{ht_gap}{Gap between heatmaps, should be a \code{\link[grid]{unit}} object. It can be a vector of length 1 or the number of heamtaps/annotations.}
   \item{main_heatmap}{Name or index for the main heatmap.}
   \item{padding}{Padding of the whole plot. The four values correspond to the bottom, left, top and right paddings.}

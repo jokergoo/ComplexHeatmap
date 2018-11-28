@@ -23,7 +23,7 @@ If \code{dend} has not been processed by \code{\link{adjust_dend_by_x}}, interna
 to add \code{x} attributes to each node/leaf.
 }
 \value{
-A \code{\link{grob}} object which is contructed by \code{\link[grid]{segmentsGrob}}.
+A \code{\link{grob}} object which is contructed by \code{\link[grid:grid.segments]{segmentsGrob}}.
 }
 \examples{
 # There is no example

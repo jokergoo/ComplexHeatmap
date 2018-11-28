@@ -22,7 +22,7 @@ decorate_title(heatmap, code, slice = 1, which = c("column", "row"),
 \details{
 There is a viewport for row titles and column title in the heatmap.
 This function contructs the name of the viewport,
-goes to the viewport by \code{\link[grid]{seekViewport}} , runs code
+goes to the viewport by \code{\link[grid:viewports]{seekViewport}} , runs code
 to that viewport and finally goes back to the original viewport.
 }
 \value{

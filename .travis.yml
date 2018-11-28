@@ -16,12 +16,6 @@ r-packages:
 - circlize
 - GetoptLong
 - covr
-<<<<<<< HEAD
-
-bioc_packages:
-- GenomicRanges
-- HilbertCurve
-=======
 - dendsort
 - Cairo
 - png
@@ -30,8 +24,11 @@ bioc_packages:
 - fastcluster
 - grImport
 - grImport2
-- rsvg
 - glue
+
+bioc_packages:
+- GenomicRanges
+- HilbertCurve
 
 r_check_args: --no-build-vignettes --no-vignettes
 

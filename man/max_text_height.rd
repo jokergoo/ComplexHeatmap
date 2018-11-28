@@ -16,7 +16,7 @@ max_text_height(text, gp = gpar())
 
 }
 \details{
-It simply calculates maximum height of a list of \code{\link[grid]{textGrob}} objects.
+It simply calculates maximum height of a list of \code{\link[grid:grid.text]{textGrob}} objects.
 
 Note it ignores the text rotation.
 }

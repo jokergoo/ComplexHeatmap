@@ -21,7 +21,7 @@ annotation_axis_grob(at = NULL, labels = at, labels_rot = 0, gp = gpar(),
 
 }
 \value{
-A \code{\link[grid]{grob}} object.
+A \code{\link[grid:grid.grob]{grob}} object.
 }
 \examples{
 gb = annotation_axis_grob(at = 1:5, labels = month.name[1:5], labels_rot = 0, 

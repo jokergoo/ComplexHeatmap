@@ -13,7 +13,7 @@ Draw legends for All Annotations
 \arguments{
 
   \item{object}{A \code{\link{HeatmapList-class}} object.}
-  \item{legend_list}{A list of self-defined legends, should be wrapped into \code{\link[grid]{grob}} objects. It is normally constructed by \code{\link{Legend}}.}
+  \item{legend_list}{A list of self-defined legends, should be wrapped into \code{\link[grid:grid.grob]{grob}} objects. It is normally constructed by \code{\link{Legend}}.}
   \item{...}{Other arguments.}
 
 }

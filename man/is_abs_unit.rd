@@ -16,7 +16,7 @@ is_abs_unit(u)
 }
 \details{
 Besides the normal absolute units (e.g. "mm", "inches"), this function
-simply assumes \code{\link[grid]{grob}} objects as absolute units.
+simply assumes \code{\link[grid:grid.grob]{grob}} objects as absolute units.
 
 For a complex unit which is combination of different units, it is absolute
 only if all units included are absolute units.

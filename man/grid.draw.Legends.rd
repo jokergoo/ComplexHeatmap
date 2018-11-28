@@ -11,7 +11,7 @@ Draw the Legends
 }
 \arguments{
 
-  \item{x}{The \code{\link[grid]{grob}} object returned by \code{\link{Legend}} or \code{\link{packLegend}}.}
+  \item{x}{The \code{\link[grid:grid.grob]{grob}} object returned by \code{\link{Legend}} or \code{\link{packLegend}}.}
   \item{recording}{Pass to \code{\link[grid]{grid.draw}}.}
 
 }

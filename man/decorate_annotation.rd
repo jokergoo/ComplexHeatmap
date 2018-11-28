@@ -20,7 +20,7 @@ decorate_annotation(annotation, code, slice = 1, envir = new.env(parent = parent
 \details{
 There is a viewport for every column annotation and row annotation.
 This function contructs the name of the viewport,
-goes to the viewport by \code{\link[grid]{seekViewport}}, runs code
+goes to the viewport by \code{\link[grid:viewports]{seekViewport}}, runs code
 to that viewport, and finally goes back to the original viewport.
 }
 \value{
