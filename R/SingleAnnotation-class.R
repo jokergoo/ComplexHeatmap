@@ -529,6 +529,7 @@ SingleAnnotation = function(name, value, col, fun,
 # -n Total number of slices. ``k`` and ``n`` are used to adjust annotation names. E.g.
 #    if ``k`` is 2 and ``n`` is 3, the annotation names are not drawn.
 # -test Is it in test mode? The value can be logical or a text which is plotted as the title of plot.
+# -anno_mark_param It contains specific parameters for drawing `anno_mark`.
 #
 # == value
 # No value is returned.
@@ -538,7 +539,23 @@ SingleAnnotation = function(name, value, col, fun,
 #
 setMethod(f = "draw",
 	signature = "SingleAnnotation",
-	definition = function(object, index, k = 1, n = 1, test = FALSE) {
+	definition = function(object, index, k = 1, n = 1, test = FALSE,
+        anno_mark_param = list()) {
+
+    ## make the special anno_mark when the anotation is split
+    if(object@fun@fun_name == "anno_mark" && length(anno_mark_param) > 0) {
+        if(k > 1) {
+            return(invisible(NULL))
+        } else {
+            ## change values for .pos and .scale for anno_mark
+            object@fun@var_env$.pos = anno_mark_param$.pos
+            object@fun@var_env$.scale = anno_mark_param$.scale
+            pushViewport(viewport(x = anno_mark_param$vp_x, y = anno_mark_param$vp_y, width = anno_mark_param$vp_width, height = anno_mark_param$vp_height, just = anno_mark_param$vp_just))
+            draw(object@fun, index = anno_mark_param$index)
+            upViewport()
+            return(invisible(NULL))
+        }
+    }
 
     if(is.character(test)) {
         test2 = TRUE

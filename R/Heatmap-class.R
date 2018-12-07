@@ -602,6 +602,12 @@ Heatmap = function(matrix, col, name,
         if(is.character(row_order)) {
             row_order = structure(seq_len(nrow(matrix)), names = rownames(matrix))[row_order]
         }
+        if(any(is.na(row_order))) {
+            stop_wrap("`row_order` should not contain NA values.")
+        }
+        if(length(row_order) != nrow(matrix)) {
+            stop_wrap("length of `row_order` should be same as the number of marix rows.")
+        }
         .Object@row_order = row_order
     }
     .Object@row_dend_param$cluster_slices = cluster_row_slices
@@ -646,6 +652,12 @@ Heatmap = function(matrix, col, name,
     } else {
         if(is.character(column_order)) {
             column_order = structure(seq_len(ncol(matrix)), names = colnames(matrix))[column_order]
+        }
+        if(any(is.na(column_order))) {
+            stop_wrap("`column_order` should not contain NA values.")
+        }
+        if(length(column_order) != ncol(matrix)) {
+            stop_wrap("length of `column_order` should be same as the number of marix columns")
         }
         .Object@column_order = column_order
     }

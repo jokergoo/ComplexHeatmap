@@ -553,6 +553,8 @@ setMethod(f = "get_legend_param_list",
 # -n Total number of slices.
 # -... Pass to `grid::viewport` which contains all the annotations.
 # -test Is it in test mode? The value can be logical or a text which is plotted as the title of plot.
+# -anno_mark_param It contains specific parameters for drawing `anno_mark` and pass to the
+#     `draw,SingleAnnotation-method`.
 #
 # == value
 # No value is returned.
@@ -563,7 +565,7 @@ setMethod(f = "get_legend_param_list",
 setMethod(f = "draw",
 	signature = "HeatmapAnnotation",
 	definition = function(object, index, k = 1, n = 1, ..., 
-		test = FALSE) {
+		test = FALSE, anno_mark_param = list()) {
 
 	which = object@which
 	n_anno = length(object@anno_list)
@@ -609,21 +611,23 @@ setMethod(f = "draw",
 		for(i in seq_len(n_anno)) {
 			pushViewport(viewport(y = sum(anno_size[seq(i, n_anno)]) + sum(gap[seq(i, n_anno)]) - gap[n_anno], 
 				height = anno_size[i], just = c("center", "top")))
-			oe = try(draw(object@anno_list[[i]], index, k, n))
-			if(inherits(oe, "try-error")) {
-				cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
-				stop_wrap(oe)
-			}
+			draw(object@anno_list[[i]], index, k, n, anno_mark_param = anno_mark_param)
+			# oe = try(draw(object@anno_list[[i]], index, k, n))
+			# if(inherits(oe, "try-error")) {
+			# 	cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
+			# 	stop_wrap(oe)
+			# }
 			upViewport()
 		}
 	} else if(which == "row") {
 		for(i in seq_len(n_anno)) {
 			pushViewport(viewport(x = sum(anno_size[seq_len(i)]) + sum(gap[seq_len(i)]) - gap[i], width = anno_size[i], just = c("right", "center")))
-			oe = try(draw(object@anno_list[[i]], index, k, n))
-			if(inherits(oe, "try-error")) {
-				cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
-				stop_wrap(oe)
-			}
+			draw(object@anno_list[[i]], index, k, n, anno_mark_param = anno_mark_param)
+			# oe = try(draw(object@anno_list[[i]], index, k, n))
+			# if(inherits(oe, "try-error")) {
+			# 	cat("Error when drawing annotation '", object@anno_list[[i]]@name, "'\n", sep = "")
+			# 	stop_wrap(oe)
+			# }
 			upViewport()
 		}
 	}
@@ -911,6 +915,10 @@ names.HeatmapAnnotation = function(x) {
 		x@anno_list[[i]]@name =  value[i]
 	}
 	return(x)
+}
+
+anno_type = function(ha) {
+	sapply(ha@anno_list, function(x) x@fun@fun_name)
 }
 
 

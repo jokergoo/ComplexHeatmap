@@ -226,6 +226,9 @@ setMethod(f = "make_layout",
                 if(length(row_split) > 1 && length(row_split) != ht_nr) {
                     stop_wrap("`row_split` should have same length as nrow of the main matrix.")
                 }
+                if(length(row_split) == 1 && !object@ht_list[[i_main]]@row_dend_param$cluster) {
+                    stop_wrap("Since there is no row clustering for the main heatmap, `row_split` is not allowed to set as a single number.")
+                }
             }
         }
         if(!is.null(row_km)) {
@@ -296,6 +299,12 @@ setMethod(f = "make_layout",
             if(verbose) qqcat("set row_dend_reorder to main heatmap\n")
         }
         if(!is.null(row_order)) {
+            if(any(is.na(row_order))) {
+                stop_wrap("`row_order` should not contain NA values.")
+            }
+            if(length(row_order) != nrow(object@ht_list[[i_main]]@matrix)) {
+                stop_wrap("length of `row_order` should be same as the number of main marix rows.")
+            }
             if(is.character(row_order)) {
                 row_order = structure(seq_len(nrow(object@ht_list[[i_main]]@matrix)), names = rownames(object@ht_list[[i_main]]@matrix))[row_order]
             }
@@ -344,6 +353,9 @@ setMethod(f = "make_layout",
             } else if(is.atomic(column_split)) {
                 if(length(column_split) > 1 && length(column_split) != ht_nr) {
                     stop_wrap("`column_split` should have same length as ncol of the main matrix.")
+                }
+                if(length(column_split) == 1 && !object@ht_list[[i_main]]@column_dend_param$cluster) {
+                    stop_wrap("Since there is no column clustering for the main heatmap, `column_split` is not allowed to set as a single number.")
                 }
             }
         }
@@ -415,6 +427,12 @@ setMethod(f = "make_layout",
             if(verbose) qqcat("set column_dend_reorder to main heatmap\n")
         }
         if(!is.null(column_order)) {
+            if(any(is.na(column_order))) {
+                stop_wrap("`column_order` should not contain NA values.")
+            }
+            if(length(column_order) != ncol(object@ht_list[[i_main]]@matrix)) {
+                stop_wrap("length of `column_order` should be same as the number of main marix columns.")
+            }
             if(is.character(column_order)) {
                 column_order = structure(seq_len(ncol(object@ht_list[[i_main]]@matrix)), names = colnames(object@ht_list[[i_main]]@matrix))[column_order]
             }

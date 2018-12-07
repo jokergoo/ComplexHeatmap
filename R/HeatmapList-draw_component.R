@@ -596,16 +596,47 @@ setMethod(f = "draw_heatmap_list",
             if(inherits(ht, "Heatmap")) {
                 draw(ht, internal = TRUE)
             } else if(inherits(ht, "HeatmapAnnotation")) {
+                # if the HeatmapAnnotation contains anno_mark() and it is split into more than one slices
+                anno_mark_param = list()
+                if(n_slice > 1) {
+                    all_anno_type = anno_type(ht)
+                    if("anno_mark" %in% all_anno_type) {
+                        ## only make the anno_mark annotation
+                        pushViewport(viewport(y = max_bottom_component_height, height = unit(1, "npc") - max_top_component_height - max_bottom_component_height, just = c("bottom")))
+                        ro_lt = ht_main@row_order_list
+                        # calcualte the position of each row with taking "gaps" into account
+                        .scale = c(0, 1)
+
+                        .pos = NULL
+                        for(i in seq_along(ro_lt)) {
+                            # assume slices are align to top `slice_just` contains "top"
+                            .pos1 = slice_y[i] - (seq_along(ro_lt[[i]]) - 0.5)/length(ro_lt[[i]]) * slice_height[i]
+                            .pos1 = convertY(.pos1, "native", valueOnly = TRUE)
+                            .pos = c(.pos, .pos1)
+                        }
+
+                        anno_mark_param$.scale = .scale
+                        anno_mark_param$.pos = .pos
+                        anno_mark_param$index = unlist(ro_lt)
+                        
+                        anno_mark_param$vp_height = convertHeight(unit(1, "npc"), "cm")
+                        anno_mark_param$vp_width = unit(1, "npc")
+                        anno_mark_param$vp_just = "top"
+                        anno_mark_param$vp_x = unit(0.5, "npc")
+                        anno_mark_param$vp_y = unit(1, "npc")
+                        popViewport()
+                    }
+                }
+
                 # calcualte the position of the heatmap body
                 pushViewport(viewport(y = max_bottom_component_height, height = unit(1, "npc") - max_top_component_height - max_bottom_component_height, just = c("bottom")))
                 for(j in seq_len(n_slice)) {
-                    draw(ht, index = ht_main@row_order_list[[j]], y = slice_y[j], height = slice_height[j], just = slice_just[2], k = j, n = n_slice)
+                    draw(ht, index = ht_main@row_order_list[[j]], y = slice_y[j], height = slice_height[j], just = slice_just[2], k = j, n = n_slice, anno_mark_param = anno_mark_param)
                 }
                 upViewport()
             }
             upViewport()
         }
-
         upViewport()
     } else {
         heatmap_height = object@layout$heatmap_height
@@ -653,10 +684,41 @@ setMethod(f = "draw_heatmap_list",
             if(inherits(ht, "Heatmap")) {
                 draw(ht, internal = TRUE)
             } else if(inherits(ht, "HeatmapAnnotation")) {
+                # if the HeatmapAnnotation contains anno_mark() and it is split into more than one slices
+                anno_mark_param = list()
+                if(n_slice > 1) {
+                    all_anno_type = anno_type(ht)
+                    if("anno_mark" %in% all_anno_type) {
+                        ## only make the anno_mark annotation
+                        pushViewport(viewport(x = max_left_component_width, width = unit(1, "npc") - max_left_component_width - max_right_component_width, just = c("left")))
+                        co_lt = ht_main@column_order_list
+                        .scale = c(0, 1)
+
+                        .pos = NULL
+                        for(i in seq_along(co_lt)) {
+                            # assume slices are align to left, `slice_just` contains "left"
+                            .pos1 = slice_x[i] + (seq_along(co_lt[[i]]) - 0.5)/length(co_lt[[i]]) * slice_width[i]
+                            .pos1 = convertX(.pos1, "native", valueOnly = TRUE)
+                            .pos = c(.pos, .pos1)
+                        }
+
+                        anno_mark_param$.scale = .scale
+                        anno_mark_param$.pos = .pos
+                        anno_mark_param$index = unlist(co_lt)
+                        
+                        anno_mark_param$vp_height = unit(1, "npc")
+                        anno_mark_param$vp_width = convertWidth(unit(1, "npc"), "cm")
+                        anno_mark_param$vp_just = "left"
+                        anno_mark_param$vp_x = unit(0, "npc")
+                        anno_mark_param$vp_y = unit(0.5, "npc")
+                        popViewport()
+                    }
+                }
+
                 # calcualte the position of the heatmap body
                 pushViewport(viewport(x = max_left_component_width, width = unit(1, "npc") - max_left_component_width - max_right_component_width, just = c("left")))
                 for(j in seq_len(n_slice)) {
-                    draw(ht, index = ht_main@column_order_list[[j]], x = slice_x[j], width = slice_width[j], just = slice_just[1], k = j, n = n_slice)
+                    draw(ht, index = ht_main@column_order_list[[j]], x = slice_x[j], width = slice_width[j], just = slice_just[1], k = j, n = n_slice, anno_mark_param = anno_mark_param)
                 }
                 upViewport()
             }

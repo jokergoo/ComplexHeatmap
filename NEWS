@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.99.4
+
+* anno_mark() is now calculated in multiple slices.
+
+========================
+
 CHANGES in VERSION 1.99.1
 
 * add `cluster_row_slices` and `cluster_column_slices` arguments in `Heatmap()`.

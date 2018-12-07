@@ -8,7 +8,7 @@ Draw the Heatmap Annotations
 }
 \usage{
 \S4method{draw}{HeatmapAnnotation}(object, index, k = 1, n = 1, ...,
-    test = FALSE)
+    test = FALSE, anno_mark_param = list())
 }
 \arguments{
 
@@ -18,6 +18,7 @@ Draw the Heatmap Annotations
   \item{n}{Total number of slices.}
   \item{...}{Pass to \code{\link[grid]{viewport}} which contains all the annotations.}
   \item{test}{Is it in test mode? The value can be logical or a text which is plotted as the title of plot.}
+  \item{anno_mark_param}{It contains specific parameters for drawing \code{\link{anno_mark}} and pass to the \code{\link{draw,SingleAnnotation-method}}.}
 
 }
 \value{

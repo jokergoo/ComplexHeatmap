@@ -6,4 +6,5 @@ check.bat
 ^\.Rproj\.user$
 .travis.yml
 vignettes_old
+revdep/
 

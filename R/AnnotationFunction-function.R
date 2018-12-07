@@ -2676,6 +2676,9 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		width = unit(1, "npc")
 	}
 
+	.pos = NULL
+	.scale = NULL
+
 	# a map between row index and positions
 	# pos_map = 
 	row_fun = function(index) {
@@ -2690,27 +2693,35 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		labels_gp = subset_gp(labels_gp, labels2index[labels])
 		link_gp = subset_gp(link_gp, labels2index[labels])
 
-		pushViewport(viewport(xscale = c(0, 1), yscale = c(0.5, n+0.5)))
+		if(is.null(.scale)) {
+			.scale = c(0.5, n+0.5)
+		}
+		pushViewport(viewport(xscale = c(0, 1), yscale = .scale))
 		if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
 		text_height = convertHeight(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
-		i2 = rev(which(index %in% at))
-		h1 = n-i2+1 - text_height*0.5
-		h2 = n-i2+1 + text_height*0.5
-		pos = rev(smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2])))
-		h = (pos[, 1] + pos[, 2])/2
+		if(is.null(.pos)) {
+			i2 = rev(which(index %in% at))
+			pos = n-i2+1 # position of rows
+		} else {
+			pos = .pos[rev(which(index %in% at))]
+		}
+		h1 = pos - text_height*0.5
+		h2 = pos + text_height*0.5
+		pos_adjusted = rev(smartAlign(h1, h2, c(.scale[1] - extend[1], .scale[2] + extend[2])))
+		h = (pos_adjusted[, 1] + pos_adjusted[, 2])/2
 
 		n2 = length(labels)
 		if(side == "right") {
 			grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "left")
 			link_width = link_width - unit(1, "mm")
-			grid.segments(unit(rep(0, n2), "npc"), n-i2+1, rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = link_gp)
-			grid.segments(rep(link_width*(1/3), n2), n-i2+1, rep(link_width*(2/3), n2), h, default.units = "native", gp = link_gp)
+			grid.segments(unit(rep(0, n2), "npc"), pos, rep(link_width*(1/3), n2), pos, default.units = "native", gp = link_gp)
+			grid.segments(rep(link_width*(1/3), n2), pos, rep(link_width*(2/3), n2), h, default.units = "native", gp = link_gp)
 			grid.segments(rep(link_width*(2/3), n2), h, rep(link_width, n2), h, default.units = "native", gp = link_gp)
 		} else {
 			grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
 			link_width = link_width - unit(1, "mm")
-			grid.segments(unit(rep(1, n2), "npc"), n-i2+1, unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, default.units = "native", gp = link_gp)
-			grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), n-i2+1, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = link_gp)
+			grid.segments(unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_width*(1/3), n2), pos, default.units = "native", gp = link_gp)
+			grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), pos, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = link_gp)
 			grid.segments(unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = link_gp)
 		}
 		upViewport()
@@ -2720,38 +2731,43 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		
 		# adjust at and labels
 		at = intersect(index, at)
+		if(length(at) == 0) {
+			return(NULL)
+		}
 		labels = at2labels[as.character(at)]
 		
 		labels_gp = subset_gp(labels_gp, labels2index[labels])
-		lines_gp = subset_gp(lines_gp, labels2index[labels])
+		link_gp = subset_gp(link_gp, labels2index[labels])
 
-		pushViewport(viewport(yscale = c(0, 1), xscale = c(0.5, n+0.5)))
+		if(is.null(.scale)) {
+			.scale = c(0.5, n+0.5)
+		}
+		pushViewport(viewport(yscale = c(0, 1), xscale = .scale))
 		if(inherits(extend, "unit")) extend = convertWidth(extend, "native", valueOnly = TRUE)
 		text_height = convertWidth(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
-		i2 = which(index %in% at)
-		h1 = i2 - text_height*0.5
-		h2 = i2 + text_height*0.5
-		pos = smartAlign(h1, h2, c(0.5 - extend[1], n+0.5 + extend[2]))
-		h = (pos[, 1] + pos[, 2])/2
-		if(is.null(link_width)) {
-			if(convertHeight(unit(1, "npc") - max_text_width(labels, gp = labels_gp), "mm", valueOnly = TRUE) < 0) {
-				link_width = unit(0.5, "npc")
-			} else {
-				link_width = unit(1, "npc") - max_text_width(labels, gp = labels_gp)
-			}
+		if(is.null(.pos)) {
+			i2 = which(index %in% at)
+			pos = i2 # position of rows
+		} else {
+			pos = .pos[which(index %in% at)]
 		}
+		h1 = pos - text_height*0.5
+		h2 = pos + text_height*0.5
+		pos_adjusted = smartAlign(h1, h2, c(.scale[1] - extend[1], .scale[2] + extend[2]))
+		h = (pos_adjusted[, 1] + pos_adjusted[, 2])/2
+
 		n2 = length(labels)
 		if(side == "top") {
 			grid.text(labels, h, rep(link_width, n2), default.units = "native", gp = labels_gp, rot = 90, just = "left")
 			link_width = link_width - unit(1, "mm")
-			grid.segments(i2, unit(rep(0, n2), "npc"), i2, rep(link_width*(1/3), n2), default.units = "native", gp = link_gp)
-			grid.segments(i2, rep(link_width*(1/3), n2), h, rep(link_width*(2/3), n2), default.units = "native", gp = link_gp)
+			grid.segments(pos, unit(rep(0, n2), "npc"), pos, rep(link_width*(1/3), n2), default.units = "native", gp = link_gp)
+			grid.segments(pos, rep(link_width*(1/3), n2), h, rep(link_width*(2/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(h, rep(link_width*(2/3), n2), h, rep(link_width, n), default.units = "native", gp = link_gp)
 		} else {
 			grid.text(labels, h, rep(max_text_width(labels, gp = labels_gp), n2), default.units = "native", gp = labels_gp, rot = 90, just = "right")
 			link_width = link_width - unit(1, "mm")
-			grid.segments(i2, unit(rep(1, n2), "npc"), i2, unit(1, "npc")-rep(link_width*(1/3), n2), default.units = "native", gp = link_gp)
-			grid.segments(i2, unit(1, "npc")-rep(link_width*(1/3), n2), h, unit(1, "npc")-rep(link_width*(2/3), n2), default.units = "native", gp = link_gp)
+			grid.segments(pos, unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_width*(1/3), n2), default.units = "native", gp = link_gp)
+			grid.segments(pos, unit(1, "npc")-rep(link_width*(1/3), n2), h, unit(1, "npc")-rep(link_width*(2/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(h, unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), default.units = "native", gp = link_gp)
 		}
 		upViewport()
@@ -2770,7 +2786,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		width = width,
 		height = height,
 		n = -1,
-		var_import = list(at, labels2index, at2labels, link_gp, labels_gp, padding, 
+		var_import = list(at, labels2index, at2labels, link_gp, labels_gp, padding, .pos, .scale,
 			side, link_width, extend),
 		show_name = FALSE
 	)

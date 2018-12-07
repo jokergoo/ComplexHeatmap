@@ -500,7 +500,73 @@ setMethod(f = "draw_annotation",
         n = length(object@row_order_list)
     }
 
+    ## deal with the special anno_mark
+    anno_mark_param = list()
+    if(which %in% c("left", "right")) {
+        slice_y = object@layout$slice$y
+        n_slice = length(slice_y)
+        slice_height = object@layout$slice$height
+
+        if(n_slice > 1) {
+            all_anno_type = anno_type(annotation)
+            if("anno_mark" %in% all_anno_type) {
+                ## only make the anno_mark annotation
+                ro_lt = object@row_order_list
+                # calcualte the position of each row with taking "gaps" into account
+                .scale = c(0, 1)
+
+                .pos = NULL
+                for(i in seq_along(ro_lt)) {
+                    # assume slices are align to top `slice_just` contains "top"
+                    .pos1 = slice_y[i] - (seq_along(ro_lt[[i]]) - 0.5)/length(ro_lt[[i]]) * slice_height[i]
+                    .pos1 = convertY(.pos1, "native", valueOnly = TRUE)
+                    .pos = c(.pos, .pos1)
+                }
+
+                anno_mark_param$.scale = .scale
+                anno_mark_param$.pos = .pos
+                anno_mark_param$index = unlist(ro_lt)
+                
+                anno_mark_param$vp_height = convertHeight(unit(1, "npc"), "cm")
+                anno_mark_param$vp_width = unit(1, "npc")
+                anno_mark_param$vp_just = "top"
+                anno_mark_param$vp_x = unit(0.5, "npc")
+                anno_mark_param$vp_y = unit(1, "npc")
+            }
+        }
+    } else {
+        slice_x = object@layout$slice$x
+        n_slice = length(slice_x)
+        slice_width = object@layout$slice$width
+
+        if(n_slice > 1) {
+            all_anno_type = anno_type(annotation)
+            if("anno_mark" %in% all_anno_type) {
+                ## only make the anno_mark annotation
+                co_lt = object@column_order_list
+                .scale = c(0, 1)
+
+                .pos = NULL
+                for(i in seq_along(co_lt)) {
+                    .pos1 = slice_x[i] + (seq_along(co_lt[[i]]) - 0.5)/length(co_lt[[i]]) * slice_width[i]
+                    .pos1 = convertX(.pos1, "native", valueOnly = TRUE)
+                    .pos = c(.pos, .pos1)
+                }
+
+                anno_mark_param$.scale = .scale
+                anno_mark_param$.pos = .pos
+                anno_mark_param$index = unlist(co_lt)
+                
+                anno_mark_param$vp_height = unit(1, "npc")
+                anno_mark_param$vp_width = convertWidth(unit(1, "npc"), "cm")
+                anno_mark_param$vp_just = "left"
+                anno_mark_param$vp_x = unit(0, "npc")
+                anno_mark_param$vp_y = unit(0.5, "npc")
+            }
+        }
+    }
+
     pushViewport(viewport(...))
-    draw(annotation, index = index, k = k, n = n)
+    draw(annotation, index = index, k = k, n = n, anno_mark_param = anno_mark_param)
     upViewport()
 })

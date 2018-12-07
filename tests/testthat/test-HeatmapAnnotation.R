@@ -101,3 +101,43 @@ draw(ha, 1:10, test = TRUE)
 ha = rowAnnotation(fun = fun, width = unit(4, "cm"))
 draw(ha, 1:10, test = TRUE)
 
+
+## test anno_mark
+m = matrix(rnorm(1000), nrow = 100)
+ha1 = rowAnnotation(foo = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10]))
+Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha1)
+Heatmap(m, name = "mat", cluster_rows = FALSE) + ha1
+
+split = rep("a", 100); split[c(1:4, 20, 60, 98:100)] = "b"
+Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha1, row_split = split, gap = unit(1, "cm"))
+Heatmap(m, name = "mat", cluster_rows = FALSE, row_split = split, gap = unit(1, "cm")) + ha1
+
+# ha has two annotations
+ha2 = rowAnnotation(foo = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10]), bar = 1:100)
+Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha2)
+Heatmap(m, name = "mat", cluster_rows = FALSE) + ha2
+
+Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha2, row_split = split, gap = unit(1, "cm"))
+Heatmap(m, name = "mat", cluster_rows = FALSE, row_split = split, gap = unit(1, "cm")) + ha2
+
+
+## test anno_mark as column annotation
+m = matrix(rnorm(1000), ncol = 100)
+ha1 = columnAnnotation(foo = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10]))
+Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha1)
+ha1 %v% Heatmap(m, name = "mat", cluster_columns = FALSE)
+
+split = rep("a", 100); split[c(1:4, 20, 60, 98:100)] = "b"
+Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha1, column_split = split, column_gap = unit(1, "cm"))
+ha1 %v% Heatmap(m, name = "mat", cluster_columns = FALSE, column_split = split, gap = unit(1, "cm"))
+
+# ha has two annotations
+ha2 = HeatmapAnnotation(foo = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10]), bar = 1:100)
+Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha2)
+ha2 %v% Heatmap(m, name = "mat", cluster_columns = FALSE)
+
+Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha2, column_split = split, column_gap = unit(1, "cm"))
+ha2 %v% Heatmap(m, name = "mat", cluster_columns = FALSE, column_split = split, column_gap = unit(1, "cm"))
+
+
+
