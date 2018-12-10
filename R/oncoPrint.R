@@ -51,7 +51,10 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 oncoPrint = function(mat, 
-	get_type = function(x) strsplit(x, "\\s*[;:,|]\\s*")[[1]],
+	get_type = function(x) {
+		x = strsplit(x, "\\s*[;:,|]\\s*")[[1]]
+		x[!x %in% c("na", "NA")]
+	},
 	alter_fun, 
 	alter_fun_is_vectorized = NULL,
 	col, 
@@ -115,12 +118,13 @@ oncoPrint = function(mat,
 		mat = as.matrix(mat)
 	}
 	if(inherits(mat, "matrix")) {
-		all_type = unique(unlist(lapply(mat, get_type)))
+		get_type2 = function(x) gsub("^\\s+|\\s+$", "", get_type(x))
+		all_type = unique(unlist(lapply(mat, get_type2)))
 		all_type = all_type[!is.na(all_type)]
 		all_type = all_type[grepl("\\S", all_type)]
 
 		mat_list = lapply(all_type, function(type) {
-			m = sapply(mat, function(x) type %in% get_type(x))
+			m = sapply(mat, function(x) type %in% get_type2(x))
 			dim(m) = dim(mat)
 			dimnames(m) = dimnames(mat)
 			m
