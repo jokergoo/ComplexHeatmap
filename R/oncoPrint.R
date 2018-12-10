@@ -51,7 +51,7 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 oncoPrint = function(mat, 
-	get_type = function(x) x,
+	get_type = function(x) strsplit(x, "\\s*[;:,|]\\s*")[[1]],
 	alter_fun, 
 	alter_fun_is_vectorized = NULL,
 	col, 
