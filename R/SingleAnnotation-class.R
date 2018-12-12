@@ -543,7 +543,7 @@ setMethod(f = "draw",
         anno_mark_param = list()) {
 
     ## make the special anno_mark when the anotation is split
-    if(object@fun@fun_name == "anno_mark" && length(anno_mark_param) > 0) {
+    if(object@fun@fun_name %in% c("anno_mark", "anno_zoom") && length(anno_mark_param) > 0) {
         if(k > 1) {
             return(invisible(NULL))
         } else {

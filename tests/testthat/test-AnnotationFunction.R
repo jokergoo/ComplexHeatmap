@@ -358,9 +358,72 @@ anno = anno_block(gp = gpar(fill = 1:4), labels = letters[1:4], labels_gp = gpar
 draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
 
 
+### anno_zoom
+fa = sort(sample(letters[1:3], 100, replace = TRUE, prob = c(1, 2, 3)))
+panel_fun = function(index, nm) {
+	grid.rect()
+	grid.text(nm)
+}
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun)
+draw(anno, index = 1:100, test = "anno_zoom")
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	gap = unit(1, "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, set gap")
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = 1:3)
+draw(anno, index = 1:100, test = "anno_zoom, size set as relative values")
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = 1:3, extend = unit(1, "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, extend")
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = unit(1:3, "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, size set as absolute values")
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = unit(c(2, 20, 40), "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, big size")
 
 
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = unit(1:3, "cm"), side = "left")
+draw(anno, index = 1:100, test = "anno_zoom, side")
 
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = unit(1:3, "cm"), link_gp = gpar(fill = 1:3))
+draw(anno, index = 1:100, test = "anno_zoom, link_gp")
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = unit(1:3, "cm"), link_gp = gpar(fill = 1:3),
+	link_width = unit(2, "cm"), width = unit(4, "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, width")
+
+anno = anno_zoom(align_to = list(a = 1:10, b = 30:45, c = 70:90), 
+	which = "row", panel_fun = panel_fun, size = unit(1:3, "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, a list of indices")
+
+anno = anno_zoom(align_to = fa, which = "column", panel_fun = panel_fun,
+	size = unit(1:3, "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, column annotation")
+
+
+m = matrix(rnorm(100*10), nrow = 100)
+hc = hclust(dist(m))
+fa2 = cutree(hc, k = 4)
+anno = anno_zoom(align_to = fa2, which = "row", panel_fun = panel_fun)
+draw(anno, index = hc$order, test = "anno_zoom, column annotation")
+
+anno = anno_zoom(align_to = fa2, which = "column", panel_fun = panel_fun)
+draw(anno, index = hc$order, test = "anno_zoom, column annotation")
+
+
+anno = anno_zoom(align_to = fa2, which = "row", panel_fun = panel_fun)
+Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno))
+Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno), row_split = 2)
 
 
 

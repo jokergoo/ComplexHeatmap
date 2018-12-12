@@ -509,7 +509,7 @@ setMethod(f = "draw_annotation",
 
         if(n_slice > 1) {
             all_anno_type = anno_type(annotation)
-            if("anno_mark" %in% all_anno_type) {
+            if(any(c("anno_zoom", "anno_mark") %in% all_anno_type)) {
                 ## only make the anno_mark annotation
                 ro_lt = object@row_order_list
                 # calcualte the position of each row with taking "gaps" into account
@@ -541,7 +541,7 @@ setMethod(f = "draw_annotation",
 
         if(n_slice > 1) {
             all_anno_type = anno_type(annotation)
-            if("anno_mark" %in% all_anno_type) {
+            if(any(c("anno_zoom", "anno_mark") %in% all_anno_type)) {
                 ## only make the anno_mark annotation
                 co_lt = object@column_order_list
                 .scale = c(0, 1)

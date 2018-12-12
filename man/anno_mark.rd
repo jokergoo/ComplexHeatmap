@@ -10,7 +10,8 @@ Link annotation with labels
 anno_mark(at, labels, which = c("column", "row"),
     side = ifelse(which == "column", "top", "right"),
     lines_gp = gpar(), labels_gp = gpar(), padding = 0.5,
-    link_width = unit(5, "mm"), link_gp = lines_gp,
+    link_width = unit(5, "mm"), link_height = link_width,
+    link_gp = lines_gp,
     extend = unit(0, "mm"))
 }
 \arguments{
@@ -24,6 +25,7 @@ anno_mark(at, labels, which = c("column", "row"),
   \item{labels_gp}{Graphic settings for the labels.}
   \item{padding}{Padding between neighbouring labels in the plot.}
   \item{link_width}{Width of the segments.}
+  \item{link_height}{Similar as \code{link_width}, used for column annotation.}
   \item{extend}{By default, the region for the labels has the same width (if it is a column annotation) or same height (if it is a row annotation) as the heatmap. The size can be extended by this options. The value can be a proportion number or  a \code{\link[grid]{unit}} object. The length can be either one or two.}
 
 }

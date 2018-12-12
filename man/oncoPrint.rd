@@ -8,7 +8,7 @@ Make oncoPrint
 }
 \usage{
 oncoPrint(mat,
-    get_type = function(x) strsplit(x, "\\\\s*[;:,|]\\\\s*")[[1]],
+    get_type = default_get_type,
     alter_fun,
     alter_fun_is_vectorized = NULL,
     col,
@@ -45,7 +45,7 @@ oncoPrint(mat,
 \arguments{
 
   \item{mat}{The value should be a character matrix which encodes mulitple alterations  or a list of matrices for which every matrix contains binary value representing whether the alteration is present or absent.  When the value is a list, the names of the list represent alteration types. You can use \code{\link{unify_mat_list}} to make all matrix having same row names and column names.}
-  \item{get_type}{If different alterations are encoded in the matrix as complex strings, this self-defined function determines how to extract them. It only works when \code{mat} is a matrix.}
+  \item{get_type}{If different alterations are encoded in the matrix as complex strings, this self-defined function determines how to extract them. It only works when \code{mat} is a matrix. The default value is \code{\link{default_get_type}}.}
   \item{alter_fun}{A single function or a list of functions which defines how to add graphics for different alterations.}
   \item{alter_fun_is_vectorized}{Whether \code{alter_fun} is implemented vectorized. Internally the function will guess.}
   \item{col}{A vector of color for which names correspond to alteration types.}

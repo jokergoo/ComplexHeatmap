@@ -2619,6 +2619,7 @@ row_anno_text = function(...) {
 # -labels_gp Graphic settings for the labels.
 # -padding Padding between neighbouring labels in the plot.
 # -link_width Width of the segments.
+# -link_height Similar as ``link_width``, used for column annotation.
 # -extend By default, the region for the labels has the same width (if it is a column annotation) or
 #         same height (if it is a row annotation) as the heatmap. The size can be extended by this options.
 #         The value can be a proportion number or  a `grid::unit` object. The length can be either one or two.
@@ -2645,7 +2646,8 @@ row_anno_text = function(...) {
 anno_mark = function(at, labels, which = c("column", "row"), 
 	side = ifelse(which == "column", "top", "right"),
 	lines_gp = gpar(), labels_gp = gpar(), padding = 0.5, 
-	link_width = unit(5, "mm"), link_gp = lines_gp, 
+	link_width = unit(5, "mm"), link_height = link_width,
+	link_gp = lines_gp, 
 	extend = unit(0, "mm")) {
 
 	if(is.null(.ENV$current_annotation_which)) {
@@ -2707,7 +2709,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		}
 		h1 = pos - text_height*0.5
 		h2 = pos + text_height*0.5
-		pos_adjusted = rev(smartAlign(h1, h2, c(.scale[1] - extend[1], .scale[2] + extend[2])))
+		pos_adjusted = smartAlign(h1, h2, c(.scale[1] - extend[1], .scale[2] + extend[2]))
 		h = (pos_adjusted[, 1] + pos_adjusted[, 2])/2
 
 		n2 = length(labels)
@@ -2758,17 +2760,17 @@ anno_mark = function(at, labels, which = c("column", "row"),
 
 		n2 = length(labels)
 		if(side == "top") {
-			grid.text(labels, h, rep(link_width, n2), default.units = "native", gp = labels_gp, rot = 90, just = "left")
-			link_width = link_width - unit(1, "mm")
-			grid.segments(pos, unit(rep(0, n2), "npc"), pos, rep(link_width*(1/3), n2), default.units = "native", gp = link_gp)
-			grid.segments(pos, rep(link_width*(1/3), n2), h, rep(link_width*(2/3), n2), default.units = "native", gp = link_gp)
-			grid.segments(h, rep(link_width*(2/3), n2), h, rep(link_width, n), default.units = "native", gp = link_gp)
+			grid.text(labels, h, rep(link_height, n2), default.units = "native", gp = labels_gp, rot = 90, just = "left")
+			link_height = link_height - unit(1, "mm")
+			grid.segments(pos, unit(rep(0, n2), "npc"), pos, rep(link_height*(1/3), n2), default.units = "native", gp = link_gp)
+			grid.segments(pos, rep(link_height*(1/3), n2), h, rep(link_height*(2/3), n2), default.units = "native", gp = link_gp)
+			grid.segments(h, rep(link_height*(2/3), n2), h, rep(link_height, n), default.units = "native", gp = link_gp)
 		} else {
 			grid.text(labels, h, rep(max_text_width(labels, gp = labels_gp), n2), default.units = "native", gp = labels_gp, rot = 90, just = "right")
-			link_width = link_width - unit(1, "mm")
-			grid.segments(pos, unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_width*(1/3), n2), default.units = "native", gp = link_gp)
-			grid.segments(pos, unit(1, "npc")-rep(link_width*(1/3), n2), h, unit(1, "npc")-rep(link_width*(2/3), n2), default.units = "native", gp = link_gp)
-			grid.segments(h, unit(1, "npc")-rep(link_width*(2/3), n2), h, unit(1, "npc")-rep(link_width, n2), default.units = "native", gp = link_gp)
+			link_height = link_height - unit(1, "mm")
+			grid.segments(pos, unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_height*(1/3), n2), default.units = "native", gp = link_gp)
+			grid.segments(pos, unit(1, "npc")-rep(link_height*(1/3), n2), h, unit(1, "npc")-rep(link_height*(2/3), n2), default.units = "native", gp = link_gp)
+			grid.segments(h, unit(1, "npc")-rep(link_height*(2/3), n2), h, unit(1, "npc")-rep(link_height, n2), default.units = "native", gp = link_gp)
 		}
 		upViewport()
 	}
@@ -2787,7 +2789,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		height = height,
 		n = -1,
 		var_import = list(at, labels2index, at2labels, link_gp, labels_gp, padding, .pos, .scale,
-			side, link_width, extend),
+			side, link_width, link_height, extend),
 		show_name = FALSE
 	)
 
@@ -3092,3 +3094,393 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 	)
 	return(anno) 
 }
+
+# == title
+# Zoom annotation
+#
+# == param
+# -align_to
+# -panel_fun
+# -which Whether it is a column annotation or a row annotation?
+# -side Side of the boxes If it is a column annotation, valid values are "top" and "bottom";
+#       If it is a row annotation, valid values are "left" and "right".
+# -size
+# -gap
+# -link_gp Graphic settings for the segments.
+# -link_width Width of the segments.
+# -link_height Similar as ``link_width``, used for column annotation.
+# -extend By default, the region for the labels has the same width (if it is a column annotation) or
+#         same height (if it is a row annotation) as the heatmap. The size can be extended by this options.
+#         The value can be a proportion number or  a `grid::unit` object. The length can be either one or two.
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+#
+# == details
+#
+anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rect() }, 
+	which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
+	size = NULL, gap = unit(1, "mm"), 
+	link_width = unit(5, "mm"), link_height = link_width, link_gp = gpar(),
+	extend = unit(0, "mm"), width = NULL, height = NULL) {
+	
+	if(is.null(.ENV$current_annotation_which)) {
+		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
+	}
+
+	anno_size = anno_width_and_height(which, width, height, unit(2, "cm") + link_width)
+
+	# align_to should be
+	# 1. a vector of class labels that the length should be same as the nrow of the matrix
+	# 2. a list of numeric indices
+
+	if(is.list(align_to)) {
+		if(!any(sapply(align_to, is.numeric))) {
+			stop_wrap(paste0("`at` should be numeric ", which, " index corresponding to the matrix."))
+		}
+	}
+
+	.pos = NULL # position of the rows
+
+	if(length(as.list(formals(panel_fun))) == 1) {
+ 		formals(panel_fun) = alist(index = , nm = NULL)
+	}
+
+	if(length(extend) == 1) extend = rep(extend, 2)
+	if(length(extend) > 2) extend = extend[1:2]
+	if(!inherits(extend, "unit")) extend = unit(extend, "npc")
+
+	# anno_zoom is always executed in one-slice mode (which means mulitple slices
+	# are treated as one big slilce)
+	row_fun = function(index) {
+		n = length(index)
+		if(is.atomic(align_to)) {
+			if(length(setdiff(align_to, index)) == 0 && !any(duplicated(align_to))) {
+				align_to = list(align_to)
+			} else {
+				if(length(align_to) != n) {
+					stop_wrap("If `align_to` is a vector with group labels, the length should be the same as the number of rows in the heatmap.")
+				}
+				lnm = as.character(unique(align_to[index]))
+				align_to = as.list(tapply(seq_along(align_to), align_to, function(x) x))
+				align_to = align_to[lnm]
+			}
+		}
+
+		nrl = sapply(align_to, length)
+		align_to_df = lapply(align_to, function(x) {
+			ind = which(index %in% x)
+			n = length(ind)
+			s = NULL
+			e = NULL
+			s[1] = ind[1]
+			if(n > 1) {
+				ind2 = which(ind[2:n] - ind[1:(n-1)] > 1)
+				if(length(ind2)) s = c(s, ind[ ind2 + 1 ])
+				k = length(s)
+				e[k] = ind[length(ind)]
+				if(length(ind2)) e[1:(k-1)] = ind[1:(n-1)][ ind2 ]
+			} else {
+				e = ind[1]
+			}
+			data.frame(s = s, e = e)
+		})
+
+		# pos is from top to bottom
+		if(is.null(.pos)) {
+			pos = (n:1 - 0.5)/n # position of rows
+		} else {
+			pos = .pos
+		}
+
+		.scale = c(0, 1)
+		pushViewport(viewport(xscale = c(0, 1), yscale = .scale))
+		if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
+		
+		# the position of boxes initially are put evenly
+		# add the gap
+		n_boxes = length(align_to)
+		if(length(gap) == 1) gap = rep(gap, n_boxes)
+		if(is.null(size)) size = nrl
+		if(length(size) != length(align_to)) {
+			stop_wrap("Length of `size` should be the same as the number of groups of indices.")
+		}
+		if(!inherits(size, "unit")) {
+			size_is_unit = FALSE
+			if(n_boxes == 1) {
+				h = data.frame(bottom = .scale[1] - extend[1], top = .scale[2] + extend[2])
+			} else {
+				gap = convertHeight(gap, "native", valueOnly = TRUE)
+				box_height = size/sum(size) * (1 + sum(extend) - sum(gap[1:(n_boxes-1)]))
+				h = data.frame(
+						top = cumsum(box_height) + cumsum(gap) - gap[length(gap)] - extend[1]
+					)
+				h$bottom = h$top - box_height
+				h = 1 - h[, 2:1]
+				colnames(h) = c("top", "bottom")
+			}
+		} else {
+			size_is_unit = TRUE
+			box_height = size
+			box_height2 = box_height # box_height2 adds the gap
+			for(i in 1:n_boxes) {
+				if(i == 1 || i == n_boxes) {
+					if(n_boxes > 1) {
+						box_height2[i] = box_height2[i] + gap[i]*0.5
+					}
+				} else {
+					box_height2[i] = box_height2[i] + gap[i]
+				}
+			}
+			box_height2 = convertHeight(box_height2, "native", valueOnly = TRUE)
+			# the original positions of boxes
+			mean_pos = sapply(align_to, function(ind) mean(pos[ind]))
+			h1 = mean_pos - box_height2*0.5
+			h2 = mean_pos + box_height2*0.5
+			h = smartAlign(rev(h1), rev(h2), c(.scale[1] - extend[1], .scale[2] + extend[2]))
+			colnames(h) = c("bottom", "top")
+			h = h[nrow(h):1, , drop = FALSE]
+
+			# recalcualte h to remove gaps
+			gap_height = convertHeight(gap, "native", valueOnly = TRUE)
+			if(n_boxes > 1) {
+				for(i in 1:n_boxes) {
+					if(i == 1) {
+						h[i, "bottom"] = h[i, "bottom"] + gap_height[i]/2
+					} else if(i == n_boxes) {
+						h[i, "top"] = h[i, "top"] - gap_height[i]/2
+					} else {
+						h[i, "bottom"] = h[i, "bottom"] + gap_height[i]/2
+						h[i, "top"] = h[i, "top"] - gap_height[i]/2
+					}
+				}
+			}
+		}
+		popViewport()
+
+		# draw boxes
+		if(side == "right") {
+			pushViewport(viewport(x = link_width, just = "left", width = anno_size$width - link_width))
+		} else {
+			pushViewport(viewport(x = 0, just = "left", width = anno_size$width - link_width))
+		}
+		for(i in 1:n_boxes) {
+			current_vp_name = current.viewport()$name
+			pushViewport(viewport(y = (h[i, "top"] + h[i, "bottom"])/2, height = h[i, "top"] - h[i, "bottom"], 
+				default.units = "native"))
+			if(is.function(panel_fun)) panel_fun(align_to[[i]], names(align_to)[i])
+			popViewport()
+
+			if(current.viewport()$name != current_vp_name) {
+				stop_wrap("If you push viewports `panel_fun`, you need to pop all them out.")
+			}
+		}
+		popViewport()
+		# draw the links
+		link_gp = recycle_gp(link_gp, n_boxes)
+		if(side == "right") {
+			pushViewport(viewport(x = unit(0, "npc"), just = "left", width = link_width))
+		} else {
+			pushViewport(viewport(x = unit(1, "npc"), just = "right", width = link_width))
+		}
+		for(i in 1:n_boxes) {
+			df = align_to_df[[i]]
+			for(j in 1:nrow(df)) {
+				# draw each polygon
+				if(side == "right") {
+					grid.polygon(unit.c(unit(c(0, 0), "npc"), rep(link_width, 2)),
+						c(pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"], h[i, "bottom"]),
+						default.units = "native", gp = subset_gp(link_gp, i))
+				} else {
+					grid.polygon(unit.c(rep(link_width, 2), unit(c(0, 0), "npc")),
+						c(pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"], h[i, "bottom"]),
+						default.units = "native", gp = subset_gp(link_gp, i))
+				}
+			}
+		}
+ 
+		popViewport()
+		
+	}
+
+	column_fun = function(index) {
+		n = length(index)
+		
+		if(is.atomic(align_to)) {
+			if(length(setdiff(align_to, index)) == 0 && !any(duplicated(align_to))) {
+				align_to = list(align_to)
+			} else {
+				if(length(align_to) != n) {
+					stop_wrap("If `align_to` is a vector with group labels, the length should be the same as the number of columns in the heatmap.")
+				}
+				lnm = as.character(unique(align_to[index]))
+				align_to = as.list(tapply(seq_along(align_to), align_to, function(x) x))
+				align_to = align_to[lnm]
+			}
+		}
+		nrl = sapply(align_to, length)
+		align_to_df = lapply(align_to, function(x) {
+			ind = which(index %in% x)
+			n = length(ind)
+			s = NULL
+			e = NULL
+			s[1] = ind[1]
+			if(n > 1) {
+				ind2 = which(ind[2:n] - ind[1:(n-1)] > 1)
+				if(length(ind2)) s = c(s, ind[ ind2 + 1 ])
+				k = length(s)
+				e[k] = ind[length(ind)]
+				if(length(ind2)) e[1:(k-1)] = ind[1:(n-1)][ ind2 ]
+			} else {
+				e = ind[1]
+			}
+			data.frame(s = s, e = e)
+		})
+
+		if(is.null(.pos)) {
+			pos = (1:n - 0.5)/n 
+		} else {
+			pos = .pos
+		}
+
+		.scale = c(0, 1)
+		pushViewport(viewport(yscale = c(0, 1), xscale = .scale))
+		if(inherits(extend, "unit")) extend = convertWidth(extend, "native", valueOnly = TRUE)
+		
+		# the position of boxes initially are put evenly
+		# add the gap
+		n_boxes = length(align_to)
+		if(length(gap) == 1) gap = rep(gap, n_boxes)
+		if(is.null(size)) size = nrl
+		if(length(size) != length(align_to)) {
+			stop_wrap("Length of `size` should be the same as the number of groups of indices.")
+		}
+		if(!inherits(size, "unit")) {
+			size_is_unit = FALSE
+			if(n_boxes == 1) {
+				h = data.frame(left = .scale[1] - extend[1], right = .scale[2] + extend[2])
+			} else {
+				gap = convertWidth(gap, "native", valueOnly = TRUE)
+				box_width = size/sum(size) * (1 + sum(extend) - sum(gap[1:(n_boxes-1)]))
+				h = data.frame(
+						right = cumsum(box_width) + cumsum(gap) - gap[length(gap)] - extend[1]
+					)
+				h$left = h$right - box_width
+			}
+		} else {
+			size_is_unit = TRUE
+			box_width = size
+			box_width2 = box_width
+			for(i in 1:n_boxes) {
+				if(i == 1 || i == n_boxes) {
+					if(n_boxes > 1) {
+						box_width2[i] = box_width2[i] + gap[i]*0.5
+					}
+				} else {
+					box_width2[i] = box_width2[i] + gap[i]
+				}
+			}
+			box_width2 = convertWidth(box_width2, "native", valueOnly = TRUE)
+			# the original positions of boxes
+			mean_pos = sapply(align_to, function(ind) mean(pos[ind]))
+			h1 = mean_pos - box_width2*0.5
+			h2 = mean_pos + box_width2*0.5
+			h = smartAlign(h1, h2, c(.scale[1] - extend[1], .scale[2] + extend[2]))
+			colnames(h) = c("left", "right")
+
+			# recalcualte h to remove gaps
+			gap_width = convertWidth(gap, "native", valueOnly = TRUE)
+			if(n_boxes > 1) {
+				for(i in 1:n_boxes) {
+					if(i == 1) {
+						h[i, "left"] = h[i, "left"] + gap_width[i]/2
+					} else if(i == n_boxes) {
+						h[i, "right"] = h[i, "right"] - gap_width[i]/2
+					} else {
+						h[i, "left"] = h[i, "left"] + gap_width[i]/2
+						h[i, "right"] = h[i, "right"] - gap_width[i]/2
+					}
+				}
+			}
+		}
+		popViewport()
+
+		# draw boxes
+		if(side == "top") {
+			pushViewport(viewport(y = link_height, just = "bottom", height = anno_size$height - link_height))
+		} else {
+			pushViewport(viewport(y = 0, just = "bottom", height = anno_size$height - link_height))
+		}
+		for(i in 1:n_boxes) {
+			current_vp_name = current.viewport()$name
+			pushViewport(viewport(x = (h[i, "right"] + h[i, "left"])/2, width = h[i, "right"] - h[i, "left"], 
+				default.units = "native"))
+			if(is.function(panel_fun)) panel_fun(align_to[[i]], names(align_to)[i])
+			popViewport()
+
+			if(current.viewport()$name != current_vp_name) {
+				stop_wrap("If you push viewports `panel_fun`, you need to pop all them out.")
+			}
+		}
+		popViewport()
+		# draw the links
+		link_gp = recycle_gp(link_gp, n_boxes)
+		if(side == "top") {
+			pushViewport(viewport(y = unit(0, "npc"), just = "bottom", height = link_height))
+		} else {
+			pushViewport(viewport(y = unit(1, "npc"), just = "top", height = link_height))
+		}
+		for(i in 1:n_boxes) {
+			df = align_to_df[[i]]
+			for(j in 1:nrow(df)) {
+				# draw each polygon
+				if(side == "top") {
+					grid.polygon(
+						c(pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"], h[i, "right"]),
+						unit.c(unit(c(0, 0), "npc"), rep(link_width, 2)),
+						default.units = "native", gp = subset_gp(link_gp, i))
+				} else {
+					grid.polygon(
+						c(pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"], h[i, "right"]),
+						unit.c(rep(link_width, 2), unit(c(0, 0), "npc")),
+						default.units = "native", gp = subset_gp(link_gp, i))
+				}
+			}
+		}
+		popViewport()
+		
+	}
+
+	if(which == "row") {
+		fun = row_fun
+	} else if(which == "column") {
+		fun = column_fun
+	}
+	
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_zoom",
+		which = which,
+		height = anno_size$height,
+		width = anno_size$width,
+		n = -1,
+		var_import = list(align_to, .pos, gap, size, panel_fun, side, anno_size, extend,
+			link_width, link_height, link_gp),
+		show_name = FALSE
+	)
+
+	anno@subset_rule$align_to = function(x, i) {
+		if(is.atomic(x)) {
+			x[i]
+		} else {
+			x = lapply(x, function(x) intersect(x, i))
+			x = x[sapply(x, length) > 0]
+		}
+	}
+
+	anno@subsetable = TRUE
+	return(anno)
+}
+
+

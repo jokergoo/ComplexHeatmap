@@ -1,8 +1,9 @@
+
 CHANGES in VERSION 1.99.4
 
 * anno_mark() is now calculated in multiple slices.
-* oncoPrint(): automatically split the alteration type if the separator is one of
-  ";:,|".
+* oncoPrint(): automatically split the alteration type if the separator is one of ";:,|".
+* add anno_zoom()
 
 ========================
 

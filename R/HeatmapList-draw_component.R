@@ -600,7 +600,7 @@ setMethod(f = "draw_heatmap_list",
                 anno_mark_param = list()
                 if(n_slice > 1) {
                     all_anno_type = anno_type(ht)
-                    if("anno_mark" %in% all_anno_type) {
+                    if(any(c("anno_zoom", "anno_mark") %in% all_anno_type)) {
                         ## only make the anno_mark annotation
                         pushViewport(viewport(y = max_bottom_component_height, height = unit(1, "npc") - max_top_component_height - max_bottom_component_height, just = c("bottom")))
                         ro_lt = ht_main@row_order_list
@@ -688,7 +688,7 @@ setMethod(f = "draw_heatmap_list",
                 anno_mark_param = list()
                 if(n_slice > 1) {
                     all_anno_type = anno_type(ht)
-                    if("anno_mark" %in% all_anno_type) {
+                    if(any(c("anno_zoom", "anno_mark") %in% all_anno_type)) {
                         ## only make the anno_mark annotation
                         pushViewport(viewport(x = max_left_component_width, width = unit(1, "npc") - max_left_component_width - max_right_component_width, just = c("left")))
                         co_lt = ht_main@column_order_list

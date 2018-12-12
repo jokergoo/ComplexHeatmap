@@ -9,7 +9,7 @@
 #      When the value is a list, the names of the list represent alteration types.
 #      You can use `unify_mat_list` to make all matrix having same row names and column names.
 # -get_type If different alterations are encoded in the matrix as complex strings, this self-defined function
-#           determines how to extract them. It only works when ``mat`` is a matrix.
+#           determines how to extract them. It only works when ``mat`` is a matrix. The default value is `default_get_type`.
 # -alter_fun A single function or a list of functions which defines how to add graphics for different alterations.
 # -alter_fun_is_vectorized Whether ``alter_fun`` is implemented vectorized. Internally the function will guess.
 # -col A vector of color for which names correspond to alteration types.
@@ -51,10 +51,7 @@
 # Zuguang Gu <z.gu@dkfz.de>
 #
 oncoPrint = function(mat, 
-	get_type = function(x) {
-		x = strsplit(x, "\\s*[;:,|]\\s*")[[1]]
-		x[!x %in% c("na", "NA")]
-	},
+	get_type = default_get_type,
 	alter_fun, 
 	alter_fun_is_vectorized = NULL,
 	col, 
@@ -611,3 +608,13 @@ guess_alter_fun_is_vectorized = function(alter_fun) {
 	}
 }
 
+# == title
+# Default get_type for oncoPrint()
+#
+# == param
+# -x A strings which encode multiple altertations.
+#
+default_get_type = function(x) {
+	x = strsplit(x, "\\s*[;:,|]\\s*")[[1]]
+	x[!x %in% c("na", "NA")]
+}
