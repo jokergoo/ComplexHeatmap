@@ -15,12 +15,12 @@ anno_zoom(align_to, panel_fun = function(index, nm = NULL) { grid.rect() },
 }
 \arguments{
 
-  \item{align_to}{-align_to}
-  \item{panel_fun}{-panel_fun}
+  \item{align_to}{It defines how the boxes correspond to the rows or the columns in the heatmap. If the value is a list of indices, each box corresponds to the rows or columns with indices in one vector in the list. If the value is a categorical variable (e.g. a factor or a character vector) that has the same length as the rows or columns in the heatmap, each box corresponds to the rows/columns in each level in the categorical variable.}
+  \item{panel_fun}{A self-defined function that defines how to draw graphics in the box. The function must have a \code{index} argument which is the indices for the rows/columns that the box corresponds to. It can  have second argument \code{nm} which is the "name" of the selected part in the heatmap. The corresponding value for \code{nm} comes from \code{align_to} if it is specified as a categorical variable or a list with names.}
   \item{which}{Whether it is a column annotation or a row annotation?}
   \item{side}{Side of the boxes If it is a column annotation, valid values are "top" and "bottom"; If it is a row annotation, valid values are "left" and "right".}
-  \item{size}{-size}
-  \item{gap}{-gap}
+  \item{size}{The size of boxes. It can be pure numeric that they are treated as relative fractions of the total height/width of the heatmap. The value of \code{size} can also be absolute units.}
+  \item{gap}{Gaps between boxes.}
   \item{link_gp}{Graphic settings for the segments.}
   \item{link_width}{Width of the segments.}
   \item{link_height}{Similar as \code{link_width}, used for column annotation.}
@@ -30,10 +30,24 @@ anno_zoom(align_to, panel_fun = function(index, nm = NULL) { grid.rect() },
 
 }
 \details{
-
+\code{\link{anno_zoom}} creates several plotting regions (boxes) which can be corresponded to subsets of rows/columns in the
+heatmap.
+}
+\value{
+An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
+}
+\seealso{
+\url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#zoom-annotation}
 }
 \examples{
-# There is no example
-NULL
-
+m = matrix(rnorm(100*10), nrow = 100)
+hc = hclust(dist(m))
+fa2 = cutree(hc, k = 4)
+panel_fun = function(index, nm) {
+	grid.rect()
+	grid.text(nm)
+}
+anno = anno_zoom(align_to = fa2, which = "row", panel_fun = panel_fun, 
+	gap = unit(1, "cm"))
+Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno))
 }

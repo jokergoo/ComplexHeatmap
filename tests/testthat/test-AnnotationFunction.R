@@ -387,6 +387,14 @@ anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
 	size = unit(c(2, 20, 40), "cm"))
 draw(anno, index = 1:100, test = "anno_zoom, big size")
 
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = 1:3, gap = unit(1, "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, size set as relative values, gap")
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
+	size = unit(1:3, "cm"), gap = unit(1, "cm"))
+draw(anno, index = 1:100, test = "anno_zoom, size set as absolute values, gap")
+
 
 anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
 	size = unit(1:3, "cm"), side = "left")
@@ -426,6 +434,8 @@ Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno))
 Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno), row_split = 2)
 
 
+anno = anno_zoom(align_to = fa2, which = "row", panel_fun = panel_fun, size = unit(1:4, "cm"))
+Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno))
 
 
 

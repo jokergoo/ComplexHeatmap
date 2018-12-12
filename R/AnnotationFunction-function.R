@@ -3099,13 +3099,21 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 # Zoom annotation
 #
 # == param
-# -align_to
-# -panel_fun
+# -align_to It defines how the boxes correspond to the rows or the columns in the heatmap.
+#    If the value is a list of indices, each box corresponds to the rows or columns with indices
+#    in one vector in the list. If the value is a categorical variable (e.g. a factor or a character vector)
+#    that has the same length as the rows or columns in the heatmap, each box corresponds to the rows/columns
+#    in each level in the categorical variable.
+# -panel_fun A self-defined function that defines how to draw graphics in the box. The function must have
+#     a ``index`` argument which is the indices for the rows/columns that the box corresponds to. It can 
+#     have second argument ``nm`` which is the "name" of the selected part in the heatmap. The corresponding
+#     value for ``nm`` comes from ``align_to`` if it is specified as a categorical variable or a list with names.
 # -which Whether it is a column annotation or a row annotation?
 # -side Side of the boxes If it is a column annotation, valid values are "top" and "bottom";
 #       If it is a row annotation, valid values are "left" and "right".
-# -size
-# -gap
+# -size The size of boxes. It can be pure numeric that they are treated as relative fractions of the total
+#      height/width of the heatmap. The value of ``size`` can also be absolute units.
+# -gap Gaps between boxes.
 # -link_gp Graphic settings for the segments.
 # -link_width Width of the segments.
 # -link_height Similar as ``link_width``, used for column annotation.
@@ -3116,7 +3124,26 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
 # == details
+# `anno_zoom` creates several plotting regions (boxes) which can be corresponded to subsets of rows/columns in the
+# heatmap.
 #
+# == value
+# An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == seealso
+# https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#zoom-annotation
+#
+# == example
+# m = matrix(rnorm(100*10), nrow = 100)
+# hc = hclust(dist(m))
+# fa2 = cutree(hc, k = 4)
+# panel_fun = function(index, nm) {
+# 	grid.rect()
+# 	grid.text(nm)
+# }
+# anno = anno_zoom(align_to = fa2, which = "row", panel_fun = panel_fun, 
+# 	gap = unit(1, "cm"))
+# Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno))
 anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rect() }, 
 	which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
 	size = NULL, gap = unit(1, "mm"), 
@@ -3203,6 +3230,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 		n_boxes = length(align_to)
 		if(length(gap) == 1) gap = rep(gap, n_boxes)
 		if(is.null(size)) size = nrl
+		if(length(size) == 1) size = rep(size, length(align_to))
 		if(length(size) != length(align_to)) {
 			stop_wrap("Length of `size` should be the same as the number of groups of indices.")
 		}
@@ -3353,6 +3381,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 		n_boxes = length(align_to)
 		if(length(gap) == 1) gap = rep(gap, n_boxes)
 		if(is.null(size)) size = nrl
+		if(length(size) == 1) size = rep(size, length(align_to))
 		if(length(size) != length(align_to)) {
 			stop_wrap("Length of `size` should be the same as the number of groups of indices.")
 		}
