@@ -40,14 +40,20 @@ An annotation function which can be used in \code{\link{HeatmapAnnotation}}.
 \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#zoom-annotation}
 }
 \examples{
+set.seed(123)
 m = matrix(rnorm(100*10), nrow = 100)
-hc = hclust(dist(m))
-fa2 = cutree(hc, k = 4)
+subgroup = sample(letters[1:3], 100, replace = TRUE, prob = c(1, 5, 10))
+rg = range(m)
 panel_fun = function(index, nm) {
+	pushViewport(viewport(xscale = rg, yscale = c(0, 2)))
 	grid.rect()
-	grid.text(nm)
+	grid.xaxis(gp = gpar(fontsize = 8))
+	grid.boxplot(m[index, ], pos = 1, direction = "horizontal")
+	grid.text(paste("distribution of group", nm), mean(rg), y = 1.9, 
+		just = "top", default.units = "native", gp = gpar(fontsize = 10))
+	popViewport()
 }
-anno = anno_zoom(align_to = fa2, which = "row", panel_fun = panel_fun, 
-	gap = unit(1, "cm"))
-Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno))
+anno = anno_zoom(align_to = subgroup, which = "row", panel_fun = panel_fun, 
+	size = unit(2, "cm"), gap = unit(1, "cm"), width = unit(4, "cm"))
+Heatmap(m, right_annotation = rowAnnotation(foo = anno), row_split = subgroup)
 }
