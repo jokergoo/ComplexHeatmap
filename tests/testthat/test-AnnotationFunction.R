@@ -454,3 +454,24 @@ anno = anno_zoom(align_to = subgroup, which = "row", panel_fun = panel_fun,
 	size = unit(2, "cm"), gap = unit(1, "cm"), width = unit(4, "cm"))
 Heatmap(m, right_annotation = rowAnnotation(foo = anno), row_split = subgroup)
 
+panel_fun2 = function(index, nm) {
+	pushViewport(viewport())
+	grid.rect()
+	n = floor(length(index)/4)
+	txt = paste("gene function", 1:n, collapse = "\n")
+	grid.text(txt, 0.95, 0.5, default.units = "npc", just = "right", gp = gpar(fontsize = 8))
+	popViewport()
+}
+anno2 = anno_zoom(align_to = subgroup, which = "row", panel_fun = panel_fun2, 
+	gap = unit(1, "cm"), width = unit(3, "cm"), side = "left")
+
+# in infinite loop
+Heatmap(m, right_annotation = rowAnnotation(subgroup = subgroup, foo = anno), 
+	left_annotation = rowAnnotation(bar = anno2, subgroup = subgroup),
+	show_row_dend = FALSE,
+	row_split = subgroup)
+
+Heatmap(m, right_annotation = rowAnnotation(foo = anno), 
+	left_annotation = rowAnnotation(bar = anno2),
+	show_row_dend = FALSE,
+	row_split = subgroup)
