@@ -466,8 +466,9 @@ anno2 = anno_zoom(align_to = subgroup, which = "row", panel_fun = panel_fun2,
 	gap = unit(1, "cm"), width = unit(3, "cm"), side = "left")
 
 # in infinite loop
-Heatmap(m, right_annotation = rowAnnotation(subgroup = subgroup, foo = anno), 
-	left_annotation = rowAnnotation(bar = anno2, subgroup = subgroup),
+Heatmap(m, right_annotation = rowAnnotation(subgroup = subgroup, foo = anno,
+	show_annotation_name = FALSE), 
+	left_annotation = rowAnnotation(bar = anno2, subgroup = subgroup, show_annotation_name = FALSE),
 	show_row_dend = FALSE,
 	row_split = subgroup)
 

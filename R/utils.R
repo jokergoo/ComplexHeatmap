@@ -920,6 +920,8 @@ smartAlign2 = function(start, end, range, range_fixed = TRUE) {
         ncluster = length(unique(cluster))
         
         if(ncluster.before == ncluster && i_try > 0) break
+
+        if(i_try > 100) break
         
         # tile intervals in each cluster and re-assign x1 and x2
         new_x1 = numeric(length(x1))

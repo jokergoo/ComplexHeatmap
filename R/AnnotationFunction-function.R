@@ -3334,9 +3334,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 				}
 			}
 		}
- 
 		popViewport()
-		
 	}
 
 	column_fun = function(index) {
