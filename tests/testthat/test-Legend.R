@@ -231,3 +231,12 @@ lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.1, 0.5, 0.75, 1),
 	direction = "horizontal")
 draw(lgd, test = "unequal interval breaks with labels")
 
+
+#### position of legends to heatmaps ##
+m = matrix(rnorm(100), 10)
+rownames(m) = random_str(10, len = 20)
+colnames(m) = random_str(10, len = 20)
+Heatmap(m)
+
+
+

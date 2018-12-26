@@ -804,8 +804,8 @@ grid.boxplot = function(value, pos, outline = TRUE, box_width = 0.6,
     }
 }
 
-random_str = function() {
-    paste(sample(c(letters, LETTERS, 0:9), 8), collapse = "")
+random_str = function(k = 1, len = 10) {
+    sapply(seq_len(k), function(i) paste(sample(c(letters, LETTERS, 0:9), len), collapse = ""))
 }
 
 

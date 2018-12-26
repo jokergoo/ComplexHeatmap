@@ -110,4 +110,3 @@ summary(ht_list[c("rnorm", "foo"), 1:5])
 
 
 
-
