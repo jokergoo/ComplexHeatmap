@@ -48,7 +48,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	comb_mat = t(comb_mat)
 
 	nc = ncol(comb_mat)
-	comb_mat2 = matrix(nr = nrow(comb_mat), nc = nc*(nc-1)/2)
+	comb_mat2 = matrix(nrow = nrow(comb_mat), ncol = nc*(nc-1)/2)
 	rownames(comb_mat2) = rownames(comb_mat)
 	if(mode == "intersect") {
 		if(nc > 1) {
@@ -112,11 +112,11 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
 
     if(inherits(lt[[1]], "GRanges")) {
     	set_size = sapply(lt, function(x) {
-	    	value_fun(union(x, GRanges()))
+	    	value_fun(union(x, x[NULL]))
 	    })
     } else if(inherits(lt[[1]], "IRanges")) {
     	set_size = sapply(lt, function(x) {
-	    	value_fun(union(x, IRanges()))
+	    	value_fun(union(x, x[NULL]))
 	    })
     } else {
 	    set_size = sapply(lt, function(x) {
@@ -213,11 +213,94 @@ list_to_matrix = function(lt) {
 # Make a Combination matrix for UpSet Plot
 #
 # == param
-# -...
-# -mode
-# -top_n_sets
-# -min_set_size
-# -value_fun
+# -... The input sets. If it is represented as a single variable, it should be a matrix/data frame
+#     or a list. If it is multiple variables, it should be name-value pairs, see Input section for explanation.
+# -mode The mode for forming the combination set, see Mode section.
+# -top_n_sets Number of sets with largest size.
+# -min_set_size Ths minimal set size that is used for generating the combination matrix.
+# -value_fun For each combination set, how to calculate the size. If it is a scalar set, 
+#      the length of the vector is the size of the set, while if it is a region-based set,
+#      (i.e. ``GRanges`` or ``IRanges`` object), the sum of widths of regions in the set is
+#      calculated as the size of the set.
+#
+# == Input
+# To represent multiple sets, the variable can be represented as: 
+#
+# 1. A list of sets where each set is a vector, e.g.:
+#
+#     list(set1 = c("a", "b", "c"),
+#          set2 = c("b", "c", "d", "e"),
+#          ...)
+#
+# 2. A binary matrix/data frame where rows are elements and columns are sets, e.g.:
+#
+#       a b c
+#     h 1 1 1
+#     t 1 0 1
+#     j 1 0 0
+#     u 1 0 1
+#     w 1 0 0
+#
+# If the variable is a data frame, the binary columns (only contain 0 and 1) and the logical
+# columns are only kept.
+#
+# The set can be genomic regions, then it can only be represented as a list of ``GRanges`` objects.
+#
+# == Mode
+# E.g. for three sets (A, B, C), the UpSet approach splits the combination of selecting elements
+# in the set or not in the set and calculates the sizes of the combination sets. For three sets,
+# all possible combinations are:
+#
+#     A B C
+#     1 1 1
+#     1 1 0
+#     1 0 1
+#     0 1 1
+#     1 0 0
+#     0 1 0
+#     0 0 1
+# 
+# A value of 1 means to select that set and 0 means not to select that set. E.g., "1 1 0"
+# means to select set A, B while not set C. Note there is no "0 0 0", because the background 
+# size is not of interest here. With the code of selecting and not selecting the sets, next
+# we need to define how to calculate the size of that combination set. There are three modes:
+#
+# 1. ``distinct`` mode: 1 means in that set and 0 means not in that set, then "1 1 0" means a
+# set of elements also in set A and B, while not in C (``setdiff(intersect(A, B), C)``). Under
+# this mode, the seven combination sets are the seven partitions in the Venn diagram and they
+# are mutually exclusive.
+#
+# 2. ``intersect`` mode: 1 means in that set and 0 is not taken into account, then, "1 1 0" means
+# a set of elements in set A and B, and they can also in C or not in C (``intersect(A, B)``).
+# Under this mode, the seven combinatio sets can overlap.
+#
+# 3. ``union`` mode: 1 means in that set and 0 is not taken into account. When there are multiple
+# 1, the relationship is OR. Then, "1 1 0" means a set of elements in set A or B, and they can also in C or not in C (``union(A, B)``).
+# Under this mode, the seven combinatio sets can overlap.
+#
+# == value
+# A matrix also in a class of ``comb_mat``.
+#
+# == example
+# set.seed(123)
+# lt = list(a = sample(letters, 10),
+# 	      b = sample(letters, 15),
+# 	      c = sample(letters, 20))
+# m = make_comb_mat(lt)
+#
+# mat = list_to_matrix(lt)
+# mat
+# m = make_comb_mat(mat)
+#
+# \dontrun{
+# library(circlize)
+# library(GenomicRanges)
+# lt = lapply(1:4, function(i) generateRandomBed())
+# lt = lapply(lt, function(df) GRanges(seqnames = df[, 1], 
+# 	ranges = IRanges(df[, 2], df[, 3])))
+# names(lt) = letters[1:4]
+# m = make_comb_mat(lt)
+# }
 make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 	top_n_sets = Inf, min_set_size = -Inf, value_fun) {
 
@@ -368,6 +451,13 @@ comb_degree = function(m) {
 	}
 }
 
+# == title
+# Extract Elements in a Combination set
+#
+# == param
+# -m
+# -comb_name
+#
 extract_comb = function(m, comb_name) {
 	all_comb_names = comb_name(m)
 	if(!comb_name %in% all_comb_names) {
@@ -463,6 +553,26 @@ t.comb_mat = function(x) {
 # -j Indices on columns
 # -drop It is always reset to ``FALSE`` internally.
 #
+# == details
+# If sets are on rows of the combination matrix, the row indices correspond
+# to sets and column indices correspond to combination sets and if sets are
+# on columns of the combination matrix, rows correspond to the combination sets.
+#
+# You should not subset by the sets. It will give you wrong set size. The subsetting
+# on rows are only used internally.
+#
+# This subsetting method is mainly for subsetting combination sets, i.e., users
+# can first use `comb_size` to get the size of each combination set, and filter them
+# by the size.
+#
+# == example
+# set.seed(123)
+# lt = list(a = sample(letters, 10),
+# 	      b = sample(letters, 15),
+# 	      c = sample(letters, 20))
+# m = make_comb_mat(lt)
+# m2 = m[, comb_size(m) >= 3]
+# comb_size(m2)
 "[.comb_mat" = function(x, i, j, drop = FALSE) {
 	set_size = attr(x, "set_size")
 	comb_size = attr(x, "comb_size")
@@ -536,6 +646,13 @@ print.comb_mat = function(x, ...) {
 
 # == title
 # Make the UpSet plot
+#
+# == param
+# -m A combination matrix returned by `make_comb_mat`. The matrix can be transposed to switch
+#    the position of sets and combination sets.
+# -set_order The order of sets.
+# -comb_order The order of combination sets.
+# -... Other arguments passed to `Heatmap`.
 #
 UpSet = function(m, set_order = order(set_size(m), decreasing = TRUE), 
 	comb_order = order(comb_size(m), decreasing = TRUE), ...) {
