@@ -326,6 +326,11 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 	make_comb_mat_from_list(lt, value_fun, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size)
 }
 
+
+binaryToInt = function(x) {
+	sum(x * 2^(rev(seq_along(x)) - 1))
+}
+
 # == title
 # Set Names
 #
@@ -455,9 +460,20 @@ comb_degree = function(m) {
 # Extract Elements in a Combination set
 #
 # == param
-# -m
-# -comb_name
+# -m A combination matrix returned by `make_comb_mat`.
+# -comb_name The valid combination set name should be from `comb_name`.
 #
+# == details
+# It returns the combination set.
+#
+# == example
+# set.seed(123)
+# lt = list(a = sample(letters, 10),
+# 	      b = sample(letters, 15),
+# 	      c = sample(letters, 20))
+#
+# m = make_comb_mat(lt)
+# extract_comb(m, "110")
 extract_comb = function(m, comb_name) {
 	all_comb_names = comb_name(m)
 	if(!comb_name %in% all_comb_names) {
@@ -652,10 +668,75 @@ print.comb_mat = function(x, ...) {
 #    the position of sets and combination sets.
 # -set_order The order of sets.
 # -comb_order The order of combination sets.
+# -top_annotation A `HeatmapAnnotation` object on top of the combination matrix.
+# -right_annotation A `HeatmapAnnotation` object on the right of the combination matrix.
 # -... Other arguments passed to `Heatmap`.
 #
+# == details
+# BY default, the sets are on rows and combination sets are on columns. The positions of the
+# two types of sets can be switched by transposing the matrix.
+#
+# When sets are on rows, the default top annotation is the barplot showing the size of each
+# combination sets and the default right annotation is the barplot showing the size of the sets.
+# The annotations are simply constructed by `HeatmapAnnotation` and `anno_barplot` with some
+# parameters pre-set. Users can check the source code of `default_upset_top_annotation` and
+# `default_upset_right_annotation` to find out how the annotations are defined.
+#
+# To change or to add annotations, users just need to define a new `HeatmapAnnotation` object.
+# E.g. if we want to change the side of the axis and name on top annotation:
+#
+#     Upset(..., top_annotation = 
+#         HeatmapAnnotation(
+#            "Intersection size" = anno_barplot(
+#                comb_size(m), 
+#                border = FALSE, 
+#                gp = gpar(fill = "black"), 
+#                height = unit(2, "cm"),
+#                axis_param = list(side = "right")
+#            ), 
+#            annotation_name_side = "right", 
+#            annotation_name_rot = 0)
+#     )
+#
+# To add more annotations on top, users just add it in `HeatmapAnnotation`:
+#
+#     Upset(..., top_annotation = 
+#         HeatmapAnnotation(
+#            "Intersection size" = anno_barplot(
+#                comb_size(m), 
+#                border = FALSE, 
+#                gp = gpar(fill = "black"), 
+#                height = unit(2, "cm"),
+#                axis_param = list(side = "right")
+#            ), 
+#            "anno1" = anno_points(...),
+#            "anno2" = some_vector, 
+#            annotation_name_side = "right", 
+#            annotation_name_rot = 0)
+#     )
+#
+# And so is for the right annotations.
+#
+# `UpSet` returns a `Heatmap-class` object, which means, you can add it with other heatmaps and annotations
+# by ``+`` or `\%v\%`.
+#
+# == example
+# set.seed(123)
+# lt = list(a = sample(letters, 10),
+# 	      b = sample(letters, 15),
+# 	      c = sample(letters, 20))
+# m = make_comb_mat(lt)
+# UpSet(m)
+# UpSet(t(m))
+# 
+# m = make_comb_mat(lt, mode = "union")
+# UpSet(m)
+#
 UpSet = function(m, set_order = order(set_size(m), decreasing = TRUE), 
-	comb_order = order(comb_size(m), decreasing = TRUE), ...) {
+	comb_order = order(comb_size(m), decreasing = TRUE), 
+	top_annotation = default_upset_top_annotation(m),
+	right_annotation = default_upset_right_annotation(m),
+	...) {
 
 	set_on_rows = attr(m, "set_on_rows")
 	mode = attr(m, "mode")
@@ -685,11 +766,8 @@ UpSet = function(m, set_order = order(set_size(m), decreasing = TRUE),
 		}
 		ht = Heatmap(m2, cluster_rows = FALSE, cluster_columns = FALSE, rect_gp = gpar(type = "none"),
 			layer_fun = layer_fun, show_heatmap_legend = FALSE,
-			top_annotation = HeatmapAnnotation("Combination size" = anno_barplot(comb_size(m), 
-					border = FALSE, gp = gpar(fill = "black"), height = unit(2, "cm")), 
-				annotation_name_side = "left", annotation_name_rot = 0),
-			right_annotation = rowAnnotation("Set size" = anno_barplot(set_size(m), border = FALSE, 
-					gp = gpar(fill = "black"), width = unit(3, "cm"))),
+			top_annotation = top_annotation,
+			right_annotation = right_annotation,
 			row_names_side = "left",
 			row_order = set_order, column_order = comb_order, ...)
 	} else {
@@ -713,17 +791,75 @@ UpSet = function(m, set_order = order(set_size(m), decreasing = TRUE),
 		}
 		ht = Heatmap(m2, cluster_rows = FALSE, cluster_columns = FALSE, rect_gp = gpar(type = "none"),
 			layer_fun = layer_fun, show_heatmap_legend = FALSE,
-			right_annotation = rowAnnotation("Combination size" = anno_barplot(comb_size(m), 
-				border = FALSE, gp = gpar(fill = "black"), width = unit(2, "cm"))),
-			top_annotation = HeatmapAnnotation("Set size" = anno_barplot(set_size(m), border = FALSE, gp = gpar(fill = "black"),
-				height = unit(3, "cm")),
-				annotation_name_side = "left", annotation_name_rot = 0),
+			top_annotation = top_annotation,
+			right_annotation = right_annotation,
 			row_order = comb_order, column_order = set_order, ...)
 	}
 	ht
 }
 
+# == title
+# Default UpSet Top Annotation
+#
+# == param
+# -m A combination matrix which is as same as the one for `UpSet`.
+#
+# == details
+# The default top annotation is actually barplot implemented by `anno_barplot`. For
+# how to set the top annotation or bottom annotation in `UpSet`, please refer to `UpSet`.
+#
+default_upset_top_annotation = function(m) {
+	set_on_rows = attr(m, "set_on_rows")
+	
+	if(set_on_rows) {
+		ha = HeatmapAnnotation("Intersection size" = anno_barplot(comb_size(m), 
+				border = FALSE, gp = gpar(fill = "black"), height = unit(2, "cm")), 
+			annotation_name_side = "left", annotation_name_rot = 0)
+	} else {
+		ha = HeatmapAnnotation("Set size" = anno_barplot(set_size(m), border = FALSE, 
+				gp = gpar(fill = "black"), height = unit(3, "cm")),
+			annotation_name_side = "left", annotation_name_rot = 0)
+	}
 
-binaryToInt = function(x) {
-	sum(x * 2^(rev(seq_along(x)) - 1))
+	mode = attr(m, "mode")
+	if(set_on_rows) {
+		if(mode %in% c("distinct", "intersect")) {
+			names(ha) = "Intersection size"
+		} else {
+			names(ha) = "Union size"
+		}
+	}
+	return(ha)
+}
+
+# == title
+# Default UpSet Right Annotation
+#
+# == param
+# -m A combination matrix which is as same as the one for `UpSet`.
+#
+# == details
+# The default right annotation is actually barplot implemented by `anno_barplot`. For
+# how to set the right annotation or left annotation in `UpSet`, please refer to `UpSet`.
+#
+default_upset_right_annotation = function(m) {
+	set_on_rows = attr(m, "set_on_rows")
+
+	if(set_on_rows) {
+		ha = rowAnnotation("Set size" = anno_barplot(set_size(m), border = FALSE, 
+					gp = gpar(fill = "black"), width = unit(3, "cm")))
+	} else {
+		ha = rowAnnotation("Intersection size" = anno_barplot(comb_size(m), 
+				border = FALSE, gp = gpar(fill = "black"), width = unit(2, "cm")))
+	}
+
+	mode = attr(m, "mode")
+	if(!set_on_rows) {
+		if(mode %in% c("distinct", "intersect")) {
+			names(ha) = "Intersection size"
+		} else {
+			names(ha) = "Union size"
+		}
+	}
+	return(ha)
 }
