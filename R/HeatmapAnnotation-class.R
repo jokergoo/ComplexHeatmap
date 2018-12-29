@@ -58,7 +58,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -show_annotation_name Whether show annotation names? For column annotation, annotation names are drawn either on the left
 #   or the right, and for row annotations, names are draw either on top or at the bottom. The value can be a vector.
 # -annotation_name_gp Graphic parameters for anntation names. Graphic paramters can be vectors.
-# -annotation_name_offset Offset to the annotations, `grid::unit` object. The value can be a vector.
+# -annotation_name_offset Offset to the annotation names, a `grid::unit` object. The value can be a vector.
 # -annotation_name_side Side of the annotation names.
 # -annotation_name_rot Rotation of the annotation names, it can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
 # -annotation_height Height of each annotation if annotations are column annotations.

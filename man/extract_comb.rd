@@ -21,9 +21,8 @@ It returns the combination set.
 \examples{
 set.seed(123)
 lt = list(a = sample(letters, 10),
-	      b = sample(letters, 15),
-	      c = sample(letters, 20))
-
+          b = sample(letters, 15),
+          c = sample(letters, 20))
 m = make_comb_mat(lt)
 extract_comb(m, "110")
 }

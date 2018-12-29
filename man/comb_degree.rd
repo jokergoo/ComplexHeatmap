@@ -23,8 +23,8 @@ A vector of degrees of the combination sets.
 \examples{
 set.seed(123)
 lt = list(a = sample(letters, 10),
-	      b = sample(letters, 15),
-	      c = sample(letters, 20))
+          b = sample(letters, 15),
+          c = sample(letters, 20))
 m = make_comb_mat(lt)
 comb_degree(m)
 }

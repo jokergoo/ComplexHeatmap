@@ -11,6 +11,7 @@ set_size(m)
 comb_size(m)
 lapply(comb_name(m), function(x) extract_comb(m, x))
 UpSet(m)
+UpSet(m, comb_col = c(rep(2, 3), rep(3, 3), 1))
 UpSet(t(m))
 
 set_name(t(m))
@@ -108,4 +109,30 @@ cs = comb_size(m)
 test_that("test comb_size and extract_comb", {
 	expect_that(cs, equals(unname(sapply(comb_name(m), function(nm) length(extract_comb(m, nm))))))
 })
+
+
+
+movies <- read.csv(system.file("extdata", "movies.csv", package = "UpSetR"), 
+    header = T, sep = ";")
+genre = c("Action", "Romance", "Horror", "Children", "SciFi", "Documentary")
+rate = cut(movies$AvgRating, c(0, 1, 2, 3, 4, 5))
+m_list = tapply(seq_len(nrow(movies)), rate, function(ind) {
+	make_comb_mat(movies[ind, genre, drop = FALSE])
+})
+m_list2 = normalize_comb_mat(m_list)
+
+lapply(m_list2, set_name)
+lapply(m_list2, set_size)
+lapply(m_list2, comb_name)
+lapply(m_list2, comb_size)
+
+lapply(1:length(m_list), function(i) {
+	n1 = comb_name(m_list[[i]])
+	x1 = comb_size(m_list[[i]])
+	n2 = comb_name(m_list2[[i]])
+	x2 = comb_size(m_list2[[i]])
+	l = n2 %in% n1
+	x2[!l]
+})
+
 

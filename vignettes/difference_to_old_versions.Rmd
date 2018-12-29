@@ -21,7 +21,7 @@ h1, h2, h3, h4, h5 {
 }
 </style>
 
-From version 2.0.0 of **ComplexHeatmap**, there are big changes to the older versions. The major
+From version 1.99.0 of **ComplexHeatmap**, there are big changes to the older versions. The major
 functionalities are still the same, but it is not 100% compatible. This vignette lists the
 changes between the new and old versions.
 
@@ -64,7 +64,7 @@ changes between the new and old versions.
 - All annotations have default width/height now. E.g. the column simple annotation has height of 5mm
   and the column barplot annotation has height of 1cm.
 - Provide more annotation functions: `anno_empty()`, `anno_simple`, `anno_image()`, `anno_block()`,
-  `anno_lines()`, `anno_joyplot()`, `anno_horizon()`, `anno_summary()`.
+  `anno_lines()`, `anno_joyplot()`, `anno_horizon()`, `anno_summary()`, `anno_zoom()`.
   (https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html)
 - The size of the annotations are better to be set in the annotation functions, e.g.
   `anno_points(..., height = )`, but you can still set `annotation_height`.

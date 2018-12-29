@@ -21,7 +21,7 @@ where n is the number of union of all sets in the list.
 \examples{
 set.seed(123)
 lt = list(a = sample(letters, 10),
-	      b = sample(letters, 15),
-	      c = sample(letters, 20))
+          b = sample(letters, 15),
+          c = sample(letters, 20))
 list_to_matrix(lt)
 }
