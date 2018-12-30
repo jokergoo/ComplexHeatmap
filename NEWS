@@ -1,3 +1,8 @@
+CHANGES in VERSION 1.99.5
+
+* add `UpSet()` and some related functions to make Upset plots
+
+========================
 
 CHANGES in VERSION 1.99.4
 

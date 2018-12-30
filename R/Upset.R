@@ -955,7 +955,7 @@ order.comb_mat = function(m, decreasing = TRUE, on = "comb_set") {
 #
 upset_top_annotation = function(m, 
 	gp = gpar(fill = "black"), 
-	height = unit(ifelse(set_on_rows, 2, 3), "cm"),
+	height = unit(ifelse(set_on_rows, 3, 2), "cm"),
 	show_annotation_name = TRUE,
 	annotation_name_gp = gpar(),
 	annotation_name_offset = NULL,
@@ -1013,7 +1013,7 @@ upset_top_annotation = function(m,
 #
 upset_right_annotation = function(m,
 	gp = gpar(fill = "black"),  
-	width = unit(ifelse(set_on_rows, 3, 2), "cm"),
+	width = unit(ifelse(set_on_rows, 2, 3), "cm"),
 	show_annotation_name = TRUE,
 	annotation_name_gp = gpar(),
 	annotation_name_offset = NULL,

@@ -22,5 +22,4 @@ The sets (by \code{\link{set_name}}) from all combination matrice should be the 
 \examples{
 # There is no example
 NULL
-
 }

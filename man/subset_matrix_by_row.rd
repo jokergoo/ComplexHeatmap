@@ -21,5 +21,4 @@ Mainly used for constructing the \code{\link{AnnotationFunction-class}} object.
 \examples{
 # There is no example
 NULL
-
 }

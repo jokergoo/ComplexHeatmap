@@ -28,5 +28,4 @@ which is generally for testing purpose.
 \examples{
 # There is no example
 NULL
-
 }

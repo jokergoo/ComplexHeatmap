@@ -1,6 +1,5 @@
 \name{color_mapping_legend-ColorMapping-method}
 \alias{color_mapping_legend,ColorMapping-method}
-\alias{color_mapping_legend}
 \title{
 Draw Legend Based on Color Mapping
 }
@@ -66,8 +65,8 @@ A \code{\link{Legends-class}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{color_mapping_legend}
 \examples{
 # There is no example
 NULL
-
 }

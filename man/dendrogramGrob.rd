@@ -28,5 +28,4 @@ A \code{\link{grob}} object which is contructed by \code{\link[grid:grid.segment
 \examples{
 # There is no example
 NULL
-
 }

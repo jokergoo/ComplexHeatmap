@@ -9,7 +9,7 @@ Default UpSet Right Annotation
 \usage{
 upset_right_annotation(m,
     gp = gpar(fill = "black"),
-    width = unit(ifelse(set_on_rows, 3, 2), "cm"),
+    width = unit(ifelse(set_on_rows, 2, 3), "cm"),
     show_annotation_name = TRUE,
     annotation_name_gp = gpar(),
     annotation_name_offset = NULL,
@@ -37,5 +37,4 @@ how to set the right annotation or left annotation in \code{\link{UpSet}}, pleas
 \examples{
 # There is no example
 NULL
-
 }

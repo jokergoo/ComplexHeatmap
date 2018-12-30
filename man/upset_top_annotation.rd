@@ -9,7 +9,7 @@ Default UpSet Top Annotation
 \usage{
 upset_top_annotation(m,
     gp = gpar(fill = "black"),
-    height = unit(ifelse(set_on_rows, 2, 3), "cm"),
+    height = unit(ifelse(set_on_rows, 3, 2), "cm"),
     show_annotation_name = TRUE,
     annotation_name_gp = gpar(),
     annotation_name_offset = NULL,
@@ -37,5 +37,4 @@ how to set the top annotation or bottom annotation in \code{\link{UpSet}}, pleas
 \examples{
 # There is no example
 NULL
-
 }

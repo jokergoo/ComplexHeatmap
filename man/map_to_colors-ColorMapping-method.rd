@@ -1,6 +1,5 @@
 \name{map_to_colors-ColorMapping-method}
 \alias{map_to_colors,ColorMapping-method}
-\alias{map_to_colors}
 \title{
 Map Values to Colors
 }
@@ -35,3 +34,4 @@ col_fun = colorRamp2(c(0, 1), c("white", "red"))
 cm = ColorMapping(col_fun = col_fun)
 map_to_colors(cm, runif(10))
 }
+\alias{map_to_colors}

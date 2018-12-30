@@ -17,5 +17,4 @@ default_get_type(x)
 \examples{
 # There is no example
 NULL
-
 }

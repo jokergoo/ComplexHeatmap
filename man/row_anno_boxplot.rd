@@ -25,5 +25,4 @@ See help page of \code{\link{anno_boxplot}}.
 \examples{
 # There is no example
 NULL
-
 }
