@@ -377,7 +377,6 @@ setMethod(f = "annotation_legend_size",
 })
 
 # create a viewport which contains legend
-# currently, one-row or one-column legend is supported
 draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right", "left", "top", "bottom"), 
     plot = TRUE, gap = unit(2, "mm"), legend_list = list(), padding = unit(c(0, 0, 0, 0), "mm"), 
     max_height = unit(dev.size("cm")[2], "cm"), max_width = unit(dev.size("cm")[1], "cm"), ...) {
@@ -398,7 +397,7 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
         if(side %in% c("left", "right")) {
             pk = packLegend(list = cm_grob, gap = gap, direction = "vertical", max_height = max_height)  
         } else {
-            pk = packLegend(list = cm_grob, gap = gap, direction = "horizontal", max_width = max_width)
+            pk = packLegend(list = cm_grob, gap = unit(4, "mm"), direction = "horizontal", max_width = max_width)
         }
     }
 

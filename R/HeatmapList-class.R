@@ -503,7 +503,7 @@ setMethod(f = "draw",
     }
 
     layout = grid.layout(nrow = length(HEATMAP_LIST_LAYOUT_COLUMN_COMPONENT), 
-        ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), 
+        ncol = length(HEATMAP_LIST_LAYOUT_ROW_COMPONENT), 
         widths = component_width(object), 
         heights = component_height(object))
 

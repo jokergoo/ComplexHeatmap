@@ -22,4 +22,5 @@ See \code{\link{AnnotationFunction}} constructor for details.
 \examples{
 # There is no example
 NULL
+
 }

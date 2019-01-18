@@ -40,4 +40,5 @@ The complete reference of ComplexHeatmap package is available at \url{http://jok
 \examples{
 # There is no example
 NULL
+
 }

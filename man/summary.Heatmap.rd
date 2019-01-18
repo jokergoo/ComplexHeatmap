@@ -18,4 +18,5 @@ Print the Summary of a Heatmap
 \examples{
 # There is no example
 NULL
+
 }

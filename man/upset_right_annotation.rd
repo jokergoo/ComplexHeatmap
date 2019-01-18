@@ -37,4 +37,5 @@ how to set the right annotation or left annotation in \code{\link{UpSet}}, pleas
 \examples{
 # There is no example
 NULL
+
 }

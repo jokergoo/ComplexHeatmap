@@ -285,7 +285,11 @@ setMethod(f = "color_mapping_legend",
 	e = environment()
 	if(!is.null(param)) {
 		for(nm in names(param)) {
-			assign(nm, param[[nm]], envir = e)
+			if(nm == "direction") {
+				assign("legend_direction", param[[nm]], envir = e)
+			} else {
+				assign(nm, param[[nm]], envir = e)
+			}
 		}
 	}
 

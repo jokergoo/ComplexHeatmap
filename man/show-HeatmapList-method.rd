@@ -24,4 +24,5 @@ This function returns no value.
 \examples{
 # There is no example
 NULL
+
 }
