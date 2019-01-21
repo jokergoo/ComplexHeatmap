@@ -84,6 +84,10 @@ Heatmap(mat1, ...) + Heatmap(mat2, ...) + ha
 
 ![complexheatmap_example1](https://user-images.githubusercontent.com/449218/47718638-2ec22980-dc49-11e8-845e-21e51d3b8e73.png)
 
+#### UpSet plot
+
+![](https://pbs.twimg.com/media/Dvpp31uX4AAqGDP.jpg:large)
+
 ### License
 
 MIT @ Zuguang Gu
