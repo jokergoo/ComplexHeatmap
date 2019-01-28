@@ -340,8 +340,17 @@ setMethod(f = "make_layout",
         } else if(is.null(height) && !is.null(heatmap_height)) {
             object@ht_list[[i_main]]@matrix_param$height = unit(1, "npc")
             object@ht_list[[i_main]]@heatmap_param$height = heatmap_height
-        } 
-        
+        }
+
+        # column_* should not be set for horizontal heatmap list
+        for(obj_nm in c("column_split", "column_km", "column_gap", "cluster_columns", "show_column_dend", "clustering_distance_columns",
+            "clustering_method_columns", "column_dend_width", "show_column_dend", "column_dend_gp", "column_dend_reorder",
+            "column_order", "width", "heatmap_width")) {
+            if(!is.null(get(obj_nm))) {
+                message_wrap(paste0("'", obj_nm, "' should not be set in draw() for horizontal heatmap list (Note a single heatmap is a horizontal heatmap list). Please directly set it in `Heatmap()`."))
+            }
+        }
+
     } else {
         if(!is.null(column_split)) {
             object@ht_list[[i_main]]@matrix_param$column_split = column_split
@@ -467,7 +476,16 @@ setMethod(f = "make_layout",
         } else if(is.null(width) && !is.null(heatmap_width)) {
             object@ht_list[[i_main]]@matrix_param$width = unit(1, "npc")
             object@ht_list[[i_main]]@heatmap_param$width = heatmap_width
-        }  
+        }
+
+        # row_* should not be set for vertical heatmap list
+        for(obj_nm in c("row_split", "row_km", "row_gap", "cluster_rows", "show_row_dend", "clustering_distance_rows",
+            "clustering_method_rows", "row_dend_width", "show_row_dend", "row_dend_gp", "row_dend_reorder",
+            "row_order", "height", "heatmap_height")) {
+            if(!is.null(get(obj_nm))) {
+                message_wrap(paste0("'", obj_nm, "' should not be set in draw() for vertical heatmap list. Please directly set it in `Heatmap()`."))
+            }
+        }
     }
 
     if(verbose) qqcat("auto adjust all heatmap/annotations by the main heatmap\n")
