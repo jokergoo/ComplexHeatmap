@@ -412,9 +412,9 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 					textGrob(pch[index], x = grid_x, y = grid_y, gp = subset_gp(legend_gp, index))
 				))
 			} else {
-				gl = c(gl, list(
-					pointsGrob(x = grid_x, y = grid_y, pch = pch[index], gp = subset_gp(legend_gp, index), size = size)
-				))
+				gl = c(gl, 
+					.pointsGrob_as_a_list(x = grid_x, y = grid_y, pch = pch[index], gp = subset_gp(legend_gp, index), size = size, width = grid_width, height = grid_height)
+				)
 			}
 		}
 		if(any(c("lines", "l") %in% type)) {
@@ -1146,4 +1146,37 @@ heightDetails.packed_legends = function(x) {
 # assume x is ordered
 is_diff_equal = function(x) {
 	all(abs(diff(diff(x)))/mean(diff(x)) < 1e-4)
+}
+
+# x, y, pch, size, gp are all vectorized
+# width and height are single values
+# pch are numeric
+.pointsGrob_as_a_list = function(x, y, pch, gp, size, width, height) {
+	n = length(x)
+	if(any(pch %in% 26:31)) {
+		gl = list()
+		for(i in 1:n) {
+			if(pch[i] == 26) {
+				gb = segmentsGrob(x[i] - width*0.4, y[i] - height*0.4, x[i] + width*0.4, y[i] + height*0.4, gp = subset_gp(gp[i]))
+			} else if(pch[i] == 27) {
+				gb = segmentsGrob(x[i] + width*0.4, y[i] - height*0.4, x[i] - width*0.4, y[i] + height*0.4, gp = subset_gp(gp[i]))
+			} else if(pch[i] == 28) {
+				gb = segmentsGrob(unit.c(x[i] - width*0.4, x[i] + width*0.4), 
+					              unit.c(y[i] - height*0.4, y[i] - height*0.4),
+					              unit.c(x[i] + width*0.4, x[i] - width*0.4),
+					              unit.c(y[i] + height*0.4, y[i] + height*0.4), 
+					              gp = subset_gp(gp[i]))
+			} else if(pch[i] %in% 29:31) {
+				stop_wrap("pch in 29:31 is not implemented in Legend().")
+			} else {
+				gb = pointsGrob(x = x[i], y = y[i], pch = pch[i], gp = subset_gp(gp, i), size = size[i])
+			}
+			gl = c(gl, list(gb))
+		}
+		return(gl)
+
+	} else {
+		gb = pointsGrob(x = x, y = y, pch = pch, gp = gp, size = size)
+		return(list(gb))
+	}
 }

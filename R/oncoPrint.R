@@ -54,7 +54,7 @@ oncoPrint = function(mat,
 	get_type = default_get_type,
 	alter_fun, 
 	alter_fun_is_vectorized = NULL,
-	col, 
+	col = NULL, 
 
 	top_annotation = HeatmapAnnotation(cbar = anno_oncoprint_barplot()),
 	right_annotation = rowAnnotation(rbar = anno_oncoprint_barplot()),
@@ -331,7 +331,7 @@ oncoPrint = function(mat,
 	# validate col
 	sdf = setdiff(all_type, names(col))
 	if(length(sdf) > 0) {
-		stop_wrap(paste0("You should define colors for:", paste(sdf, collapse = ", ")))
+		message_wrap(paste0("Colors are not defined for: ", paste(sdf, collapse = ", ")))
 	}
 
 	# for each gene, percent of samples that have alterations
@@ -339,6 +339,10 @@ oncoPrint = function(mat,
 	pct = paste0(round(pct_num * 100, digits = pct_digits), "%")
 
 	### now the annotations
+	if(length(col) == 0) {
+		if(missing(top_annotation)) top_annotation = NULL
+		if(missing(right_annotation)) right_annotation = NULL
+	}
 	top_annotation = top_annotation
 	right_annotation = right_annotation
 
@@ -421,7 +425,13 @@ oncoPrint = function(mat,
 	
 	#####################################################################
 	# the main matrix
-	pheudo = c(all_type, rep(NA, nrow(arr)*ncol(arr) - length(all_type)))
+	if(length(col)) {
+		pheudo = c(names(col), rep(NA, nrow(arr)*ncol(arr) - length(col)))
+	} else {
+		pheudo = c("mutation", rep(NA, nrow(arr)*ncol(arr) - 1))
+		col = c("mutation" = "black")
+	}
+
 	dim(pheudo) = dim(arr)[1:2]
 	dimnames(pheudo) = dimnames(arr)[1:2]
 	
@@ -523,7 +533,7 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 		all_type = pf$all_type
 		col = pf$col
 
-		if(is.null(type)) type = all_type
+		if(is.null(type)) type = names(col)
 
 		all_type = intersect(all_type, type)
 		if(length(all_type) == 0) {
@@ -544,7 +554,7 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 		all_type = pf$all_type
 		col = pf$col
 
-		if(is.null(type)) type = all_type
+		if(is.null(type)) type = names(col)
 
 		all_type = intersect(all_type, type)
 		if(length(all_type) == 0) {
