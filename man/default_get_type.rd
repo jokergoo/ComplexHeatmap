@@ -14,6 +14,9 @@ default_get_type(x)
   \item{x}{A strings which encode multiple altertations.}
 
 }
+\details{
+It recognizes following separators: \code{;:,|}.
+}
 \examples{
 # There is no example
 NULL

@@ -615,7 +615,133 @@ guess_alter_fun_is_vectorized = function(alter_fun) {
 # == param
 # -x A strings which encode multiple altertations.
 #
+# == details
+# It recognizes following separators: ``;:,|``.
+#
 default_get_type = function(x) {
 	x = strsplit(x, "\\s*[;:,|]\\s*")[[1]]
 	x[!x %in% c("na", "NA")]
+}
+
+# == title
+# Test alter_fun for oncoPrint()
+#
+# == param
+# -fun The ``alter_fun`` for `oncoPrint`. The value can be a list of functions or a single function. See https://jokergoo.github.io/ComplexHeatmap-reference/book/oncoprint.html#define-the-alter-fun
+# -type A vector of alteration types. It is only used when ``fun`` is a single function.
+# -asp_ratio The aspect ratio (width/height) for the small rectangles.
+#
+# == details
+# This function helps you to have a quick view of how the graphics for each alteration type
+# and combinations look like.
+#
+# == example
+# alter_fun = list(
+# 	mut1 = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "red", col = NA)),
+# 	mut2 = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "blue", col = NA)),
+# 	mut3 = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "yellow", col = NA)),
+# 	mut4 = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "purple", col = NA)),
+# 	mut5 = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(lwd = 2)),
+# 	mut6 = function(x, y, w, h) grid.points(x, y, pch = 16),
+# 	mut7 = function(x, y, w, h) grid.segments(x - w*0.5, y - h*0.5, x + w*0.5, y + h*0.5, gp = gpar(lwd = 2))
+# )
+# test_alter_fun(alter_fun)
+test_alter_fun = function(fun, type, asp_ratio = 1) {
+	background_fun = NULL
+	if(inherits(fun, "list")) {
+		fun_type = "list"
+		type = names(fun)
+
+		if("background" %in% type) {
+			background_fun = fun$background
+		}
+		type = setdiff(type, "background")
+
+		if(length(type) == 0) {
+			stop_wrap("'type' should be of the names of the function list defined in `fun`.")
+		}
+
+		cat("`alter_fun` is defined as a list of functions.\n")
+		cat("Functions are defined for following alteration types:\n")
+		cat(paste(strwrap(paste(names(fun), collapse = ", "), initial = "  "), collapse = "\n"), "\n")
+		if(!is.null(background_fun)) {
+			cat("Background is also defined.\n")
+		}
+	} else{
+		fun_type = "function"
+		if(length(as.list(formals(fun))) != 5) {
+			stop_wrap("If `alter_fun` is defined as a single function, it needs to have five arguments. Check example at https://jokergoo.github.io/ComplexHeatmap-reference/book/oncoprint.html#define-the-alter-fun.")
+		}
+
+		if(missing(type)) {
+			stop_wrap("You need to provide a vector of alteration types for `type` argument to test.")
+		}
+
+		type = setdiff(type, "background")
+	}
+	
+	tl = lapply(type, function(x) x)
+	names(tl) = type
+	if(length(type) >= 2) {
+		tl2 = as.list(as.data.frame(combn(type, 2), stringsAsFactors = FALSE))
+	} else {
+		tl2 = NULL
+	}
+	if(length(type) >= 3) {
+		tl2 = c(tl2, as.list(as.data.frame(combn(type, 3), stringsAsFactors = FALSE)))
+	}
+
+	if(!is.null(tl2)) {
+		tl2 = tl2[sample(length(tl2), min(length(tl), length(tl2)), prob = sapply(tl2, length))]
+		tl2 = tl2[order(sapply(tl2, length))]
+		names(tl2) = sapply(tl2, paste, collapse = "+")
+	}
+
+	# draw the examples
+	grid_width = asp_ratio*max_text_height("A")*2
+	grid_height = max_text_height("A")*2 + unit(2, "mm")
+	text_width_1 = max_text_width(names(tl))
+	w = text_width_1 + unit(1, "mm") + grid_width
+	if(!is.null(tl2)) {
+		text_width_2 = max_text_width(names(tl2))
+		w = w + unit(5, "mm") + text_width_2 + unit(1, "mm") + grid_width
+	}
+	n = length(tl)
+	h = grid_height*n
+
+	grid.newpage()
+	pushViewport(viewport(width = w, height = h))
+	for(i in 1:n) {
+		grid.text(names(tl)[i], text_width_1, (n - i + 0.5)/n, just = "right")
+		if(is.null(background_fun)) {
+			grid.rect(text_width_1 + unit(1, "mm") + grid_width*0.5, unit((n - i + 0.5)/n, "npc"), grid_width, grid_height - unit(2, "mm"), gp = gpar(fill = "#CCCCCC", col = NA))
+		} else {
+			background_fun(text_width_1 + unit(1, "mm") + grid_width*0.5, unit((n - i + 0.5)/n, "npc"), grid_width, grid_height - unit(2, "mm"))
+		}
+		if(fun_type == "list") {
+			fun[[ tl[[i]] ]](text_width_1 + unit(1, "mm") + grid_width*0.5, unit((n - i + 0.5)/n, "npc"), grid_width, grid_height - unit(2, "mm"))
+		} else {
+			fun(text_width_1 + unit(1, "mm") + grid_width*0.5, unit((n - i + 0.5)/n, "npc"), grid_width, grid_height - unit(2, "mm"), tl[[i]])
+		}
+	}
+	if(!is.null(tl2)) {
+		n2 = length(tl2)
+		for(i in 1:n2) {
+			grid.text(names(tl2)[i], text_width_1 + unit(1, "mm") + grid_width + unit(5, "mm") + text_width_2, (n - i + 0.5)/n, just = "right")
+			if(is.null(background_fun)) {
+				grid.rect(text_width_1 + unit(2, "mm") + unit(5, "mm") + grid_width + text_width_2 + grid_width*0.5, unit((n - i + 0.5)/n, "npc"), grid_width, grid_height - unit(2, "mm"), gp = gpar(fill = "#CCCCCC", col = NA))
+			} else {
+				background_fun(text_width_1 + unit(2, "mm") + unit(5, "mm") + grid_width + text_width_2 + grid_width*0.5, unit((n - i + 0.5)/n, "npc"), grid_width, grid_height - unit(2, "mm"))
+			}
+			if(fun_type == "list") {
+				for(j in tl2[[i]]) {
+					fun[[ j ]](text_width_1 + unit(2, "mm") + unit(5, "mm") + grid_width + text_width_2 + grid_width*0.5, unit((n - i + 0.5)/n, "npc"), grid_width, grid_height - unit(2, "mm"))
+				}
+			} else {
+				fun(text_width_1 + unit(2, "mm") + grid_width + unit(5, "mm") + text_width_2 + grid_width*0.5, unit((n - i + 0.5)/n, "npc"), grid_width, grid_height - unit(2, "mm"), tl2[[i]])
+			}
+		}
+	}
+	popViewport()
+	
 }
