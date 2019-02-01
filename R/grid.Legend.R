@@ -63,6 +63,7 @@ Legends = function(...) {
 # -type Type of legends. The value can be one of ``grid``, ``points`` and ``lines``.
 # -legend_gp Graphic parameters for the legend grids. You should control the filled color of the legend grids by ``gpar(fill = ...)``.
 # -pch Type of points if points are used as legend. Note you can use single-letter as pch, e.g. ``pch = 'A'``.
+#      There are three additional integers that are valid for ``pch``: 26 and 27 for single diagonal lines and 28 for double diagonal lines.
 # -size Size of points.
 # -legend_height Height of the whole legend body. It is only used for vertical continous legend.
 # -legend_width Width of the whole legend body. It is only used for horizontal continous legend.
