@@ -11,7 +11,7 @@ oncoPrint(mat,
     get_type = default_get_type,
     alter_fun,
     alter_fun_is_vectorized = NULL,
-    col,
+    col = NULL,
     
     top_annotation = HeatmapAnnotation(cbar = anno_oncoprint_barplot()),
     right_annotation = rowAnnotation(rbar = anno_oncoprint_barplot()),
