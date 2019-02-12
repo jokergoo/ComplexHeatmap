@@ -189,7 +189,7 @@ setMethod(f = "add_heatmap",
 # -main_heatmap index of main heatmap. The value can be a numeric index or the heatmap name
 # -padding padding of the whole plot. The value is a unit vector of length 4, which corresponds to bottom, left, top and right.
 # -adjust_annotation_extension whether take annotation name into account when calculating positions of graphic elements.
-# -auto_adjust whether auto adjust
+# -auto_adjust whether apply automatic adjustment? The auto-adjustment includes turning off dendrograms, titles and row/columns for non-main heatmaps.
 # -row_dend_side side of the dendrogram from the main heatmap
 # -row_sub_title_side side of the row title from the main heatmap
 # -column_dend_side side of the dendrogram from the main heatmap
