@@ -118,3 +118,7 @@ changes between the new and old versions.
 - Columns can be clustered by the Kolmogorov-Smirnov distance between distributions.
 - `densityHeatmap()` returns a vertical heatmap that more heatmaps and annotations can concatenate
   to it vertically.
+
+## UpSet() function
+- Add a new `UpSet()` function to make UpSet plots and can be concatenated to other heatmaps/annotations. (https://jokergoo.github.io/ComplexHeatmap-reference/book/upset-plot.html)
+
