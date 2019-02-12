@@ -1041,7 +1041,7 @@ setMethod(f = "re_size",
 	height = NULL, 
 	width = NULL, 
 	anno_simple_size = ht_opt$anno_simple_size,
-	simple_anno_size_adjust = FALSE) {
+	simple_anno_size_adjust = NULL) {
 
 	if(object@which == "column") {
 		if(!missing(width) || !missing(annotation_width)) {
@@ -1054,15 +1054,26 @@ setMethod(f = "re_size",
 		}
 	}
 
+	all_simple_annotation = all(sapply(object@anno_list, function(x) is_simple_annotation(x) || is_matrix_annotation(x)))
+	if(is.null(simple_anno_size_adjust)) {
+		if(all_simple_annotation) {
+			simple_anno_size_adjust = TRUE
+		} else {
+			simple_anno_size_adjust = FALSE
+		}
+	}
 	which = object@which
 	if(!simple_anno_size_adjust) {
-		if(all(sapply(object@anno_list, function(x) is_simple_annotation(x) || is_matrix_annotation(x)))) {
+		if(all_simple_annotation) {
 			if(which == "column") {
 				height = sum(object@anno_size) + sum(object@gap) - object@gap[length(object@gap)]
 				object@height = convertHeight(height, "mm")
 			} else {
 				width = sum(object@anno_size) + sum(object@gap) - object@gap[length(object@gap)]
 				object@width = convertWidth(width, "mm")
+			}
+			if(ht_opt$verbose) {
+				message_wrap("`simple_anno_size_adjust` is set to FALSE and all annotations are simple annotations or matrix annotations, the heights of all annotations are not adjusted.")
 			}
 			return(object)
 		}
@@ -1084,13 +1095,20 @@ setMethod(f = "re_size",
 			is_annotation_size_set = FALSE
 		} else {
 			if(length(annotation_height) == 1) {
+				if(!inherits(annotation_height, "unit")) {
+					annotation_height = rep(annotation_height, length(object@anno_list))
+				}
+			}
+			if(length(annotation_height) == 1) {
 				if(length(object@anno_list) > 1) {
 					warning_wrap("`annotation_height` is set with length of one while with multiple annotations, `annotation_height` is treated as `height`.")
 				}
 				if(length(object@anno_list) == 1 && !inherits(annotation_height, "unit")) {
 					stop_wrap("When there is only one annotation, `annotation_height` should be set as a unit object.")
 				}
-				height = annotation_height[1]
+				if(!inherits(height, "unit")) {
+					height = annotation_height[1]
+				}
 				if(!inherits(height, "unit")) {
 					stop_wrap("`height` should be a `unit` object")
 				}
@@ -1122,13 +1140,20 @@ setMethod(f = "re_size",
 			is_annotation_size_set = FALSE
 		} else {
 			if(length(annotation_width) == 1) {
+				if(!inherits(annotation_width, "unit")) {
+					annotation_width = rep(annotation_width, length(object@anno_list))
+				}
+			}
+			if(length(annotation_width) == 1) {
 				if(length(object@anno_list) > 1) {
 					warning_wrap("`annotation_width` is set with length of one while with multiple annotations, `annotation_width` is treated as `width`.")
 				}
 				if(length(object@anno_list) == 1 && !inherits(annotation_width, "unit")) {
 					stop_wrap("When there is only one annotation, `annotation_width` should be set as a unit object.")
 				}
-				width = annotation_width[1]
+				if(!inherits(width, "unit")) {
+					width = annotation_width[1]
+				}
 				if(!inherits(width, "unit")) {
 					stop_wrap("`width` should be a `unit` object")
 				}

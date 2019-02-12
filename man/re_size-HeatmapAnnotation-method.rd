@@ -14,7 +14,7 @@ Resize the Width or Height of Heatmap Annotations
     height = NULL,
     width = NULL,
     anno_simple_size = ht_opt$anno_simple_size,
-    simple_anno_size_adjust = FALSE)
+    simple_anno_size_adjust = NULL)
 }
 \arguments{
 

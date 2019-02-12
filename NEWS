@@ -3,6 +3,9 @@ CHANGES in VERSION 1.99.5
 * add `UpSet()` and some related functions to make Upset plots
 * fixed bugs of drawing legends
 * add `test_alter_fun()`
+* `HeatmapAnnotation()`: fixed a bug for setting `height` when all annotations are simple annotations.
+* `default_col()`: if the fraction of positive values in the matrix is in (0.3, 0.7), the color mapping
+  is symmetric to zero.
 
 ========================
 

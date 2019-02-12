@@ -35,7 +35,7 @@ Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
   \item{background}{Background colors for the grids. It is used when points and lines are the legend graphics.}
   \item{type}{Type of legends. The value can be one of \code{grid}, \code{points} and \code{lines}.}
   \item{legend_gp}{Graphic parameters for the legend grids. You should control the filled color of the legend grids by \code{gpar(fill = ...)}.}
-  \item{pch}{Type of points if points are used as legend. Note you can use single-letter as pch, e.g. \code{pch = 'A'}.}
+  \item{pch}{Type of points if points are used as legend. Note you can use single-letter as pch, e.g. \code{pch = 'A'}. There are three additional integers that are valid for \code{pch}: 26 and 27 for single diagonal lines and 28 for double diagonal lines.}
   \item{size}{Size of points.}
   \item{legend_height}{Height of the whole legend body. It is only used for vertical continous legend.}
   \item{legend_width}{Width of the whole legend body. It is only used for horizontal continous legend.}

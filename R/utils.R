@@ -72,16 +72,30 @@ default_col = function(x, main_matrix = FALSE) {
         return(colors)
     } else if(is.numeric(x)) {
         if(main_matrix) {
-            if(length(unique(x)) > 100) {
-                q1 = quantile(x, 0.01)
-                q2 = quantile(x, 0.99)
-                if(length(unique(x[x > q1 & x < q2])) == 1) {
-                     col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
+            p = sum(x > 0)/length(x)
+            if(p > 0.3 & p < 0.7) {
+                if(ht_opt$verbose) {
+                    cat("This matrix has both negative and positive values, use a color mapping symmetric to zero\n")
+                }
+                if(length(unique(x)) >= 100) {
+                    q1 = quantile(abs(x), 0.99)
+                    col_fun = colorRamp2(c(-q1, 0, q1), c("blue", "#EEEEEE", "red"))
                 } else {
-                    col_fun = colorRamp2(seq(q1, q2, length = 3), c("blue", "#EEEEEE", "red"))
+                    q1 = max(abs(x))
+                    col_fun = colorRamp2(c(-q1, 0, q1), c("blue", "#EEEEEE", "red"))
                 }
             } else {
-                col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
+                if(length(unique(x)) >= 100) {
+                    q1 = quantile(x, 0.01)
+                    q2 = quantile(x, 0.99)
+                    if(length(unique(x[x > q1 & x < q2])) == 1) {
+                         col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
+                    } else {
+                        col_fun = colorRamp2(seq(q1, q2, length = 3), c("blue", "#EEEEEE", "red"))
+                    }
+                } else {
+                    col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
+                }
             }
         } else {
             #col_fun = colorRamp2(range(min(x), max(x)), c("white", hsv(runif(1), 1, 1)))
