@@ -119,3 +119,29 @@ every single row or column. I suggest to random sample rows or columns
 into a reasonable small number, and the final heatmap should be the same as if
 you still insist to use the full matrix.
 
+### How to add axes for dendrograms?
+
+You need to use `decorate_row_dend()` or `decorate_column_dend()` to manually add the axes. See following examples:
+
+```{r}
+m = matrix(rnorm(100), 10)
+
+ht = Heatmap(m, name = "foo", 
+	row_dend_width = unit(4, "cm"),
+	column_dend_height = unit(4, "cm")
+)
+draw(ht, padding = unit(c(15, 2, 2, 2), "mm"))
+decorate_column_dend("foo", {
+	grid.yaxis()
+})
+decorate_row_dend("foo", {
+	vp = current.viewport()
+	xscale = vp$xscale
+	grid.xaxis(at = xscale[2] - 0:5, label = 0:5)
+})
+```
+
+Note for the left row dendrogram, the x-axis is from right to left, you need to self-define `at`
+and `label` in `grid.xaxis()` function.
+
+You can also check `annotation_axis_grob()` function (later use `grid.draw()` to draw the axes) to draw a nicer axis.
