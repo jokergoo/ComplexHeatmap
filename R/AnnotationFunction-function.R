@@ -1349,10 +1349,10 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		grid.segments(boxplot_stats[3, ], n - seq_along(index) + 1 - 0.5*box_width, 
 			          boxplot_stats[3, ], n - seq_along(index) + 1 + 0.5*box_width, 
 			          default.units = "native", gp = gp)
-		if(outline) {
+		if(outline && !anyNA(value)) {
 			for(i in seq_along(value)) {
 				l1 = value[[i]] > boxplot_stats[5,i]
-				if(sum(l1) > 0) grid.points(y = rep(n - i + 1, sum(l1)), x = value[[i]][l1], 
+				if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = value[[i]][l1], 
 					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 				l2 = value[[i]] < boxplot_stats[1,i]
 				if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = value[[i]][l2], 
