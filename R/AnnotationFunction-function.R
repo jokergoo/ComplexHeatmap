@@ -1352,9 +1352,11 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		if(outline) {
 			for(i in seq_along(value)) {
 				l1 = value[[i]] > boxplot_stats[5,i]
+				l1[is.na(l1)] = FALSE
 				if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = value[[i]][l1], 
 					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 				l2 = value[[i]] < boxplot_stats[1,i]
+				l2[is.na(l2)] = FALSE
 				if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = value[[i]][l2], 
 					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 			}
@@ -1399,9 +1401,11 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		if(outline) {	
 			for(i in seq_along(value)) {
 				l1 = value[[i]] > boxplot_stats[5,i]
+				l1[is.na(l1)] = FALSE
 				if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = value[[i]][l1], 
 					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 				l2 = value[[i]] < boxplot_stats[1,i]
+				l2[is.na(l2)] = FALSE
 				if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = value[[i]][l2], 
 					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
 			}
@@ -1679,7 +1683,7 @@ anno_density = function(x, which = c("column", "row"),
 	type = match.arg(type)[1]
 
 	n_all = length(value)
-	density_stats = lapply(value, density)
+	density_stats = lapply(value, density, na.rm = TRUE)
 	density_x = lapply(density_stats, function(x) x$x)
 	density_y = lapply(density_stats, function(x) x$y)
 	

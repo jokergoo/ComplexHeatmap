@@ -119,6 +119,10 @@ anno = anno_points(1:10, gp = gpar(col = rep(2:3, each = 5)), pch = rep(2:3, eac
 draw(anno, test = "anno_points")
 draw(anno, index = c(1, 3, 5, 7, 9, 2, 4, 6, 8, 10), test = "anno_points")
 
+anno = anno_points(c(1:5, NA, 7:10))
+draw(anno, test = "anno_points")
+
+
 ##### test anno_lines ###
 anno = anno_lines(runif(10))
 draw(anno, test = "anno_lines")
@@ -139,6 +143,8 @@ anno = anno_lines(cbind(sort(rnorm(10)), sort(rnorm(10), decreasing = TRUE)),
 	width = unit(2, "cm"), smooth = TRUE, add_points = TRUE, gp = gpar(col = 2:3), which = "row")
 draw(anno, test = "anno_lines, smooth, matrix, by row")
 
+anno = anno_lines(c(1:5, NA, 7:10))
+draw(anno, test = "anno_lines")
 
 
 ###### test anno_text #######
@@ -190,6 +196,8 @@ draw(anno, test = "proportion matrix")
 anno = anno_barplot(m, gp = gpar(fill = 2:5), bar_width = 1, height = unit(6, "cm"))
 draw(anno, test = "proportion matrix")
 
+anno = anno_barplot(c(1:5, NA, 7:10))
+draw(anno, test = "a vector")
 
 ##### test anno_boxplot #####
 set.seed(123)
@@ -201,6 +209,12 @@ anno = anno_boxplot(m, height = unit(4, "cm"), gp = gpar(fill = 1:10))
 draw(anno, test = "anno_boxplot with gp")
 anno = anno_boxplot(m, height = unit(4, "cm"), box_width = 0.9)
 draw(anno, test = "anno_boxplot with box_width")
+
+m = matrix(rnorm(100), 10)
+m[1, ] = NA
+anno = anno_boxplot(m, height = unit(4, "cm"))
+draw(anno, test = "anno_boxplot")
+
 
 ####### test anno_joyplot ####
 m = matrix(rnorm(1000), nc = 10)
@@ -240,6 +254,10 @@ anno = anno_histogram(t(m), which = "row", gp = gpar(fill = 1:10))
 draw(anno, test = "row histogram with color")
 anno = anno_histogram(t(m), which = "row", n_breaks = 20)
 draw(anno, test = "row histogram with color")
+m[1, ] = NA
+anno = anno_histogram(t(m), which = "row")
+draw(anno, test = "row histogram")
+
 
 ####### test anno_density ######
 anno = anno_density(t(m), which = "row")

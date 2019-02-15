@@ -6,6 +6,7 @@ CHANGES in VERSION 1.99.5
 * `HeatmapAnnotation()`: fixed a bug for setting `height` when all annotations are simple annotations.
 * `default_col()`: if the fraction of positive values in the matrix is in (0.3, 0.7), the color mapping
   is symmetric to zero.
+* check `NA` values in `anno_boxplot()` and `anno_density()`.
 
 ========================
 
