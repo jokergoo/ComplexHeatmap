@@ -351,8 +351,10 @@ Heatmap = function(matrix, col, name,
 
     ### normalize km/split and row_km/row_split
     if(missing(row_km)) row_km = km
+    if(is.null(row_km)) row_km = 1
     if(missing(row_split)) row_split = split
     if(missing(row_gap)) row_gap = gap
+    if(is.null(column_km)) column_km = 1
 
     ####### zero and one column matrix ########
     if(ncol(matrix) == 0 || nrow(matrix) == 0) {
