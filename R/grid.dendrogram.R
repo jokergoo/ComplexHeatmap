@@ -586,13 +586,13 @@ cluster_within_group = function(mat, factor) {
             order.dendrogram(dend_list[[le]]) = order_list[[le]]
         }
     }
-    
+
     parent = as.dendrogram(hclust(dist(t(sapply(order_list, function(x) rowMeans(mat[, x, drop = FALSE]))))))
     dend_list = lapply(dend_list, function(dend) dendrapply(dend, function(node) {
         attr(node, "height") = 0
         node
     }))
     dend = merge_dendrogram(parent, dend_list)
-    order.dendrogram(dend) = unlist(order_list)
+    order.dendrogram(dend) = unlist(order_list[order.dendrogram(parent)])
     return(dend)
 }
