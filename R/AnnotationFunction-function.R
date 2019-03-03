@@ -125,6 +125,7 @@ subset_vector = function(x, i) x[i]
 #          the value of ``pt_size`` can be a vector, while if ``x`` is a matrix, ``pt_size`` can
 #          only be a single value.
 # -pt_gp Graphic parameters for points/symbols. The length setting is same as ``pt_size``.
+#     If ``pch`` is set as letters, the fontsize should be set as ``pt_gp = gpar(fontsize = ...)``.
 # -anno_simple_size size of the simple annotation.
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
