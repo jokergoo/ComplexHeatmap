@@ -690,6 +690,18 @@ print.comb_mat = function(x, ...) {
 	} else {
 		cat("  sets are on columns\n")
 	}
+	cat("
+Utility functions that can be applied:
+- set_name(): name of the sets.
+- set_size(): size of the sets.
+- comb_name(): name of the combination sets.
+- comb_size(): size of the combination sets.
+- comb_degree(): degree of the combination sets.
+- extract_comb(): extract elements in the specific combination sets.
+- t(): transpose the combination matrix.
+- '[': subset the combination matrix.
+")
+
 }
 
 # == title
