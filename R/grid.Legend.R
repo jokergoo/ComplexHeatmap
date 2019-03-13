@@ -937,10 +937,15 @@ split_by_max = function(x, max, gap = 0) {
 	ind = seq_along(x)
 	ind_list = list()
 	while(length(x)) {
-		i = max(which(cumsum(x) < max))
-		ind_list = c(ind_list, list(ind[1:i]))
-		x = x[-(1:i)]
-		ind = ind[-(1:i)]
+		i2 = which(cumsum(x) < max)
+		if(length(i2)) {
+			i = max(i2)
+		} else {
+			i = 1
+		}
+		ind_list = c(ind_list, list(ind[seq_len(i)]))
+		x = x[-seq_len(i)]
+		ind = ind[-seq_len(i)]
 	}
 	ind_list
 }
