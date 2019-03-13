@@ -26,6 +26,7 @@
 # -clustering_distance_columns There is a specific distance method ``ks`` which is the Kolmogorov-Smirnov statistic between two distributions.
 #          For other methods, the distance is calculated on the density matrix.
 # -clustering_method_columns Pass to `Heatmap`.
+# -mc.cores Multiple cores for calculating ks distance.
 # -... Pass to `Heatmap`.
 #
 # == details
@@ -83,6 +84,7 @@ densityHeatmap = function(data,
 	cluster_columns = FALSE,
 	clustering_distance_columns = "ks",
 	clustering_method_columns = "complete",
+	mc.cores = 1,
 
 	...) {
 
@@ -138,17 +140,7 @@ densityHeatmap = function(data,
 
 	if(cluster_columns) {
 		if(clustering_distance_columns == "ks") {
-			nc = length(data)
-		    d = matrix(NA, nrow = nc, ncol = nc)
-		    rownames(d) = colnames(d) = rownames(d)
-
-		    for(i in 2:nc) {
-		        for(j in 1:(nc-1)) {
-		            suppressWarnings(d[i, j] <- ks_dist(data[[i]], data[[j]]))
-		        }
-		    }
-
-		    d = as.dist(d)
+			d = ks_dist(data, mc.cores = mc.cores)
 
 			hc = hclust(d, clustering_method_columns)
 			cluster_columns = hc
@@ -259,7 +251,8 @@ densityHeatmap = function(data,
 	return(ht_list)
 }
 
-ks_dist = function(x, y) {
+# https://stackoverflow.com/a/29853834/3425904
+ks_dist_pair = function(x, y) {
 	# if(length(x) > 5000) x = sample(x, 5000)
 	# if(length(y) > 5000) y = sample(y, 5000)
 	n <- length(x)
@@ -269,4 +262,45 @@ ks_dist = function(x, y) {
     w <- c(x, y)
     z <- cumsum(ifelse(order(w) <= n.x, 1/n.x, -1/n.y))
     max(abs(z))
+}
+
+ks_dist = function(mat, mc.cores = 1) {
+	nr = nrow(mat)
+    nc = ncol(mat)
+
+	ind_mat = expand.grid(seq_len(nc), seq_len(nc))
+	ind_mat = ind_mat[  ind_mat[, 1] > ind_mat[, 2], , drop = FALSE]
+	v = mclapply(seq_len(nrow(ind_mat)), function(ind) {
+		i = ind_mat[ind, 1]
+		j = ind_mat[ind, 2]
+		suppressWarnings(d <- ks_dist_pair(mat[, i], mat[, j]))
+		return(d)
+	}, mc.cores = mc.cores)
+	v = unlist(v)
+
+	i = ind_mat[, 1]
+	j = ind_mat[, 2]
+	
+    ind = (j - 1) * nr + i
+    d = matrix(0, nrow = nc, ncol = nc)
+    d[ind] = v
+    as.dist(d)
+}
+
+# m = matrix(rnorm(100), 10)
+# ks_dist(m, mc.cores = 1)
+# ks_dist(m, mc.cores = 2)
+# ks_dist_1(m)
+ks_dist_1 = function(mat) {
+	nc = ncol(mat)
+    d = matrix(NA, nrow = nc, ncol = nc)
+    rownames(d) = colnames(d) = rownames(d)
+
+    for(i in 2:nc) {
+        for(j in 1:(nc-1)) {
+            suppressWarnings(d[i, j] <- ks_dist_pair(mat[, i], mat[, j]))
+        }
+    }
+
+    as.dist(d)
 }
