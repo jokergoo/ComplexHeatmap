@@ -140,7 +140,7 @@ densityHeatmap = function(data,
 
 	if(cluster_columns) {
 		if(clustering_distance_columns == "ks") {
-			d = ks_dist(data, mc.cores = mc.cores)
+			d = ks_dist(mat, mc.cores = mc.cores)
 
 			hc = hclust(d, clustering_method_columns)
 			cluster_columns = hc
@@ -264,41 +264,59 @@ ks_dist_pair = function(x, y) {
     max(abs(z))
 }
 
-ks_dist = function(mat, mc.cores = 1) {
-	nr = nrow(mat)
-    nc = ncol(mat)
+# data: a list or a matrix
+ks_dist = function(data, mc.cores = 1) {
+	has_names = TRUE
+	if(is.matrix(data)) {
+		has_names = !is.null(colnames(data))
+		data = as.data.frame(data)
+	}
+
+    nc = length(data)
 
 	ind_mat = expand.grid(seq_len(nc), seq_len(nc))
 	ind_mat = ind_mat[  ind_mat[, 1] > ind_mat[, 2], , drop = FALSE]
 	v = mclapply(seq_len(nrow(ind_mat)), function(ind) {
 		i = ind_mat[ind, 1]
 		j = ind_mat[ind, 2]
-		suppressWarnings(d <- ks_dist_pair(mat[, i], mat[, j]))
+		suppressWarnings(d <- ks_dist_pair(data[[i]], data[[j]]))
 		return(d)
 	}, mc.cores = mc.cores)
 	v = unlist(v)
 
 	i = ind_mat[, 1]
 	j = ind_mat[, 2]
+
 	
-    ind = (j - 1) * nr + i
+    ind = (j - 1) * nc + i
     d = matrix(0, nrow = nc, ncol = nc)
+    if(has_names) rownames(d) = colnames(d) = names(data)
+
     d[ind] = v
     as.dist(d)
 }
 
-# m = matrix(rnorm(100), 10)
+# m = matrix(rnorm(200), nc = 10)
 # ks_dist(m, mc.cores = 1)
 # ks_dist(m, mc.cores = 2)
 # ks_dist_1(m)
-ks_dist_1 = function(mat) {
-	nc = ncol(mat)
+# lt = lapply(1:10, function(i) rnorm(runif(1, min = 10, max = 20)))
+# ks_dist(lt, mc.cores = 1)
+# ks_dist(lt, mc.cores = 2)
+# ks_dist_1(lt)
+ks_dist_1 = function(data) {
+	has_names = TRUE
+	if(is.matrix(data)) {
+		has_names = !is.null(colnames(data))
+		data = as.data.frame(data)
+	}
+	nc = length(data)
     d = matrix(NA, nrow = nc, ncol = nc)
-    rownames(d) = colnames(d) = rownames(d)
+    if(has_names) rownames(d) = colnames(d) = names(data)
 
     for(i in 2:nc) {
         for(j in 1:(nc-1)) {
-            suppressWarnings(d[i, j] <- ks_dist_pair(mat[, i], mat[, j]))
+            suppressWarnings(d[i, j] <- ks_dist_pair(data[[i]], data[[j]]))
         }
     }
 
