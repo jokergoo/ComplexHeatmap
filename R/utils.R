@@ -72,7 +72,7 @@ default_col = function(x, main_matrix = FALSE) {
         return(colors)
     } else if(is.numeric(x)) {
         if(main_matrix) {
-            p = sum(x > 0)/length(x)
+            p = sum(x > 0)/sum(x != 0)
             if(p > 0.3 & p < 0.7) {
                 if(ht_opt$verbose) {
                     cat("This matrix has both negative and positive values, use a color mapping symmetric to zero\n")
