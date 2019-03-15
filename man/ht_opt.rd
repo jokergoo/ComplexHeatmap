@@ -48,7 +48,7 @@ Following parameters control heatmap annotations:
 
 \describe{
   \item{annotation_border}{\code{border} in all \code{\link{HeatmapAnnotation}}.}
-  \item{anno_simple_size}{size for the simple annotation.}
+  \item{simple_anno_size}{size for the simple annotation.}
 }
 
 Following parameters control the space between heatmap components:

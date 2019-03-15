@@ -141,3 +141,56 @@ ha2 %v% Heatmap(m, name = "mat", cluster_columns = FALSE, column_split = split, 
 
 
 
+### when there are only simple annotations
+col_fun = colorRamp2(c(0, 10), c("white", "blue"))
+ha = HeatmapAnnotation(
+    foo = cbind(a = 1:10, b = 10:1), 
+    bar = sample(letters[1:3], 10, replace = TRUE),
+    col = list(foo = col_fun,
+               bar = c("a" = "red", "b" = "green", "c" = "blue")
+    ),
+    simple_anno_size = unit(1, "cm")
+)
+draw(ha, test = TRUE)
+
+set.seed(123)
+mat1 = matrix(rnorm(80, 2), 8, 10)
+mat1 = rbind(mat1, matrix(rnorm(40, -2), 4, 10))
+rownames(mat1) = paste0("R", 1:12)
+colnames(mat1) = paste0("C", 1:10)
+
+mat2 = matrix(runif(60, max = 3, min = 1), 6, 10)
+mat2 = rbind(mat2, matrix(runif(60, max = 2, min = 0), 6, 10))
+rownames(mat2) = paste0("R", 1:12)
+colnames(mat2) = paste0("C", 1:10)
+
+ind = sample(12, 12)
+mat1 = mat1[ind, ]
+mat2 = mat2[ind, ]
+
+ha1 = HeatmapAnnotation(foo1 = 1:10, 
+	                    annotation_height = unit(1, "cm"),
+	                    simple_anno_size_adjust = TRUE,
+                        annotation_name_side = "left")
+ha2 = HeatmapAnnotation(df = data.frame(foo1 = 1:10,
+                                        foo2 = 1:10,
+                                        foo4 = 1:10,
+                                        foo5 = 1:10))
+ht1 = Heatmap(mat1, name = "rnorm", top_annotation = ha1)
+ht2 = Heatmap(mat2, name = "runif", top_annotation = ha2)
+
+ht1 + ht2
+
+##### test size of a single simple annotation
+
+ha = HeatmapAnnotation(foo1 = 1:10, 
+	simple_anno_size = unit(1, "cm")
+)
+ha = HeatmapAnnotation(foo1 = 1:10, 
+	annotation_height = unit(1, "cm"),
+	simple_anno_size_adjust = TRUE
+)
+ha = HeatmapAnnotation(foo1 = 1:10, 
+	height = unit(1, "cm"),
+	simple_anno_size_adjust = TRUE
+)

@@ -26,7 +26,7 @@ HeatmapAnnotation(...,
     annotation_width = NULL,
     height = NULL,
     width = NULL,
-    anno_simple_size = ht_opt$anno_simple_size,
+    simple_anno_size = ht_opt$simple_anno_size,
     simple_anno_size_adjust = FALSE)
 }
 \arguments{
@@ -51,7 +51,7 @@ HeatmapAnnotation(...,
   \item{annotation_width}{Width of each annotation if annotations are row annotations.}
   \item{height}{Height of the whole column annotations.}
   \item{width}{Width of the whole heatmap annotations.}
-  \item{anno_simple_size}{Size of the simple annotation.}
+  \item{simple_anno_size}{Size of the simple annotation.}
   \item{simple_anno_size_adjust}{Whether also adjust the size of simple annotations when adjusting the whole heatmap annotation.}
 
 }

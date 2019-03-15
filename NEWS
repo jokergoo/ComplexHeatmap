@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.99.6
+
+* adjust the size of heatmap annotations and add testing scripts
+
+========================
+
 CHANGES in VERSION 1.99.5
 
 * add `UpSet()` and some related functions to make Upset plots

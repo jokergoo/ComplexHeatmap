@@ -26,14 +26,16 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 		height = "ANY",  
 		gap = "ANY",
 		subsetable = "logical",
-		extended = "ANY"
+		extended = "ANY",
+		param = "list"
 	),
 	prototype = list(
 		anno_list = list(),
 		which = "column",
 		gap = unit(0, "mm"),
 		subsetable = FALSE,
-		extended = unit(c(0, 0, 0, 0), "mm")
+		extended = unit(c(0, 0, 0, 0), "mm"),
+		param = list()
 	),
     contains = "AdditiveUnit"
 )
@@ -65,7 +67,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -annotation_width Width of each annotation if annotations are row annotations.
 # -height Height of the whole column annotations.
 # -width Width of the whole heatmap annotations.
-# -anno_simple_size Size of the simple annotation.
+# -simple_anno_size Size of the simple annotation.
 # -simple_anno_size_adjust Whether also adjust the size of simple annotations when adjusting the whole heatmap annotation.
 #
 # == details
@@ -109,11 +111,16 @@ HeatmapAnnotation = function(...,
 	annotation_width = NULL, 
 	height = NULL,
 	width = NULL,
-	anno_simple_size = ht_opt$anno_simple_size,
+	simple_anno_size = ht_opt$simple_anno_size,
 	simple_anno_size_adjust = FALSE
 	) {
 
 	dev.null()
+
+	is_height_set = !missing(height)
+	is_width_set = !missing(width)
+	is_annotation_height_set = !missing(annotation_height)
+	is_annotation_width_set = !missing(annotation_width)
 
 	.ENV$current_annotation_which = NULL
 	which = match.arg(which)[1]
@@ -197,6 +204,10 @@ HeatmapAnnotation = function(...,
     l_simple_anno = sapply(anno_value_list, is.atomic)
     n_simple_anno = sum(l_simple_anno)
     simple_anno_name = names(anno_value_list[l_simple_anno])
+
+    if("anno_simple_size" %in% names(anno_value_list)) {
+    	stop_wrap("Please use `simple_anno_size` as the argument.")
+    }
 
     if(verbose) qqcat("in total there are @{length(anno_value_list)} annotations (@{n_simple_anno} simple annotations)\n")
 	
@@ -318,7 +329,7 @@ HeatmapAnnotation = function(...,
 			arg_list$legend_param = annotation_legend_param[[i_simple + 1]]
 			arg_list$value = anno_value_list[[ag]]
 			arg_list$na_col = na_col
-			# arg_list$anno_simple_size = anno_simple_size
+			arg_list$simple_anno_size = simple_anno_size
 			if(missing(col)) {
 				anno_list[[ag]] = do.call(SingleAnnotation, arg_list)
 		    } else {
@@ -361,6 +372,8 @@ HeatmapAnnotation = function(...,
 
 
 	if(is.null(gap)) gap = unit(0, "mm")
+	if(identical(gap, 0)) gap = unit(0, "mm")
+	if(!inherits(gap, "unit")) stop_wrap("`gap` needs to be a unit object.")
 
 	# the nth gap does not really matter
     if(length(gap) == 1) {
@@ -428,14 +441,20 @@ HeatmapAnnotation = function(...,
     	}))
     }
     .Object@extended = extended
+    .Object@param = list(
+    	simple_anno_size = simple_anno_size, 
+    	simple_anno_size_adjust = simple_anno_size_adjust,
+    	is_height_set = is_height_set,
+    	is_width_set = is_width_set,
+    	is_annotation_height_set = is_annotation_height_set,
+    	is_annotation_width_set = is_annotation_width_set
+    )
 
     ## adjust height/width if `width`/`annotation_width` is set
     if(which == "column") {
-	    .Object = re_size(.Object, height = height, annotation_height = annotation_height,
-	    	anno_simple_size = anno_simple_size, simple_anno_size_adjust = simple_anno_size_adjust)
+	    .Object = re_size(.Object, height = height, annotation_height = annotation_height)
 	} else {
-		.Object = re_size(.Object, width = width, annotation_width = annotation_width, 
-			anno_simple_size = anno_simple_size, simple_anno_size_adjust = simple_anno_size_adjust)
+		.Object = re_size(.Object, width = width, annotation_width = annotation_width)
 	}
 
     return(.Object)
@@ -1015,7 +1034,7 @@ length.HeatmapAnnotation = function(x) {
 # -annotation_width A vector of of annotation widths in `grid::unit` class.
 # -height The height of the complete heatmap annotation.
 # -width The width of the complete heatmap annotation.
-# -anno_simple_size The size of one line of the simple annotation.
+# -simple_anno_size The size of one line of the simple annotation.
 # -simple_anno_size_adjust Whether adjust the size of the simple annotation?
 #
 # == details
@@ -1027,10 +1046,10 @@ length.HeatmapAnnotation = function(x) {
 #    ``annotation_height`` are absolute units, ``height`` is ignored.
 # 2. If ``annotation_height`` contains non-absolute units, ``height`` also need to be set and the
 #    non-absolute units should be set in a simple form such as 1:10 or ``unit(1, "null")``.
-# 3. ``anno_simple_size`` is only used when ``annotation_height`` is NULL.
+# 3. ``simple_anno_size`` is only used when ``annotation_height`` is NULL.
 # 4. If only ``height`` is set, non-simple annotation is adjusted while keeps simple anntation unchanged.
 # 5. If only ``height`` is set and all annotations are simple annotations, all anntations are adjusted,
-#      and ``anno_simple_size`` is disabled.
+#      and ``simple_anno_size`` is disabled.
 # 6. If ``simple_anno_size_adjust`` is ``FALSE``, the size of the simple annotations will not change.
 #
 setMethod(f = "re_size",
@@ -1040,17 +1059,17 @@ setMethod(f = "re_size",
 	annotation_width = NULL,
 	height = NULL, 
 	width = NULL, 
-	anno_simple_size = ht_opt$anno_simple_size,
-	simple_anno_size_adjust = NULL) {
+	simple_anno_size = object@param$simple_anno_size,
+	simple_anno_size_adjust = object@param$simple_anno_size_adjust) {
 
 	if(object@which == "column") {
 		if(!missing(width) || !missing(annotation_width)) {
-			stop_wrap("Please use ComplexHeatmap:::width() directly")
+			stop_wrap("You cannot set the width of the column annotations.")
 		}
 	}
 	if(object@which == "colrowumn") {
 		if(!missing(height) || !missing(annotation_height)) {
-			stop_wrap("Please use ComplexHeatmap:::height() directly")
+			stop_wrap("You cannot set the height of the row annotations.")
 		}
 	}
 
@@ -1078,7 +1097,6 @@ setMethod(f = "re_size",
 			return(object)
 		}
 	}
-
 	if(which == "column") {
 		if(is.null(height)) {
 			is_size_set = FALSE
@@ -1106,7 +1124,7 @@ setMethod(f = "re_size",
 				if(length(object@anno_list) == 1 && !inherits(annotation_height, "unit")) {
 					stop_wrap("When there is only one annotation, `annotation_height` should be set as a unit object.")
 				}
-				if(!inherits(height, "unit")) {
+				if(!inherits(height, "unit") || !object@param$is_height_set) {
 					height = annotation_height[1]
 				}
 				if(!inherits(height, "unit")) {
@@ -1151,7 +1169,7 @@ setMethod(f = "re_size",
 				if(length(object@anno_list) == 1 && !inherits(annotation_width, "unit")) {
 					stop_wrap("When there is only one annotation, `annotation_width` should be set as a unit object.")
 				}
-				if(!inherits(width, "unit")) {
+				if(!inherits(width, "unit") || !object@param$is_width_set) {
 					width = annotation_width[1]
 				}
 				if(!inherits(width, "unit")) {
@@ -1260,10 +1278,14 @@ setMethod(f = "re_size",
 	} else {
 		size = convertUnitFun(size, "mm", valueOnly = TRUE)
 		anno_size = convertUnitFun(anno_size, "mm", valueOnly = TRUE)
-	
-		l_simple_anno = sapply(seq_len(n), function(i) {
-			!is.null(object@anno_list[[i]]@color_mapping)
-		})
+		
+		if(simple_anno_size_adjust) {
+			l_simple_anno = rep(FALSE, n)
+		} else {
+			l_simple_anno = sapply(seq_len(n), function(i) {
+				!is.null(object@anno_list[[i]]@color_mapping)
+			})
+		}
 
 		if(all(l_simple_anno)) {
 			anno_size2 = anno_size/sum(anno_size) * (size_adjusted - sum(gap))
@@ -1273,22 +1295,21 @@ setMethod(f = "re_size",
 
 			anno_size2 = anno_size
 			# size_adjusted = convertUnitFun(size_adjusted, "mm", valueOnly = TRUE)
-			if(is.null(anno_simple_size)) {
-				anno_simple_size = 5
+			if(is.null(simple_anno_size)) {
+				simple_anno_size = 5
 			} else {
-				anno_simple_size = convertUnitFun(anno_simple_size, "mm", valueOnly = TRUE)
+				simple_anno_size = convertUnitFun(simple_anno_size, "mm", valueOnly = TRUE)
 			}
 			if(size_adjusted <= sum(gap)) {
 				stop_wrap(paste0(size_name, " you set is smaller than sum of gaps."))
 			}
 
 			## fix the size of simple annotation and zoom function annotations
-			ts = size_adjusted - sum(gap) - sum(anno_size[l_simple_anno]*anno_simple_size/5)
+			ts = size_adjusted - sum(gap) - sum(anno_size[l_simple_anno]) # total size excluding simple annotations and gap
 			if(ts < 0) {
 				stop_wrap(paste0(size_name, " you set is too small."))
 			}
 			anno_size2[!l_simple_anno] = anno_size[!l_simple_anno]/sum(anno_size[!l_simple_anno]) * ts
-			anno_size2[l_simple_anno] = anno_size[l_simple_anno]*anno_simple_size/5
 
 			size_adjusted = unit(size_adjusted, "mm")
 			anno_size2 = unit(anno_size2, "mm")

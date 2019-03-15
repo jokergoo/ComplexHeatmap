@@ -235,7 +235,7 @@ setMethod(f = "add_heatmap",
 # -heatmap_border this set the value in `ht_opt` and reset back after the plot is done
 # -annotation_border  this set the value in `ht_opt` and reset back after the plot is done
 # -fastcluster this set the value in `ht_opt` and reset back after the plot is done
-# -anno_simple_size  this set the value in `ht_opt` and reset back after the plot is done
+# -simple_anno_size  this set the value in `ht_opt` and reset back after the plot is done
 # -show_parent_dend_line this set the value in `ht_opt` and reset back after the plot is done
 #
 # == detail
@@ -330,7 +330,7 @@ setMethod(f = "draw",
     heatmap_border = NULL,
     annotation_border = NULL,
     fastcluster = NULL,
-    anno_simple_size = NULL,
+    simple_anno_size = NULL,
     show_parent_dend_line = NULL
     ) {
 
@@ -350,7 +350,7 @@ setMethod(f = "draw",
                     "heatmap_border",
                     "annotation_border",
                     "fastcluster",
-                    "anno_simple_size",
+                    "simple_anno_size",
                     "show_parent_dend_line")) {
         v = get(opt_nm, inherits = FALSE)
         if(!is.null(v)) {

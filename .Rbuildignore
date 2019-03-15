@@ -1,6 +1,6 @@
 ^\..*
 README.*
-tests/
+tests_not_run/
 check.bat
 ^.*\.Rproj$
 ^\.Rproj\.user$

@@ -35,7 +35,7 @@
 # Following parameters control heatmap annotations:
 #
 # -annotation_border ``border`` in all `HeatmapAnnotation`.
-# -anno_simple_size size for the simple annotation.
+# -simple_anno_size size for the simple annotation.
 #
 # Following parameters control the space between heatmap components:
 #
@@ -126,7 +126,7 @@ ht_opt = setGlobalOptions(
 		},
 		.length = 1),
 	show_vp = FALSE,
-	anno_simple_size = list(
+	simple_anno_size = list(
 		.value = unit(5, "mm"),
 		.class = "unit"
 	),

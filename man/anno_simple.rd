@@ -10,7 +10,7 @@ Simple Annotation
 anno_simple(x, col, na_col = "grey",
     which = c("column", "row"), border = FALSE, gp = gpar(col = NA),
     pch = NULL, pt_size = unit(1, "snpc")*0.8, pt_gp = gpar(),
-    anno_simple_size = ht_opt$anno_simple_size,
+    simple_anno_size = ht_opt$simple_anno_size,
     width = NULL, height = NULL)
 }
 \arguments{
@@ -24,7 +24,7 @@ anno_simple(x, col, na_col = "grey",
   \item{pch}{Points/symbols that are added on top of the annotation grids. The value can be numeric or single letters. It can be a vector if \code{x} is a vector and a matrix if \code{x} is a matrix. No points are drawn if the corresponding values are NA.}
   \item{pt_size}{Size of the points/symbols. It should be a \code{\link[grid]{unit}} object. If \code{x} is a vector, the value of \code{pt_size} can be a vector, while if \code{x} is a matrix, \code{pt_size} can only be a single value.}
   \item{pt_gp}{Graphic parameters for points/symbols. The length setting is same as \code{pt_size}. If \code{pch} is set as letters, the fontsize should be set as \code{pt_gp = gpar(fontsize = ...)}.}
-  \item{anno_simple_size}{size of the simple annotation.}
+  \item{simple_anno_size}{size of the simple annotation.}
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
   \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
 

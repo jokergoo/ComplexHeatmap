@@ -73,7 +73,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -name_offset Offset to the annotation, a `grid::unit` object.
 # -name_side 'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations
 # -name_rot Rotation of the annotation name, it can only take values in ``c(0, 90, 180, 270)``.
-# -anno_simple_size size of the simple annotation.
+# -simple_anno_size size of the simple annotation.
 # -width The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation,
 #        the width must be an absolute unit.
 # -height The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation,
@@ -152,7 +152,7 @@ SingleAnnotation = function(name, value, col, fun,
 	name_offset = NULL,
 	name_side = ifelse(which == "column", "right", "bottom"),
     name_rot = NULL,
-    anno_simple_size = ht_opt$anno_simple_size,
+    simple_anno_size = ht_opt$simple_anno_size,
     width = NULL, height = NULL) {
 
     .ENV$current_annotation_which = NULL
@@ -471,7 +471,7 @@ SingleAnnotation = function(name, value, col, fun,
         value = value
 
         if(verbose) qqcat("@{name}: generate AnnotationFunction for simple annotation values by anno_simple()\n")
-        .Object@fun = anno_simple(value, col = color_mapping, which = which, na_col = na_col, gp = gp, border = border, anno_simple_size = anno_simple_size)
+        .Object@fun = anno_simple(value, col = color_mapping, which = which, na_col = na_col, gp = gp, border = border, simple_anno_size = simple_anno_size)
         if(missing(width)) {
             .Object@width = .Object@fun@width
         } else {

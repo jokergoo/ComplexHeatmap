@@ -13,8 +13,8 @@ Resize the Width or Height of Heatmap Annotations
     annotation_width = NULL,
     height = NULL,
     width = NULL,
-    anno_simple_size = ht_opt$anno_simple_size,
-    simple_anno_size_adjust = NULL)
+    simple_anno_size = object@param$simple_anno_size,
+    simple_anno_size_adjust = object@param$simple_anno_size_adjust)
 }
 \arguments{
 
@@ -23,7 +23,7 @@ Resize the Width or Height of Heatmap Annotations
   \item{annotation_width}{A vector of of annotation widths in \code{\link[grid]{unit}} class.}
   \item{height}{The height of the complete heatmap annotation.}
   \item{width}{The width of the complete heatmap annotation.}
-  \item{anno_simple_size}{The size of one line of the simple annotation.}
+  \item{simple_anno_size}{The size of one line of the simple annotation.}
   \item{simple_anno_size_adjust}{Whether adjust the size of the simple annotation?}
 
 }
@@ -36,10 +36,10 @@ The basic rules are (take \code{height} and \code{annotation_height} for example
    \code{annotation_height} are absolute units, \code{height} is ignored.
 2. If \code{annotation_height} contains non-absolute units, \code{height} also need to be set and the
    non-absolute units should be set in a simple form such as 1:10 or \code{unit(1, "null")}.
-3. \code{anno_simple_size} is only used when \code{annotation_height} is NULL.
+3. \code{simple_anno_size} is only used when \code{annotation_height} is NULL.
 4. If only \code{height} is set, non-simple annotation is adjusted while keeps simple anntation unchanged.
 5. If only \code{height} is set and all annotations are simple annotations, all anntations are adjusted,
-     and \code{anno_simple_size} is disabled.
+     and \code{simple_anno_size} is disabled.
 6. If \code{simple_anno_size_adjust} is \code{FALSE}, the size of the simple annotations will not change.
 }
 \examples{

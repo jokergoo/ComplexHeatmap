@@ -126,7 +126,7 @@ subset_vector = function(x, i) x[i]
 #          only be a single value.
 # -pt_gp Graphic parameters for points/symbols. The length setting is same as ``pt_size``.
 #     If ``pch`` is set as letters, the fontsize should be set as ``pt_gp = gpar(fontsize = ...)``.
-# -anno_simple_size size of the simple annotation.
+# -simple_anno_size size of the simple annotation.
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
@@ -162,7 +162,7 @@ subset_vector = function(x, i) x[i]
 anno_simple = function(x, col, na_col = "grey", 
 	which = c("column", "row"), border = FALSE, gp = gpar(col = NA),
 	pch = NULL, pt_size = unit(1, "snpc")*0.8, pt_gp = gpar(), 
-	anno_simple_size = ht_opt$anno_simple_size,
+	simple_anno_size = ht_opt$simple_anno_size,
 	width = NULL, height = NULL) {
 
 	if(is.null(.ENV$current_annotation_which)) {
@@ -180,7 +180,7 @@ anno_simple = function(x, col, na_col = "grey",
 	input_is_matrix = is.matrix(x)
 
 	anno_size = anno_width_and_height(which, width, height, 
-		anno_simple_size*ifelse(input_is_matrix, ncol(x), 1))
+		simple_anno_size*ifelse(input_is_matrix, ncol(x), 1))
 	
 	if(missing(col)) {
 		col = default_col(x)
