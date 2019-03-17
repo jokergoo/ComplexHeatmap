@@ -274,6 +274,13 @@ ks_dist = function(data, mc.cores = 1) {
 
     nc = length(data)
 
+    if(.Platform$OS.type == "windows") {
+    	if(mc.cores > 1) {
+    		message("parallel::mclapply() does not support multiple cores on Windows. mc.cores is reset to 1.")
+    		mc.cores = 1
+    	}
+    }
+
 	ind_mat = expand.grid(seq_len(nc), seq_len(nc))
 	ind_mat = ind_mat[  ind_mat[, 1] > ind_mat[, 2], , drop = FALSE]
 	v = mclapply(seq_len(nrow(ind_mat)), function(ind) {

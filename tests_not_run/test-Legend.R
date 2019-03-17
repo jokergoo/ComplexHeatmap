@@ -185,6 +185,10 @@ draw(pd, test = "many legends, max_height = unit(10, 'cm')")
 pd = packLegend(lgd1, lgd2, lgd1, lgd2, lgd1, lgd2, max_height = unit(10, "cm"), gap = unit(1, "cm"))
 draw(pd, test = "many legends, max_height = unit(10, 'cm'), with gap")
 
+lgd_long = Legend(at = 1:50, legend_gp = gpar(fill = 1:50))
+pd = packLegend(lgd1, lgd2, lgd1, lgd2, lgd1, lgd2, lgd_long, max_height = unit(10, "cm"))
+draw(pd, test = "many legends with a long one, max_height = unit(10, 'cm')")
+
 lgd1 = Legend(at = 1:6, legend_gp = gpar(fill = 1:6), title = "legend1",
 	nr = 1)
 lgd2 = Legend(col_fun = col_fun, title = "legend2", at = c(0, 0.25, 0.5, 0.75, 1),
