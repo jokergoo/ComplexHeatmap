@@ -270,4 +270,7 @@ importFrom("utils", "combn")
 importFrom("utils", "getFromNamespace")
 importFrom("utils", "packageDescription")
 importFrom("utils", "str")
-
+importFrom("clue", as.cl_hard_partition)
+importFrom("clue", cl_ensemble)
+importFrom("clue", cl_consensus)
+importFrom("clue", cl_class_ids)

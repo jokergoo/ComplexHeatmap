@@ -152,8 +152,10 @@ Heatmap = setClass("Heatmap",
 # -split A vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
 #        indicating to split the dendrogram by `stats::cutree`.
 # -row_km Same as ``km``.
+# -row_km_repeats Number of k-means runs to get a consensus k-means clustering.
 # -row_split Same as ``split``.
 # -column_km K-means clustering on columns.
+# -column_km_repeats Number of k-means runs to get a consensus k-means clustering.
 # -column_split Split on columns. For heatmap splitting, please refer to https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-split .
 # -gap Gap between row slices if the heatmap is split by rows. The value should be a `grid::unit` object.
 # -row_gap Same as ``gap``.
@@ -254,8 +256,10 @@ Heatmap = function(matrix, col, name,
     km = 1, 
     split = NULL, 
     row_km = km,
+    row_km_repeats = 10,
     row_split = split,
     column_km = 1,
+    column_km_repeats = 10,
     column_split = NULL,
     gap = unit(1, "mm"),
     row_gap = unit(1, "mm"),
@@ -413,8 +417,10 @@ Heatmap = function(matrix, col, name,
     .Object@matrix = matrix
 
     .Object@matrix_param$row_km = row_km
+    .Object@matrix_param$row_km_repeats = row_km_repeats
     .Object@matrix_param$row_gap = row_gap
     .Object@matrix_param$column_km = column_km
+    .Object@matrix_param$column_km_repeats = column_km_repeats
     .Object@matrix_param$column_gap = column_gap
 
     ### check row_split and column_split ###
@@ -912,6 +918,7 @@ make_cluster = function(object, which = c("row", "column")) {
     method = slot(object, paste0(which, "_dend_param"))$method
     order = slot(object, paste0(which, "_order"))  # pre-defined row order
     km = getElement(object@matrix_param, paste0(which, "_km"))
+    km_repeats = getElement(object@matrix_param, paste0(which, "_km_repeats"))
     split = getElement(object@matrix_param, paste0(which, "_split"))
     reorder = slot(object, paste0(which, "_dend_param"))$reorder
     cluster = slot(object, paste0(which, "_dend_param"))$cluster
@@ -1108,16 +1115,26 @@ make_cluster = function(object, which = c("row", "column")) {
 
     if(verbose) qq("clustering object is not pre-defined, clustering is applied to each @{which} slice\n")
     # make k-means clustering to add a split column
+    consensus_kmeans = function(mat, centers, km_repeats) {
+        partition_list = lapply(seq_len(km_repeats), function(i) {
+            as.cl_hard_partition(kmeans(mat, centers))
+        })
+        partition_list = cl_ensemble(list = partition_list)
+        partition_consensus = cl_consensus(partition_list)
+        as.vector(cl_class_ids(partition_consensus)) 
+    }
     if(km > 1 && is.numeric(mat)) {
         if(which == "row") {
-            km.fit = kmeans(mat, centers = km)
-            cl = km.fit$cluster
+            # km.fit = kmeans(mat, centers = km)
+            # cl = km.fit$cluster
+            cl = consensus_kmeans(mat, km, km_repeats)
             meanmat = lapply(sort(unique(cl)), function(i) {
                 colMeans(mat[cl == i, , drop = FALSE])
             })
         } else {
-            km.fit = kmeans(t(mat), centers = km)
-            cl = km.fit$cluster
+            # km.fit = kmeans(t(mat), centers = km)
+            # cl = km.fit$cluster
+            cl = consensus_kmeans(t(mat), km, km_repeats)
             meanmat = lapply(sort(unique(cl)), function(i) {
                 rowMeans(mat[, cl == i, drop = FALSE])
             })
