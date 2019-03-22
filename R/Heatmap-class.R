@@ -152,10 +152,11 @@ Heatmap = setClass("Heatmap",
 # -split A vector or a data frame by which the rows are split. But if ``cluster_rows`` is a clustering object, ``split`` can be a single number
 #        indicating to split the dendrogram by `stats::cutree`.
 # -row_km Same as ``km``.
-# -row_km_repeats Number of k-means runs to get a consensus k-means clustering.
+# -row_km_repeats Number of k-means runs to get a consensus k-means clustering. Note if ``row_km_repeats`` is set to more than one, the final number
+#                of groups might be smaller than ``row_km``, but this might means the original ``row_km`` is not a good choice.
 # -row_split Same as ``split``.
 # -column_km K-means clustering on columns.
-# -column_km_repeats Number of k-means runs to get a consensus k-means clustering.
+# -column_km_repeats Number of k-means runs to get a consensus k-means clustering. Similar as ``row_km_repeats``.
 # -column_split Split on columns. For heatmap splitting, please refer to https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-split .
 # -gap Gap between row slices if the heatmap is split by rows. The value should be a `grid::unit` object.
 # -row_gap Same as ``gap``.

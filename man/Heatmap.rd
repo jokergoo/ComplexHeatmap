@@ -67,8 +67,10 @@ Heatmap(matrix, col, name,
     km = 1,
     split = NULL,
     row_km = km,
+    row_km_repeats = 10,
     row_split = split,
     column_km = 1,
+    column_km_repeats = 10,
     column_split = NULL,
     gap = unit(1, "mm"),
     row_gap = unit(1, "mm"),
@@ -149,8 +151,10 @@ Heatmap(matrix, col, name,
   \item{km}{Apply k-means clustering on rows. If the value is larger than 1, the heatmap will be split by rows according to the k-means clustering. For each row slice, hierarchical clustering is still applied with parameters above.}
   \item{split}{A vector or a data frame by which the rows are split. But if \code{cluster_rows} is a clustering object, \code{split} can be a single number indicating to split the dendrogram by \code{\link[stats]{cutree}}.}
   \item{row_km}{Same as \code{km}.}
+  \item{row_km_repeats}{Number of k-means runs to get a consensus k-means clustering. Note if \code{row_km_repeats} is set to more than one, the final number of groups might be smaller than \code{row_km}, but this might means the original \code{row_km} is not a good choice.}
   \item{row_split}{Same as \code{split}.}
   \item{column_km}{K-means clustering on columns.}
+  \item{column_km_repeats}{Number of k-means runs to get a consensus k-means clustering. Similar as \code{row_km_repeats}.}
   \item{column_split}{Split on columns. For heatmap splitting, please refer to \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-split} .}
   \item{gap}{Gap between row slices if the heatmap is split by rows. The value should be a \code{\link[grid]{unit}} object.}
   \item{row_gap}{Same as \code{gap}.}
