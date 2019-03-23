@@ -351,7 +351,11 @@ Heatmap = function(matrix, col, name,
     }
 
     if(ncol(matrix) == 0) {
+        show_heatmap_legend = FALSE
         .Object@heatmap_param$show_heatmap_legend = FALSE
+    }
+    if(identical(rect_gp$type, "none")) {
+        show_heatmap_legend = FALSE
     }
 
     ### normalize km/split and row_km/row_split

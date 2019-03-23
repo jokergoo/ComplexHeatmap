@@ -1138,3 +1138,16 @@ normalize_comb_mat = function(...) {
 	}
 	return(lt)
 }
+
+# == title
+# str method
+#
+# == param
+# -object A combination matrix returned by `make_comb_mat`.
+# -... Other arguments.
+#
+str.comb_mat = function(object, ...) {
+	class(object) = "matrix"
+	cat(" A comb_mat class object\n")
+	str(object)
+}
