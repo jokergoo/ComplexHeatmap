@@ -137,12 +137,14 @@ Heatmap = setClass("Heatmap",
 # -row_names_max_width Maximum width of row names viewport.
 # -row_names_gp Graphic parameters for row names.
 # -row_names_rot Rotation of row names.
+# -row_names_centered Should row names put centered?
 # -column_labels Optional column labels which are put as column names in the heatmap.
 # -column_names_side Should the column names be put on the top or bottom of the heatmap?
 # -column_names_max_height Maximum height of column names viewport.
 # -show_column_names Whether show column names.
 # -column_names_gp Graphic parameters for drawing text.
 # -column_names_rot Rotation of column names.
+# -column_names_centered Should column names put centered?
 # -top_annotation A `HeatmapAnnotation` object.
 # -bottom_annotation A `HeatmapAnnotation` object.
 # -left_annotation It should be specified by `rowAnnotation`.
@@ -242,12 +244,14 @@ Heatmap = function(matrix, col, name,
     row_names_max_width = unit(6, "cm"), 
     row_names_gp = gpar(fontsize = 12), 
     row_names_rot = 0,
+    row_names_centered = FALSE,
     column_labels = colnames(matrix),
     column_names_side = c("bottom", "top"), 
     show_column_names = TRUE, 
     column_names_max_height = unit(6, "cm"), 
     column_names_gp = gpar(fontsize = 12),
     column_names_rot = 90,
+    column_names_centered = FALSE,
 
     top_annotation = NULL,
     bottom_annotation = NULL,
@@ -257,10 +261,10 @@ Heatmap = function(matrix, col, name,
     km = 1, 
     split = NULL, 
     row_km = km,
-    row_km_repeats = 10,
+    row_km_repeats = 1,
     row_split = split,
     column_km = 1,
-    column_km_repeats = 10,
+    column_km_repeats = 1,
     column_split = NULL,
     gap = unit(1, "mm"),
     row_gap = unit(1, "mm"),
@@ -540,15 +544,22 @@ Heatmap = function(matrix, col, name,
     .Object@row_names_param$show = show_row_names
     .Object@row_names_param$gp = check_gp(row_names_gp)
     .Object@row_names_param$rot = row_names_rot
+    .Object@row_names_param$centered = row_names_centered
     .Object@row_names_param$max_width = row_names_max_width + unit(2, "mm")
     # we use anno_text to draw row/column names because it already takes care of text rotation
     if(show_row_names) {
         if(length(row_labels) != nrow(matrix)) {
             stop_wrap("Length of `row_labels` should be the same as the nrow of matrix.")
         }
-        row_names_anno = anno_text(row_labels, which = "row", gp = row_names_gp, rot = row_names_rot,
-            location = ifelse(.Object@row_names_param$side == "left", 1, 0), 
-            just = ifelse(.Object@row_names_param$side == "left", "right", "left"))
+        if(row_names_centered) {
+            row_names_anno = anno_text(row_labels, which = "row", gp = row_names_gp, rot = row_names_rot,
+                location = 0.5, 
+                just = "center")
+        } else {
+            row_names_anno = anno_text(row_labels, which = "row", gp = row_names_gp, rot = row_names_rot,
+                location = ifelse(.Object@row_names_param$side == "left", 1, 0), 
+                just = ifelse(.Object@row_names_param$side == "left", "right", "left"))
+        }
         .Object@row_names_param$anno = row_names_anno
     }
 
@@ -560,17 +571,24 @@ Heatmap = function(matrix, col, name,
     .Object@column_names_param$show = show_column_names
     .Object@column_names_param$gp = check_gp(column_names_gp)
     .Object@column_names_param$rot = column_names_rot
+    .Object@column_names_param$centered = column_names_centered
     .Object@column_names_param$max_height = column_names_max_height + unit(2, "mm")
     if(show_column_names) {
         if(length(column_labels) != ncol(matrix)) {
             stop_wrap("Length of `column_labels` should be the same as the ncol of matrix.")
         }
-        column_names_anno = anno_text(column_labels, which = "column", gp = column_names_gp, rot = column_names_rot,
-            location = ifelse(.Object@column_names_param$side == "top", 0, 1), 
-            just = ifelse(.Object@column_names_param$side == "top", 
-                     ifelse(.Object@column_names_param$rot >= 0, "left", "right"),
-                     ifelse(.Object@column_names_param$rot >= 0, "right", "left")
-                    ))
+        if(column_names_centered) {
+            column_names_anno = anno_text(column_labels, which = "column", gp = column_names_gp, rot = column_names_rot,
+            location = 0.5, 
+            just = "center")
+        } else {
+            column_names_anno = anno_text(column_labels, which = "column", gp = column_names_gp, rot = column_names_rot,
+                location = ifelse(.Object@column_names_param$side == "top", 0, 1), 
+                just = ifelse(.Object@column_names_param$side == "top", 
+                         ifelse(.Object@column_names_param$rot >= 0, "left", "right"),
+                         ifelse(.Object@column_names_param$rot >= 0, "right", "left")
+                        ))
+        }
         .Object@column_names_param$anno = column_names_anno
     }
 
@@ -1146,7 +1164,6 @@ make_cluster = function(object, which = c("row", "column")) {
         }
 
         meanmat = do.call("cbind", meanmat)
-        hc = hclust(dist(t(meanmat)))
         # if `reorder` is a vector, the slice dendrogram is reordered by the mean of reorder in each slice
         # or else, weighted by the mean of `meanmat`.
         if(length(reorder) > 1) {
@@ -1154,7 +1171,12 @@ make_cluster = function(object, which = c("row", "column")) {
         } else {
             weight = colMeans(meanmat)
         }
-        hc = as.hclust(reorder(as.dendrogram(hc), weight, mean))
+        if(cluster_slices) {
+            hc = hclust(dist(t(meanmat)))
+            hc = as.hclust(reorder(as.dendrogram(hc), weight, mean))
+        } else {
+            hc = list(order = order(weight))
+        }
 
         cl2 = numeric(length(cl))
         for(i in seq_along(hc$order)) {

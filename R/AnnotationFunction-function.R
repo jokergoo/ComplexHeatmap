@@ -2000,11 +2000,31 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 
 	row_fun = function(index) {
 		n = length(index)
-		grid.text(value[index], location, (n - seq_along(index) + 0.5)/n, gp = subset_gp(gp, index), just = just, rot = rot)
+		gp = subset_gp(gp, index)
+		gp2 = gp
+        if("border" %in% names(gp2)) gp2$col = gp2$border
+        if("fill" %in% names(gp2)) {
+        	if(!"border" %in% names(gp2)) gp2$col = gp2$fill
+        }
+        if(any(c("border", "fill") %in% names(gp2))) {
+        	grid.rect(y = (n - seq_along(index) + 0.5)/n, height = 1/n, gp = gp2)
+        }
+        
+		grid.text(value[index], location, (n - seq_along(index) + 0.5)/n, gp = gp, just = just, rot = rot)
 	}
 	column_fun = function(index, k = NULL, N = NULL, vp_name = NULL) {
 		n = length(index)
-		grid.text(value[index], (seq_along(index) - 0.5)/n, location, gp = subset_gp(gp, index), just = just, rot = rot)
+		gp = subset_gp(gp, index)
+		gp2 = gp
+        if("border" %in% names(gp2)) gp2$col = gp2$border
+        if("fill" %in% names(gp2)) {
+        	if(!"border" %in% names(gp2)) gp2$col = gp2$fill
+        }
+        if(any(c("border", "fill") %in% names(gp2))) {
+        	grid.rect(x = (seq_along(index) - 0.5)/n, width = 1/n, gp = gp2)
+        }
+        
+		grid.text(value[index], (seq_along(index) - 0.5)/n, location, gp = gp, just = just, rot = rot)
 	}
 
 	if(which == "row") {

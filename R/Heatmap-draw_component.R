@@ -430,9 +430,9 @@ setMethod(f = "draw_title",
     if(which == "row") {
         
         pushViewport(viewport(name = paste(object@name, "row_title", k, sep = "_"), clip = FALSE, ...))
-        if("fill" %in% names(gp)) {
-            grid.rect(gp = gpar(fill = gp$fill))
-        }
+        gp2 = gp
+        if("border" %in% names(gp2)) gp2$col = gp2$border
+        if(any(c("border", "fill") %in% names(gp2))) grid.rect(gp = gp2)
         if(side == "left") {
             grid.text(title, x = unit(1, "npc") - ht_opt$TITLE_PADDING, rot = rot, just = just, gp = gp)
         } else {
@@ -441,9 +441,9 @@ setMethod(f = "draw_title",
         upViewport()
     } else {
         pushViewport(viewport(name = paste(object@name, "column_title", k, sep = "_"), clip = FALSE, ...))
-        if("fill" %in% names(gp)) {
-            grid.rect(gp = gpar(fill = gp$fill))
-        }
+        gp2 = gp
+        if("border" %in% names(gp2)) gp2$col = gp2$border
+        if(any(c("border", "fill") %in% names(gp2))) grid.rect(gp = gp2)
         if(side == "top") {
             grid.text(title, y = ht_opt$TITLE_PADDING, rot = rot, just = just, gp = gp)
         } else {

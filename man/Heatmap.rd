@@ -52,12 +52,14 @@ Heatmap(matrix, col, name,
     row_names_max_width = unit(6, "cm"),
     row_names_gp = gpar(fontsize = 12),
     row_names_rot = 0,
+    row_names_centered = FALSE,
     column_labels = colnames(matrix),
     column_names_side = c("bottom", "top"),
     show_column_names = TRUE,
     column_names_max_height = unit(6, "cm"),
     column_names_gp = gpar(fontsize = 12),
     column_names_rot = 90,
+    column_names_centered = FALSE,
     
     top_annotation = NULL,
     bottom_annotation = NULL,
@@ -67,10 +69,10 @@ Heatmap(matrix, col, name,
     km = 1,
     split = NULL,
     row_km = km,
-    row_km_repeats = 10,
+    row_km_repeats = 1,
     row_split = split,
     column_km = 1,
-    column_km_repeats = 10,
+    column_km_repeats = 1,
     column_split = NULL,
     gap = unit(1, "mm"),
     row_gap = unit(1, "mm"),
@@ -138,12 +140,14 @@ Heatmap(matrix, col, name,
   \item{row_names_max_width}{Maximum width of row names viewport.}
   \item{row_names_gp}{Graphic parameters for row names.}
   \item{row_names_rot}{Rotation of row names.}
+  \item{row_names_centered}{Should row names put centered?}
   \item{column_labels}{Optional column labels which are put as column names in the heatmap.}
   \item{column_names_side}{Should the column names be put on the top or bottom of the heatmap?}
   \item{column_names_max_height}{Maximum height of column names viewport.}
   \item{show_column_names}{Whether show column names.}
   \item{column_names_gp}{Graphic parameters for drawing text.}
   \item{column_names_rot}{Rotation of column names.}
+  \item{column_names_centered}{Should column names put centered?}
   \item{top_annotation}{A \code{\link{HeatmapAnnotation}} object.}
   \item{bottom_annotation}{A \code{\link{HeatmapAnnotation}} object.}
   \item{left_annotation}{It should be specified by \code{\link{rowAnnotation}}.}
