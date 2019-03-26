@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.99.7
+
+* `UpSet()` supports adding complement sets.
+
+========================
+
 CHANGES in VERSION 1.99.6
 
 * adjust the size of heatmap annotations and add testing scripts.

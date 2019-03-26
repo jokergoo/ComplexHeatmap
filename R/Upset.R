@@ -1,5 +1,5 @@
 
-make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -Inf) {
+make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -Inf, complement_size = NULL) {
 	# check whether x is a binary matrix
 	if(is.data.frame(x)) {
 		lc = sapply(x, function(x) {
@@ -93,6 +93,11 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 		})
 	}
 
+	if(!is.null(complement_size)) {
+		comb_mat = cbind(rep(0, nrow(comb_mat)), comb_mat)
+		comb_size = c(complement_size, comb_size)
+	}
+
 	attr(comb_mat, "set_size") = set_size
 	attr(comb_mat, "comb_size") = comb_size
 	attr(comb_mat, "mode") = mode
@@ -103,7 +108,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 
 }
 
-make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = Inf, min_set_size = -Inf) {
+make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = Inf, min_set_size = -Inf, complement_size = NULL) {
 	n = length(lt)
     nm = names(lt)
     if(is.null(nm)) {
@@ -183,6 +188,12 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
     }
 
     comb_mat = comb_mat + 0
+
+    if(!is.null(complement_size)) {
+		comb_mat = cbind(rep(0, nrow(comb_mat)), comb_mat)
+		comb_size = c(complement_size, comb_size)
+	}
+
     attr(comb_mat, "set_size") = set_size
 	attr(comb_mat, "comb_size") = comb_size
 	attr(comb_mat, "mode") = mode
@@ -228,6 +239,8 @@ list_to_matrix = function(lt) {
 # -mode The mode for forming the combination set, see Mode section.
 # -top_n_sets Number of sets with largest size.
 # -min_set_size Ths minimal set size that is used for generating the combination matrix.
+# -complement_size The size for the complement of all sets. If it is specified, the combination
+#                  set name will be like "00...".
 # -value_fun For each combination set, how to calculate the size? If it is a scalar set, 
 #      the length of the vector is the size of the set, while if it is a region-based set,
 #      (i.e. ``GRanges`` or ``IRanges`` object), the sum of widths of regions in the set is
@@ -316,7 +329,7 @@ list_to_matrix = function(lt) {
 # m = make_comb_mat(lt)
 # }
 make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
-	top_n_sets = Inf, min_set_size = -Inf, value_fun) {
+	top_n_sets = Inf, min_set_size = -Inf, complement_size = NULL, value_fun) {
 
 	lt = list(...)
 
@@ -324,7 +337,7 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 	if(length(lt) == 1) {
 		lt = lt[[1]]
 		if(!is.null(dim(lt))) {
-			return(make_comb_mat_from_matrix(lt, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size))
+			return(make_comb_mat_from_matrix(lt, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size, complement_size = complement_size))
 		}
 	}
 
@@ -337,7 +350,7 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 			value_fun = length
 		}
 	}
-	make_comb_mat_from_list(lt, value_fun, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size)
+	make_comb_mat_from_list(lt, value_fun, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size, complement_size = complement_size)
 }
 
 
@@ -492,6 +505,11 @@ comb_degree = function(m) {
 # m = make_comb_mat(lt)
 # extract_comb(m, "110")
 extract_comb = function(m, comb_name) {
+
+	if(grepl("^0+$", comb_name)) {
+		stop_wrap(qq("Cannot extract elements for the complement set '@{comb_name}'."))
+	}
+
 	all_comb_names = comb_name(m)
 	if(!comb_name %in% all_comb_names) {
 		stop_wrap(paste0("Cannot find a combination name:	", comb_name, ", valid combination name should be in `comb_name(m)`."))
