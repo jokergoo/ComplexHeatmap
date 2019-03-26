@@ -206,6 +206,7 @@ setMethod(f = "add_heatmap",
 # -km = this modifies ``km`` of the main heatmap
 # -split this modifies ``split`` of the main heatmap
 # -row_km this modifies ``row_km`` of the main heatmap
+# -row_km_repeats this modifies ``row_km_repeats`` of the main heatmap
 # -row_split this modifies ``row_split`` of the main heatmap
 # -height this modifies ``height`` of the main heatmap
 # -heatmap_height this modifies ``heatmap_height`` of the main heatmap
@@ -219,6 +220,7 @@ setMethod(f = "add_heatmap",
 # -column_dend_gp this modifies ``column_dend_gp`` of the main heatmap
 # -column_order this modifies ``column_order`` of the main heatmap
 # -column_km this modifies ``column_km`` of the main heatmap
+# -column_km_repeats this modifies ``column_km_repeats`` of the main heatmap
 # -column_split this modifies ``column_split`` of the main heatmap
 # -width this modifies ``width`` of the main heatmap
 # -heatmap_width this modifies ``heatmap_width`` of the main heatmap
@@ -298,6 +300,7 @@ setMethod(f = "draw",
     km = NULL,
     split = NULL,
     row_km = km,
+    row_km_repeats = NULL,
     row_split = split,
     height = NULL,
     heatmap_height = NULL,
@@ -312,6 +315,7 @@ setMethod(f = "draw",
     column_dend_gp = NULL,
     column_order = NULL,
     column_km = NULL,
+    column_km_repeats = NULL,
     column_split = NULL,
     width = NULL,
     heatmap_width = NULL,
@@ -465,6 +469,7 @@ setMethod(f = "draw",
         row_dend_gp = row_dend_gp,
         row_order = row_order,
         row_km = row_km,
+        row_km_repeats = row_km_repeats,
         row_split = row_split,
         height = height,
         heatmap_height = heatmap_height,
@@ -479,6 +484,7 @@ setMethod(f = "draw",
         column_dend_gp = column_dend_gp,
         column_order = column_order,
         column_km = column_km,
+        column_km_repeats = column_km_repeats,
         column_split = column_split,
         width = width,
         heatmap_width = heatmap_width
@@ -514,7 +520,7 @@ setMethod(f = "draw",
     ht_graphic_fun_list = object@layout$graphic_fun_list
 
     for(j in seq_len(nrow(ht_layout_index))) {
-        pushViewport(viewport(layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
+        pushViewport(viewport(name = paste0("global-", rownames(ht_layout_index)[j]), layout.pos.row = ht_layout_index[j, 1], layout.pos.col = ht_layout_index[j, 2]))
         ht_graphic_fun_list[[j]](object)
         upViewport()
     }

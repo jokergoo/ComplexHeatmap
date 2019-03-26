@@ -354,9 +354,17 @@ Heatmap = function(matrix, col, name,
         }
     }
 
-    if(ncol(matrix) == 0) {
-        show_heatmap_legend = FALSE
-        .Object@heatmap_param$show_heatmap_legend = FALSE
+    # if(ncol(matrix) == 0 || nrow(matrix) == 0) {
+    #     show_heatmap_legend = FALSE
+    #     .Object@heatmap_param$show_heatmap_legend = FALSE
+    # }
+    if(ncol(matrix) == 0 && (!is.null(left_annotation) || !is.null(right_annotation))) {
+        message_wrap("If you have row annotations for a zeor-column matrix, please directly use in form of `rowAnnotation(...) + NULL`")
+        return(invisible(NULL))
+    }
+    if(nrow(matrix) == 0 && (!is.null(top_annotation) || !is.null(bottom_annotation))) {
+        message_wrap("If you have column annotations for a zero-row matrix, please directly use in form of `HeatmapAnnotation(...) %v% NULL`")
+        return(invisible(NULL))
     }
     if(identical(rect_gp$type, "none")) {
         show_heatmap_legend = FALSE
@@ -1430,6 +1438,10 @@ make_cluster = function(object, which = c("row", "column")) {
         }
     }
     slot(object, paste0(which, "_title")) = title
+    # check whether height of the dendrogram is zero
+    if(all(sapply(dend_list, dend_heights) == 0)) {
+        slot(object, paste0(which, "_dend_param"))$show = FALSE
+    }
     return(object)
 
 }

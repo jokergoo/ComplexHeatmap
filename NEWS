@@ -1,11 +1,13 @@
 CHANGES in VERSION 1.99.6
 
-* adjust the size of heatmap annotations and add testing scripts
-* run multiple times k-means to get a consensus partition
-* `show_heatmap_legend` is set to FALSE if `rect_gp = gpar(type = "none")`
-* add `restore_matrix()`
-* add `row_names_centered`/`column_names_centered` arguments to `Heatmap()`
-* `gp` in `anno_text()` supports `fill` and `border`
+* adjust the size of heatmap annotations and add testing scripts.
+* run multiple times k-means to get a consensus partition.
+* `show_heatmap_legend` is set to FALSE if `rect_gp = gpar(type = "none")`.
+* add `restore_matrix()`.
+* add `row_names_centered`/`column_names_centered` arguments to `Heatmap()`.
+* `gp` in `anno_text()` supports `fill` and `border`.
+* `Legend` adds boxplot-style legend.
+* adjustment according to annotation extension is improved.
 
 ========================
 

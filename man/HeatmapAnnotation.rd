@@ -37,7 +37,7 @@ HeatmapAnnotation(...,
   \item{col}{A list of colors which contain color mapping to \code{df} or simple annotations defined in \code{...}.  See \code{\link{SingleAnnotation}} for how to set colors.}
   \item{na_col}{Color for \code{NA} values in simple annotations.}
   \item{annotation_legend_param}{A list which contains parameters for annotation legends. See \code{\link{color_mapping_legend,ColorMapping-method}} for all possible options.}
-  \item{show_legend}{Whether show annotation legends. The value can be one single value or a vector which corresponds to simple annotations.}
+  \item{show_legend}{Whether show annotation legends. The value can be one single value or a vector.}
   \item{which}{Are these row annotations or column annotations?}
   \item{gp}{Graphic parameters for simple annotations (with \code{fill} parameter ignored).}
   \item{border}{border of single annotations.}

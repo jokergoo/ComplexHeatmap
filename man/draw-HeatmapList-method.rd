@@ -50,6 +50,7 @@ Draw a list of heatmaps
     km = NULL,
     split = NULL,
     row_km = km,
+    row_km_repeats = NULL,
     row_split = split,
     height = NULL,
     heatmap_height = NULL,
@@ -64,6 +65,7 @@ Draw a list of heatmaps
     column_dend_gp = NULL,
     column_order = NULL,
     column_km = NULL,
+    column_km_repeats = NULL,
     column_split = NULL,
     width = NULL,
     heatmap_width = NULL,
@@ -124,6 +126,7 @@ Draw a list of heatmaps
   \item{km}{= this modifies \code{km} of the main heatmap}
   \item{split}{this modifies \code{split} of the main heatmap}
   \item{row_km}{this modifies \code{row_km} of the main heatmap}
+  \item{row_km_repeats}{this modifies \code{row_km_repeats} of the main heatmap}
   \item{row_split}{this modifies \code{row_split} of the main heatmap}
   \item{height}{this modifies \code{height} of the main heatmap}
   \item{heatmap_height}{this modifies \code{heatmap_height} of the main heatmap}
@@ -137,6 +140,7 @@ Draw a list of heatmaps
   \item{column_dend_gp}{this modifies \code{column_dend_gp} of the main heatmap}
   \item{column_order}{this modifies \code{column_order} of the main heatmap}
   \item{column_km}{this modifies \code{column_km} of the main heatmap}
+  \item{column_km_repeats}{this modifies \code{column_km_repeats} of the main heatmap}
   \item{column_split}{this modifies \code{column_split} of the main heatmap}
   \item{width}{this modifies \code{width} of the main heatmap}
   \item{heatmap_width}{this modifies \code{heatmap_width} of the main heatmap}

@@ -35,6 +35,7 @@
 # -row_dend_gp Overwrite the corresponding setting in the main heatmap.
 # -row_order Overwrite the corresponding setting in the main heatmap.
 # -row_km Overwrite the corresponding setting in the main heatmap.
+# -row_km_repeats Overwrite the corresponding setting in the main heatmap.
 # -row_split Overwrite the corresponding setting in the main heatmap.
 # -height Overwrite the corresponding setting in the main heatmap.
 # -heatmap_height Overwrite the corresponding setting in the main heatmap.
@@ -48,6 +49,7 @@
 # -column_dend_gp Overwrite the corresponding setting in the main heatmap.
 # -column_order Overwrite the corresponding setting in the main heatmap.
 # -column_km Overwrite the corresponding setting in the main heatmap.
+# -column_km_repeats Overwrite the corresponding setting in the main heatmap.
 # -column_split Overwrite the corresponding setting in the main heatmap.
 # -width Overwrite the corresponding setting in the main heatmap.
 # -heatmap_width Overwrite the corresponding setting in the main heatmap.
@@ -104,6 +106,7 @@ setMethod(f = "make_layout",
     row_dend_gp = NULL,
     row_order = NULL,
     row_km = NULL,
+    row_km_repeats = NULL,
     row_split = NULL,
     height = NULL,
     heatmap_height = NULL,
@@ -118,6 +121,7 @@ setMethod(f = "make_layout",
     column_dend_gp = NULL,
     column_order = NULL,
     column_km = NULL,
+    column_km_repeats = NULL,
     column_split = NULL,
     width = NULL,
     heatmap_width = NULL) {
@@ -234,6 +238,10 @@ setMethod(f = "make_layout",
         if(!is.null(row_km)) {
             object@ht_list[[i_main]]@matrix_param$row_km = row_km
             if(verbose) qqcat("set row_km to main heatmap\n")
+        }
+        if(!is.null(row_km_repeats)) {
+            object@ht_list[[i_main]]@matrix_param$row_km_repeats = row_km_repeats
+            if(verbose) qqcat("set row_km_repeats to main heatmap\n")
         }
 
         if(!is.null(row_gap)) {
@@ -371,6 +379,10 @@ setMethod(f = "make_layout",
         if(!is.null(column_km)) {
             object@ht_list[[i_main]]@matrix_param$column_km = column_km
             if(verbose) qqcat("set column_km to main heatmap\n")
+        }
+        if(!is.null(column_km_repeats)) {
+            object@ht_list[[i_main]]@matrix_param$column_km_repeats = column_km_repeats
+            if(verbose) qqcat("set column_km_repeats to main heatmap\n")
         }
 
         if(!is.null(column_gap)) {
@@ -846,6 +858,16 @@ setMethod(f = "make_layout",
             } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
                 ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
             }
+        }
+    }
+    if(length(heatmap_legend_list) != 0) {
+        if(inherits(heatmap_legend_list, c("Legends", "grob"))) {
+            heatmap_legend_list = list(heatmap_legend_list)
+        }
+    }
+    if(length(annotation_legend_list) != 0) {
+        if(inherits(annotation_legend_list, c("Legends", "grob"))) {
+            annotation_legend_list = list(annotation_legend_list)
         }
     }
     if(merge_legends) {

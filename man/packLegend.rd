@@ -7,14 +7,14 @@ Pack Legends
 Pack Legends
 }
 \usage{
-packLegend(...,gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2, "mm"),
+packLegend(..., gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2, "mm"),
     direction = c("vertical", "horizontal"),
     max_width = NULL, max_height = NULL, list = NULL)
 }
 \arguments{
 
   \item{...}{A list of objects returned by \code{\link{Legend}}.}
-  \item{gap}{Gap between two neighbouring legends. The value is a \code{\link[grid]{unit}} object with length of one.}
+  \item{gap}{Gap between two neighbouring legends. The value is a \code{\link[grid]{unit}} object with length of one. It is the same as \code{row_gap} if the direction if vertial and the same as \code{column_gap} if the direction is horizontal.}
   \item{row_gap}{Horizontal gaps between legends.}
   \item{column_gap}{Vertical gaps between legends.}
   \item{direction}{The direction to arrange legends.}

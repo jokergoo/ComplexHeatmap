@@ -56,7 +56,7 @@ default_col = function(x, main_matrix = FALSE) {
         x = as.vector(x)
     }
 
-    if(length(unique(x)) == 1) {
+    if(length(unique(as.vector(x))) == 1) {
         x = as.character(x)
     }
 

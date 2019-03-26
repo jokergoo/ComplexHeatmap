@@ -60,7 +60,7 @@ Legends = function(...) {
 # -labels_rot Text rotation for labels. It should only be used for horizontal continuous legend.
 # -border Color of legend grid borders. It also works for the ticks in the continuous legend.
 # -background Background colors for the grids. It is used when points and lines are the legend graphics.
-# -type Type of legends. The value can be one of ``grid``, ``points`` and ``lines``.
+# -type Type of legends. The value can be one of ``grid``, ``points``, ``lines`` and ``boxplot``.
 # -legend_gp Graphic parameters for the legend grids. You should control the filled color of the legend grids by ``gpar(fill = ...)``.
 # -pch Type of points if points are used as legend. Note you can use single-letter as pch, e.g. ``pch = 'A'``.
 #      There are three additional integers that are valid for ``pch``: 26 and 27 for single diagonal lines and 28 for double diagonal lines.
@@ -425,6 +425,18 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 					         gp = subset_gp(legend_gp, index))
 			))
 		}
+		if(any(c("boxplot", "box") %in% type)) {
+			gl = c(gl, list(
+				segmentsGrob(x0 = grid_x, y0 = grid_y - grid_height*0.45, 
+					         x1 = grid_x, y1 = grid_y + grid_height*0.45,
+					         gp = subset_gp(legend_gp, index)),
+				rectGrob(x = grid_x, y = grid_y, width = grid_width*0.9, height = grid_height*0.5,
+					     gp = subset_gp(legend_gp, index)),
+				segmentsGrob(x0 = grid_x - grid_width*0.45, y0 = grid_y, 
+					         x1 = grid_x + grid_width*0.45, y1 = grid_y,
+					         gp = subset_gp(legend_gp, index))
+			))
+		}
 	}
 
 	class(gl) = "gList"
@@ -742,6 +754,8 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # == param
 # -... A list of objects returned by `Legend`.
 # -gap Gap between two neighbouring legends. The value is a `grid::unit` object with length of one.
+#      It is the same as ``row_gap`` if the direction if vertial and the same as ``column_gap`` if
+#      the direction is horizontal.
 # -row_gap Horizontal gaps between legends.
 # -column_gap Vertical gaps between legends.
 # -direction The direction to arrange legends.
@@ -765,7 +779,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # draw(pd, test = "two legends")
 # pd = packLegend(lgd1, lgd2, direction = "horizontal")
 # draw(pd, test = "two legends packed horizontally")
-packLegend = function(...,gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2, "mm"),
+packLegend = function(..., gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2, "mm"),
 	direction = c("vertical", "horizontal"),
 	max_width = NULL, max_height = NULL, list = NULL) {
 

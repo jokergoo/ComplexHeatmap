@@ -33,7 +33,7 @@ Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
   \item{labels_rot}{Text rotation for labels. It should only be used for horizontal continuous legend.}
   \item{border}{Color of legend grid borders. It also works for the ticks in the continuous legend.}
   \item{background}{Background colors for the grids. It is used when points and lines are the legend graphics.}
-  \item{type}{Type of legends. The value can be one of \code{grid}, \code{points} and \code{lines}.}
+  \item{type}{Type of legends. The value can be one of \code{grid}, \code{points}, \code{lines} and \code{boxplot}.}
   \item{legend_gp}{Graphic parameters for the legend grids. You should control the filled color of the legend grids by \code{gpar(fill = ...)}.}
   \item{pch}{Type of points if points are used as legend. Note you can use single-letter as pch, e.g. \code{pch = 'A'}. There are three additional integers that are valid for \code{pch}: 26 and 27 for single diagonal lines and 28 for double diagonal lines.}
   \item{size}{Size of points.}

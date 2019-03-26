@@ -94,8 +94,8 @@ oncoPrint = function(mat,
 	if("axis_gp" %in% arg_names) {
 		stop_wrap("`axis_gp` is removed from the arguments. Please set `axis_param(gp = ...)` in `anno_oncoprint_barplot()` when you define the `top_annotation` or `right_annotation`.")
 	}
-	if("show_row_names" %in% arg_names) {
-		stop_wrap("`show_row_names` is removed from the arguments. Please directly remove `anno_oncoprint_barplot()` in `right_annotation` to remove barplots on the left of the oncoPrint.")
+	if("show_row_barplot" %in% arg_names) {
+		stop_wrap("`show_row_barplot` is removed from the arguments. Please directly remove `anno_oncoprint_barplot()` in `right_annotation` to remove barplots on the right of the oncoPrint.")
 	}
 	if("row_barplot_width" %in% arg_names) {
 		stop_wrap("`row_barplot_width` is removed from the arguments. Please directly set `width` in `anno_oncoprint_barplot()` in `right_annotation`.")
@@ -108,6 +108,10 @@ oncoPrint = function(mat,
 	}
 	if("barplot_ignore" %in% arg_names) {
 		stop_wrap("`barplot_ignore` is removed from the arguments. The subset of alterations now can be controlled in `anno_oncoprint_barplot()`.")
+	}
+
+	if(inherits(col, "function")) {
+		stop_wrap("`col` should be specified as a vector.")
 	}
 
 	# convert mat to mat_list
@@ -152,8 +156,7 @@ oncoPrint = function(mat,
 		stop_wrap("Incorrect type of 'mat'")
 	}
 
-	cat("All mutation types:", paste(all_type, collapse = ", "), "\n")
-
+	message_wrap(paste0("All mutation types: ", paste(all_type, collapse = ", ")))
 
 	# type as the third dimension
 	arr = array(FALSE, dim = c(dim(mat_list[[1]]), length(all_type)), dimnames = c(dimnames(mat_list[[1]]), list(all_type)))
@@ -573,7 +576,7 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 			axis = axis, axis_param = axis_param)@fun
 		fun(index, k, n)
 	}
-	
+
 	if(which == "row") {
 		fun = row_fun
 	} else if(which == "column") {
@@ -592,8 +595,19 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 	anno@subsetable = TRUE
 	anno@show_name = FALSE
 
+	if(exists("arr", envir = parent.frame(1))) {
+		arr = get("arr", envir = parent.frame(1))
+		if(which == "row") {
+			data_scale = c(0, max(apply(arr, 1, sum)))
+		} else {
+			data_scale = c(0, max(apply(arr, 2, sum)))
+		}
+	} else {
+		data_scale = c(0, 100)
+	}
+
 	axis_param = validate_axis_param(axis_param, which)
-	axis_grob = if(axis) construct_axis_grob(axis_param, which, c(0, 100)) else NULL
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
 	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
 
 	return(anno) 

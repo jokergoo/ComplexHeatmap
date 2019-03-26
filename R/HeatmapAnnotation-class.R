@@ -52,7 +52,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 #      See `SingleAnnotation` for how to set colors.
 # -na_col Color for ``NA`` values in simple annotations.
 # -annotation_legend_param A list which contains parameters for annotation legends. See `color_mapping_legend,ColorMapping-method` for all possible options.
-# -show_legend Whether show annotation legends. The value can be one single value or a vector which corresponds to simple annotations.
+# -show_legend Whether show annotation legends. The value can be one single value or a vector.
 # -which Are these row annotations or column annotations?
 # -gp Graphic parameters for simple annotations (with ``fill`` parameter ignored).
 # -border border of single annotations.
@@ -214,6 +214,10 @@ HeatmapAnnotation = function(...,
     # normalize `show_legend`
     if(length(show_legend) == 1) {
 		show_legend = recycle_param(show_legend, simple_anno_name, TRUE)
+	}
+	# check length of show_legend
+	if(length(show_legend) == length(anno_value_list) && !all(l_simple_anno)) {
+		show_legend = show_legend[l_simple_anno]
 	}
 
 	###### normalize `heatmap_legend_param` #######

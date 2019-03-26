@@ -45,6 +45,7 @@ Make Layout for the Heatmap List
     row_dend_gp = NULL,
     row_order = NULL,
     row_km = NULL,
+    row_km_repeats = NULL,
     row_split = NULL,
     height = NULL,
     heatmap_height = NULL,
@@ -59,6 +60,7 @@ Make Layout for the Heatmap List
     column_dend_gp = NULL,
     column_order = NULL,
     column_km = NULL,
+    column_km_repeats = NULL,
     column_split = NULL,
     width = NULL,
     heatmap_width = NULL)
@@ -97,6 +99,7 @@ Make Layout for the Heatmap List
   \item{row_dend_gp}{Overwrite the corresponding setting in the main heatmap.}
   \item{row_order}{Overwrite the corresponding setting in the main heatmap.}
   \item{row_km}{Overwrite the corresponding setting in the main heatmap.}
+  \item{row_km_repeats}{Overwrite the corresponding setting in the main heatmap.}
   \item{row_split}{Overwrite the corresponding setting in the main heatmap.}
   \item{height}{Overwrite the corresponding setting in the main heatmap.}
   \item{heatmap_height}{Overwrite the corresponding setting in the main heatmap.}
@@ -110,6 +113,7 @@ Make Layout for the Heatmap List
   \item{column_dend_gp}{Overwrite the corresponding setting in the main heatmap.}
   \item{column_order}{Overwrite the corresponding setting in the main heatmap.}
   \item{column_km}{Overwrite the corresponding setting in the main heatmap.}
+  \item{column_km_repeats}{Overwrite the corresponding setting in the main heatmap.}
   \item{column_split}{Overwrite the corresponding setting in the main heatmap.}
   \item{width}{Overwrite the corresponding setting in the main heatmap.}
   \item{heatmap_width}{Overwrite the corresponding setting in the main heatmap.}

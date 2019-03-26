@@ -50,6 +50,7 @@ setMethod(f = "adjust_heatmap_list",
         }
 
         # since each heatmap actually has nine rows, calculate the maximum height of corresponding rows in all heatmap 
+        max_title_component_width = unit(c(0, 0), "mm")
         max_title_component_height = unit.c(
             max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, "column_title_top")))),
             max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_height(ht, "column_title_bottom"))))
@@ -191,6 +192,7 @@ setMethod(f = "adjust_heatmap_list",
             object@layout$row_anno_max_bottom_extended = row_anno_max_bottom_extended
             object@layout$max_bottom_component_height = max_bottom_component_height
             object@layout$max_title_component_height = max_title_component_height
+            object@layout$max_title_component_width = max_title_component_width
 
             ## left and right
             column_anno_max_left_extended = unit(0, "mm")
@@ -251,6 +253,7 @@ setMethod(f = "adjust_heatmap_list",
             }
         }
 
+        max_title_component_height = unit(c(0, 0), "mm")
         max_title_component_width = unit.c(
             max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_width(ht, "row_title_left")))),
             max(do.call("unit.c", lapply(object@ht_list[ht_index], function(ht) component_width(ht, "row_title_right"))))
@@ -392,6 +395,7 @@ setMethod(f = "adjust_heatmap_list",
             object@layout$column_anno_max_right_extended = column_anno_max_right_extended
             object@layout$max_right_component_width = max_right_component_width
             object@layout$max_title_component_width = max_title_component_width
+            object@layout$max_title_component_height = max_title_component_height
 
             ## top and bottom
             row_anno_max_top_extended = unit(0, "mm")
@@ -399,6 +403,7 @@ setMethod(f = "adjust_heatmap_list",
             if(inherits(object@ht_list[[1]], "Heatmap")) {
                 ht_first = object@ht_list[[1]]
                 max_top_component_height = sum(component_height(ht_first, c("column_names_top", "column_dend_top", "column_anno_top", "column_title_top")))
+
                 u = unit(0, "mm")
                 if(!is.null(ht_first@left_annotation)) {
                     u = unit.c(u, ht_first@left_annotation@extended[3])
@@ -499,20 +504,22 @@ setMethod(f = "adjust_heatmap_list",
             }
         }
     }
+
     if(is.null(adjust_annotation_extension)) adjust_annotation_extension = TRUE
     if(adjust_annotation_extension) {
-        if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]) {
-            padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height
+        # note e.g. max_*_component_height does not include the height of titles
+        if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]+ object@layout$max_title_component_height[[2]]) {
+            padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height - object@layout$max_title_component_height[2]
         }
-        if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]]) {
-            padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width + GLOBAL_PADDING[2]
+        if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]] + object@layout$max_title_component_width[[1]]) {
+            padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width - object@layout$max_title_component_width[1]
         }
             
-        if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]]) {
-            padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height + GLOBAL_PADDING[3]
+        if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]] + object@layout$max_title_component_height[[1]]) {
+            padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height - object@layout$max_title_component_height[1]
         }
-        if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]]) {
-            padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width + GLOBAL_PADDING[4]
+        if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]] + object@layout$max_title_component_width[[2]]) {
+            padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width - object@layout$max_title_component_width[2]
         }
     }
     object@layout$heatmap_list_padding = padding
