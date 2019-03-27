@@ -295,7 +295,8 @@ list_to_matrix = function(lt, universal_set = NULL) {
 # -mode The mode for forming the combination set, see Mode section.
 # -top_n_sets Number of sets with largest size.
 # -min_set_size Ths minimal set size that is used for generating the combination matrix.
-# -universal_set The universal set. It if is specified, ``complement_size`` is ignored.
+# -universal_set The universal set. If it is set, the size of the complement set of all sets is also calculated.
+#                It if is specified, ``complement_size`` is ignored.
 # -complement_size The size for the complement of all sets. If it is specified, the combination
 #                  set name will be like "00...".
 # -value_fun For each combination set, how to calculate the size? If it is a scalar set, 
