@@ -10,6 +10,7 @@ Make the UpSet plot
 UpSet(m,
     comb_col = "black",
     pt_size = unit(3, "mm"), lwd = 2,
+    bg_col = "#F0F0F0", bg_pt_col = "#CCCCCC",
     set_order = order(set_size(m), decreasing = TRUE),
     comb_order = if(attr(m, "set_on_rows")) {
     order.comb_mat(m[set_order, ], decreasing = TRUE)
@@ -27,6 +28,8 @@ UpSet(m,
   \item{comb_col}{The color for the dots representing combination sets.}
   \item{pt_size}{The point size for the dots representing combination sets.}
   \item{lwd}{The line width for the combination sets.}
+  \item{bg_col}{Color for the background rectangles.}
+  \item{bg_pt_col}{Color for the dots representing the set is not selected.}
   \item{set_order}{The order of sets.}
   \item{comb_order}{The order of combination sets.}
   \item{top_annotation}{A \code{\link{HeatmapAnnotation}} object on top of the combination matrix.}

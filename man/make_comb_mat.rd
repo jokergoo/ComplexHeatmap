@@ -8,7 +8,9 @@ Make a Combination Matrix for UpSet Plot
 }
 \usage{
 make_comb_mat(..., mode = c("distinct", "intersect", "union"),
-    top_n_sets = Inf, min_set_size = -Inf, universal_set = NULL, complement_size = NULL, value_fun)
+    top_n_sets = Inf, min_set_size = -Inf, remove_empty_comb_set = TRUE,
+    remove_complement_set = FALSE, universal_set = NULL,
+    complement_size = NULL, value_fun = NULL)
 }
 \arguments{
 
@@ -16,6 +18,8 @@ make_comb_mat(..., mode = c("distinct", "intersect", "union"),
   \item{mode}{The mode for forming the combination set, see Mode section.}
   \item{top_n_sets}{Number of sets with largest size.}
   \item{min_set_size}{Ths minimal set size that is used for generating the combination matrix.}
+  \item{remove_empty_comb_set}{Whether remove empty combination sets?}
+  \item{remove_complement_set}{Whether remove the complement set which has no intersection to any of the set.}
   \item{universal_set}{The universal set. If it is set, the size of the complement set of all sets is also calculated. It if is specified, \code{complement_size} is ignored.}
   \item{complement_size}{The size for the complement of all sets. If it is specified, the combination set name will be like "00...".}
   \item{value_fun}{For each combination set, how to calculate the size? If it is a scalar set,  the length of the vector is the size of the set, while if it is a region-based set, (i.e. \code{GRanges} or \code{IRanges} object), the sum of widths of regions in the set is calculated as the size of the set.}

@@ -48,6 +48,14 @@ test_that("test default make_comb_mat", {
 	m2 = make_comb_mat(list_to_matrix(lt))
 	expect_that(sort(extract_comb(m1, "111")), is_identical_to(sort(extract_comb(m2, "111"))))
 	expect_that(sort(extract_comb(m1, "011")), is_identical_to(sort(extract_comb(m2, "011"))))
+
+	m1 = make_comb_mat(lt, universal_set = letters)
+	m2 = make_comb_mat(list_to_matrix(lt, universal_set = letters))
+	attr(m1, "x") = NULL
+	attr(m2, "x") = NULL
+	attr(m1, "lt") = NULL
+	attr(m2, "lt") = NULL
+	expect_that(m1, equals(m2))
 })
 
 
@@ -65,7 +73,19 @@ test_that("test default make_comb_mat with universal_set which is smaller than t
 	m = make_comb_mat(lt, universal_set = letters[1:10])
 
 	expect_that("000" %in% comb_name(m), is_identical_to(TRUE))
+	expect_that(length(comb_size(m)) < 8, is_identical_to(TRUE))
 	expect_that(sort(extract_comb(m, "000")), is_identical_to(sort(setdiff(letters[1:10], unlist(lt)))))
+
+	m = make_comb_mat(lt, universal_set = letters[1:10], remove_empty_comb_set = FALSE)
+	expect_that(length(comb_size(m)), equals(8))
+})
+
+test_that("test matrix with no names", {
+	m = list_to_matrix(lt, universal_set = letters)
+	rownames(m) = NULL
+
+	m2 = make_comb_mat(m)
+	expect_that(extract_comb(m2, "000"), equals(which(rowSums(m) == 0)))
 })
 
 # test GRanges
@@ -101,7 +121,7 @@ test_that("test default make_comb_mat with GRanges", {
 	expect_that(length(comb_size(m)), equals(8))
 	expect_that(comb_size(m)[["000"]], equals(sum(GenomicRanges::width( GenomicRanges::setdiff(universal, GenomicRanges::union(GenomicRanges::union(gr1, gr2), gr3))))))
 
-	m = make_comb_mat(lt, universal_set = bg)
+	m = make_comb_mat(lt, universal_set = bg, remove_empty_comb_set = FALSE)
 	expect_that(length(comb_size(m)), equals(8))
 	expect_that(comb_size(m)[["000"]], equals(sum(GenomicRanges::width( GenomicRanges::setdiff(bg, GenomicRanges::union(GenomicRanges::union(gr1, gr2), gr3))))))
 })

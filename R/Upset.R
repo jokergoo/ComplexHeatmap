@@ -39,12 +39,33 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 
 	set_size = set_size[l]
 	x = x[, l, drop = FALSE]
+	
+	if(is.null(rownames(x))) {
+		x_has_rownames = FALSE
+		rownames(x) = as.character(seq_len(nrow(x)))
+	} else {
+		x_has_rownames = TRUE
+	}
+
+	if(!is.null(universal_set)) {
+		if(!x_has_rownames) {
+			stop_wrap("`x` should have row names when `universal_set` is set.")
+		}
+	}
+
+	if(is.null(complement_size)) {
+		k = sum(rowSums(x) == 0)
+		if(k) {
+			complement_size = k
+			if(is.null(universal_set)) {
+				universal_set = unique(rownames(x))
+			}
+		}
+	}
+
 	x = x[rowSums(x) > 0, , drop = FALSE]
 
 	if(!is.null(universal_set)) {
-		if(is.null(rownames(x))) {
-			stop_wrap("`x` should have row names when `universal_set` is set.")
-		}
 
     	x = x[intersect(rownames(x), universal_set), , drop = FALSE]
     	if(nrow(x) == 0) {
@@ -139,6 +160,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	attr(comb_mat, "mode") = mode
 	attr(comb_mat, "set_on_rows") = TRUE
 	attr(comb_mat, "x") = x
+	if(!x_has_rownames) universal_set = as.numeric(universal_set)
 	attr(comb_mat, "universal_set") = universal_set
 	class(comb_mat) = c("comb_mat", "matrix")
 	return(comb_mat)
@@ -295,6 +317,8 @@ list_to_matrix = function(lt, universal_set = NULL) {
 # -mode The mode for forming the combination set, see Mode section.
 # -top_n_sets Number of sets with largest size.
 # -min_set_size Ths minimal set size that is used for generating the combination matrix.
+# -remove_empty_comb_set Whether remove empty combination sets?
+# -remove_complement_set Whether remove the complement set which has no intersection to any of the set.
 # -universal_set The universal set. If it is set, the size of the complement set of all sets is also calculated.
 #                It if is specified, ``complement_size`` is ignored.
 # -complement_size The size for the complement of all sets. If it is specified, the combination
@@ -387,7 +411,9 @@ list_to_matrix = function(lt, universal_set = NULL) {
 # m = make_comb_mat(lt)
 # }
 make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
-	top_n_sets = Inf, min_set_size = -Inf, universal_set = NULL, complement_size = NULL, value_fun) {
+	top_n_sets = Inf, min_set_size = -Inf, remove_empty_comb_set = TRUE,
+	remove_complement_set = FALSE, universal_set = NULL, 
+	complement_size = NULL, value_fun = NULL) {
 
 	lt = list(...)
 
@@ -395,12 +421,19 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 	if(length(lt) == 1) {
 		lt = lt[[1]]
 		if(!is.null(dim(lt))) {
-			return(make_comb_mat_from_matrix(lt, mode = mode, top_n_sets = top_n_sets, 
-				min_set_size = min_set_size, universal_set = universal_set, complement_size = complement_size))
+			m = make_comb_mat_from_matrix(lt, mode = mode, top_n_sets = top_n_sets, 
+				min_set_size = min_set_size, universal_set = universal_set, complement_size = complement_size)
+			if(remove_empty_comb_set) {
+				m = m[comb_size(m) > 0]
+			}
+			if(remove_complement_set) {
+				m = m[comb_degree(m) > 0]
+			}
+			return(m)
 		}
 	}
 
-	if(missing(value_fun)) {
+	if(is.null(value_fun)) {
 		if(inherits(lt[[1]], "GRanges")) {
 			value_fun = function(x) sum(as.numeric(getFromNamespace("width", ns = "BiocGenerics")(x)))
 		} else if(inherits(lt[[1]], "IRanges")) {
@@ -409,8 +442,15 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 			value_fun = length
 		}
 	}
-	make_comb_mat_from_list(lt, value_fun, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size, 
+	m = make_comb_mat_from_list(lt, value_fun, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size, 
 		universal_set = universal_set, complement_size = complement_size)
+	if(remove_empty_comb_set) {
+		m = m[comb_size(m) > 0]
+	}
+	if(remove_complement_set) {
+		m = m[comb_degree(m) > 0]
+	}
+	return(m)
 }
 
 
@@ -589,7 +629,11 @@ extract_comb = function(m, comb_name) {
 
 	if(!is.null(x)) {
 		if(is_complement_set(comb_name)) {
-			return(setdiff(universal_set, rownames(x)))
+			if(is.numeric(universal_set)) {
+				return(as.integer(as.numeric(setdiff(as.character(universal_set), rownames(x)))))
+			} else {
+				return(setdiff(universal_set, rownames(x)))
+			}
 		}
 
 		if(mode == "distinct") {
@@ -609,10 +653,18 @@ extract_comb = function(m, comb_name) {
 		}
 
 		rn = rownames(x)
-		if(is.null(rn)) {
-			return(seq_len(nrow(x))[l])
+		if(is.null(universal_set)) {
+			if(is.null(rn)) {
+				return(seq_len(nrow(x))[l])
+			} else {
+				return(rn[l])
+			}
 		} else {
-			return(rn[l])
+			if(is.numeric(universal_set)) {
+				return(as.integer(as.numeric(rn[l])))
+			} else {
+				return(rn[l])
+			}
 		}
 	}
 	if(!is.null(lt)) {
@@ -762,6 +814,7 @@ t.comb_mat = function(x) {
 	attr(x2, "set_on_rows") = set_on_rows
 	attr(x2, "x") = attr(x, "x")
 	attr(x2, "lt") = attr(x, "lt")
+	attr(x2, "universal_set") = attr(x, "universal_set")
 	class(x2) = c("comb_mat", "matrix")
 	return(x2)
 }
@@ -780,13 +833,17 @@ print.comb_mat = function(x, ...) {
 	mode = attr(x, "mode")
 
 	cat("A combination matrix with", length(set_size), "sets and", length(comb_size), "combinations.\n")
-	cat("  ranges of #combination set: c(", min(comb_size), ", ", max(comb_size), ").\n", sep = "")
+	cat("  ranges of combination set size: c(", min(comb_size), ", ", max(comb_size), ").\n", sep = "")
 	cat("  mode for the combination size: ", mode, ".\n", sep = "")
 	if(set_on_rows) {
 		cat("  sets are on rows.\n")
 	} else {
 		cat("  sets are on columns\n")
 	}
+	if(!is.null(attr(x, "universal_set"))) {
+		cat("  universal set is set.\n")
+	}
+
 	cat("
 Utility functions that can be applied:
 - set_name(): name of the sets.
@@ -794,8 +851,8 @@ Utility functions that can be applied:
 - comb_name(): name of the combination sets.
 - comb_size(): size of the combination sets.
 - comb_degree(): degree of the combination sets.
-- extract_comb(): extract elements in the specific combination sets.
-- t(): transpose the combination matrix.
+- extract_comb(): extract elements in the specific combination set.
+- t(): transpose the combination matrix on the UpSet plot.
 - '[': subset the combination matrix.
 ")
 
@@ -810,6 +867,8 @@ Utility functions that can be applied:
 # -comb_col The color for the dots representing combination sets.
 # -pt_size The point size for the dots representing combination sets.
 # -lwd The line width for the combination sets.
+# -bg_col Color for the background rectangles.
+# -bg_pt_col Color for the dots representing the set is not selected.
 # -set_order The order of sets.
 # -comb_order The order of combination sets.
 # -top_annotation A `HeatmapAnnotation` object on top of the combination matrix.
@@ -903,7 +962,8 @@ Utility functions that can be applied:
 #
 UpSet = function(m, 
 	comb_col = "black",
-	pt_size = unit(3, "mm"), lwd = 2,
+	pt_size = unit(3, "mm"), lwd = 2, 
+	bg_col = "#F0F0F0", bg_pt_col = "#CCCCCC",
 	set_order = order(set_size(m), decreasing = TRUE), 
 	comb_order = if(attr(m, "set_on_rows")) {
 			order.comb_mat(m[set_order, ], decreasing = TRUE)
@@ -935,10 +995,14 @@ UpSet = function(m,
 			subm = matrix(pindex(m2, i, j), nrow = nr, byrow = FALSE)
 			for(k in seq_len(nr)) {
 				if(k %% 2) {
-					grid.rect(y = k/nr, height = 1/nr, just = "top", gp = gpar(fill = "#F0F0F0", col = NA))
+					grid.rect(y = k/nr, height = 1/nr, just = "top", gp = gpar(fill = bg_col[1], col = NA))
+				} else {
+					if(length(bg_col) > 1) {
+						grid.rect(y = k/nr, height = 1/nr, just = "top", gp = gpar(fill = bg_col[2], col = NA))
+					}
 				}
 			}
-			grid.points(x, y, size = pt_size, pch = 16, gp = gpar(col = ifelse(pindex(m2, i, j), comb_col[j], "#CCCCCC")))
+			grid.points(x, y, size = pt_size, pch = 16, gp = gpar(col = ifelse(pindex(m2, i, j), comb_col[j], bg_pt_col)))
 			jj = unique(j)
 			for(k in seq_len(nc)) {
 		        if(sum(subm[, k]) >= 2) {
