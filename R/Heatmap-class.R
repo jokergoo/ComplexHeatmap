@@ -366,9 +366,6 @@ Heatmap = function(matrix, col, name,
         message_wrap("If you have column annotations for a zero-row matrix, please directly use in form of `HeatmapAnnotation(...) %v% NULL`")
         return(invisible(NULL))
     }
-    if(identical(rect_gp$type, "none")) {
-        show_heatmap_legend = FALSE
-    }
 
     ### normalize km/split and row_km/row_split
     if(missing(row_km)) row_km = km
