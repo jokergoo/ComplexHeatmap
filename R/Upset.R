@@ -420,7 +420,7 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 	mode = match.arg(mode)[1]
 	if(length(lt) == 1) {
 		lt = lt[[1]]
-		if(!is.null(dim(lt))) {
+		if(length(dim(lt)) == 2) { # a matrix
 			m = make_comb_mat_from_matrix(lt, mode = mode, top_n_sets = top_n_sets, 
 				min_set_size = min_set_size, universal_set = universal_set, complement_size = complement_size)
 			if(remove_empty_comb_set) {
@@ -512,6 +512,7 @@ set_size = function(m) {
 #
 # == param
 # -m A combination matrix returned by `make_comb_mat`.
+# -degree degree of the intersection. The value can be a vector.
 #
 # == value
 # A vector of sizes of the combination sets.
@@ -523,8 +524,13 @@ set_size = function(m) {
 #           c = sample(letters, 20))
 # m = make_comb_mat(lt)
 # comb_size(m)
-comb_size = function(m) {
-	structure(attr(m, "comb_size"), names = comb_name(m))
+comb_size = function(m, degree = NULL) {
+	x = structure(attr(m, "comb_size"), names = comb_name(m))
+	if(is.null(degree)) {
+		return(x)
+	} else {
+		x[comb_degree(m) %in% degree]
+	}
 }
 
 # == title
