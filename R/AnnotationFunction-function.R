@@ -1578,15 +1578,12 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 	yscale[2] = yscale[2]*1.05
 
 	gp = recycle_gp(gp, n)
+	axis_param$direction = "normal"
 	axis_param = validate_axis_param(axis_param, which)
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
 
-		if(axis_param$direction == "reverse") {
-			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
-		}
-		
 		n_all = length(value)
 		value = value[index]
 		
@@ -1613,10 +1610,6 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 	}
 	column_fun = function(index, k = 1, N = 1) {
 
-		if(axis_param$direction == "reverse") {
-			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
-		}
-		
 		n_all = length(value)
 		value = value[index]
 		
@@ -1774,14 +1767,11 @@ anno_density = function(x, which = c("column", "row"),
 			length = length(heatmap_colors)), heatmap_colors)
 	}
 
+	axis_param$direction = "normal"
 	axis_param = validate_axis_param(axis_param, which)
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
-
-		if(axis_param$direction == "reverse") {
-			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
-		}
 		
 		n = length(index)
 		value = value[index]
@@ -1836,10 +1826,6 @@ anno_density = function(x, which = c("column", "row"),
 		popViewport()
 	}
 	column_fun = function(index, k = 1, N = 1) {
-		
-		if(axis_param$direction == "reverse") {
-			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
-		}
 
 		n_all = length(value)
 		value = value[index]
@@ -2214,14 +2200,11 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 	} 
 	gp = recycle_gp(gp, n)
 	gp$fill = add_transparency(gp$fill, transparency)
+	axis_param$direction = "normal"
 	axis_param = validate_axis_param(axis_param, which)
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
-
-		if(axis_param$direction == "reverse") {
-			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
-		}
 
 		n_all = length(value)
 		value = value[index]
@@ -2255,10 +2238,6 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 		popViewport()
 	}
 	column_fun = function(index, k = 1, N = 1) {
-
-		if(axis_param$direction == "reverse") {
-			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
-		}
 
 		n_all = length(value)
 		value = value[index]
@@ -2439,14 +2418,11 @@ anno_horizon = function(x, which = c("column", "row"),
 	xscale = range(lapply(value, function(x) x[, 1]), na.rm = TRUE)
 	yscale = range(lapply(value, function(x) abs(x[, 2])), na.rm = TRUE)
 	
+	axis_param$direction = "normal"
 	axis_param = validate_axis_param(axis_param, which)
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
-
-		if(axis_param$direction == "reverse") {
-			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
-		}
 
 		n_all = length(value)
 		value = value[index]

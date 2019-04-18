@@ -2,6 +2,7 @@ CHANGES in VERSION 1.99.7
 
 * `UpSet()` supports adding complement sets.
 * `make_comb_set()`: add `universal_set` and `complement_size` arguments.
+* axes can be reversed in anno_* functions.
 
 ========================
 
