@@ -7,11 +7,12 @@ Sizes of the Combination sets
 Sizes of the Combination sets
 }
 \usage{
-comb_size(m)
+comb_size(m, degree = NULL)
 }
 \arguments{
 
   \item{m}{A combination matrix returned by \code{\link{make_comb_mat}}.}
+  \item{degree}{degree of the intersection. The value can be a vector.}
 
 }
 \value{

@@ -8,7 +8,7 @@ Draw Annotation Axis
 }
 \usage{
 grid.annotation_axis(at = NULL, labels = at, labels_rot = 0, gp = gpar(),
-    side = "left", facing = "outside")
+    side = "left", facing = "outside", direction = "normal")
 }
 \arguments{
 
@@ -18,6 +18,7 @@ grid.annotation_axis(at = NULL, labels = at, labels_rot = 0, gp = gpar(),
   \item{gp}{Graphic parameters.}
   \item{side}{side of the axis of the annotation viewport.}
   \item{facing}{Facing of the axis.}
+  \item{direction}{direction of the axis. Value should be "normal" or "reverse".}
 
 }
 \details{

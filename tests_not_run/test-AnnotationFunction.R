@@ -123,6 +123,12 @@ anno = anno_points(c(1:5, NA, 7:10))
 draw(anno, test = "anno_points")
 
 
+anno = anno_points(runif(10), axis_param = list(direction = "reverse"), ylim = c(0, 1))
+draw(anno, test = "anno_points")
+
+anno = anno_points(runif(10), axis_param = list(direction = "reverse"), ylim = c(0, 1), which = "row")
+draw(anno, test = "anno_points")
+
 ##### test anno_lines ###
 anno = anno_lines(runif(10))
 draw(anno, test = "anno_lines")
@@ -146,6 +152,8 @@ draw(anno, test = "anno_lines, smooth, matrix, by row")
 anno = anno_lines(c(1:5, NA, 7:10))
 draw(anno, test = "anno_lines")
 
+anno = anno_lines(runif(10), axis_param = list(direction = "reverse"))
+draw(anno, test = "anno_lines")
 
 ###### test anno_text #######
 anno = anno_text(month.name)
@@ -198,6 +206,16 @@ draw(anno, test = "proportion matrix")
 
 anno = anno_barplot(c(1:5, NA, 7:10))
 draw(anno, test = "a vector")
+
+anno = anno_barplot(1:10, which = "row", axis_param = list(direction = "reverse"))
+draw(anno, test = "a vector")
+
+anno = anno_barplot(1:10, baseline = 5, which = "row", axis_param = list(direction = "reverse"))
+draw(anno, test = "a vector")
+
+anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)), which = "row", axis_param = list(direction = "reverse"))
+draw(anno, test = "a vector")
+
 
 ##### test anno_boxplot #####
 set.seed(123)

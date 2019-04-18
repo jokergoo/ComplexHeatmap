@@ -555,6 +555,9 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 # -facing Whether the axis faces to the outside of the annotation region or inside. Sometimes when
 #         appending more than one heatmaps, the axes of column annotations of one heatmap might
 #         overlap to the neighbouring heatmap, setting ``facing`` to ``inside`` may invoild it.
+# -direction The direction of the axis. Value should be "normal" or "reverse".
+#
+# All the parameters are passed to `annotation_axis_grob` to construct an axis grob.
 #
 # == example
 # default_axis_param("column")
@@ -566,7 +569,8 @@ default_axis_param = function(which) {
 		labels_rot = ifelse(which == "column", 0, 90), 
 		gp = gpar(fontsize = 8), 
 		side = ifelse(which == "column", "left", "bottom"), 
-		facing = "outside"
+		facing = "outside",
+		direction = "normal"
 	)
 }
 
@@ -600,9 +604,12 @@ construct_axis_grob = function(axis_param, which, data_scale) {
 		axis_param$at = at
 		axis_param$labels = at
 	}
+
 	if(is.null(axis_param$labels)) {
 		axis_param$labels = axis_param$at
 	}
+
+	axis_param$scale = data_scale
 	axis_grob = do.call(annotation_axis_grob, axis_param)
 	return(axis_grob)
 }
@@ -709,6 +716,10 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		
 		n = length(index)
 
+		if(axis_param$direction == "reverse") {
+			value = data_scale[2] - value + data_scale[1]
+		}
+
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 		if(is.matrix(value)) {
 			for(i in seq_len(ncol(value))) {
@@ -732,6 +743,10 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 	column_fun = function(index, k = 1, N = 1) {
 		
 		n = length(index)
+
+		if(axis_param$direction == "reverse") {
+			value = data_scale[2] - value + data_scale[1]
+		}
 		
 		pushViewport(viewport(yscale = data_scale, xscale = c(0.5, n+0.5)))
 		if(is.matrix(value)) {
@@ -903,6 +918,10 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 	row_fun = function(index, k = 1, N = 1) {
 		n = length(index)
 
+		if(axis_param$direction == "reverse") {
+			value = data_scale[2] - value + data_scale[1]
+		}
+
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 		if(is.matrix(value)) {
 			for(i in seq_len(ncol(value))) {
@@ -949,6 +968,10 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 
 	column_fun = function(index, k = 1, N = 1) {
 		n = length(index)
+
+		if(axis_param$direction == "reverse") {
+			value = data_scale[2] - value + data_scale[1]
+		}
 
 		pushViewport(viewport(yscale = data_scale, xscale = c(0.5, n+0.5)))
 		if(is.matrix(value)) {
@@ -1147,6 +1170,12 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	row_fun = function(index, k = 1, N = 1) {
 		n = length(index)
 		
+		if(axis_param$direction == "reverse") {
+			value_origin = value
+			value = data_scale[2] - value + data_scale[1]
+			baseline = data_scale[2] - baseline + data_scale[1]
+		}
+
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
 		if(ncol(value) == 1) {
 			width = value[index] - baseline
@@ -1154,9 +1183,16 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, index))
 		} else {
 			for(i in seq_len(ncol(value))) {
-				width = value[index, i]
-				x_coor = rowSums(value[index, seq_len(i-1), drop = FALSE]) + width/2
-				grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+				if(axis_param$direction == "normal") {
+					width = abs(value[index, i])
+					x_coor = rowSums(value[index, seq_len(i-1), drop = FALSE]) + width/2
+					grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+				} else {
+					width = value_origin[index, i] # the original width
+					x_coor = rowSums(value_origin[index, seq_len(i-1), drop = FALSE]) + width/2 #distance to the right
+					x_coor = data_scale[2] - x_coor + data_scale[1]
+					grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+				}
 			}
 		}
 		if(axis_param$side == "top") {
@@ -1170,7 +1206,13 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	}
 	column_fun = function(index, k = 1, N = 1) {
 		n = length(index)
-	
+		
+		if(axis_param$direction == "reverse") {
+			value_origin = value
+			value = data_scale[2] - value + data_scale[1]
+			baseline = data_scale[2] - baseline + data_scale[1]
+		}
+
 		pushViewport(viewport(yscale = data_scale, xscale = c(0.5, n+0.5)))
 		if(ncol(value) == 1) {
 			height = value[index] - baseline
@@ -1178,9 +1220,16 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, index))
 		} else {
 			for(i in seq_len(ncol(value))) {
-				height = value[index, i]
-				y_coor = rowSums(value[index, seq_len(i-1), drop = FALSE]) + height/2
-				grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+				if(axis_param$direction == "normal") {
+					height = value[index, i]
+					y_coor = rowSums(value[index, seq_len(i-1), drop = FALSE]) + height/2
+					grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+				} else {
+					height = value_origin[index, i]
+					y_coor = rowSums(value_origin[index, seq_len(i-1), drop = FALSE]) + height/2
+					y_coor = data_scale[2] - y_coor + data_scale[1]
+					grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+				}
 			}
 		}
 		if(axis_param$side == "left") {
@@ -1321,6 +1370,10 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 	row_fun = function(index, k = 1, N = 1) {
 
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
+
 		n_all = length(value)
 		value = value[index]
 		boxplot_stats = boxplot(value, plot = FALSE)$stats
@@ -1372,6 +1425,11 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		popViewport()
 	}
 	column_fun = function(index, k = 1, N = 1) {
+
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
+
 		value = value[index]
 		boxplot_stats = boxplot(value, plot = FALSE)$stats
 
@@ -1524,6 +1582,10 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
+
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
 		
 		n_all = length(value)
 		value = value[index]
@@ -1550,6 +1612,10 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 		popViewport()
 	}
 	column_fun = function(index, k = 1, N = 1) {
+
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
 		
 		n_all = length(value)
 		value = value[index]
@@ -1712,6 +1778,10 @@ anno_density = function(x, which = c("column", "row"),
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
+
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
 		
 		n = length(index)
 		value = value[index]
@@ -1766,6 +1836,10 @@ anno_density = function(x, which = c("column", "row"),
 		popViewport()
 	}
 	column_fun = function(index, k = 1, N = 1) {
+		
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
 
 		n_all = length(value)
 		value = value[index]
@@ -2145,6 +2219,10 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 
 	row_fun = function(index, k = 1, N = 1) {
 
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
+
 		n_all = length(value)
 		value = value[index]
 		
@@ -2177,6 +2255,10 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 		popViewport()
 	}
 	column_fun = function(index, k = 1, N = 1) {
+
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
 
 		n_all = length(value)
 		value = value[index]
@@ -2361,6 +2443,10 @@ anno_horizon = function(x, which = c("column", "row"),
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, xscale) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
+
+		if(axis_param$direction == "reverse") {
+			value = lapply(value, function(x) data_scale[2] - x + data_scale[1])
+		}
 
 		n_all = length(value)
 		value = value[index]

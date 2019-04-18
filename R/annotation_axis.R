@@ -8,7 +8,8 @@
 # -gp Graphic parameters.
 # -side side of the axis of the annotation viewport.
 # -facing Facing of the axis.
-# -direction direction of the axis. Value should be "normal" or "reverse".
+# -direction Direction of the axis. Value should be "normal" or "reverse".
+# -scale The data scale. If it is ``NULL``, it is inferred from current viewport.
 #
 # == value
 # A `grid::grob` object.
@@ -129,7 +130,7 @@
 # popViewport()
 #
 annotation_axis_grob = function(at = NULL, labels = at, labels_rot = 0, gp = gpar(), 
-	side = "left", facing = "outside", direction = "normal") {
+	side = "left", facing = "outside", direction = "normal", scale = NULL) {
 
 	if(!side %in% c("left", "right", "top", "bottom")) {
 		stop_wrap("`side` can only be in 'left', 'right', 'top' and 'bottom'.")
@@ -141,10 +142,12 @@ annotation_axis_grob = function(at = NULL, labels = at, labels_rot = 0, gp = gpa
 		stop_wrap("`direction` can only be in `normal` and `reverse`.")
 	}
 
-	if(side %in% c("top", "bottom")) {
-		scale = current.viewport()$xscale
-	} else {
-		scale = current.viewport()$yscale
+	if(is.null(scale)) {
+		if(side %in% c("top", "bottom")) {
+			scale = current.viewport()$xscale
+		} else {
+			scale = current.viewport()$yscale
+		}
 	}
 	if(is.null(at)) {
 		at = pretty_breaks(scale)
