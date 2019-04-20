@@ -1061,3 +1061,43 @@ smartAlign2 = function(start, end, range, range_fixed = TRUE) {
     df[rk, , drop = FALSE]
 }
 
+color_overlap = function (r0, g0, b0, r, g, b, alpha = 1) {
+    l_na_1 = is.na(r0) | is.na(g0) | is.na(b0)
+    l_na_2 = is.na(r) | is.na(g) | is.na(b)
+    r = ifelse(l_na_1 & l_na_2, 1, ifelse(l_na_1, r * alpha,
+        ifelse(l_na_2, r0, r * alpha + r0 * (1 - alpha))))
+    g = ifelse(l_na_1 & l_na_2, 1, ifelse(l_na_1, g * alpha,
+        ifelse(l_na_2, g0, g * alpha + g0 * (1 - alpha))))
+    b = ifelse(l_na_1 & l_na_2, 1, ifelse(l_na_1, b * alpha,
+        ifelse(l_na_2, b0, b * alpha + b0 * (1 - alpha))))
+    return(list(r = r, g = g, b = b))
+}
+
+colorRamp2_biv = function(f1, f2, transparency = 0.5) {
+    f1 = f1
+    f2 = f2
+    if(length(transparency) == 1) transparency = rep(transparency, 2)
+    f = function(x1, x2) {
+        if(missing(x2)) {
+            if(ncol(x1) == 2) {
+                x2 = x1[, 2]
+                x1 = x1[, 1]
+            } else {
+                stop_wrap("If only one variable is specified, it should be a matrix/data frame with two columns.")
+            }
+        }
+        col1 = col2rgb(f1(x1), alpha = TRUE)/255
+        col2 = col2rgb(f2(x2), alpha = TRUE)/255
+
+        if(length(transparency)) {
+            col1[4, ] = 1 - transparency[1]
+            col2[4, ] = 1 - transparency[2]
+        }
+
+        col1 = col1[1:3, , drop = FALSE] * rep(col1[4, ], each = 3)
+        lt = color_overlap(col1[1, ], col1[2, ], col1[3, ],
+            col2[1, ], col2[2, ], col2[3, ], alpha = col2[4, ])
+        rgb(lt[[1]], lt[[2]], lt[[3]])
+    }
+}
+
