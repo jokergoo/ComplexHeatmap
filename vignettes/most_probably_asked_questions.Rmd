@@ -3,16 +3,13 @@
 %\VignetteIndexEntry{Most probably asked questions}
 -->
 
-Most Probably Asked Questions
-=================================================
+## Most probably asked questions
 
-**Author**: Zuguang Gu ( z.gu@dkfz.de )
+```{r, echo = FALSE, message = FALSE}
+library(markdown)
+options(markdown.HTML.options = c(options('markdown.HTML.options')[[1]], "toc"))
+```
 
-**Date**: `r Sys.Date()`
-
-**Package version**: `r installed.packages()["ComplexHeatmap", "Version"]`
-
----------------------------------------
 
 <style type="text/css">
 h1, h2, h3, h4, h5 {
@@ -128,7 +125,7 @@ Heatmap(m, cluster_rows = cluster_within_group(t(m), group),
 
 Heatmap is used to visualize the global patterns of your matrix while not
 every single row or column. I suggest to random sample rows or columns into a
-reasonable small number, and the final heatmap should be the same as if you
+reasonable small number, and the final heatmap should look the same as if you
 still insist to use the full matrix.
 
 ### How to add axes for dendrograms?
@@ -159,7 +156,18 @@ and `label` in `grid.xaxis()` function.
 
 You can also check `annotation_axis_grob()` function (later use `grid.draw()` to draw the axes) to draw a nicer axis.
 
-### I still have a problem with the package and I am lost in the see of the huge vignette.
+### I set row_km/column_km and it gives me different k-means clusterings for different runs.
+
+Yes, this is what it should be expected because k-means uses random start points and it might give
+different results for different runs. To solve this problem, you do either way as follows:
+
+1. Always add `set.seed(...)` before making the heatmap. This makes sure the
+   random seed is always the same for different runs. 
+2. Set `row_km_repeats`/`column_km_repeats` to run k-means multiple times to get a
+   final consensus k-means clustering. Note you might still get different
+   results, but the chance is much smaller than just running k-means once.
+
+### I still have a problem with the package and I am lost in the ocean of the huge vignette.
 
 The vignette (https://jokergoo.github.io/ComplexHeatmap-reference/book/)
 contains huge number of examples and plots showing different usage of the
