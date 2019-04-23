@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jokergoo/ComplexHeatmap.svg)](https://travis-ci.org/jokergoo/ComplexHeatmap) 
 [![codecov](https://img.shields.io/codecov/c/github/jokergoo/ComplexHeatmap.svg)](https://codecov.io/github/jokergoo/ComplexHeatmap) 
-[![bioc](http://www.bioconductor.org/shields/downloads/ComplexHeatmap.svg)](https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/) 
+[![bioc](http://www.bioconductor.org/shields/downloads/devel/ComplexHeatmap.svg)](https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/) 
 [![bioc](http://mcube.nju.edu.cn/cgi-bin/zuguanggu/bioc_download.pl?package=ComplexHeatmap&)](https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/) 
 [![bioc](http://www.bioconductor.org/shields/years-in-bioc/ComplexHeatmap.svg)](http://bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html)
 
