@@ -16,7 +16,8 @@ Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
     legend_height = NULL, legend_width = NULL,
     direction = c("vertical", "horizontal"),
     title = "", title_gp = gpar(fontsize = 10, fontface = "bold"),
-    title_position = c("topleft", "topcenter", "leftcenter", "lefttop", "leftcenter-rot", "lefttop-rot"))
+    title_position = c("topleft", "topcenter", "leftcenter", "lefttop", "leftcenter-rot", "lefttop-rot"),
+    title_gap = unit(1.5, "mm"))
 }
 \arguments{
 
@@ -43,6 +44,7 @@ Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
   \item{title}{Title of the legend.}
   \item{title_gp}{Graphic parameters of the title.}
   \item{title_position}{Position of title relative to the legend. \code{topleft}, \code{topcenter}, \code{leftcenter-rot} and \code{lefttop-rot} are only for vertical legend and \code{leftcenter}, \code{lefttop} are only for  horizontal legend.}
+  \item{title_gap}{Gap between title and the legend body.}
 
 }
 \details{
