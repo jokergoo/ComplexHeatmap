@@ -73,6 +73,7 @@ Legends = function(...) {
 # -title_position Position of title relative to the legend. ``topleft``, ``topcenter``, ``leftcenter-rot``
 #     and ``lefttop-rot`` are only for vertical legend and ``leftcenter``, ``lefttop`` are only for 
 #     horizontal legend.
+# -title_gap Gap between title and the legend body.
 #
 # == details
 # Most of the argument can also be set in ``heatmap_legend_param`` argument in `Heatmap` or ``annotation_legend_param``
@@ -107,7 +108,8 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	legend_height = NULL, legend_width = NULL,
 	direction = c("vertical", "horizontal"),
 	title = "", title_gp = gpar(fontsize = 10, fontface = "bold"),
-	title_position = c("topleft", "topcenter", "leftcenter", "lefttop", "leftcenter-rot", "lefttop-rot")) {
+	title_position = c("topleft", "topcenter", "leftcenter", "lefttop", "leftcenter-rot", "lefttop-rot"),
+	title_gap = unit(1.5, "mm")) {
 
 	dev.null()
 	on.exit(dev.off2())
@@ -123,7 +125,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	# odevlist = dev.list()
 	direction = match.arg(direction)[1]
 	title_position = match.arg(title_position)[1]
-	title_padding = unit(1.5, "mm")
+	title_padding = title_gap
 	if(missing(col_fun)) {
 		if(is.null(border)) border = "white"
 		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,

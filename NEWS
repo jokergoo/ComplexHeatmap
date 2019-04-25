@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.99.8
+
+* add `title_gap` in `Legend()
+
+========================
+
 CHANGES in VERSION 1.99.7
 
 * `UpSet()` supports adding complement sets.
