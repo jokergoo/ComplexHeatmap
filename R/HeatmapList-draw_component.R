@@ -262,7 +262,7 @@ setMethod(f = "adjust_heatmap_list",
 
         max_left_component_width = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
             if(inherits(ht, "Heatmap")) {
-                sum(component_width(ht, c("row_dend_left", "row_names_left", "row_anno_left", "row_title_left")))   
+                sum(component_width(ht, c("row_dend_left", "row_names_left", "row_anno_left")))   
             } else {
                 unit(0, "mm")
             }
@@ -270,7 +270,7 @@ setMethod(f = "adjust_heatmap_list",
         max_left_component_width = convertWidth(max_left_component_width, "mm")
         max_right_component_width = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
             if(inherits(ht, "Heatmap")) {
-                sum(component_width(ht, c("row_dend_right", "row_names_right", "row_anno_right", "row_title_right")))
+                sum(component_width(ht, c("row_dend_right", "row_names_right", "row_anno_right")))
             } else {
                 unit(0, "mm")
             }

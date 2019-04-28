@@ -1,6 +1,8 @@
 CHANGES in VERSION 1.99.8
 
 * add `title_gap` in `Legend()
+* fixed a bug of wrong row title spaces when multiple heatmaps are vertically
+  concatenated.
 
 ========================
 
