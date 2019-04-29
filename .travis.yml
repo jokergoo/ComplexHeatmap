@@ -1,36 +1,4 @@
 language: r
-
-sudo: required
-
-# Be strict when checking our package
-warnings_are_errors: true
-
-r-packages:
-- colorspace
-- RColorBrewer
-- testthat
-- knitr
-- markdown
-- dendextend
-- GlobalOptions
-- circlize
-- GetoptLong
-- covr
-- dendsort
-- Cairo
-- png
-- jpeg
-- tiff
-- fastcluster
-- grImport
-- grImport2
-- glue
-
-bioc_packages:
-- GenomicRanges
-- HilbertCurve
-
-r_check_args: --no-build-vignettes --no-vignettes
-
-after_success:
-  - Rscript -e 'library(covr);codecov()'
+r: bioc-devel
+r_build_args: --no-manual --no-build-vignettes
+r_check_args: --no-manual --no-build-vignettes --ignore-vignettes
