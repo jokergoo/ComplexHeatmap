@@ -524,9 +524,9 @@ setMethod(f = "make_layout",
                 object@ht_list = c(list(Heatmap(matrix(nrow = nr, ncol = 0))), object@ht_list)
                 ht_gap = unit.c(unit(0, "mm"), ht_gap)
                 i_main = i_main + 1
+                n_ht = n_ht + 1
                 if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very left\n")
-            }
-                
+            }     
         }
 
         if(row_dend_side == "right" || row_sub_title_side == "right") {
@@ -534,6 +534,7 @@ setMethod(f = "make_layout",
             if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
                 object@ht_list = c(object@ht_list, list(Heatmap(matrix(nrow = nr, ncol = 0))))
                 ht_gap = unit.c(ht_gap, unit(0, "mm"))
+                n_ht = n_ht + 1
                 if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very right\n")
             }
         }
@@ -546,6 +547,7 @@ setMethod(f = "make_layout",
                 object@ht_list = c(list(Heatmap(matrix(nrow = 0, ncol = nc))), object@ht_list)
                 ht_gap = unit.c(unit(0, "mm"), ht_gap)
                 i_main = i_main + 1
+                n_ht = n_ht + 1
                 if(verbose) qqcat("add a zero-row heatmap for column dend/title on the very top\n")
             }   
         }
@@ -554,6 +556,7 @@ setMethod(f = "make_layout",
             if(inherits(object@ht_list[[ length(object@ht_list) ]], "HeatmapAnnotation")) {
                 object@ht_list = c(object@ht_list, list(Heatmap(matrix(nrow = 0, ncol = nc))))
                 ht_gap = unit.c(ht_gap, unit(0, "mm"))
+                n_ht = n_ht + 1
                 if(verbose) qqcat("add a zero-column heatmap for row dend/title on the very bottom\n")
             }
         }

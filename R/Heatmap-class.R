@@ -358,14 +358,15 @@ Heatmap = function(matrix, col, name,
     #     show_heatmap_legend = FALSE
     #     .Object@heatmap_param$show_heatmap_legend = FALSE
     # }
-    if(ncol(matrix) == 0 && (!is.null(left_annotation) || !is.null(right_annotation))) {
-        message_wrap("If you have row annotations for a zeor-column matrix, please directly use in form of `rowAnnotation(...) + NULL`")
-        return(invisible(NULL))
-    }
-    if(nrow(matrix) == 0 && (!is.null(top_annotation) || !is.null(bottom_annotation))) {
-        message_wrap("If you have column annotations for a zero-row matrix, please directly use in form of `HeatmapAnnotation(...) %v% NULL`")
-        return(invisible(NULL))
-    }
+    
+    # if(ncol(matrix) == 0 && (!is.null(left_annotation) || !is.null(right_annotation))) {
+    #     message_wrap("If you have row annotations for a zeor-column matrix, please directly use in form of `rowAnnotation(...) + NULL`")
+    #     return(invisible(NULL))
+    # }
+    # if(nrow(matrix) == 0 && (!is.null(top_annotation) || !is.null(bottom_annotation))) {
+    #     message_wrap("If you have column annotations for a zero-row matrix, please directly use in form of `HeatmapAnnotation(...) %v% NULL`")
+    #     return(invisible(NULL))
+    # }
 
     ### normalize km/split and row_km/row_split
     if(missing(row_km)) row_km = km
@@ -803,7 +804,7 @@ Heatmap = function(matrix, col, name,
             row_anno_right_width = unit(0, "mm")
         ),
 
-        layout_index = NULL,
+        layout_index = matrix(nrow = 0, ncol = 2),
         graphic_fun_list = list(),
         initialized = FALSE
     )
@@ -1488,7 +1489,8 @@ setMethod(f = "draw",
         upViewport()
     } else {
         if(internal) {  # a heatmap without legend
-            if(ncol(object@matrix) == 0 || nrow(object@matrix) == 0) return(invisible(NULL))
+            # if(ncol(object@matrix) == 0 || nrow(object@matrix) == 0) return(invisible(NULL))
+            if(nrow(object@layout$layout_index) == 0) return(invisible(NULL))
             layout = grid.layout(nrow = length(HEATMAP_LAYOUT_COLUMN_COMPONENT), 
                 ncol = length(HEATMAP_LAYOUT_ROW_COMPONENT), widths = component_width(object), 
                 heights = component_height(object))
@@ -1507,9 +1509,9 @@ setMethod(f = "draw",
             }
             upViewport()
         } else {
-            if(ncol(object@matrix) == 0) {
-                stop_wrap("Single heatmap should contains a matrix with at least one column. Zero-column matrix can only be appended to the heatmap list.")
-            }
+            # if(ncol(object@matrix) == 0) {
+            #     stop_wrap("Single heatmap should contains a matrix with at least one column. Zero-column matrix can only be appended to the heatmap list.")
+            # }
             ht_list = new("HeatmapList")
             ht_list = add_heatmap(ht_list, object)
             draw(ht_list, ...)

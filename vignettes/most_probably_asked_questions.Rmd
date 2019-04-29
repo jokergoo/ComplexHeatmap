@@ -167,6 +167,20 @@ different results for different runs. To solve this problem, you do either way a
    final consensus k-means clustering. Note you might still get different
    results, but the chance is much smaller than just running k-means once.
 
+### I only want to draw dendrograms plus a list of annotations.
+
+You need to assign the dendrograms to a zero-row/column matrix:
+
+```{r}
+hc = hclust(dist(matrix(rnorm(100), 10)))
+Heatmap(matrix(nc = 0, nr = 10), cluster_rows = hc, 
+	right_annotation = rowAnnotation(
+		foo = anno_points(1:10),
+		sth = 1:10,
+		bar = anno_barplot(1:10)),
+	row_split = 2)
+```
+
 ### I still have a problem with the package and I am lost in the ocean of the huge vignette.
 
 The vignette (https://jokergoo.github.io/ComplexHeatmap-reference/book/)

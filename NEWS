@@ -3,6 +3,9 @@ CHANGES in VERSION 1.99.8
 * add `title_gap` in `Legend()
 * fixed a bug of wrong row title spaces when multiple heatmaps are vertically
   concatenated.
+* fixed a bug of *_sub_title_side when the heatmap annotation is the first/last
+  element in the heatmap list.
+* zero-column/row heatmap is supported.
 
 ========================
 
