@@ -6,6 +6,7 @@ CHANGES in VERSION 1.99.8
 * fixed a bug of *_sub_title_side when the heatmap annotation is the first/last
   element in the heatmap list.
 * zero-column/row heatmap is supported.
+* improved calculation of axis breaks
 
 ========================
 
