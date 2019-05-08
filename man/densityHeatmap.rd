@@ -22,6 +22,7 @@ densityHeatmap(data,
     ylab_gp = gpar(fontsize = 12),
     tick_label_gp = gpar(fontsize = 10),
     quantile_gp = gpar(fontsize = 10),
+    show_quantiles = TRUE,
     
     column_order = NULL,
     column_names_side = "bottom",
@@ -52,6 +53,7 @@ densityHeatmap(data,
   \item{ylab_gp}{Graphic parameters for y-labels.}
   \item{tick_label_gp}{Graphic parameters for y-ticks.}
   \item{quantile_gp}{Graphic parameters for the quantiles.}
+  \item{show_quantiles}{Whether show quantile lines.}
   \item{column_order}{Order of columns.}
   \item{column_names_side}{Pass to \code{\link{Heatmap}}.}
   \item{show_column_names}{Pass to \code{\link{Heatmap}}.}
