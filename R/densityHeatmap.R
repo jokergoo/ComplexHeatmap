@@ -16,6 +16,7 @@
 # -ylab_gp Graphic parameters for y-labels.
 # -tick_label_gp Graphic parameters for y-ticks.
 # -quantile_gp Graphic parameters for the quantiles.
+# -show_quantiles Whether show quantile lines.
 # -column_order Order of columns.
 # -column_names_side Pass to `Heatmap`.
 # -show_column_names Pass to `Heatmap`.
@@ -73,6 +74,7 @@ densityHeatmap = function(data,
 	ylab_gp = gpar(fontsize = 12),
 	tick_label_gp = gpar(fontsize = 10),
 	quantile_gp = gpar(fontsize = 10),
+	show_quantiles = TRUE,
 
 	column_order = NULL,
 	column_names_side = "bottom",
@@ -167,16 +169,18 @@ densityHeatmap = function(data,
 		left_annotation = rowAnnotation(axis = anno_empty(border = FALSE, 
 				width = grobHeight(textGrob(ylab, gp = ylab_gp))*2 + max_text_width(bb, gp = tick_label_gp) + unit(4, "mm")),
 			show_annotation_name = FALSE), 
-		right_annotation = rowAnnotation(quantile = anno_empty(border = FALSE, 
+		right_annotation = {if(show_quantiles) {rowAnnotation(quantile = anno_empty(border = FALSE, 
 				width = grobWidth(textGrob("100%", gp = quantile_gp)) + unit(6, "mm")),
-			show_annotation_name = FALSE),
+			show_annotation_name = FALSE)} else NULL},
 		...
 	)
 
 	random_str = paste(sample(c(letters, LETTERS, 0:9), 8), collapse = "")
 	ht@name = paste0(ht@name, "_", random_str)
 	names(ht@left_annotation) = paste0(names(ht@left_annotation), "_", random_str)
-	names(ht@right_annotation) = paste0(names(ht@right_annotation), "_", random_str)
+	if(show_quantiles) {
+		names(ht@right_annotation) = paste0(names(ht@right_annotation), "_", random_str)
+	}
 
 	post_fun = function(ht) {
 		column_order = column_order(ht)
@@ -189,16 +193,18 @@ densityHeatmap = function(data,
 			grid.text(ylab, x = grobHeight(textGrob(ylab, gp = ylab_gp)), rot = 90)
 		}, slice = 1)
 
-		for(i_slice in 1:n_slice) {
-			decorate_heatmap_body(paste0("density_", random_str), {
-				n = length(column_order[[i_slice]])
-				pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = TRUE))
-				for(i in seq_len(5)) {
-					grid.lines(1:n, quantile_list[i, column_order[[i_slice]] ], default.units = "native", gp = gpar(lty = 2))
-				}
-				grid.lines(1:n, mean_value[ column_order[[i_slice]] ], default.units = "native", gp = gpar(lty = 2, col = "darkred"))
-				upViewport()
-			}, column_slice = i_slice)
+		if(!is.null(ht@right_annotation)) {
+			for(i_slice in 1:n_slice) {
+				decorate_heatmap_body(paste0("density_", random_str), {
+					n = length(column_order[[i_slice]])
+					pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = TRUE))
+					for(i in seq_len(5)) {
+						grid.lines(1:n, quantile_list[i, column_order[[i_slice]] ], default.units = "native", gp = gpar(lty = 2))
+					}
+					grid.lines(1:n, mean_value[ column_order[[i_slice]] ], default.units = "native", gp = gpar(lty = 2, col = "darkred"))
+					upViewport()
+				}, column_slice = i_slice)
+			}
 		}
 
 		decorate_heatmap_body(paste0("density_", random_str), {
@@ -208,41 +214,43 @@ densityHeatmap = function(data,
 			upViewport()
 		}, column_slice = 1)
 
-		decorate_heatmap_body(paste0("density_", random_str), {
-			n = length(column_order[[n_slice]])
-			
-			lq = !apply(quantile_list, 1, function(x) all(x > max_x) || all(x < min_x))
-			lq = c(lq, !(all(mean_value > max_x) || all(mean_value < min_x)))
-			if(sum(lq) == 0) {
-				return(NULL)
-			}
+		if(!is.null(ht@right_annotation)) {
+			decorate_heatmap_body(paste0("density_", random_str), {
+				n = length(column_order[[n_slice]])
+				
+				lq = !apply(quantile_list, 1, function(x) all(x > max_x) || all(x < min_x))
+				lq = c(lq, !(all(mean_value > max_x) || all(mean_value < min_x)))
+				if(sum(lq) == 0) {
+					return(NULL)
+				}
 
-			labels = c(rownames(quantile_list), "mean")
-			y = c(quantile_list[, column_order[[n_slice]][n] ], mean_value[ column_order[[n_slice]][n] ])
-			labels = labels[lq]
-			y = y[lq]
-			od = order(y)
-			y = y[od]
-			labels = labels[od]
-			
-			pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = FALSE))
-			text_height = convertHeight(grobHeight(textGrob(labels[1])) * (1 + 0.2), "native", valueOnly = TRUE)
-	        h1 = y - text_height*0.5
-	        h2 = y + text_height*0.5
-	        pos = rev(smartAlign(h1, h2, c(min_x, max_x)))
-	        h = (pos[, 1] + pos[, 2])/2
-	        link_width = unit(6, "mm")
-	        n2 = length(labels)
-	        grid.text(labels, unit(1, "npc") + rep(link_width, n2), h, default.units = "native", just = "left", gp = quantile_gp)
-	        link_width = link_width - unit(1, "mm")
-	        ly = y <= max_x & y >= min_x
-	        if(sum(ly)) {
-		        grid.segments(unit(rep(1, n2), "npc")[ly], y[ly], unit(1, "npc") + rep(link_width * (1/3), n2)[ly], y[ly], default.units = "native")
-		        grid.segments(unit(1, "npc") + rep(link_width * (1/3), n2)[ly], y[ly], unit(1, "npc") + rep(link_width * (2/3), n2)[ly], h[ly], default.units = "native")
-		        grid.segments(unit(1, "npc") + rep(link_width * (2/3), n2)[ly], h[ly], unit(1, "npc") + rep(link_width, n2)[ly], h[ly], default.units = "native")
-		    }
-			upViewport()
-		}, column_slice = n_slice)
+				labels = c(rownames(quantile_list), "mean")
+				y = c(quantile_list[, column_order[[n_slice]][n] ], mean_value[ column_order[[n_slice]][n] ])
+				labels = labels[lq]
+				y = y[lq]
+				od = order(y)
+				y = y[od]
+				labels = labels[od]
+				
+				pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = FALSE))
+				text_height = convertHeight(grobHeight(textGrob(labels[1])) * (1 + 0.2), "native", valueOnly = TRUE)
+		        h1 = y - text_height*0.5
+		        h2 = y + text_height*0.5
+		        pos = rev(smartAlign(h1, h2, c(min_x, max_x)))
+		        h = (pos[, 1] + pos[, 2])/2
+		        link_width = unit(6, "mm")
+		        n2 = length(labels)
+		        grid.text(labels, unit(1, "npc") + rep(link_width, n2), h, default.units = "native", just = "left", gp = quantile_gp)
+		        link_width = link_width - unit(1, "mm")
+		        ly = y <= max_x & y >= min_x
+		        if(sum(ly)) {
+			        grid.segments(unit(rep(1, n2), "npc")[ly], y[ly], unit(1, "npc") + rep(link_width * (1/3), n2)[ly], y[ly], default.units = "native")
+			        grid.segments(unit(1, "npc") + rep(link_width * (1/3), n2)[ly], y[ly], unit(1, "npc") + rep(link_width * (2/3), n2)[ly], h[ly], default.units = "native")
+			        grid.segments(unit(1, "npc") + rep(link_width * (2/3), n2)[ly], h[ly], unit(1, "npc") + rep(link_width, n2)[ly], h[ly], default.units = "native")
+			    }
+				upViewport()
+			}, column_slice = n_slice)
+		}
 	}
 
 	ht@heatmap_param$post_fun = post_fun
