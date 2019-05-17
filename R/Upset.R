@@ -130,7 +130,11 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 
 	#normalize comb_mat to 2^n - 1 columns
 	n = nrow(comb_mat)
-	if(ncol(comb_mat) < 2^n - 1) {
+	n_empty = 2^n -1 - n
+	if(n_empty > 10000){
+		#consider to make 10000 a parameter?
+		warning_wrap("Since there are more than 10000 empty combinations (", n_empty, "), these will not be added")
+	}else if(n_empty > 0) {
 		full_comb_mat = matrix(0, nrow = n, ncol = 2^n - 1)
 		j = 1
 		for(k in seq_len(n)) {
