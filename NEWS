@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.1.0
+
+* check the length of the clustering objects and the matrix rows/columns
+
+========================
+
 CHANGES in VERSION 1.99.8
 
 * add `title_gap` in `Legend()

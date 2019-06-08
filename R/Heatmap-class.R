@@ -964,6 +964,24 @@ make_cluster = function(object, which = c("row", "column")) {
 
     dend_param$split_by_cutree = FALSE
 
+    if(!is.null(dend_param$obj)) {
+        if(inherits(dend_param$obj, "hclust")) {
+            ncl = length(dend_param$obj$order)
+        } else {
+            ncl = nobs(dend_param$obj)
+        }
+
+        if(which == "row") {
+            if(ncl != nrow(mat)) {
+                stop_wrap("The length of the row clustering object is not the same as the number of matrix rows.")
+            }
+        } else {
+            if(ncl != ncol(mat)) {
+                stop_wrap("The length of the column clustering object is not the same as the number of matrix columns")
+            }
+        }
+    }
+
     if(cluster) {
 
         if(is.numeric(split) && length(split) == 1) {
