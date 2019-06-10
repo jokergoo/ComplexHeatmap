@@ -1,6 +1,7 @@
 CHANGES in VERSION 2.1.0
 
 * check the length of the clustering objects and the matrix rows/columns
+* `anno_oncoprint_barplot()`: add `ylim` argumnet
 
 ========================
 
