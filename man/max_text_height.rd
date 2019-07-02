@@ -7,12 +7,13 @@ Maximum Height of Text
 Maximum Height of Text
 }
 \usage{
-max_text_height(text, gp = gpar())
+max_text_height(text, gp = gpar(), rot = 0)
 }
 \arguments{
 
   \item{text}{A vector of text.}
   \item{gp}{Graphic parameters for text.}
+  \item{rot}{Rotation of the text, scalar.}
 
 }
 \details{

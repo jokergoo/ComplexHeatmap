@@ -341,6 +341,7 @@ list_components = function() {
 # == param
 # -text A vector of text.
 # -gp Graphic parameters for text.
+# -rot Rotation of the text, scalar.
 #
 # == details
 # It simply calculates maximum width of a list of `grid::textGrob` objects.
@@ -360,14 +361,14 @@ list_components = function() {
 # x = c("a", "bb", "ccc")
 # max_text_width(x, gp = gpar(fontsize = 10))
 #
-max_text_width = function(text, gp = gpar()) {
+max_text_width = function(text, gp = gpar(), rot = 0) {
     if(is.null(text)) {
         return(unit(0, "mm"))
     }
     n = length(text)
     gp = recycle_gp(gp, n)
 
-    u = max(do.call("unit.c", lapply(seq_len(n), function(i) grobWidth(textGrob(text[i], gp = subset_gp(gp, i))))))
+    u = max(do.call("unit.c", lapply(seq_len(n), function(i) grobWidth(textGrob(text[i], gp = subset_gp(gp, i), rot = rot)))))
     convertWidth(u, "mm")
 }
 
@@ -377,6 +378,7 @@ max_text_width = function(text, gp = gpar()) {
 # == param
 # -text A vector of text.
 # -gp Graphic parameters for text.
+# -rot Rotation of the text, scalar.
 #
 # == details
 # It simply calculates maximum height of a list of `grid::textGrob` objects.
@@ -396,14 +398,14 @@ max_text_width = function(text, gp = gpar()) {
 # x = c("a", "b\nb", "c\nc\nc")
 # max_text_height(x, gp = gpar(fontsize = 10))
 #
-max_text_height = function(text, gp = gpar()) {
+max_text_height = function(text, gp = gpar(), rot = 0) {
     if(is.null(text)) {
         return(unit(0, "mm"))
     }
     n = length(text)
     gp = recycle_gp(gp, n)
 
-    u = max(do.call("unit.c", lapply(seq_len(n), function(i) grobHeight(textGrob(text[i], gp = subset_gp(gp, i))))))
+    u = max(do.call("unit.c", lapply(seq_len(n), function(i) grobHeight(textGrob(text[i], gp = subset_gp(gp, i), rot = rot)))))
     convertHeight(u, "mm")
 }
 

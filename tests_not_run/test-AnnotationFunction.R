@@ -293,8 +293,11 @@ draw(anno, test = "heatmap, colors")
 anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row")
 draw(anno, index = 1:100, test = "anno_mark")
 
+anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], labels_rot = 30, which = "row")
+draw(anno, index = 1:100, test = "anno_mark")
+
 m = matrix(1:1000, byrow = TRUE, nr = 100)
-anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row")
+anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row", labels_rot = 30)
 Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark = anno)
 Heatmap(m) + rowAnnotation(mark = anno)
 

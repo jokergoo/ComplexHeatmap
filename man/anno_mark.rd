@@ -9,7 +9,8 @@ Link annotation with labels
 \usage{
 anno_mark(at, labels, which = c("column", "row"),
     side = ifelse(which == "column", "top", "right"),
-    lines_gp = gpar(), labels_gp = gpar(), padding = 0.5,
+    lines_gp = gpar(), labels_gp = gpar(),
+    labels_rot = ifelse(which == "column", 90, 0), padding = 0.5,
     link_width = unit(5, "mm"), link_height = link_width,
     link_gp = lines_gp,
     extend = unit(0, "mm"))
@@ -23,6 +24,7 @@ anno_mark(at, labels, which = c("column", "row"),
   \item{lines_gp}{Please use \code{link_gp} instead.}
   \item{link_gp}{Graphic settings for the segments.}
   \item{labels_gp}{Graphic settings for the labels.}
+  \item{labels_rot}{Rotations of labels, scalar.}
   \item{padding}{Padding between neighbouring labels in the plot.}
   \item{link_width}{Width of the segments.}
   \item{link_height}{Similar as \code{link_width}, used for column annotation.}

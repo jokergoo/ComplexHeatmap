@@ -2704,6 +2704,7 @@ row_anno_text = function(...) {
 # -lines_gp Please use ``link_gp`` instead.
 # -link_gp Graphic settings for the segments.
 # -labels_gp Graphic settings for the labels.
+# -labels_rot Rotations of labels, scalar.
 # -padding Padding between neighbouring labels in the plot.
 # -link_width Width of the segments.
 # -link_height Similar as ``link_width``, used for column annotation.
@@ -2732,7 +2733,8 @@ row_anno_text = function(...) {
 # Heatmap(m) + rowAnnotation(mark = anno)
 anno_mark = function(at, labels, which = c("column", "row"), 
 	side = ifelse(which == "column", "top", "right"),
-	lines_gp = gpar(), labels_gp = gpar(), padding = 0.5, 
+	lines_gp = gpar(), labels_gp = gpar(), 
+	labels_rot = ifelse(which == "column", 90, 0), padding = 0.5, 
 	link_width = unit(5, "mm"), link_height = link_width,
 	link_gp = lines_gp, 
 	extend = unit(0, "mm")) {
@@ -2759,9 +2761,9 @@ anno_mark = function(at, labels, which = c("column", "row"),
 
 	if(which == "row") {
 		height = unit(1, "npc")
-		width = link_width + max_text_width(labels, gp = labels_gp)
+		width = link_width + max_text_width(labels, gp = labels_gp, rot = labels_rot)
 	} else {
-		height = link_width + max_text_width(labels, gp = labels_gp)
+		height = link_width + max_text_height(labels, gp = labels_gp, rot = labels_rot)
 		width = unit(1, "npc")
 	}
 
@@ -2801,13 +2803,13 @@ anno_mark = function(at, labels, which = c("column", "row"),
 
 		n2 = length(labels)
 		if(side == "right") {
-			grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "left")
+			grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, rot = labels_rot, just = "left")
 			link_width = link_width - unit(1, "mm")
 			grid.segments(unit(rep(0, n2), "npc"), pos, rep(link_width*(1/3), n2), pos, default.units = "native", gp = link_gp)
 			grid.segments(rep(link_width*(1/3), n2), pos, rep(link_width*(2/3), n2), h, default.units = "native", gp = link_gp)
 			grid.segments(rep(link_width*(2/3), n2), h, rep(link_width, n2), h, default.units = "native", gp = link_gp)
 		} else {
-			grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, just = "right")
+			grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, rot = labels_rot, just = "right")
 			link_width = link_width - unit(1, "mm")
 			grid.segments(unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_width*(1/3), n2), pos, default.units = "native", gp = link_gp)
 			grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), pos, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = link_gp)
@@ -2847,13 +2849,13 @@ anno_mark = function(at, labels, which = c("column", "row"),
 
 		n2 = length(labels)
 		if(side == "top") {
-			grid.text(labels, h, rep(link_height, n2), default.units = "native", gp = labels_gp, rot = 90, just = "left")
+			grid.text(labels, h, rep(link_height, n2), default.units = "native", gp = labels_gp, rot = labels_rot, just = "left")
 			link_height = link_height - unit(1, "mm")
 			grid.segments(pos, unit(rep(0, n2), "npc"), pos, rep(link_height*(1/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(pos, rep(link_height*(1/3), n2), h, rep(link_height*(2/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(h, rep(link_height*(2/3), n2), h, rep(link_height, n), default.units = "native", gp = link_gp)
 		} else {
-			grid.text(labels, h, rep(max_text_width(labels, gp = labels_gp), n2), default.units = "native", gp = labels_gp, rot = 90, just = "right")
+			grid.text(labels, h, rep(max_text_width(labels, gp = labels_gp), n2), default.units = "native", gp = labels_gp, rot = labels_rot, just = "right")
 			link_height = link_height - unit(1, "mm")
 			grid.segments(pos, unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_height*(1/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(pos, unit(1, "npc")-rep(link_height*(1/3), n2), h, unit(1, "npc")-rep(link_height*(2/3), n2), default.units = "native", gp = link_gp)
@@ -2875,7 +2877,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		width = width,
 		height = height,
 		n = -1,
-		var_import = list(at, labels2index, at2labels, link_gp, labels_gp, padding, .pos, .scale,
+		var_import = list(at, labels2index, at2labels, link_gp, labels_gp, labels_rot, padding, .pos, .scale,
 			side, link_width, link_height, extend),
 		show_name = FALSE
 	)
