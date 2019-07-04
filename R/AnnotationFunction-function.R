@@ -2855,7 +2855,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 			grid.segments(pos, rep(link_height*(1/3), n2), h, rep(link_height*(2/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(h, rep(link_height*(2/3), n2), h, rep(link_height, n), default.units = "native", gp = link_gp)
 		} else {
-			grid.text(labels, h, rep(max_text_width(labels, gp = labels_gp), n2), default.units = "native", gp = labels_gp, rot = labels_rot, just = "right")
+			grid.text(labels, h, unit(1, "npc")-rep(link_height, n2), default.units = "native", gp = labels_gp, rot = labels_rot, just = "right")
 			link_height = link_height - unit(1, "mm")
 			grid.segments(pos, unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_height*(1/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(pos, unit(1, "npc")-rep(link_height*(1/3), n2), h, unit(1, "npc")-rep(link_height*(2/3), n2), default.units = "native", gp = link_gp)
