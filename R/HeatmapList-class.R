@@ -426,8 +426,10 @@ setMethod(f = "draw",
     #     heatmap_legend_offset = annotation_legend_offset
     # }
 
-    object@heatmap_legend_param$offset = unit(0, "mm") #heatmap_legend_offset
-    object@annotation_legend_param$offset = unit(0, "mm") #annotation_legend_offset
+    if(is.null(object@heatmap_legend_param$offset))
+        object@heatmap_legend_param$offset = unit(0, "mm") #heatmap_legend_offset
+    if(is.null(object@annotation_legend_param$offset))
+        object@annotation_legend_param$offset = unit(0, "mm") #annotation_legend_offset
 
     object@ht_list_param$adjust_annotation_extension = adjust_annotation_extension
 

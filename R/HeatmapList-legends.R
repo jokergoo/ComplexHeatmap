@@ -101,16 +101,17 @@ setMethod(f = "draw_heatmap_legend",
     annotation_legend_size = object@annotation_legend_param$size
     offset = object@heatmap_legend_param$offset
 
-    # if(inherits(offset, "character")) {
-    #     if(offset == "annotation_top") {
-    #         i_ht = object@ht_list_param$main_heatmap
-    #         main_ht = object@ht_list[[i_ht]]
-    #         offset = unit(1, "npc") - main_ht@layout$layout_size$column_title_top_height - 
-    #             main_ht@layout$layout_size$column_dend_top_height - 
-    #             (unit(0.5, "npc") + size[2]*0.5)
-    #     } 
-    # }
-    offset = unit(0, "mm")
+    if(inherits(offset, "character")) {
+        if(offset == "annotation_top") {
+            i_ht = object@ht_list_param$main_heatmap
+            main_ht = object@ht_list[[i_ht]]
+            offset = unit(1, "npc") - main_ht@layout$layout_size$column_title_top_height - 
+                main_ht@layout$layout_size$column_dend_top_height - 
+                (unit(0.5, "npc") + size[2]*0.5)
+        } 
+    } else {
+        offset = unit(0, "mm")
+    }
 
     if(side != annotation_legend_side) {
         y = unit(0.5, "npc")
