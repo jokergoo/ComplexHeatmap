@@ -198,7 +198,15 @@ ha = HeatmapAnnotation(foo1 = 1:10,
 
 ## annotation with the same names
 
+set.seed(123)
 m = matrix(rnorm(100), 10)
+ha1 = HeatmapAnnotation(foo = sample(c("a", "b"), 10, replace = TRUE))
+ha2 = HeatmapAnnotation(foo = sample(c("b", "c"), 10, replace = TRUE))
+
+Heatmap(m, top_annotation = ha1) + 
+Heatmap(m, top_annotation = ha2)
+
+
 ha1 = HeatmapAnnotation(foo = sample(c("a", "b"), 10, replace = TRUE),
 	annotation_legend_param = list(
 		foo = list(title = "letters", 
@@ -210,3 +218,14 @@ ha2 = HeatmapAnnotation(foo = sample(c("b", "c"), 10, replace = TRUE))
 
 Heatmap(m, top_annotation = ha1) + 
 Heatmap(m, top_annotation = ha2)
+
+
+library(ComplexHeatmap)
+x = matrix(rnorm(6), ncol=3)
+subtype_col = c("Basal" = "purple","Her2" = "black","Normal" = "blue")
+h1 <- HeatmapAnnotation("Subtype" = c("Basal","Her2", "Normal"),
+                        col = list("Subtype" = subtype_col))
+h2 <- HeatmapAnnotation("Subtype" = c("Normal","Normal", "Basal"),
+                        col = list("Subtype" = subtype_col))
+
+Heatmap(x,top_annotation = h1) + Heatmap(x,top_annotation = h2)
