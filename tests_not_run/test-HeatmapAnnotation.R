@@ -194,3 +194,19 @@ ha = HeatmapAnnotation(foo1 = 1:10,
 	height = unit(1, "cm"),
 	simple_anno_size_adjust = TRUE
 )
+
+
+## annotation with the same names
+
+m = matrix(rnorm(100), 10)
+ha1 = HeatmapAnnotation(foo = sample(c("a", "b"), 10, replace = TRUE),
+	annotation_legend_param = list(
+		foo = list(title = "letters", 
+			       at = c("a", "b", "c"),
+			       labels = c("A", "B", "C")
+			  )
+	))
+ha2 = HeatmapAnnotation(foo = sample(c("b", "c"), 10, replace = TRUE))
+
+Heatmap(m, top_annotation = ha1) + 
+Heatmap(m, top_annotation = ha2)

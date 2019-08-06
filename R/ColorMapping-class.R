@@ -334,3 +334,43 @@ setMethod(f = "color_mapping_legend",
 
 	return(invisible(gf))
 })
+
+# == title
+# Concatenate A List of ColorMapping objects
+#
+# == param
+# -... A list of `ColorMapping-class` objects.
+#
+# == details
+# Only discrete color mappings can be concatenated.
+#
+# == example
+# cm1 = ColorMapping(colors = c("A" = "red", "B" = "black"))
+# cm2 = ColorMapping(colors = c("B" = "blue", "C" = "green"))
+# c(cm1, cm2)
+c.ColorMapping = function(...) {
+	cm_list = list(...)
+	if(!all(sapply(cm_list, function(x) x@type) == "discrete")) {
+		stop_wrap("Only discrete color mappings can be concatenated.")
+	}
+
+	all_levels = unlist(lapply(cm_list, function(x) x@levels))
+	all_colors = unlist(lapply(cm_list, function(x) x@colors))
+
+	increase_color_mapping_index()
+	name = paste0("color_mapping_", get_color_mapping_index())
+
+	l_dup = duplicated(all_levels)
+
+	all_levels = all_levels[!l_dup]
+	all_colors = all_colors[!l_dup]
+	names(all_colors) = all_levels
+
+	cm = new("ColorMapping")
+	cm@colors = all_colors
+	cm@levels = all_levels
+	cm@type = "discrete"
+	cm@name = name
+	cm@na_col = cm_list[[1]]@na_col
+	return(cm)
+}

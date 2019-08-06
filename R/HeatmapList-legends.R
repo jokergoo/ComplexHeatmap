@@ -383,18 +383,33 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
     max_height = unit(dev.size("cm")[2], "cm"), max_width = unit(dev.size("cm")[1], "cm"), ...) {
 
     side = match.arg(side)[1]
-
     # remove legends which are duplicated by testing the names
     legend_names = sapply(ColorMappingList, function(x) x@name)
-    l = !duplicated(legend_names)
-    ColorMappingList = ColorMappingList[l]
-    ColorMappingParamList = ColorMappingParamList[l]
+    # merge discrete legend if they have the same name
+    ColorMappingParamList2 = ColorMappingList2 = vector("list", length(unique(legend_names)))
+    names(ColorMappingParamList2) = names(ColorMappingList2) = unique(legend_names)
+    for(i in seq_along(legend_names)) {
+        if(is.null(ColorMappingList2[[ legend_names[i] ]])) {
+            ColorMappingList2[[ legend_names[i] ]] = ColorMappingList[[i]]
+            ColorMappingParamList2[[ legend_names[i] ]] = ColorMappingParamList[[i]]
+        } else {
+            if(ColorMappingList2[[ legend_names[i] ]]@type == "discrete" && ColorMappingList[[i]]@type == "discrete") {
+                ColorMappingList2[[ legend_names[i] ]] = c(ColorMappingList2[[ legend_names[i] ]], ColorMappingList[[i]])
+            }
+        }
+    }
 
-    n = length(ColorMappingList)
+
+    # l = !duplicated(legend_names)
+    # ColorMappingList = ColorMappingList[l]
+    # ColorMappingParamList = ColorMappingParamList[l]
+
+
+    n = length(ColorMappingList2)
     if(n == 0 && length(legend_list) == 0) {
         return(unit(c(0, 0), "mm"))
     } else {
-        cm_grob = c(lapply(seq_along(ColorMappingList), function(i) color_mapping_legend(ColorMappingList[[i]], param = ColorMappingParamList[[i]], plot = FALSE, ...)), legend_list)
+        cm_grob = c(lapply(seq_along(ColorMappingList2), function(i) color_mapping_legend(ColorMappingList2[[i]], param = ColorMappingParamList2[[i]], plot = FALSE, ...)), legend_list)
         if(side %in% c("left", "right")) {
             pk = packLegend(list = cm_grob, gap = gap, direction = "vertical", max_height = max_height)  
         } else {
