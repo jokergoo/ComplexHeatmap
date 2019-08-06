@@ -3,6 +3,7 @@ CHANGES in VERSION 2.1.0
 * check the length of the clustering objects and the matrix rows/columns
 * `anno_oncoprint_barplot()`: add `ylim` argumnet
 * `anno_mark()`: add `labels_rot` argument
+* `draw_legend()`: legends for annotations with the same names are merged
 
 ========================
 
