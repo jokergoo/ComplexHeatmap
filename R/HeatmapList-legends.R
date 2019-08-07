@@ -394,7 +394,7 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
             ColorMappingParamList2[[ legend_names[i] ]] = ColorMappingParamList[[i]]
         } else {
             if(ColorMappingList2[[ legend_names[i] ]]@type == "discrete" && ColorMappingList[[i]]@type == "discrete") {
-                ColorMappingList2[[ legend_names[i] ]] = c(ColorMappingList2[[ legend_names[i] ]], ColorMappingList[[i]])
+                ColorMappingList2[[ legend_names[i] ]] = c(ColorMappingList2[[ legend_names[i] ]], ColorMappingList[[i]], name = legend_names[i])
             }
         }
     }

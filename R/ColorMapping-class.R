@@ -340,6 +340,7 @@ setMethod(f = "color_mapping_legend",
 #
 # == param
 # -... A list of `ColorMapping-class` objects.
+# -name Name of the new merged color mapping.
 #
 # == details
 # Only discrete color mappings can be concatenated.
@@ -348,7 +349,7 @@ setMethod(f = "color_mapping_legend",
 # cm1 = ColorMapping(colors = c("A" = "red", "B" = "black"))
 # cm2 = ColorMapping(colors = c("B" = "blue", "C" = "green"))
 # c(cm1, cm2)
-c.ColorMapping = function(...) {
+c.ColorMapping = function(..., name = NULL) {
 	cm_list = list(...)
 	if(!all(sapply(cm_list, function(x) x@type) == "discrete")) {
 		stop_wrap("Only discrete color mappings can be concatenated.")
@@ -358,7 +359,7 @@ c.ColorMapping = function(...) {
 	all_colors = unlist(lapply(cm_list, function(x) x@colors))
 
 	increase_color_mapping_index()
-	name = paste0("color_mapping_", get_color_mapping_index())
+	if(is.null(name)) name = paste0("color_mapping_", get_color_mapping_index())
 
 	l_dup = duplicated(all_levels)
 
