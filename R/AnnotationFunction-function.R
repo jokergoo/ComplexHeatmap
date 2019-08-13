@@ -225,12 +225,10 @@ anno_simple = function(x, col, na_col = "grey",
 	    n = length(index)
 	    y = (n - seq_len(n) + 0.5) / n
 	    if(is.matrix(value)) {
+
 		nc = ncol(value)
-		if(is.matrix(pch)){
-	            pch = pch[index, , drop = FALSE]
-	        } else if(is.vector(pch)) {
-		    stop_wrap(paste0("Since annotation is a matrix, pch should also be a matrix")
-	        }
+		pch = pch[index, , drop = FALSE]
+
 		for(i in seq_len(nc)) {
 		    fill = map_to_colors(color_mapping, value[index, i])
 		    grid.rect(x = (i-0.5)/nc, y, height = 1/n, width = 1/nc, 
@@ -262,13 +260,9 @@ anno_simple = function(x, col, na_col = "grey",
 		n = length(index)
 		x = (seq_len(n) - 0.5) / n
         if(is.matrix(value)) {
+
             nc = ncol(value)
-		
-	    if(is.matrix(pch)){
-	        pch = pch[index, , drop = FALSE]
-	    } else if(is.vector(pch)) {
-		stop_wrap(paste0("Since annotation is a matrix, pch should also be a matrix")
-	    }
+	    pch = pch[index, , drop = FALSE]
 			  
             for(i in seq_len(nc)) {
                 fill = map_to_colors(color_mapping, value[index, i])
