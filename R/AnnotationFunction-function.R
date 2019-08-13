@@ -222,33 +222,38 @@ anno_simple = function(x, col, na_col = "grey",
 
 	row_fun = function(index) {
 		
-		n = length(index)
-		y = (n - seq_len(n) + 0.5) / n
-        if(is.matrix(value)) {
-            nc = ncol(value)
-            for(i in seq_len(nc)) {
-                fill = map_to_colors(color_mapping, value[index, i])
-                grid.rect(x = (i-0.5)/nc, y, height = 1/n, width = 1/nc, 
-                	gp = do.call("gpar", c(list(fill = fill), gp)))
-                if(!is.null(pch)) {
-					l = !is.na(pch[, i])
-					grid.points(x = rep((i-0.5)/nc, sum(l)), y = y[l], pch = pch[l, i], 
-						size = {if(length(pt_size) == 1) pt_size else pt_size[i]}, 
-						gp = subset_gp(pt_gp, i))
-				}
-            }
-        } else {
-			fill = map_to_colors(color_mapping, value[index])
-			grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
-			if(!is.null(pch)) {
-				pch = pch[index]
-				pt_size = pt_size[index]
-				pt_gp = subset_gp(pt_gp, index)
-				l = !is.na(pch)
-				grid.points(x = rep(0.5, sum(l)), y = y[l], pch = pch[l], size = pt_size[l], 
-					gp = subset_gp(pt_gp, which(l)))
-			}
-        }
+	    n = length(index)
+	    y = (n - seq_len(n) + 0.5) / n
+	    if(is.matrix(value)) {
+		nc = ncol(value)
+		if(is.matrix(pch)){
+	            pch = pch[index, , drop = FALSE]
+	        } else if(is.vector(pch)) {
+		    stop_wrap(paste0("Since annotation is a matrix, pch should also be a matrix")
+	        }
+		for(i in seq_len(nc)) {
+		    fill = map_to_colors(color_mapping, value[index, i])
+		    grid.rect(x = (i-0.5)/nc, y, height = 1/n, width = 1/nc, 
+			gp = do.call("gpar", c(list(fill = fill), gp)))
+		    if(!is.null(pch)) {
+			l = !is.na(pch[, i])
+			grid.points(x = rep((i-0.5)/nc, sum(l)), y = y[l], pch = pch[l, i], 
+			    size = {if(length(pt_size) == 1) pt_size else pt_size[i]}, 
+			    gp = subset_gp(pt_gp, i))
+		    }
+		}
+	    } else {
+		fill = map_to_colors(color_mapping, value[index])
+		grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+		if(!is.null(pch)) {
+		    pch = pch[index]
+		    pt_size = pt_size[index]
+		    pt_gp = subset_gp(pt_gp, index)
+		    l = !is.na(pch)
+		    grid.points(x = rep(0.5, sum(l)), y = y[l], pch = pch[l], size = pt_size[l], 
+			gp = subset_gp(pt_gp, which(l)))
+		}
+	    }
         if(border) grid.rect(gp = gpar(fill = "transparent"))
 	}
 
@@ -258,28 +263,34 @@ anno_simple = function(x, col, na_col = "grey",
 		x = (seq_len(n) - 0.5) / n
         if(is.matrix(value)) {
             nc = ncol(value)
+		
+	    if(is.matrix(pch)){
+	        pch = pch[index, , drop = FALSE]
+	    } else if(is.vector(pch)) {
+		stop_wrap(paste0("Since annotation is a matrix, pch should also be a matrix")
+	    }
+			  
             for(i in seq_len(nc)) {
                 fill = map_to_colors(color_mapping, value[index, i])
                 grid.rect(x, y = (nc-i +0.5)/nc, width = 1/n, height = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
-                if(!is.null(pch)) {
-                	pch = pch[index, , drop = FALSE]
-					l = !is.na(pch[, i])
-					grid.points(x[l], y = rep((nc-i +0.5)/nc, sum(l)), pch = pch[l, i], 
-						size = {if(length(pt_size) == 1) pt_size else pt_size[i]}, 
-						gp = subset_gp(pt_gp, i))
-				}
-            }
+		if(!is.null(pch)){
+		    l = !is.na(pch[, i])
+		    grid.points(x[l], y = rep((nc-i +0.5)/nc, sum(l)), pch = pch[l, i], 
+			size = {if(length(pt_size) == 1) pt_size else pt_size[i]}, 
+			gp = subset_gp(pt_gp, i))
+		}
+	    }
         } else {
-			fill = map_to_colors(color_mapping, value[index])
-			grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
-			if(!is.null(pch)) {
-				pch = pch[index]
-				pt_size = pt_size[index]
-				pt_gp = subset_gp(pt_gp, index)
-				l = !is.na(pch)
-				grid.points(x[l], y = rep(0.5, sum(l)), pch = pch[l], size = pt_size[l], 
-					gp = subset_gp(pt_gp, which(l)))
-			}
+		fill = map_to_colors(color_mapping, value[index])
+		grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+		if(!is.null(pch)) {
+			pch = pch[index]
+			pt_size = pt_size[index]
+			pt_gp = subset_gp(pt_gp, index)
+			l = !is.na(pch)
+			grid.points(x[l], y = rep(0.5, sum(l)), pch = pch[l], size = pt_size[l], 
+				gp = subset_gp(pt_gp, which(l)))
+		}
         }
         if(border) grid.rect(gp = gpar(fill = "transparent"))
 	}
