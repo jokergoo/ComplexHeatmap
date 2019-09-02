@@ -15,7 +15,7 @@ densityHeatmap(data,
     ylab = deparse(substitute(data)),
     column_title = paste0("Density heatmap of ", deparse(substitute(data))),
     title = column_title,
-    ylim = c(-Inf, Inf),
+    ylim = NULL,
     range = ylim,
     
     title_gp = gpar(fontsize = 14),

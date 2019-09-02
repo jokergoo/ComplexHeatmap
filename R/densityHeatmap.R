@@ -67,7 +67,7 @@ densityHeatmap = function(data,
 	ylab = deparse(substitute(data)),
 	column_title = paste0("Density heatmap of ", deparse(substitute(data))),
 	title = column_title,
-	ylim = c(-Inf, Inf),
+	ylim = NULL,
 	range = ylim,
 
 	title_gp = gpar(fontsize = 14),
@@ -126,8 +126,10 @@ densityHeatmap = function(data,
 	max_x = quantile(unlist(lapply(density_list, function(x) x$x)), 0.99)
 	min_x = quantile(unlist(lapply(density_list, function(x) x$x)), 0.01)
 
-	max_x = min(max_x, range[2])
-	min_x = max(min_x, range[1])
+	if(!is.null(range)) {
+		max_x = range[2]
+		min_x = range[1]
+	}
 	
 	x = seq(min_x, max_x, length = 500)
 

@@ -4,6 +4,7 @@ CHANGES in VERSION 2.1.0
 * `anno_oncoprint_barplot()`: add `ylim` argumnet
 * `anno_mark()`: add `labels_rot` argument
 * `draw_legend()`: legends for annotations with the same names are merged
+* `densityHeatmap()`: `ylim` works as it is expected.
 
 ========================
 
