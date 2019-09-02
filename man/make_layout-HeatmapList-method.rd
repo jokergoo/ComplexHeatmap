@@ -37,6 +37,7 @@ Make Layout for the Heatmap List
     
     row_gap = NULL,
     cluster_rows = NULL,
+    cluster_row_slices = NULL,
     clustering_distance_rows = NULL,
     clustering_method_rows = NULL,
     row_dend_width = NULL,
@@ -52,6 +53,7 @@ Make Layout for the Heatmap List
     
     column_gap = NULL,
     cluster_columns = NULL,
+    cluster_column_slices = NULL,
     clustering_distance_columns = NULL,
     clustering_method_columns = NULL,
     column_dend_width = NULL,
@@ -91,6 +93,7 @@ Make Layout for the Heatmap List
   \item{column_sub_title_side}{Similar setting as \code{row_sub_title_side}.}
   \item{row_gap}{Overwrite the corresponding setting in the main heatmap.}
   \item{cluster_rows}{Overwrite the corresponding setting in the main heatmap.}
+  \item{cluster_row_slices}{Overwrite the corresponding setting in the main heatmap.}
   \item{clustering_distance_rows}{Overwrite the corresponding setting in the main heatmap.}
   \item{clustering_method_rows}{Overwrite the corresponding setting in the main heatmap.same setting as in \code{\link{Heatmap}}, if it is specified, \code{clustering_method_rows} in main heatmap is ignored.}
   \item{row_dend_width}{Overwrite the corresponding setting in the main heatmap.}
@@ -105,6 +108,7 @@ Make Layout for the Heatmap List
   \item{heatmap_height}{Overwrite the corresponding setting in the main heatmap.}
   \item{column_gap}{Overwrite the corresponding setting in the main heatmap.}
   \item{cluster_columns}{Overwrite the corresponding setting in the main heatmap.}
+  \item{cluster_column_slices}{Overwrite the corresponding setting in the main heatmap.}
   \item{clustering_distance_columns}{Overwrite the corresponding setting in the main heatmap.}
   \item{clustering_method_columns}{Overwrite the corresponding setting in the main heatmap.}
   \item{column_dend_width}{column Overwrite the corresponding setting in the main heatmap.}
