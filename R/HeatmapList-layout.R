@@ -27,6 +27,7 @@
 # -column_sub_title_side Similar setting as ``row_sub_title_side``.
 # -row_gap Overwrite the corresponding setting in the main heatmap.
 # -cluster_rows Overwrite the corresponding setting in the main heatmap.
+# -cluster_row_slices Overwrite the corresponding setting in the main heatmap.
 # -clustering_distance_rows Overwrite the corresponding setting in the main heatmap.
 # -clustering_method_rows Overwrite the corresponding setting in the main heatmap.same setting as in `Heatmap`, if it is specified, ``clustering_method_rows`` in main heatmap is ignored.
 # -row_dend_width Overwrite the corresponding setting in the main heatmap.
@@ -41,6 +42,7 @@
 # -heatmap_height Overwrite the corresponding setting in the main heatmap.
 # -column_gap Overwrite the corresponding setting in the main heatmap.
 # -cluster_columns Overwrite the corresponding setting in the main heatmap.
+# -cluster_column_slices Overwrite the corresponding setting in the main heatmap.
 # -clustering_distance_columns Overwrite the corresponding setting in the main heatmap.
 # -clustering_method_columns Overwrite the corresponding setting in the main heatmap.
 # -column_dend_width column Overwrite the corresponding setting in the main heatmap.
@@ -98,6 +100,7 @@ setMethod(f = "make_layout",
     
     row_gap = NULL,
     cluster_rows = NULL,
+    cluster_row_slices = NULL,
     clustering_distance_rows = NULL,
     clustering_method_rows = NULL,
     row_dend_width = NULL, 
@@ -113,6 +116,7 @@ setMethod(f = "make_layout",
 
     column_gap = NULL,
     cluster_columns = NULL,
+    cluster_column_slices = NULL,
     clustering_distance_columns = NULL,
     clustering_method_columns = NULL,
     column_dend_width = NULL, 
@@ -275,6 +279,11 @@ setMethod(f = "make_layout",
             }
         }
 
+        if(!is.null(cluster_row_slices)) {
+            object@ht_list[[i_main]]@row_dend_param$cluster_slices = cluster_row_slices
+            if(verbose) qqcat("set cluster_row_slices to main heatmap\n")
+        }
+
         if(!is.null(show_row_dend)) {
             if(!show_row_dend) {
                 row_dend_width = unit(0, "mm")
@@ -414,6 +423,11 @@ setMethod(f = "make_layout",
                     column_dend_width = unit(10, "mm")
                 }
             }
+        }
+
+        if(!is.null(cluster_column_slices)) {
+            object@ht_list[[i_main]]@column_dend_param$cluster_slices = cluster_column_slices
+            if(verbose) qqcat("set cluster_column_slices to main heatmap\n")
         }
 
         if(!is.null(show_column_dend)) {

@@ -196,6 +196,7 @@ setMethod(f = "add_heatmap",
 # -column_sub_title_side side of the column title from the main heatmap
 # -row_gap this modifies ``row_gap`` of the main heatmap
 # -cluster_rows this modifies ``cluster_rows`` of the main heatmap
+# -cluster_row_slices this modifies ``cluster_row_slices`` of the main heatmap
 # -clustering_distance_rows this modifies ``clustering_distance_rows`` of the main heatmap
 # -clustering_method_rows this modifies ``clustering_method_rows`` of the main heatmap
 # -row_dend_width this modifies ``row_dend_width`` of the main heatmap
@@ -212,6 +213,7 @@ setMethod(f = "add_heatmap",
 # -heatmap_height this modifies ``heatmap_height`` of the main heatmap
 # -column_gap this modifies ``column_gap`` of the main heatmap
 # -cluster_columns this modifies ``cluster_columns`` of the main heatmap
+# -cluster_column_slices this modifies ``cluster_column_slices`` of the main heatmap
 # -clustering_distance_columns this modifies ``clustering_distance_columns`` of the main heatmap
 # -clustering_method_columns this modifies ``clustering_method_columns`` of the main heatmap
 # -column_dend_width this modifies ``column_dend_width`` of the main heatmap
@@ -290,6 +292,7 @@ setMethod(f = "draw",
     
     row_gap = NULL,
     cluster_rows = NULL,
+    cluster_row_slices = NULL,
     clustering_distance_rows = NULL,
     clustering_method_rows = NULL,
     row_dend_width = NULL, 
@@ -307,6 +310,7 @@ setMethod(f = "draw",
 
     column_gap = NULL,
     cluster_columns = NULL,
+    cluster_column_slices = NULL,
     clustering_distance_columns = NULL,
     clustering_method_columns = NULL,
     column_dend_width = NULL, 
@@ -463,6 +467,7 @@ setMethod(f = "draw",
         
         row_gap = row_gap,
         cluster_rows = cluster_rows,
+        cluster_row_slices = cluster_row_slices,
         clustering_distance_rows = clustering_distance_rows,
         clustering_method_rows = clustering_method_rows,
         row_dend_width = row_dend_width, 
@@ -478,6 +483,7 @@ setMethod(f = "draw",
 
         column_gap = column_gap,
         cluster_columns = cluster_columns,
+        cluster_column_slices = cluster_column_slices,
         clustering_distance_columns = clustering_distance_columns,
         clustering_method_columns = clustering_method_columns,
         column_dend_width = column_dend_width, 

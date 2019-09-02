@@ -832,7 +832,7 @@ Heatmap = function(matrix, col, name,
     }
     if(!is.null(height) && !is.null(heatmap_height)) {
         if(is_abs_unit(height) && is_abs_unit(heatmap_height)) {
-            stop_wrap("`heatmap_height` and `width` should not all be the absolute units.")
+            stop_wrap("`heatmap_height` and `height` should not all be the absolute units.")
         }
     }
     
