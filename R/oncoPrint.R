@@ -30,6 +30,8 @@
 # -column_names_gp Pass to `Heatmap`.
 # -column_split Pass to `Heatmap`.
 # -row_order Order of rows. By default rows are sorted by the number of occurence of the alterations.
+# -cluster_rows If it is set, it must be a dendrogram/hclust object.
+# -cluster_columns If it is set, it must be a dendrogram/hclust object.
 # -column_order Order of columns. By default the columns are sorted to show the mutual exclusivity of alterations.
 # -remove_empty_columns If there is no alteration in some samples, whether remove them on the oncoPrint?
 # -remove_empty_rows If there is no alteration in some samples, whether remove them on the oncoPrint?
@@ -78,6 +80,8 @@ oncoPrint = function(mat,
 
 	row_order = NULL,
 	column_order = NULL,
+	cluster_rows = FALSE,
+	cluster_columns = FALSE,
 	
 	remove_empty_columns = FALSE,
 	remove_empty_rows = FALSE,
@@ -439,14 +443,25 @@ oncoPrint = function(mat,
 	dimnames(pheudo) = dimnames(arr)[1:2]
 	
 	if(length(arg_list)) {
-		if(any(arg_names %in% c("rect_gp", "cluster_rows", "cluster_columns", "cell_fun"))) {
-			stop_wrap("'rect_gp', 'cluster_rows', 'cluster_columns', 'cell_fun' are not allowed to use in `oncoPrint()`.")
+		if(any(arg_names %in% c("rect_gp", "cell_fun"))) {
+			stop_wrap("'rect_gp', 'cell_fun' are not allowed to use in `oncoPrint()`.")
+		}
+
+		if("cluster_rows" %in% arg_names) {
+			if(!inherits(cluster_rows, c("dendrogram", "hclust"))) {
+				stop_wrap("`cluster_rows` can only be a dendrogram/hclust object if it is set.")
+			}
+		}
+		if("cluster_columns" %in% arg_names) {
+			if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
+				stop_wrap("`cluster_columns` can only be a dendrogram/hclust object if it is set.")
+			}
 		}
 	}
 
 	ht = Heatmap(pheudo, col = col, 
 		rect_gp = gpar(type = "none"), 
-		cluster_rows = FALSE, cluster_columns = FALSE, 
+		cluster_rows = cluster_rows, cluster_columns = cluster_columns, 
 		row_order = row_order, column_order = column_order,
 		row_split = row_split, 
 		column_labels = column_labels,
