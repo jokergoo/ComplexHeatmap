@@ -37,5 +37,4 @@ how to set the top annotation or bottom annotation in \code{\link{UpSet}}, pleas
 \examples{
 # There is no example
 NULL
-
 }

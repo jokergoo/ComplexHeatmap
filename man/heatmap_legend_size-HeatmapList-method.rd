@@ -1,6 +1,5 @@
 \name{heatmap_legend_size-HeatmapList-method}
 \alias{heatmap_legend_size,HeatmapList-method}
-\alias{heatmap_legend_size}
 \title{
 Size of the Heatmap Legends
 }
@@ -28,8 +27,8 @@ A \code{\link[grid]{unit}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{heatmap_legend_size}
 \examples{
 # There is no example
 NULL
-
 }

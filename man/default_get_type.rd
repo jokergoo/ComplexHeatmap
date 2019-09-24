@@ -20,5 +20,4 @@ It recognizes following separators: \code{;:,|}.
 \examples{
 # There is no example
 NULL
-
 }

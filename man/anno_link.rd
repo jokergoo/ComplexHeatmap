@@ -20,5 +20,4 @@ anno_link(...)
 \examples{
 # There is no example
 NULL
-
 }
