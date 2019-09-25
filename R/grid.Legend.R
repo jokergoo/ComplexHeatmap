@@ -373,7 +373,11 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 	# legend grid
 	gl = list()
 	for(i in 1:ncol) {
-		index = index_mat[, i][labels_mat[, i] != ""]
+		if(inherits(labels_mat[1, 1], "expression")) {
+			index = index_mat[, i][sapply(labels_mat[, i], function(x) x) != ""]
+		} else {
+			index = index_mat[, i][labels_mat[, i] != ""]
+		}
 		ni = length(index)
 		y = (0:(ni-1))*(grid_height)
 		y = legend_body_height - y
