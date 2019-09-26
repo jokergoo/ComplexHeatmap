@@ -1,6 +1,5 @@
 \name{get_legend_param_list-HeatmapAnnotation-method}
 \alias{get_legend_param_list,HeatmapAnnotation-method}
-\alias{get_legend_param_list}
 \title{
 Get a List of Annotation Legend Parameters
 }
@@ -26,8 +25,8 @@ A list.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{get_legend_param_list}
 \examples{
 # There is no example
 NULL
-
 }

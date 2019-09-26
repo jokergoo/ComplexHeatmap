@@ -35,6 +35,8 @@ oncoPrint(mat,
     
     row_order = NULL,
     column_order = NULL,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
     
     remove_empty_columns = FALSE,
     remove_empty_rows = FALSE,
@@ -66,6 +68,8 @@ oncoPrint(mat,
   \item{column_names_gp}{Pass to \code{\link{Heatmap}}.}
   \item{column_split}{Pass to \code{\link{Heatmap}}.}
   \item{row_order}{Order of rows. By default rows are sorted by the number of occurence of the alterations.}
+  \item{cluster_rows}{If it is set, it must be a dendrogram/hclust object.}
+  \item{cluster_columns}{If it is set, it must be a dendrogram/hclust object.}
   \item{column_order}{Order of columns. By default the columns are sorted to show the mutual exclusivity of alterations.}
   \item{remove_empty_columns}{If there is no alteration in some samples, whether remove them on the oncoPrint?}
   \item{remove_empty_rows}{If there is no alteration in some samples, whether remove them on the oncoPrint?}
@@ -90,5 +94,4 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
-
 }

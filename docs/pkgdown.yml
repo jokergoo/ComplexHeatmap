@@ -1,0 +1,7 @@
+pandoc: 1.19.2.1
+pkgdown: 1.4.1
+pkgdown_sha: ~
+articles:
+  complex_heatmap: complex_heatmap.html
+  most_probably_asked_questions: most_probably_asked_questions.html
+

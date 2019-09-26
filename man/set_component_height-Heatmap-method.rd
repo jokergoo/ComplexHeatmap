@@ -1,6 +1,5 @@
 \name{set_component_height-Heatmap-method}
 \alias{set_component_height,Heatmap-method}
-\alias{set_component_height}
 \title{
 Set Height of Heatmap Component
 }
@@ -30,8 +29,8 @@ The \code{\link{Heatmap-class}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{set_component_height}
 \examples{
 # There is no example
 NULL
-
 }

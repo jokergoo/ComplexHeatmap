@@ -17,5 +17,4 @@ Names of the heatmaps/annotations
 \examples{
 # There is no example
 NULL
-
 }

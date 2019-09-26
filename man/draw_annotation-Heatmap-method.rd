@@ -1,6 +1,5 @@
 \name{draw_annotation-Heatmap-method}
 \alias{draw_annotation,Heatmap-method}
-\alias{draw_annotation}
 \title{
 Draw Heatmap Annotations on the Heatmap
 }
@@ -31,8 +30,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{draw_annotation}
 \examples{
 # There is no example
 NULL
-
 }

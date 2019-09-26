@@ -8,3 +8,6 @@ check.bat
 vignettes_old
 revdep/
 
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
