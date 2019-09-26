@@ -6,6 +6,7 @@ CHANGES in VERSION 2.1.0
 * `draw_legend()`: legends for annotations with the same names are merged
 * `densityHeatmap()`: `ylim` works as it is expected.
 * add `cluster_row_slices` and `cluster_column_slices` to `draw,HeatmapList-method()`
+* `densityHeatmap()`: `col` can be set as a function
 
 ========================
 

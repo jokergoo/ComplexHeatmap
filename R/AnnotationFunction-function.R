@@ -3340,6 +3340,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 			if(n_boxes == 1) {
 				h = data.frame(bottom = .scale[1] - extend[1], top = .scale[2] + extend[2])
 			} else {
+				size = as.numeric(size)
 				gap = convertHeight(gap, "native", valueOnly = TRUE)
 				box_height = size/sum(size) * (1 + sum(extend) - sum(gap[1:(n_boxes-1)]))
 				h = data.frame(
@@ -3489,6 +3490,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 			if(n_boxes == 1) {
 				h = data.frame(left = .scale[1] - extend[1], right = .scale[2] + extend[2])
 			} else {
+				size = as.numeric(size)
 				gap = convertWidth(gap, "native", valueOnly = TRUE)
 				box_width = size/sum(size) * (1 + sum(extend) - sum(gap[1:(n_boxes-1)]))
 				h = data.frame(
