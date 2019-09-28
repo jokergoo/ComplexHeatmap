@@ -23,4 +23,5 @@ by the combination matrix.
 \examples{
 # There is no example
 NULL
+
 }

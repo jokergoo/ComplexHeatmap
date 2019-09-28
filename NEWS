@@ -9,6 +9,9 @@ CHANGES in VERSION 2.1.0
 * `densityHeatmap()`: `col` can be set as a function
 * add `cluster_rows`/`cluster_columns` in `oncoPrint()`
 * legend labels support symbols
+* `Heatmap()`: add `jitter` argument to add tiny random shift to original matrix. 
+   It is mainly to solve the problem of "Error: node stack overflow"
+   when there are too many identical rows/columns for plotting the dendrograms.
 
 ========================
 

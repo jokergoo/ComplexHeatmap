@@ -1,5 +1,6 @@
 \name{get_color_mapping_list-HeatmapAnnotation-method}
 \alias{get_color_mapping_list,HeatmapAnnotation-method}
+\alias{get_color_mapping_list}
 \title{
 Get a List of ColorMapping objects
 }
@@ -25,8 +26,8 @@ A list of \code{\link{ColorMapping-class}} objects or an empty list.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\alias{get_color_mapping_list}
 \examples{
 # There is no example
 NULL
+
 }

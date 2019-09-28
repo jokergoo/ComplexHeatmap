@@ -20,4 +20,5 @@ The physical width of the grob can be get by \code{convertWidth(grobWidth(axis_g
 \examples{
 # There is no example
 NULL
+
 }

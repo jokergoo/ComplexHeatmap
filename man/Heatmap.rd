@@ -14,6 +14,7 @@ Heatmap(matrix, col, name,
     border = NA,
     cell_fun = NULL,
     layer_fun = NULL,
+    jitter = FALSE,
     
     row_title = character(0),
     row_title_side = c("left", "right"),
@@ -106,6 +107,7 @@ Heatmap(matrix, col, name,
   \item{border}{Whether draw border. The value can be logical or a string of color.}
   \item{cell_fun}{Self-defined function to add graphics on each cell. Seven parameters will be passed into  this function: \code{j}, \code{i}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are column index, row index in \code{matrix}, coordinate of the cell, the width and height of the cell and the filled color. \code{x}, \code{y}, \code{width} and \code{height} are all \code{\link[grid]{unit}} objects.}
   \item{layer_fun}{Similar as \code{cell_fun}, but is vectorized. Check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#customize-the-heatmap-body} .}
+  \item{jitter}{Random shifts added to the matrix. The value can be logical or a single numeric value. It it is \code{TRUE}, random  values from uniform distribution between 0 and 1e-10 are generated. If it is a numeric value, the range for the uniform distribution is (0, \code{jitter}). It is mainly to solve the problem of "Error: node stack overflow" when there are too many identical rows/columns for plotting the dendrograms.}
   \item{row_title}{Title on the row.}
   \item{row_title_side}{Will the title be put on the left or right of the heatmap?}
   \item{row_title_gp}{Graphic parameters for row title.}
@@ -204,4 +206,5 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 # There is no example
 NULL
+
 }

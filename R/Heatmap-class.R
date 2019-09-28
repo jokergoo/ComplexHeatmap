@@ -93,6 +93,10 @@ Heatmap = setClass("Heatmap",
 #           row index in ``matrix``, coordinate of the cell,
 #           the width and height of the cell and the filled color. ``x``, ``y``, ``width`` and ``height`` are all `grid::unit` objects.
 # -layer_fun Similar as ``cell_fun``, but is vectorized. Check https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#customize-the-heatmap-body .
+# -jitter Random shifts added to the matrix. The value can be logical or a single numeric value. It it is ``TRUE``, random 
+#      values from uniform distribution between 0 and 1e-10 are generated. If it is a numeric value,
+#      the range for the uniform distribution is (0, ``jitter``). It is mainly to solve the problem of "Error: node stack overflow"
+#      when there are too many identical rows/columns for plotting the dendrograms.
 # -row_title Title on the row.
 # -row_title_side Will the title be put on the left or right of the heatmap?
 # -row_title_gp Graphic parameters for row title.
@@ -206,6 +210,7 @@ Heatmap = function(matrix, col, name,
     border = NA,
     cell_fun = NULL,
     layer_fun = NULL,
+    jitter = FALSE,
 
     row_title = character(0), 
     row_title_side = c("left", "right"), 
@@ -437,6 +442,7 @@ Heatmap = function(matrix, col, name,
     .Object@matrix_param$column_km = column_km
     .Object@matrix_param$column_km_repeats = column_km_repeats
     .Object@matrix_param$column_gap = column_gap
+    .Object@matrix_param$jitter = jitter
 
     ### check row_split and column_split ###
     if(!is.null(row_split)) {
@@ -943,6 +949,17 @@ make_cluster = function(object, which = c("row", "column")) {
     }
 
     mat = object@matrix
+    jitter = object@matrix_param$jitter
+    if(is.numeric(mat)) {
+        if(is.logical(jitter)) {
+            if(jitter) {
+                mat = mat + runif(length(mat), min = 0, max = 1e-10)
+            }
+        } else {
+            mat = mat + runif(length(mat), min = 0, max = jitter + 0)
+        }
+    }
+
     distance = slot(object, paste0(which, "_dend_param"))$distance
     method = slot(object, paste0(which, "_dend_param"))$method
     order = slot(object, paste0(which, "_order"))  # pre-defined row order

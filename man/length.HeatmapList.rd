@@ -17,4 +17,5 @@ Length of the HeatmapList object
 \examples{
 # There is no example
 NULL
+
 }
