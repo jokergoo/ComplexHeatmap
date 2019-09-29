@@ -136,6 +136,7 @@
     <span class='kw'>border</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
     <span class='kw'>cell_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
     <span class='kw'>layer_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
 
     <span class='kw'>row_title</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fl'>0</span>),
     <span class='kw'>row_title_side</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"left"</span>, <span class='st'>"right"</span>),
@@ -255,6 +256,10 @@
     <tr>
       <th>layer_fun</th>
       <td><p>Similar as <code>cell_fun</code>, but is vectorized. Check <a href='https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#customize-the-heatmap-body'>https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#customize-the-heatmap-body</a> .</p></td>
+    </tr>
+    <tr>
+      <th>jitter</th>
+      <td><p>Random shifts added to the matrix. The value can be logical or a single numeric value. It it is <code>TRUE</code>, random  values from uniform distribution between 0 and 1e-10 are generated. If it is a numeric value, the range for the uniform distribution is (0, <code>jitter</code>). It is mainly to solve the problem of "Error: node stack overflow" when there are too many identical rows/columns for plotting the dendrograms.</p></td>
     </tr>
     <tr>
       <th>row_title</th>
@@ -559,7 +564,8 @@ of the <code><a href='Heatmap-class.html'>Heatmap-class</a></code> object actual
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># There is no example</span>
-<span class='kw'>NULL</span></div><div class='output co'>#&gt; NULL</div></pre>
+<span class='kw'>NULL</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
