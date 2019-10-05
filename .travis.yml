@@ -2,3 +2,8 @@ language: r
 r: bioc-devel
 r_build_args: --no-manual --no-build-vignettes
 r_check_args: --no-manual --no-build-vignettes --ignore-vignettes
+r_github_packages:
+  - r-lib/covr
+after_success:
+  - Rscript -e 'covr::codecov()'
+  
