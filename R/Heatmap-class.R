@@ -302,6 +302,9 @@ Heatmap = function(matrix, col, name,
         name = paste0("matrix_", get_heatmap_index() + 1)
         increase_heatmap_index()
     }
+    if(name == "") {
+        stop_wrap("Heatmap name cannot be empty string.")
+    }
     .Object@name = name
 
     # re-define some of the argument values according to global settings

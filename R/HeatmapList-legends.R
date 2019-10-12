@@ -399,7 +399,6 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
         }
     }
 
-
     # l = !duplicated(legend_names)
     # ColorMappingList = ColorMappingList[l]
     # ColorMappingParamList = ColorMappingParamList[l]
