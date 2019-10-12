@@ -12,6 +12,7 @@ CHANGES in VERSION 2.1.0
 * `Heatmap()`: add `jitter` argument to add tiny random shift to original matrix. 
    It is mainly to solve the problem of "Error: node stack overflow"
    when there are too many identical rows/columns for plotting the dendrograms.
+* `Heatmap()`: give error when heatmap has empty string as its name.
 
 ========================
 
