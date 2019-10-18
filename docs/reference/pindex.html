@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ComplexHeatmap</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
       </span>
     </div>
 
@@ -160,16 +160,15 @@
     <span class='no'>i</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='no'>m</span>[, <span class='no'>ci</span>] <span class='kw'>&gt;</span> <span class='fl'>0</span>)
     <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='kw'>i</span> <span class='kw'>=</span> <span class='no'>i</span>, <span class='kw'>j</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='no'>ci</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>i</span>)))
 }))
-<span class='fu'>pindex</span>(<span class='no'>m</span>, <span class='no'>ind</span>[, <span class='fl'>1</span>], <span class='no'>ind</span>[, <span class='fl'>2</span>])</div><div class='output co'>#&gt;  [1] 0.73649596 0.38602657 0.11814451 0.13403865 0.22101947 1.64084617
-#&gt;  [7] 0.16806538 1.16838387 1.05418102 1.14526311 2.00248273 0.06670087
-#&gt; [13] 1.86685184 0.02098359 1.24991457 0.33117917 0.21198043 1.23667505
-#&gt; [19] 2.03757402 1.30117599 0.75677476 0.70352390 1.68443571 0.91139129
-#&gt; [25] 0.23743027 1.21810861 0.66082030 0.68374552 0.63296071 1.33551762
-#&gt; [31] 0.00729009 1.01755864 1.51921771 0.37738797 0.86577940 0.62418747
-#&gt; [37] 0.95900538 1.67105483 0.05601673 0.09932759 1.01494317 0.11663728
-#&gt; [43] 0.33390294 0.41142992 2.57145815 0.65119328 0.27376649 1.02467323
-#&gt; [49] 0.81765945 0.37816777 0.85692301 2.41677335 0.82537986 0.51013255
-#&gt; [55] 0.14447570</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='fu'>pindex</span>(<span class='no'>m</span>, <span class='no'>ind</span>[, <span class='fl'>1</span>], <span class='no'>ind</span>[, <span class='fl'>2</span>]), <span class='no'>m</span>[<span class='no'>m</span> <span class='kw'>&gt;</span> <span class='fl'>0</span>])</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='fu'>pindex</span>(<span class='no'>m</span>, <span class='no'>ind</span>[, <span class='fl'>1</span>], <span class='no'>ind</span>[, <span class='fl'>2</span>])</div><div class='output co'>#&gt;  [1] 0.31030923 0.66651132 0.45825713 1.23923784 0.32142619 1.98665079
+#&gt;  [7] 1.88720053 0.66381092 0.73569713 0.60318930 0.54504614 0.65076758
+#&gt; [13] 0.30038830 1.41536821 0.73609075 0.58291632 0.51167333 0.81057520
+#&gt; [19] 1.01772098 0.59880248 1.01672953 0.04375947 0.97048785 0.87070062
+#&gt; [25] 0.47912409 0.57563890 1.54384492 1.83154531 0.63925483 0.46531229
+#&gt; [31] 0.19790749 0.25733554 0.16704424 0.29074462 0.87210366 2.28670551
+#&gt; [37] 0.52292860 2.27514007 0.87646511 2.21329543 1.71954343 1.11922942
+#&gt; [43] 0.49667542 0.21108201 0.86968687 1.07345732 0.40879306 0.78597642
+#&gt; [49] 2.15207805 0.72119043 0.02362363</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='fu'>pindex</span>(<span class='no'>m</span>, <span class='no'>ind</span>[, <span class='fl'>1</span>], <span class='no'>ind</span>[, <span class='fl'>2</span>]), <span class='no'>m</span>[<span class='no'>m</span> <span class='kw'>&gt;</span> <span class='fl'>0</span>])</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='co'># 3d array</span>
 <span class='no'>arr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>(<span class='fl'>1</span>:<span class='fl'>27</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span>))
 <span class='fu'>pindex</span>(<span class='no'>arr</span>, <span class='fl'>1</span>:<span class='fl'>2</span>, <span class='fl'>2</span>:<span class='fl'>3</span>)</div><div class='output co'>#&gt;      [,1] [,2] [,3]

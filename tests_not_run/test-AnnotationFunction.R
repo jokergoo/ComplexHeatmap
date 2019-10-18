@@ -304,6 +304,19 @@ Heatmap(m) + rowAnnotation(mark = anno)
 ht_list = Heatmap(m, cluster_rows = F, cluster_columns = F) + rowAnnotation(mark = anno)
 draw(ht_list, row_split = c(rep("a", 95), rep("b", 5)))
 
+pl = list()
+for(rot in seq(0, 360, by = 30)[-13]) {
+	anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = letters[1:10], labels_rot = rot, which = "column")
+	pl[[as.character(rot)]] = grid.grabExpr(draw(anno, index = 1:100, test = qq("labels_rot = @{rot}")))
+}
+pushViewport(viewport(layout = grid.layout(nrow = 12, ncol = 1)))
+for(i in seq_along(pl)) {
+	pushViewport(viewport(layout.pos.row = i, layout.pos.col = 1))
+	grid.draw(pl[[i]])
+	popViewport()
+}
+popViewport()
+
 
 ### graphic parameters after reordering
 index = c(1, 3, 5, 7, 9, 2, 4, 6, 8, 10)

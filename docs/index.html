@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ComplexHeatmap</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
       </span>
     </div>
 
@@ -84,85 +84,78 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+<div id="make-complex-heatmaps" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#make-complex-heatmaps" class="anchor"></a>Make Complex Heatmaps <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/"><img src="https://jokergoo.github.io/ComplexHeatmap-reference/book/complexheatmap-cover.jpg" width="240" align="right" style="border:2px solid black;"></a>
+</h1></div>
 
-
-<p><a href="https://travis-ci.org/jokergoo/ComplexHeatmap"><img src="https://travis-ci.org/jokergoo/ComplexHeatmap.svg" alt="Build Status"></a> <a href="https://codecov.io/github/jokergoo/ComplexHeatmap"><img src="https://img.shields.io/codecov/c/github/jokergoo/ComplexHeatmap.svg" alt="codecov"></a> <a href="https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/"><img src="http://www.bioconductor.org/shields/downloads/devel/ComplexHeatmap.svg" alt="bioc"></a> <a href="https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/"><embed src="http://mcube.nju.edu.cn/cgi-bin/zuguanggu/bioc_download.pl?package=ComplexHeatmap&amp;"></embed></a> <a href="http://bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html"><img src="http://www.bioconductor.org/shields/years-in-bioc/ComplexHeatmap.svg" alt="bioc"></a></p>
 <p><img src="http://jokergoo.github.io/complexheatmap_logo.svg" width="600"></p>
-<div id="make-complex-heatmaps" class="section level2">
-<h2 class="hasAnchor">
-<a href="#make-complex-heatmaps" class="anchor"></a>Make Complex Heatmaps</h2>
 <p>Complex heatmaps are efficient to visualize associations between different sources of data sets and reveal potential patterns. Here the <strong>ComplexHeatmap</strong> package provides a highly flexible way to arrange multiple heatmaps and supports various annotation graphics.</p>
-<div id="citation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#citation" class="anchor"></a>Citation</h3>
+<div id="citation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#citation" class="anchor"></a>Citation</h2>
 <p>Zuguang Gu, Roland Eils and Matthias Schlesner, <a href="http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract">Complex heatmaps reveal patterns and correlations in multidimensional genomic data</a>, Bioinformatics, 2016</p>
 </div>
-<div id="documentation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h3>
-<p>The full documentations are available at <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/" class="uri">https://jokergoo.github.io/ComplexHeatmap-reference/book/</a>.</p>
+<div id="documentation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#documentation" class="anchor"></a>Documentation</h2>
+<p>The full documentations are available at <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/">https://jokergoo.github.io/ComplexHeatmap-reference/book/</a>.</p>
 </div>
-<div id="install" class="section level3">
-<h3 class="hasAnchor">
-<a href="#install" class="anchor"></a>Install</h3>
+<div id="install" class="section level2">
+<h2 class="hasAnchor">
+<a href="#install" class="anchor"></a>Install</h2>
 <p><code>ComplexHeatmap</code> is available on <a href="http://www.bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html">Bioconductor</a>, you can install it by:</p>
-<pre class="{r}"><code>if (!requireNamespace("BiocManager", quietly=TRUE))
-    install.packages("BiocManager")
-BiocManager::install("ComplexHeatmap")</code></pre>
+<p><code>{r} if (!requireNamespace("BiocManager", quietly=TRUE))     install.packages("BiocManager") BiocManager::install("ComplexHeatmap")</code></p>
 <p>If you want the latest version, install it directly from GitHub:</p>
-<pre class="{r}"><code><a href="https://rdrr.io/r/base/library.html">library(devtools)
-install_github("jokergoo/ComplexHeatmap")</a></code></pre>
+<p><code>{r} library(devtools) install_github("jokergoo/ComplexHeatmap")</code></p>
 </div>
-<div id="usage" class="section level3">
-<h3 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h3>
+<div id="usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h2>
 <p>Make a single heatmap:</p>
-<pre class="{r}"><code><a href="reference/Heatmap.html">Heatmap(mat, ...)</a></code></pre>
+<p><code>{r} Heatmap(mat, ...)</code></p>
 <p>A single Heatmap with column annotations:</p>
-<pre class="{r}"><code>ha = HeatmapAnnotation(df = anno1, anno_fun = anno2, ...)
-Heatmap(mat, ..., top_annotation = ha)</code></pre>
+<p><code>{r} ha = HeatmapAnnotation(df = anno1, anno_fun = anno2, ...) Heatmap(mat, ..., top_annotation = ha)</code></p>
 <p>Make a list of heatmaps:</p>
-<pre class="{r}"><code>Heatmap(mat1, ...) + Heatmap(mat2, ...)</code></pre>
+<p><code>{r} Heatmap(mat1, ...) + Heatmap(mat2, ...)</code></p>
 <p>Make a list of heatmaps and row annotations:</p>
-<pre class="{r}"><code>ha = HeatmapAnnotation(df = anno1, anno_fun = anno2, ..., which = "row")
-Heatmap(mat1, ...) + Heatmap(mat2, ...) + ha</code></pre>
+<p><code>{r} ha = HeatmapAnnotation(df = anno1, anno_fun = anno2, ..., which = "row") Heatmap(mat1, ...) + Heatmap(mat2, ...) + ha</code></p>
 </div>
-<div id="examples" class="section level3">
+<div id="examples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#examples" class="anchor"></a>Examples</h2>
+<div id="visualize-methylation-profile-with-complex-annotations" class="section level3">
 <h3 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h3>
-<div id="visualize-methylation-profile-with-complex-annotations" class="section level4">
-<h4 class="hasAnchor">
-<a href="#visualize-methylation-profile-with-complex-annotations" class="anchor"></a>Visualize Methylation Profile with Complex Annotations</h4>
+<a href="#visualize-methylation-profile-with-complex-annotations" class="anchor"></a>Visualize Methylation Profile with Complex Annotations</h3>
 <p><img src="https://user-images.githubusercontent.com/449218/47718635-2ec22980-dc49-11e8-9f01-37becb19e0d5.png" alt="complexheatmap_example4"></p>
 </div>
-<div id="correlations-between-methylation-expression-and-other-genomic-features" class="section level4">
-<h4 class="hasAnchor">
-<a href="#correlations-between-methylation-expression-and-other-genomic-features" class="anchor"></a>Correlations between methylation, expression and other genomic features</h4>
+<div id="correlations-between-methylation-expression-and-other-genomic-features" class="section level3">
+<h3 class="hasAnchor">
+<a href="#correlations-between-methylation-expression-and-other-genomic-features" class="anchor"></a>Correlations between methylation, expression and other genomic features</h3>
 <p><img src="https://user-images.githubusercontent.com/449218/47718636-2ec22980-dc49-11e8-8db0-1659c27dcf40.png" alt="complexheatmap_example3"></p>
 </div>
-<div id="visualize-cell-heterogeneity-from-single-cell-rnaseq" class="section level4">
-<h4 class="hasAnchor">
-<a href="#visualize-cell-heterogeneity-from-single-cell-rnaseq" class="anchor"></a>Visualize Cell Heterogeneity from Single Cell RNASeq</h4>
+<div id="visualize-cell-heterogeneity-from-single-cell-rnaseq" class="section level3">
+<h3 class="hasAnchor">
+<a href="#visualize-cell-heterogeneity-from-single-cell-rnaseq" class="anchor"></a>Visualize Cell Heterogeneity from Single Cell RNASeq</h3>
 <p><img src="https://user-images.githubusercontent.com/449218/47718637-2ec22980-dc49-11e8-925e-955c16cfa982.png" alt="complexheatmap_example2"></p>
 </div>
-<div id="making-enhanced-oncoprint" class="section level4">
-<h4 class="hasAnchor">
-<a href="#making-enhanced-oncoprint" class="anchor"></a>Making Enhanced OncoPrint</h4>
+<div id="making-enhanced-oncoprint" class="section level3">
+<h3 class="hasAnchor">
+<a href="#making-enhanced-oncoprint" class="anchor"></a>Making Enhanced OncoPrint</h3>
 <p><img src="https://user-images.githubusercontent.com/449218/47718638-2ec22980-dc49-11e8-845e-21e51d3b8e73.png" alt="complexheatmap_example1"></p>
 </div>
-<div id="upset-plot" class="section level4">
-<h4 class="hasAnchor">
-<a href="#upset-plot" class="anchor"></a>UpSet plot</h4>
-<p><embed src="https://pbs.twimg.com/media/Dvpp31uX4AAqGDP.jpg:large"></embed></p>
-</div>
-</div>
-<div id="license" class="section level3">
+<div id="upset-plot" class="section level3">
 <h3 class="hasAnchor">
-<a href="#license" class="anchor"></a>License</h3>
+<a href="#upset-plot" class="anchor"></a>UpSet plot</h3>
+<p><img src="https://pbs.twimg.com/media/Dvpp31uX4AAqGDP.jpg"></p>
+</div>
+</div>
+<div id="license" class="section level2">
+<h2 class="hasAnchor">
+<a href="#license" class="anchor"></a>License</h2>
 <p>MIT @ Zuguang Gu</p>
 </div>
 </div>
-
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -199,7 +192,11 @@ Heatmap(mat1, ...) + Heatmap(mat2, ...) + ha</code></pre>
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/"><img src="https://jokergoo.github.io/ComplexHeatmap-reference/book/complexheatmap-cover.jpg" width="240" align="right" style="border:2px solid black;"></a></li>
+<li><a href="https://travis-ci.org/jokergoo/ComplexHeatmap"><img src="https://travis-ci.org/jokergoo/ComplexHeatmap.svg" alt="Build Status"></a></li>
+<li><a href="https://codecov.io/github/jokergoo/ComplexHeatmap"><img src="https://img.shields.io/codecov/c/github/jokergoo/ComplexHeatmap.svg" alt="codecov"></a></li>
+<li><a href="https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/"><img src="http://www.bioconductor.org/shields/downloads/devel/ComplexHeatmap.svg" alt="bioc"></a></li>
+<li><a href="https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/"><embed src="http://mcube.nju.edu.cn/cgi-bin/zuguanggu/bioc_download.pl?package=ComplexHeatmap&amp;"></embed></a></li>
+<li><a href="http://bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html"><img src="http://www.bioconductor.org/shields/years-in-bioc/ComplexHeatmap.svg" alt="bioc"></a></li>
 </ul>
 </div>
 </div>

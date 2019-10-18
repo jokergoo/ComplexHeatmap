@@ -8,11 +8,13 @@
 
 <title>Class for Color Mapping — ColorMapping-class • ComplexHeatmap</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,10 +34,11 @@
 
 
 
-<meta property="og:title" content="Class for Color Mapping — ColorMapping-class" />
 
+<meta property="og:title" content="Class for Color Mapping — ColorMapping-class" />
 <meta property="og:description" content="Class for Color Mapping" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -66,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ComplexHeatmap</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
       </span>
     </div>
 
@@ -97,7 +100,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/jokergoo/ComplexHeatmap">
@@ -124,18 +126,16 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Class for Color Mapping</p>
-    
     </div>
 
-        
+
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The <code><a href='ColorMapping-class.rd.html'>ColorMapping-class</a></code> handles color mapping for discrete values and continuous values.
 Discrete values are mapped by setting a vector of colors and continuous values are mapped by setting
 a color mapping function.</p>
-    
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     <p>The <code><a href='ColorMapping-class.rd.html'>ColorMapping-class</a></code> provides following methods:</p>
@@ -144,7 +144,6 @@ a color mapping function.</p>
 <li><p><code><a href='map_to_colors-ColorMapping-method.rd.html'>map_to_colors,ColorMapping-method</a></code>: mapping values to colors.</p></li>
 <li><p><code><a href='color_mapping_legend-ColorMapping-method.rd.html'>color_mapping_legend,ColorMapping-method</a></code>: draw legend or get legend as an object.</p></li>
 </ul>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># There is no example</span>
@@ -154,11 +153,8 @@ a color mapping function.</p>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
       <li><a href="#details">Details</a></li>
-
       <li><a href="#methods">Methods</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ComplexHeatmap</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
       </span>
     </div>
 
@@ -171,8 +171,8 @@
     <p>This function supports image formats in <code>png</code>, <code>svg</code>, <code>pdf</code>, <code>eps</code>, <code>jpeg/jpg</code>, <code>tiff</code>. 
 <code>png</code>, <code>jpeg/jpg</code> and <code>tiff</code> images are imported by <code><a href='https://rdrr.io/pkg/png/man/readPNG.html'>readPNG</a></code>, <code><a href='https://rdrr.io/pkg/jpeg/man/readJPEG.html'>readJPEG</a></code> and 
 <code><a href='https://rdrr.io/pkg/tiff/man/readTIFF.html'>readTIFF</a></code>, and drawn by <code><a href='https://rdrr.io/r/grid/grid.raster.html'>grid.raster</a></code>. <code>svg</code> images are firstly reformatted by <code>rsvg::rsvg_svg</code>
-and then imported by <code>readPicture</code> and drawn by <code>grid.picture</code>. <code>pdf</code> and <code>eps</code>
-images are imported by <code>PostScriptTrace</code> and <code>readPicture</code>, later drawn by <code>grid.picture</code>.</p>
+and then imported by <code><a href='https://rdrr.io/pkg/grImport2/man/readPicture.html'>readPicture</a></code> and drawn by <code><a href='https://rdrr.io/pkg/grImport2/man/grid.picture.html'>grid.picture</a></code>. <code>pdf</code> and <code>eps</code>
+images are imported by <code><a href='https://rdrr.io/pkg/grImport/man/PostScriptTrace.html'>PostScriptTrace</a></code> and <code><a href='https://rdrr.io/pkg/grImport/man/readPicture.html'>readPicture</a></code>, later drawn by <code><a href='https://rdrr.io/pkg/grImport/man/grid.picture.html'>grid.picture</a></code>.</p>
 <p>Different image formats can be mixed in the <code>image</code> vector.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -183,14 +183,9 @@ images are imported by <code>PostScriptTrace</code> and <code>readPicture</code>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># download the free icons from https://github.com/Keyamoon/IcoMoon-Free</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>image</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>dir</a></span>(<span class='st'>"~/Downloads/IcoMoon-Free-master/PNG/64px"</span>, <span class='kw'>full.names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>), <span class='fl'>10</span>)
-<span class='no'>anno</span> <span class='kw'>=</span> <span class='fu'>anno_image</span>(<span class='no'>image</span>)
-<span class='fu'><a href='draw-dispatch.html'>draw</a></span>(<span class='no'>anno</span>, <span class='kw'>test</span> <span class='kw'>=</span> <span class='st'>"png"</span>)
-<span class='no'>image</span>[<span class='fl'>1</span>:<span class='fl'>5</span>] <span class='kw'>=</span> <span class='st'>""</span>
-<span class='no'>anno</span> <span class='kw'>=</span> <span class='fu'>anno_image</span>(<span class='no'>image</span>)
-<span class='fu'><a href='draw-dispatch.html'>draw</a></span>(<span class='no'>anno</span>, <span class='kw'>test</span> <span class='kw'>=</span> <span class='st'>"some of png"</span>)
-}</div></pre>
+<span class='co'># \dontrun{</span>
+<span class='no'>image</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>dir</a></span>(<span class='st'>"~/Downloads/IcoMoon-Free-master/PNG/64px"</span>, <span class='kw'>full.names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>), <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='error'>Error in sample.int(length(x), size, replace, prob): invalid first argument</span></div><div class='input'><span class='no'>anno</span> <span class='kw'>=</span> <span class='fu'>anno_image</span>(<span class='no'>image</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'closure'</span></div><div class='output co'>#&gt; <span class='error'>Error in image[is.na(image)] &lt;- "": object of type 'closure' is not subsettable</span></div><div class='input'><span class='fu'><a href='draw-dispatch.html'>draw</a></span>(<span class='no'>anno</span>, <span class='kw'>test</span> <span class='kw'>=</span> <span class='st'>"png"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in draw(anno, test = "png"): object 'anno' not found</span></div><div class='input'><span class='no'>image</span>[<span class='fl'>1</span>:<span class='fl'>5</span>] <span class='kw'>=</span> <span class='st'>""</span></div><div class='output co'>#&gt; <span class='error'>Error in image[1:5] = "": object of type 'closure' is not subsettable</span></div><div class='input'><span class='no'>anno</span> <span class='kw'>=</span> <span class='fu'>anno_image</span>(<span class='no'>image</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'closure'</span></div><div class='output co'>#&gt; <span class='error'>Error in image[is.na(image)] &lt;- "": object of type 'closure' is not subsettable</span></div><div class='input'><span class='fu'><a href='draw-dispatch.html'>draw</a></span>(<span class='no'>anno</span>, <span class='kw'>test</span> <span class='kw'>=</span> <span class='st'>"some of png"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in draw(anno, test = "some of png"): object 'anno' not found</span></div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

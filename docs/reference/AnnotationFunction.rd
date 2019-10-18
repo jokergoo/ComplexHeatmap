@@ -8,11 +8,13 @@
 
 <title>Constructor of AnnotationFunction Class — AnnotationFunction • ComplexHeatmap</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,10 +34,11 @@
 
 
 
-<meta property="og:title" content="Constructor of AnnotationFunction Class — AnnotationFunction" />
 
+<meta property="og:title" content="Constructor of AnnotationFunction Class — AnnotationFunction" />
 <meta property="og:description" content="Constructor of AnnotationFunction Class" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -66,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ComplexHeatmap</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
       </span>
     </div>
 
@@ -97,7 +100,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/jokergoo/ComplexHeatmap">
@@ -124,15 +126,13 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Constructor of AnnotationFunction Class</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'><a href='AnnotationFunction.rd.html'>AnnotationFunction</a></span>(<span class='no'>fun</span>, <span class='kw'>fun_name</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"column"</span>, <span class='st'>"row"</span>),
     <span class='kw'>var_import</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>data_scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>), <span class='kw'>subset_rule</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
     <span class='kw'>subsetable</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>subset_rule</span>) <span class='kw'>&gt;</span> <span class='fl'>0</span>, <span class='kw'>show_name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -181,7 +181,7 @@
       <td><p>The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation, the width must be an absolute unit.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>In the package, we have implemted quite a lot annotation functions by <code><a href='AnnotationFunction.rd.html'>AnnotationFunction</a></code> constructor:
@@ -191,11 +191,9 @@ support as both row annotations and column annotations and they are are all subs
 <p>The build-in annotation functions are already enough for most of the analysis, nevertheless, if users
 want to know more about how to construct the AnnotationFunction class manually, they can refer to
 <a href='https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#implement-new-annotation-functions.'>https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-annotations.html#implement-new-annotation-functions.</a></p>
-    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <code><a href='AnnotationFunction-class.rd.html'>AnnotationFunction-class</a></code> object which can be used in <code><a href='HeatmapAnnotation.rd.html'>HeatmapAnnotation</a></code>.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>
@@ -220,11 +218,8 @@ want to know more about how to construct the AnnotationFunction class manually, 
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#details">Details</a></li>
-
       <li><a href="#value">Value</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

@@ -8,11 +8,13 @@
 
 <title>Class for Concatenating Heatmaps and Annotations — AdditiveUnit-class • ComplexHeatmap</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,10 +34,11 @@
 
 
 
-<meta property="og:title" content="Class for Concatenating Heatmaps and Annotations — AdditiveUnit-class" />
 
+<meta property="og:title" content="Class for Concatenating Heatmaps and Annotations — AdditiveUnit-class" />
 <meta property="og:description" content="Class for Concatenating Heatmaps and Annotations" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -66,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ComplexHeatmap</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
       </span>
     </div>
 
@@ -97,7 +100,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/jokergoo/ComplexHeatmap">
@@ -124,18 +126,16 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Class for Concatenating Heatmaps and Annotations</p>
-    
     </div>
 
-        
+
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This class is a super class for <code><a href='Heatmap-class.rd.html'>Heatmap-class</a></code>, <code><a href='HeatmapList-class.rd.html'>HeatmapList-class</a></code> and
 <code><a href='HeatmapAnnotation-class.rd.html'>HeatmapAnnotation-class</a></code> classes. It is only designed for <code>+</code> generic
 method and the <code>%v%v</code> method so that above three classes can be appended to each other.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># There is no example</span>
@@ -145,9 +145,7 @@ method and the <code>%v%v</code> method so that above three classes can be appen
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
       <li><a href="#details">Details</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
