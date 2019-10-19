@@ -420,20 +420,6 @@ text_width = function(text, gp = gpar()) {
     convertWidth(u, "mm")
 }
 
-grid.text = function(label, x = unit(0.5, "npc"), y = unit(0.5, "npc"), 
-    just = "centre", hjust = NULL, vjust = NULL, rot = 0, check.overlap = FALSE, 
-    default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, 
-    vp = NULL) {
-    tg <- textGrob(label = label, x = x, y = y, just = just, 
-        hjust = hjust, vjust = vjust, rot = rot, check.overlap = check.overlap, 
-        default.units = default.units, name = name, gp = gp, 
-        vp = vp)
-    tw = text_width(label)
-    th = text_height(label)
-    grid.draw(tg)
-    if(identical(just, ""))
-}
-
 text_height = function(text, gp = gpar()) {
     if(is.null(text)) {
         return(unit(0, "mm"))

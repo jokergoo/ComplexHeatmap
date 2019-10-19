@@ -290,6 +290,31 @@ draw(anno, test = "heatmap, colors")
 
 
 ###### anno_mark ###
+library(gridtext)
+grid.text = function(text, x = 0.5, y = 0.5, gp = gpar(), rot = 0, default.units = "npc", just = "center") {
+	if(length(just) == 1) {
+		if(just == "center") {
+			just = c("center", "center")
+		} else if(just == "bottom") {
+			just = c("center", "bottom")
+		} else if (just == "top") {
+			just = c("center", "top")
+		} else if(just == "left") {
+			just = c("left", "center")
+		} else if(just == "right") {
+			just = c("right", "center")
+		}
+	}
+	just2 = c(0.5, 0.5)
+	if(is.character(just)) {
+		just2[1] = switch(just[1], "center" = 0.5, "left" = 0, "right" = 1)
+		just2[2] = switch(just[2], "center" = 0.5, "bottom" = 0, "top" = 1)
+	}
+	gb = richtext_grob(text, x = x, y = y, gp = gpar(fontsize = 10), box_gp = gpar(col = "black"),
+		default.units = default.units, hjust = just2[1], vjust = just2[2], rot = rot)
+	grid.draw(gb)
+}
+
 anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row")
 draw(anno, index = 1:100, test = "anno_mark")
 
@@ -306,10 +331,12 @@ draw(ht_list, row_split = c(rep("a", 95), rep("b", 5)))
 
 
 grid.newpage()
-pushViewport(viewport(layout = grid.layout(nrow = 12, ncol = 1)))
-for(rot in seq(0, 360, by = 30)[-13]) {
+pushViewport(viewport(w = 0.9, h = 0.9))
+h = unit(0, "mm")
+for(rot in seq(0, 360, by = 30)) {
 	anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = strrep(letters[1:10], 4), labels_rot = rot, which = "column", side = "bottom")
-	pushViewport(viewport(layout.pos.col = 1, layout.pos.row = rot/30 + 1))
+	h = h + height(anno)
+	pushViewport(viewport(y = h, height = height(anno), just = "top"))
 	grid.rect()
 	draw(anno, index = 1:100)
 	popViewport()
@@ -317,10 +344,12 @@ for(rot in seq(0, 360, by = 30)[-13]) {
 
 
 grid.newpage()
-pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 12)))
-for(rot in seq(0, 360, by = 30)[-13]) {
-	anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = strrep(letters[1:10], 4), labels_rot = rot, which = "row", side = "right")
-	pushViewport(viewport(layout.pos.row = 1, layout.pos.col = rot/30 + 1))
+pushViewport(viewport(w = 0.9, h = 0.9))
+w = unit(0, "mm")
+for(rot in seq(0, 360, by = 30)) {
+	anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = strrep(letters[1:10], 4), labels_rot = rot, which = "row", side = "left")
+	w = w + width(anno)
+	pushViewport(viewport(x = w, width = width(anno), just = "right"))
 	grid.rect()
 	draw(anno, index = 1:100)
 	popViewport()
