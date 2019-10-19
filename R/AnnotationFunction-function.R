@@ -2739,7 +2739,7 @@ row_anno_text = function(...) {
 anno_mark = function(at, labels, which = c("column", "row"), 
 	side = ifelse(which == "column", "top", "right"),
 	lines_gp = gpar(), labels_gp = gpar(), 
-	labels_rot = ifelse(which == "column", 90, 0), padding = 0.5, 
+	labels_rot = ifelse(which == "column", 90, 0), padding = unit(1, "mm"), 
 	link_width = unit(5, "mm"), link_height = link_width,
 	link_gp = lines_gp, 
 	extend = unit(0, "mm")) {
@@ -2775,6 +2775,8 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	.pos = NULL
 	.scale = NULL
 
+	labels_rot = labels_rot %% 360
+
 	# a map between row index and positions
 	# pos_map = 
 	row_fun = function(index) {
@@ -2794,7 +2796,11 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		}
 		pushViewport(viewport(xscale = c(0, 1), yscale = .scale))
 		if(inherits(extend, "unit")) extend = convertHeight(extend, "native", valueOnly = TRUE)
-		text_height = convertHeight(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
+		if(labels_rot %in% c(90, 270)) {
+			text_height = convertHeight(text_width(labels, gp = labels_gp) + padding, "native", valueOnly = TRUE)
+		} else {
+			text_height = convertHeight(text_height(labels, gp = labels_gp) + padding, "native", valueOnly = TRUE)
+		}
 		if(is.null(.pos)) {
 			i2 = rev(which(index %in% at))
 			pos = n-i2+1 # position of rows
@@ -2808,13 +2814,34 @@ anno_mark = function(at, labels, which = c("column", "row"),
 
 		n2 = length(labels)
 		if(side == "right") {
-			grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, rot = labels_rot, just = "left")
+			if(labels_rot == 90) {
+				just = c("center", "top")
+			} else if(labels_rot == 270) {
+				just = c("center", "bottom")
+			} else if(labels_rot > 90 & labels_rot < 270 ) {
+				just = c("right", "center")
+			} else {
+				just = c("left", "center")
+			}
+		} else {
+			if(labels_rot == 90) {
+				just = c("center", "bottom")
+			} else if(labels_rot == 270) {
+				just = c("center", "top")
+			} else if(labels_rot > 90 & labels_rot < 270 ) {
+				just = c("left", "center")
+			} else {
+				just = c("right", "center")
+			}
+		}
+		if(side == "right") {
+			grid.text(labels, rep(link_width, n2), h, default.units = "native", gp = labels_gp, rot = labels_rot, just = just)
 			link_width = link_width - unit(1, "mm")
 			grid.segments(unit(rep(0, n2), "npc"), pos, rep(link_width*(1/3), n2), pos, default.units = "native", gp = link_gp)
 			grid.segments(rep(link_width*(1/3), n2), pos, rep(link_width*(2/3), n2), h, default.units = "native", gp = link_gp)
 			grid.segments(rep(link_width*(2/3), n2), h, rep(link_width, n2), h, default.units = "native", gp = link_gp)
 		} else {
-			grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, rot = labels_rot, just = "right")
+			grid.text(labels, unit(1, "npc")-rep(link_width, n2), h, default.units = "native", gp = labels_gp, rot = labels_rot, just = just)
 			link_width = link_width - unit(1, "mm")
 			grid.segments(unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_width*(1/3), n2), pos, default.units = "native", gp = link_gp)
 			grid.segments(unit(1, "npc")-rep(link_width*(1/3), n2), pos, unit(1, "npc")-rep(link_width*(2/3), n2), h, default.units = "native", gp = link_gp)
@@ -2824,7 +2851,6 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	}
 	column_fun = function(index) {
 		n = length(index)
-		
 		# adjust at and labels
 		at = intersect(index, at)
 		if(length(at) == 0) {
@@ -2840,7 +2866,11 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		}
 		pushViewport(viewport(yscale = c(0, 1), xscale = .scale))
 		if(inherits(extend, "unit")) extend = convertWidth(extend, "native", valueOnly = TRUE)
-		text_height = convertWidth(grobHeight(textGrob(labels, gp = labels_gp))*(1+padding), "native", valueOnly = TRUE)
+		if(labels_rot %in% c(0, 180)) {
+			text_height = convertWidth(text_width(labels, gp = labels_gp) + padding, "native", valueOnly = TRUE)
+		} else {
+			text_height = convertWidth(text_height(labels, gp = labels_gp) + padding, "native", valueOnly = TRUE)
+		}
 		if(is.null(.pos)) {
 			i2 = which(index %in% at)
 			pos = i2 # position of rows
@@ -2854,13 +2884,34 @@ anno_mark = function(at, labels, which = c("column", "row"),
 
 		n2 = length(labels)
 		if(side == "top") {
-			grid.text(labels, h, rep(link_height, n2), default.units = "native", gp = labels_gp, rot = labels_rot, just = "left")
+			if(labels_rot == 0) {
+				just = c("center", "bottom")
+			} else if(labels_rot == 180) {
+				just = c("center", "top")
+			} else if(labels_rot > 0 & labels_rot < 180 ) {
+				just = c("left", "center")
+			} else {
+				just = c("right", "center")
+			}
+		} else {
+			if(labels_rot == 0) {
+				just = c("center", "top")
+			} else if(labels_rot == 180) {
+				just = c("center", "bottom")
+			} else if(labels_rot > 0 & labels_rot < 180 ) {
+				just = c("right", "center")
+			} else {
+				just = c("left", "center")
+			}
+		}
+		if(side == "top") {
+			grid.text(labels, h, rep(link_height, n2), default.units = "native", gp = labels_gp, rot = labels_rot, just = just)
 			link_height = link_height - unit(1, "mm")
 			grid.segments(pos, unit(rep(0, n2), "npc"), pos, rep(link_height*(1/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(pos, rep(link_height*(1/3), n2), h, rep(link_height*(2/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(h, rep(link_height*(2/3), n2), h, rep(link_height, n), default.units = "native", gp = link_gp)
 		} else {
-			grid.text(labels, h, unit(1, "npc")-rep(link_height, n2), default.units = "native", gp = labels_gp, rot = labels_rot, just = "right")
+			grid.text(labels, h, unit(1, "npc")-rep(link_height, n2), default.units = "native", gp = labels_gp, rot = labels_rot, just = just)
 			link_height = link_height - unit(1, "mm")
 			grid.segments(pos, unit(rep(1, n2), "npc"), pos, unit(1, "npc")-rep(link_height*(1/3), n2), default.units = "native", gp = link_gp)
 			grid.segments(pos, unit(1, "npc")-rep(link_height*(1/3), n2), h, unit(1, "npc")-rep(link_height*(2/3), n2), default.units = "native", gp = link_gp)

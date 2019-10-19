@@ -409,6 +409,42 @@ max_text_height = function(text, gp = gpar(), rot = 0) {
     convertHeight(u, "mm")
 }
 
+text_width = function(text, gp = gpar()) {
+    if(is.null(text)) {
+        return(unit(0, "mm"))
+    }
+    n = length(text)
+    gp = recycle_gp(gp, n)
+
+    u = do.call("unit.c", lapply(seq_len(n), function(i) grobWidth(textGrob(text[i], gp = subset_gp(gp, i)))))
+    convertWidth(u, "mm")
+}
+
+grid.text = function(label, x = unit(0.5, "npc"), y = unit(0.5, "npc"), 
+    just = "centre", hjust = NULL, vjust = NULL, rot = 0, check.overlap = FALSE, 
+    default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, 
+    vp = NULL) {
+    tg <- textGrob(label = label, x = x, y = y, just = just, 
+        hjust = hjust, vjust = vjust, rot = rot, check.overlap = check.overlap, 
+        default.units = default.units, name = name, gp = gp, 
+        vp = vp)
+    tw = text_width(label)
+    th = text_height(label)
+    grid.draw(tg)
+    if(identical(just, ""))
+}
+
+text_height = function(text, gp = gpar()) {
+    if(is.null(text)) {
+        return(unit(0, "mm"))
+    }
+    n = length(text)
+    gp = recycle_gp(gp, n)
+
+    u = do.call("unit.c", lapply(seq_len(n), function(i) grobHeight(textGrob(text[i], gp = subset_gp(gp, i)))))
+    convertHeight(u, "mm")
+}
+
 dev.null = function(...) {
     pdf(file = NULL, ...)
 }
