@@ -331,14 +331,15 @@ draw(ht_list, row_split = c(rep("a", 95), rep("b", 5)))
 
 
 grid.newpage()
-pushViewport(viewport(w = 0.9, h = 0.9))
+pushViewport(viewport(x = 0.45, w = 0.7, h = 0.95))
 h = unit(0, "mm")
-for(rot in seq(0, 360, by = 30)) {
+for(rot in seq(0, 360, by = 30)[-13]) {
 	anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = strrep(letters[1:10], 4), labels_rot = rot, which = "column", side = "bottom")
 	h = h + height(anno)
 	pushViewport(viewport(y = h, height = height(anno), just = "top"))
 	grid.rect()
 	draw(anno, index = 1:100)
+	grid::grid.text(qq("labels_rot = @{rot}"), unit(1, "npc") + unit(2, "mm"), just = "left")
 	popViewport()
 }
 
