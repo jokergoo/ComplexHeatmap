@@ -22,4 +22,5 @@ it returns \code{NA}.
 \examples{
 # There is no example
 NULL
+
 }

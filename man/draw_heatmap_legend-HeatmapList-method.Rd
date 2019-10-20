@@ -1,5 +1,6 @@
 \name{draw_heatmap_legend-HeatmapList-method}
 \alias{draw_heatmap_legend,HeatmapList-method}
+\alias{draw_heatmap_legend}
 \title{
 Draw legends for All Heatmaps
 }
@@ -32,8 +33,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\alias{draw_heatmap_legend}
 \examples{
 # There is no example
 NULL
+
 }

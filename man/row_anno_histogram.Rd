@@ -25,4 +25,5 @@ See help page of \code{\link{anno_histogram}}.
 \examples{
 # There is no example
 NULL
+
 }

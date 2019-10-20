@@ -10,7 +10,7 @@ Link annotation with labels
 anno_mark(at, labels, which = c("column", "row"),
     side = ifelse(which == "column", "top", "right"),
     lines_gp = gpar(), labels_gp = gpar(),
-    labels_rot = ifelse(which == "column", 90, 0), padding = 0.5,
+    labels_rot = ifelse(which == "column", 90, 0), padding = unit(1, "mm"),
     link_width = unit(5, "mm"), link_height = link_width,
     link_gp = lines_gp,
     extend = unit(0, "mm"))
