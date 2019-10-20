@@ -198,7 +198,10 @@ SingleAnnotation = function(name, value, col, fun,
 
     .Object@is_anno_matrix = FALSE
     use_mat_column_names = FALSE
+            
     if(!missing(value)) {
+        value2 = value
+    
         if(verbose) qqcat("@{name}: annotation value is vector/matrix\n")
         if(is.logical(value)) {
             if(is.matrix(value)) {
@@ -437,13 +440,14 @@ SingleAnnotation = function(name, value, col, fun,
             color_is_random = TRUE
             if(verbose) qqcat("@{name}: use randomly generated colors\n")
     	}
+
     	if(is.atomic(col)) {
     	    if(is.null(names(col))) {
-                if(is.factor(value)) {
-                    names(col) = levels(value)
+                if(is.factor(value2)) {
+                    names(col) = levels(value2)
                     if(verbose) qqcat("@{names}: add names for discrete color mapping\n")
                 } else if(length(col) == length(unique(value))) {
-                    names(col) = unique(value)
+                    names(col) = sort(unique(value))
                     if(verbose) qqcat("@{names}: add names for discrete color mapping\n")
                 } else if(is.numeric(value)) {
                     col = colorRamp2(seq(min(value, na.rm = TRUE), max(value, na.rm = TRUE), length = length(col)), col)
@@ -453,7 +457,11 @@ SingleAnnotation = function(name, value, col, fun,
             if(is.function(col)) {
                 color_mapping = ColorMapping(name = name, col_fun = col, na_col = na_col)
             } else {
-                col = col[intersect(c(names(col), "_NA_"), as.character(value))]
+                if(is.factor(value2)) {
+                    col = col[intersect(c(levels(value2), "_NA_"), names(col))]
+                } else {
+                    col = col[intersect(c(sort(names(col)), "_NA_"), as.character(value))]
+                }
         		if("_NA_" %in% names(col)) {
         			na_col = col["_NA_"]
         			col = col[names(col) != "_NA_"]

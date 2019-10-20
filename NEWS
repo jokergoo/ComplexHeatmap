@@ -2,6 +2,7 @@ CHANGES in VERSION 2.1.1
 
 * `Heatmap()`: give error when heatmap has empty string as its name.
 * `anno_mark()`: text positions are correctly calculated now with rotations.
+* The order of legend labels are ordered by either `sort` or `levels`.
 
 ========================
 

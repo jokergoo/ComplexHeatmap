@@ -350,8 +350,12 @@ Heatmap = function(matrix, col, name,
         warning_wrap("The input is a data frame, convert it to the matrix.")
         matrix = as.matrix(matrix)
     }
+    fa_level = NULL
     if(!is.matrix(matrix)) {
         if(is.atomic(matrix)) {
+            if(is.factor(matrix)) {
+                fa_level = levels(matrix)
+            }
             rn = names(matrix)
             matrix = matrix(matrix, ncol = 1)
             if(!is.null(rn)) rownames(matrix) = rn
@@ -503,6 +507,9 @@ Heatmap = function(matrix, col, name,
     if(ncol(matrix) > 0 && nrow(matrix) > 0) {
         if(missing(col)) {
             col = default_col(matrix, main_matrix = TRUE)
+            if(!is.null(fa_level)) {
+                col = col[fa_level]
+            }
             if(verbose) qqcat("color is not specified, use randomly generated colors\n")
         }
         if(is.function(col)) {
@@ -511,7 +518,11 @@ Heatmap = function(matrix, col, name,
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(as.vector(matrix)))) {
-                    names(col) = sort(unique(as.vector(matrix)))
+                    if(is.null(fa_level)) {
+                        names(col) = sort(unique(as.vector(matrix)))
+                    } else {
+                        names(col) = fa_level
+                    }
                     .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
                     if(verbose) qqcat("input color is a vector with no names, treat it as discrete color mapping\n")
                 } else if(is.numeric(matrix)) {
@@ -523,7 +534,11 @@ Heatmap = function(matrix, col, name,
                     stop_wrap("`col` should have names to map to values in `mat`.")
                 }
             } else {
-                col = col[intersect(c(names(col), "_NA_"), as.character(matrix))]
+                if(is.null(fa_level)) {
+                    col = col[intersect(c(names(col), "_NA_"), as.character(matrix))]
+                } else {
+                    col = col[intersect(c(fa_level, "_NA_"), names(col))]
+                }
                 .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
                 if(verbose) qqcat("input color is a named vector\n")
             }
