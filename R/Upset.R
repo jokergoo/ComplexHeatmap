@@ -39,6 +39,10 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 
 	set_size = set_size[l]
 	x = x[, l, drop = FALSE]
+
+	if(ncol(x) > 15) {
+		stop_wrap("Currently number of sets <= 15 is only supported.")
+	}
 	
 	if(is.null(rownames(x))) {
 		x_has_rownames = FALSE
@@ -83,7 +87,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	comb_mat = t(comb_mat)
 
 	nc = ncol(comb_mat)
-	comb_mat2 = matrix(nrow = nrow(comb_mat), ncol = nc*(nc-1)/2)
+	comb_mat2 = Matrix::Matrix(0, nrow = nrow(comb_mat), ncol = nc*(nc-1)/2, sparse = TRUE)
 	rownames(comb_mat2) = rownames(comb_mat)
 	if(mode == "intersect") {
 		if(nc > 1) {
@@ -171,6 +175,9 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
 	min_set_size = -Inf, universal_set = NULL, complement_size = NULL) {
 
 	n = length(lt)
+	if(n > 15) {
+		stop_wrap("Currently number of sets <= 15 is only supported.")
+	}
     nm = names(lt)
     if(is.null(nm)) {
     	stop_wrap("The list must have names.")
@@ -216,7 +223,7 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
     	complement_size = value_fun(complement_set)
     }
     
-    comb_mat = matrix(FALSE, nrow = n, ncol = sum(choose(n, 1:n)))
+    comb_mat = Matrix::Matrix(FALSE, nrow = n, ncol = sum(choose(n, 1:n)), s)
     rownames(comb_mat) = nm
     j = 1
     for(k in 1:n) {
@@ -442,9 +449,7 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 			value_fun = length
 		}
 	}
-	if(length(lt) > 10) {
-		stop_wrap("Currently number of sets <= 10 is only supported.")
-	}
+	
 	m = make_comb_mat_from_list(lt, value_fun, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size, 
 		universal_set = universal_set, complement_size = complement_size)
 	if(remove_empty_comb_set) {
@@ -541,6 +546,7 @@ comb_size = function(m, degree = NULL) {
 #
 # == param
 # -m A combination matrix returned by `make_comb_mat`.
+# -readable Whether the combination represents as e.g. "A&B&C".
 #
 # == details
 # The name of the combination sets are formatted as a string
@@ -559,13 +565,25 @@ comb_size = function(m, degree = NULL) {
 #           c = sample(letters, 20))
 # m = make_comb_mat(lt)
 # comb_name(m)
-comb_name = function(m) {
+# comb_name(m, readable = TRUE)
+comb_name = function(m, readable = FALSE) {
 	set_on_rows = attr(m, "set_on_rows")
 	if(set_on_rows) {
-		apply(m, 2, paste, collapse = "")
+		nm = apply(m, 2, paste, collapse = "")
 	} else {
-		apply(m, 1, paste, collapse = "")
+		nm = apply(m, 1, paste, collapse = "")
 	}
+
+	if(readable) {
+		sn = set_name(m)
+		nm = sapply(strsplit(nm, ""), function(x) {
+			l = as.logical(as.numeric(x))
+			paste(sn[l], collapse = "&")
+		}
+		nm = unname(nm)
+	}
+
+	return(nm)
 }
 
 # == title
