@@ -421,9 +421,6 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 	if(length(lt) == 1) {
 		lt = lt[[1]]
 		if(length(dim(lt)) == 2) { # a matrix
-			if(dim(lt)[2] > 10) {
-				stop_wrap("Currently number of sets <= 10 is only supported.")
-			}
 			m = make_comb_mat_from_matrix(lt, mode = mode, top_n_sets = top_n_sets, 
 				min_set_size = min_set_size, universal_set = universal_set, complement_size = complement_size)
 			if(remove_empty_comb_set) {
