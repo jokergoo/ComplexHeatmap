@@ -7,11 +7,12 @@ Names of the Combination sets
 Names of the Combination sets
 }
 \usage{
-comb_name(m)
+comb_name(m, readable = FALSE)
 }
 \arguments{
 
   \item{m}{A combination matrix returned by \code{\link{make_comb_mat}}.}
+  \item{readable}{Whether the combination represents as e.g. "A&B&C".}
 
 }
 \details{
@@ -31,4 +32,5 @@ lt = list(a = sample(letters, 10),
           c = sample(letters, 20))
 m = make_comb_mat(lt)
 comb_name(m)
+comb_name(m, readable = TRUE)
 }

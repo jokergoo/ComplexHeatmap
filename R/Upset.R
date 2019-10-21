@@ -87,7 +87,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	comb_mat = t(comb_mat)
 
 	nc = ncol(comb_mat)
-	comb_mat2 = Matrix::Matrix(0, nrow = nrow(comb_mat), ncol = nc*(nc-1)/2, sparse = TRUE)
+	comb_mat2 = matrix(0, nrow = nrow(comb_mat), ncol = nc*(nc-1)/2)
 	rownames(comb_mat2) = rownames(comb_mat)
 	if(mode == "intersect") {
 		if(nc > 1) {
@@ -223,7 +223,7 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
     	complement_size = value_fun(complement_set)
     }
     
-    comb_mat = Matrix::Matrix(FALSE, nrow = n, ncol = sum(choose(n, 1:n)), s)
+    comb_mat = matrix(FALSE, nrow = n, ncol = sum(choose(n, 1:n)))
     rownames(comb_mat) = nm
     j = 1
     for(k in 1:n) {
@@ -579,7 +579,7 @@ comb_name = function(m, readable = FALSE) {
 		nm = sapply(strsplit(nm, ""), function(x) {
 			l = as.logical(as.numeric(x))
 			paste(sn[l], collapse = "&")
-		}
+		})
 		nm = unname(nm)
 	}
 
