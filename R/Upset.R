@@ -40,9 +40,9 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	set_size = set_size[l]
 	x = x[, l, drop = FALSE]
 
-	if(ncol(x) > 15) {
-		stop_wrap("Currently number of sets <= 15 is only supported.")
-	}
+	# if(ncol(x) > 15) {
+	# 	stop_wrap("Currently number of sets <= 15 is only supported.")
+	# }
 	
 	if(is.null(rownames(x))) {
 		x_has_rownames = FALSE
