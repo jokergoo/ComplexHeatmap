@@ -2777,6 +2777,10 @@ anno_mark = function(at, labels, which = c("column", "row"),
 
 	labels_rot = labels_rot %% 360
 
+	if(!inherits(padding, "unit")) {
+		padding = convertHeight(padding*grobHeight(textGrob("a", gp = subset_gp(labels_gp, 1))), "mm")
+	}
+
 	# a map between row index and positions
 	# pos_map = 
 	row_fun = function(index) {
