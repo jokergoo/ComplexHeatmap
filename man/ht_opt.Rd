@@ -59,6 +59,8 @@ Following parameters control the space between heatmap components:
   \item{TITLE_PADDING}{space between row/column titles and heatmap body.}
   \item{COLUMN_ANNO_PADDING}{space between column annotations and heatmap body.}
   \item{ROW_ANNO_PADDING}{space between row annotations and heatmap body.}
+  \item{HEATMAP_LEGEND_PADDING}{space between heatmap legends and heatmaps}
+  \item{ANNOTATION_LEGEND_PADDING}{space between annotation legends and heatmaps}
 }
 
 Other parameters:

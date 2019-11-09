@@ -44,6 +44,8 @@
 # -TITLE_PADDING space between row/column titles and heatmap body.
 # -COLUMN_ANNO_PADDING space between column annotations and heatmap body.
 # -ROW_ANNO_PADDING space between row annotations and heatmap body.
+# -HEATMAP_LEGEND_PADDING space between heatmap legends and heatmaps
+# -ANNOTATION_LEGEND_PADDING space between annotation legends and heatmaps
 #
 # Other parameters:
 #
@@ -149,6 +151,14 @@ ht_opt = setGlobalOptions(
 	),
 	ROW_ANNO_PADDING = list(
 		.value = unit(1, "mm"),
+		.class = "unit"
+	),
+	HEATMAP_LEGEND_PADDING = list(
+		.value = unit(2, "mm"),
+		.class = "unit"
+	),
+	ANNOTATION_LEGEND_PADDING = list(
+		.value = unit(2, "mm"),
 		.class = "unit"
 	)
 )
