@@ -129,6 +129,14 @@ draw(anno, test = "anno_points")
 anno = anno_points(runif(10), axis_param = list(direction = "reverse"), ylim = c(0, 1), which = "row")
 draw(anno, test = "anno_points")
 
+# pch as image
+image1 = sample(dir("/desktop-home/guz/Downloads/IcoMoon-Free-master/PNG/64px", full.names = TRUE), 10)
+x = runif(10)
+anno1 = anno_points(x, pch = image1, pch_as_image = TRUE, size = unit(5, "mm"), height = unit(4, "cm"))
+anno2 = anno_points(x, height = unit(4, "cm"))
+draw(anno1, test = "anno_points")
+draw(anno2, test = "anno_points")
+
 ##### test anno_lines ###
 anno = anno_lines(runif(10))
 draw(anno, test = "anno_lines")

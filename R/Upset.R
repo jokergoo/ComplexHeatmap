@@ -87,7 +87,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	comb_mat = t(comb_mat)
 
 	nc = ncol(comb_mat)
-	comb_mat2 = Matrix::Matrix(0, nrow = nrow(comb_mat), ncol = nc*(nc-1)/2, sparse = TRUE)
+	comb_mat2 = matrix(0, nrow = nrow(comb_mat), ncol = nc*(nc-1)/2)
 	rownames(comb_mat2) = rownames(comb_mat)
 	if(mode == "intersect") {
 		if(nc > 1) {
@@ -223,7 +223,7 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
     	complement_size = value_fun(complement_set)
     }
     
-    comb_mat = Matrix::Matrix(FALSE, nrow = n, ncol = sum(choose(n, 1:n)), s)
+    comb_mat = matrix(FALSE, nrow = n, ncol = sum(choose(n, 1:n)))
     rownames(comb_mat) = nm
     j = 1
     for(k in 1:n) {
@@ -449,6 +449,18 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 			value_fun = length
 		}
 	}
+
+	if(is.atomic(lt[[1]])) {
+		m = make_comb_mat_from_matrix(list_to_matrix(lt), mode = mode, top_n_sets = top_n_sets, 
+			min_set_size = min_set_size, universal_set = universal_set, complement_size = complement_size)
+		if(remove_empty_comb_set) {
+			m = m[comb_size(m) > 0]
+		}
+		if(remove_complement_set) {
+			m = m[comb_degree(m) > 0]
+		}
+		return(m)
+	}
 	
 	m = make_comb_mat_from_list(lt, value_fun, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size, 
 		universal_set = universal_set, complement_size = complement_size)
@@ -579,8 +591,7 @@ comb_name = function(m, readable = FALSE) {
 		nm = sapply(strsplit(nm, ""), function(x) {
 			l = as.logical(as.numeric(x))
 			paste(sn[l], collapse = "&")
-		}
-		nm = unname(nm)
+		})
 	}
 
 	return(nm)

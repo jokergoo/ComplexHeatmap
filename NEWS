@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.3.1
+
+* `anno_points()`: allows images as symbols.
+
+========================
+
 CHANGES in VERSION 2.1.1
 
 * `Heatmap()`: give error when heatmap has empty string as its name.

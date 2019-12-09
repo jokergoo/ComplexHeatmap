@@ -663,6 +663,11 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 			stop_wrap("`axis_direction` is not supported any more.")
 		}
 	}
+	if("pch_as_image" %in% names(other_args)) {
+		pch_as_image = other_args$pch_as_image
+	} else {
+		pch_as_image = FALSE
+	}
 
 	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
@@ -732,8 +737,17 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 					default.units = "native", pch = pch[i], size = size[i])
 			}
 		} else {
-			grid.points(value[index], n - seq_along(index) + 1, gp = subset_gp(gp, index), default.units = "native", 
-				pch = pch[index], size = size[index])
+			if(pch_as_image) {
+				for(ii in seq_along(index)) {
+					pch_image = png::readPNG(pch[ index[ii] ])
+					grid.raster(pch_image, y = n - ii + 1, x = value[ index[ii] ], 
+						default.units = "native", width = size[ index[ii] ], 
+						height = size[ index[ii] ]*(nrow(pch_image)/ncol(pch_image)))
+				}
+			} else {
+				grid.points(value[index], n - seq_along(index) + 1, gp = subset_gp(gp, index), default.units = "native", 
+					pch = pch[index], size = size[index])
+			}
 		}
 		if(axis_param$side == "top") {
 			if(k > 1) axis = FALSE
@@ -756,10 +770,21 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		pushViewport(viewport(yscale = data_scale, xscale = c(0.5, n+0.5)))
 		if(is.matrix(value)) {
 			for(i in seq_len(ncol(value))) {
-				grid.points(seq_along(index), value[index, i], gp = subset_gp(gp, i), default.units = "native", pch = pch[i], size = size[i])
+				grid.points(seq_along(index), value[index, i], gp = subset_gp(gp, i), 
+					default.units = "native", pch = pch[i], size = size[i])
 			}
 		} else {
-			grid.points(seq_along(index), value[index], gp = subset_gp(gp, index), default.units = "native", pch = pch[index], size = size[index])
+			if(pch_as_image) {
+				for(ii in seq_along(index)) {
+					pch_image = png::readPNG(pch[ index[ii] ])
+					grid.raster(pch_image, x = ii, value[ index[ii] ], 
+						default.units = "native", width = size[ index[ii] ], 
+						height = size[ index[ii] ]*(nrow(pch_image)/ncol(pch_image)))
+				}
+			} else {
+				grid.points(seq_along(index), value[index], gp = subset_gp(gp, index), 
+					default.units = "native", pch = pch[index], size = size[index])
+			}
 		}
 		if(axis_param$side == "left") {
 			if(k > 1) axis = FALSE
@@ -785,7 +810,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 		height = anno_size$height,
 		n = n,
 		data_scale = data_scale,
-		var_import = list(value, gp, border, pch, size, axis, axis_param, axis_grob, data_scale)
+		var_import = list(value, gp, border, pch, size, axis, axis_param, axis_grob, data_scale, pch_as_image)
 	)
 
 	anno@subset_rule$gp = subset_vector
