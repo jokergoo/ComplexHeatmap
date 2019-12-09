@@ -909,25 +909,25 @@ setMethod(f = "make_layout",
     object@heatmap_legend_param$side = heatmap_legend_side   
     if(show_heatmap_legend) {
         if(heatmap_legend_side == "top") {
-            object@heatmap_legend_param$padding = unit(c(2, 0, 0, 0), "mm")
+            object@heatmap_legend_param$padding = unit.c(ht_opt$HEATMAP_LEGEND_PADDING, unit(c(0, 0, 0), "mm")) #unit(c(2, 0, 0, 0), "mm")
             size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, heatmap_legend_top = heatmap_list_layout_index("heatmap_legend_top"))
         } else if(heatmap_legend_side == "bottom") {
-            object@heatmap_legend_param$padding = unit(c(0, 0, 2, 0), "mm")
+            object@heatmap_legend_param$padding = unit.c(unit(c(0, 0), "mm"), ht_opt$HEATMAP_LEGEND_PADDING, unit(0, "mm")) # unit(c(0, 0, 2, 0), "mm")
             size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, heatmap_legend_bottom = heatmap_list_layout_index("heatmap_legend_bottom"))
         } else if(heatmap_legend_side == "left") {
-            object@heatmap_legend_param$padding = unit(c(0, 0, 0, 2), "mm")
+            object@heatmap_legend_param$padding = unit.c(unit(c(0, 0, 0), "mm"), ht_opt$HEATMAP_LEGEND_PADDING) # unit(c(0, 0, 0, 2), "mm")
             size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, heatmap_legend_left = heatmap_list_layout_index("heatmap_legend_left"))
         } else if(heatmap_legend_side == "right") {
-            object@heatmap_legend_param$padding = unit(c(0, 2, 0, 0), "mm")
+            object@heatmap_legend_param$padding = unit.c(unit(0, "mm"), ht_opt$HEATMAP_LEGEND_PADDING, unit(c(0, 0), "mm")) # unit(c(0, 2, 0, 0), "mm")
             size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_right_width = size[1]
@@ -980,25 +980,25 @@ setMethod(f = "make_layout",
     object@annotation_legend_param$side = annotation_legend_side
     if(show_annotation_legend) {
         if(annotation_legend_side == "top") {
-            object@annotation_legend_param$padding = unit(c(2, 0, 0, 0), "mm")
+            object@annotation_legend_param$padding = unit.c(ht_opt$ANNOTATION_LEGEND_PADDING, unit(c(0, 0, 0), "mm")) # unit(c(2, 0, 0, 0), "mm")
             size = annotation_legend_size(object, legend_list = annotation_legend_list, max_width = calc_legends_max_width(object))
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, annotation_legend_top = heatmap_list_layout_index("annotation_legend_top"))
         } else if(annotation_legend_side == "bottom") {
-            object@annotation_legend_param$padding = unit(c(0, 0, 2, 0), "mm")
+            object@annotation_legend_param$padding = unit.c(unit(c(0, 0), "mm"), ht_opt$ANNOTATION_LEGEND_PADDING, unit(0, "mm")) # unit(c(0, 0, 2, 0), "mm")
             size = annotation_legend_size(object, legend_list = annotation_legend_list, max_width = calc_legends_max_width(object))
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, annotation_legend_bottom = heatmap_list_layout_index("annotation_legend_bottom"))
         } else if(annotation_legend_side == "left") {
-            object@annotation_legend_param$padding = unit(c(0, 0, 0, 2), "mm")
+            object@annotation_legend_param$padding = unit.c(unit(c(0, 0, 0), "mm"), ht_opt$ANNOTATION_LEGEND_PADDING) # unit(c(0, 0, 0, 2), "mm")
             size = annotation_legend_size(object, legend_list = annotation_legend_list, max_height = calc_legends_max_height(object))
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, annotation_legend_left = heatmap_list_layout_index("annotation_legend_left"))
         } else if(annotation_legend_side == "right") {
-            object@annotation_legend_param$padding = unit(c(0, 2, 0, 0), "mm")
+            object@annotation_legend_param$padding = unit.c(unit(0, "mm"), ht_opt$ANNOTATION_LEGEND_PADDING, unit(c(0, 0), "mm")) # unit(c(0, 2, 0, 0), "mm")
             size = annotation_legend_size(object, legend_list = annotation_legend_list, max_height = calc_legends_max_height(object))
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_right_width = size[1]

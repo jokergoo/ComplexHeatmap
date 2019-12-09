@@ -1,6 +1,7 @@
 CHANGES in VERSION 2.3.1
 
 * `anno_points()`: allows images as symbols.
+* add `HEATMAP_LEGEND_PADDING` and `ANNOTATION_LEGEND_PADDING` options in `ht_opt`
 
 ========================
 
