@@ -449,6 +449,18 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 			value_fun = length
 		}
 	}
+
+	if(is.atomic(lt[[1]])) {
+		m = make_comb_mat_from_matrix(list_to_matrix(lt), mode = mode, top_n_sets = top_n_sets, 
+			min_set_size = min_set_size, universal_set = universal_set, complement_size = complement_size)
+		if(remove_empty_comb_set) {
+			m = m[comb_size(m) > 0]
+		}
+		if(remove_complement_set) {
+			m = m[comb_degree(m) > 0]
+		}
+		return(m)
+	}
 	
 	m = make_comb_mat_from_list(lt, value_fun, mode = mode, top_n_sets = top_n_sets, min_set_size = min_set_size, 
 		universal_set = universal_set, complement_size = complement_size)
@@ -580,7 +592,6 @@ comb_name = function(m, readable = FALSE) {
 			l = as.logical(as.numeric(x))
 			paste(sn[l], collapse = "&")
 		})
-		nm = unname(nm)
 	}
 
 	return(nm)
