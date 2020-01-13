@@ -128,6 +128,11 @@ oncoPrint = function(mat,
 		all_type = all_type[!is.na(all_type)]
 		all_type = all_type[grepl("\\S", all_type)]
 
+		## check whether there are NA values in the matrix
+		if(any(is.na(mat))) {
+			message_wrap("Found NA values in the matrix and treat as no alteration. If `NA` means no alteration, you can explicitly set it to empty strings like ''. If `NA` is an alteration type, you should format it to a string like `'NA'` and define a graphic for it.")
+		}
+
 		mat_list = lapply(all_type, function(type) {
 			m = sapply(mat, function(x) type %in% get_type2(x))
 			dim(m) = dim(mat)

@@ -239,7 +239,7 @@ densityHeatmap = function(data,
 				labels = labels[od]
 				
 				pushViewport(viewport(xscale = c(0.5, n + 0.5), yscale = c(min_x, max_x), clip = FALSE))
-				text_height = convertHeight(grobHeight(textGrob(labels[1])) * 1.5, "native", valueOnly = TRUE)
+				text_height = convertHeight(grobHeight(textGrob(labels[1])) * 2, "native", valueOnly = TRUE)
 		        h1 = y - text_height*0.5
 		        h2 = y + text_height*0.5
 		        pos = rev(smartAlign(h1, h2, c(min_x, max_x)))
