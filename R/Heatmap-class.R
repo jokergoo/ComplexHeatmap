@@ -567,7 +567,9 @@ Heatmap = function(matrix, col, name,
 
     ### row labels/column labels ###
     if(is.null(rownames(matrix))) {
-        show_row_names = FALSE
+        if(is.null(row_labels)) {
+            show_row_names = FALSE
+        }
     }
     .Object@row_names_param$labels = row_labels
     .Object@row_names_param$side = match.arg(row_names_side)[1]
@@ -594,7 +596,9 @@ Heatmap = function(matrix, col, name,
     }
 
     if(is.null(colnames(matrix))) {
-        show_column_names = FALSE
+        if(is.null(column_labels)) {
+            show_column_names = FALSE
+        }
     }
     .Object@column_names_param$labels = column_labels
     .Object@column_names_param$side = match.arg(column_names_side)[1]
