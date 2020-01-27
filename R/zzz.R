@@ -10,6 +10,9 @@ Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
 If you use it in published research, please cite:
 Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
   genomic data. Bioinformatics 2016.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
 ========================================
 ")	
 
