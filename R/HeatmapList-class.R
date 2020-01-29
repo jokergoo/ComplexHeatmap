@@ -226,6 +226,11 @@ setMethod(f = "add_heatmap",
 # -column_split this modifies ``column_split`` of the main heatmap
 # -width this modifies ``width`` of the main heatmap
 # -heatmap_width this modifies ``heatmap_width`` of the main heatmap
+# -use_raster this modifies ``use_raster`` of every heatmap.
+# -raster_device this modifies ``raster_device`` of every heatmap.
+# -raster_quality this modifies ``raster_quality`` of every heatmap.
+# -raster_device_param this modifies ``raster_device_param`` of every heatmap.
+# -raster_resize this modifies ``raster_resize`` of every heatmap.
 # -heatmap_row_names_gp  this set the value in `ht_opt` and reset back after the plot is done
 # -heatmap_column_names_gp this set the value in `ht_opt` and reset back after the plot is done
 # -heatmap_row_title_gp this set the value in `ht_opt` and reset back after the plot is done
@@ -323,6 +328,12 @@ setMethod(f = "draw",
     column_split = NULL,
     width = NULL,
     heatmap_width = NULL,
+
+    use_raster = NULL, 
+    raster_device = NULL,
+    raster_quality = NULL,
+    raster_device_param = NULL,
+    raster_resize = NULL,
 
     ### global setting
     heatmap_row_names_gp = NULL,
@@ -495,7 +506,13 @@ setMethod(f = "draw",
         column_km_repeats = column_km_repeats,
         column_split = column_split,
         width = width,
-        heatmap_width = heatmap_width
+        heatmap_width = heatmap_width,
+
+        use_raster = use_raster, 
+        raster_device = raster_device,
+        raster_quality = raster_quality,
+        raster_device_param = raster_device_param,
+        raster_resize = raster_resize
     )
 
     ht_list_width = sum(component_width(object)) + padding[2] + padding[4]

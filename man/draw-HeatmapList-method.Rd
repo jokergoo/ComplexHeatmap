@@ -72,6 +72,12 @@ Draw a list of heatmaps
     width = NULL,
     heatmap_width = NULL,
     
+    use_raster = NULL,
+    raster_device = NULL,
+    raster_quality = NULL,
+    raster_device_param = NULL,
+    raster_resize = NULL,
+    
     ### global setting
     heatmap_row_names_gp = NULL,
     heatmap_column_names_gp = NULL,
@@ -148,6 +154,11 @@ Draw a list of heatmaps
   \item{column_split}{this modifies \code{column_split} of the main heatmap}
   \item{width}{this modifies \code{width} of the main heatmap}
   \item{heatmap_width}{this modifies \code{heatmap_width} of the main heatmap}
+  \item{use_raster}{this modifies \code{use_raster} of every heatmap.}
+  \item{raster_device}{this modifies \code{raster_device} of every heatmap.}
+  \item{raster_quality}{this modifies \code{raster_quality} of every heatmap.}
+  \item{raster_device_param}{this modifies \code{raster_device_param} of every heatmap.}
+  \item{raster_resize}{this modifies \code{raster_resize} of every heatmap.}
   \item{heatmap_row_names_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{heatmap_column_names_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{heatmap_row_title_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}

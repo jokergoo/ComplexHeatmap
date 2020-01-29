@@ -55,6 +55,11 @@
 # -column_split Overwrite the corresponding setting in the main heatmap.
 # -width Overwrite the corresponding setting in the main heatmap.
 # -heatmap_width Overwrite the corresponding setting in the main heatmap.
+# -use_raster Overwrite the corresponding setting in every heatmap.
+# -raster_device Overwrite the corresponding setting in every heatmap.
+# -raster_quality Overwrite the corresponding setting in every heatmap.
+# -raster_device_param Overwrite the corresponding setting in every heatmap.
+# -raster_resize Overwrite the corresponding setting in every heatmap.
 #
 # == detail
 # It sets the size of each component of the heatmap list and adjusts graphic
@@ -128,7 +133,13 @@ setMethod(f = "make_layout",
     column_km_repeats = NULL,
     column_split = NULL,
     width = NULL,
-    heatmap_width = NULL) {
+    heatmap_width = NULL,
+
+    use_raster = NULL, 
+    raster_device = NULL,
+    raster_quality = NULL,
+    raster_device_param = NULL,
+    raster_resize = NULL) {
 
     verbose = ht_opt("verbose")
 
@@ -511,6 +522,25 @@ setMethod(f = "make_layout",
             if(!is.null(get(obj_nm))) {
                 message_wrap(paste0("'", obj_nm, "' should not be set in draw() for vertical heatmap list. Please directly set it in `Heatmap()`."))
             }
+        }
+    }
+
+    ### parameter for all heatmaps
+    for(i in seq_len(n_ht)) {
+        if(!is.null(use_raster)) {
+            object@ht_list[[i]]@heatmap_param$use_raster = use_raster
+        }
+        if(!is.null(raster_device)) {
+            object@ht_list[[i]]@heatmap_param$raster_device = raster_device
+        }
+        if(!is.null(raster_quality)) {
+            object@ht_list[[i]]@heatmap_param$raster_quality = raster_quality
+        }
+        if(!is.null(raster_device_param)) {
+            object@ht_list[[i]]@heatmap_param$raster_device_param = raster_device_param
+        }
+        if(!is.null(raster_resize)) {
+            object@ht_list[[i]]@heatmap_param$raster_resize = raster_resize
         }
     }
 
