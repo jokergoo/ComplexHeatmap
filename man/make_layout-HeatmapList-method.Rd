@@ -65,7 +65,13 @@ Make Layout for the Heatmap List
     column_km_repeats = NULL,
     column_split = NULL,
     width = NULL,
-    heatmap_width = NULL)
+    heatmap_width = NULL,
+    
+    use_raster = NULL,
+    raster_device = NULL,
+    raster_quality = NULL,
+    raster_device_param = NULL,
+    raster_resize = NULL)
 }
 \arguments{
 
@@ -121,6 +127,11 @@ Make Layout for the Heatmap List
   \item{column_split}{Overwrite the corresponding setting in the main heatmap.}
   \item{width}{Overwrite the corresponding setting in the main heatmap.}
   \item{heatmap_width}{Overwrite the corresponding setting in the main heatmap.}
+  \item{use_raster}{Overwrite the corresponding setting in every heatmap.}
+  \item{raster_device}{Overwrite the corresponding setting in every heatmap.}
+  \item{raster_quality}{Overwrite the corresponding setting in every heatmap.}
+  \item{raster_device_param}{Overwrite the corresponding setting in every heatmap.}
+  \item{raster_resize}{Overwrite the corresponding setting in every heatmap.}
 
 }
 \details{
