@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.3.2
+
+* support gridtext
+
+========================
+
 CHANGES in VERSION 2.3.1
 
 * `anno_points()`: allows images as symbols.
