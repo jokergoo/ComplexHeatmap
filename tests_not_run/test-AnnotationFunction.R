@@ -184,13 +184,6 @@ for(rot in seq(0, 360, by = 45)) {
 	draw(anno, test = paste0("rot =", rot))
 }
 
-##### test anno_richtext ####
-anno = anno_richtext(richtext_grob(month.name, box_gp = gpar(col = "red"), rot = 90, hjust = 1, y = unit(1, "npc")))
-draw(anno, test = "month names")
-anno = anno_richtext(richtext_grob(month.name, box_gp = gpar(col = "red"), hjust = 0, x = unit(0, "npc")), which = "row")
-draw(anno, test = "month names")
-
-
 
 ##### test anno_barplot #####
 anno = anno_barplot(1:10)
