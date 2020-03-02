@@ -522,23 +522,32 @@ unit.c = function(...) {
 }
 
 ">.unit" = function(x, y) {
-    if(!identical(attr(x, "unit"), "mm")) {
+    if(!unit_in_mm(x)) {
         stop_wrap("x should be in mm unit")
     }
-    if(!identical(attr(y, "unit"), "mm")) {
+    if(!unit_in_mm(y)) {
         stop_wrap("y should be in mm unit")
     }
     x[[1]] > y[[1]]
 }
 
 "<.unit" = function(x, y) {
-    if(!identical(attr(x, "unit"), "mm")) {
+    if(!unit_in_mm(x)) {
         stop_wrap("x should be in mm unit")
     }
-    if(!identical(attr(y, "unit"), "mm")) {
+    if(!unit_in_mm(y)) {
         stop_wrap("y should be in mm unit")
     }
     x[[1]] < y[[1]]
+}
+
+unit_in_mm = function(x) {
+    if(getRversion() >= "4.0.0") {
+        unitType = get("unitType", envir = asNamespace("grid"))
+        identical(unitType(x), "mm")
+    } else {
+        identical(attr(x, "unit"), "mm")
+    }
 }
 
 normalize_graphic_param_to_mat = function(x, nc, nr, name) {

@@ -35,3 +35,9 @@ test_that("test ks_dist", {
 	expect_that(d2, is_identical_to(d3))
 })
 
+test_that("test is_absolute_unit", {
+	expect_that(is_abs_unit(unit(1, "mm")), is_identical_to(TRUE))
+	expect_that(is_abs_unit(unit(1, "npc")), is_identical_to(FALSE))
+	expect_that(is_abs_unit(grobWidth(textGrob("foo"))), is_identical_to(TRUE))
+	expect_that(is_abs_unit(unit(1, "mm") + unit(1, "npc")), is_identical_to(FALSE))
+})

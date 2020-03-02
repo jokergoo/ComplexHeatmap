@@ -1,6 +1,5 @@
 CHANGES in VERSION 2.3.2
 
-* support gridtext
 * `anno_simple()`: fixed a bug when pch are all NA in a slice
 
 ========================

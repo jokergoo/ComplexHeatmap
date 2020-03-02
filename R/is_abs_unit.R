@@ -1,9 +1,23 @@
 
 # is_abs_unit = function(x) UseMethod("is_abs_unit")
 
+# grid::absolute.size() treats grobwidth and grobheight as non-absolute units,
+# thus, I write another function to test
 .is_abs_unit.unit = function(x) {
-	unit = attr(x, "valid.unit")
-	if(all(unit %in% c(1:4, 7:24))) {
+
+	if(getRversion() >= "4.0.0") {
+        unitType = get("unitType", envir = asNamespace("grid"))
+        unit = unitType(x)
+    } else {
+    	unit = attr(x, "unit")
+    }
+
+	if(all(unit %in% c("cm", "inches", "mm", "points", "picas", "bigpts", "dida", "cicero",
+		               "scaledpts", "lines", "char", "strwidth", "strheight", "grobwidth",
+		               "grobheight", "strascent", "strdescent", "mylines", "mychar", 
+		               "mystrwidth", "mystrheight", "centimetre", "centimetres", "centimeter",
+		               "centimeters", "in", "inch", "line", "millimetre", "millimetres",
+		               "millimeter", "millimeters", "point", "pt"))) {
 		return(TRUE)
 	} else {
 		return(FALSE)
@@ -54,7 +68,7 @@
 # == example
 # is_abs_unit(unit(1, "mm"))
 # is_abs_unit(unit(1, "npc"))
-# is_abs_unit(textGrob("foo"))
+# is_abs_unit(grobWidth(textGrob("foo")))
 # is_abs_unit(unit(1, "mm") + unit(1, "npc"))
 #
 is_abs_unit = function(u) {

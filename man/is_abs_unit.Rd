@@ -30,6 +30,6 @@ Zuguang Gu <z.gu@dkfz.de>
 \examples{
 is_abs_unit(unit(1, "mm"))
 is_abs_unit(unit(1, "npc"))
-is_abs_unit(textGrob("foo"))
+is_abs_unit(grobWidth(textGrob("foo")))
 is_abs_unit(unit(1, "mm") + unit(1, "npc"))
 }
