@@ -22,6 +22,6 @@ This message can be suppressed by:
 if(getRversion() >= "4.0.0") {
     unitType = get("unitType", envir = asNamespace("grid"))
 } else {
-	unitType = function(x) attr(x, "unit")
+	unitType = function(x, recurse = TRUE) attr(x, "unit")
 }
 

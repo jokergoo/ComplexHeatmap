@@ -1,3 +1,8 @@
+
+if(!exists("cut_dendrogram")) {
+	cut_dendrogram = ComplexHeatmap:::cut_dendrogram
+}
+
 library(dendextend)
 
 m = matrix(rnorm(100), 10)
