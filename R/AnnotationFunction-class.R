@@ -312,13 +312,13 @@ setMethod(f = "draw",
 		if(!identical(unit(0, "mm"), object@extended[1])) {
 			grid.rect(y = 1, height = unit(1, "npc") + object@extended[1], just = "top",
 				gp = gpar(fill = "transparent", col = "red", lty = 2))
-		} else if(!identical(unit(0, "mm"), object@extended[[2]])) {
+		} else if(!identical(unit(0, "mm"), object@extended[2])) {
 			grid.rect(x = 1, width = unit(1, "npc") + object@extended[2], just = "right",
 				gp = gpar(fill = "transparent", col = "red", lty = 2))
-		} else if(!identical(unit(0, "mm"), object@extended[[3]])) {
+		} else if(!identical(unit(0, "mm"), object@extended[3])) {
 			grid.rect(y = 0, height = unit(1, "npc") + object@extended[3], just = "bottom",
 				gp = gpar(fill = "transparent", col = "red", lty = 2))
-		} else if(!identical(unit(0, "mm"), object@extended[[4]])) {
+		} else if(!identical(unit(0, "mm"), object@extended[4])) {
 			grid.rect(x = 0, width = unit(1, "npc") + object@extended[4], just = "left",
 				gp = gpar(fill = "transparent", col = "red", lty = 2))
 		}

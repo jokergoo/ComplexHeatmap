@@ -67,8 +67,30 @@
 # is_abs_unit(unit(1, "mm") + unit(1, "npc"))
 #
 is_abs_unit = function(u) {
+	NULL
+}
+
+is_abs_unit_v3 = function(u) {
 	if(inherits(u, "unit.arithmetic")) .is_abs_unit.unit.arithmetic(u)
 	else if(inherits(u, "unit.list")) .is_abs_unit.unit.list(u)
 	else if(inherits(u, "unit")) .is_abs_unit.unit(u)
 	else FALSE
+}
+
+is_abs_unit_v4 = function(u) {
+	if(inherits(u, "simpleUnit")) {
+		.is_abs_unit.unit(u)
+	} else {
+		if(unitType(u) %in% c("sum", "min", "max")) {
+			all(sapply(unclass(u)[[1]][[2]], is_abs_unit_v4))
+		} else {
+			.is_abs_unit.unit(u)
+		}
+	}
+}
+
+if(getRversion() >= "4.0.0") {
+	is_abs_unit = is_abs_unit_v4
+} else {
+	is_abs_unit = is_abs_unit_v3
 }

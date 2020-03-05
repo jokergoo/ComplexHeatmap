@@ -545,6 +545,10 @@ unit_in_mm = function(x) {
     identical(unitType(x), "mm")
 }
 
+unit_to_numeric = function(x) {
+    as.numeric(x)
+}
+
 normalize_graphic_param_to_mat = function(x, nc, nr, name) {
     if(is.matrix(x)) {
         if(nrow(x) == nr && ncol(x) == nc) {

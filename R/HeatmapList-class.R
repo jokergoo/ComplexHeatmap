@@ -402,7 +402,7 @@ setMethod(f = "draw",
                 }
             })))
             max_height = convertHeight(max_height, "mm")
-            if(max_height[[1]] == 0) {
+            if(unit_to_numeric(max_height[1]) == 0) {
                 object = object + Heatmap(matrix(ncol = 0, nrow = nr), row_title = NULL, show_heatmap_legend = FALSE)
             } else {
                 object = object + Heatmap(matrix(ncol = 0, nrow = nr), height = max_height, row_title = NULL, show_heatmap_legend = FALSE)
@@ -419,7 +419,7 @@ setMethod(f = "draw",
                 }
             })))
             max_width = convertWidth(max_width, "mm")
-            if(max_width[[1]] == 0) {
+            if(unit_to_numeric(max_width[1]) == 0) {
                 object = object %v% Heatmap(matrix(nrow = 0, ncol = nc), column_title = NULL, show_heatmap_legend = FALSE)
             } else {
                 object = object %v% Heatmap(matrix(nrow = 0, ncol = nc), width = max_width, column_title = NULL, show_heatmap_legend = FALSE)

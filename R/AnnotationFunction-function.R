@@ -846,13 +846,13 @@ update_anno_extend = function(anno, axis_grob, axis_param) {
 
 	if(axis_param$facing == "outside") {
 		if(axis_param$side == "left") {
-			extended[[2]] = convertWidth(grobWidth(axis_grob), "mm", valueOnly = TRUE)
+			extended[2] = convertWidth(grobWidth(axis_grob), "mm")
 		} else if(axis_param$side == "right") {
-			extended[[4]] = convertWidth(grobWidth(axis_grob), "mm", valueOnly = TRUE)
+			extended[4] = convertWidth(grobWidth(axis_grob), "mm")
 		} else if(axis_param$side == "top") {
-			extended[[3]] = convertHeight(grobHeight(axis_grob), "mm", valueOnly = TRUE)
+			extended[3] = convertHeight(grobHeight(axis_grob), "mm")
 		} else if(axis_param$side == "bottom") {
-			extended[[1]] = convertHeight(grobHeight(axis_grob), "mm", valueOnly = TRUE)
+			extended[1] = convertHeight(grobHeight(axis_grob), "mm")
 		}
 	}
 	return(extended)

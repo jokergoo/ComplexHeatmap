@@ -440,9 +440,9 @@ HeatmapAnnotation = function(...,
     .Object@subsetable = all(sapply(anno_list, function(x) x@subsetable))
     extended = unit(c(0, 0, 0, 0), "mm")
     for(i in 1:4) {
-    	extended[[i]] = max(sapply(anno_list, function(anno) {
-    		anno@extended[[i]]
-    	}))
+    	extended[i] = unit(max(sapply(anno_list, function(anno) {
+    		unit_to_numeric(anno@extended[i])
+    	})), "mm")
     }
     .Object@extended = extended
     .Object@param = list(
@@ -893,9 +893,9 @@ c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
 
 	extended = unit(c(0, 0, 0, 0), "mm")
     for(i in 1:4) {
-    	extended[[i]] = max(sapply(x@anno_list, function(anno) {
-    		anno@extended[[i]]
-    	}))
+    	extended[i] = unit(max(sapply(x@anno_list, function(anno) {
+    		unit_to_numeric(anno@extended[i])
+    	})), "mm")
     }
     x@extended = extended
 
@@ -1009,9 +1009,9 @@ anno_type = function(ha) {
     
     extended = unit(c(0, 0, 0, 0), "mm")
     for(i in 1:4) {
-    	extended[[i]] = max(sapply(x2@anno_list, function(anno) {
-    		anno@extended[[i]]
-    	}))
+    	extended[[i]] = unit(max(sapply(x2@anno_list, function(anno) {
+    		unit_to_numeric(anno@extended[i])
+    	})), "mm")
     }
     x2@extended = extended
 
@@ -1202,7 +1202,11 @@ setMethod(f = "re_size",
 	anno_size = object@anno_size
 	size = slot(object, size_name)
 	gap = object@gap
-	gap = gap[-length(gap)]
+	if(length(gap) == 1) {
+		gap = unit(0, "mm")
+	} else {
+		gap = gap[-length(gap)]
+	}
 	n = length(object@anno_list)
 
 	# the basic rule is
@@ -1240,7 +1244,7 @@ setMethod(f = "re_size",
 						} else {
 							stop_wrap("relative unit should be defined as `unit(..., 'null')")
 						}
-						annotation_size_adjusted[i][[1]]
+						unit_to_numeric(annotation_size_adjusted[i][[1]])
 					})
 					rel_num = rel_num/sum(rel_num)
 					if(any(!l_rel_unit)) {

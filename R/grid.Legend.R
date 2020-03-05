@@ -156,7 +156,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 			if(title_position == "lefttop") {
 				title_width = convertWidth(grobWidth(textGrob(title, gp = title_gp)), "mm")
 				title_height = convertHeight(grobHeight(textGrob(title, gp = title_gp)), "mm")
-				if(title_height[[1]] <= grid_height[[1]]) {
+				if(unit_to_numeric(title_height[1]) <= unit_to_numeric(grid_height[1])) {
 					legend_extension = title_width + title_padding
 				}
 			}

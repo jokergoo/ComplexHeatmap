@@ -263,7 +263,7 @@ SingleAnnotation = function(name, value, col, fun,
     	}
         if(verbose) qqcat("@{name}: adjust positions of annotation names\n")
     	if(name_side == "left") {
-            if(anno_fun_extend[[2]] > 0) {
+            if(unit_to_numeric(anno_fun_extend[2]) > 0) {
                 if(!is_name_offset_called) {
                     name_offset = name_offset + anno_fun_extend[2]
                 }
@@ -291,7 +291,7 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "top"
             }
     	} else {
-            if(anno_fun_extend[[4]] > 0) {
+            if(unit_to_numeric(anno_fun_extend[4]) > 0) {
                 if(!is_name_offset_called) {
                     name_offset = name_offset + anno_fun_extend[4]
                 }
@@ -326,7 +326,7 @@ SingleAnnotation = function(name, value, col, fun,
     	}
         if(verbose) qqcat("@{name}: adjust positions of annotation names\n")
     	if(name_side == "top") {
-            if(anno_fun_extend[[3]] > 0) {
+            if(unit_to_numeric(anno_fun_extend[3]) > 0) {
                 if(!is_name_offset_called) {
                     name_offset = name_offset + anno_fun_extend[3]
                 }
@@ -354,7 +354,7 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "right"
             }
     	} else {
-            if(anno_fun_extend[[1]] > 0) {
+            if(unit_to_numeric(anno_fun_extend[1]) > 0) {
                 if(!is_name_offset_called) {
                     name_offset = name_offset + anno_fun_extend[1]
                 }
@@ -399,30 +399,30 @@ SingleAnnotation = function(name, value, col, fun,
     if(name_param$show) {
         if(which == "column") {
             if(name_param$rot == 0) {
-                text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm", valueOnly = TRUE)
+                text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm")
             } else {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm", valueOnly = TRUE)
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm")
             }
             if(name_param$side == "left") {
-                extended[[2]] = text_width
+                extended[2] = text_width
             } else if(name_param$side == "right") {
-                extended[[4]] = text_width
+                extended[4] = text_width
             }
         } else if(which == "row") {
             if(name_param$rot == 0) {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm", valueOnly = TRUE)
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             } else {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm", valueOnly = TRUE)
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             }
             if(name_param$side == "bottom") {
-                extended[[1]] = text_width
+                extended[1] = text_width
             } else if(name_param$side == "top") {
-                extended[[3]] = text_width
+                extended[3] = text_width
             }
         }
     }
     for(i in 1:4) {
-        extended[[i]] = max(anno_fun_extend[[i]], extended[[i]])
+        extended[[i]] = unit(max(unit_to_numeric(anno_fun_extend[i]), unit_to_numeric(extended[i])), "mm")
     }
     .Object@extended = extended
 

@@ -430,7 +430,7 @@ setMethod(f = "make_layout",
                 layout_size$row_anno_right_width,
                 layout_size$row_names_right_width,
                 layout_size$row_title_right_width), "mm")
-        if(object@matrix_param$width[[1]] <= 0) {
+        if(unit_to_numeric(object@matrix_param$width[1]) <= 0) {
             stop_wrap("width of the heatmap body is negative, maybe `heatmap_width` you set is too small. Note `heatmap_width` is the width of the complete heatmap.")
         }
     } else if(is_abs_unit(object@matrix_param$width)) {  # e.g. unit(1, "npc")
@@ -461,7 +461,7 @@ setMethod(f = "make_layout",
                 layout_size$column_dend_bottom_height,
                 layout_size$column_anno_bottom_height,
                 layout_size$column_names_bottom_height), "mm")
-        if(object@matrix_param$height[[1]] <= 0) {
+        if(unit_to_numeric(object@matrix_param$height[1]) <= 0) {
             stop_wrap("height of the heatmap body is negative, maybe `heatmap_height` you set is too small. Note `heatmap_height` is the height of the complete heatmap.")
         }
     } else if(is_abs_unit(object@matrix_param$height)) {

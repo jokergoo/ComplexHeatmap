@@ -133,7 +133,7 @@ setMethod(f = "adjust_heatmap_list",
                     if(is_abs_unit(ht@matrix_param$width)) {
                         ht@heatmap_param$width
                     } else {
-                        sum(component_width(ht, setdiff(names(HEATMAP_LAYOUT_ROW_COMPONENT), "heatmap_body"))) + ht@matrix_param$width[[1]]*unit_per_null
+                        sum(component_width(ht, setdiff(names(HEATMAP_LAYOUT_ROW_COMPONENT), "heatmap_body"))) + unit_to_numeric(ht@matrix_param$width[1])*unit_per_null
                     }
                 } else {
                     size(ht)
@@ -336,7 +336,7 @@ setMethod(f = "adjust_heatmap_list",
                     if(is_abs_unit(ht@matrix_param$height)) {
                         ht@heatmap_param$height
                     } else {
-                        sum(component_height(ht, setdiff(names(HEATMAP_LAYOUT_COLUMN_COMPONENT), "heatmap_body"))) + ht@matrix_param$height[[1]]*unit_per_null
+                        sum(component_height(ht, setdiff(names(HEATMAP_LAYOUT_COLUMN_COMPONENT), "heatmap_body"))) + unit_to_numeric(ht@matrix_param$height[1])*unit_per_null
                     }
                 } else {
                     size(ht)
@@ -508,17 +508,17 @@ setMethod(f = "adjust_heatmap_list",
     if(is.null(adjust_annotation_extension)) adjust_annotation_extension = TRUE
     if(adjust_annotation_extension) {
         # note e.g. max_*_component_height does not include the height of titles
-        if(object@layout$row_anno_max_bottom_extended[[1]] > object@layout$max_bottom_component_height[[1]]+ object@layout$max_title_component_height[[2]]) {
+        if(unit_to_numeric(object@layout$row_anno_max_bottom_extended[1]) > unit_to_numeric(object@layout$max_bottom_component_height[1]) + unit_to_numeric(object@layout$max_title_component_height[2])) {
             padding[1] = object@layout$row_anno_max_bottom_extended - object@layout$max_bottom_component_height - object@layout$max_title_component_height[2]
         }
-        if(object@layout$column_anno_max_left_extended[[1]] > object@layout$max_left_component_width[[1]] + object@layout$max_title_component_width[[1]]) {
+        if(unit_to_numeric(object@layout$column_anno_max_left_extended[1]) > unit_to_numeric(object@layout$max_left_component_width[1]) + unit_to_numeric(object@layout$max_title_component_width[1])) {
             padding[2] = object@layout$column_anno_max_left_extended - object@layout$max_left_component_width - object@layout$max_title_component_width[1]
         }
             
-        if(object@layout$row_anno_max_top_extended[[1]] > object@layout$max_top_component_height[[1]] + object@layout$max_title_component_height[[1]]) {
+        if(unit_to_numeric(object@layout$row_anno_max_top_extended[1]) > unit_to_numeric(object@layout$max_top_component_height[1]) + unit_to_numeric(object@layout$max_title_component_height[1])) {
             padding[3] = object@layout$row_anno_max_top_extended - object@layout$max_top_component_height - object@layout$max_title_component_height[1]
         }
-        if(object@layout$column_anno_max_right_extended[[1]] > object@layout$max_right_component_width[[1]] + object@layout$max_title_component_width[[2]]) {
+        if(unit_to_numeric(object@layout$column_anno_max_right_extended[1]) > unit_to_numeric(object@layout$max_right_component_width[1]) + unit_to_numeric(object@layout$max_title_component_width[2])) {
             padding[4] = object@layout$column_anno_max_right_extended - object@layout$max_right_component_width - object@layout$max_title_component_width[2]
         }
     }
