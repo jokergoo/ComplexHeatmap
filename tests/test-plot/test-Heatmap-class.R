@@ -1,7 +1,4 @@
 
-if(!exists("random_str")) {
-	random_str = ComplexHeatmap:::random_str
-}
 
 set.seed(123)
 nr1 = 10; nr2 = 8; nr3 = 6
@@ -166,10 +163,10 @@ draw(ht, test = TRUE)
 ht = Heatmap(mat, row_names_side = "left")
 draw(ht, test = TRUE)
 
-random_str = function(k) {
+random_str2 = function(k) {
 	sapply(1:k, function(i) paste(sample(letters, sample(5:10, 1)), collapse = ""))
 }
-ht = Heatmap(mat, row_labels = random_str(24))
+ht = Heatmap(mat, row_labels = random_str2(24))
 draw(ht, test = TRUE)
 
 ht = Heatmap(mat, row_names_gp = gpar(fontsize = 20))
@@ -190,7 +187,7 @@ draw(ht, test = TRUE)
 ht = Heatmap(mat, column_names_side = "top")
 draw(ht, test = TRUE)
 
-ht = Heatmap(mat, column_labels = random_str(24))
+ht = Heatmap(mat, column_labels = random_str2(24))
 draw(ht, test = TRUE)
 
 ht = Heatmap(mat, column_names_gp = gpar(fontsize = 20))

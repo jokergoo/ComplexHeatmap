@@ -1,5 +1,5 @@
 
-ht_global_opt("verbose" = TRUE)
+# ht_opt("verbose" = TRUE)
 m = matrix(rnorm(50), nr = 10)
 
 ht = Heatmap(m)
@@ -20,4 +20,4 @@ ht = make_row_cluster(ht)
 ht = Heatmap(m, cluster_rows = hclust(dist(m)), row_split = 2)
 ht = make_row_cluster(ht)
 
-ht_global_opt("verbose" = FALSE)
+# ht_opt("verbose" = FALSE)
