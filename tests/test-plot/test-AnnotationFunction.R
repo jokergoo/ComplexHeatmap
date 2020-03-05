@@ -1,3 +1,16 @@
+library(circlize)
+
+if(!exists("normalize_graphic_param_to_mat")) {
+	normalize_graphic_param_to_mat = ComplexHeatmap:::normalize_graphic_param_to_mat
+}
+
+if(!exists("height")) {
+	height = ComplexHeatmap:::height
+}
+
+if(!exists("width")) {
+	width = ComplexHeatmap:::width
+}
 
 normalize_graphic_param_to_mat(1, nc = 2, nr = 4, "foo")
 normalize_graphic_param_to_mat(1:2, nc = 2, nr = 4, "foo")
@@ -18,11 +31,11 @@ fun = function(index) {
 	grid.points(index, x[index])
 	popViewport()
 }
-anno = AnnotationFunction(fun = fun, var_imported = "x")
-anno = AnnotationFunction(fun = fun, var_imported = list(x))
+anno = AnnotationFunction(fun = fun, var_import = "x")
+anno = AnnotationFunction(fun = fun, var_import = list(x))
 
 
-devAskNewPage(ask = TRUE)
+# devAskNewPage(ask = dev.interactive())
 
 ########### testing anno_simple ############
 anno = anno_simple(1:10)
@@ -74,6 +87,7 @@ draw(anno, test = "anno_empty")
 anno = anno_empty(border = FALSE)
 draw(anno, test = "anno_empty without border")
 
+if(0) {
 ###### test anno_image #####
 image1 = sample(dir("~/Downloads/IcoMoon-Free-master/PNG/64px", full.names = TRUE), 10)
 anno = anno_image(image1)
@@ -104,6 +118,7 @@ draw(anno, test = "space")
 image1[1] = ""
 anno = anno_image(image1)
 draw(anno, test = "png")
+}
 
 ######## test anno_points #####
 anno = anno_points(runif(10))
@@ -130,12 +145,14 @@ anno = anno_points(runif(10), axis_param = list(direction = "reverse"), ylim = c
 draw(anno, test = "anno_points")
 
 # pch as image
+if(0) {
 image1 = sample(dir("/desktop-home/guz/Downloads/IcoMoon-Free-master/PNG/64px", full.names = TRUE), 10)
 x = runif(10)
 anno1 = anno_points(x, pch = image1, pch_as_image = TRUE, size = unit(5, "mm"), height = unit(4, "cm"))
 anno2 = anno_points(x, height = unit(4, "cm"))
 draw(anno1, test = "anno_points")
 draw(anno2, test = "anno_points")
+}
 
 ##### test anno_lines ###
 anno = anno_lines(runif(10))
@@ -177,7 +194,7 @@ draw(anno, test = "with rotations")
 anno = anno_text(month.name, location = 1, rot = 45, just = "right", gp = gpar(fontsize = 1:12+4))
 draw(anno, test = "with rotations")
 
-devAskNewPage(ask = TRUE)
+
 for(rot in seq(0, 360, by = 45)) {
 	anno = anno_text(month.name, which = "row", location = 0, rot = rot, 
 		just = "left")
@@ -297,6 +314,7 @@ draw(anno, test = "heatmap, colors")
 
 
 ###### anno_mark ###
+if(0) {
 library(gridtext)
 grid.text = function(text, x = 0.5, y = 0.5, gp = gpar(), rot = 0, default.units = "npc", just = "center") {
 	if(length(just) == 1) {
@@ -321,7 +339,7 @@ grid.text = function(text, x = 0.5, y = 0.5, gp = gpar(), rot = 0, default.units
 		default.units = default.units, hjust = just2[1], vjust = just2[2], rot = rot)
 	grid.draw(gb)
 }
-
+}
 anno = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10], which = "row")
 draw(anno, index = 1:100, test = "anno_mark")
 
@@ -451,7 +469,7 @@ draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
 anno = anno_block(gp = gpar(fill = 1:4), labels = letters[1:4], labels_gp = gpar(col = "white"))
 draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
 draw(anno, index = 1:10, k = 4, n = 4, test = "anno_block")
-draw(anno, index = 1:10, k = 2, n = 2, test = "anno_block")
+# draw(anno, index = 1:10, k = 2, n = 2, test = "anno_block")
 
 anno = anno_block(gp = gpar(fill = 1:4), labels = letters[1:4], labels_gp = gpar(col = "white"), which = "row")
 draw(anno, index = 1:10, k = 2, n = 4, test = "anno_block")
@@ -529,12 +547,12 @@ draw(anno, index = hc$order, test = "anno_zoom, column annotation")
 
 
 anno = anno_zoom(align_to = fa2, which = "row", panel_fun = panel_fun)
-Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno))
-Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno), row_split = 2)
+draw(Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno)))
+draw(Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno), row_split = 2))
 
 
 anno = anno_zoom(align_to = fa2, which = "row", panel_fun = panel_fun, size = unit(1:4, "cm"))
-Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno))
+draw(Heatmap(m, cluster_rows = hc, right_annotation = rowAnnotation(foo = anno)))
 
 set.seed(123)
 m = matrix(rnorm(100*10), nrow = 100)
@@ -551,7 +569,7 @@ panel_fun = function(index, nm) {
 }
 anno = anno_zoom(align_to = subgroup, which = "row", panel_fun = panel_fun, 
 	size = unit(2, "cm"), gap = unit(1, "cm"), width = unit(4, "cm"))
-Heatmap(m, right_annotation = rowAnnotation(foo = anno), row_split = subgroup)
+draw(Heatmap(m, right_annotation = rowAnnotation(foo = anno), row_split = subgroup))
 
 panel_fun2 = function(index, nm) {
 	pushViewport(viewport())
@@ -565,13 +583,13 @@ anno2 = anno_zoom(align_to = subgroup, which = "row", panel_fun = panel_fun2,
 	gap = unit(1, "cm"), width = unit(3, "cm"), side = "left")
 
 # in infinite loop
-Heatmap(m, right_annotation = rowAnnotation(subgroup = subgroup, foo = anno,
+draw(Heatmap(m, right_annotation = rowAnnotation(subgroup = subgroup, foo = anno,
 	show_annotation_name = FALSE), 
 	left_annotation = rowAnnotation(bar = anno2, subgroup = subgroup, show_annotation_name = FALSE),
 	show_row_dend = FALSE,
-	row_split = subgroup)
+	row_split = subgroup))
 
-Heatmap(m, right_annotation = rowAnnotation(foo = anno), 
+draw(Heatmap(m, right_annotation = rowAnnotation(foo = anno), 
 	left_annotation = rowAnnotation(bar = anno2),
 	show_row_dend = FALSE,
-	row_split = subgroup)
+	row_split = subgroup))

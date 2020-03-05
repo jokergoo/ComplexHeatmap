@@ -229,12 +229,14 @@ dendrogramGrob = function(dend, facing = c("bottom", "top", "left", "right"),
         lt$y1 = unit(1, "npc") - unit(lt$y1, "native")
     }
     if(facing %in% c("bottom", "top")) {
-        segmentsGrob(lt$x0, lt$y0, lt$x1, lt$y1, gp = gpar(lwd = lt$lwd, lty = lt$lty, col = lt$col),
+        gb = segmentsGrob(lt$x0, lt$y0, lt$x1, lt$y1, gp = gpar(lwd = lt$lwd, lty = lt$lty, col = lt$col),
             default.units = "native")
     } else if(facing %in% c("left", "right")) {
-        segmentsGrob(lt$y0, lt$x0, lt$y1, lt$x1, gp = gpar(lwd = lt$lwd, lty = lt$lty, col = lt$col),
+        gb = segmentsGrob(lt$y0, lt$x0, lt$y1, lt$x1, gp = gpar(lwd = lt$lwd, lty = lt$lty, col = lt$col),
             default.units = "native")
     }
+    gb$facing = facing
+    return(gb)
 }
 
 # == title
@@ -272,20 +274,15 @@ dendrogramGrob = function(dend, facing = c("bottom", "top", "left", "right"),
 grid.dendrogram = function(dend, ..., test = FALSE) {
     gb = dendrogramGrob(dend, ...)
     if(test) {
-        ylim = range(gb[c("y0", "y1")])
-        ylim[1] = - 0.05*(ylim[2] - ylim[1])
-        ylim[2] = ylim[2] + 0.05*ylim[2]
+        h = dend_heights(dend)
+        n = nobs(dend)
         grid.newpage()
-        if(is_abs_unit(gb$x0[1]) && !identical("native", attr(gb$x0[1], "unit"))) {
-            width = max(unit.c(gb$x0, gb$x1))
-            pushViewport(viewport(yscale = ylim, 
-                width = width*1.1, 
+        if(gb$facing %in% c("top", "bottom")) {
+           pushViewport(viewport(xscale = c(-0.5, n + 0.5), yscale = c(-h*0.05, h*1.05), 
+                width = unit(1, "npc") - unit(4, "cm"), 
                 height = unit(1, "npc") - unit(4, "cm")))
         } else {
-            xlim = range(gb[c("x0", "x1")])
-            xlim[1] = xlim[1] - 0.05*(xlim[2] - xlim[1])
-            xlim[2] = xlim[2] + 0.05*(xlim[2] - xlim[1])
-            pushViewport(viewport(xscale = xlim, yscale = ylim, 
+            pushViewport(viewport(yscale = c(-0.5, n + 0.5), xscale = c(-h*0.05, h*1.05), 
                 width = unit(1, "npc") - unit(4, "cm"), 
                 height = unit(1, "npc") - unit(4, "cm")))
         }

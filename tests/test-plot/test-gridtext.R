@@ -1,5 +1,5 @@
 
-
+if(0) {
 ##### test anno_richtext ####
 anno = anno_text(month.name)
 
@@ -32,3 +32,4 @@ Heatmap(m, row_labels = richtext_grob(rownames(m), align_widths = TRUE, box_gp =
 
 
 Heatmap(m)
+}

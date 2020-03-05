@@ -1,5 +1,7 @@
-ht_global_opt$verbose = FALSE
-ht_global_opt$show_vp_border = FALSE
+
+if(!exists("random_str")) {
+	random_str = ComplexHeatmap:::random_str
+}
 
 set.seed(123)
 nr1 = 10; nr2 = 8; nr3 = 6
@@ -45,8 +47,8 @@ draw(ht, test = TRUE)
 ht = Heatmap(mat, row_title = "blablabla", row_title_gp = gpar(fontsize = 20, font = 2))
 draw(ht, test = TRUE)
 
-ht = Heatmap(mat, row_title = "blablabla", row_title_rot = 45)
-draw(ht, test = TRUE)
+# ht = Heatmap(mat, row_title = "blablabla", row_title_rot = 45)
+# draw(ht, test = TRUE)
 
 ht = Heatmap(mat, row_title = "blablabla", row_title_rot = 0)
 draw(ht, test = TRUE)
@@ -63,8 +65,8 @@ draw(ht, test = TRUE)
 ht = Heatmap(mat, column_title = "blablabla", column_title_gp = gpar(fontsize = 20, font = 2))
 draw(ht, test = TRUE)
 
-ht = Heatmap(mat, column_title = "blablabla", column_title_rot = 45)
-draw(ht, test = TRUE)
+# ht = Heatmap(mat, column_title = "blablabla", column_title_rot = 45)
+# draw(ht, test = TRUE)
 
 ht = Heatmap(mat, column_title = "blablabla", column_title_rot = 90)
 draw(ht, test = TRUE)
@@ -100,6 +102,7 @@ dend = as.dendrogram(hclust(dist(mat)))
 ht = Heatmap(mat, cluster_rows = dend)
 draw(ht, test = TRUE)
 
+library(dendextend)
 dend = color_branches(dend, k = 3)
 ht = Heatmap(mat, cluster_rows = dend)
 draw(ht, test = TRUE)
@@ -392,13 +395,13 @@ ht@heatmap_param[c("width", "height")]
 ht@matrix_param[c("width", "height")]
 draw(ht, test = TRUE)
 
-ht = Heatmap(mat, heatmap_body_width = unit(10, "cm"), heatmap_body_height = unit(10, "cm"))
+ht = Heatmap(mat, heatmap_width = unit(10, "cm"), heatmap_height = unit(10, "cm"))
 ht = prepare(ht)
 ht@heatmap_param[c("width", "height")]
 ht@matrix_param[c("width", "height")]
 draw(ht, test = TRUE)
 
-ht = Heatmap(mat, heatmap_body_width = unit(10, "cm"))
+ht = Heatmap(mat, heatmap_width = unit(10, "cm"))
 ht = prepare(ht)
 ht@heatmap_param[c("width", "height")]
 ht@matrix_param[c("width", "height")]
@@ -415,10 +418,13 @@ draw(ht, test = TRUE)
 
 #### test global padding
 ra = rowAnnotation(foo = 1:24)
-Heatmap(mat, show_column_names = FALSE) + ra
-	left_annotation = ra)
+ht = Heatmap(mat, show_column_names = FALSE) + ra
+draw(ht)
 
+ht = Heatmap(matrix(rnorm(100), 10), row_km = 2, row_title = "")
+draw(ht)
 
-Heatmap(matrix(rnorm(100), 10), row_km = 2, row_title = "")
-
-Heatmap(matrix(rnorm(100), 10), heatmap_width = unit(5, "mm"))
+if(0) {
+ht = Heatmap(matrix(rnorm(100), 10), heatmap_width = unit(5, "mm"))
+draw(ht)
+}

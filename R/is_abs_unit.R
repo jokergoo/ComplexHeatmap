@@ -1,18 +1,20 @@
 
 # is_abs_unit = function(x) UseMethod("is_abs_unit")
 
+abs_units = c("cm", "inches", "mm", "points", "picas", "bigpts", "dida", "cicero",
+		               "scaledpts", "lines", "char", "strwidth", "strheight", "grobwidth",
+		               "grobheight", "strascent", "strdescent", "mylines", "mychar", 
+		               "mystrwidth", "mystrheight", "centimetre", "centimetres", "centimeter",
+		               "centimeters", "in", "inch", "line", "millimetre", "millimetres",
+		               "millimeter", "millimeters", "point", "pt")
+
 # grid::absolute.size() treats grobwidth and grobheight as non-absolute units,
 # thus, I write another function to test
 .is_abs_unit.unit = function(x) {
 
 	unit = unitType(x)
 
-	if(all(unit %in% c("cm", "inches", "mm", "points", "picas", "bigpts", "dida", "cicero",
-		               "scaledpts", "lines", "char", "strwidth", "strheight", "grobwidth",
-		               "grobheight", "strascent", "strdescent", "mylines", "mychar", 
-		               "mystrwidth", "mystrheight", "centimetre", "centimetres", "centimeter",
-		               "centimeters", "in", "inch", "line", "millimetre", "millimetres",
-		               "millimeter", "millimeters", "point", "pt"))) {
+	if(all(unit %in% abs_units)) {
 		return(TRUE)
 	} else {
 		return(FALSE)
@@ -78,15 +80,9 @@ is_abs_unit_v3 = function(u) {
 }
 
 is_abs_unit_v4 = function(u) {
-	if(inherits(u, "simpleUnit")) {
-		.is_abs_unit.unit(u)
-	} else {
-		if(unitType(u) %in% c("sum", "min", "max")) {
-			all(sapply(unclass(u)[[1]][[2]], is_abs_unit_v4))
-		} else {
-			.is_abs_unit.unit(u)
-		}
-	}
+	u = unitType(u, recurse = TRUE)
+	u = unlist(u)
+	all(u %in% abs_units)
 }
 
 if(getRversion() >= "4.0.0") {

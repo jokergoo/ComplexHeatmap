@@ -55,7 +55,7 @@ draw(ha, 1:10, test = "anno_empty")
 ha = HeatmapAnnotation(foo = anno_empty(), bar = 1:10, height = unit(4, "cm"))
 draw(ha, 1:10, test = "anno_empty")
 
-ha = HeatmapAnnotation(foo = function(index) {grid.rect()}, bar = 1:10 height = unit(4, "cm"))
+ha = HeatmapAnnotation(foo = function(index) {grid.rect()}, bar = 1:10, height = unit(4, "cm"))
 draw(ha, 1:10, test = "self-defined function")
 
 
@@ -67,11 +67,11 @@ draw(ha, test = "complex annotations on row")
 ## test row annotation with no heatmap
 rowAnnotation(foo = 1:10, bar = anno_points(10:1))
 
-
+if(0) {
 HeatmapAnnotation(1:10)
 
 HeatmapAnnotation(data.frame(1:10))
-
+}
 
 
 ha = HeatmapAnnotation(summary = anno_summary(height = unit(4, "cm")))
@@ -219,8 +219,6 @@ ha2 = HeatmapAnnotation(foo = sample(c("b", "c"), 10, replace = TRUE))
 Heatmap(m, top_annotation = ha1) + 
 Heatmap(m, top_annotation = ha2)
 
-
-library(ComplexHeatmap)
 x = matrix(rnorm(6), ncol=3)
 subtype_col = c("Basal" = "purple","Her2" = "black","Normal" = "blue")
 h1 <- HeatmapAnnotation("Subtype" = c("Basal","Her2", "Normal"),

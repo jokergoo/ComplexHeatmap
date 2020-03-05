@@ -51,7 +51,7 @@ fun = local({
 	}
 })
 ha = SingleAnnotation(fun = fun, height = unit(4, "cm"))
-ha[1:5]
+# ha[1:5]
 draw(ha, index = c(1, 4, 2, 6), test = "self-defined function")
 draw(ha, index = c(1, 4, 2, 6), k = 1, n = 2, test = "self-defined function, k = 1, n = 2")
 draw(ha, index = c(1, 4, 2, 6), k = 2, n = 2, test = "self-defined function, k = 2, n = 2")

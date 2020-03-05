@@ -15,32 +15,37 @@ alter_fun = list(
 )
 
 col = c(snv = "red", indel = "blue")
-oncoPrint(mat, get_type = get_type_fun,
+ht = oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col)
+draw(ht)
 
 ## turn off row names while turn on column names
-oncoPrint(mat, get_type = get_type_fun,
+ht = oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col, 
     show_column_names = TRUE, show_row_names = FALSE, show_pct = FALSE)
+draw(ht)
 
-oncoPrint(mat, get_type = get_type_fun,
+ht = oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col, pct_side = "right", 
     row_names_side = "left")
+draw(ht)
 
-oncoPrint(mat, get_type = get_type_fun,
+ht = oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col,
     top_annotation = HeatmapAnnotation(column_barplot = anno_oncoprint_barplot())
 )
+draw(ht)
 
-oncoPrint(mat, get_type = get_type_fun,
+ht = oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col,
     top_annotation = HeatmapAnnotation(
     	column_barplot = anno_oncoprint_barplot(),
     	foo = 1:3,
     	annotation_name_side = "left")
 )
+draw(ht)
 
-oncoPrint(mat, get_type = get_type_fun,
+ht = oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col,
     top_annotation = HeatmapAnnotation(
     	cbar = anno_oncoprint_barplot(),
@@ -49,9 +54,10 @@ oncoPrint(mat, get_type = get_type_fun,
     left_annotation = rowAnnotation(foo2 = 1:3),
     right_annotation = rowAnnotation(cbar = anno_oncoprint_barplot(), foo3 = 1:3),
 )
+draw(ht)
 
 
-oncoPrint(mat, get_type = get_type_fun,
+ht = oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col,
     top_annotation = HeatmapAnnotation(
         cbar = anno_oncoprint_barplot(border = TRUE),
@@ -62,9 +68,11 @@ oncoPrint(mat, get_type = get_type_fun,
         cbar = anno_oncoprint_barplot(border = TRUE), 
         foo3 = 1:3),
 )
+draw(ht)
 
-oncoPrint(mat, get_type = get_type_fun,
+ht = oncoPrint(mat, get_type = get_type_fun,
     alter_fun = alter_fun, col = col,
     right_annotation = rowAnnotation(rbar = anno_oncoprint_barplot(axis_param = list(side = "bottom", labels_rot = 90)))
 )
+draw(ht)
 

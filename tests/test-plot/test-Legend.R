@@ -1,4 +1,8 @@
 
+if(!exists("random_str")) {
+	random_str = ComplexHeatmap:::random_str
+}
+
 lgd = Legend(at = 1:6, legend_gp = gpar(fill = 1:6))
 draw(lgd, test = "default discrete legends style")
 
@@ -237,10 +241,11 @@ draw(lgd, test = "unequal interval breaks with labels")
 
 
 #### position of legends to heatmaps ##
+if(0) {
 m = matrix(rnorm(100), 10)
 rownames(m) = random_str(10, len = 20)
 colnames(m) = random_str(10, len = 20)
 Heatmap(m)
-
+}
 
 

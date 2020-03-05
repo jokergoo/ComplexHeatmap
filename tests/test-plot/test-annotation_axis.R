@@ -109,7 +109,7 @@ grid.newpage()
 pushViewport(viewport(xscale = c(0, 4), yscale = c(0, 6), width = 0.6, height = 0.6))
 gb = annotation_axis_grob(side = "bottom", direction = "reverse")
 grid.rect()
-grid.text('side = "bottom", directio = "reverse"')
+grid.text('side = "bottom", direction = "reverse"')
 grid.draw(gb)
 popViewport()
 

@@ -1,7 +1,4 @@
 
-ht_global_opt$verbose = FALSE
-ht_global_opt$show_vp_border = FALSE
-
 set.seed(123)
 nr1 = 10; nr2 = 8; nr3 = 6
 nc1 = 6; nc2 = 8; nc3 = 10
@@ -37,7 +34,7 @@ colnames(mat2) = paste0("column_2_", seq_len(nrow(mat2)))
 
 
 ht_list = Heatmap(mat1) + Heatmap(mat2)
-ht_list
+draw(ht_list)
 
 ######### legend ############
 draw(ht_list, heatmap_legend_side = "bottom")
@@ -46,23 +43,30 @@ draw(ht_list, heatmap_legend_side = "top")
 
 
 ########## width #############
-Heatmap(mat1, width = unit(6, "cm")) + Heatmap(mat2)
-Heatmap(mat1) + Heatmap(mat2, width = unit(8, "cm"))
-Heatmap(mat1, width = unit(12, "cm")) + Heatmap(mat2, width = unit(8, "cm"))
+ht_list = Heatmap(mat1, width = unit(6, "cm")) + Heatmap(mat2)
+draw(ht_list)
+ht_list = Heatmap(mat1) + Heatmap(mat2, width = unit(8, "cm"))
+draw(ht_list)
+ht_list = Heatmap(mat1, width = unit(12, "cm")) + Heatmap(mat2, width = unit(8, "cm"))
+draw(ht_list)
 
-Heatmap(mat1, heatmap_body_width = unit(6, "cm")) + Heatmap(mat2)
-Heatmap(mat1) + Heatmap(mat2, heatmap_body_width = unit(6, "cm"))
-Heatmap(mat1, heatmap_body_width = unit(6, "cm")) + Heatmap(mat2, heatmap_body_width = unit(6, "cm"))
-Heatmap(mat1, heatmap_body_width = 4) + Heatmap(mat2)
-
-Heatmap(mat1, heatmap_body_width = 2) + Heatmap(mat2, heatmap_body_width = 1)
+ht_list = Heatmap(mat1, heatmap_width = unit(6, "cm")) + Heatmap(mat2)
+Heatmap(mat1) + Heatmap(mat2, heatmap_width = unit(6, "cm"))
+draw(ht_list)
+ht_list = Heatmap(mat1, heatmap_width = unit(6, "cm")) + Heatmap(mat2, heatmap_width = unit(6, "cm"))
+Heatmap(mat1, heatmap_width = 4) + Heatmap(mat2)
+draw(ht_list)
+ht_list = Heatmap(mat1, heatmap_width = 2) + Heatmap(mat2, heatmap_width = 1)
+draw(ht_list)
 
 
 ########### height ###########
-Heatmap(mat1, height = unit(6, "cm")) + Heatmap(mat2)
-Heatmap(mat1, heatmap_body_height = unit(6, "cm")) + Heatmap(mat2)
-ht_list = Heatmap(mat1, heatmap_body_width = unit(6, "cm"), height = unit(6, "cm")) + 
-	Heatmap(mat2, heatmap_body_width = unit(6, "cm"), height = unit(6, "cm"))
+ht_list = Heatmap(mat1, height = unit(6, "cm")) + Heatmap(mat2)
+draw(ht_list)
+ht_list = Heatmap(mat1, heatmap_height = unit(6, "cm")) + Heatmap(mat2)
+draw(ht_list)
+ht_list = Heatmap(mat1, heatmap_width = unit(6, "cm"), height = unit(6, "cm")) + 
+	Heatmap(mat2, heatmap_width = unit(6, "cm"), height = unit(6, "cm"))
 draw(ht_list, column_title = "foooooooooo", row_title = "baaaaaaaaaaar")
 
 ##### split #####
@@ -78,19 +82,25 @@ draw(ht_list, main_heatmap = "m2", column_title = "foooooooooo", row_title = "ba
 ##### adjust column annotations #####
 ha1 = HeatmapAnnotation(foo = 1:24, bar = anno_points(24:1, height = unit(4, "cm")))
 ha2 = HeatmapAnnotation(bar = anno_points(24:1), foo = 1:24)
-Heatmap(mat1, top_annotation = ha1) + Heatmap(mat2, top_annotation = ha2)
+ht_list = Heatmap(mat1, top_annotation = ha1) + Heatmap(mat2, top_annotation = ha2)
+draw(ht_list)
 ha2 = HeatmapAnnotation(foo = 1:24)
-Heatmap(mat1, top_annotation = ha1) + Heatmap(mat2, top_annotation = ha2)
-Heatmap(mat1, top_annotation = ha1) + Heatmap(mat2)
-Heatmap(mat1, bottom_annotation = ha1) + Heatmap(mat2)
+ht_list = Heatmap(mat1, top_annotation = ha1) + Heatmap(mat2, top_annotation = ha2)
+draw(ht_list)
+ht_list = Heatmap(mat1, top_annotation = ha1) + Heatmap(mat2)
+draw(ht_list)
+ht_list = Heatmap(mat1, bottom_annotation = ha1) + Heatmap(mat2)
+draw(ht_list)
 
 
 #### row annotations #####
 ha = rowAnnotation(foo = 1:24, bar = anno_points(24:1), width = unit(6, "cm"))
-Heatmap(mat1) + ha
-Heatmap(mat1, width = unit(6, "cm")) + ha
-Heatmap(mat1, width = unit(6, "cm"), row_km = 2) + ha
-
+ht_list = Heatmap(mat1) + ha
+draw(ht_list)
+ht_list = Heatmap(mat1, width = unit(6, "cm")) + ha
+draw(ht_list)
+ht_list = Heatmap(mat1, width = unit(6, "cm"), row_km = 2) + ha
+draw(ht_list)
 
 ht_list = Heatmap(matrix(rnorm(100), 10), name = "rnorm") +
   rowAnnotation(foo = 1:10, bar = anno_points(10:1)) + 
