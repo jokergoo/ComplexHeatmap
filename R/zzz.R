@@ -18,3 +18,22 @@ This message can be suppressed by:
 
     packageStartupMessage(msg)
 }
+
+if(getRversion() >= "4.0.0") {
+    unitType = get("unitType", envir = asNamespace("grid"))
+} else {
+	unitType = function(x) attr(x, "unit")
+}
+
+
+"[[.unit" = function(x, index) {
+    as.numeric(x[index])
+}
+
+# value is a pure number
+"[[<-.unit" = function(x, index, value) {
+	ut = unitType(x[index])
+    x[index] = unit(value, ut)
+    x
+}
+

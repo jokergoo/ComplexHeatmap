@@ -528,7 +528,7 @@ unit.c = function(...) {
     if(!unit_in_mm(y)) {
         stop_wrap("y should be in mm unit")
     }
-    x[[1]] > y[[1]]
+    as.numeric(x) > as.numeric(y)
 }
 
 "<.unit" = function(x, y) {
@@ -538,16 +538,11 @@ unit.c = function(...) {
     if(!unit_in_mm(y)) {
         stop_wrap("y should be in mm unit")
     }
-    x[[1]] < y[[1]]
+    as.numeric(x) < as.numeric(y)
 }
 
 unit_in_mm = function(x) {
-    if(getRversion() >= "4.0.0") {
-        unitType = get("unitType", envir = asNamespace("grid"))
-        identical(unitType(x), "mm")
-    } else {
-        identical(attr(x, "unit"), "mm")
-    }
+    identical(unitType(x), "mm")
 }
 
 normalize_graphic_param_to_mat = function(x, nc, nr, name) {

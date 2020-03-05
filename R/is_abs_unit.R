@@ -5,12 +5,7 @@
 # thus, I write another function to test
 .is_abs_unit.unit = function(x) {
 
-	if(getRversion() >= "4.0.0") {
-        unitType = get("unitType", envir = asNamespace("grid"))
-        unit = unitType(x)
-    } else {
-    	unit = attr(x, "unit")
-    }
+	unit = unitType(x)
 
 	if(all(unit %in% c("cm", "inches", "mm", "points", "picas", "bigpts", "dida", "cicero",
 		               "scaledpts", "lines", "char", "strwidth", "strheight", "grobwidth",
