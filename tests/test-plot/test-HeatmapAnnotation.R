@@ -78,19 +78,21 @@ ha = HeatmapAnnotation(summary = anno_summary(height = unit(4, "cm")))
 v = sample(letters[1:2], 50, replace = TRUE)
 split = sample(letters[1:2], 50, replace = TRUE)
 
-Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
+ht = Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
+draw(ht)
 
 ha = HeatmapAnnotation(summary = anno_summary(gp = gpar(fill = 2:3), height = unit(4, "cm")))
 v = rnorm(50)
-Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
-
+ht = Heatmap(v, top_annotation = ha, width = unit(1, "cm"), split = split)
+draw(ht)
 
 
 ### auto adjust
 m = matrix(rnorm(100), 10)
-Heatmap(m, top_annotation = HeatmapAnnotation(foo = 1:10), column_dend_height = unit(4, "cm")) +
-Heatmap(m, top_annotation = HeatmapAnnotation(bar = anno_points(1:10)),
-	cluster_columns = FALSE)
+ht_list = Heatmap(m, top_annotation = HeatmapAnnotation(foo = 1:10), column_dend_height = unit(4, "cm")) +
+	Heatmap(m, top_annotation = HeatmapAnnotation(bar = anno_points(1:10)),
+		cluster_columns = FALSE)
+draw(ht_list)
 
 fun = function(index) {
 	grid.rect()
@@ -105,40 +107,54 @@ draw(ha, 1:10, test = TRUE)
 ## test anno_mark
 m = matrix(rnorm(1000), nrow = 100)
 ha1 = rowAnnotation(foo = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10]))
-Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha1)
-Heatmap(m, name = "mat", cluster_rows = FALSE) + ha1
+ht = Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha1)
+draw(ht)
+ht = Heatmap(m, name = "mat", cluster_rows = FALSE) + ha1
+draw(ht)
 
 split = rep("a", 100); split[c(1:4, 20, 60, 98:100)] = "b"
-Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha1, row_split = split, gap = unit(1, "cm"))
-Heatmap(m, name = "mat", cluster_rows = FALSE, row_split = split, gap = unit(1, "cm")) + ha1
+ht = Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha1, row_split = split, gap = unit(1, "cm"))
+draw(ht)
+ht = Heatmap(m, name = "mat", cluster_rows = FALSE, row_split = split, gap = unit(1, "cm")) + ha1
+draw(ht)
 
 # ha has two annotations
 ha2 = rowAnnotation(foo = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10]), bar = 1:100)
-Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha2)
-Heatmap(m, name = "mat", cluster_rows = FALSE) + ha2
+ht = Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha2)
+draw(ht)
+ht = Heatmap(m, name = "mat", cluster_rows = FALSE) + ha2
+draw(ht)
 
-Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha2, row_split = split, gap = unit(1, "cm"))
-Heatmap(m, name = "mat", cluster_rows = FALSE, row_split = split, gap = unit(1, "cm")) + ha2
-
+ht = Heatmap(m, name = "mat", cluster_rows = FALSE, right_annotation = ha2, row_split = split, gap = unit(1, "cm"))
+draw(ht)
+ht = Heatmap(m, name = "mat", cluster_rows = FALSE, row_split = split, gap = unit(1, "cm")) + ha2
+draw(ht)
 
 ## test anno_mark as column annotation
 m = matrix(rnorm(1000), ncol = 100)
 ha1 = columnAnnotation(foo = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10]))
-Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha1)
-ha1 %v% Heatmap(m, name = "mat", cluster_columns = FALSE)
+ht = Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha1)
+draw(ht)
+ht_list = ha1 %v% Heatmap(m, name = "mat", cluster_columns = FALSE)
+draw(ht_list)
 
 split = rep("a", 100); split[c(1:4, 20, 60, 98:100)] = "b"
-Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha1, column_split = split, column_gap = unit(1, "cm"))
-ha1 %v% Heatmap(m, name = "mat", cluster_columns = FALSE, column_split = split, gap = unit(1, "cm"))
+ht = Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha1, column_split = split, column_gap = unit(1, "cm"))
+draw(ht)
+ht_list = ha1 %v% Heatmap(m, name = "mat", cluster_columns = FALSE, column_split = split, gap = unit(1, "cm"))
+draw(ht_list)
 
 # ha has two annotations
 ha2 = HeatmapAnnotation(foo = anno_mark(at = c(1:4, 20, 60, 97:100), labels = month.name[1:10]), bar = 1:100)
-Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha2)
-ha2 %v% Heatmap(m, name = "mat", cluster_columns = FALSE)
+ht = Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha2)
+draw(ht)
+ht_list = ha2 %v% Heatmap(m, name = "mat", cluster_columns = FALSE)
+draw(ht_list)
 
-Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha2, column_split = split, column_gap = unit(1, "cm"))
-ha2 %v% Heatmap(m, name = "mat", cluster_columns = FALSE, column_split = split, column_gap = unit(1, "cm"))
-
+ht = Heatmap(m, name = "mat", cluster_columns = FALSE, top_annotation = ha2, column_split = split, column_gap = unit(1, "cm"))
+draw(ht)
+ht_list = ha2 %v% Heatmap(m, name = "mat", cluster_columns = FALSE, column_split = split, column_gap = unit(1, "cm"))
+draw(ht_list)
 
 
 ### when there are only simple annotations
@@ -179,7 +195,7 @@ ha2 = HeatmapAnnotation(df = data.frame(foo1 = 1:10,
 ht1 = Heatmap(mat1, name = "rnorm", top_annotation = ha1)
 ht2 = Heatmap(mat2, name = "runif", top_annotation = ha2)
 
-ht1 + ht2
+draw(ht1 + ht2)
 
 ##### test size of a single simple annotation
 
@@ -203,9 +219,9 @@ m = matrix(rnorm(100), 10)
 ha1 = HeatmapAnnotation(foo = sample(c("a", "b"), 10, replace = TRUE))
 ha2 = HeatmapAnnotation(foo = sample(c("b", "c"), 10, replace = TRUE))
 
-Heatmap(m, top_annotation = ha1) + 
-Heatmap(m, top_annotation = ha2)
-
+ht_list = Heatmap(m, top_annotation = ha1) + 
+	Heatmap(m, top_annotation = ha2)
+draw(ht_list)
 
 ha1 = HeatmapAnnotation(foo = sample(c("a", "b"), 10, replace = TRUE),
 	annotation_legend_param = list(
@@ -216,8 +232,9 @@ ha1 = HeatmapAnnotation(foo = sample(c("a", "b"), 10, replace = TRUE),
 	))
 ha2 = HeatmapAnnotation(foo = sample(c("b", "c"), 10, replace = TRUE))
 
-Heatmap(m, top_annotation = ha1) + 
-Heatmap(m, top_annotation = ha2)
+ht_list = Heatmap(m, top_annotation = ha1) + 
+	Heatmap(m, top_annotation = ha2)
+draw(ht_list)
 
 x = matrix(rnorm(6), ncol=3)
 subtype_col = c("Basal" = "purple","Her2" = "black","Normal" = "blue")
@@ -226,4 +243,6 @@ h1 <- HeatmapAnnotation("Subtype" = c("Basal","Her2", "Normal"),
 h2 <- HeatmapAnnotation("Subtype" = c("Normal","Normal", "Basal"),
                         col = list("Subtype" = subtype_col))
 
-Heatmap(x,top_annotation = h1) + Heatmap(x,top_annotation = h2)
+ht_list = Heatmap(x,top_annotation = h1) + Heatmap(x,top_annotation = h2)
+draw(ht_list)
+

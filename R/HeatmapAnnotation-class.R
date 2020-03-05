@@ -1238,7 +1238,7 @@ setMethod(f = "re_size",
 				if(is_abs_unit(size_adjusted)) {
 					rel_num = sapply(which(l_rel_unit), function(i) {
 						if(identical(class(annotation_size_adjusted[i]), "unit")) {
-							if(attr(annotation_size_adjusted[i], "unit") != "null") {
+							if(unitType(annotation_size_adjusted[i]) != "null") {
 								stop_wrap("relative unit should be defined as `unit(..., 'null')")
 							}
 						} else {
