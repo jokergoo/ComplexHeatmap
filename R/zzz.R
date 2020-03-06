@@ -19,7 +19,9 @@ This message can be suppressed by:
     packageStartupMessage(msg)
 }
 
-if(getRversion() >= "4.0.0") {
+rv = R.Version()
+
+if(getRversion() >= "4.0.0" && as.numeric(rv$`svn rev`) >= 77889) {
     unitType = get("unitType", envir = asNamespace("grid"))
 } else {
 	unitType = function(x, recurse = TRUE) attr(x, "unit")
