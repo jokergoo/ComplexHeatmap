@@ -53,13 +53,15 @@ draw(ht_list)
 ht_list = Heatmap(mat1, width = unit(12, "cm")) + Heatmap(mat2, width = unit(8, "cm"))
 draw(ht_list)
 
-ht_list = Heatmap(mat1, heatmap_width = unit(6, "cm")) + Heatmap(mat2)
-Heatmap(mat1) + Heatmap(mat2, heatmap_width = unit(6, "cm"))
+ht_list = Heatmap(mat1, width = unit(6, "cm")) + Heatmap(mat2)
 draw(ht_list)
-ht_list = Heatmap(mat1, heatmap_width = unit(6, "cm")) + Heatmap(mat2, heatmap_width = unit(6, "cm"))
-Heatmap(mat1, heatmap_width = 4) + Heatmap(mat2)
+ht_list = Heatmap(mat1) + Heatmap(mat2, width = unit(6, "cm"))
 draw(ht_list)
-ht_list = Heatmap(mat1, heatmap_width = 2) + Heatmap(mat2, heatmap_width = 1)
+ht_list = Heatmap(mat1, width = unit(6, "cm")) + Heatmap(mat2, width = unit(6, "cm"))
+draw(ht_list)
+ht_list = Heatmap(mat1, width = 4) + Heatmap(mat2)
+draw(ht_list)
+ht_list = Heatmap(mat1, width = 2) + Heatmap(mat2, width = 1)
 draw(ht_list)
 
 
@@ -68,8 +70,8 @@ ht_list = Heatmap(mat1, height = unit(6, "cm")) + Heatmap(mat2)
 draw(ht_list)
 ht_list = Heatmap(mat1, heatmap_height = unit(6, "cm")) + Heatmap(mat2)
 draw(ht_list)
-ht_list = Heatmap(mat1, heatmap_width = unit(6, "cm"), height = unit(6, "cm")) + 
-	Heatmap(mat2, heatmap_width = unit(6, "cm"), height = unit(6, "cm"))
+ht_list = Heatmap(mat1, width = unit(6, "cm"), height = unit(6, "cm")) + 
+	Heatmap(mat2, width = unit(6, "cm"), height = unit(6, "cm"))
 draw(ht_list, column_title = "foooooooooo", row_title = "baaaaaaaaaaar")
 
 ##### split #####
