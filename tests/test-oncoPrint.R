@@ -1,3 +1,7 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
+
 mat = read.table(textConnection(
 "s1,s2,s3
 g1,snv;indel,snv,indel

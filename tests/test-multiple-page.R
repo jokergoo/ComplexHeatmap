@@ -1,3 +1,7 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
+
 m = matrix(rnorm(100), 10)
 
 postscript("test.ps")

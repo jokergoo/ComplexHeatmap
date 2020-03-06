@@ -1,3 +1,6 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
 
 # ht_opt("verbose" = TRUE)
 m = matrix(rnorm(50), nr = 10)

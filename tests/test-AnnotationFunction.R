@@ -1,4 +1,6 @@
 library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
 
 if(!exists("normalize_graphic_param_to_mat")) {
 	normalize_graphic_param_to_mat = ComplexHeatmap:::normalize_graphic_param_to_mat

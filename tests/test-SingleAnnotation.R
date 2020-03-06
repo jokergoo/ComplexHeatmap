@@ -1,3 +1,7 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
+
 ha = SingleAnnotation(value = 1:10)
 draw(ha, test = "single column annotation")
 ha = SingleAnnotation(value = 1:10, which = "row")

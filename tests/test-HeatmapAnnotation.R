@@ -1,3 +1,6 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
 
 
 ha = HeatmapAnnotation(foo = 1:10)

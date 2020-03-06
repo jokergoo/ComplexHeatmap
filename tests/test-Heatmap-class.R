@@ -1,4 +1,6 @@
-
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
 
 set.seed(123)
 nr1 = 10; nr2 = 8; nr3 = 6

@@ -1,3 +1,6 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
 
 if(!exists("cut_dendrogram")) {
 	cut_dendrogram = ComplexHeatmap:::cut_dendrogram

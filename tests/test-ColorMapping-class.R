@@ -1,4 +1,6 @@
-
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
 
 cm = ColorMapping(name = "test",
 	colors = c("blue", "white", "red"),

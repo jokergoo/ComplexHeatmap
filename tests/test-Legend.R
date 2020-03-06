@@ -1,3 +1,6 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
 
 if(!exists("random_str")) {
 	random_str = ComplexHeatmap:::random_str

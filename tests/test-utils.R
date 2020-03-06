@@ -1,3 +1,6 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
 
 # things needed to be tested
 # 1. the order

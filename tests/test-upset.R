@@ -1,3 +1,7 @@
+library(circlize)
+library(ComplexHeatmap)
+library(GetoptLong)
+
 set.seed(123)
 lt = list(a = sample(letters, 10),
 	      b = sample(letters, 15),
@@ -59,16 +63,16 @@ lt = lapply(lt, function(df) GRanges(seqnames = df[, 1], ranges = IRanges(df[, 2
 names(lt) = letters[1:4]
 m = make_comb_mat(lt)
 
-if(0) {
-set.seed(123)
-lt = list(a = sample(letters, 10),
-	      b = sample(letters, 15),
-	      c = sample(letters, 20))
-v = gplots::venn(lt, show.plot = FALSE)
-rownames(v) = apply(v[, -1], 1, paste, collapse = "")
-m = make_comb_mat(lt)
-cs = structure(comb_size(m), names = comb_name(m))
-}
+# if(0) {
+# set.seed(123)
+# lt = list(a = sample(letters, 10),
+# 	      b = sample(letters, 15),
+# 	      c = sample(letters, 20))
+# v = gplots::venn(lt, show.plot = FALSE)
+# rownames(v) = apply(v[, -1], 1, paste, collapse = "")
+# m = make_comb_mat(lt)
+# cs = structure(comb_size(m), names = comb_name(m))
+# }
 
 if(file.exists(f)) {
 	movies <- read.csv(f, header = T, sep = ";")

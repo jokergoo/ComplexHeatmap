@@ -1,3 +1,4 @@
+library(gridtext)
 
 if(0) {
 ##### test anno_richtext ####
