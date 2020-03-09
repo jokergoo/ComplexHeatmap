@@ -85,6 +85,7 @@ is_abs_unit_v4 = function(u) {
 	all(u %in% abs_units)
 }
 
+rv = R.Version()
 if(getRversion() >= "4.0.0" && as.numeric(rv$`svn rev`) >= 77889) {
 	is_abs_unit = is_abs_unit_v4
 } else {
