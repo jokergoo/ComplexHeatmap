@@ -180,7 +180,6 @@ setMethod(f = "make_layout",
                 draw_dend(object, k = i, which = "row", y = slice_y[i], height = slice_height[i], just = "top",
                     max_height = row_dend_max_height)
             }
-
             if(nr_slice > 1 && cluster_dend_slices) {
                 if(row_dend_side == "left") {
                     pushViewport(viewport(xscale = c(0, row_dend_max_height)))

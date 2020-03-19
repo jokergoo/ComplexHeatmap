@@ -429,6 +429,12 @@ Heatmap = function(matrix, col, name,
         row_dend_reorder = FALSE
         cluster_row_slices = FALSE
 
+        if(inherits(cluster_rows, c("dendrogram", "hclust")) && length(row_split) == 1) {
+            if(!"cluster_row_slices" %in% called_args) {
+                cluster_row_slices = TRUE
+            }
+        }
+
         if("clustering_distance_columns" %in% called_args) {
         } else if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
         } else {
@@ -437,6 +443,13 @@ Heatmap = function(matrix, col, name,
         }
         column_dend_reorder = FALSE
         cluster_column_slices = FALSE
+
+        if(inherits(cluster_columns, c("dendrogram", "hclust")) && length(column_split) == 1) {
+            if(!"cluster_column_slices" %in% called_args) {
+                cluster_column_slices = TRUE
+            }
+        }
+
         row_km = 1
         column_km = 1
         if(verbose) qqcat("matrix is character. Do not cluster unless distance method is provided.\n")

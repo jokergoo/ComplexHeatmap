@@ -3,6 +3,8 @@ CHANGES in VERSION 2.3.2
 * `anno_simple()`: fixed a bug when pch are all NA in a slice
 * adjust code according to grid 4.0.
 * move scripts in test_not_run/ to tests/ folder
+* `Heatmap()`: `cluster_row_slice`/`cluster_column_slice` set to TRUE
+  by default for character matrix and when dendrogram is already provided.
 
 ========================
 
