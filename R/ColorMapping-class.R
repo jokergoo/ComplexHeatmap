@@ -97,15 +97,14 @@ ColorMapping = function(name, colors = NULL, levels = NULL,
 			if(is.null(breaks)) {
 				stop_wrap("You should provide breaks.\n")
 			}
-		
 
-			le1 = grid.pretty(range(breaks))
-			le2 = pretty(breaks, n = 3)
-			if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
-				le = le1
-			} else {
-				le = le2
-			}
+			rg = range(breaks)
+			diff = rg[2] - rg[1]
+			rg[1] = rg[1] + diff*0.05
+			rg[2] = rg[2] - diff*0.05
+
+			le = pretty(rg, n = 3)
+
 		} else {
 			le = breaks
 		}

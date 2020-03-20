@@ -1462,7 +1462,7 @@ make_cluster = function(object, which = c("row", "column")) {
         stop_wrap(qq("Length of `gap` should be 1 or number of @{which} slices."))
     }
     object@matrix_param[[ paste0(which, "_gap") ]] = gap
-    
+
     # adjust title
     title = slot(object, paste0(which, "_title"))
     if(!is.null(split)) {
@@ -1474,9 +1474,9 @@ make_cluster = function(object, which = c("row", "column")) {
                     lt = lapply(x, function(x) x)
                     lt$fmt = title
                     do.call(sprintf, lt)
-                })
+                })[slice_od]
             } else if(grepl("@\\{.+\\}", title)) {
-                title = apply(unique(split), 1, function(x) {
+                title = apply(unique(split[order2, , drop = FALSE]), 1, function(x) {
                     x = x
                     envir = environment()
                     title = get("title")
@@ -1486,12 +1486,12 @@ make_cluster = function(object, which = c("row", "column")) {
                     title = GetoptLong::qq(title, envir = envir)
                     parent.env(envir) = op
                     return(title)
-                })
+                })[slice_od]
             } else if(grepl("\\{.+\\}", title)) {
                 if(!requireNamespace("glue")) {
                     stop_wrap("You need to install glue package.")
                 }
-                title = apply(unique(split), 1, function(x) {
+                title = apply(unique(split[order2, , drop = FALSE]), 1, function(x) {
                     x = x
                     envir = environment()
                     title = get("title")
@@ -1501,7 +1501,7 @@ make_cluster = function(object, which = c("row", "column")) {
                     title = glue::glue(title, envir = calling_env)
                     parent.env(envir) = op
                     return(title)
-                })
+                })[slice_od]
             }
         }
     }
