@@ -961,6 +961,7 @@ anno_type = function(ha) {
 # ha[, 1:2]
 # ha[1:5, c("foo", "sth")]
 "[.HeatmapAnnotation" = function(x, i, j) {
+
 	if(!missing(j)) {
 		if(is.character(j)) {
 			j = which(names(x@anno_list) %in% j)
@@ -1004,7 +1005,6 @@ anno_type = function(ha) {
         x2@gap[length(x2@gap)] = unit(0, "mm")
 
         size(x2) = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
-
     }
     
     extended = unit(c(0, 0, 0, 0), "mm")

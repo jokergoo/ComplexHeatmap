@@ -584,7 +584,6 @@ panel_fun2 = function(index, nm) {
 anno2 = anno_zoom(align_to = subgroup, which = "row", panel_fun = panel_fun2, 
 	gap = unit(1, "cm"), width = unit(3, "cm"), side = "left")
 
-# in infinite loop
 draw(Heatmap(m, right_annotation = rowAnnotation(subgroup = subgroup, foo = anno,
 	show_annotation_name = FALSE), 
 	left_annotation = rowAnnotation(bar = anno2, subgroup = subgroup, show_annotation_name = FALSE),
@@ -595,3 +594,26 @@ draw(Heatmap(m, right_annotation = rowAnnotation(foo = anno),
 	left_annotation = rowAnnotation(bar = anno2),
 	show_row_dend = FALSE,
 	row_split = subgroup))
+
+set.seed(12345)
+mat = matrix(rnorm(30*10), nr = 30)
+row_split = c(rep("a", 10), rep("b", 5), rep("c", 2), rep("d", 3), 
+	          rep("e", 2), letters[10:17])
+row_split = factor(row_split)
+
+panel_fun = function(index, name) {
+	pushViewport(viewport())
+	grid.rect()
+	grid.text(name)
+	popViewport()
+}
+
+anno = anno_zoom(align_to = row_split, which = "row", panel_fun = panel_fun, 
+	size = unit(0.5, "cm"), width = unit(4, "cm"))
+
+# > dev.size()
+# [1] 3.938326 4.502203
+dev.new(width = 3.938326, height = 4.502203)
+draw(Heatmap(mat, right_annotation = rowAnnotation(foo = anno), 
+	row_split = row_split))
+

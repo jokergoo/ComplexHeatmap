@@ -5,6 +5,7 @@ CHANGES in VERSION 2.3.2
 * move scripts in test_not_run/ to tests/ folder
 * `Heatmap()`: `cluster_row_slice`/`cluster_column_slice` set to TRUE
   by default for character matrix and when dendrogram is already provided.
+* `smartAlign2()`: improved the code
 
 ========================
 

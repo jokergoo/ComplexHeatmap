@@ -89,6 +89,9 @@ oncoPrint = function(mat,
 	heatmap_legend_param = list(title = "Alterations"),
 	...) {
 
+	dev.null()
+    on.exit(dev.off2())
+
 	arg_list = as.list(match.call())[-1]
 	arg_names = names(arg_list)
 
