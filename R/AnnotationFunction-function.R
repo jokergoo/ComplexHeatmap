@@ -2017,10 +2017,6 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 	rot = guess_rot(), just = guess_just(), 
 	offset = guess_location(), location = guess_location(),
 	width = NULL, height = NULL) {
-	
-	if(inherits(x, "richtext_grob")) {
-		return(anno_richtext(x, which = which, width = width, height = height))
-	}
 
 	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
@@ -2152,81 +2148,6 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 	anno@subsetable = TRUE
 
 	return(anno)
-}
-
-anno_richtext = function(x, which = c("column", "row"), width = NULL, height = NULL) {
-
-	# ef = function() NULL
-	# if(is.null(.ENV$current_annotation_which)) {
-	# 	which = match.arg(which)[1]
-	# 	dev.null()
-	# 	ef = dev.off2
-	# } else {
-	# 	which = .ENV$current_annotation_which
-	# }
-
-	# on.exit(ef())
-
-	# n = length(x)
-	
-	# if(which == "column") {
-	# 	if(missing(height)) {
-	# 		height = grobHeight(x)
-	# 		height = convertHeight(height, "mm")
-	# 	}
-	# 	if(missing(width)) {
-	# 		width = unit(1, "npc")
-	# 	}
-	# }
-	# if(which == "row") {
-	# 	if(missing(width)) {
-	# 		width = grobWidth(x)
-	# 		width = convertWidth(width, "mm")
-	# 	}
-	# 	if(missing(height)) {
-	# 		height = unit(1, "npc")
-	# 	}
-	# }
-
-	# anno_size = list(width = width, height = height)
-
-	# value = x
-
-	# row_fun = function(index) {
-	# 	n = length(index)
-	# 	gb = value[index]
-	# 	gb = update_xy(gb, y = unit((n - seq_along(index) + 0.5)/n, "native"))
-	# 	grid.draw(gb)
-	# }
-	# column_fun = function(index, k = NULL, N = NULL, vp_name = NULL) {
-	# 	n = length(index)
-	# 	gb = value[index]
-	# 	gb = update_xy(gb, x = unit((seq_along(index) - 0.5)/n, "native"))
-	# 	grid.draw(gb)
-	# }
-
-	# if(which == "row") {
-	# 	fun = row_fun
-	# } else if(which == "column") {
-	# 	fun = column_fun
-	# }
-
-	# anno = AnnotationFunction(
-	# 	fun = fun,
-	# 	fun_name = "anno_richtext",
-	# 	which = which,
-	# 	width = width,
-	# 	height = height,
-	# 	n = n,
-	# 	var_import = list(value),
-	# 	show_name = FALSE
-	# )
-
-	# anno@subset_rule$value = subset_vector
-
-	# anno@subsetable = TRUE
-
-	# return(anno)
 }
 
 # == title

@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.3.3
+
+* support **gridtext** package
+
+========================
+
 CHANGES in VERSION 2.3.2
 
 * `anno_simple()`: fixed a bug when pch are all NA in a slice
@@ -5,7 +11,8 @@ CHANGES in VERSION 2.3.2
 * move scripts in test_not_run/ to tests/ folder
 * `Heatmap()`: `cluster_row_slice`/`cluster_column_slice` set to TRUE
   by default for character matrix and when dendrogram is already provided.
-* `smartAlign2()`: improved the code
+* `smartAlign2()`: improved the code that positions are correctly calculated.
+* row titles are in the correct order if they are set as "template".
 
 ========================
 

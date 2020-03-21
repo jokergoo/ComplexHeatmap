@@ -39,4 +39,3 @@ make_plot(pos1, smartAlign2(pos1, range = range), range)
 
 pos1 = rbind(c(1, 8), c(3, 10))
 make_plot(pos1, smartAlign2(pos1, range = range), range)
-make_plot(pos1, smartAlign2(pos1, range = range, range_fixed = FALSE), range)

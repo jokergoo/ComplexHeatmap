@@ -1,7 +1,25 @@
-library(ComplexHeatmap)
+\name{gt_render}
+\alias{gt_render}
+\title{
+Mark the text for the rendering by gridtext package
+}
+\description{
+Mark the text for the rendering by gridtext package
+}
+\usage{
+gt_render(x, ...)
+}
+\arguments{
 
+  \item{x}{Text labels. The value can be a vector.}
+  \item{...}{Other parameters passed to \code{\link[gridtext]{richtext_grob}}.}
+
+}
+\details{
+Text marked by \code{\link{gt_render}} will be rendered by \code{\link[gridtext]{richtext_grob}} function.
+}
+\examples{
 if(requireNamespace("gridtext")) {
-##### test anno_richtext ####
 mat = matrix(rnorm(100), 10)
 rownames(mat) = letters[1:10]
 ht = Heatmap(mat, 
@@ -26,4 +44,5 @@ ht = rowAnnotation(
 	)) + ht
 draw(ht)
 
+}
 }
