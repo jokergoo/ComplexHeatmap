@@ -156,12 +156,9 @@ construct_dend_segments = function(dend, gp) {
                 env$y0 = c(env$y0, yl[i], height)
                 env$y1 = c(env$y1, height, height)
             }
-        }
 
-        for(i in seq_len(nc)) {
             generate_children_dendrogram_segments(dend[[i]], env)
         }
-        
     }
 
     generate_children_dendrogram_segments(dend, env)
