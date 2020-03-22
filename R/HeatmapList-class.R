@@ -241,6 +241,9 @@ setMethod(f = "add_heatmap",
 # -legend_grid_height this set the value in `ht_opt` and reset back after the plot is done
 # -legend_grid_width  this set the value in `ht_opt` and reset back after the plot is done
 # -legend_border this set the value in `ht_opt` and reset back after the plot is done
+# -legend_gap Gap between legends. The value should be a vector of two units. One for gaps between
+#         vertical legends and one for the horizontal legends. If only one single unit is specified,
+#         the same gap set for the vertical and horizontal legends. 
 # -heatmap_border this set the value in `ht_opt` and reset back after the plot is done
 # -annotation_border  this set the value in `ht_opt` and reset back after the plot is done
 # -fastcluster this set the value in `ht_opt` and reset back after the plot is done
@@ -346,6 +349,7 @@ setMethod(f = "draw",
     legend_grid_height = NULL,
     legend_grid_width = NULL,
     legend_border = NULL,
+    legend_gap = NULL,
     heatmap_border = NULL,
     annotation_border = NULL,
     fastcluster = NULL,
@@ -366,6 +370,7 @@ setMethod(f = "draw",
                     "legend_grid_height",
                     "legend_grid_width",
                     "legend_border",
+                    "legend_gap",
                     "heatmap_border",
                     "annotation_border",
                     "fastcluster",

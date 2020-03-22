@@ -1,6 +1,7 @@
 CHANGES in VERSION 2.3.3
 
 * support **gridtext** package
+* fixed the bug of node stack overflow when there are many identical rows for drawing the dendrogram
 
 ========================
 

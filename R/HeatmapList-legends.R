@@ -410,9 +410,9 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
     } else {
         cm_grob = c(lapply(seq_along(ColorMappingList2), function(i) color_mapping_legend(ColorMappingList2[[i]], param = ColorMappingParamList2[[i]], plot = FALSE, ...)), legend_list)
         if(side %in% c("left", "right")) {
-            pk = packLegend(list = cm_grob, gap = gap, direction = "vertical", max_height = max_height)  
+            pk = packLegend(list = cm_grob, gap = ht_opt$legend_gap[1], direction = "vertical", max_height = max_height)  
         } else {
-            pk = packLegend(list = cm_grob, gap = unit(4, "mm"), direction = "horizontal", max_width = max_width)
+            pk = packLegend(list = cm_grob, gap = ht_opt$legend_gap[2], direction = "horizontal", max_width = max_width)
         }
     }
 

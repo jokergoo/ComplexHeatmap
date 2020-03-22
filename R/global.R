@@ -31,6 +31,9 @@
 # -legend_grid_width set ``grid_width`` in all heatmap legends and annotation legends.
 # -legend_grid_height set ``grid_height`` in all heatmap legends and annotation legends.
 # -legend_border set ``border`` in all heatmap legends and annotation legends.
+# -legend_gap Gap between legends. The value should be a vector of two units. One for gaps between
+#         vertical legends and one for the horizontal legends. If only one single unit is specified,
+#         the same gap set for the vertical and horizontal legends.
 #
 # Following parameters control heatmap annotations:
 #
@@ -101,6 +104,18 @@ ht_opt = setGlobalOptions(
 		.class = "unit"),
 	legend_border = list(
 		.value = NULL),
+	legend_gap = list(
+		.value = unit(c(2, 4), "mm"),
+		.length = 1:2,
+		.class = "unit",
+		.filter = function(x) {
+			if(length(x) == 1) {
+				rep(x, 2)
+			} else {
+				x
+			}
+		}
+	),
 
 	heatmap_border = list(
 		.value = NULL),
