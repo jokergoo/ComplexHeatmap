@@ -3,6 +3,8 @@ CHANGES in VERSION 2.3.3
 * support **gridtext** package
 * fixed the bug of node stack overflow when there are many identical rows for drawing the dendrogram.
 * support to set legend gaps
+* print important messages, e.g. when number of rows are more than 2000, interanlly use_raster 
+  is turned on and the message should be printed to users.
 
 ========================
 
