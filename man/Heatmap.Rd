@@ -88,7 +88,7 @@ Heatmap(matrix, col, name,
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
     
-    use_raster = (nrow(matrix) > 2000 && ncol(matrix) > 10) || (ncol(matrix) > 2000 && nrow(matrix) > 10),
+    use_raster = NULL,
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
     raster_device_param = list(),

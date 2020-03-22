@@ -89,6 +89,7 @@ Draw a list of heatmaps
     legend_grid_height = NULL,
     legend_grid_width = NULL,
     legend_border = NULL,
+    legend_gap = NULL,
     heatmap_border = NULL,
     annotation_border = NULL,
     fastcluster = NULL,
@@ -169,6 +170,7 @@ Draw a list of heatmaps
   \item{legend_grid_height}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{legend_grid_width}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{legend_border}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
+  \item{legend_gap}{Gap between legends. The value should be a vector of two units. One for gaps between vertical legends and one for the horizontal legends. If only one single unit is specified, the same gap set for the vertical and horizontal legends. }
   \item{heatmap_border}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{annotation_border}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{fastcluster}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}

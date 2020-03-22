@@ -284,7 +284,7 @@ Heatmap = function(matrix, col, name,
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
 
-    use_raster = (nrow(matrix) > 2000 && ncol(matrix) > 10) || (ncol(matrix) > 2000 && nrow(matrix) > 10), 
+    use_raster = NULL, 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
     raster_quality = 2,
     raster_device_param = list(),
@@ -874,6 +874,20 @@ Heatmap = function(matrix, col, name,
     if(!is.null(height) && !is.null(heatmap_height)) {
         if(is_abs_unit(height) && is_abs_unit(heatmap_height)) {
             stop_wrap("`heatmap_height` and `height` should not all be the absolute units.")
+        }
+    }
+
+    if(is.null(use_raster)) {
+        if(nrow(matrix) > 2000 && ncol(matrix) > 10) {
+            use_raster = TRUE
+            if(ht_opt$message) {
+                message_wrap("`use_raster` is automatically set to TRUE for a matrix with more than 2000 rows. You can control `use_raster` arugment by explicitly setting TRUE/FALSE to it. Set `ht_opt$message = FALSE` to turn off this message.")
+            }
+        } else if(ncol(matrix) > 2000 && nrow(matrix) > 10) {
+            use_raster = TRUE
+            if(ht_opt$message) {
+                message_wrap("`use_raster` is automatically set to TRUE for a matrix with more than 2000 columns You can control `use_raster` arugment by explicitly setting TRUE/FALSE to it. Set `ht_opt$message = FALSE` to turn off this message.")
+            }
         }
     }
     

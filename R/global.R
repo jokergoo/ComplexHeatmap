@@ -142,6 +142,19 @@ ht_opt = setGlobalOptions(
 			}
 		},
 		.length = 1),
+	message = list(
+		.value = TRUE,
+		.class = "logical",
+		.filter = function(x) {
+			if(is.null(x)) {
+				FALSE
+			} else if(is.na(x)) {
+				FALSE
+			} else {
+				x
+			}
+		},
+		.length = 1),
 	show_vp = FALSE,
 	simple_anno_size = list(
 		.value = unit(5, "mm"),
