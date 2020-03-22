@@ -888,6 +888,8 @@ Heatmap = function(matrix, col, name,
             if(ht_opt$message) {
                 message_wrap("`use_raster` is automatically set to TRUE for a matrix with more than 2000 columns You can control `use_raster` arugment by explicitly setting TRUE/FALSE to it. Set `ht_opt$message = FALSE` to turn off this message.")
             }
+        } else {
+            use_raster = FALSE
         }
     }
     
