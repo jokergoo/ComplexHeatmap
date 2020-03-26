@@ -9,7 +9,7 @@ Barplot Annotation
 \usage{
 anno_barplot(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6,
     gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, axis = TRUE,
-    axis_param = default_axis_param(which), beside = FALSE,
+    axis_param = default_axis_param(which),
     width = NULL, height = NULL, ...)
 }
 \arguments{

@@ -495,7 +495,13 @@ full_comb_code = function(n, complement = FALSE) {
             j = j + 1
         }
     }
-    sort(apply(comb_mat, 2, paste, collapse = ""))
+
+    lt = list(colSums(comb_mat))
+	lt = c(lt, as.list(as.data.frame(t(comb_mat))))
+	lt$decreasing = TRUE
+	od = do.call(order, lt)
+
+    apply(comb_mat[, od, drop = FALSE], 2, paste, collapse = "")
 }
 
 
@@ -874,7 +880,7 @@ subset_by_comb_ind = function(x, ind, margin = 2) {
 
 	class(x) = "matrix"
 	n = nrow(x)
-	if(is.numeric(ind)) {
+	if(is.numeric(ind) || is.logical(ind)) {
 		if(margin == 1) {
 			x2 = x[ind, , drop = FALSE]
 		} else {
@@ -918,7 +924,7 @@ subset_by_set_ind = function(x, ind) {
 
 	ind = unique(ind)
 
-	if(is.numeric(ind)) {
+	if(is.numeric(ind) || is.logical(ind)) {
 		sub_set = set_name(x)[ind]
 		if(is.matrix(env$data)) {
 			param$x = env$data[, sub_set, drop = FALSE]

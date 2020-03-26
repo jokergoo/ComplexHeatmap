@@ -21,6 +21,7 @@ make_comb_mat(..., mode = c("distinct", "intersect", "union"),
   \item{universal_set}{The universal set. If it is set, the size of the complement set of all sets is also calculated. It if is specified, \code{complement_size} is ignored.}
   \item{complement_size}{The size for the complement of all sets. If it is specified, the combination set name will be like "00...".}
   \item{value_fun}{For each combination set, how to calculate the size? If it is a scalar set,  the length of the vector is the size of the set, while if it is a region-based set, (i.e. \code{GRanges} or \code{IRanges} object), the sum of widths of regions in the set is calculated as the size of the set.}
+  \item{set_on_rows}{Used internally.}
 
 }
 \section{Input}{

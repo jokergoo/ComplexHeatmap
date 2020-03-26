@@ -252,14 +252,14 @@ cm2 = make_comb_mat_from_matrix(m, "distinct")
 test_that("test subset method on sets and combination sets", {
 	expect_that(comb_size(cm1[, 1:5]), equals(comb_size(cm1)[1:5]))
 	expect_that(comb_size(cm1[1:5]), equals(comb_size(cm1)[1:5]))
-	expect_that(comb_size(cm1[full_comb_code(3, TRUE)]), equals(c("000" = 0, comb_size(cm1))))
+	expect_that(comb_size(cm1[full_comb_code(3, TRUE)]), equals(c(comb_size(cm1), "000" = 0)))
 
 	cm1_2sets = make_comb_mat_from_list(lt[1:2], "distinct")
 	expect_that(comb_size(cm1[c("a", "b"), ]), equals(comb_size(cm1_2sets)))
 
 	expect_that(comb_size(cm2[, 1:5]), equals(comb_size(cm2)[1:5]))
 	expect_that(comb_size(cm2[1:5]), equals(comb_size(cm2)[1:5]))
-	expect_that(comb_size(cm2[full_comb_code(3, TRUE)]), equals(c("000" = 0, comb_size(cm2))))
+	expect_that(comb_size(cm2[full_comb_code(3, TRUE)]), equals(c(comb_size(cm2), "000" = 0)))
 
 	cm2_2sets = make_comb_mat_from_matrix(m[, 1:2], "distinct")
 	expect_that(comb_size(cm2[c("a", "b"), ]), equals(comb_size(cm2_2sets)))
