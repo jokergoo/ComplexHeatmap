@@ -154,7 +154,7 @@ densityHeatmap = function(data,
 	if(inherits(col, "function")) {
 		col = col(mat)
 	} else {
-		col = colorRamp2(seq(0, max(mat, na.rm = TRUE), length = length(col)), col, space = color_space)
+		col = colorRamp2(seq(0, quantile(mat, 0.99, na.rm = TRUE), length = length(col)), col, space = color_space)
 	}
 
 	bb = grid.pretty(c(min_x, max_x))
