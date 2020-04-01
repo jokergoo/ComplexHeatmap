@@ -8,6 +8,7 @@ CHANGES in VERSION 2.3.3
   is turned on and the message should be printed to users.
 * UpSet plots: optimize the processing of many sets (current solution consumes huge memory)
 * UpSet plots: the "intersect" and "union" modes are currectly calculated.
+* `anno_block()`: add `show_name` argument.
 
 ========================
 

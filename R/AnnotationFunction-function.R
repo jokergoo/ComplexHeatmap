@@ -3210,6 +3210,7 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 # -which Is it a row annotation or a column annotation?
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+# -show_name Whether show annotatio name.
 #
 # == details
 # The block annotation is used for representing slices. The length of all arguments should be 1 or the number of slices.
@@ -3229,7 +3230,7 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 #         labels = c("group1", "group2", "group3"), labels_gp = gpar(col = "white"))),
 #     row_km = 3)
 anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot = ifelse(which == "row", 90, 0),
-	which = c("column", "row"), width = NULL, height = NULL) {
+	which = c("column", "row"), width = NULL, height = NULL, show_name = FALSE) {
 
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
@@ -3272,7 +3273,7 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 		subsetable = TRUE,
 		height = anno_size$height,
 		width = anno_size$width,
-		show_name = FALSE
+		show_name = show_name
 	)
 	return(anno) 
 }

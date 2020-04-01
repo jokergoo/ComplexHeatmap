@@ -8,7 +8,7 @@ Block annotation
 }
 \usage{
 anno_block(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot = ifelse(which == "row", 90, 0),
-    which = c("column", "row"), width = NULL, height = NULL)
+    which = c("column", "row"), width = NULL, height = NULL, show_name = FALSE)
 }
 \arguments{
 
@@ -19,6 +19,7 @@ anno_block(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot = ifelse(w
   \item{which}{Is it a row annotation or a column annotation?}
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
   \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
+  \item{show_name}{Whether show annotatio name.}
 
 }
 \details{
