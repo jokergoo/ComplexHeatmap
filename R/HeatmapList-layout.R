@@ -309,7 +309,7 @@ setMethod(f = "make_layout",
             if(verbose) qqcat("set clustering_method_rows to main heatmap\n")
         }
         if(!is.null(row_dend_width)) {
-            if(row_dend_width[[1]] == 0) {
+            if(unclass(row_dend_width)[[1]] == 0) {
                 object@ht_list[[i_main]]@row_dend_param$width = unit(0, "mm")
             } else {
                 object@ht_list[[i_main]]@row_dend_param$width = row_dend_width + ht_opt$DENDROGRAM_PADDING  # append the gap
@@ -455,7 +455,7 @@ setMethod(f = "make_layout",
             if(verbose) qqcat("set clustering_method_columns to main heatmap\n")
         }
         if(!is.null(column_dend_width)) {
-            if(column_dend_width[[1]] == 0) {
+            if(unclass(column_dend_width)[[1]] == 0) {
                 object@ht_list[[i_main]]@column_dend_param$width = unit(0, "mm")
             } else {
                 object@ht_list[[i_main]]@column_dend_param$width = column_dend_width + ht_opt$DENDROGRAM_PADDING  # append the gap
