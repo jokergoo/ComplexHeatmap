@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.3.4
+
+* add `alter_graphic()` to automatically generate alteration graphic functions.
+
+========================
+
 CHANGES in VERSION 2.3.3
 
 * support **gridtext** package

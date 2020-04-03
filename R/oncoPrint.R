@@ -11,6 +11,7 @@
 # -get_type If different alterations are encoded in the matrix as complex strings, this self-defined function
 #           determines how to extract them. It only works when ``mat`` is a matrix. The default value is `default_get_type`.
 # -alter_fun A single function or a list of functions which defines how to add graphics for different alterations.
+#      You can use `alter_graphic` to automatically generate for rectangles and points.
 # -alter_fun_is_vectorized Whether ``alter_fun`` is implemented vectorized. Internally the function will guess.
 # -col A vector of color for which names correspond to alteration types.
 # -top_annotation Annotation put on top of the oncoPrint. By default it is barplot which shows the number of genes with a certain alteration in each sample.
@@ -488,6 +489,68 @@ oncoPrint = function(mat,
 	ht@heatmap_param$oncoprint_env = environment()
 
 	return(ht)
+}
+
+# == title
+# Automatically generate alter_fun
+#
+# == param
+# -graphic Graphic to draw.
+# -width Relative width of the rectangle.
+# -height Relative height of the rectangle.
+# -horiz_margin Horizontal margin. E.g. if you want 1mm margin on top and 1mm margin
+#        at bottom of the rectangle, set this value to ``unit(1, 'mm')`.
+# -vertical_margin Vertical margin.
+# -fill Filled color.
+# -col Border color.
+# -pch Pch for points
+# -... Pass to `grid::gpar`
+#
+# == details
+# This function aims to simplify the definition of functions in ``alter_fun``. Now it only
+# supports rectangles and points.
+#
+# == example
+# mat = read.table(textConnection(
+# "s1,s2,s3
+# g1,snv;indel,snv,indel
+# g2,,snv;indel,snv
+# g3,snv,,indel;snv"), row.names = 1, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+# mat = as.matrix(mat)
+# col = c(snv = "red", indel = "blue")
+#
+# oncoPrint(mat, 
+# 	alter_fun = list(
+# 		snv = alter_graphic("rect", width = 0.9, height = 0.9, fill = col["snv"]),
+# 		indel = alter_graphic("rect", width = 0.9, height = 0.9, fill = col["indel"])
+# 	), col = col)
+#
+alter_graphic = function(graphic = c("rect", "point"),
+	width = 1, height = 1, 
+	vertical_margin = unit(0, "mm"), horiz_margin = unit(0, "mm"),
+	fill = "red", col = NA, pch = 16, ...) {
+
+	graphic = match.arg(graphic)[1]
+
+	if(graphic == "rect") {
+		if(!is.numeric(width)) {
+			stop_wrap("`width` should be nummeric.")
+		}
+		if(!is.numeric(height)) {
+			stop_wrap("`height` should be nummeric.")
+		}
+		fun = function(x, y, w, h) {
+			w = w*width
+			h = h*height
+			grid.rect(x, y, w*width - horiz_margin*2, h*height - vertical_margin*2,
+				gp = gpar(fill = fill, col = col, ...))
+		}
+	} else if(graphc == "point") {
+		fun = function(x, y, w, h) {
+			grid.points(x, y, pch = pch, gp = gpar(fill = fill, col = col, ...))
+		}
+	}
+	return(fun)
 }
 
 ONCOPRINT_ENV = new.env()
