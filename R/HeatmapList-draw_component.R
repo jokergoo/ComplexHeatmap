@@ -362,7 +362,7 @@ setMethod(f = "adjust_heatmap_list",
                         u = unit.c(u, ht@top_annotation@extended[2])
                     }
                     if(!is.null(ht@bottom_annotation)) {
-                        u = unit.c(u, ht@right_annotation@extended[2])
+                        u = unit.c(u, ht@bottom_annotation@extended[2])
                     }
                     u
                 } else {
