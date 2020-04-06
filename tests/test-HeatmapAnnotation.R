@@ -249,3 +249,24 @@ h2 <- HeatmapAnnotation("Subtype" = c("Normal","Normal", "Basal"),
 ht_list = Heatmap(x,top_annotation = h1) + Heatmap(x,top_annotation = h2)
 draw(ht_list)
 
+
+### test annotation_label
+ha = HeatmapAnnotation(foo = 1:10, bar = letters[1:10],
+	annotation_label = c("anno1", "anno2"))
+draw(ha, test = TRUE)
+
+ha = HeatmapAnnotation(foo = 1:10, bar = letters[1:10],
+	annotation_label = list(foo = "anno1"))
+draw(ha, test = TRUE)
+
+
+ha = HeatmapAnnotation(foo = 1:10, bar = letters[1:10],
+	annotation_label = list(
+		foo = gt_render("foo", gp = gpar(box_fill = "red"))))
+draw(ha, test = TRUE)
+
+ha = HeatmapAnnotation(foo = 1:10, bar = letters[1:10],
+	annotation_label = list(
+		foo = gt_render("foo", gp = gpar(box_fill = "red")),
+		bar = gt_render("bar", gp = gpar(box_fill = "blue"))))
+draw(ha, test = TRUE)

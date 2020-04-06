@@ -8,6 +8,7 @@ Constructor Method for SingleAnnotation Class
 }
 \usage{
 SingleAnnotation(name, value, col, fun,
+    label = NULL,
     na_col = "grey",
     which = c("column", "row"),
     show_legend = TRUE,
@@ -28,6 +29,7 @@ SingleAnnotation(name, value, col, fun,
   \item{value}{A vector or a matrix of discrete or continuous values.}
   \item{col}{Colors corresponding to \code{value}. If the mapping is discrete, the value of \code{col} should be a named vector; If the mapping is continuous, the value of \code{col} should be  a color mapping function.}
   \item{fun}{A user-defined function to add annotation graphics. The argument of this function should be at least  a vector of index that corresponds to rows or columns. Normally the function should be  constructed by \code{\link{AnnotationFunction}} if you want the annotation supports splitting.  See **Details** for more explanation.}
+  \item{label}{Label for the annotation. By default is the annotation name.}
   \item{na_col}{Color for \code{NA} values in the simple annotations.}
   \item{which}{Whether the annotation is a row annotation or a column annotation?}
   \item{show_legend}{If it is a simple annotation, whether show legend in the final heatmap?}

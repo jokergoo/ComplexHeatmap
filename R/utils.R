@@ -627,6 +627,44 @@ recycle_param = function(x, all_names, default, as.list = FALSE) {
     }
 }
 
+# recycle_list(list(a = 1), "a")
+# recycle_list(1, c("a", "b"))
+# recycle_list(list(a = 1), c("a", "b"), 0)
+recycle_list = function(x, all_names, default = NULL) {
+    n = length(all_names)
+    if(is.null(x)) {
+        lt = rep(list(default), n)
+        names(lt) = all_names
+        return(lt)
+    }
+    if(length(x) == 1 && !is.list(x) && n == 1) {
+        lt = list(x)
+        names(lt) = all_names
+        return(lt)
+    }
+    if(length(x) == 1 && !is.list(x)) {
+        lt = rep(list(x), n)
+        names(lt) = all_names
+        return(lt)
+    }
+    if(is.list(x)) {
+        lt = rep(list(default), n)
+        names(lt) = all_names
+        for(nm in names(x)) {
+            lt[[nm]] = x[[nm]]
+        }
+        return(lt)
+    }
+    if(length(x) == n) {
+        lt = lapply(x, function(y) y)
+        names(lt) = all_names
+        return(lt)
+    }
+
+    stop_wrap("wrong input data type.")
+
+}
+
 # == title
 # Convert XY in a Parent Viewport
 #

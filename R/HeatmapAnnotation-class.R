@@ -59,6 +59,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -gap Gap between annotations. It can be a single value or a vector of `grid::unit` objects.
 # -show_annotation_name Whether show annotation names? For column annotation, annotation names are drawn either on the left
 #   or the right, and for row annotations, names are draw either on top or at the bottom. The value can be a vector.
+# -annotation_label Labels for the annotations. By default it is the same as individual annotation names.
 # -annotation_name_gp Graphic parameters for anntation names. Graphic paramters can be vectors.
 # -annotation_name_offset Offset to the annotation names, a `grid::unit` object. The value can be a vector.
 # -annotation_name_side Side of the annotation names.
@@ -102,6 +103,7 @@ HeatmapAnnotation = function(...,
 	gap = unit(1, "points"),
 	
 	show_annotation_name = TRUE,
+	annotation_label = NULL,
 	annotation_name_gp = gpar(),
 	annotation_name_offset = NULL,
 	annotation_name_side = ifelse(which == "column", "right", "bottom"),
@@ -266,6 +268,7 @@ HeatmapAnnotation = function(...,
     }
     border = recycle_param(border, an, FALSE)
     annotation_name_gp = recycle_gp(annotation_name_gp, n_total_anno)
+    annotation_label = recycle_list(annotation_label, an, NULL)
 
     if(!missing(col)) {
     	if(is.null(names(col))) {
@@ -310,6 +313,7 @@ HeatmapAnnotation = function(...,
 
 		i_anno = i_anno + 1
 		arg_list = list(name = ag, which = which,
+				label = annotation_label[[i_anno]],
 				show_name = show_annotation_name[i_anno], 
 				name_gp = subset_gp(annotation_name_gp, i_anno), 
 	        	name_offset = annotation_name_offset[[i_anno]], 

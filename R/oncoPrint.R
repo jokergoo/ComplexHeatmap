@@ -499,7 +499,7 @@ oncoPrint = function(mat,
 # -width Relative width of the rectangle.
 # -height Relative height of the rectangle.
 # -horiz_margin Horizontal margin. E.g. if you want 1mm margin on top and 1mm margin
-#        at bottom of the rectangle, set this value to ``unit(1, 'mm')`.
+#        at bottom of the rectangle, set this value to ``unit(1, 'mm')``.
 # -vertical_margin Vertical margin.
 # -fill Filled color.
 # -col Border color.
@@ -527,7 +527,7 @@ oncoPrint = function(mat,
 #
 alter_graphic = function(graphic = c("rect", "point"),
 	width = 1, height = 1, 
-	vertical_margin = unit(0, "mm"), horiz_margin = unit(0, "mm"),
+	horiz_margin = unit(1, "pt"), vertical_margin = unit(1, "pt"),
 	fill = "red", col = NA, pch = 16, ...) {
 
 	graphic = match.arg(graphic)[1]
@@ -539,13 +539,23 @@ alter_graphic = function(graphic = c("rect", "point"),
 		if(!is.numeric(height)) {
 			stop_wrap("`height` should be nummeric.")
 		}
+		if(width != 1) {
+			if(missing(horiz_margin)) {
+				horiz_margin = unit(0, "pt")
+			}
+		}
+		if(height != 1) {
+			if(missing(vertical_margin)) {
+				vertical_margin = unit(0, "pt")
+			}
+		}
 		fun = function(x, y, w, h) {
 			w = w*width
 			h = h*height
-			grid.rect(x, y, w*width - horiz_margin*2, h*height - vertical_margin*2,
+			grid.rect(x, y, w - horiz_margin*2, h - vertical_margin*2,
 				gp = gpar(fill = fill, col = col, ...))
 		}
-	} else if(graphc == "point") {
+	} else if(graphic == "point") {
 		fun = function(x, y, w, h) {
 			grid.points(x, y, pch = pch, gp = gpar(fill = fill, col = col, ...))
 		}

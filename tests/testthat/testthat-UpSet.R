@@ -48,8 +48,8 @@ test_that("test default make_comb_mat", {
 
 	m1 = make_comb_mat(lt, universal_set = letters)
 	m2 = make_comb_mat(list_to_matrix(lt, universal_set = letters))
-	attr(m1, "env") = NULL
-	attr(m2, "env") = NULL
+	attr(m1, "data") = NULL
+	attr(m2, "data") = NULL
 	attr(m1, "param") = NULL
 	attr(m2, "param") = NULL
 	expect_that(m1, equals(m2))
@@ -240,6 +240,42 @@ test_that("test default make_comb_mat with GRanges", {
 })
 
 
+lt = list(
+	a = c("h", "t", "j", "u", "w"),
+	b = c("b", "n", "v", "m", "k", "u", "j", "w", "x", "z"),
+	c = c("x", "g", "b", "h", "u", "s", "n", "m", "r", "l", "q", "i", "o", "d", "z")
+)
+test_that("test with an empty set", {
+	lt$d = character(0)
+	m = list_to_matrix(lt)
+	expect_that(ncol(m), equals(4))
+
+	lt$d = NULL
+	lt = c(lt, list(d = NULL))
+	m = list_to_matrix(lt)
+	expect_that(ncol(m), equals(4))
+
+	lt$d = character(0)
+	cm = make_comb_mat(lt)
+	expect_that(unname(set_size(cm)["d"]), equals(0))
+
+	lt$d = NULL
+	lt = c(lt, list(d = NULL))
+	cm = make_comb_mat(lt)
+	expect_that(unname(set_size(cm)["d"]), equals(0))
+
+	lt$d = character(0)
+	cm = make_comb_mat_from_list(lt, "distinct")
+	expect_that(unname(set_size(cm)["d"]), equals(0))
+
+	lt$d = NULL
+	lt = c(lt, list(d = NULL))
+	cm = make_comb_mat_from_list(lt, "distinct")
+	expect_that(unname(set_size(cm)["d"]), equals(0))
+
+})
+
+
 ### test subset methods
 lt = list(
 	a = c("h", "t", "j", "u", "w"),
@@ -264,6 +300,81 @@ test_that("test subset method on sets and combination sets", {
 	cm2_2sets = make_comb_mat_from_matrix(m[, 1:2], "distinct")
 	expect_that(comb_size(cm2[c("a", "b"), ]), equals(comb_size(cm2_2sets)))
 
+
+	expect_that(length(comb_size(cm1[, 1:5][3:1, ])), equals(5))
 })
 
 
+lt = list(
+	a = c("a", "b", "c", "d", "e"),
+	b = c("a", "c"),
+	c = c("a", "b"),
+	d = NULL
+)
+cm = make_comb_mat(lt)
+
+test_that("test subset method by set, reorder", {
+	expect_that(set_name(cm[4:1, ]), equals(c("d", "c", "b", "a")))
+	expect_that(set_name(cm[c("d", "c", "b", "a"), ]), equals(c("d", "c", "b", "a")))
+
+	expect_that(set_name(t(cm)[, 4:1]), equals(c("d", "c", "b", "a")))
+	expect_that(set_name(t(cm)[, c("d", "c", "b", "a")]), equals(c("d", "c", "b", "a")))
+})
+
+test_that("test subset method by set, remove empty sets", {
+	expect_that(set_name(cm[1:3, ]), equals(c("a", "b", "c")))
+	expect_that(set_name(cm[3:1, ]), equals(c("c", "b", "a")))
+	expect_that(set_name(cm[c("a", "b", "c"), ]), equals(c("a", "b", "c")))
+	expect_that(set_name(cm[c("c", "b", "a"), ]), equals(c("c", "b", "a")))
+
+	expect_that(set_name(t(cm)[, 1:3]), equals(c("a", "b", "c")))
+	expect_that(set_name(t(cm)[, 3:1]), equals(c("c", "b", "a")))
+	expect_that(set_name(t(cm)[, c("a", "b", "c")]), equals(c("a", "b", "c")))
+	expect_that(set_name(t(cm)[, c("c", "b", "a")]), equals(c("c", "b", "a")))
+})
+
+test_that("test subset method by set, add new empty sets", {
+	expect_that(set_name(cm[c("a", "b", "c", "d", "e"), ]), equals(c("a", "b", "c", "d", "e")))
+	expect_that(set_name(cm[c("e", "d", "c", "b", "a"), ]), equals(c("e", "d", "c", "b", "a")))
+	expect_that(set_name(cm[c("a", "b", "c", "e"), ]), equals(c("a", "b", "c", "e")))
+	expect_that(set_name(cm[c("e", "c", "b", "a"), ]), equals(c("e", "c", "b", "a")))
+
+	expect_that(set_name(t(cm)[, c("a", "b", "c", "d", "e")]), equals(c("a", "b", "c", "d", "e")))
+	expect_that(set_name(t(cm)[, c("e", "d", "c", "b", "a")]), equals(c("e", "d", "c", "b", "a")))
+	expect_that(set_name(t(cm)[, c("a", "b", "c", "e")]), equals(c("a", "b", "c", "e")))
+	expect_that(set_name(t(cm)[, c("e", "c", "b", "a")]), equals(c("e", "c", "b", "a")))
+})
+
+test_that("test subset method by set, only a part of non-empty sets", {
+	cm2 = make_comb_mat(lt[c("a", "b")])
+	expect_that(comb_size(cm[c("a", "b"), ]), equals(comb_size(cm2)))
+
+	lt2 = lt
+	lt2$e = character(0)
+	cm2 = make_comb_mat(lt2[c("a", "b", "e")])
+	expect_that(comb_size(cm[c("a", "b", "e"), ]), equals(comb_size(cm2)))
+
+})
+
+test_that("test subset method both by combination sets and sets", {
+	cm2 = cm[c("c", "b", "a"), 3:1]
+	expect_that(set_name(cm2), equals(c("c", "b", "a")))
+	expect_that(unname(comb_size(cm2)), equals(c(1, 1, 1)))
+
+	cm2 = cm[c("c", "b", "a", "e"), 3:1]
+	expect_that(set_name(cm2), equals(c("c", "b", "a", "e")))
+	expect_that(unname(comb_size(cm2)), equals(c(1, 1, 1)))
+
+	expect_error(cm[c("a", "b", "e"), 1:3])
+
+	cm2 = t(cm)[3:1, c("c", "b", "a")]
+	expect_that(set_name(cm2), equals(c("c", "b", "a")))
+	expect_that(unname(comb_size(cm2)), equals(c(1, 1, 1)))
+
+	cm2 = cm[c("c", "b", "a", "e"), 3:1]
+	expect_that(set_name(cm2), equals(c("c", "b", "a", "e")))
+	expect_that(unname(comb_size(cm2)), equals(c(1, 1, 1)))
+
+	expect_error(t(cm)[1:3, c("a", "b", "e")])
+
+})

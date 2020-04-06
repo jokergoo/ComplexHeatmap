@@ -17,6 +17,7 @@ HeatmapAnnotation(...,
     gap = unit(1, "points"),
     
     show_annotation_name = TRUE,
+    annotation_label = NULL,
     annotation_name_gp = gpar(),
     annotation_name_offset = NULL,
     annotation_name_side = ifelse(which == "column", "right", "bottom"),
@@ -43,6 +44,7 @@ HeatmapAnnotation(...,
   \item{border}{border of single annotations.}
   \item{gap}{Gap between annotations. It can be a single value or a vector of \code{\link[grid]{unit}} objects.}
   \item{show_annotation_name}{Whether show annotation names? For column annotation, annotation names are drawn either on the left or the right, and for row annotations, names are draw either on top or at the bottom. The value can be a vector.}
+  \item{annotation_label}{Labels for the annotations. By default it is the same as individual annotation names.}
   \item{annotation_name_gp}{Graphic parameters for anntation names. Graphic paramters can be vectors.}
   \item{annotation_name_offset}{Offset to the annotation names, a \code{\link[grid]{unit}} object. The value can be a vector.}
   \item{annotation_name_side}{Side of the annotation names.}

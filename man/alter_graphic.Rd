@@ -9,7 +9,7 @@ Automatically generate alter_fun
 \usage{
 alter_graphic(graphic = c("rect", "point"),
     width = 1, height = 1,
-    vertical_margin = unit(0, "mm"), horiz_margin = unit(0, "mm"),
+    horiz_margin = unit(1, "pt"), vertical_margin = unit(1, "pt"),
     fill = "red", col = NA, pch = 16, ...)
 }
 \arguments{
@@ -17,7 +17,7 @@ alter_graphic(graphic = c("rect", "point"),
   \item{graphic}{Graphic to draw.}
   \item{width}{Relative width of the rectangle.}
   \item{height}{Relative height of the rectangle.}
-  \item{horiz_margin}{Horizontal margin. E.g. if you want 1mm margin on top and 1mm margin at bottom of the rectangle, set this value to \code{\link{}}unit(1, 'mm')`.}
+  \item{horiz_margin}{Horizontal margin. E.g. if you want 1mm margin on top and 1mm margin at bottom of the rectangle, set this value to \code{unit(1, 'mm')}.}
   \item{vertical_margin}{Vertical margin.}
   \item{fill}{Filled color.}
   \item{col}{Border color.}

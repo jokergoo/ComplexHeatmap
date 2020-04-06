@@ -23,6 +23,7 @@
 SingleAnnotation = setClass("SingleAnnotation",
 	slots = list(
 		name = "character",
+        label = "ANY",
 		color_mapping = "ANY",  # a ColorMapping object or NULL
 		legend_param = "ANY", # a list or NULL, it contains parameters for color_mapping_legend
 		fun = "ANY",
@@ -61,6 +62,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 #      a vector of index that corresponds to rows or columns. Normally the function should be 
 #      constructed by `AnnotationFunction` if you want the annotation supports splitting. 
 #      See **Details** for more explanation.
+# -label Label for the annotation. By default is the annotation name.
 # -na_col Color for ``NA`` values in the simple annotations.
 # -which Whether the annotation is a row annotation or a column annotation?
 # -show_legend If it is a simple annotation, whether show legend in the final heatmap?
@@ -141,6 +143,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # ha = SingleAnnotation(fun = fun, height = unit(4, "cm"))
 # draw(ha, index = 1:10, test = "self-defined function")
 SingleAnnotation = function(name, value, col, fun, 
+    label = NULL,
 	na_col = "grey",
 	which = c("column", "row"), 
 	show_legend = TRUE, 
@@ -187,6 +190,10 @@ SingleAnnotation = function(name, value, col, fun,
         increase_annotation_index()
     }
     .Object@name = name
+    if(is.null(label)) {
+        label = name
+    }
+    .Object@label = label
 
     if(!is.null(name_rot)) {
         if(!name_rot %in% c(0, 90, 180, 270)) {
@@ -255,7 +262,7 @@ SingleAnnotation = function(name, value, col, fun,
     }
     if(is.null(name_rot)) name_rot = ifelse(which == "column", 0, 90)
 
-    anno_name = name
+    anno_name = label
     if(which == "column") {
         if(verbose) qqcat("@{name}: it is a column annotation\n")
     	if(!name_side %in% c("left", "right")) {
@@ -641,15 +648,15 @@ setMethod(f = "draw",
                     rot = object@name_param$rot, gp = object@name_param$gp)
             } else {
                 if(object@which == "column") {
-                    grid.text(object@name, x = object@name_param$x[1], y = unit(0.5, "npc"), just = object@name_param$just, 
+                    grid.text(object@label, x = object@name_param$x[1], y = unit(0.5, "npc"), just = object@name_param$just, 
                         rot = object@name_param$rot, gp = object@name_param$gp)
                 } else {
-                    grid.text(object@name, x = unit(0.5, "npc"), y = object@name_param$y[1], just = object@name_param$just, 
+                    grid.text(object@label, x = unit(0.5, "npc"), y = object@name_param$y[1], just = object@name_param$just, 
                         rot = object@name_param$rot, gp = object@name_param$gp)
                 }
             }
         } else {
-    		grid.text(object@name, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
+    		grid.text(object@label, x = object@name_param$x, y = object@name_param$y, just = object@name_param$just, 
     			rot = object@name_param$rot, gp = object@name_param$gp)
         }
     }

@@ -61,3 +61,8 @@ draw(ha, index = c(1, 4, 2, 6), k = 1, n = 2, test = "self-defined function, k =
 draw(ha, index = c(1, 4, 2, 6), k = 2, n = 2, test = "self-defined function, k = 2, n = 2")
 
 
+# test gridtext
+ha = SingleAnnotation(value = 1:10, label = gt_render("foo", r = unit(2, "pt")), name_gp = gpar(box_fill = "red"))
+draw(ha, test = "single column annotation")
+
+

@@ -61,10 +61,6 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 		}
 	}
 
-	# universal_set has higher priority than complement_size
-	x0 = x
-	x = x[rowSums(x) > 0, , drop = FALSE]
-
 	if(!is.null(universal_set)) {
 
     	x = x[intersect(rownames(x), universal_set), , drop = FALSE]
@@ -73,6 +69,10 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
     	}
     	complement_size = length(setdiff(universal_set, rownames(x)))
     }
+
+    # universal_set has higher priority than complement_size
+	x0 = x
+	x = x[rowSums(x) > 0, , drop = FALSE]
 	
 	if(mode == "distinct") {
 		comb_size = table(apply(x, 1, binaryToInt))		
@@ -104,9 +104,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	attr(comb_mat, "set_size") = unname(set_size)
 	attr(comb_mat, "comb_size") = comb_size
 	
-	env = new.env(parent = emptyenv())
-	env$data = x0
-	attr(comb_mat, "env") = env
+	attr(comb_mat, "data") = x0
 
 	param = list(mode = mode, 
 		universal_set = universal_set, 
@@ -282,9 +280,7 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
 	attr(comb_mat, "set_size") = unname(set_size)
 	attr(comb_mat, "comb_size") = comb_size
 	
-	env = new.env(parent = emptyenv())
-	env$data = lt
-	attr(comb_mat, "env") = env
+	attr(comb_mat, "data") = lt
 
 	param = list(mode = mode, 
 		value_fun = value_fun,
@@ -439,6 +435,10 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 
 	lt = list(...)
 
+	if("remove_complement_set" %in% names(lt)) {
+		stop_wrap("Argument `remove_complement_set` has been removed.")
+	}
+
 	mode = match.arg(mode)[1]
 	if(length(lt) == 1) {
 		lt = lt[[1]]
@@ -556,6 +556,25 @@ set_name = function(m) {
 # set_size(m)
 set_size = function(m) {
 	structure(attr(m, "set_size"), names = set_name(m))
+}
+
+# == title
+# Complement Set Size
+#
+# == param
+# -m A combination matrix returned by `make_comb_mat`.
+#
+# == value
+# If there is no complement set, it returns zero.
+#
+complement_size = function(m) {
+	sz = comb_size(m)
+	l = grepl("^0+$", names(sz))
+	if(any(l)) {
+		return(unname(sz[l]))
+	} else {
+		return(0)
+	}
 }
 
 # == title
@@ -703,7 +722,7 @@ extract_comb = function(m, comb_name) {
 
 	query = as.numeric(strsplit(comb_name, "")[[1]])
 
-	env = attr(m, "env")
+	data = attr(m, "data")
 	param = attr(m, "param")
 	universal_set = param$universal_set
 	mode = param$mode
@@ -712,8 +731,8 @@ extract_comb = function(m, comb_name) {
 		grepl("^0+$", comb_name)
 	}
 
-	if(is.matrix(env$data)) {
-		x = env$data
+	if(is.matrix(data)) {
+		x = data
 		if(!is.null(universal_set)) {
 			if(is_complement_set(comb_name)) {
 				return(setdiff(universal_set, rownames(x)))
@@ -742,8 +761,8 @@ extract_comb = function(m, comb_name) {
 		} else {
 			return(rn[l])
 		}
-	} else if(is.list(env$data)) {
-		lt = env$data
+	} else if(is.list(data)) {
+		lt = data
 
 		if(inherits(lt[[1]], "GRanges")) {
 	    	union = getFromNamespace("union", ns = "BiocGenerics")
@@ -854,29 +873,51 @@ t.comb_mat = function(x) {
 		} else if(missing(i)) {
 			x2 = subset_by_comb_ind(x, j, 2)
 		} else if(missing(j)) {
-			x2 = subset_by_set_ind(x, i)
+			x2 = subset_by_set_ind(x, i, 1)
 		} else {
-			stop_wrap("The `i` and `j` indices should be specified separated, e.g., x[i, ][, j]")
+			if(can_both_subset(x, i)) {
+				x2 = subset_by_comb_ind(x, j, 2)
+				x2 = subset_by_set_ind(x2, i, 1)
+			} else {
+				stop_wrap("Cannot apply subsetting on combination sets and sets simultaneously.")
+			}
 		}
 	} else {
 		if(nargs() == 2) {
 			x2 = subset_by_comb_ind(x, i, 1)
 		} else if(missing(i)) {
-			x2 = subset_by_set_ind(x, j)
+			x2 = subset_by_set_ind(x, j, 2)
 		} else if(missing(j)) {
 			x2 = subset_by_comb_ind(x, i, 1)
 		} else {
-			stop_wrap("The `i` and `j` indices should be specified separated, e.g., x[i, ][, j]")
+			if(can_both_subset(x, j)) {
+				x2 = subset_by_comb_ind(x, i, 1)
+				x2 = subset_by_set_ind(x2, j, 2)
+			} else {
+				stop_wrap("Cannot apply subsetting on combination sets and sets simultaneously.")
+			}
 		}
 	}
 
 	return(x2)
 }
 
+can_both_subset = function(x, set_selected) {
+	set_name = set_name(x)
+	set_size = set_size(x)
+	if(is.numeric(set_selected)) set_selected = set_name[set_selected]
+
+	non_empty_set = set_name[set_size > 0]
+
+	length(setdiff(non_empty_set, set_selected)) == 0
+}
+
 # when comb_set changes, set does not need to change
+# it should also allow new empty comb sets
 subset_by_comb_ind = function(x, ind, margin = 2) {
 
 	comb_size = comb_size(x)
+	set_size = set_size(x)
 
 	class(x) = "matrix"
 	n = nrow(x)
@@ -894,14 +935,17 @@ subset_by_comb_ind = function(x, ind, margin = 2) {
 		}
 		code = strsplit(ind, "")
 		if(any(sapply(code, length) != n)) {
-			stop_wrap("code index has no overlap to the available code.")
+			stop_wrap(qq("code should have @{n} digits."))
 		}
 		# construct a new comb_mat
 		if(margin == 1) {
 			x2 = do.call(rbind, lapply(code, as.integer))
+			colnames(x2) = names(set_size)
 		} else {
 			x2 = do.call(cbind, lapply(code, as.integer))
+			rownames(x2) = names(set_size)
 		}
+
 		comb_size2 = comb_size[ind]
 		comb_size2[is.na(comb_size2)] = 0
 		comb_size = unname(comb_size2)
@@ -911,66 +955,151 @@ subset_by_comb_ind = function(x, ind, margin = 2) {
 
 	attr(x2, "set_size") = attr(x, "set_size")
 	attr(x2, "comb_size") = comb_size
-	attr(x2, "env") = attr(x, "env")
+	attr(x2, "data") = attr(x, "data")
 	attr(x2, "param") = attr(x, "param")
 	class(x2) = c("comb_mat", "matrix")
 	return(x2)
 }
 
-# when set changes, comb set and comb_size should also be changed
-subset_by_set_ind = function(x, ind) {
-	env = attr(x, "env")
+# following scenarios do not need re run make_comb_mat:
+# 1. add new empty sets
+# 2. reorder
+# 3. remove empty sets
+subset_by_set_ind = function(x, ind, margin = 1) {
+	
+	data = attr(x, "data")
 	param = attr(x, "param")
+	class(x) = "matrix"
+
+	if(is.logical(ind)) ind = which(ind)
 
 	ind = unique(ind)
 
-	if(is.numeric(ind) || is.logical(ind)) {
-		sub_set = set_name(x)[ind]
-		if(is.matrix(env$data)) {
-			param$x = env$data[, sub_set, drop = FALSE]
+	set_size = set_size(x)
+	set_name = names(set_size)
+	n = length(set_size)
+	empty_set = set_name[set_size == 0]
+	non_empty_set = set_name[set_size > 0]
+	which_empty_set = which(set_size == 0)
+
+	comb_size = comb_size(x)
+
+	# just reorder the sets
+	reorder_set = FALSE
+	if(is.numeric(ind)) {
+		if(length(setdiff(ind, 1:n))) {
+			stop_wrap(qq("nummeric index should not exceed @{n}"))
+		}
+		if(length(ind) == n) {
+			reorder_set = TRUE
+		}
+		# if the indices not selected are only empty sets
+		if(length(setdiff(ind, 1:n)) == 0) {
+			if(length(setdiff(setdiff(1:n, ind), which_empty_set)) == 0) {
+				reorder_set = TRUE
+			}
+		}
+	}
+	if(is.character(ind)) {
+		if(length(ind) == n && length(setdiff(ind, set_name)) == 0) {
+			reorder_set = TRUE
+		}
+		if(length(setdiff(ind, set_name)) == 0) {
+			if(length(setdiff(setdiff(set_name, ind), empty_set)) == 0) {
+				reorder_set = TRUE
+			}
+		}
+	}
+	if(reorder_set) {
+		if(margin == 1) {
+			x = x[ind, , drop = FALSE]
+		} else {
+			x = x[, ind, drop = FALSE]
+		}
+		attr(x, "set_size") = set_size[ind]
+		attr(x, "comb_size") = comb_size
+		if(is.matrix(data)) {
+			data = data[, ind, drop = FALSE]
+		} else {
+			data = data[ind]
+		}
+		attr(x, "data") = data
+		attr(x, "param") = param
+		class(x) = c("comb_mat", "matrix")
+		return(x)
+	}
+
+	rerun = FALSE
+	if(is.numeric(ind)) {
+		rerun = TRUE
+	} else if(is.character(ind)) {
+		# index is a subset of the set name
+		if(length(setdiff(ind, non_empty_set)) == 0) {
+			rerun = TRUE
+		}
+	}
+	if(rerun) {
+		if(is.matrix(data)) {
+			param$x = data[, ind, drop = FALSE]
 			x2 = do.call(make_comb_mat_from_matrix, param)
 		} else {
-			param$lt = env$data[sub_set]
+			param$lt = data[ind]
 			x2 = do.call(make_comb_mat_from_list, param)
 		}
-
 		return(x2)
-
-	} else if(is.character(ind)) {
-
-		set_size = set_size(x)
-		if(all(ind %in% names(set_size))) {
-			sub_set = ind
-			if(is.matrix(env$data)) {
-				param$x = env$data[, sub_set, drop = FALSE]
-				x2 = do.call(make_comb_mat_from_matrix, param)
-			} else {
-				param$lt = env$data[sub_set]
-				x2 = do.call(make_comb_mat_from_list, param)
-			}
-		} else if(length(intersect(ind, names(set_size))) == 0) {
-			stop_wrap("index has no overlap to set names.")
-		} else {
-			if(is.matrix(env$data)) {
-				mat = matrix(0, nrow = nrow(env$data), ncol = length(ind))
-				rownames(mat) = rownames(env$data)
-				colnames(mat) = ind
-				common_names = intersect(ind, colnames(param$data))
-				mat[, common_names] = param$data[, common_names]
-				x2 = do.call(make_comb_mat_from_matrix, param)
-			} else {
-				lt = vector("list", length(ind))
-				names(lt) = ind
-				common_names = intersect(ind, names(param$data))
-				lt[common_names] = param$data[common_names]
-				param$lt = lt
-				x2 = do.call(make_comb_mat_from_list, param)
-			}
-		}
-		return(x2)
-	} else {
-		stop_wrap("index should be either numeric or character.")
 	}
+
+	## add new empty sets
+	if(is.character(ind)) {
+		new_set = setdiff(ind, set_name)
+		# if ind includes all non-empty sets and has additional empty new sets
+		if(length(new_set) && length(setdiff(setdiff(set_name, empty_set), ind)) == 0) {
+			all_set = ind
+			non_empty_set = setdiff(set_name, empty_set)
+			n2 = length(all_set)
+			if(margin == 1) {
+				x2 = matrix(0, nrow = length(all_set), ncol = ncol(x))
+				rownames(x2) = all_set
+				for(rn in non_empty_set) x2[rn, ] = x[rn, ]
+			} else {
+				x2 = matrix(0, ncol = length(all_set), nrow = nrow(x))
+				colnames(x2) = all_set
+				for(cn in non_empty_set) x2[, cn] = x[, cn]
+			}
+			set_size2 = structure(rep(0, n2), names = all_set)
+			set_size2[non_empty_set] = set_size[non_empty_set]
+
+			if(is.matrix(data)) {
+				data2 = matrix(0, nrow = nrow(data), ncol = n2)
+				rownames(data2) = rownames(data)
+				colnames(data2) = all_set
+				data2[, non_empty_set] = data[, non_empty_set]
+			} else {
+				data2 = rep(list(), n2)
+				names(data2) = all_set
+				data2[non_empty_set] = data[non_empty_set]
+			}
+
+			attr(x2, "set_size") = set_size2
+			attr(x2, "comb_size") = attr(x, "comb_size")
+			attr(x2, "data") = data
+			attr(x2, "param") = attr(x, "param")
+			class(x2) = c("comb_mat", "matrix")
+			return(x2)
+		}
+	}
+
+	# partial existed sets and partial empty sets
+	if(is.character(ind)) {
+		which_existed = which(ind %in% set_name)
+		which_new = which(! ind %in% set_name)
+
+		x2 = subset_by_set_ind(x, which_existed, margin = margin)
+		x2 = subset_by_set_ind(x2, ind, margin = margin)
+		return(x2)
+	}
+
+	stop_wrap("subsetting failed.")
 }
 
 # == title
@@ -985,6 +1114,10 @@ print.comb_mat = function(x, ...) {
 	comb_size = comb_size(x)
 	set_on_rows = attr(x, "param")$set_on_rows
 	mode = attr(x, "param")$mode
+
+	ow =  getOption("width")
+	options(width = 9999)
+	on.exit(options(width = ow))
 
 	cat("A combination matrix with", length(set_size), "sets and", length(comb_size), "combinations.\n")
 	cat("  ranges of combination set size: c(", min(comb_size), ", ", max(comb_size), ").\n", sep = "")
@@ -1015,6 +1148,18 @@ print.comb_mat = function(x, ...) {
 		cat("Top 8 combination sets are:\n")
 		print(df2[1:8, ], row.names = FALSE)
 	}
+
+	cat("\n")
+	cat("Sets are:\n")
+	sz = set_size(x)
+	cz = complement_size(x)
+	if(cz > 0) {
+		sz = c(sz, "complement" = cz)
+	}
+	sz = data.frame(set = names(sz), size = sz)
+	sz[, 1] = paste0(" ", sz[, 1])
+	colnames(sz)[1] = paste0(" ", colnames(sz)[1])
+	print(sz, row.names = FALSE, right = FALSE)
 
 # 	cat("
 # Utility functions that can be applied:
