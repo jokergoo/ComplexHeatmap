@@ -1571,54 +1571,28 @@ normalize_comb_mat = function(...) {
 		stop_wrap("There should be at least two combination matrices.")
 	}
 
-	set1 = set_name(lt[[1]])
-	for(i in 2:n) {
-		if(!setequal(set1, set_name(lt[[i]]))) {
-			stop_wrap("The sets of all combination matrices should be identical.")
-		}
+	all_set_names = sort(unique(unlist(lapply(lt, set_name))))
+	if(any(sapply(lt, function(x) attr(x, "param")$set_on_rows) != attr(lt[[1]], "param")$set_on_rows)) {
+		stop_wrap("Combination sets should be all on rows or on columns.")
 	}
-	all_set_name = set_name(lt[[1]])
-	n_set = length(all_set_name)
 
-	all_comb_size = lapply(lt, function(x) {
-		set_on_rows = attr(x, "param")$set_on_rows
-		if(set_on_rows) {
-			code = apply(x, 2, binaryToInt)
+	lt = lapply(lt, function(m) {
+		if(attr(m, "param")$set_on_rows) {
+			m[all_set_names, ]
 		} else {
-			code = apply(x, 1, binaryToInt)
+			m[, all_set_names]
 		}
-		structure(comb_size(x), names = code)
 	})
 
-	all_code = unique(unlist(lapply(all_comb_size, names)))
-	comb_mat = do.call(cbind, lapply(as.numeric(all_code), intToBinary, len = n_set))
-	rownames(comb_mat) = all_set_name
-
-	all_comb_size = lapply(all_comb_size, function(x) {
-		x2 = structure(rep(0, length(all_code)), names = all_code)
-		x2[names(x)] = x
-		x2
-	})
-
-	for(i in seq_along(lt)) {
-		x = lt[[i]]
-		set_on_rows = attr(x, "param")$set_on_rows
-		attr = attributes(x)
-		attr = attr[!names(attr) %in% c("dim", "dimname")]
-
-		if(set_on_rows) {
-			x2 = comb_mat
+	all_comb_names = sort(unique(unlist(lapply(lt, comb_name))))
+	lt = lapply(lt, function(m) {
+		if(attr(m, "param")$set_on_rows) {
+			m = m[, all_comb_names]
 		} else {
-			x2 = t(comb_mat)
+			m = m[all_set_names, ]
 		}
-		for(nm in names(attr)) {
-			attr(x2, nm) = attr[[nm]]
-		}
-		attr(x2, "set_size") = attr$set_size[all_set_name]
-		attr(x2, "comb_size") = all_comb_size[[i]]
-		
-		lt[[i]] = x2
-	}
+		m[order.comb_mat(m)]
+	})
 	return(lt)
 }
 

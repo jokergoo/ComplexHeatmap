@@ -378,3 +378,28 @@ test_that("test subset method both by combination sets and sets", {
 	expect_error(t(cm)[1:3, c("a", "b", "e")])
 
 })
+
+lt1 = list(
+	a = c("a", "b", "c"),
+	b = c("a", "c")
+)
+
+lt2 = list(
+	b = c("a", "c"),
+	c = c("a", "d")
+)
+
+cm1 = make_comb_mat(lt1)
+cm2 = make_comb_mat(lt2)
+
+cm_lt = normalize_comb_mat(cm1, cm2)
+cm1_new = cm_lt[[1]]
+cm2_new = cm_lt[[2]]
+
+test_that("test normalize_comb_mat()", {
+	expect_that(set_name(cm1_new), equals(set_name(cm2_new)))
+	expect_that(set_name(cm1_new), equals(c("a", "b", "c")))
+	expect_that(comb_name(cm1_new), equals(comb_name(cm2_new)))
+
+	expect_error(normalize_comb_mat(cm1, t(cm2)))
+})
