@@ -35,12 +35,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	}
 
 	x = as.matrix(x) + 0
-	set_size = colSums(x)
-	l = set_size >= min_set_size & rank(max(set_size) - set_size) <= top_n_sets
 
-	set_size = set_size[l]
-	x = x[, l, drop = FALSE]
-	
 	if(is.null(rownames(x))) {
 		x_has_rownames = FALSE
 	} else {
@@ -70,6 +65,12 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
     	complement_size = length(setdiff(universal_set, rownames(x)))
     }
 
+    set_size = colSums(x)
+	l = set_size >= min_set_size & rank(max(set_size) - set_size) <= top_n_sets
+
+	set_size = set_size[l]
+	x = x[, l, drop = FALSE]
+	
     # universal_set has higher priority than complement_size
 	x0 = x
 	x = x[rowSums(x) > 0, , drop = FALSE]
@@ -189,6 +190,15 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
     	setdiff = getFromNamespace("setdiff", ns = "BiocGenerics")
     }
 
+    if(!is.null(universal_set)) {
+    	lt = lapply(lt, function(x) intersect(x, universal_set))
+    	complement_set = universal_set
+    	for(i in seq_along(lt)) {
+    		complement_set = setdiff(complement_set, lt[[i]])
+    	}
+    	complement_size = value_fun(complement_set)
+    }
+
     if(inherits(lt[[1]], "GRanges")) {
     	set_size = sapply(lt, function(x) {
 	    	value_fun(union(x, x[NULL]))
@@ -209,15 +219,6 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
 	lt = lt[l]
 	n = length(lt)
     nm = names(lt)
-
-    if(!is.null(universal_set)) {
-    	lt = lapply(lt, function(x) intersect(x, universal_set))
-    	complement_set = universal_set
-    	for(i in seq_along(lt)) {
-    		complement_set = setdiff(complement_set, lt[[i]])
-    	}
-    	complement_size = value_fun(complement_set)
-    }
     
     comb_mat = matrix(FALSE, nrow = n, ncol = sum(choose(n, 1:n)))
     rownames(comb_mat) = nm
@@ -1159,7 +1160,7 @@ print.comb_mat = function(x, ...) {
 	sz = data.frame(set = names(sz), size = sz)
 	sz[, 1] = paste0(" ", sz[, 1])
 	colnames(sz)[1] = paste0(" ", colnames(sz)[1])
-	print(sz, row.names = FALSE, right = FALSE)
+	print(sz, row.names = FALSE)
 
 # 	cat("
 # Utility functions that can be applied:
