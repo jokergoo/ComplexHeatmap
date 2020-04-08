@@ -403,3 +403,15 @@ test_that("test normalize_comb_mat()", {
 
 	expect_error(normalize_comb_mat(cm1, t(cm2)))
 })
+
+lt = list(
+	a = c("a", "b", "c", "d", "e"),
+	b = c("a", "c"),
+	c = c("a", "b")
+)
+cm = make_comb_mat(lt)
+test_that("test set_name<-", {
+	set_name(cm) = c("A", "B", "C")
+	expect_that(set_name(cm), equals(c("A", "B", "C")))
+	expect_error(set_name(cm) <- c("A", "B"))
+})

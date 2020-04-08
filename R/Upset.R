@@ -540,6 +540,48 @@ set_name = function(m) {
 }
 
 # == title
+# Modify Set Names
+#
+# == param
+# -x A combination matrix returned by `make_comb_mat`.
+# -value New set names.
+# -... Other arguments.
+#
+# == example
+# set.seed(123)
+# lt = list(a = sample(letters, 10),
+#           b = sample(letters, 15),
+#           c = sample(letters, 20))
+# m = make_comb_mat(lt)
+# set_name(m) = c("A", "B", "C")
+# m
+"set_name<-" = function (x, ..., value) {
+	old_set_name = set_name(x)
+	n1 = length(old_set_name)
+	n2 = length(value)
+	param = attr(x, "param")
+	set_on_rows = param$set_on_rows
+	data = attr(x, "data")
+
+	if(n1 != n2) {
+		stop_wrap("New set names should have the same length as the old ones.")
+	}
+
+	if(set_on_rows) {
+		attr(x, "dimnames")[[1]] = value
+	} else {
+		attr(x, "dimnames")[[2]] = value
+	}
+	if(is.matrix(data)) {
+		colnames(data) = value
+	} else {
+		names(data) = value
+	}
+	attr(x, "data") = data
+	return(x)
+}
+
+# == title
 # Set Sizes
 #
 # == param
