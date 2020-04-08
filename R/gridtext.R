@@ -245,6 +245,7 @@ richtext_grob2 = function(label, ...) {
 		gp = param$gp
 		l_box = grepl("^box_", names(gp))
 		if(any(l_box)) {
+			class(gp) = "list"
 			box_gp = gp[l_box]
 			gp[l_box] = NULL
 			names(box_gp) = gsub("^box_", "", names(box_gp))
