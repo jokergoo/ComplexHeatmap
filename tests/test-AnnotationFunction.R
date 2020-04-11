@@ -491,7 +491,7 @@ panel_fun = function(index, nm) {
 	grid.text(nm)
 }
 
-anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun, link_gp = gpar(fill = "grey", col = "black"), internal_line = TRUE)
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun, link_gp = gpar(fill = "grey", col = "black"), internal_line = FALSE)
 draw(anno, index = 1:100, test = "anno_zoom")
 
 
