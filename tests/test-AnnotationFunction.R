@@ -486,6 +486,15 @@ panel_fun = function(index, nm) {
 anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun)
 draw(anno, index = 1:100, test = "anno_zoom")
 
+panel_fun = function(index, nm) {
+	grid.rect(gp = gpar(fill = "grey", col = NA))
+	grid.text(nm)
+}
+
+anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun, link_gp = gpar(fill = "grey", col = "black"), internal_line = TRUE)
+draw(anno, index = 1:100, test = "anno_zoom")
+
+
 anno = anno_zoom(align_to = fa, which = "row", panel_fun = panel_fun,
 	gap = unit(1, "cm"))
 draw(anno, index = 1:100, test = "anno_zoom, set gap")

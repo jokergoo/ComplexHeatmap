@@ -3305,6 +3305,7 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 #         The value can be a proportion number or  a `grid::unit` object. The length can be either one or two.
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+# -internal_line Internally used.
 #
 # == details
 # `anno_zoom` creates several plotting regions (boxes) which can be corresponded to subsets of rows/columns in the
@@ -3338,7 +3339,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 	which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
 	size = NULL, gap = unit(1, "mm"), 
 	link_width = unit(5, "mm"), link_height = link_width, link_gp = gpar(),
-	extend = unit(0, "mm"), width = NULL, height = NULL) {
+	extend = unit(0, "mm"), width = NULL, height = NULL, internal_line = TRUE) {
 	
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
@@ -3507,14 +3508,39 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 			df = align_to_df[[i]]
 			for(j in 1:nrow(df)) {
 				# draw each polygon
-				if(side == "right") {
-					grid.polygon(unit.c(unit(c(0, 0), "npc"), rep(link_width, 2)),
-						c(pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"], h[i, "bottom"]),
-						default.units = "native", gp = subset_gp(link_gp, i))
+				if(internal_line && "col" %in% names(link_gp)) {
+					link_gp3 = link_gp2 = link_gp
+					link_gp2$col = link_gp$fill
+					link_gp2$lty = NULL
+					link_gp3$fill = NA
+					if(side == "right") {
+						grid.polygon(unit.c(unit(c(0, 0), "npc"), rep(link_width, 2)),
+							c(pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"], h[i, "bottom"]),
+							default.units = "native", gp = subset_gp(link_gp2, i))
+
+						grid.lines(unit.c(link_width, unit(c(0, 0), "npc"), link_width),
+							c(h[i, "bottom"], pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"]),
+							default.units = "native", gp = subset_gp(link_gp3, i))
+					} else {
+						grid.polygon(unit.c(rep(link_width, 2), unit(c(0, 0), "npc")),
+							c(pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"], h[i, "bottom"]),
+							default.units = "native", gp = subset_gp(link_gp2, i))
+
+						grid.lines(unit.c(unit(0, "npc"), rep(link_width, 2), unit(0, "npc")),
+							c(h[i, "bottom"], pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"]),
+							default.units = "native", gp = subset_gp(link_gp3, i))
+					}
+
 				} else {
-					grid.polygon(unit.c(rep(link_width, 2), unit(c(0, 0), "npc")),
-						c(pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"], h[i, "bottom"]),
-						default.units = "native", gp = subset_gp(link_gp, i))
+					if(side == "right") {
+						grid.polygon(unit.c(unit(c(0, 0), "npc"), rep(link_width, 2)),
+							c(pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"], h[i, "bottom"]),
+							default.units = "native", gp = subset_gp(link_gp, i))
+					} else {
+						grid.polygon(unit.c(rep(link_width, 2), unit(c(0, 0), "npc")),
+							c(pos[df[j, 2]] - 0.5/n, pos[df[j, 1]] + 0.5/n, h[i, "top"], h[i, "bottom"]),
+							default.units = "native", gp = subset_gp(link_gp, i))
+					}
 				}
 			}
 		}
@@ -3654,16 +3680,45 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 			df = align_to_df[[i]]
 			for(j in 1:nrow(df)) {
 				# draw each polygon
-				if(side == "top") {
-					grid.polygon(
-						c(pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"], h[i, "right"]),
-						unit.c(unit(c(0, 0), "npc"), rep(link_width, 2)),
-						default.units = "native", gp = subset_gp(link_gp, i))
+				if(internal_line && "col" %in% names(link_gp)) {
+					link_gp3 = link_gp2 = link_gp
+					link_gp2$col = link_gp$fill
+					link_gp2$lty = NULL
+					link_gp3$fill = NA
+
+					if(side == "top") {
+						grid.polygon(
+							c(pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"], h[i, "right"]),
+							unit.c(unit(c(0, 0), "npc"), rep(link_width, 2)),
+							default.units = "native", gp = subset_gp(link_gp2, i))
+
+						grid.lines(
+							c(h[i, "right"], pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"]),
+							unit.c(link_width,unit(c(0, 0), "npc"), link_width),
+							default.units = "native", gp = subset_gp(link_gp3, i))
+					} else {
+						grid.polygon(
+							c(pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"], h[i, "right"]),
+							unit.c(rep(link_width, 2), unit(c(0, 0), "npc")),
+							default.units = "native", gp = subset_gp(link_gp2, i))
+
+						grid.lines(
+							c(h[i, "right"], pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"]),
+							unit.c(unit(0, "npc"), rep(link_width, 2), unit(0, "npc")),
+							default.units = "native", gp = subset_gp(link_gp3, i))
+					}
 				} else {
-					grid.polygon(
-						c(pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"], h[i, "right"]),
-						unit.c(rep(link_width, 2), unit(c(0, 0), "npc")),
-						default.units = "native", gp = subset_gp(link_gp, i))
+					if(side == "top") {
+						grid.polygon(
+							c(pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"], h[i, "right"]),
+							unit.c(unit(c(0, 0), "npc"), rep(link_width, 2)),
+							default.units = "native", gp = subset_gp(link_gp, i))
+					} else {
+						grid.polygon(
+							c(pos[df[j, 2]] + 0.5/n, pos[df[j, 1]] - 0.5/n, h[i, "left"], h[i, "right"]),
+							unit.c(rep(link_width, 2), unit(c(0, 0), "npc")),
+							default.units = "native", gp = subset_gp(link_gp, i))
+					}
 				}
 			}
 		}
@@ -3685,7 +3740,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 		width = anno_size$width,
 		n = -1,
 		var_import = list(align_to, .pos, gap, size, panel_fun, side, anno_size, extend,
-			link_width, link_height, link_gp),
+			link_width, link_height, link_gp, internal_line),
 		show_name = FALSE
 	)
 
