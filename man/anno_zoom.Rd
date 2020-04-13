@@ -11,7 +11,7 @@ anno_zoom(align_to, panel_fun = function(index, nm = NULL) { grid.rect() },
     which = c("column", "row"), side = ifelse(which == "column", "top", "right"),
     size = NULL, gap = unit(1, "mm"),
     link_width = unit(5, "mm"), link_height = link_width, link_gp = gpar(),
-    extend = unit(0, "mm"), width = NULL, height = NULL)
+    extend = unit(0, "mm"), width = NULL, height = NULL, internal_line = TRUE)
 }
 \arguments{
 
@@ -27,6 +27,7 @@ anno_zoom(align_to, panel_fun = function(index, nm = NULL) { grid.rect() },
   \item{extend}{By default, the region for the labels has the same width (if it is a column annotation) or same height (if it is a row annotation) as the heatmap. The size can be extended by this options. The value can be a proportion number or  a \code{\link[grid]{unit}} object. The length can be either one or two.}
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
   \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
+  \item{internal_line}{Internally used.}
 
 }
 \details{
