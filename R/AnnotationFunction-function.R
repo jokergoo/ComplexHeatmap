@@ -2986,39 +2986,16 @@ subset_by_intersect = function(x, i) {
 }
 
 # == title
-# Label Markers Annotation
+# Link Annotation
 #
 # == param
-# -... Pass to `anno_mark`.
+# -... Pass to `anno_zoom`.
 #
 # == details
-# `anno_link` is deprecated, please use `anno_mark` instead.
+# This function is the same as `anno_zoom`. It links subsets of rows or columns to a list of graphic regions.
 #
 anno_link = function(...) {
-	warning_wrap("anno_link() is deprecated, please use anno_mark() instead.")
-	anno_mark(...)
-}
-
-
-# == title
-# Label Markers as Row Annotation
-#
-# == param
-# -... pass to `anno_link`.
-#
-# == details
-# A wrapper of `anno_link` with pre-defined ``which`` to ``row``.
-#
-# You can directly use `anno_link` for row annotation if you call it in `rowAnnotation`.
-#
-# == value
-# See help page of `anno_link`.
-#
-row_anno_link = function(...) {
-	if(exists(".__under_SingleAnnotation__", envir = parent.frame())) {
-		message_wrap("From version 1.99.0, you can directly use `anno_mark()` for row annotation if you call it in `rowAnnotation()`.")
-	}
-	anno_link(..., which = "row")
+	anno_zoom(...)
 }
 
 # == title
