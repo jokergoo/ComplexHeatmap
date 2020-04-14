@@ -1,21 +1,21 @@
 \name{anno_link}
 \alias{anno_link}
 \title{
-Label Markers Annotation
+Link Annotation
 }
 \description{
-Label Markers Annotation
+Link Annotation
 }
 \usage{
 anno_link(...)
 }
 \arguments{
 
-  \item{...}{Pass to \code{\link{anno_mark}}.}
+  \item{...}{Pass to \code{\link{anno_zoom}}.}
 
 }
 \details{
-\code{\link{anno_link}} is deprecated, please use \code{\link{anno_mark}} instead.
+This function is the same as \code{\link{anno_zoom}}. It links subsets of rows or columns to a list of graphic regions.
 }
 \examples{
 # There is no example
