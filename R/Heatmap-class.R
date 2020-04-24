@@ -1112,6 +1112,7 @@ make_cluster = function(object, which = c("row", "column")) {
             }
             if(identical(reorder, TRUE)) {
                 do_reorder = TRUE
+                browser()
                 if(which == "row") {
                     reorder = -rowMeans(mat, na.rm = TRUE)
                 } else {
