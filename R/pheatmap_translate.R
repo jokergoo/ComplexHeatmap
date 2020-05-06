@@ -3,7 +3,10 @@
 #
 # == param
 # -mat The input matrix.
-# -color The same as in `pheatmap::pheatmap`.
+# -color The same as in `pheatmap::pheatmap`. Here you don't necessarily need to generate a long color vector.
+#        The discrete colors sent to `grDevices::colorRampPalette` are also OK here. E.g.
+#        ``colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100)`` can be simply 
+#        replaced as ``rev(brewer.pal(n = 7, name = "RdYlBu"))``.
 # -kmeans_k Not supported.
 # -breaks The same as in `pheatmap::pheatmap`.
 # -border_color The same as in `pheatmap::pheatmap`.

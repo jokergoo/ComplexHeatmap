@@ -1,7 +1,12 @@
+CHANGES in VERSION 2.5.2
+
+* translate pheatmap to Heatmap
+
+========================
+
 CHANGES in VERSION 2.5.1
 
 * A temporary solution of the sum of two complicated units (in temp.R).
-* translate pheatmap to Heatmap
 
 ========================
 

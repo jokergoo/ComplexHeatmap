@@ -5,6 +5,8 @@ if(requireNamespace("pheatmap")) {
 
 	compare_pheatmap(mat)
 
+	pheatmap(mat)
+	pheatmap(mat, col = rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))
 
 	test = matrix(rnorm(200), 20, 10)
 	test[1:10, seq(1, 10, 2)] = test[1:10, seq(1, 10, 2)] + 3
