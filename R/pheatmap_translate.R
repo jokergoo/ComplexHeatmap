@@ -204,12 +204,14 @@ pheatmap = function(mat,
         if(inherits(cluster_rows, c("logical", "hclust", "dendrogram"))) {
             ht_param$row_split = cutree_rows
             ht_param$row_gap = unit(4, "bigpts")
+            ht_param["row_title"] = list(NULL)
         }
     }
     if(!is.na(cutree_cols)) {
         if(inherits(cluster_cols, c("logical", "hclust", "dendrogram"))) {
             ht_param$column_split = cutree_cols
             ht_param$column_gap = unit(4, "bigpts")
+            ht_param["column_title"] = list(NULL)
         }
     }
     
