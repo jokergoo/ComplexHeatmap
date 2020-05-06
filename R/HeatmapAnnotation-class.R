@@ -271,18 +271,20 @@ HeatmapAnnotation = function(...,
     annotation_label = recycle_list(annotation_label, an, NULL)
 
     if(!missing(col)) {
-    	if(is.null(names(col))) {
-    		stop_wrap("`col` should be a named list.")
-    	}
-    	if(any(is.na(names(col)))) {
-    		stop_wrap("`col` should be a named list.")
-    	}
-    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else is.null(names(x))))) {
-    		stop_wrap("elements in `col` should be named vectors.")
-    	}
-    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else any(is.na(names(x)))))) {
-    		stop_wrap("elements in `col` should be named vectors.")
-    	}
+    	if(length(col) >= 1) {
+	    	if(is.null(names(col))) {
+	    		stop_wrap("`col` should be a named list.")
+	    	}
+	    	if(any(is.na(names(col)))) {
+	    		stop_wrap("`col` should be a named list.")
+	    	}
+	    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else is.null(names(x))))) {
+	    		stop_wrap("elements in `col` should be named vectors.")
+	    	}
+	    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else any(is.na(names(x)))))) {
+	    		stop_wrap("elements in `col` should be named vectors.")
+	    	}
+	    }
     }
 
     ### check the length of annotations

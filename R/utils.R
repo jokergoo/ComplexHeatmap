@@ -179,6 +179,8 @@ get_dist = function(matrix, method) {
         } else {
             stop_wrap("Since your distance method is a function, it can only accept one or two arguments.")
         }
+    } else if(inherits(method, "dist")) {
+        return(method)
     } else if(method %in% c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")) {
         # if(any(is.na(matrix))) {
         #     dst = get_dist(matrix, function(x, y) {
@@ -206,6 +208,8 @@ get_dist = function(matrix, method) {
                          spearman = as.dist(1 - cor(t(matrix), method = "spearman")),
                          kendall = as.dist(1 - cor(t(matrix), method = "kendall")))
         }
+    } else {
+        stop_wrap(qq("method @{method} not supported"))
     }
     return(dst)
 }

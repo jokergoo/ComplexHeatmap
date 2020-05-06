@@ -301,6 +301,9 @@ Heatmap = function(matrix, col, name,
     if(missing(name)) {
         name = paste0("matrix_", get_heatmap_index() + 1)
         increase_heatmap_index()
+    } else if(is.null(name)) {
+        name = paste0("matrix_", get_heatmap_index() + 1)
+        increase_heatmap_index()
     }
     if(name == "") {
         stop_wrap("Heatmap name cannot be empty string.")
