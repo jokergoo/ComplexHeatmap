@@ -21,7 +21,7 @@ h1, h2, h3, h4, h5 {
 library(ComplexHeatmap)
 ```
 
-### There is no plot comming out after running Heatmap() function.
+### There is no plot coming out after running Heatmap() function.
 
 In this case, you need to use `draw()` function explicitly. See
 https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#plot-the-heatmap
