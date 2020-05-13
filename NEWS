@@ -1,6 +1,9 @@
 CHANGES in VERSION 2.5.2
 
 * translate pheatmap to Heatmap
+* `upset_top_annotation()` and `upset_right_annotation()`: the names of the annotations
+   are changed to `intersection_size`, `set_size` and `union_size`.
+* `list_components()`: adds `pattern` argument.
 
 ========================
 

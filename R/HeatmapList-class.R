@@ -804,3 +804,21 @@ summary.HeatmapList = function(object, ...) {
     }
 }
 
+# == title
+# Calculate the width and height of the heatmaps
+#
+# == param
+# -ht A `Heatmap-class` or `HeatmapList-class` object.
+#
+# == value
+# A list of two elements: width and height.
+#
+ht_size = function(ht) {
+    dev.null()
+    ht = draw(ht)
+    w = ComplexHeatmap:::width(ht)
+    h = ComplexHeatmap:::height(ht)
+    dev.off2()
+
+    list(width = w, height = h)
+}

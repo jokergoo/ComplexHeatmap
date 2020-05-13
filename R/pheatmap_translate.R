@@ -57,6 +57,9 @@
 # -name Name of the heatmap. This argument is passed to `Heatmap`.
 # -... Other arguments passed to `Heatmap`.
 #
+# == details
+# See https://jokergoo.github.io/2020/05/06/translate-from-pheatmap-to-complexheatmap/
+#
 # == value
 # A `Heatmap-class` object.
 #

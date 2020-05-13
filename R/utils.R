@@ -326,16 +326,22 @@ rep.list = function(x, n) {
 # == title
 # List All Heatmap Components
 #
+# == param
+# -pattern A regular expression.
+#
 # == value
 # A vector of viewport names.
 #
-list_components = function() {
+list_components = function(pattern = NULL) {
     vp = grid.ls(viewports = TRUE, grobs = FALSE, flatten = FALSE, print = FALSE)
     vp = unlist(vp)
     attributes(vp) = NULL
     vp = vp[!grepl("^\\d+$", vp)]
     vp = vp[!grepl("GRID.VP", vp)]
     # unique(vp)
+    if(!is.null(pattern)) {
+        vp = grep(pattern, vp, value = TRUE)
+    }
     vp
 }
 

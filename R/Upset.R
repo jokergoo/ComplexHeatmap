@@ -1489,6 +1489,10 @@ order.comb_mat = function(m, decreasing = TRUE, on = "comb_set") {
 # The default top annotation is actually barplot implemented by `anno_barplot`. For
 # how to set the top annotation or bottom annotation in `UpSet`, please refer to `UpSet`.
 #
+# If you want to use `decorate_annotation()` function, the annotation name for the "sets"
+# is ``set_size`` and the annotation name for the "intersection sets" are ``intersection_size``
+# and if under the union mode, it is ``union_size``.
+#
 upset_top_annotation = function(m, 
 	gp = gpar(fill = "black"), 
 	height = unit(ifelse(set_on_rows, 3, 2), "cm"),
@@ -1502,29 +1506,32 @@ upset_top_annotation = function(m,
 	set_on_rows = attr(m, "param")$set_on_rows
 	
 	if(set_on_rows) {
-		ha = HeatmapAnnotation("Intersection\nsize" = anno_barplot(comb_size(m), 
+		ha = HeatmapAnnotation("intersection_size" = anno_barplot(comb_size(m), 
 					border = FALSE, gp = gp, height = height, ...), 
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
 				annotation_name_offset = annotation_name_offset,
 				annotation_name_side = annotation_name_side,
-				annotation_name_rot = annotation_name_rot)
+				annotation_name_rot = annotation_name_rot,
+				annotation_label = "Intersection\nsize")
 	} else {
-		ha = HeatmapAnnotation("Set\nsize" = anno_barplot(set_size(m), border = FALSE, 
+		ha = HeatmapAnnotation("set_size" = anno_barplot(set_size(m), border = FALSE, 
 					gp = gp, height = height, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
 				annotation_name_offset = annotation_name_offset,
 				annotation_name_side = annotation_name_side,
-				annotation_name_rot = annotation_name_rot)
+				annotation_name_rot = annotation_name_rot,
+				annotation_label = "Set\nsize")
 	}
 
 	mode = attr(m, "param")$mode
 	if(set_on_rows) {
 		if(mode %in% c("distinct", "intersect")) {
-			names(ha) = "Intersection\nsize"
+			# names(ha) = "intersection_size"
 		} else {
-			names(ha) = "Union\nsize"
+			names(ha) = "union_size"
+			ha@ha_list[[1]]@label = "Union\nsize"
 		}
 	}
 	return(ha)
@@ -1548,6 +1555,10 @@ upset_top_annotation = function(m,
 # The default right annotation is actually barplot implemented by `anno_barplot`. For
 # how to set the right annotation or left annotation in `UpSet`, please refer to `UpSet`.
 #
+# If you want to use `decorate_annotation()` function, the annotation name for the "sets"
+# is ``set_size`` and the annotation name for the "intersection sets" are ``intersection_size``
+# and if under the union mode, it is ``union_size``.
+#
 upset_right_annotation = function(m,
 	gp = gpar(fill = "black"),  
 	width = unit(ifelse(set_on_rows, 2, 3), "cm"),
@@ -1561,29 +1572,32 @@ upset_right_annotation = function(m,
 	set_on_rows = attr(m, "param")$set_on_rows
 
 	if(set_on_rows) {
-		ha = rowAnnotation("Set size" = anno_barplot(set_size(m), border = FALSE, 
+		ha = rowAnnotation("set_size" = anno_barplot(set_size(m), border = FALSE, 
 					gp = gp, width = width, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
 				annotation_name_offset = annotation_name_offset,
 				annotation_name_side = annotation_name_side,
-				annotation_name_rot = annotation_name_rot)
+				annotation_name_rot = annotation_name_rot,
+				annotation_label = "Set size")
 	} else {
-		ha = rowAnnotation("Intersection\nsize" = anno_barplot(comb_size(m), 
+		ha = rowAnnotation("intersection_size" = anno_barplot(comb_size(m), 
 					border = FALSE, gp = gp, width = width, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
 				annotation_name_offset = annotation_name_offset,
 				annotation_name_side = annotation_name_side,
-				annotation_name_rot = annotation_name_rot)
+				annotation_name_rot = annotation_name_rot,
+				annotation_label = "Intersection\nsize")
 	}
 
 	mode = attr(m, "param")$mode
 	if(!set_on_rows) {
 		if(mode %in% c("distinct", "intersect")) {
-			names(ha) = "Intersection\nsize"
+			# names(ha) = "intersection_size"
 		} else {
-			names(ha) = "Union size"
+			names(ha) = "union_size"
+			ha@ha_list[[1]]@label = "Union size"
 		}
 	}
 	return(ha)
