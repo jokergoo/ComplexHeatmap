@@ -7,7 +7,12 @@ List All Heatmap Components
 List All Heatmap Components
 }
 \usage{
-list_components()
+list_components(pattern = NULL)
+}
+\arguments{
+
+  \item{pattern}{A regular expression.}
+
 }
 \value{
 A vector of viewport names.

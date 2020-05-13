@@ -33,6 +33,10 @@ upset_top_annotation(m,
 \details{
 The default top annotation is actually barplot implemented by \code{\link{anno_barplot}}. For
 how to set the top annotation or bottom annotation in \code{\link{UpSet}}, please refer to \code{\link{UpSet}}.
+
+If you want to use \code{\link{decorate_annotation}} function, the annotation name for the "sets"
+is \code{set_size} and the annotation name for the "intersection sets" are \code{intersection_size}
+and if under the union mode, it is \code{union_size}.
 }
 \examples{
 # There is no example

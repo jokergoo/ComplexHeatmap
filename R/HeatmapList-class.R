@@ -816,8 +816,8 @@ summary.HeatmapList = function(object, ...) {
 ht_size = function(ht) {
     dev.null()
     ht = draw(ht)
-    w = ComplexHeatmap:::width(ht)
-    h = ComplexHeatmap:::height(ht)
+    w = width(ht)
+    h = height(ht)
     dev.off2()
 
     list(width = w, height = h)

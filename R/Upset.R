@@ -1489,7 +1489,7 @@ order.comb_mat = function(m, decreasing = TRUE, on = "comb_set") {
 # The default top annotation is actually barplot implemented by `anno_barplot`. For
 # how to set the top annotation or bottom annotation in `UpSet`, please refer to `UpSet`.
 #
-# If you want to use `decorate_annotation()` function, the annotation name for the "sets"
+# If you want to use `decorate_annotation` function, the annotation name for the "sets"
 # is ``set_size`` and the annotation name for the "intersection sets" are ``intersection_size``
 # and if under the union mode, it is ``union_size``.
 #
@@ -1531,7 +1531,7 @@ upset_top_annotation = function(m,
 			# names(ha) = "intersection_size"
 		} else {
 			names(ha) = "union_size"
-			ha@ha_list[[1]]@label = "Union\nsize"
+			ha@anno_list[[1]]@label = "Union\nsize"
 		}
 	}
 	return(ha)
@@ -1555,7 +1555,7 @@ upset_top_annotation = function(m,
 # The default right annotation is actually barplot implemented by `anno_barplot`. For
 # how to set the right annotation or left annotation in `UpSet`, please refer to `UpSet`.
 #
-# If you want to use `decorate_annotation()` function, the annotation name for the "sets"
+# If you want to use `decorate_annotation` function, the annotation name for the "sets"
 # is ``set_size`` and the annotation name for the "intersection sets" are ``intersection_size``
 # and if under the union mode, it is ``union_size``.
 #
@@ -1597,7 +1597,7 @@ upset_right_annotation = function(m,
 			# names(ha) = "intersection_size"
 		} else {
 			names(ha) = "union_size"
-			ha@ha_list[[1]]@label = "Union size"
+			ha@anno_list[[1]]@label = "Union size"
 		}
 	}
 	return(ha)
