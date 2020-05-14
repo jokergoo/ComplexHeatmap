@@ -2,6 +2,7 @@ require(shiny)
 library(GetoptLong)
 
 ui = fluidPage(
+	h3("Click on the heatmap or select a region from the heatmap."),
 	fluidRow(
 		column(width = 3,
 			plotOutput("plot1", height = 300, width = 300,
