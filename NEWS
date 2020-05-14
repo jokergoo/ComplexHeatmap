@@ -1,3 +1,10 @@
+CHANGES in VERSION 2.5.3
+
+* add `selectArea()` which allows interactively select a region from 
+  the heatmaps.
+
+========================
+
 CHANGES in VERSION 2.5.2
 
 * translate pheatmap to Heatmap

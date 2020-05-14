@@ -11,8 +11,8 @@ Method dispatch page for \code{add_heatmap}.
 
 \itemize{
 \item \code{\link{add_heatmap,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
-\item \code{\link{add_heatmap,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 \item \code{\link{add_heatmap,HeatmapAnnotation-method}}, \code{\link{HeatmapAnnotation-class}} class method
+\item \code{\link{add_heatmap,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 }
 \examples{
