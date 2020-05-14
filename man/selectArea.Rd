@@ -7,7 +7,8 @@ Select an area in the heatmap
 Select an area in the heatmap
 }
 \usage{
-selectArea(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = TRUE)
+selectArea(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = TRUE,
+    ht_pos = NULL)
 }
 \arguments{
 
@@ -16,6 +17,7 @@ selectArea(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = TRUE)
   \item{pos1}{If the value is \code{NULL}, it can be selected by click on the heatmap (of cource, the heatmap should be on the interactive graphic device). If it is set, it must be a \code{\link[grid]{unit}} object with length two which corresponds to the x and y position of the point.}
   \item{pos2}{Another point as \code{pos1}, together with \code{pos1} defines the selected region.}
   \item{verbose}{Whether to print messages.}
+  \item{ht_pos}{A value returned by \code{\link{ht_pos_on_device}}.}
 
 }
 \details{
@@ -23,7 +25,7 @@ The regions can be selected interactively or manually by setting \code{pos1} and
 }
 \value{
 A deep list containing row indices and column indices corresponding to the selected region.
-The format is (assme the returned object is called \code{lt}):
+The format is (assume the returned object is called \code{lt}):
 
 \itemize{
   \item \code{lt[[ heatmap_name ]][[ slice_name ]][[ row_index ]]}: row indicies of the selected sub-matrix.
