@@ -29,6 +29,7 @@ The format is (assme the returned object is called \code{pos}):
 }
 \examples{
 \dontrun{
+if(interactive()) {
 # it is runable if you are under an interactive graphic device
 m = matrix(rnorm(100), 10)
 ht = Heatmap(m, row_km = 2, column_km = 2)
@@ -48,6 +49,7 @@ for(ht_name in names(pos)) {
 		grid.rect()
 		popViewport()
 	}
+}
 }
 }
 }

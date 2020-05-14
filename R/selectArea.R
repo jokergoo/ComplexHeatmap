@@ -215,6 +215,7 @@ selectArea = function(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = 
 #
 # == example
 # \dontrun{
+# if(interactive()) {
 # # it is runable if you are under an interactive graphic device
 # m = matrix(rnorm(100), 10)
 # ht = Heatmap(m, row_km = 2, column_km = 2)
@@ -234,6 +235,7 @@ selectArea = function(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = 
 # 		grid.rect()
 # 		popViewport()
 # 	}
+# }
 # }
 # }
 ht_pos_on_device = function(ht_list, unit = "inch", valueOnly = FALSE) {
@@ -308,7 +310,10 @@ seek_root_vp = function() {
 # -ht_list A `Heatmap-class` or a `HeatmapList-class` object.
 #
 # == details
-# source code of the app is at ``system.file("app", package = "ComplexHeatmap")``.
+# source code of the app is at https://github.com/jokergoo/ComplexHeatmap/blob/master/inst/app/app.R .
+#
+# == seealso
+# https://jokergoo.shinyapps.io/selectArea/
 #
 # == example
 # if(interactive()) {

@@ -15,7 +15,10 @@ selectArea_shiny_demo(ht_list)
 
 }
 \details{
-source code of the app is at \code{system.file("app", package = "ComplexHeatmap")}.
+source code of the app is at \url{https://github.com/jokergoo/ComplexHeatmap/blob/master/inst/app/app.R} .
+}
+\seealso{
+\url{https://jokergoo.shinyapps.io/selectArea/}
 }
 \examples{
 if(interactive()) {
