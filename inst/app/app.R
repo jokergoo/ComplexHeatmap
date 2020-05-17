@@ -258,7 +258,7 @@ server = function(input, output, session) {
 			    if(is.null(row_label)) {
 			    	row_label = "NULL"
 			    } else {
-			    	row_label = paste0("'", row_label, "'")
+			    	# row_label = paste0("'", row_label, "'")
 			    }
 			    if(is.null(column_label)) {
 			    	column_label = "NULL"
