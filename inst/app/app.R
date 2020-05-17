@@ -47,7 +47,7 @@ ui = fluidPage(
    })
 });
 ')),
-		tags$link(rel = "stylesheet", type = "text/css", href = "http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"),
+		tags$link(rel = "stylesheet", type = "text/css", href = "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"),
 		tags$style(
 "
 #heatmap_wrap, #sub_heatmap_wrap {
