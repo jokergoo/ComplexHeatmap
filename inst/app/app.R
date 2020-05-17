@@ -6,7 +6,8 @@ library(GetoptLong)
 
 ui = fluidPage(
 	tags$head(
-		tags$script(src = "https://code.jquery.com/ui/1.12.1/jquery-ui.js"),
+		tags$script(HTML(paste(readLines(system.file("app", "jquery-ui.js", package = "ComplexHeatmap"), warn = FALSE), collapse = "\n"))),
+
 		tags$script(HTML(
 '$( function() {
    $("#heatmap_wrap").resizable({
@@ -47,7 +48,7 @@ ui = fluidPage(
    })
 });
 ')),
-		tags$link(rel = "stylesheet", type = "text/css", href = "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"),
+		tags$style(paste(readLines(system.file("app", "jquery-ui.css", package = "ComplexHeatmap")), collapse = "\n")),
 		tags$style(
 "
 #heatmap_wrap, #sub_heatmap_wrap {
