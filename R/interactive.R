@@ -89,7 +89,7 @@ selectArea = function(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = 
 	}
 	pos1 = lapply(pos1, as.numeric)
 	if(mark) grid.points(pos1$x, pos1$y, default.units = unit)
-	if(verbose) qqcat("  Point 1: x = @{sprintf('%.1f', pos1$x)} @{unit}, y = @{sprintf('%.1f', pos1$y)} @{unit} (measured in the graphic device)\n")
+	if(verbose) qqcat("  Point 1: x = @{sprintf('%.1f', pos1$x)} @{unit}, y = @{sprintf('%.1f', pos1$y)} @{unit} (measured in the graphics device)\n")
 	
 	if(is.null(pos2)) {
 		unit = "mm"
@@ -304,7 +304,7 @@ selectPosition = function(ht_list, pos = NULL, mark = TRUE, verbose = TRUE,
 	}
 	pos1 = lapply(pos1, as.numeric)
 	if(mark) grid.points(pos1$x, pos1$y, default.units = unit)
-	if(verbose) qqcat("  Point: x = @{sprintf('%.1f', pos1$x)} @{unit}, y = @{sprintf('%.1f', pos1$y)} @{unit} (measured in the graphic device)\n")
+	if(verbose) qqcat("  Point: x = @{sprintf('%.1f', pos1$x)} @{unit}, y = @{sprintf('%.1f', pos1$y)} @{unit} (measured in the graphics device)\n")
 	
 	if(verbose) cat("\n")
 
@@ -499,12 +499,12 @@ redraw_ht_vp = function(pos) {
 		x_max = pos[i, "x_max"]
 		y_min = pos[i, "y_min"]
 		y_max = pos[i, "y_max"]
-		pushViewport(viewport(x = x_min, y = y_min, 
+		pushViewport(viewport(x = x_min, y = y_min, name = pos[i, "slice"],
 			width = x_max - x_min, height = y_max - y_min,
 			just = c("left", "bottom")))
 		grid.rect()
-		popViewport()
-	}	
+		upViewport()
+	}
 }
 
 seek_root_vp = function() {
