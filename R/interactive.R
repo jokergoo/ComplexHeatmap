@@ -246,6 +246,9 @@ selectArea = function(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = 
 # == value
 # A `S4Vectors::DataFrame` object with row index and column index corresponding to the selected position.
 #
+# == seealso
+# The code for this shiny app is at https://github.com/jokergoo/ComplexHeatmap/blob/master/inst/app/app.R
+#
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #

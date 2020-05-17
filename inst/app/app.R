@@ -1,6 +1,9 @@
 require(shiny)
 library(GetoptLong)
 
+## if you want to run it as a stand-alone app, you need to have a variable `ht_list` which
+## contains the heatmap list or the single heatmap.
+
 ui = fluidPage(
 	tags$head(
 		tags$script(src = "https://code.jquery.com/ui/1.12.1/jquery-ui.js"),
