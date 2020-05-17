@@ -20,24 +20,19 @@ selectPosition(ht_list, pos = NULL, mark = TRUE, verbose = TRUE,
 
 }
 \value{
-A deep list containing row index and column index corresponding to the selected position.
-The format is (assume the returned object is called \code{lt}):
-
-\itemize{
-  \item \code{lt[[ heatmap_name ]][[ slice_name ]][[ row_index ]]}: row index of the selected point.
-  \item \code{lt[[ heatmap_name ]][[ slice_name ]][[ column_index ]]}: column index of the selected point.
-}
+A \code{\link[S4Vectors:DataFrame-class]{DataFrame}} object with row index and column index corresponding to the selected position.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
 \examples{
-m = matrix(rnorm(100), 10)
-rownames(m) = 1:10
-colnames(m) = 1:10
+if(interactive()) {
+	m = matrix(rnorm(100), 10)
+	rownames(m) = 1:10
+	colnames(m) = 1:10
 
 ht = Heatmap(m)
-ht = draw(ht)
-selectPosition(ht, pos = unit(c(4, 4), "cm"))
-# you can try selectArea(ht) in the interactive graphic device
+	ht = draw(ht)
+selectPosition(ht)
+}
 }

@@ -17,39 +17,15 @@ ht_pos_on_device(ht_list, unit = "inch", valueOnly = FALSE)
 
 }
 \value{
-It returns a deep list of the positions of the bottom left and top right
-of every heatmap slice.
-
-The format is (assme the returned object is called \code{pos}):
-
-\itemize{
-  \item \code{pos[[ heatmap_name ]][[ slice_name ]][[ x ]]}: left and right of the selected sub-heatmap.
-  \item \code{pos[[ heatmap_name ]][[ slice_name ]][[ y ]]}: bottom and top of the selected sub-heatmap.
-}
+It returns a \code{\link[S4Vectors:DataFrame-class]{DataFrame}} object of the positions of every heatmap slice.
 }
 \examples{
-\dontrun{
 if(interactive()) {
-# it is runable if you are under an interactive graphic device
 m = matrix(rnorm(100), 10)
 ht = Heatmap(m, row_km = 2, column_km = 2)
 ht = draw(ht)
 pos = ht_pos_on_device(ht)
 
-ds = dev.size()
-dev.new(width = ds[1], height = ds[2])
-grid.newpage()
-for(ht_name in names(pos)) {
-	for(vp_name in names(pos[[ht_name]])) {
-		x = pos[[ht_name]][[vp_name]]$x
-		y = pos[[ht_name]][[vp_name]]$y
-		pushViewport(viewport(x = x[1], y = y[1], 
-			width = x[2] - x[1], height = y[2] - y[1],
-			just = c("left", "bottom")))
-		grid.rect()
-		popViewport()
-	}
-}
-}
+ComplexHeatmap:::redraw_ht_vp(pos)
 }
 }

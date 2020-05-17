@@ -531,6 +531,9 @@ Heatmap = function(matrix, col, name,
         if(is.function(col)) {
             .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
             if(verbose) qqcat("input color is a color mapping function\n")
+        } else if(inherits(col, "ColorMapping")){
+            .Object@matrix_color_mapping = col
+            if(verbose) qqcat("input color is a ColorMapping object\n")
         } else {
             if(is.null(names(col))) {
                 if(length(col) == length(unique(as.vector(matrix)))) {

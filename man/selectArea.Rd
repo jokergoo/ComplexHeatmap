@@ -24,33 +24,24 @@ selectArea(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = TRUE,
 The regions can be selected interactively or manually by setting \code{pos1} and \code{pos2}.
 }
 \value{
-A deep list containing row indices and column indices corresponding to the selected region.
-The format is (assume the returned object is called \code{lt}):
-
-\itemize{
-  \item \code{lt[[ heatmap_name ]][[ slice_name ]][[ row_index ]]}: row indicies of the selected sub-matrix.
-  \item \code{lt[[ heatmap_name ]][[ slice_name ]][[ column_index ]]}: column indicies of the selected sub-matrix.
-}
+A \code{\link[S4Vectors:DataFrame-class]{DataFrame}} object with row indices and column indices corresponding to the selected region.
 }
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\seealso{
-With this function, it is possible to make ComplexHeatmap interactive as a shiny app. Try \code{\link{selectArea_shiny_demo}}.
-}
 \examples{
-m = matrix(rnorm(100), 10)
-rownames(m) = 1:10
-colnames(m) = 1:10
+if(interactive()) {
+	m = matrix(rnorm(100), 10)
+	rownames(m) = 1:10
+	colnames(m) = 1:10
 
 ht = Heatmap(m)
-ht = draw(ht)
-selectArea(ht, pos1 = unit(c(1, 1), "cm"), pos2 = unit(c(4, 4), "cm"))
-# you can try selectArea(ht) in the interactive graphic device
+	ht = draw(ht)
+	selectArea(ht)
 
 set.seed(123)
-ht = Heatmap(m, row_km = 2, column_km = 2)
-ht = draw(ht)
-selectArea(ht, pos1 = unit(c(1, 1), "cm"), pos2 = unit(c(8, 8), "cm"))
-# you can try selectArea(ht) in the interactive graphic device
+	ht = Heatmap(m, row_km = 2, column_km = 2)
+	ht = draw(ht)
+	selectArea(ht)
+}
 }
