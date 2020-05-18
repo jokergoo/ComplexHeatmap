@@ -80,6 +80,10 @@ default_col = function(x, main_matrix = FALSE) {
                 if(length(unique(x)) >= 100) {
                     q1 = quantile(abs(x), 0.99)
                     col_fun = colorRamp2(c(-q1, 0, q1), c("blue", "#EEEEEE", "red"))
+
+                    if(any(x > q1*3 | x < -q1*3)) {
+                        message_wrap("The automatically generated color maps from the minus and plus 99^th of the absolute values in the matrix. There are outliers in the matrix whose patterns might be hidden by this color mapping.\n\nUse `suppressMessages()` to turn off this message.")
+                    }
                 } else {
                     q1 = max(abs(x))
                     col_fun = colorRamp2(c(-q1, 0, q1), c("blue", "#EEEEEE", "red"))
@@ -92,6 +96,9 @@ default_col = function(x, main_matrix = FALSE) {
                          col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
                     } else {
                         col_fun = colorRamp2(seq(q1, q2, length = 3), c("blue", "#EEEEEE", "red"))
+                        if(any(x > q2 + (q2-q1) | x < q1 - (q2-q1))) {
+                            message_wrap("The automatically generated color maps from the 1^st and 99^th of the values in the matrix. There are outliers in the matrix whose patterns might be hidden by this color mapping.\n\nUse `suppressMessages()` to turn off this message.")
+                        }
                     }
                 } else {
                     col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
