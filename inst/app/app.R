@@ -68,8 +68,7 @@ ui = fluidPage(
 
 	titlePanel("ComplexHeatmap Shiny App"),
 
-	p("You can click or select an area from the heatmap. The original heatmap and the selected sub-heatmap can be resized by dragging from the bottom right."),
-	
+	p("You can click or select an area from the heatmap. The original heatmap and the selected sub-heatmap can be resized by dragging from the bottom right. If the heatmap is too huge or you resize the heatmap too frequently, the heatmap might not be correctly updated. You can just need to slightly resize the heatmap again and wait for several seconds."),
 	hr(),
 
 	div(
