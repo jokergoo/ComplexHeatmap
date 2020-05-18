@@ -257,7 +257,7 @@ server = function(input, output, session) {
 			    v = m[row_index, column_index]
 			    col = map_to_colors(ht_list@ht_list[[ht_name]]@matrix_color_mapping, v)
 			    row_label = rownames(m)[row_index]
-			    column_label = rownames(m)[column_index]
+			    column_label = colnames(m)[column_index]
 			    if(is.null(row_label)) {
 			    	row_label = "NULL"
 			    } else {
