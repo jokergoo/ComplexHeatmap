@@ -5,6 +5,7 @@ CHANGES in VERSION 2.5.3
 * export the heatmap as a shiny app!!!
 * `col` in `Heatmap()` accpets a `ColorMapping` object.
 * `default_col()`: print a message if there are outliers in the matrix.
+* `discrete_legend_body()`: adjust ncol and nrow if there are empty rows and columns in the layout.
 
 ========================
 

@@ -335,8 +335,19 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 	}
 	ncol = ifelse(ncol > n_labels, n_labels, ncol)
 
-	labels_mat = matrix(c(labels, rep("", nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = by_row)
+	labels_mat = matrix(c(labels, rep(NA, nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = by_row)
 	index_mat = matrix(1:(nrow*ncol), nrow = nrow, ncol = ncol, byrow = by_row)
+
+	l_na = apply(labels_mat, 2, function(x) all(is.na(x)))
+	if(any(l_na)) {
+		message_wrap(qq("No legend element is put in the last @{sum(l_na)} column@{ifelse(sum(l_na) > 1, 's', '')} under `ncol = @{ncol}`, maybe you should set `by_row = TRUE`? Reset `ncol` to @{sum(!l_na)}."))
+		ncol = sum(!l_na)
+	}
+	l_na = apply(labels_mat, 1, function(x) all(is.na(x)))
+	if(any(l_na)) {
+		message_wrap(qq("No legend element is put in the last @{sum(l_na)} row@{ifelse(sum(l_na) > 1, 's', '')} under `nrow = @{nrow}`, maybe you should set `by_row = FALSE`? Reset `nrow` to @{sum(!l_na)}."))
+		nrow = sum(!l_na)
+	}
 
 	labels_padding_left = unit(1, "mm")
 
@@ -376,7 +387,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		if(inherits(labels_mat[1, 1], "expression")) {
 			index = index_mat[, i][sapply(labels_mat[, i], function(x) x) != ""]
 		} else {
-			index = index_mat[, i][labels_mat[, i] != ""]
+			index = index_mat[, i][!is.na(labels_mat[, i])]
 		}
 		ni = length(index)
 		y = (0:(ni-1))*(grid_height)
