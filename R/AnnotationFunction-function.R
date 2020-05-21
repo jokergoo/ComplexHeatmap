@@ -473,7 +473,7 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 		asp = convertHeight(unit(1, "npc") - space*2, "mm", valueOnly = TRUE)/convertWidth(unit(1/n, "npc") - space*2, "mm", valueOnly = TRUE)
 		grid.rect(x = (1:n - 0.5)/n, width = 1/n, gp = subset_gp(gp, index))
 		for(i in seq_len(n)) {
-			if(identical(image_list[[i]], NA)) next
+			if(identical(image_list[[ index[i] ]], NA)) next
 			if(yx_asp[ index[i] ] > asp) {
 				height = unit(1, "npc") - space*2
 				width = convertHeight(height, "mm")*yx_asp[ index[i] ]
@@ -482,13 +482,13 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 				height = yx_asp[ index[i] ]*convertWidth(width, "mm")
 			}
 			if(image_class[ index[i] ] == "raster") {
-				grid.raster(image_list[[i]], x = (i-0.5)/n, width = width, height = height)
+				grid.raster(image_list[[ index[i] ]], x = (i-0.5)/n, width = width, height = height)
 			} else if(image_class[ index[i] ] == "grImport::Picture") {
 				grid.picture = getFromNamespace("grid.picture", ns = "grImport")
-				grid.picture(image_list[[i]], x = (i-0.5)/n, width = width, height = height)
+				grid.picture(image_list[[ index[i] ]], x = (i-0.5)/n, width = width, height = height)
 			} else if(image_class[ index[i] ] == "grImport2::Picture") {
 				grid.picture = getFromNamespace("grid.picture", ns = "grImport2")
-				grid.picture(image_list[[i]], x = (i-0.5)/n, width = width, height = height)
+				grid.picture(image_list[[ index[i] ]], x = (i-0.5)/n, width = width, height = height)
 			}
 		}
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
@@ -502,7 +502,7 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 		asp = convertHeight(unit(1/n, "npc") - space*2, "mm", valueOnly = TRUE)/convertWidth(unit(1, "npc") - space*2, "mm", valueOnly = TRUE)
 		grid.rect(y = (n - 1:n + 0.5)/n, height = 1/n, gp = subset_gp(gp, index))
 		for(i in seq_len(n)) {
-			if(identical(image_list[[i]], NA)) next
+			if(identical(image_list[[ index[i] ]], NA)) next
 			if(yx_asp[ index[i] ] > asp) {
 				height = unit(1/n, "npc") - space*2
 				width = convertHeight(height, "mm")*(1/yx_asp[ index[i] ])
@@ -511,13 +511,13 @@ anno_image = function(image, which = c("column", "row"), border = TRUE,
 				height = yx_asp[ index[i] ]*convertWidth(width, "mm")
 			}
 			if(image_class[ index[i] ] == "raster") {
-				grid.raster(image_list[[i]], y = (n - i + 0.5)/n, width = width, height = height)
+				grid.raster(image_list[[ index[i] ]], y = (n - i + 0.5)/n, width = width, height = height)
 			} else if(image_class[ index[i] ] == "grImport::Picture") {
 				grid.picture = getFromNamespace("grid.picture", ns = "grImport")
-				grid.picture(image_list[[i]], y = (n - i + 0.5)/n, width = width, height = height)
+				grid.picture(image_list[[ index[i] ]], y = (n - i + 0.5)/n, width = width, height = height)
 			} else if(image_class[ index[i] ] == "grImport2::Picture") {
 				grid.picture = getFromNamespace("grid.picture", ns = "grImport2")
-				grid.picture(image_list[[i]], y = (n - i + 0.5)/n, width = width, height = height)
+				grid.picture(image_list[[ index[i] ]], y = (n - i + 0.5)/n, width = width, height = height)
 			}
 		}
 		if(border) grid.rect(gp = gpar(fill = "transparent"))
