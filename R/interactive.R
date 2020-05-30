@@ -41,11 +41,20 @@ selectArea = function(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = 
 
 	if(is.null(pos1) || is.null(pos2)) pos2 = pos1 = NULL
 	if(!is.null(pos1)) {
-		if(!inherits(pos1, "simpleUnit")) {
-			stop_wrap("`pos1` should be a simpleUnit.")
-		}
-		if(!inherits(pos2, "simpleUnit")) {
-			stop_wrap("`pos2` should be a simpleUnit.")
+		if(getRversion() >= "4.0.0") {
+			if(!inherits(pos1, "simpleUnit")) {
+				stop_wrap("`pos1` should be a simpleUnit.")
+			}
+			if(!inherits(pos2, "simpleUnit")) {
+				stop_wrap("`pos2` should be a simpleUnit.")
+			}
+		} else {
+			if(!inherits(pos1, "unit")) {
+				stop_wrap("`pos1` should be a simple unit.")
+			}
+			if(!inherits(pos2, "unit")) {
+				stop_wrap("`pos2` should be a simple unit.")
+			}
 		}
 
 		if(length(pos1) != 2) {
@@ -268,8 +277,14 @@ selectPosition = function(ht_list, pos = NULL, mark = TRUE, verbose = TRUE,
 
 	pos1 = pos
 	if(!is.null(pos1)) {
-		if(!inherits(pos1, "simpleUnit")) {
-			stop_wrap("`pos` should be a simpleUnit.")
+		if(getRversion() >= "4.0.0") {
+			if(!inherits(pos1, "simpleUnit")) {
+				stop_wrap("`pos` should be a simpleUnit.")
+			}
+		} else {
+			if(!inherits(pos1, "unit")) {
+				stop_wrap("`pos` should be a simple unit.")
+			}
 		}
 
 		if(length(pos1) != 2) {
