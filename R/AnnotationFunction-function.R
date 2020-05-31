@@ -3475,6 +3475,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 		}
 		popViewport()
 		# draw the links
+		if(is.null(link_gp$fill)) link_gp$fill = NA
 		link_gp = recycle_gp(link_gp, n_boxes)
 		if(side == "right") {
 			pushViewport(viewport(x = unit(0, "npc"), just = "left", width = link_width))
@@ -3485,7 +3486,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 			df = align_to_df[[i]]
 			for(j in 1:nrow(df)) {
 				# draw each polygon
-				if(!internal_line && "col" %in% names(link_gp)) {
+				if(!internal_line) {
 					link_gp3 = link_gp2 = link_gp
 					link_gp2$col = link_gp$fill
 					link_gp2$lty = NULL
@@ -3647,6 +3648,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 		}
 		popViewport()
 		# draw the links
+		if(is.null(link_gp$fill)) link_gp$fill = NA
 		link_gp = recycle_gp(link_gp, n_boxes)
 		if(side == "top") {
 			pushViewport(viewport(y = unit(0, "npc"), just = "bottom", height = link_height))
@@ -3657,7 +3659,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 			df = align_to_df[[i]]
 			for(j in 1:nrow(df)) {
 				# draw each polygon
-				if(!internal_line && "col" %in% names(link_gp)) {
+				if(!internal_line) {
 					link_gp3 = link_gp2 = link_gp
 					link_gp2$col = link_gp$fill
 					link_gp2$lty = NULL
