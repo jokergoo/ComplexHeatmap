@@ -2790,7 +2790,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	n = length(at)
 	link_gp = recycle_gp(link_gp, n)
 	labels_gp = recycle_gp(labels_gp, n)
-	labels2index = structure(seq_along(at), names = labels)
+	labels2index = structure(seq_along(at), names = as.character(labels))
 	at2labels = structure(labels, names = at)
 
 	if(length(extend) == 1) extend = rep(extend, 2)
@@ -2825,8 +2825,8 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		}
 		labels = rev(at2labels[as.character(at)])
 
-		labels_gp = subset_gp(labels_gp, labels2index[labels])
-		link_gp = subset_gp(link_gp, labels2index[labels])
+		labels_gp = subset_gp(labels_gp, labels2index[as.character(labels)])
+		link_gp = subset_gp(link_gp, labels2index[as.character(labels)])
 
 		if(is.null(.scale)) {
 			.scale = c(0.5, n+0.5)
@@ -2895,8 +2895,8 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		}
 		labels = at2labels[as.character(at)]
 		
-		labels_gp = subset_gp(labels_gp, labels2index[labels])
-		link_gp = subset_gp(link_gp, labels2index[labels])
+		labels_gp = subset_gp(labels_gp, labels2index[as.character(labels)])
+		link_gp = subset_gp(link_gp, labels2index[as.character(labels)])
 
 		if(is.null(.scale)) {
 			.scale = c(0.5, n+0.5)
