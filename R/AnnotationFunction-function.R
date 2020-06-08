@@ -3375,6 +3375,9 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 			}
 		}
 
+		## adjust index order 
+		align_to = lapply(align_to, function(x) intersect(index, x))
+
 		nrl = sapply(align_to, length)
 		align_to_df = lapply(align_to, function(x) {
 			ind = which(index %in% x)
@@ -3552,6 +3555,9 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 				align_to = align_to[lnm]
 			}
 		}
+
+		align_to = lapply(align_to, function(x) intersect(index, x))
+
 		nrl = sapply(align_to, length)
 		align_to_df = lapply(align_to, function(x) {
 			ind = which(index %in% x)

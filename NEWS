@@ -8,6 +8,7 @@ CHANGES in VERSION 2.5.3
 * `discrete_legend_body()`: adjust ncol and nrow if there are empty rows and columns in the layout.
 * `anno_image()`: fixed a bug that images are not reordered.
 * `anno_mark()`: now expression is correctly supported.
+* `anno_zoom()`: order of index in `panel_fun` is adjusted to the order in the heatmap
 
 ========================
 
