@@ -22,6 +22,9 @@ selectPosition(ht_list, pos = NULL, mark = TRUE, verbose = TRUE,
 \value{
 A \code{\link[S4Vectors:DataFrame-class]{DataFrame}} object with row index and column index corresponding to the selected position.
 }
+\seealso{
+The code for this shiny app is at \url{https://github.com/jokergoo/ComplexHeatmap/blob/master/inst/app/app.R}
+}
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }

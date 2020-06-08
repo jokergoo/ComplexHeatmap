@@ -8,7 +8,7 @@ Density Annotation
 }
 \usage{
 anno_density(x, which = c("column", "row"),
-    type = c("lines", "violin", "heatmap"),
+    type = c("lines", "violin", "heatmap"), xlim = NULL,
     heatmap_colors = rev(brewer.pal(name = "RdYlBu", n = 11)),
     joyplot_scale = 1, border = TRUE, gp = gpar(fill = "#CCCCCC"),
     axis = TRUE, axis_param = default_axis_param(which),
@@ -19,6 +19,7 @@ anno_density(x, which = c("column", "row"),
   \item{x}{A matrix or a list. If \code{x} is a matrix and if \code{which} is \code{column}, statistics for boxplots are calculated by columns, if \code{which} is \code{row}, the calculation is done by rows.}
   \item{which}{Whether it is a column annotation or a row annotation?}
   \item{type}{Type of graphics to represent density distribution. "lines" for normal density plot; "violine" for violin plot and "heatmap" for heatmap visualization of density distribution.}
+  \item{xlim}{Range on x-axis.}
   \item{heatmap_colors}{A vector of colors for interpolating density values.}
   \item{joyplot_scale}{Relative height of density distribution. A value higher than 1 increases the height of the density distribution and the plot will represented as so-called "joyplot".}
   \item{border}{Wether draw borders of the annotation region?}

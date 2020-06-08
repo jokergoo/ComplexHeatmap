@@ -1611,7 +1611,7 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 	histogram_counts = lapply(histogram_stats, function(x) x$counts)
 
 	xscale = range(unlist(histogram_breaks), na.rm = TRUE)
-	xscale = xscale + c(0, 0.05)*(xscale[2] - xscale[1])
+	xscale = xscale + c(-0.025, 0.025)*(xscale[2] - xscale[1])
 	yscale = c(0, max(unlist(histogram_counts)))
 	yscale[2] = yscale[2]*1.05
 
@@ -1718,6 +1718,7 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 # -which Whether it is a column annotation or a row annotation?
 # -type Type of graphics to represent density distribution. "lines" for normal density plot; "violine" for violin plot
 #       and "heatmap" for heatmap visualization of density distribution.
+# -xlim Range on x-axis.
 # -heatmap_colors A vector of colors for interpolating density values.
 # -joyplot_scale Relative height of density distribution. A value higher than 1 increases the height of the density
 #               distribution and the plot will represented as so-called "joyplot".
@@ -1746,7 +1747,7 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 #     heatmap_colors = c("white", "orange"))
 # draw(anno, test = "heatmap, colors")
 anno_density = function(x, which = c("column", "row"),
-	type = c("lines", "violin", "heatmap"), 
+	type = c("lines", "violin", "heatmap"), xlim = NULL,
 	heatmap_colors = rev(brewer.pal(name = "RdYlBu", n = 11)), 
 	joyplot_scale = 1, border = TRUE, gp = gpar(fill = "#CCCCCC"),
 	axis = TRUE, axis_param = default_axis_param(which),
@@ -1788,8 +1789,20 @@ anno_density = function(x, which = c("column", "row"),
 	min_density_x = min(unlist(density_x))
 	max_density_x = max(unlist(density_x))
 	
-	xscale = range(unlist(density_x), na.rm = TRUE)
-	xscale = xscale + c(0, 0.05)*(xscale[2] - xscale[1])
+	if(is.null(xlim)) {
+		xscale = range(unlist(density_x), na.rm = TRUE)
+	} else {
+		xscale = xlim
+		for(i in seq_len(n)) {
+			l = density_x[[i]] >= xscale[1] & density_x[[i]] <= xscale[2]
+			density_x[[i]] = density_x[[i]][l]
+			density_y[[i]] = density_y[[i]][l]
+
+			density_x[[i]] = c(density_x[[i]][ 1 ], density_x[[i]], density_x[[i]][ length(density_x[[i]]) ])
+			density_y[[i]] = c(0, density_y[[i]], 0)
+		}
+	}
+	xscale = xscale + c(-0.025, 0.025)*(xscale[2] - xscale[1])
 	if(type == "lines") {
 		yscale = c(0, max(unlist(density_y)))
 		yscale[2] = yscale[2]*1.05
@@ -1797,7 +1810,6 @@ anno_density = function(x, which = c("column", "row"),
 		yscale = max(unlist(density_y))
 		yscale = c(-yscale*1.05, yscale*1.05)
 	} else if(type == "heatmap") {
-		xscale = range(unlist(density_x), na.rm = TRUE)
 		yscale = c(0, 1)
 		min_y = min(unlist(density_y))
 		max_y = max(unlist(density_y))
@@ -2226,7 +2238,7 @@ anno_joyplot = function(x, which = c("column", "row"), gp = gpar(fill = "#000000
 	}
 
 	xscale = range(lapply(value, function(x) x[, 1]), na.rm = TRUE)
-	xscale = xscale + c(-0.05, 0.05)*(xscale[2] - xscale[1])
+	xscale = xscale + c(-0.025, 0.025)*(xscale[2] - xscale[1])
 	yscale = range(lapply(value, function(x) x[, 2]), na.rm = TRUE)
 	yscale[1] = 0
 	yscale[2] = yscale[2]*1.05
