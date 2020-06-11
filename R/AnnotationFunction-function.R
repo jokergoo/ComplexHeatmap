@@ -2121,6 +2121,11 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
         }
         
 		grid.text(value[index], location, (n - seq_along(index) + 0.5)/n, gp = gp, just = just, rot = rot)
+		# if(add_lines) {
+		# 	if(n > 1) {
+		# 		grid.segments(0, (n - seq_along(index)[-n])/n, 1, (n - seq_along(index)[-n])/n, default.units = "native")
+		# 	}
+		# }
 	}
 	column_fun = function(index, k = NULL, N = NULL, vp_name = NULL) {
 		n = length(index)

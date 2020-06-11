@@ -323,7 +323,7 @@ list_to_matrix = function(lt, universal_set = NULL) {
 	rownames(mat) = sort(universal_set)
 	colnames(mat) = names(lt)
 	for(i in seq_along(lt)) {
-		mat[unique(lt[[i]]), i] = 1
+		mat[as.character(unique(lt[[i]])), i] = 1
 	}
 	return(mat)
 }
