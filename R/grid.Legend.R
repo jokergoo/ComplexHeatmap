@@ -835,6 +835,8 @@ packLegend = function(..., gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_
 		stop_wrap("Length of `column_gap` must be one.")
 	}
     n_lgd = length(legend_list)
+    nr = 1
+    nc = 1
     if(direction == "vertical") {
 	    lgd_height = do.call("unit.c", lapply(legend_list, grobHeight))
 
@@ -959,6 +961,8 @@ packLegend = function(..., gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_
 	object@grob = gt
 	object@type = "packed_legends"
 	object@n = n_lgd
+	object@nr = nr
+	object@nc = nc
 	return(object)
 }
 

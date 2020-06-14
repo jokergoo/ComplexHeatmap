@@ -9,6 +9,9 @@ CHANGES in VERSION 2.5.3
 * `anno_image()`: fixed a bug that images are not reordered.
 * `anno_mark()`: now expression is correctly supported.
 * `anno_zoom()`: order of index in `panel_fun` is adjusted to the order in the heatmap
+* `list_to_matrix()`: convert elements to characters.
+* print messages for `anno_mark()`, `anno_zoom()`, `draw_legend()` (if legends are wrapped) 
+  if working under RStudio.
 
 ========================
 

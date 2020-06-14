@@ -1053,3 +1053,17 @@ colorRamp2_biv = function(f1, f2, transparency = 0.5) {
     }
 }
 
+
+is_RStudio_current_dev = function() {
+    dv = names(dev.list())
+    if(length(dv) < 2) {
+        FALSE
+    } else {
+        n = length(dv)
+        if(dv[n-1] == "RStudioGD") {
+            TRUE
+        } else {
+            FALSE
+        }
+    }
+}

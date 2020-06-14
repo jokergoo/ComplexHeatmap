@@ -431,6 +431,14 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
         } else if(side == "bottom") {
             draw(pk, y = unit(0, "npc"), just = "bottom")
         }
+
+        if(pk@nr > 1 || pk@nc > 1) {
+            if(is_RStudio_current_dev()) {
+                if(ht_opt$message) {
+                    message_wrap("It seems you are using RStudio IDE. There are many legends and they are wrapped into multiple rows/columns. The arrangement relies on the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the legend positions might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
+                }
+            }
+        }
     }
 
     size = unit.c(width, height)
