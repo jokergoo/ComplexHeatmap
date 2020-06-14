@@ -294,6 +294,8 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	object@grob = gf
 	object@type = "single_legend"
 	object@n = 1
+	object@nr = 1
+	object@nc = 1
 	return(object)
 }
 
