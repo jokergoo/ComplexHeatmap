@@ -2794,12 +2794,6 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	link_gp = lines_gp, 
 	extend = unit(0, "mm")) {
 
-	if(is_RStudio_current_dev()) {
-		if(ht_opt$message) {
-			message_wrap("It seems you are using RStudio IDE. `anno_mark()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
-		}
-	}
-
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
 	} else {
@@ -2840,6 +2834,13 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	# a map between row index and positions
 	# pos_map = 
 	row_fun = function(index) {
+
+		if(is_RStudio_current_dev()) {
+			if(ht_opt$message) {
+				message_wrap("It seems you are using RStudio IDE. `anno_mark()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
+			}
+		}
+
 		n = length(index)
 		# adjust at and labels
 		at = intersect(index, at)
@@ -2910,6 +2911,13 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		upViewport()
 	}
 	column_fun = function(index) {
+
+		if(is_RStudio_current_dev()) {
+			if(ht_opt$message) {
+				message_wrap("It seems you are using RStudio IDE. `anno_mark()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
+			}
+		}
+		
 		n = length(index)
 		# adjust at and labels
 		at = intersect(index, at)
@@ -3340,12 +3348,6 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 	size = NULL, gap = unit(1, "mm"), 
 	link_width = unit(5, "mm"), link_height = link_width, link_gp = gpar(),
 	extend = unit(0, "mm"), width = NULL, height = NULL, internal_line = TRUE) {
-	
-	if(is_RStudio_current_dev()) {
-		if(ht_opt$message) {
-			message_wrap("It seems you are using RStudio IDE. `anno_zoom()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
-		}
-	}
 
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
@@ -3378,6 +3380,13 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 	# anno_zoom is always executed in one-slice mode (which means mulitple slices
 	# are treated as one big slilce)
 	row_fun = function(index) {
+
+		if(is_RStudio_current_dev()) {
+			if(ht_opt$message) {
+				message_wrap("It seems you are using RStudio IDE. `anno_zoom()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
+			}
+		}
+
 		n = length(index)
 		if(is.atomic(align_to)) {
 			if(length(setdiff(align_to, index)) == 0 && !any(duplicated(align_to))) {
@@ -3558,6 +3567,13 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 	}
 
 	column_fun = function(index) {
+
+		if(is_RStudio_current_dev()) {
+			if(ht_opt$message) {
+				message_wrap("It seems you are using RStudio IDE. `anno_zoom()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
+			}
+		}
+
 		n = length(index)
 		
 		if(is.atomic(align_to)) {

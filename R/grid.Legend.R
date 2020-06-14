@@ -15,7 +15,9 @@ Legends = setClass("Legends",
     slots = list(
         grob = "ANY",
         type = "character",
-        n = "numeric"
+        n = "numeric",
+        nr = "numeric",
+        nc = "numeric"
     )
 )
 
