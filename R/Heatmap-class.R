@@ -785,7 +785,7 @@ Heatmap = function(matrix, col, name,
         nb = nobs(bottom_annotation)
         if(!is.na(nb)) {
             if(nb != ncol(.Object@matrix)) {
-                stop_wrap("number of observations in bottom anntotion should be as same as ncol of the matrix.")
+                stop_wrap("number of observations in bottom annotation should be as same as ncol of the matrix.")
             }
         }
     }
@@ -805,7 +805,7 @@ Heatmap = function(matrix, col, name,
         nb = nobs(left_annotation)
         if(!is.na(nb)) {
             if(nb != nrow(.Object@matrix)) {
-                stop_wrap("number of observations in left anntotion should be same as nrow of the matrix.")
+                stop_wrap("number of observations in left annotation should be same as nrow of the matrix.")
             }
         }
     }
@@ -825,7 +825,7 @@ Heatmap = function(matrix, col, name,
         nb = nobs(right_annotation)
         if(!is.na(nb)) {
             if(nb != nrow(.Object@matrix)) {
-                stop_wrap("number of observations in right anntotion should be same as nrow of the matrix.")
+                stop_wrap("number of observations in right annotation should be same as nrow of the matrix.")
             }
         }
     }
