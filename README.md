@@ -6,7 +6,7 @@
 [![bioc](http://mcube.nju.edu.cn/cgi-bin/zuguanggu/bioc_download.pl?package=ComplexHeatmap&)](https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/) 
 [![bioc](http://www.bioconductor.org/shields/years-in-bioc/ComplexHeatmap.svg)](http://bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html)
 
-<img src="http://jokergoo.github.io/complexheatmap_logo.svg" width="600">
+<img src="http://jokergoo.github.io/complexheatmap_logo.svg" width="550">
 
 
 Complex heatmaps are efficient to visualize associations between different
