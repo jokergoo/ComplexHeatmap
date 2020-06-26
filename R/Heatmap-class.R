@@ -88,6 +88,8 @@ Heatmap = setClass("Heatmap",
 # -color_space The color space in which colors are interpolated. Only used if ``matrix`` is numeric and 
 #            ``col`` is a vector of colors. Pass to `circlize::colorRamp2`.
 # -border Whether draw border. The value can be logical or a string of color.
+# -border_gp Graphic parameters for the borders. If you want to set different parameters for different heatmap slices,
+#           please consider to use `decorate_heatmap_body`.
 # -cell_fun Self-defined function to add graphics on each cell. Seven parameters will be passed into 
 #           this function: ``j``, ``i``, ``x``, ``y``, ``width``, ``height``, ``fill`` which are column index,
 #           row index in ``matrix``, coordinate of the cell,
@@ -174,7 +176,7 @@ Heatmap = setClass("Heatmap",
 # -heatmap_height Height of the whole heatmap (including heatmap components). Check https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#size-of-the-heatmap .
 # -show_heatmap_legend Whether show heatmap legend?
 # -heatmap_legend_param A list contains parameters for the heatmap legends. See `color_mapping_legend,ColorMapping-method` for all available parameters.
-# -use_raster Whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if ``cell_fun``
+# -use_raster Whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. If number of rows or columns is more than 2000, it is by default turned on. Note if ``cell_fun``
 #       is set, ``use_raster`` is enforced to be ``FALSE``.
 # -raster_device Graphic device which is used to generate the raster image.
 # -raster_quality A value set to larger than 1 will improve the quality of the raster image.
@@ -208,6 +210,7 @@ Heatmap = function(matrix, col, name,
     color_space = "LAB",
     rect_gp = gpar(col = NA), 
     border = NA,
+    border_gp = gpar(fill = NA, col = "black"),
     cell_fun = NULL,
     layer_fun = NULL,
     jitter = FALSE,
@@ -516,6 +519,7 @@ Heatmap = function(matrix, col, name,
     }
     if(identical(border, TRUE)) border = "black"
     .Object@matrix_param$border = border
+    .Object@matrix_param$border_gp = border_gp
     .Object@matrix_param$cell_fun = cell_fun
     .Object@matrix_param$layer_fun = layer_fun
     
@@ -1433,6 +1437,7 @@ make_cluster = function(object, which = c("row", "column")) {
                 slice_mean = matrix(slice_mean, nrow = 1)
             }
             dend_slice = as.dendrogram(hclust(dist(t(slice_mean))))
+            dend_slice = reorder(dend_slice, slice_mean, mean)
             if(verbose) qqcat("perform clustering on mean of @{which} slices\n")
 
             slice_od = order.dendrogram(dend_slice)

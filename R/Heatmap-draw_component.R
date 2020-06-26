@@ -212,7 +212,8 @@ setMethod(f = "draw_heatmap_body",
     }
 
     if(!identical(border, FALSE)) {
-        grid.rect(gp = gpar(fill = "transparent", col = border))
+        border_gp = object@matrix_param$border_gp
+        grid.rect(gp = border_gp)
     }
 
     upViewport()
