@@ -16,8 +16,8 @@ Legends = setClass("Legends",
         grob = "ANY",
         type = "character",
         n = "numeric",
-        nr = "numeric",
-        nc = "numeric"
+        multiple = "numeric",
+        direction = "character"
     )
 )
 
@@ -111,7 +111,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	direction = c("vertical", "horizontal"),
 	title = "", title_gp = gpar(fontsize = 10, fontface = "bold"),
 	title_position = c("topleft", "topcenter", "leftcenter", "lefttop", "leftcenter-rot", "lefttop-rot"),
-	title_gap = unit(1.5, "mm")) {
+	title_gap = unit(2, "mm")) {
 
 	dev.null()
 	on.exit(dev.off2())
@@ -173,6 +173,8 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 		object@grob = legend_body
 		object@type = "single_legend_no_title"
 		object@n = 1
+		object@multiple = 1
+		object@direction = "vertical"
 		return(object)
 	}
 	if(!inherits(title, c("expression", "call"))) {
@@ -181,6 +183,8 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 			object@grob = legend_body
 			object@type = "single_legend_no_title"
 			object@n = 1
+			object@multiple = 1
+			object@direction = "vertical"
 			return(object)
 		}
 	}
@@ -294,8 +298,8 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	object@grob = gf
 	object@type = "single_legend"
 	object@n = 1
-	object@nr = 1
-	object@nc = 1
+	object@multiple = 1
+	object@direction = "vertical"
 	return(object)
 }
 
@@ -964,9 +968,13 @@ packLegend = function(..., gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_
 	object = new("Legends")
 	object@grob = gt
 	object@type = "packed_legends"
+	object@direction = direction
 	object@n = n_lgd
-	object@nr = nr
-	object@nc = nc
+	if(direction == "vertical") {
+		object@multiple = nc
+	} else {
+		object@multiple = nr
+	}
 	return(object)
 }
 

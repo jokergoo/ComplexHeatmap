@@ -91,6 +91,8 @@ setMethod(f = "make_layout",
     annotation_legend_side = c("right", "left", "bottom", "top"), 
     show_annotation_legend = TRUE, 
     annotation_legend_list = list(),
+    align_heatmap_legend = NULL,
+    align_annotation_legend = NULL,
 
     ht_gap = unit(2, "mm"), 
 
@@ -961,7 +963,7 @@ setMethod(f = "make_layout",
             size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_right_width = size[1]
-            object@layout$layout_index = rbind(object@layout$layout_index, heamap_legend_right = heatmap_list_layout_index("heatmap_legend_right"))
+            object@layout$layout_index = rbind(object@layout$layout_index, heatmap_legend_right = heatmap_list_layout_index("heatmap_legend_right"))
         }
         if(heatmap_legend_side %in% c("top", "bottom")) {
             object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object)))
@@ -1042,6 +1044,9 @@ setMethod(f = "make_layout",
     } else {
         object@annotation_legend_param$size = unit(c(0, 0), "null")
     }
+
+    object@heatmap_legend_param$align_legend = align_heatmap_legend
+    object@annotation_legend_param$align_legend = align_annotation_legend
 
     object = adjust_heatmap_list(object)
     object@layout$layout_index = rbind(heatmaplist = heatmap_list_layout_index("heatmap_list"), object@layout$layout_index)

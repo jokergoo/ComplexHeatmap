@@ -284,6 +284,8 @@ setMethod(f = "draw",
     annotation_legend_side = c("right", "left", "bottom", "top"), 
     show_annotation_legend = TRUE, 
     annotation_legend_list = list(),
+    align_heatmap_legend = NULL,
+    align_annotation_legend = NULL,
 
     gap = unit(2, "mm"), 
     ht_gap = gap, 
@@ -440,18 +442,17 @@ setMethod(f = "draw",
         grid.newpage()
     }
 
-    # if(!missing(heatmap_legend_offset) && missing(annotation_legend_offset)) {
-    #     annotation_legend_offset = heatmap_legend_offset
-    # } else if(missing(heatmap_legend_offset) && !missing(annotation_legend_offset)) {
-    #     heatmap_legend_offset = annotation_legend_offset
-    # }
-
-    if(is.null(object@heatmap_legend_param$offset))
-        object@heatmap_legend_param$offset = unit(0, "mm") #heatmap_legend_offset
-    if(is.null(object@annotation_legend_param$offset))
-        object@annotation_legend_param$offset = unit(0, "mm") #annotation_legend_offset
-
     object@ht_list_param$adjust_annotation_extension = adjust_annotation_extension
+
+    heatmap_legend_side = match.arg(heatmap_legend_side)
+    annotation_legend_side = match.arg(annotation_legend_side)
+    if(heatmap_legend_side == annotation_legend_side) {
+        if(!is.null(align_heatmap_legend) && is.null(align_annotation_legend)) {
+            align_annotation_legend = align_heatmap_legend
+        } else if(is.null(align_heatmap_legend) && !is.null(align_annotation_legend)) {
+            align_heatmap_legend = align_heatmap_legend
+        }
+    }
 
     object = make_layout(
         object, 
@@ -469,6 +470,8 @@ setMethod(f = "draw",
         annotation_legend_side = annotation_legend_side, 
         show_annotation_legend = show_annotation_legend, 
         annotation_legend_list = annotation_legend_list,
+        align_heatmap_legend = align_heatmap_legend,
+        align_annotation_legend = align_annotation_legend,
 
         ht_gap = ht_gap, 
 
@@ -821,4 +824,18 @@ ht_size = function(ht) {
     dev.off2()
 
     list(width = w, height = h)
+}
+
+
+which_first_ht = function(ht_list) {
+    which(sapply(ht_list@ht_list, inherits, "Heatmap"))[1]
+}
+
+
+which_last_ht = function(ht_list) {
+    max(which(sapply(ht_list@ht_list, inherits, "Heatmap")))
+}
+
+which_main_ht = function(ht_list) {
+    ht_list@ht_list_param$main_heatmap
 }

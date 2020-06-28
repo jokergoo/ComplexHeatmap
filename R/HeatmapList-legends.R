@@ -99,35 +99,104 @@ setMethod(f = "draw_heatmap_legend",
 
     annotation_legend_side = object@annotation_legend_param$side
     annotation_legend_size = object@annotation_legend_param$size
-    offset = object@heatmap_legend_param$offset
-
-    if(inherits(offset, "character")) {
-        if(offset == "annotation_top") {
-            i_ht = object@ht_list_param$main_heatmap
-            main_ht = object@ht_list[[i_ht]]
-            offset = unit(1, "npc") - main_ht@layout$layout_size$column_title_top_height - 
-                main_ht@layout$layout_size$column_dend_top_height - 
-                (unit(0.5, "npc") + size[2]*0.5)
-        } 
-    } else {
-        offset = unit(0, "mm")
+    align_legend = object@heatmap_legend_param$align_legend
+    if(is.null(align_legend)) {
+        align_legend = guess_align_legend(object,
+            object@heatmap_legend_param$size, object@annotation_legend_param$size,
+            object@heatmap_legend_param$side, object@annotation_legend_param$side,
+            test_on = "heatmap_legend")
     }
 
-    if(side != annotation_legend_side) {
-        y = unit(0.5, "npc")
-        pushViewport(viewport(name = "heatmap_legend", x = unit(0.5, "npc"), y = y + offset, width = size[1], height = size[2], just = c("center", "center")))
-    } else {
-        if(side %in% c("left", "right")) {
-            y1 = unit(0.5, "npc") + size[2]*0.5  # top of heatmap legend
-            y2 = unit(0.5, "npc") + annotation_legend_size[2]*0.5
-            y = max(y1, y2)
-            pushViewport(viewport(name = "heatmap_legend", x = unit(0.5, "npc"), y = y + offset, width = size[1], height = size[2], just = c("center", "top")))           
+    if(align_legend == "global_center") {
+        if(side != annotation_legend_side) {
+            y = unit(0.5, "npc")
+            pushViewport(viewport(name = "heatmap_legend", x = unit(0.5, "npc"), y = y, width = size[1], height = size[2], just = c("center", "center")))
         } else {
-            x1 = unit(0.5, "npc") - size[1]*0.5  # top of heatmap legend
-            x2 = unit(0.5, "npc") - annotation_legend_size[1]*0.5
-            x = min(x1, x2)
-            pushViewport(viewport(name = "heatmap_legend", x = x, y = unit(0.5, "npc") + offset, width = size[1], height = size[2], just = c("left", "center")))           
+            if(side %in% c("left", "right")) {
+                y1 = unit(0.5, "npc") + size[2]*0.5  # top of heatmap legend
+                y2 = unit(0.5, "npc") + annotation_legend_size[2]*0.5
+                y = max(y1, y2)
+                pushViewport(viewport(name = "heatmap_legend", x = unit(0.5, "npc"), y = y, width = size[1], height = size[2], just = c("center", "top")))           
+            } else {
+                x1 = unit(0.5, "npc") - size[1]*0.5  # top of heatmap legend
+                x2 = unit(0.5, "npc") - annotation_legend_size[1]*0.5
+                x = min(x1, x2)
+                pushViewport(viewport(name = "heatmap_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
+            }
         }
+    } else {
+   
+        if(align_legend == "heatmap_top") {
+            if(!side %in% c("left", "right")) {
+                stop_wrap("Heatmap legends should be put on the left or right side of the heatmaps if `align_legend` is 'heatmap_top'.")
+            }
+            if(object@direction == "horizontal") {
+                top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
+            } else {
+                top_h = sum(component_height(object@ht_list[[ which_first_ht(object) ]], 1:4))
+            }
+            y = unit(1, "npc") - top_h
+            legend_just = "top"
+            x = unit(0.5, "npc")
+        } else if(align_legend == "heatmap_left") {
+            if(!side %in% c("top", "bottom")) {
+                stop_wrap("Heatmap legends should be put on the top or bottom side of the heatmaps if `align_legend` is 'heatmap_left'.")
+            }
+            if(object@direction == "vertical") {
+                left_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 1:4))
+            } else {
+                left_w = sum(component_width(object@ht_list[[ which_first_ht(object) ]], 1:4))
+            }
+            x = left_w
+            legend_just = "left"
+            y = unit(0.5, "npc")
+        } else if(align_legend == "heatmap_center") {
+            if(side %in% c("left", "right")) {
+                if(object@direction == "horizontal") {
+                    bottom_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 6:9))
+                    top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
+                } else {
+                    bottom_h = sum(component_height(object@ht_list[[ which_last_ht(object) ]], 6:9))
+                    top_h = sum(component_height(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                }
+                ht_h = unit(1, "npc") - top_h - bottom_h
+                y = bottom_h + ht_h*0.5
+                legend_just = "center"
+                x = unit(0.5, "npc")
+                # grid.rect(y = y, height = ht_h)
+            } else {
+                if(object@direction == "horizontal") {
+                    left_w = sum(component_width(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                    right_w = sum(component_width(object@ht_list[[ which_last_ht(object) ]], 6:9))
+                } else {
+                    left_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 1:4))
+                    right_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 6:9))
+                }
+                ht_w = unit(1, "npc") - left_w - right_w
+                x = left_w + ht_w*0.5
+                legend_just = "center"
+                y = unit(0.5, "npc")
+                # grid.rect(x = x, width = ht_w)
+            }
+        }
+
+        if(side != annotation_legend_side) {
+            pushViewport(viewport(name = "heatmap_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))           
+        } else {
+            if(side %in% c("left", "right")) {
+                if(align_legend == "heatmap_center") {
+                    y = bottom_h + ht_h*0.5 + max(size[2]*0.5, annotation_legend_size[2]*0.5)
+                    legend_just = "top"
+                }
+                pushViewport(viewport(name = "heatmap_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))  
+            } else {
+                if(align_legend == "heatmap_center") {
+                    x = left_w + ht_w*0.5 - max(size[1]*0.5, annotation_legend_size[1]*0.5)
+                    legend_just = "left"
+                }
+                pushViewport(viewport(name = "heatmap_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))  
+            }
+        }   
     }
     draw_legend(ColorMappingList, ColorMappingParamList, side = side, legend_list = legend_list, padding = padding, ...)
 
@@ -203,25 +272,228 @@ setMethod(f = "draw_annotation_legend",
 
     heatmap_legend_side = object@heatmap_legend_param$side
     heatmap_legend_size = object@heatmap_legend_param$size
-    if(side != heatmap_legend_side) {
-        pushViewport(viewport(name = "annotation_legend", x = unit(0.5, "npc") + offset, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("center", "center")))
-    } else {
-        if(side %in% c("left", "right")) {
-            y1 = unit(0.5, "npc") + size[2]*0.5  # top of heatmap legend
-            y2 = unit(0.5, "npc") + heatmap_legend_size[2]*0.5
-            y = max(y1, y2)
-            pushViewport(viewport(name = "annotation_legend", x = unit(0.5, "npc") + offset, y = y, width = size[1], height = size[2], just = c("center", "top")))           
+    align_legend = object@annotation_legend_param$align_legend
+    if(is.null(align_legend)) {
+        align_legend = guess_align_legend(object,
+            object@heatmap_legend_param$size, object@annotation_legend_param$size,
+            object@heatmap_legend_param$side, object@annotation_legend_param$side,
+            test_on = "annotation_legend")
+    }
+
+    if(align_legend == "global_center") {
+        if(side != heatmap_legend_side) {
+            pushViewport(viewport(name = "annotation_legend", x = unit(0.5, "npc"), y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("center", "center")))
         } else {
-            x1 = unit(0.5, "npc") - size[1]*0.5  # top of heatmap legend
-            x2 = unit(0.5, "npc") - heatmap_legend_size[1]*0.5
-            x = min(x1, x2)
-            pushViewport(viewport(name = "annotation_legend", x = x + offset, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
+            if(side %in% c("left", "right")) {
+                y1 = unit(0.5, "npc") + size[2]*0.5  # top of heatmap legend
+                y2 = unit(0.5, "npc") + heatmap_legend_size[2]*0.5
+                y = max(y1, y2)
+                pushViewport(viewport(name = "annotation_legend", x = unit(0.5, "npc"), y = y, width = size[1], height = size[2], just = c("center", "top")))           
+            } else {
+                x1 = unit(0.5, "npc") - size[1]*0.5  # top of heatmap legend
+                x2 = unit(0.5, "npc") - heatmap_legend_size[1]*0.5
+                x = min(x1, x2)
+                pushViewport(viewport(name = "annotation_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           
+            }
         }
+    } else {
+        if(align_legend == "heatmap_top") {
+            if(!side %in% c("left", "right")) {
+                stop_wrap("Annotation legends should be put on the left or right side of the heatmaps if `align_legend` is 'heatmap_top'.")
+            }
+            if(object@direction == "horizontal") {
+                top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
+            } else {
+                top_h = sum(component_height(object@ht_list[[ which_first_ht(object) ]], 1:4))
+            }
+            y = unit(1, "npc") - top_h
+            legend_just = "top"
+            x = unit(0.5, "npc")
+        } else if(align_legend == "heatmap_left") {
+            if(!side %in% c("top", "bottom")) {
+                stop_wrap("Annotation legends should be put on the top or bottom side of the heatmaps if `align_legend` is 'heatmap_left'.")
+            }
+            if(object@direction == "vertical") {
+                left_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 1:4))
+            } else {
+                left_w = sum(component_width(object@ht_list[[ which_first_ht(object) ]], 1:4))
+            }
+            x = left_w
+            legend_just = "left"
+            y = unit(0.5, "npc")
+        } else if(align_legend == "heatmap_center") {
+            if(side %in% c("left", "right")) {
+                if(object@direction == "horizontal") {
+                    bottom_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 6:9))
+                    top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
+                } else {
+                    bottom_h = sum(component_height(object@ht_list[[ which_last_ht(object) ]], 6:9))
+                    top_h = sum(component_height(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                }
+                ht_h = unit(1, "npc") - top_h - bottom_h
+                y = bottom_h + ht_h*0.5
+                legend_just = "center"
+                x = unit(0.5, "npc")
+                # grid.rect(y = y, height = ht_h)
+            } else {
+                if(object@direction == "horizontal") {
+                    left_w = sum(component_width(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                    right_w = sum(component_width(object@ht_list[[ which_last_ht(object) ]], 6:9))
+                } else {
+                    left_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 1:4))
+                    right_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 6:9))
+                }
+                ht_w = unit(1, "npc") - left_w - right_w
+                x = left_w + ht_w*0.5
+                legend_just = "center"
+                y = unit(0.5, "npc")
+                # grid.rect(x = x, width = ht_w)
+            }
+        }
+
+        if(side != heatmap_legend_side) {
+            pushViewport(viewport(name = "annotation_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))           
+        } else {
+            if(side %in% c("left", "right")) {
+                if(align_legend == "heatmap_center") {
+                    y = bottom_h + ht_h*0.5 + max(size[2]*0.5, heatmap_legend_size[2]*0.5)
+                    legend_just = "top"
+                }
+                pushViewport(viewport(name = "annotation_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))  
+            } else {
+                if(align_legend == "heatmap_center") {
+                    x = left_w + ht_w*0.5 - max(size[1]*0.5, heatmap_legend_size[1]*0.5)
+                    legend_just = "left"
+                }
+                pushViewport(viewport(name = "annotation_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))  
+            }
+        }   
     }
 
     draw_legend(ColorMappingList, ColorMappingParamList, side = side, legend_list = legend_list, padding = padding, ...)
     upViewport()
 })
+
+guess_align_legend = function(ht_list, 
+    heatmap_legend_size, annotation_legend_size,
+    heatmap_legend_side, annotation_legend_side,
+    test_on) {
+
+    if(test_on == "heatmap_legend") {
+        if(attr(heatmap_legend_size, "multiple") != 1) {
+            return("global_center")
+        }
+    }
+    if(test_on == "annotation_legend") {
+        if(attr(annotation_legend_size, "multiple") != 1) {
+            return("global_center")
+        }
+    }
+
+    calc_ht_h = function(inlcude_bottom = FALSE) {
+        if(ht_list@direction == "horizontal") {
+            bottom_h = sum(component_height(ht_list@ht_list[[ which_main_ht(ht_list) ]], 6:9))
+            top_h = sum(component_height(ht_list@ht_list[[ which_main_ht(ht_list) ]], 1:4))
+        } else {
+            bottom_h = sum(component_height(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+            top_h = sum(component_height(ht_list@ht_list[[ which_first_ht(ht_list) ]], 1:4))
+        }
+        ht_h = unit(1, "npc") - top_h - bottom_h
+        if(inlcude_bottom) {
+            ht_h = unit(1, "npc") - top_h
+        }
+        ht_h
+    }
+
+    calc_ht_w = function(include_right = FALSE) {
+        if(ht_list@direction == "horizontal") {
+            left_w = sum(component_width(ht_list@ht_list[[ which_first_ht(ht_list) ]], 1:4))
+            right_w = sum(component_width(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+        } else {
+            left_w = sum(component_width(ht_list@ht_list[[ which_main_ht(ht_list) ]], 1:4))
+            right_w = sum(component_width(ht_list@ht_list[[ which_main_ht(ht_list) ]], 6:9))
+        }
+        ht_w = unit(1, "npc") - left_w - right_w
+        if(include_right) {
+            ht_w = unit(1, "npc") - left_w
+        }
+        ht_w
+    }
+
+    align_legend = NULL
+    if(heatmap_legend_side == annotation_legend_side) {
+        # if the size is less than the heatmap body
+        if(ifelse(test_on == "heatmap_legend", heatmap_legend_side, annotation_legend_side) %in% c("left", "right")) {
+            ht_h = calc_ht_h()
+            if(convertHeight(ht_h, "mm", valueOnly = TRUE) >= max(as.numeric(heatmap_legend_size[2]), as.numeric(annotation_legend_size[2]))) {
+                align_legend = "heatmap_center"
+            }
+        } else {
+            ht_w = calc_ht_w()
+            if(convertWidth(ht_w, "mm", valueOnly = TRUE) >= max(as.numeric(heatmap_legend_size[1]), as.numeric(annotation_legend_size[1]))) {
+                align_legend = "heatmap_center"
+            }
+        }
+        # if the size if less than excluding top of first heatmap
+        if(is.null(align_legend)) {
+            if(ifelse(test_on == "heatmap_legend", heatmap_legend_side, annotation_legend_side) %in% c("left", "right")) {
+                ht_h = calc_ht_h(TRUE)
+                if(convertHeight(ht_h, "mm", valueOnly = TRUE) >= max(as.numeric(heatmap_legend_size[2]), as.numeric(annotation_legend_size[2]))) {
+                    align_legend = "heatmap_top"
+                }
+            } else {
+                ht_w = calc_ht_w(TRUE)
+                if(convertWidth(ht_w, "mm", valueOnly = TRUE) >= max(as.numeric(heatmap_legend_size[1]), as.numeric(annotation_legend_size[1]))) {
+                    align_legend = "heatmap_left"
+                }
+            }
+        }
+
+        if(is.null(align_legend)) {
+            align_legend = "global_center"
+        }
+    } else {
+        # if the size is less than the heatmap body
+        if(ifelse(test_on == "heatmap_legend", heatmap_legend_side, annotation_legend_side) %in% c("left", "right")) {
+            ht_h = ht_h()
+            if(convertHeight(ht_h, "mm", valueOnly = TRUE) >= 
+                ifelse(test_on == "heatmap_legend", 
+                    as.numeric(heatmap_legend_size[2]), as.numeric(annotation_legend_size[2]))) {
+                align_legend = "heatmap_center"
+            }
+        } else {
+            ht_w = ht_w()
+            if(convertWidth(ht_w, "mm", valueOnly = TRUE) >= 
+                ifelse(test_on == "heatmap_legend", 
+                    as.numeric(heatmap_legend_size[1]), as.numeric(annotation_legend_size[1]))) {
+                align_legend = "heatmap_center"
+            }
+        }
+        # if the size if less than excluding top of first heatmap
+        if(is.null(align_legend)) {
+            if(ifelse(test_on == "heatmap_legend", heatmap_legend_side, annotation_legend_side) %in% c("left", "right")) {
+                ht_h = ht_h(TRUE)
+                if(convertHeight(ht_h, "mm", valueOnly = TRUE) >= 
+                    ifelse(test_on == "heatmap_legend", 
+                        as.numeric(heatmap_legend_size[2]), as.numeric(annotation_legend_size[2]))) {
+                    align_legend = "heatmap_top"
+                }
+            } else {
+                ht_w = ht_w(TRUE)
+                if(convertWidth(ht_w, "mm", valueOnly = TRUE) >= 
+                    ifelse(test_on == "heatmap_legend", 
+                        as.numeric(heatmap_legend_size[1]), as.numeric(annotation_legend_size[1]))) {
+                    align_legend = "heatmap_left"
+                }
+            }
+        }
+
+        if(is.null(align_legend)) {
+            align_legend = "global_center"
+        }
+    }
+    return(align_legend)
+}
 
 # == title
 # Size of the Heatmap Legends
@@ -379,7 +651,7 @@ setMethod(f = "annotation_legend_size",
 
 # create a viewport which contains legend
 draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right", "left", "top", "bottom"), 
-    plot = TRUE, gap = unit(2, "mm"), legend_list = list(), padding = unit(c(0, 0, 0, 0), "mm"), 
+    plot = TRUE, gap = unit(4, "mm"), legend_list = list(), padding = unit(c(0, 0, 0, 0), "mm"), 
     max_height = unit(dev.size("cm")[2], "cm"), max_width = unit(dev.size("cm")[1], "cm"), ...) {
 
     side = match.arg(side)[1]
@@ -432,7 +704,7 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
             draw(pk, y = unit(0, "npc"), just = "bottom")
         }
 
-        if(pk@nr > 1 || pk@nc > 1) {
+        if(pk@multiple > 1) {
             if(is_RStudio_current_dev()) {
                 if(ht_opt$message) {
                     message_wrap("It seems you are using RStudio IDE. There are many legends and they are wrapped into multiple rows/columns. The arrangement relies on the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the legend positions might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
@@ -444,5 +716,6 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
     size = unit.c(width, height)
 
     size = unit.c(size[1] + padding[2] + padding[4], size[2] + padding[1] + padding[3])
+    attr(size, "multiple") = pk@multiple
     return(size)
 }
