@@ -211,8 +211,9 @@ setMethod(f = "draw_heatmap_body",
         }
     }
 
-    if(!identical(border, FALSE)) {
+    if(!identical(border, FALSE) && !identical(border, NA)) {
         border_gp = object@matrix_param$border_gp
+        border_gp$fill = "transparent"
         grid.rect(gp = border_gp)
     }
 

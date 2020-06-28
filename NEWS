@@ -1,3 +1,10 @@
+CHANGES in VERSION 2.5.4
+
+* fixed a bug where slice clusters were wrongly reordered.
+* `Heatmap()`: add `border_gp` argument.
+
+========================
+
 CHANGES in VERSION 2.5.3
 
 * add `selectArea()`/`selectPosition()` which allows interactively select a region from 
