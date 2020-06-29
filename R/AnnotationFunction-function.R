@@ -3261,7 +3261,8 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 				width = width + unit(5, "mm")
 			} else {
 				if(!inherits(width, "unit")) {
-				stop_wrap("Since you specified `width`, the value should be `unit` object.")
+					stop_wrap("Since you specified `width`, the value should be `unit` object.")
+				}
 			}
 		}
 	}
