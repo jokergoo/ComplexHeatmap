@@ -184,6 +184,9 @@ setMethod(f = "add_heatmap",
 # -annotation_legend_side side of the annotation legends
 # -show_annotation_legend whether show annotation legends
 # -annotation_legend_list user-defined legends which are put after the annotation legends
+# -align_heatmap_legend How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center". If the value is ``NULL``,
+#           it automatically picks the proper value from the three options.
+# -align_annotation_legend  How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center".
 # -gap gap between heatmaps/annotations
 # -ht_gap same as ``gap``.
 # -main_heatmap index of main heatmap. The value can be a numeric index or the heatmap name

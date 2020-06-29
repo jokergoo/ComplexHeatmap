@@ -24,6 +24,8 @@ Draw a list of heatmaps
     annotation_legend_side = c("right", "left", "bottom", "top"),
     show_annotation_legend = TRUE,
     annotation_legend_list = list(),
+    align_heatmap_legend = NULL,
+    align_annotation_legend = NULL,
     
     gap = unit(2, "mm"),
     ht_gap = gap,
@@ -113,6 +115,8 @@ Draw a list of heatmaps
   \item{annotation_legend_side}{side of the annotation legends}
   \item{show_annotation_legend}{whether show annotation legends}
   \item{annotation_legend_list}{user-defined legends which are put after the annotation legends}
+  \item{align_heatmap_legend}{How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center". If the value is \code{NULL}, it automatically picks the proper value from the three options.}
+  \item{align_annotation_legend}{How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center".}
   \item{gap}{gap between heatmaps/annotations}
   \item{ht_gap}{same as \code{gap}.}
   \item{main_heatmap}{index of main heatmap. The value can be a numeric index or the heatmap name}

@@ -3247,11 +3247,22 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 	}
 	if(length(labels)) {
 		if(which == "column") {
-			height = grobHeight(textGrob(labels, rot = labels_rot, gp = labels_gp))
-			height = height + unit(5, "mm")
+			if(missing(height)) {
+				height = grobHeight(textGrob(labels, rot = labels_rot, gp = labels_gp))
+				height = height + unit(5, "mm")
+			} else {
+				if(!inherits(height, "unit")) {
+					stop_wrap("Since you specified `height`, the value should be `unit` object.")
+				}
+			}
 		} else {
-			width = grobWidth(textGrob(labels, rot = labels_rot, gp = labels_gp))
-			width = width + unit(5, "mm")
+			if(missing(width)) {
+				width = grobWidth(textGrob(labels, rot = labels_rot, gp = labels_gp))
+				width = width + unit(5, "mm")
+			} else {
+				if(!inherits(width, "unit")) {
+				stop_wrap("Since you specified `width`, the value should be `unit` object.")
+			}
 		}
 	}
 

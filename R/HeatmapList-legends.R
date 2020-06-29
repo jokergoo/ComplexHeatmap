@@ -133,7 +133,7 @@ setMethod(f = "draw_heatmap_legend",
             if(object@direction == "horizontal") {
                 top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
             } else {
-                top_h = sum(component_height(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                top_h = calc_before_h(object)
             }
             y = unit(1, "npc") - top_h
             legend_just = "top"
@@ -145,7 +145,7 @@ setMethod(f = "draw_heatmap_legend",
             if(object@direction == "vertical") {
                 left_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 1:4))
             } else {
-                left_w = sum(component_width(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                left_w = calc_before_w(object)
             }
             x = left_w
             legend_just = "left"
@@ -156,8 +156,8 @@ setMethod(f = "draw_heatmap_legend",
                     bottom_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 6:9))
                     top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
                 } else {
-                    bottom_h = sum(component_height(object@ht_list[[ which_last_ht(object) ]], 6:9))
-                    top_h = sum(component_height(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                    bottom_h = calc_after_h(object)
+                    top_h = calc_before_h(object)
                 }
                 ht_h = unit(1, "npc") - top_h - bottom_h
                 y = bottom_h + ht_h*0.5
@@ -166,8 +166,8 @@ setMethod(f = "draw_heatmap_legend",
                 # grid.rect(y = y, height = ht_h)
             } else {
                 if(object@direction == "horizontal") {
-                    left_w = sum(component_width(object@ht_list[[ which_first_ht(object) ]], 1:4))
-                    right_w = sum(component_width(object@ht_list[[ which_last_ht(object) ]], 6:9))
+                    left_w = calc_before_w(object)
+                    right_w = calc_after_w(object)
                 } else {
                     left_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 1:4))
                     right_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 6:9))
@@ -304,7 +304,7 @@ setMethod(f = "draw_annotation_legend",
             if(object@direction == "horizontal") {
                 top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
             } else {
-                top_h = sum(component_height(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                top_h = calc_before_h(object)
             }
             y = unit(1, "npc") - top_h
             legend_just = "top"
@@ -316,7 +316,7 @@ setMethod(f = "draw_annotation_legend",
             if(object@direction == "vertical") {
                 left_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 1:4))
             } else {
-                left_w = sum(component_width(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                left_w = calc_before_w(object)
             }
             x = left_w
             legend_just = "left"
@@ -327,8 +327,8 @@ setMethod(f = "draw_annotation_legend",
                     bottom_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 6:9))
                     top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
                 } else {
-                    bottom_h = sum(component_height(object@ht_list[[ which_last_ht(object) ]], 6:9))
-                    top_h = sum(component_height(object@ht_list[[ which_first_ht(object) ]], 1:4))
+                    bottom_h = calc_after_h(object)
+                    top_h = calc_before_h(object)
                 }
                 ht_h = unit(1, "npc") - top_h - bottom_h
                 y = bottom_h + ht_h*0.5
@@ -337,8 +337,8 @@ setMethod(f = "draw_annotation_legend",
                 # grid.rect(y = y, height = ht_h)
             } else {
                 if(object@direction == "horizontal") {
-                    left_w = sum(component_width(object@ht_list[[ which_first_ht(object) ]], 1:4))
-                    right_w = sum(component_width(object@ht_list[[ which_last_ht(object) ]], 6:9))
+                    left_w = calc_before_w(object)
+                    right_w = calc_after_w(object)
                 } else {
                     left_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 1:4))
                     right_w = sum(component_width(object@ht_list[[ which_main_ht(object) ]], 6:9))
@@ -374,6 +374,72 @@ setMethod(f = "draw_annotation_legend",
     upViewport()
 })
 
+calc_ht_h = function(ht_list, inlcude_bottom = FALSE) {
+    if(ht_list@direction == "horizontal") {
+        bottom_h = sum(component_height(ht_list@ht_list[[ which_main_ht(ht_list) ]], 6:9))
+        top_h = sum(component_height(ht_list@ht_list[[ which_main_ht(ht_list) ]], 1:4))
+    } else {
+        bottom_h = calc_after_h(ht_list)
+        top_h = calc_before_h(ht_list)
+    }
+    ht_h = unit(1, "npc") - top_h - bottom_h
+    if(inlcude_bottom) {
+        ht_h = unit(1, "npc") - top_h
+    }
+    ht_h
+}
+
+calc_ht_w = function(ht_list, include_right = FALSE) {
+    if(ht_list@direction == "horizontal") {
+        left_w = calc_before_w(ht_list)
+        right_w = calc_after_w(ht_list)
+    } else {
+        left_w = sum(component_width(ht_list@ht_list[[ which_main_ht(ht_list) ]], 1:4))
+        right_w = sum(component_width(ht_list@ht_list[[ which_main_ht(ht_list) ]], 6:9))
+    }
+    ht_w = unit(1, "npc") - left_w - right_w
+    if(include_right) {
+        ht_w = unit(1, "npc") - left_w
+    }
+    ht_w
+}
+
+calc_before_h = function(ht_list) {
+    i = which_last_ht(ht_list)
+    if(i == 1) {
+        unit(0, "mm")
+    } else {
+        sum(component_height(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+    }
+}
+
+calc_after_h = function(ht_list) {
+    i = which_last_ht(ht_list)
+    if(i == length(ht_list@ht_list)) {
+        unit(0, "mm")
+    } else {
+        sum(component_height(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+    }
+}
+
+calc_before_w = function(ht_list) {
+    i = which_last_ht(ht_list)
+    if(i == 1) {
+        unit(0, "mm")
+    } else {
+        sum(component_width(ht_list@ht_list[[ which_first_ht(ht_list) ]], 1:4))
+    }
+}
+
+calc_after_w = function(ht_list) {
+    i = which_last_ht(ht_list)
+    if(i == length(ht_list@ht_list)) {
+        unit(0, "mm")
+    } else {
+        sum(component_width(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+    }
+}
+
 guess_align_legend = function(ht_list, 
     heatmap_legend_size, annotation_legend_size,
     heatmap_legend_side, annotation_legend_side,
@@ -390,46 +456,16 @@ guess_align_legend = function(ht_list,
         }
     }
 
-    calc_ht_h = function(inlcude_bottom = FALSE) {
-        if(ht_list@direction == "horizontal") {
-            bottom_h = sum(component_height(ht_list@ht_list[[ which_main_ht(ht_list) ]], 6:9))
-            top_h = sum(component_height(ht_list@ht_list[[ which_main_ht(ht_list) ]], 1:4))
-        } else {
-            bottom_h = sum(component_height(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
-            top_h = sum(component_height(ht_list@ht_list[[ which_first_ht(ht_list) ]], 1:4))
-        }
-        ht_h = unit(1, "npc") - top_h - bottom_h
-        if(inlcude_bottom) {
-            ht_h = unit(1, "npc") - top_h
-        }
-        ht_h
-    }
-
-    calc_ht_w = function(include_right = FALSE) {
-        if(ht_list@direction == "horizontal") {
-            left_w = sum(component_width(ht_list@ht_list[[ which_first_ht(ht_list) ]], 1:4))
-            right_w = sum(component_width(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
-        } else {
-            left_w = sum(component_width(ht_list@ht_list[[ which_main_ht(ht_list) ]], 1:4))
-            right_w = sum(component_width(ht_list@ht_list[[ which_main_ht(ht_list) ]], 6:9))
-        }
-        ht_w = unit(1, "npc") - left_w - right_w
-        if(include_right) {
-            ht_w = unit(1, "npc") - left_w
-        }
-        ht_w
-    }
-
     align_legend = NULL
     if(heatmap_legend_side == annotation_legend_side) {
         # if the size is less than the heatmap body
         if(ifelse(test_on == "heatmap_legend", heatmap_legend_side, annotation_legend_side) %in% c("left", "right")) {
-            ht_h = calc_ht_h()
+            ht_h = calc_ht_h(ht_list)
             if(convertHeight(ht_h, "mm", valueOnly = TRUE) >= max(as.numeric(heatmap_legend_size[2]), as.numeric(annotation_legend_size[2]))) {
                 align_legend = "heatmap_center"
             }
         } else {
-            ht_w = calc_ht_w()
+            ht_w = calc_ht_w(ht_list)
             if(convertWidth(ht_w, "mm", valueOnly = TRUE) >= max(as.numeric(heatmap_legend_size[1]), as.numeric(annotation_legend_size[1]))) {
                 align_legend = "heatmap_center"
             }
@@ -437,12 +473,12 @@ guess_align_legend = function(ht_list,
         # if the size if less than excluding top of first heatmap
         if(is.null(align_legend)) {
             if(ifelse(test_on == "heatmap_legend", heatmap_legend_side, annotation_legend_side) %in% c("left", "right")) {
-                ht_h = calc_ht_h(TRUE)
+                ht_h = calc_ht_h(ht_list, TRUE)
                 if(convertHeight(ht_h, "mm", valueOnly = TRUE) >= max(as.numeric(heatmap_legend_size[2]), as.numeric(annotation_legend_size[2]))) {
                     align_legend = "heatmap_top"
                 }
             } else {
-                ht_w = calc_ht_w(TRUE)
+                ht_w = calc_ht_w(ht_list, TRUE)
                 if(convertWidth(ht_w, "mm", valueOnly = TRUE) >= max(as.numeric(heatmap_legend_size[1]), as.numeric(annotation_legend_size[1]))) {
                     align_legend = "heatmap_left"
                 }
@@ -455,14 +491,14 @@ guess_align_legend = function(ht_list,
     } else {
         # if the size is less than the heatmap body
         if(ifelse(test_on == "heatmap_legend", heatmap_legend_side, annotation_legend_side) %in% c("left", "right")) {
-            ht_h = ht_h()
+            ht_h = calc_ht_h(ht_list)
             if(convertHeight(ht_h, "mm", valueOnly = TRUE) >= 
                 ifelse(test_on == "heatmap_legend", 
                     as.numeric(heatmap_legend_size[2]), as.numeric(annotation_legend_size[2]))) {
                 align_legend = "heatmap_center"
             }
         } else {
-            ht_w = ht_w()
+            ht_w = calc_ht_w(ht_list)
             if(convertWidth(ht_w, "mm", valueOnly = TRUE) >= 
                 ifelse(test_on == "heatmap_legend", 
                     as.numeric(heatmap_legend_size[1]), as.numeric(annotation_legend_size[1]))) {
@@ -472,14 +508,14 @@ guess_align_legend = function(ht_list,
         # if the size if less than excluding top of first heatmap
         if(is.null(align_legend)) {
             if(ifelse(test_on == "heatmap_legend", heatmap_legend_side, annotation_legend_side) %in% c("left", "right")) {
-                ht_h = ht_h(TRUE)
+                ht_h = calc_ht_h(ht_list, TRUE)
                 if(convertHeight(ht_h, "mm", valueOnly = TRUE) >= 
                     ifelse(test_on == "heatmap_legend", 
                         as.numeric(heatmap_legend_size[2]), as.numeric(annotation_legend_size[2]))) {
                     align_legend = "heatmap_top"
                 }
             } else {
-                ht_w = ht_w(TRUE)
+                ht_w = calc_ht_w(ht_list, TRUE)
                 if(convertWidth(ht_w, "mm", valueOnly = TRUE) >= 
                     ifelse(test_on == "heatmap_legend", 
                         as.numeric(heatmap_legend_size[1]), as.numeric(annotation_legend_size[1]))) {

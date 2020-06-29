@@ -12,6 +12,7 @@ Heatmap(matrix, col, name,
     color_space = "LAB",
     rect_gp = gpar(col = NA),
     border = NA,
+    border_gp = gpar(fill = NA, col = "black"),
     cell_fun = NULL,
     layer_fun = NULL,
     jitter = FALSE,
@@ -105,6 +106,7 @@ Heatmap(matrix, col, name,
   \item{rect_gp}{Graphic parameters for drawing rectangles (for heatmap body). The value should be specified by \code{\link[grid]{gpar}} and \code{fill} parameter is ignored.}
   \item{color_space}{The color space in which colors are interpolated. Only used if \code{matrix} is numeric and  \code{col} is a vector of colors. Pass to \code{\link[circlize]{colorRamp2}}.}
   \item{border}{Whether draw border. The value can be logical or a string of color.}
+  \item{border_gp}{Graphic parameters for the borders. If you want to set different parameters for different heatmap slices, please consider to use \code{\link{decorate_heatmap_body}}.}
   \item{cell_fun}{Self-defined function to add graphics on each cell. Seven parameters will be passed into  this function: \code{j}, \code{i}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are column index, row index in \code{matrix}, coordinate of the cell, the width and height of the cell and the filled color. \code{x}, \code{y}, \code{width} and \code{height} are all \code{\link[grid]{unit}} objects.}
   \item{layer_fun}{Similar as \code{cell_fun}, but is vectorized. Check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#customize-the-heatmap-body} .}
   \item{jitter}{Random shifts added to the matrix. The value can be logical or a single numeric value. It it is \code{TRUE}, random  values from uniform distribution between 0 and 1e-10 are generated. If it is a numeric value, the range for the uniform distribution is (0, \code{jitter}). It is mainly to solve the problem of "Error: node stack overflow" when there are too many identical rows/columns for plotting the dendrograms.}
@@ -172,7 +174,7 @@ Heatmap(matrix, col, name,
   \item{heatmap_height}{Height of the whole heatmap (including heatmap components). Check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#size-of-the-heatmap} .}
   \item{show_heatmap_legend}{Whether show heatmap legend?}
   \item{heatmap_legend_param}{A list contains parameters for the heatmap legends. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
-  \item{use_raster}{Whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. Note if \code{cell_fun} is set, \code{use_raster} is enforced to be \code{FALSE}.}
+  \item{use_raster}{Whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. If number of rows or columns is more than 2000, it is by default turned on. Note if \code{cell_fun} is set, \code{use_raster} is enforced to be \code{FALSE}.}
   \item{raster_device}{Graphic device which is used to generate the raster image.}
   \item{raster_quality}{A value set to larger than 1 will improve the quality of the raster image.}
   \item{raster_device_param}{A list of further parameters for the selected graphic device. For raster image support, please check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-as-raster-image} .}

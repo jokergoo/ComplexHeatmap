@@ -17,6 +17,9 @@
 # -annotation_legend_side Side of annotation legends.
 # -show_annotation_legend Whether show annotation legends.
 # -annotation_legend_list A list of self-defined legends, should be wrapped into a list of `grid::grob` objects. Normally they are constructed by `Legend`.
+# -align_heatmap_legend How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center". If the value is ``NULL``,
+#           it automatically picks the proper value from the three options.
+# -align_annotation_legend  How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center".
 # -ht_gap Gap between heatmaps, should be a `grid::unit` object. It can be a vector of length 1 or the number of heamtaps/annotations.
 # -main_heatmap Name or index for the main heatmap.
 # -padding Padding of the whole plot. The four values correspond to the bottom, left, top and right paddings.

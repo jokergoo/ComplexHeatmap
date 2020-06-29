@@ -23,6 +23,8 @@ Make Layout for the Heatmap List
     annotation_legend_side = c("right", "left", "bottom", "top"),
     show_annotation_legend = TRUE,
     annotation_legend_list = list(),
+    align_heatmap_legend = NULL,
+    align_annotation_legend = NULL,
     
     ht_gap = unit(2, "mm"),
     
@@ -89,6 +91,8 @@ Make Layout for the Heatmap List
   \item{annotation_legend_side}{Side of annotation legends.}
   \item{show_annotation_legend}{Whether show annotation legends.}
   \item{annotation_legend_list}{A list of self-defined legends, should be wrapped into a list of \code{\link[grid:grid.grob]{grob}} objects. Normally they are constructed by \code{\link{Legend}}.}
+  \item{align_heatmap_legend}{How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center". If the value is \code{NULL}, it automatically picks the proper value from the three options.}
+  \item{align_annotation_legend}{How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center".}
   \item{ht_gap}{Gap between heatmaps, should be a \code{\link[grid]{unit}} object. It can be a vector of length 1 or the number of heamtaps/annotations.}
   \item{main_heatmap}{Name or index for the main heatmap.}
   \item{padding}{Padding of the whole plot. The four values correspond to the bottom, left, top and right paddings.}

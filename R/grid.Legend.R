@@ -804,7 +804,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 # draw(pd, test = "two legends")
 # pd = packLegend(lgd1, lgd2, direction = "horizontal")
 # draw(pd, test = "two legends packed horizontally")
-packLegend = function(..., gap = unit(2, "mm"), row_gap = unit(2, "mm"), column_gap = unit(2, "mm"),
+packLegend = function(..., gap = unit(4, "mm"), row_gap = unit(4, "mm"), column_gap = unit(4, "mm"),
 	direction = c("vertical", "horizontal"),
 	max_width = NULL, max_height = NULL, list = NULL) {
 

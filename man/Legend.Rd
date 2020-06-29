@@ -17,7 +17,7 @@ Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
     direction = c("vertical", "horizontal"),
     title = "", title_gp = gpar(fontsize = 10, fontface = "bold"),
     title_position = c("topleft", "topcenter", "leftcenter", "lefttop", "leftcenter-rot", "lefttop-rot"),
-    title_gap = unit(1.5, "mm"))
+    title_gap = unit(2, "mm"))
 }
 \arguments{
 

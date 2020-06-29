@@ -3,6 +3,7 @@ CHANGES in VERSION 2.5.4
 * fixed a bug where slice clusters were wrongly reordered.
 * `Heatmap()`: add `border_gp` argument.
 * Legends are nicely placed.
+* `anno_block()`: allows to set height and width.
 
 ========================
 
