@@ -37,6 +37,8 @@ setMethod(f = "draw_heatmap_body",
     raster_device = object@heatmap_param$raster_device
     raster_quality = object@heatmap_param$raster_quality
     raster_device_param = object@heatmap_param$raster_device_param
+    raster_by_magick = object@heatmap_param$raster_by_magick
+    raster_magick_filter = object@heatmap_param$raster_magick_filter
     if(length(raster_device_param) == 0) raster_device_param = list()
 
     pushViewport(viewport(name = paste(object@name, "heatmap_body", kr, kc, sep = "_"), ...))
@@ -74,36 +76,51 @@ setMethod(f = "draw_heatmap_body",
             stop_wrap(paste0("Need ", device_info[2], " package to read image."))
         }
         # can we get the size of the heatmap body?
-        heatmap_width = convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE)
-        heatmap_height = convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)
-        if(heatmap_width <= 0 || heatmap_height <= 0) {
+        heatmap_width_pt = ceiling(convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE))
+        heatmap_height_pt = ceiling(convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE))
+        if(heatmap_width_pt <= 0 || heatmap_height_pt <= 0) {
             stop_wrap("The width or height of the raster image is zero, maybe you forget to turn off the previous graphic device or it was corrupted. Run `dev.off()` to close it.")
         }
 
         matrix_is_resized = FALSE
-        if(object@heatmap_param$raster_resize) {
-            if(heatmap_width < nc && heatmap_height < nr) {
-                mat2 = resize_matrix(mat, nr = heatmap_height, nc = heatmap_width)
+        # resize on the matrix
+        raster_resize_mat = object@heatmap_param$raster_resize_mat
+        if(!identical(raster_resize_mat, FALSE)) {
+            if(is.logical(raster_resize_mat)) {
+                raster_resize_mat_fun = function(x) mean(x, na.rm = TRUE)
+            } else {
+                if(!inherits(raster_resize_mat, "function")) {
+                    stop_wrap("`raster_resize_mat` should be set as logical scalar or a function.")
+                }
+                raster_resize_mat_fun = raster_resize_mat
+            }
+
+            if(heatmap_width_pt < nc && heatmap_height_pt < nr) {
+                mat2 = resize_matrix(mat, nr = heatmap_height_pt, nc = heatmap_width_pt, fun = raster_resize_mat_fun)
                 matrix_is_resized = TRUE
-            } else if(heatmap_width < nc) {
-                mat2 = resize_matrix(mat, nr = nr, nc = heatmap_width)
+            } else if(heatmap_width_pt < nc) {
+                mat2 = resize_matrix(mat, nr = nr, nc = heatmap_width_pt, fun = raster_resize_mat_fun)
                 matrix_is_resized = TRUE
-            } else if(heatmap_height < nr) {
-                mat2 = resize_matrix(mat, nr = heatmap_height, nc = nc)
+            } else if(heatmap_height_pt < nr) {
+                mat2 = resize_matrix(mat, nr = heatmap_height_pt, nc = nc, fun = raster_resize_mat_fun)
                 matrix_is_resized = TRUE
             }
         }
 
         temp_dir = tempdir()
-                # dir.create(tmp_dir, showWarnings = FALSE)
         temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
-        #getFromNamespace(raster_device, ns = device_info[1])(temp_image, width = heatmap_width*raster_quality, height = heatmap_height*raster_quality)
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
 
-        do.call(device_fun, c(list(filename = temp_image, width = max(c(heatmap_width*raster_quality, 1)), height = max(c(heatmap_height*raster_quality, 1))), raster_device_param))
+        temp_image_width = ceiling(max(heatmap_width_pt, nc, 1))
+        temp_image_height = ceiling(max(heatmap_height_pt, nr, 1))
+        do.call(device_fun, c(list(filename = temp_image, 
+            width = temp_image_width, height = temp_image_height), raster_device_param))
+        if(object@heatmap_param$verbose) {
+            qqcat("saving into a temp image (.@{device_info[2]}) with size @{temp_image_width}x@{temp_image_height}px.\n")
+        }
         if(matrix_is_resized) {
             if(object@heatmap_param$verbose) {
-                qqcat("resize the matrix from (@{nrow(mat)} x @{ncol(mat)}) to (@{nrow(mat2)} x @{ncol(mat2)}).\n")
+                qqcat("resize the matrix from (@{nrow(mat)}x@{ncol(mat)}) to (@{nrow(mat2)}x@{ncol(mat2)}).\n")
             }
             col_matrix2 = map_to_colors(object@matrix_color_mapping, mat2)
             nc2 = ncol(mat2)
@@ -129,51 +146,27 @@ setMethod(f = "draw_heatmap_body",
             }
         }
         dev.off2()
-        
-        # ############################################
-        # ## make the heatmap body in a another process
-        # temp_R_data = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".RData"))
-        # temp_R_file = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".R"))
-        # if(Sys.info()["sysname"] == "Windows") {
-        #     temp_image = gsub("\\\\", "/", temp_image)
-        #     temp_R_data = gsub("\\\\", "/", temp_R_data)
-        #     temp_R_file = gsub("\\\\", "/", temp_R_file)
-        # }
-        # save(device_fun, device_info, temp_image, heatmap_width, raster_quality, heatmap_height, raster_device_param,
-        #     gp, x, expand_index, nc, nr, col_matrix, row_order, column_order, y,
-        #     file = temp_R_data)
-        # R_cmd = qq("
-        # library(@{device_info[1]})
-        # library(grid)
-        # load('@{temp_R_data}')
-        # do.call('device_fun', c(list(filename = temp_image, width = max(c(heatmap_width*raster_quality, 1)), height = max(c(heatmap_height*raster_quality, 1))), raster_device_param))
-        # grid.rect(x[expand_index[[2]]], y[expand_index[[1]]], width = unit(1/nc, 'npc'), height = unit(1/nr, 'npc'), gp = do.call('gpar', c(list(fill = col_matrix), gp)))
-        # dev.off()
-        # q(save = 'no')
-        # ", code.pattern = "@\\{CODE\\}")
-        # writeLines(R_cmd, con = temp_R_file)
-        # if(grepl(" ", temp_R_file)) {
-        #     if(is_windows()) {
-        #         oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE), silent = TRUE)
-        #     } else {
-        #         oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < \'@{temp_R_file}\'", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE), silent = TRUE)
-        #     }
-        # } else {
-        #     if(is_windows()) {
-        #         oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE), silent = TRUE)
-        #     } else {
-        #         oe = try(system(qq("\"@{normalizePath(R_binary(), winslash='/')}\" --vanilla < @{temp_R_file}", code.pattern = "@\\{CODE\\}"), ignore.stdout = TRUE, ignore.stderr = TRUE), silent = TRUE)
-        #     }
-        # }
-        # ############################################
-        # file.remove(temp_R_data)
-        # file.remove(temp_R_file)
-        # if(inherits(oe, "try-error")) {
-        #     stop(oe)
-        # }
-        image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
-        image = as.raster(image)
-        grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+
+        if(object@heatmap_param$verbose) {
+            qqcat("resize the temp image to a size @{heatmap_width_pt}x@{heatmap_height_pt}px.\n")
+        }
+        if(raster_by_magick) {
+            if(object@heatmap_param$verbose) {
+                qqcat("image is read by magick.\n")
+            }
+            if(!requireNamespace("magick")) {
+                stop_wrap("magick package should be installed.")
+            }
+            image = magick::image_read(temp_image)
+            image = magick::image_resize(image, paste0(heatmap_width_pt, "x", heatmap_height_pt, "!"), filter = raster_magick_filter)
+            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+        } else {
+            if(object@heatmap_param$verbose) {
+                qqcat("image is read by @{device_info[2]}::@{device_info[3]}\n")
+            }
+            image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
+            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+        }
         file.remove(temp_image)
 
     } else {

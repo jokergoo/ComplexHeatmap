@@ -179,9 +179,14 @@ Heatmap = setClass("Heatmap",
 # -use_raster Whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. If number of rows or columns is more than 2000, it is by default turned on. Note if ``cell_fun``
 #       is set, ``use_raster`` is enforced to be ``FALSE``.
 # -raster_device Graphic device which is used to generate the raster image.
-# -raster_quality A value set to larger than 1 will improve the quality of the raster image.
+# -raster_quality Ignored now.
 # -raster_device_param A list of further parameters for the selected graphic device. For raster image support, please check https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-as-raster-image .
-# -raster_resize Whether resize the matrix to let the dimension of the matrix the same as the dimension of the raster image?
+# -raster_resize_mat Whether resize the matrix to let the dimension of the matrix the same as the dimension of the raster image?
+#          The value can be logical. If it is ``TRUE``, `base::mean` is used to summarize the sub matrix which corresponds to a single pixel.
+#          The value can also be a summary function, e.g. `base::max`.
+# -raster_by_magick Whether to use `magick::image_resize` to scale the image.
+# -raster_magick_filter Pass to ``filter`` argument of `magick::image_resize`. A character scalar and all possible values
+#          are in `magick::filter_types`. The default is ``"Lanczos"``.
 # -post_fun A function which will be executed after the heatmap list is drawn.
 #
 # == details
@@ -289,9 +294,11 @@ Heatmap = function(matrix, col, name,
 
     use_raster = NULL, 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
-    raster_quality = 2,
+    raster_quality = 1,
     raster_device_param = list(),
-    raster_resize = FALSE,
+    raster_resize_mat = FALSE,
+    raster_by_magick = requireNamespace("magick", quietly = TRUE),
+    raster_magick_filter = NULL,
 
     post_fun = NULL) {
 
@@ -891,12 +898,12 @@ Heatmap = function(matrix, col, name,
         if(nrow(matrix) > 2000 && ncol(matrix) > 10) {
             use_raster = TRUE
             if(ht_opt$message) {
-                message_wrap("`use_raster` is automatically set to TRUE for a matrix with more than 2000 rows. You can control `use_raster` arugment by explicitly setting TRUE/FALSE to it. Set `ht_opt$message = FALSE` to turn off this message.")
+                message_wrap("`use_raster` is automatically set to TRUE for a matrix with more than 2000 rows. You can control `use_raster` argument by explicitly setting TRUE/FALSE to it.\n\nSet `ht_opt$message = FALSE` to turn off this message.")
             }
         } else if(ncol(matrix) > 2000 && nrow(matrix) > 10) {
             use_raster = TRUE
             if(ht_opt$message) {
-                message_wrap("`use_raster` is automatically set to TRUE for a matrix with more than 2000 columns You can control `use_raster` arugment by explicitly setting TRUE/FALSE to it. Set `ht_opt$message = FALSE` to turn off this message.")
+                message_wrap("`use_raster` is automatically set to TRUE for a matrix with more than 2000 columns You can control `use_raster` argument by explicitly setting TRUE/FALSE to it.\n\nSet `ht_opt$message = FALSE` to turn off this message.")
             }
         } else {
             use_raster = FALSE
@@ -913,7 +920,9 @@ Heatmap = function(matrix, col, name,
     .Object@heatmap_param$raster_device = match.arg(raster_device)[1]
     .Object@heatmap_param$raster_quality = raster_quality
     .Object@heatmap_param$raster_device_param = raster_device_param
-    .Object@heatmap_param$raster_resize = raster_resize
+    .Object@heatmap_param$raster_resize_mat = raster_resize_mat
+    .Object@heatmap_param$raster_by_magick = raster_by_magick
+    .Object@heatmap_param$raster_magick_filter = raster_magick_filter
     .Object@heatmap_param$verbose = verbose
     .Object@heatmap_param$post_fun = post_fun
     .Object@heatmap_param$calling_env = parent.frame()

@@ -82,7 +82,7 @@ default_col = function(x, main_matrix = FALSE) {
                     col_fun = colorRamp2(c(-q1, 0, q1), c("blue", "#EEEEEE", "red"))
 
                     if(any(x > q1*3 | x < -q1*3)) {
-                        message_wrap("The automatically generated color maps from the minus and plus 99^th of the absolute values in the matrix. There are outliers in the matrix whose patterns might be hidden by this color mapping.\n\nUse `suppressMessages()` to turn off this message.")
+                        message_wrap("The automatically generated colors map from the minus and plus 99^th of the absolute values in the matrix. There are outliers in the matrix whose patterns might be hidden by this color mapping. You can manually set the color to `col` argument.\n\nUse `suppressMessages()` to turn off this message.")
                     }
                 } else {
                     q1 = max(abs(x))
@@ -97,7 +97,7 @@ default_col = function(x, main_matrix = FALSE) {
                     } else {
                         col_fun = colorRamp2(seq(q1, q2, length = 3), c("blue", "#EEEEEE", "red"))
                         if(any(x > q2 + (q2-q1) | x < q1 - (q2-q1))) {
-                            message_wrap("The automatically generated color maps from the 1^st and 99^th of the values in the matrix. There are outliers in the matrix whose patterns might be hidden by this color mapping.\n\nUse `suppressMessages()` to turn off this message.")
+                            message_wrap("The automatically generated colors map from the 1^st and 99^th of the values in the matrix. There are outliers in the matrix whose patterns might be hidden by this color mapping. You can manually set the color to `col` argument.\n\nUse `suppressMessages()` to turn off this message.")
                         }
                     }
                 } else {
@@ -1006,10 +1006,33 @@ to_unit = function(str) {
 }
 
 
-resize_matrix = function(mat, nr, nc) {
+# nr <= nrow(mat)
+# nc <- ncol(mat)
+resize_matrix = function(mat, nr, nc, fun = median) {
     w_ratio = nc/ncol(mat)
     h_ratio = nr/nrow(mat)
-    mat[ ceiling(1:nr / h_ratio), ceiling(1:nc / w_ratio), drop = FALSE]
+
+    ind_r2 = ceiling(1:nr / h_ratio)
+    ind_r1 = c(1, ind_r2[-length(ind_r2)]+1)
+    ind_c2 = ceiling(1:nc / w_ratio)
+    ind_c1 = c(1, ind_c2[-length(ind_c2)]+1)
+    if(is.null(fun)) {
+        mat[ ceiling(1:nr / h_ratio), ceiling(1:nc / w_ratio), drop = FALSE]
+    } else {
+
+        nr_reduced = length(ind_r1)
+        nc_reduced = length(ind_c1)
+
+        ind_grid = expand.grid(1:nr_reduced, 1:nc_reduced)
+        mat_reduced = matrix(nrow = nr_reduced, ncol = nc_reduced)
+        for(k in seq_len(nrow(ind_grid))) {
+            i = ind_grid[k, 1]
+            j = ind_grid[k, 2]
+            subm = mat[seq(ind_r1[i], ind_r2[i]), seq(ind_c1[j], ind_c1[j]), drop = FALSE]
+            mat_reduced[i, j] = fun(subm)
+        }
+        return(mat_reduced)
+    }
 }
 
 

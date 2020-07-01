@@ -456,6 +456,8 @@ guess_align_legend = function(ht_list,
         }
     }
 
+    heatmap_legend_size
+
     align_legend = NULL
     if(heatmap_legend_side == annotation_legend_side) {
         # if the size is less than the heatmap body
@@ -749,9 +751,12 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
         }
     }
 
+    width = width + padding[2] + padding[4]
+    height = height + padding[1] + padding[3]
+    width = convertWidth(width, "mm")
+    height = convertHeight(height, "mm")
     size = unit.c(width, height)
 
-    size = unit.c(size[1] + padding[2] + padding[4], size[2] + padding[1] + padding[3])
     attr(size, "multiple") = pk@multiple
     return(size)
 }
