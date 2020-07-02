@@ -91,9 +91,11 @@ Heatmap(matrix, col, name,
     
     use_raster = NULL,
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
-    raster_quality = 2,
+    raster_quality = 1,
     raster_device_param = list(),
-    raster_resize = FALSE,
+    raster_resize_mat = FALSE,
+    raster_by_magick = requireNamespace("magick", quietly = TRUE),
+    raster_magick_filter = NULL,
     
     post_fun = NULL)
 }
@@ -176,9 +178,11 @@ Heatmap(matrix, col, name,
   \item{heatmap_legend_param}{A list contains parameters for the heatmap legends. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
   \item{use_raster}{Whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. If number of rows or columns is more than 2000, it is by default turned on. Note if \code{cell_fun} is set, \code{use_raster} is enforced to be \code{FALSE}.}
   \item{raster_device}{Graphic device which is used to generate the raster image.}
-  \item{raster_quality}{A value set to larger than 1 will improve the quality of the raster image.}
+  \item{raster_quality}{Ignored now.}
   \item{raster_device_param}{A list of further parameters for the selected graphic device. For raster image support, please check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-as-raster-image} .}
-  \item{raster_resize}{Whether resize the matrix to let the dimension of the matrix the same as the dimension of the raster image?}
+  \item{raster_resize_mat}{Whether resize the matrix to let the dimension of the matrix the same as the dimension of the raster image? The value can be logical. If it is \code{TRUE}, \code{\link[base]{mean}} is used to summarize the sub matrix which corresponds to a single pixel. The value can also be a summary function, e.g. \code{\link[base:Extremes]{max}}.}
+  \item{raster_by_magick}{Whether to use \code{\link[magick:transform]{image_resize}} to scale the image.}
+  \item{raster_magick_filter}{Pass to \code{filter} argument of \code{\link[magick:transform]{image_resize}}. A character scalar and all possible values are in \code{\link[magick:options]{filter_types}}. The default is \code{"Lanczos"}.}
   \item{post_fun}{A function which will be executed after the heatmap list is drawn.}
 
 }

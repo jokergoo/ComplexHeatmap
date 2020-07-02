@@ -75,6 +75,7 @@ setMethod(f = "draw_heatmap_body",
         if(!requireNamespace(device_info[2])) {
             stop_wrap(paste0("Need ", device_info[2], " package to read image."))
         }
+
         # can we get the size of the heatmap body?
         heatmap_width_pt = ceiling(convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE))
         heatmap_height_pt = ceiling(convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE))
@@ -167,6 +168,23 @@ setMethod(f = "draw_heatmap_body",
             image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
             grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
         }
+
+        ### only for testing ###
+        if(inherits(image, "magick-image")) {
+            image = as.raster(image)
+        } else {
+            tf = tempfile()
+            png(tf, width = heatmap_width_pt, height = heatmap_height_pt)
+            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+            dev.off()
+            image = as.raster(png::readPNG(tf))
+            file.remove(tf)   
+        }
+        attr(image, "width") = heatmap_width_pt
+        attr(image, "height") = heatmap_height_pt
+        .GlobalEnv$image = image
+        ########################
+
         file.remove(temp_image)
 
     } else {
