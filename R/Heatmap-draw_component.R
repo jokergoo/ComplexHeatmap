@@ -170,19 +170,21 @@ setMethod(f = "draw_heatmap_body",
         }
 
         ### only for testing ###
-        if(inherits(image, "magick-image")) {
-            image = as.raster(image)
-        } else {
-            tf = tempfile()
-            png(tf, width = heatmap_width_pt, height = heatmap_height_pt)
-            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
-            dev.off()
-            image = as.raster(png::readPNG(tf))
-            file.remove(tf)   
+        if(ht_opt("__export_image_size__")) {
+            if(inherits(image, "magick-image")) {
+                image = as.raster(image)
+            } else {
+                tf = tempfile()
+                png(tf, width = heatmap_width_pt, height = heatmap_height_pt)
+                grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+                dev.off()
+                image = as.raster(png::readPNG(tf))
+                file.remove(tf)   
+            }
+            attr(image, "width") = heatmap_width_pt
+            attr(image, "height") = heatmap_height_pt
+            assign(".image", image, envir = .GlobalEnv)
         }
-        attr(image, "width") = heatmap_width_pt
-        attr(image, "height") = heatmap_height_pt
-        .GlobalEnv$image = image
         ########################
 
         file.remove(temp_image)

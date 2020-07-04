@@ -188,6 +188,12 @@ ht_opt = setGlobalOptions(
 	ANNOTATION_LEGEND_PADDING = list(
 		.value = unit(2, "mm"),
 		.class = "unit"
+	),
+
+	### invisible
+	"__export_image_size__" = list(
+		.visible = FALSE,
+		.value = FALSE
 	)
 )
 
