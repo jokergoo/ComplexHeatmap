@@ -5,6 +5,7 @@ CHANGES in VERSION 2.5.4
 * Legends are nicely placed.
 * `anno_block()`: allows to set height and width.
 * support better rasterization.
+* support setting graphics on dendrogram nodes.
 
 ========================
 

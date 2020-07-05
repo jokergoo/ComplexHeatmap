@@ -78,3 +78,18 @@ m[1, 2] = 2
 dend = as.dendrogram(hclust(dist(m)))
 grid.dendrogram(dend, test = T)
 
+# node attr
+m = matrix(rnorm(100), 10)
+dend = as.dendrogram(hclust(dist(m)))
+require(dendextend)
+dend1 = color_branches(dend, k = 2, col = 1:2)
+grid.dendrogram(dend1, test = T)
+dend1 = dend
+dend1 = dendrapply(dend, function(d) {
+	attr(d, "nodePar") = list(pch = 13, size = unit(runif(1, min = 3, max = 20), "bigpts"))
+	d
+})
+grid.dendrogram(dend1, test = T)
+
+Heatmap(m, cluster_rows = dend1, cluster_columns = dend1)
+
