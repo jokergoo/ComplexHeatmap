@@ -405,20 +405,41 @@ calc_ht_w = function(ht_list, include_right = FALSE) {
 }
 
 calc_before_h = function(ht_list) {
-    sum(component_height(ht_list@ht_list[[ which_first_ht(ht_list) ]], 1:4))
+    i = which_last_ht(ht_list)
+    if(i > 1) {
+        unit(0, "mm")
+    } else {
+        sum(component_height(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+    }
 }
 
 calc_after_h = function(ht_list) {
-    sum(component_height(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+    i = which_last_ht(ht_list)
+    if(i < length(ht_list@ht_list)) {
+        unit(0, "mm")
+    } else {
+        sum(component_height(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+    }
 }
 
 calc_before_w = function(ht_list) {
-    sum(component_width(ht_list@ht_list[[ which_first_ht(ht_list) ]], 1:4))
+    i = which_last_ht(ht_list)
+    if(i > 1) {
+        unit(0, "mm")
+    } else {
+        sum(component_width(ht_list@ht_list[[ which_first_ht(ht_list) ]], 1:4))
+    }
 }
 
 calc_after_w = function(ht_list) {
-    sum(component_width(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+    i = which_last_ht(ht_list)
+    if(i < length(ht_list@ht_list)) {
+        unit(0, "mm")
+    } else {
+        sum(component_width(ht_list@ht_list[[ which_last_ht(ht_list) ]], 6:9))
+    }
 }
+
 
 guess_align_legend = function(ht_list, 
     heatmap_legend_size, annotation_legend_size,
