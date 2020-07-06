@@ -8,7 +8,7 @@ Grob for Dendrogram
 }
 \usage{
 dendrogramGrob(dend, facing = c("bottom", "top", "left", "right"),
-    order = c("normal", "reverse"), gp = gpar(), edge_gp = gp)
+    order = c("normal", "reverse"), gp = gpar())
 }
 \arguments{
 
@@ -16,7 +16,6 @@ dendrogramGrob(dend, facing = c("bottom", "top", "left", "right"),
   \item{facing}{Facing of the dendrogram.}
   \item{order}{If it is set to \code{reverse}, the first leaf is put on the right if the dendrogram is horizontal and it is put on the top if the dendrogram is vertical.}
   \item{gp}{Graphic parameters for the dendrogram segments. If any of \code{col}, \code{lwd} or \code{lty} is set in the \code{edgePar} attribute of a node, the corresponding value defined in \code{gp} will be overwritten for this node, so \code{gp} is like global graphic parameters for dendrogram segments.}
-  \item{edge_gp}{The same as \code{gp}.}
 
 }
 \details{
