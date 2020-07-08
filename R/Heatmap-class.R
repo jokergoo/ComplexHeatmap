@@ -215,7 +215,7 @@ Heatmap = function(matrix, col, name,
     color_space = "LAB",
     rect_gp = gpar(col = NA), 
     border = NA,
-    border_gp = gpar(fill = NA, col = "black"),
+    border_gp = gpar(col = "black"),
     cell_fun = NULL,
     layer_fun = NULL,
     jitter = FALSE,
@@ -524,7 +524,7 @@ Heatmap = function(matrix, col, name,
     if(missing(border)) {
         if(!is.null(ht_opt$heatmap_border)) border = ht_opt$heatmap_border
     }
-    if(identical(border, TRUE)) border = "black"
+    if(!missing(border_gp) && missing(border)) border = TRUE
     .Object@matrix_param$border = border
     .Object@matrix_param$border_gp = border_gp
     .Object@matrix_param$cell_fun = cell_fun
