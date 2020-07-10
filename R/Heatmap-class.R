@@ -294,7 +294,7 @@ Heatmap = function(matrix, col, name,
 
     use_raster = NULL, 
     raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
-    raster_quality = 1,
+    raster_quality = 2,
     raster_device_param = list(),
     raster_resize_mat = FALSE,
     raster_by_magick = requireNamespace("magick", quietly = TRUE),

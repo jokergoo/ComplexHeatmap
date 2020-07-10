@@ -108,12 +108,29 @@ setMethod(f = "draw_heatmap_body",
             }
         }
 
+        if(matrix_is_resized) {
+            raster_by_magick = FALSE
+        }
+
         temp_dir = tempdir()
         temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
 
-        temp_image_width = ceiling(max(heatmap_width_pt, nc, 1))
-        temp_image_height = ceiling(max(heatmap_height_pt, nr, 1))
+        if(raster_by_magick) {
+            temp_image_width = ceiling(max(heatmap_width_pt, nc, 1))
+            temp_image_height = ceiling(max(heatmap_height_pt, nr, 1))
+        } else if(matrix_is_resized) {
+            temp_image_width = ceiling(max(heatmap_width_pt, 1))
+            temp_image_height = ceiling(max(heatmap_height_pt, 1))
+        } else {
+            if(is.character(raster_quality)) {
+                temp_image_width = ceiling(max(heatmap_width_pt, nc, 1))
+                temp_image_height = ceiling(max(heatmap_height_pt, nr, 1))
+            } else {
+                temp_image_width = ceiling(max(heatmap_width_pt*raster_quality, 1))
+                temp_image_height = ceiling(max(heatmap_height_pt*raster_quality, 1))
+            }
+        }
         do.call(device_fun, c(list(filename = temp_image, 
             width = temp_image_width, height = temp_image_height), raster_device_param))
         if(object@heatmap_param$verbose) {
@@ -160,13 +177,13 @@ setMethod(f = "draw_heatmap_body",
             }
             image = magick::image_read(temp_image)
             image = magick::image_resize(image, paste0(heatmap_width_pt, "x", heatmap_height_pt, "!"), filter = raster_magick_filter)
-            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = FALSE)
         } else {
             if(object@heatmap_param$verbose) {
                 qqcat("image is read by @{device_info[2]}::@{device_info[3]}\n")
             }
             image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
-            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"))
+            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = FALSE)
         }
 
         ### only for testing ###
