@@ -909,6 +909,16 @@ Heatmap = function(matrix, col, name,
             use_raster = FALSE
         }
     }
+
+    if(use_raster) {
+        if(missing(raster_by_magick)) {
+            if(!raster_by_magick) {
+                if(ht_opt$message) {
+                    message_wrap("'magick' package is suggested to install to give better rasterization.\n\nSet `ht_opt$message = FALSE` to turn off this message.")
+                }
+            }
+        }
+    }
     
     .Object@matrix_param$width = width
     .Object@matrix_param$height = height

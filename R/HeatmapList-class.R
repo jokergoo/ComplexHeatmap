@@ -103,7 +103,7 @@ setMethod(f = "add_heatmap",
     
     direction = match.arg(direction)[1]
     if(object@direction != direction) {
-        stop_wrap("The heatmap list should only be all horizontal or vertical.")
+        stop_wrap("The heatmap list should only be all horizontal or vertical. Maybe you can move some of the row annotations to the 'left_annotation'/'right_annotation' of the heatmap if you want to make the heatmap list vertical. Or similarly, to move independent column annotations to 'top_annotation'/'bottom_annotation' if you want the heatmap list horizontal.")
     }
 
     # check settings of this new heatmap

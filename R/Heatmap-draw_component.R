@@ -127,6 +127,7 @@ setMethod(f = "draw_heatmap_body",
                 temp_image_width = ceiling(max(heatmap_width_pt, nc, 1))
                 temp_image_height = ceiling(max(heatmap_height_pt, nr, 1))
             } else {
+                if(raster_quality < 1) raster_quality = 1
                 temp_image_width = ceiling(max(heatmap_width_pt*raster_quality, 1))
                 temp_image_height = ceiling(max(heatmap_height_pt*raster_quality, 1))
             }
@@ -173,7 +174,7 @@ setMethod(f = "draw_heatmap_body",
                 qqcat("image is read by magick.\n")
             }
             if(!requireNamespace("magick")) {
-                stop_wrap("magick package should be installed.")
+                stop_wrap("'magick' package should be installed.")
             }
             image = magick::image_read(temp_image)
             image = magick::image_resize(image, paste0(heatmap_width_pt, "x", heatmap_height_pt, "!"), filter = raster_magick_filter)
