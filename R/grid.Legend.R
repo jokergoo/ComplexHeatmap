@@ -261,7 +261,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 			edit_vp_in_legend_grob(legend_body, x = unit(1, "npc"), y = unit(1, "npc"), 
 				valid.just = c(1, 1)),
 			vp = viewport(width = total_width, height = total_height),
-			cl = "Legend"
+			cl = "legend"
 		)
 		attr(gf, "width") = total_width
 		attr(gf, "height") = total_height
