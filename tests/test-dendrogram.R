@@ -72,9 +72,9 @@ dend = cluster_within_group(m, fa)
 grid.dendrogram(dend, test = TRUE)
 
 
-#  stack overflow problem
-m = matrix(1, nrow = 1000, ncol = 10)
-m[1, 2] = 2
-dend = as.dendrogram(hclust(dist(m)))
-grid.dendrogram(dend, test = T)
+# #  stack overflow problem
+# m = matrix(1, nrow = 1000, ncol = 10)
+# m[1, 2] = 2
+# dend = as.dendrogram(hclust(dist(m)))
+# grid.dendrogram(dend, test = T)
 
