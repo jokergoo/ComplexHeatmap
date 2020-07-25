@@ -573,7 +573,7 @@ cluster_within_group = function(mat, factor) {
             order_list[[le]] = which(factor == le)
             dend_list[[le]] = structure(which(factor == le), class = "dendrogram", leaf = TRUE,
                 height = 0, label = 1, members = 1)
-        } else {
+        } else if(ncol(m) > 1) {
             hc1 = hclust(dist(t(m)))
             dend_list[[le]] = as.dendrogram(hc1)
             order_list[[le]] = which(factor == le)[order.dendrogram(dend_list[[le]])]
