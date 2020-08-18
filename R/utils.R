@@ -92,8 +92,10 @@ default_col = function(x, main_matrix = FALSE) {
                 if(length(unique(x)) >= 100) {
                     q1 = quantile(x, 0.01)
                     q2 = quantile(x, 0.99)
-                    if(length(unique(x[x > q1 & x < q2])) == 1) {
-                         col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
+                    if(q1 == q2) {
+                        col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
+                    } else if(length(unique(x[x > q1 & x < q2])) == 1) {
+                        col_fun = colorRamp2(seq(min(x), max(x), length = 3), c("blue", "#EEEEEE", "red"))
                     } else {
                         col_fun = colorRamp2(seq(q1, q2, length = 3), c("blue", "#EEEEEE", "red"))
                         if(any(x > q2 + (q2-q1) | x < q1 - (q2-q1))) {
