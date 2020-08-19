@@ -8,7 +8,7 @@ Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.2), methods, grid, graphics, stats, grDevices
 Imports: circlize (>= 0.4.5), GetoptLong, colorspace, clue,
     RColorBrewer, GlobalOptions (>= 0.1.0), parallel, png,
-    digest, S4Vectors, IRanges
+    digest, S4Vectors (>=0.27.12), IRanges
 Suggests: testthat (>= 1.0.0), knitr, markdown, dendsort, 
     Cairo, jpeg, tiff, fastcluster,
     dendextend (>= 1.0.1), grImport, grImport2, glue,
