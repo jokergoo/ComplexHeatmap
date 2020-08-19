@@ -5,7 +5,6 @@ Version: 2.5.5
 Date: 2020-06-26
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
-biocViews:
 Depends: R (>= 3.1.2), methods, grid, graphics, stats, grDevices
 Imports: circlize (>= 0.4.5), GetoptLong, colorspace, clue,
     RColorBrewer, GlobalOptions (>= 0.1.0), parallel, png,
