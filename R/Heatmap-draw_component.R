@@ -77,11 +77,8 @@ setMethod(f = "draw_heatmap_body",
         }
 
         # can we get the size of the heatmap body?
-        heatmap_width_pt = ceiling(convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE))
-        heatmap_height_pt = ceiling(convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE))
-        if(heatmap_width_pt <= 0 || heatmap_height_pt <= 0) {
-            stop_wrap("The width or height of the raster image is zero, maybe you forget to turn off the previous graphic device or it was corrupted. Run `dev.off()` to close it.")
-        }
+        heatmap_width_pt = max(1, ceiling(convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE)))
+        heatmap_height_pt = max(1, ceiling(convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)))
 
         matrix_is_resized = FALSE
         # resize on the matrix

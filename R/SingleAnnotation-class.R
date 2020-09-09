@@ -482,6 +482,8 @@ SingleAnnotation = function(name, value, col, fun,
             }
         } else if(is.function(col)) {
             color_mapping = ColorMapping(name = cm_name, col_fun = col, na_col = na_col)
+        } else {
+            stop_wrap("The color mapping should be a named vector or a function.")
         }
 
         .Object@color_mapping = color_mapping

@@ -125,16 +125,25 @@ pheatmap = function(mat,
     }
 
     if("row" %in% scale) {
-        mat = t(scale(t(mat)))
+
+        if(any(is.na(mat))) {
+            mat = (mat - rowMeans(mat, na.rm = TRUE))/rowSds(mat, na.rm = TRUE)
+        } else {
+            mat = t(scale(t(mat)))
+        }
     } else if("column" %in% scale) {
-        mat = scale(mat)
+        if(any(is.na(mat))) {
+            mat = t((t(mat) - colMeans(mat, na.rm = TRUE))/colSds(mat, na.rm = TRUE))
+        } else {
+            mat = scale(mat)
+        }
     }
 
     ht_param = list(matrix = mat)
 
     if(is.na(breaks)) {
         n_col = length(color)
-        ht_param$col = colorRamp2(seq(min(mat), max(mat), length = n_col), color)
+        ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length = n_col), color)
     } else  {
         if(length(breaks) == length(color) + 1) {
             ht_param$col = local({

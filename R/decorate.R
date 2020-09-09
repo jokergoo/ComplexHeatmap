@@ -96,7 +96,7 @@ decorate_dend = function(heatmap, code, slice = 1, which = c("column", "row"),
 	vp_name = paste0(heatmap, "_dend_", which, "_", slice)	
 	seekViewport(vp_name)
 	e = new.env(parent = parent.frame())
-	eval(substitute(code), envir = e)
+	eval(substitute(code), envir = envir)
 
 	seekViewport(current_vp)
 }
