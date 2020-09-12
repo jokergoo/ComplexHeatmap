@@ -174,7 +174,7 @@ setMethod(f = "add_heatmap",
         })
         nc = nc[!is.na(nc)]
 
-        if(length(unique(nr)) > 1) {
+        if(length(unique(nc)) > 1) {
             cat("`ncol` of all heatmaps and `nobs` of all annotations should be the same\nfor vertical heatmap list.\n")
             for(i in seq_along(object@ht_list)) {
                 if(inherits(object@ht_list[[i]], "Heatmap")) {
