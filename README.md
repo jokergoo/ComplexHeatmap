@@ -17,9 +17,6 @@ heatmaps and supports various annotation graphics.
 
 Zuguang Gu, Roland Eils and Matthias Schlesner, [Complex heatmaps reveal patterns and correlations in multidimensional genomic data](http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract), Bioinformatics, 2016
 
-## Documentation
-
-The full documentations are available at https://jokergoo.github.io/ComplexHeatmap-reference/book/ and the website is at https://jokergoo.github.io/ComplexHeatmap.
 
 ## Install
 
@@ -66,6 +63,24 @@ ha = HeatmapAnnotation(df = anno1, anno_fun = anno2, ..., which = "row")
 Heatmap(mat1, ...) + Heatmap(mat2, ...) + ha
 ```
 
+## Documentation
+
+The full documentations are available at https://jokergoo.github.io/ComplexHeatmap-reference/book/ and the website is at https://jokergoo.github.io/ComplexHeatmap.
+
+## Blog posts
+
+There are following blog posts focusing on specific topics:
+
+-[Translate from pheatmap to ComplexHeatmap](https://jokergoo.github.io/2020/05/06/translate-from-pheatmap-to-complexheatmap/)
+-[Set cell width/height in the heatmap](https://jokergoo.github.io/2020/05/11/set-cell-width/height-in-the-heatmap/)
+-[Interactive ComplexHeatmap](https://jokergoo.github.io/2020/05/15/interactive-complexheatmap/)
+-[Word cloud as heatmap annotation](https://jokergoo.github.io/2020/05/31/word-cloud-as-heatmap-annotation/)
+-[Which heatmap function is faster?](https://jokergoo.github.io/2020/06/19/which-heatmap-function-is-faster/)
+-[Rasterization in ComplexHeatmap](https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/)
+-[Block annotation over several slices](https://jokergoo.github.io/2020/07/06/block-annotation-over-several-slices/)
+-[Integrate ComplexHeatmap with cowplot package](https://jokergoo.github.io/2020/07/14/integrate-complexheatmap-with-cowplot-package/)
+
+
 ## Examples
 
 ### Visualize Methylation Profile with Complex Annotations
@@ -87,6 +102,13 @@ Heatmap(mat1, ...) + Heatmap(mat2, ...) + ha
 ### UpSet plot
 
 ![](https://pbs.twimg.com/media/Dvpp31uX4AAqGDP.jpg)
+
+### Interactive heatmaps
+
+Heatmaps can be exported into a Shiny app by `ht_shiny(ht)`. See examples at https://jokergoo.shinyapps.io/interactive_complexheatmap/.
+
+https://user-images.githubusercontent.com/449218/82199376-e5eec600-98fd-11ea-9fca-ad95d405dc20.gif
+
 
 ## License
 
