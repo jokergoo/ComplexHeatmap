@@ -134,30 +134,61 @@ setMethod(f = "add_heatmap",
         warning_wrap(paste0("Heatmap/annotation names are duplicated: ", paste(ht_name[which_duplicated], collapse = ", ")))
     }
 
-    l = which(sapply(object@ht_list, inherits, "Heatmap"))
     if(direction == "horizontal") {
-        nr = sapply(object@ht_list[l], function(ht) nrow(ht@matrix))
+        nr = sapply(object@ht_list, function(ht) {
+            if(inherits(ht, "Heatmap")) {
+                nrow(ht@matrix)
+            } else if(inherits(ht, "HeatmapAnnotation")) {
+                nobs(ht)
+            } else {
+                NA
+            }
+        })
+        nr = nr[!is.na(nr)]
 
         if(length(unique(nr)) > 1) {
-            cat("`nrow` of all heatmaps:\n")
-            print(nr)
-            stop_wrap("`nrow` of all heatmaps should be the same for horizontal heatmap list.")
-            for(i in l) {
-                cat(object@ht_list[[i]]@name, ":", nrow(object@ht_list[[i]]@matrix), "\n")
+            cat("`nrow` of all heatmaps and `nobs` of all annotations should be the same\nfor horizontal heatmap list.\n")
+            for(i in seq_along(object@ht_list)) {
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    cat("  heatmap '", object@ht_list[[i]]@name, "': ", nrow(object@ht_list[[i]]@matrix), "\n", sep = "")
+                } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                    ha = object@ht_list[[i]]
+                    for(j in seq_along(ha@anno_list)) {
+                        if(!is.na(nobs(ha@anno_list[[j]]))) {
+                            cat("  annotation '", ha@anno_list[[j]]@name, "': ", nobs(ha@anno_list[[j]]), "\n", sep = "")
+                        }
+                    }
+                }
             }
-            cat("\n")
+            stop("You have an error when adding heatmaps and annotations.")
         }
     } else {
-        nc = sapply(object@ht_list[l], function(ht) ncol(ht@matrix))
-
-        if(length(unique(nc)) > 1) {
-            cat("`ncol` of all heatmaps:\n")
-            print(nc)
-            stop_wrap("`ncol` of all heatmaps should be the same for vertical heatmap list.")
-            for(i in l) {
-                cat(object@ht_list[[i]]@name, ":", ncol(object@ht_list[[i]]@matrix), "\n")
+        nc = sapply(object@ht_list, function(ht) {
+            if(inherits(ht, "Heatmap")) {
+                ncol(ht@matrix)
+            } else if(inherits(ht, "HeatmapAnnotation")) {
+                nobs(ht)
+            } else {
+                NA
             }
-            cat("\n")
+        })
+        nc = nc[!is.na(nc)]
+
+        if(length(unique(nr)) > 1) {
+            cat("`ncol` of all heatmaps and `nobs` of all annotations should be the same\nfor vertical heatmap list.\n")
+            for(i in seq_along(object@ht_list)) {
+                if(inherits(object@ht_list[[i]], "Heatmap")) {
+                    cat("  heatmap '", object@ht_list[[i]]@name, "': ", ncol(object@ht_list[[i]]@matrix), "\n", sep = "")
+                } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                    ha = object@ht_list[[i]]
+                    for(j in seq_along(ha@anno_list)) {
+                        if(!is.na(nobs(ha@anno_list[[j]]))) {
+                            cat("  annotation '", ha@anno_list[[j]]@name, "': ", nobs(ha@anno_list[[j]]), "\n", sep = "")
+                        }
+                    }
+                }
+            }
+            stop("You have an error when adding heatmaps and annotations.")
         }
     }
 

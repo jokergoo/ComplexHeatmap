@@ -109,6 +109,11 @@ construct_dend_segments = function(dend, gp) {
         }
 
         height = attr(dend, "height")
+        if(is.unit(height)) {
+            height_is_zero = abs(convertHeight(height, "mm", valueOnly = TRUE) - 0) < 1e-10
+        } else {
+            height_is_zero = abs(height - 0) < 1e-10
+        }
         nc = length(dend)
         
         xl = lapply(seq_len(nc), function(i) attr(dend[[i]], "x"))
@@ -142,19 +147,36 @@ construct_dend_segments = function(dend, gp) {
                 env[[gp_name]] = c(env[[gp_name]], gpa)
             }
 
-            if(x_is_unit) {
-                env$x0 = unit.c(env$x0, xl[i], xl[i])
-                env$x1 = unit.c(env$x1, xl[i], mid_x)
+            if(height_is_zero) {
+                if(x_is_unit) {
+                    env$x0 = unit.c(env$x0, xl[i])
+                    env$x1 = unit.c(env$x1, mid_x)
+                } else {
+                    env$x0 = c(env$x0, xl[i])
+                    env$x1 = c(env$x1, mid_x)
+                }
+                if(height_is_unit) {
+                    env$y0 = unit.c(env$y0, height)
+                    env$y1 = unit.c(env$y1, height)
+                } else {
+                    env$y0 = c(env$y0, height)
+                    env$y1 = c(env$y1, height)
+                }
             } else {
-                env$x0 = c(env$x0, xl[i], xl[i])
-                env$x1 = c(env$x1, xl[i], mid_x)
-            }
-            if(height_is_unit) {
-                env$y0 = unit.c(env$y0, yl[i], height)
-                env$y1 = unit.c(env$y1, height, height)
-            } else {
-                env$y0 = c(env$y0, yl[i], height)
-                env$y1 = c(env$y1, height, height)
+                if(x_is_unit) {
+                    env$x0 = unit.c(env$x0, xl[i], xl[i])
+                    env$x1 = unit.c(env$x1, xl[i], mid_x)
+                } else {
+                    env$x0 = c(env$x0, xl[i], xl[i])
+                    env$x1 = c(env$x1, xl[i], mid_x)
+                }
+                if(height_is_unit) {
+                    env$y0 = unit.c(env$y0, yl[i], height)
+                    env$y1 = unit.c(env$y1, height, height)
+                } else {
+                    env$y0 = c(env$y0, yl[i], height)
+                    env$y1 = c(env$y1, height, height)
+                }
             }
 
             generate_children_dendrogram_segments(dend[[i]], env)
@@ -272,6 +294,7 @@ grid.dendrogram = function(dend, ..., test = FALSE) {
     gb = dendrogramGrob(dend, ...)
     if(test) {
         h = dend_heights(dend)
+        if(h == 0) h = 1
         n = nobs(dend)
         grid.newpage()
         if(gb$facing %in% c("top", "bottom")) {
@@ -468,8 +491,9 @@ cut_dendrogram = function(dend, k) {
 dend_branches_heights = function(d, v = NULL) {
     if(!is.leaf(d)) {
         v = c(v, attr(d, "height"))
-        v = dend_branches_heights(d[[1]], v)
-        v = dend_branches_heights(d[[2]], v)
+        for(i in seq_along(d)) {
+            v = dend_branches_heights(d[[i]], v)
+        }
     }
     return(v)
 }

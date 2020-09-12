@@ -826,10 +826,14 @@ setMethod(f = "copy_all",
 # == details
 # It returns the ``n`` slot of the annotaton function. If it does not exist, it returns ``NA``.
 nobs.SingleAnnotation = function(object, ...) {
-    if(object@fun@n > 0) {
-        object@fun@n
-    } else {
+    if(is.na(object@fun@n)) {
         NA
+    } else {
+        if(object@fun@n > 0) {
+            object@fun@n
+        } else {
+            NA
+        }
     }
 }
 

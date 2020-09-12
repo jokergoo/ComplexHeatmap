@@ -10,6 +10,8 @@ CHANGES in VERSION 2.5.4
 * `Legends()`: fixed a bug of mixtype "legend" to "Legend".
 * now assign correct envir to `decorate_dend()`.
 * `pheatmap()`: check `NA` in the matrix.
+* `grid.dendrogram()`: consider branches with height zero.
+* checking the dimension of the matrix and the nobs of annotations when adding them.
 
 ========================
 
