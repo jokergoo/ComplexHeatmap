@@ -107,7 +107,7 @@ There are following blog posts focusing on specific topics:
 
 Heatmaps can be exported into a Shiny app by `ht_shiny(ht)`. See examples at https://jokergoo.shinyapps.io/interactive_complexheatmap/.
 
-https://user-images.githubusercontent.com/449218/82199376-e5eec600-98fd-11ea-9fca-ad95d405dc20.gif
+<img src="https://user-images.githubusercontent.com/449218/82199376-e5eec600-98fd-11ea-9fca-ad95d405dc20.gif" />
 
 
 ## License
