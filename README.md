@@ -71,14 +71,14 @@ The full documentations are available at https://jokergoo.github.io/ComplexHeatm
 
 There are following blog posts focusing on specific topics:
 
--[Translate from pheatmap to ComplexHeatmap](https://jokergoo.github.io/2020/05/06/translate-from-pheatmap-to-complexheatmap/)
--[Set cell width/height in the heatmap](https://jokergoo.github.io/2020/05/11/set-cell-width/height-in-the-heatmap/)
--[Interactive ComplexHeatmap](https://jokergoo.github.io/2020/05/15/interactive-complexheatmap/)
--[Word cloud as heatmap annotation](https://jokergoo.github.io/2020/05/31/word-cloud-as-heatmap-annotation/)
--[Which heatmap function is faster?](https://jokergoo.github.io/2020/06/19/which-heatmap-function-is-faster/)
--[Rasterization in ComplexHeatmap](https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/)
--[Block annotation over several slices](https://jokergoo.github.io/2020/07/06/block-annotation-over-several-slices/)
--[Integrate ComplexHeatmap with cowplot package](https://jokergoo.github.io/2020/07/14/integrate-complexheatmap-with-cowplot-package/)
+- [Translate from pheatmap to ComplexHeatmap](https://jokergoo.github.io/2020/05/06/translate-from-pheatmap-to-complexheatmap/)
+- [Set cell width/height in the heatmap](https://jokergoo.github.io/2020/05/11/set-cell-width/height-in-the-heatmap/)
+- [Interactive ComplexHeatmap](https://jokergoo.github.io/2020/05/15/interactive-complexheatmap/)
+- [Word cloud as heatmap annotation](https://jokergoo.github.io/2020/05/31/word-cloud-as-heatmap-annotation/)
+- [Which heatmap function is faster?](https://jokergoo.github.io/2020/06/19/which-heatmap-function-is-faster/)
+- [Rasterization in ComplexHeatmap](https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/)
+- [Block annotation over several slices](https://jokergoo.github.io/2020/07/06/block-annotation-over-several-slices/)
+- [Integrate ComplexHeatmap with cowplot package](https://jokergoo.github.io/2020/07/14/integrate-complexheatmap-with-cowplot-package/)
 
 
 ## Examples
