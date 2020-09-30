@@ -333,7 +333,7 @@ pheatmap = function(mat,
     }
 
     if(!is.null(labels_col)) {
-        ht_param$labels_col = labels_col
+        ht_param$column_labels = labels_col
     }
 
     if(!is.null(gaps_row)) {
