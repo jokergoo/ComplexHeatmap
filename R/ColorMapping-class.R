@@ -303,6 +303,7 @@ setMethod(f = "color_mapping_legend",
 	if(length(at) != length(labels)) {
 		stop_wrap("Length of 'at' should be same as length of 'labels'.")
 	}
+
 	# if it is character color mapping, remove items in `at` which are not in the available optinos
 	if(color_bar == "discrete" && is.character(at)) {
 		l = which(at %in% object@levels)
@@ -315,15 +316,20 @@ setMethod(f = "color_mapping_legend",
 			at = rev(at)
 			labels = rev(labels)
 		}
-		gf = Legend(at = at, labels = labels, title = title, title_gp = title_gp, grid_height = grid_height,
-			grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
-			legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position, by_row = by_row)
+		if(length(at) == 0) {
+			gf = Legend(at = "NA", labels = "NA", title = title, title_gp = title_gp, grid_height = grid_height,
+				grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
+				legend_gp = gpar(fill = object@na_col), title_position = title_position, by_row = by_row)
+		} else {
+			gf = Legend(at = at, labels = labels, title = title, title_gp = title_gp, grid_height = grid_height,
+				grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
+				legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position, by_row = by_row)
+		}
 
 	} else {
-
 		gf = Legend(at = at, labels = labels, col_fun = object@col_fun, title = title, title_gp = title_gp, grid_height = grid_height,
-			grid_width = grid_width, border = border, labels_gp = labels_gp, labels_rot = labels_rot, direction = legend_direction,
-			legend_width = legend_width, legend_height = legend_height, title_position = title_position, by_row = by_row)
+				grid_width = grid_width, border = border, labels_gp = labels_gp, labels_rot = labels_rot, direction = legend_direction,
+				legend_width = legend_width, legend_height = legend_height, title_position = title_position, by_row = by_row)
 
 	}
 

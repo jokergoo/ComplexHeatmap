@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.5.5
+
+* still draw the legend when all values are NA in an annotation.
+
+======================
+
 CHANGES in VERSION 2.5.4
 
 * fixed a bug where slice clusters were wrongly reordered.
