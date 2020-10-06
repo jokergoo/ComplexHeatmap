@@ -141,34 +141,45 @@ pheatmap = function(mat,
 
     ht_param = list(matrix = mat)
 
-    if(is.na(breaks)) {
-        n_col = length(color)
-        ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length = n_col), color)
-    } else  {
-        if(length(breaks) == length(color) + 1) {
-            ht_param$col = local({
-                breaks = breaks
-                color = color
-                fun = function(x) {
-                    n = length(color)
-                    df = data.frame(start = c(-Inf, breaks[seq_len(n)], breaks[n+1]), 
-                                    end = c(breaks[1], breaks[1+seq_len(n)], Inf))
-                    # tell which interval x is in
-                    ind = numeric(length(x))
-                    for(i in seq_along(x)) {
-                        ind[i] = which(x >= df$start & x < df$end)
-                    }
-                    ind = ind - 1
-                    ind[ind < 1] = 1
-                    ind[ind > n] = n
-                    color[ind]
-                }
-                attr(fun, "breaks") = breaks
-                fun
-            })
-        } else {
+    # if color is a color mapping function
+    if(is.function(color)) {
+        ht_param$col = color
+        if(!identical(breaks, NA)) {
+            warning_wrap("`breaks` is ignored when `color` is set as a color mapping function.")
+        }
+    } else {
+        if(identical(breaks, NA)) {
             n_col = length(color)
-            ht_param$col  = colorRamp2(seq(min(breaks), max(breaks), length = n_col), color)
+            ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length = n_col), color)
+        } else  {
+            if(length(breaks) == length(color) + 1) {
+                ht_param$col = local({
+                    breaks = breaks
+                    color = color
+                    fun = function(x) {
+                        n = length(color)
+                        df = data.frame(start = c(-Inf, breaks[seq_len(n)], breaks[n+1]), 
+                                        end = c(breaks[1], breaks[1+seq_len(n)], Inf))
+                        # tell which interval x is in
+                        ind = numeric(length(x))
+                        for(i in seq_along(x)) {
+                            ind[i] = which(x >= df$start & x < df$end)
+                        }
+                        ind = ind - 1
+                        ind[ind < 1] = 1
+                        ind[ind > n] = n
+                        color[ind]
+                    }
+                    attr(fun, "breaks") = breaks
+                    fun
+                })
+            } else if(length(breaks) == length(color)) {
+                ht_param$col = colorRamp2(breaks, color)
+            } else {
+                n_col = length(color)
+                ht_param$col  = colorRamp2(seq(min(breaks), max(breaks), length = n_col), color)
+                warning_wrap("`breaks` does not have the same length as `color`. The colors are interpolated from the minimal to the maximal of `breaks`.")
+            }
         }
     }
 
@@ -333,7 +344,7 @@ pheatmap = function(mat,
     }
 
     if(!is.null(labels_col)) {
-        ht_param$labels_col = labels_col
+        ht_param$column_labels = labels_col
     }
 
     if(!is.null(gaps_row)) {

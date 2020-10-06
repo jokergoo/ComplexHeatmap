@@ -444,6 +444,11 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 	if(length(lt) == 1) {
 		lt = lt[[1]]
 		if(length(dim(lt)) == 2) { # a matrix
+
+			if(ncol(lt) > 31) {
+				stop_wrap("Only support number of sets <= 31.")
+			}
+
 			m = make_comb_mat_from_matrix(lt, mode = mode, top_n_sets = top_n_sets, 
 				min_set_size = min_set_size, universal_set = universal_set, complement_size = complement_size,
 				set_on_rows = set_on_rows)
@@ -461,7 +466,11 @@ make_comb_mat = function(..., mode = c("distinct", "intersect", "union"),
 		}
 	}
 
-	# if lt is a list of atomic sets, convert to the matrix because it is more efficiency
+	if(length(lt) > 31) {
+		stop_wrap("Only support number of sets <= 31.")
+	}
+
+	# if lt is a list of atomic sets, convert to the matrix because it is more efficient
 	if(is.atomic(lt[[1]])) {
 		m = make_comb_mat_from_matrix(list_to_matrix(lt), mode = mode, top_n_sets = top_n_sets, 
 			min_set_size = min_set_size, universal_set = universal_set, complement_size = complement_size,

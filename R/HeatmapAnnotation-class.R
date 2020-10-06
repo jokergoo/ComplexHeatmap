@@ -158,7 +158,10 @@ HeatmapAnnotation = function(...,
 		arg_list = scl[-1]
 	} else {
 		scl = as.list(sc[[nsc-1]])
-		if(any(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation"))) {
+		if(is.function(scl[[1]])) {
+			scl = as.list(sc[[nsc]])
+			arg_list = scl[-1]
+		} else if(any(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation"))) {
 			arg_list = scl[-1]
 		} else {
 			scl = as.list(sc[[nsc]])
