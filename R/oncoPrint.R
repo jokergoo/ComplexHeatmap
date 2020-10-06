@@ -606,6 +606,7 @@ unify_mat_list = function(mat_list, default = 0) {
 # -which Is it a row annotation or a column annotation?
 # -bar_width Width of the bars.
 # -ylim Data range.
+# -show_fraction Whether to show the numbers or the fractions?
 # -axis Whether draw axis?
 # -axis_param Parameters for controlling axis.
 # -width Width of the annotation.
@@ -619,7 +620,7 @@ unify_mat_list = function(mat_list, default = 0) {
 # Zuguang Gu <z.gu@dkfz.de>
 #
 anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
-	bar_width = 0.6, ylim = NULL, axis = TRUE, 
+	bar_width = 0.6, ylim = NULL, show_fraction = FALSE, axis = TRUE,
 	axis_param = if(which == "column") default_axis_param("column") else list(side = "top", labels_rot = 0),
 	width = NULL, height = NULL, border = FALSE) {
 
@@ -646,8 +647,12 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 		arr = arr[, , all_type, drop = FALSE]
 		col = col[all_type]
 
-		count = apply(arr, c(2, 3), sum)
-		fun = anno_barplot(count, gp = gpar(fill = col, col = NA), which = "column", ylim = ylim,
+		if(show_fraction) {
+			v = apply(arr, c(2, 3), sum)/dim(arr)[1]
+		} else {
+			v = apply(arr, c(2, 3), sum)
+		}
+		fun = anno_barplot(v, gp = gpar(fill = col, col = NA), which = "column", ylim = ylim,
 			baseline = 0, height = anno_size$height, border = border, bar_width = bar_width,
 			axis = axis, axis_param = axis_param)@fun
 		fun(index, k, n)
@@ -667,8 +672,12 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 		arr = arr[, , all_type, drop = FALSE]
 		col = col[all_type]
 
-		count = apply(arr, c(1, 3), sum)
-		fun = anno_barplot(count, gp = gpar(fill = col, col = NA), which = "row", ylim = ylim,
+		if(show_fraction) {
+			v = apply(arr, c(1, 3), sum)/dim(arr)[2]
+		} else {
+			v = apply(arr, c(1, 3), sum)
+		}
+		fun = anno_barplot(v, gp = gpar(fill = col, col = NA), which = "row", ylim = ylim,
 			baseline = 0, width = anno_size$width, border = border, bar_width = bar_width,
 			axis = axis, axis_param = axis_param)@fun
 		fun(index, k, n)
@@ -686,7 +695,7 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 		which = which,
 		width = anno_size$width,
 		height = anno_size$height,
-		var_import = list(border, type, bar_width, axis, axis_param, anno_size, ylim)
+		var_import = list(border, type, bar_width, axis, axis_param, anno_size, ylim, show_fraction)
 	)
 		
 	anno@subsetable = TRUE
