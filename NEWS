@@ -6,6 +6,7 @@ CHANGES in VERSION 2.5.5
 * `pheatmap()`: improve the setting of `color` and `breaks`.
 * `ht_opt$TITLE_PADDING` can be set with a unit of length two.
 * `HeatmapAnnotation()`: remove colors that are not in the annotations. 
+* `pheatmap()`: fixed a bug when length(breaks) = length(color) + 1
 
 ======================
 

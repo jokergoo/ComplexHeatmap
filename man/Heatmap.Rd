@@ -181,8 +181,8 @@ Heatmap(matrix, col, name,
   \item{raster_quality}{Ignored now.}
   \item{raster_device_param}{A list of further parameters for the selected graphic device. For raster image support, please check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-as-raster-image} .}
   \item{raster_resize_mat}{Whether resize the matrix to let the dimension of the matrix the same as the dimension of the raster image? The value can be logical. If it is \code{TRUE}, \code{\link[base]{mean}} is used to summarize the sub matrix which corresponds to a single pixel. The value can also be a summary function, e.g. \code{\link[base:Extremes]{max}}.}
-  \item{raster_by_magick}{Whether to use \code{\link[magick]{image_resize}} to scale the image.}
-  \item{raster_magick_filter}{Pass to \code{filter} argument of \code{\link[magick]{image_resize}}. A character scalar and all possible values are in \code{\link[magick]{filter_types}}. The default is \code{"Lanczos"}.}
+  \item{raster_by_magick}{Whether to use \code{\link[magick:transform]{image_resize}} to scale the image.}
+  \item{raster_magick_filter}{Pass to \code{filter} argument of \code{\link[magick:transform]{image_resize}}. A character scalar and all possible values are in \code{\link[magick:options]{filter_types}}. The default is \code{"Lanczos"}.}
   \item{post_fun}{A function which will be executed after the heatmap list is drawn.}
 
 }

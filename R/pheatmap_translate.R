@@ -94,14 +94,14 @@ pheatmap = function(mat,
     annotation_names_row = TRUE, 
     annotation_names_col = TRUE,
     drop_levels = TRUE, 
-    show_rownames = T, 
-    show_colnames = T, 
+    show_rownames = TRUE, 
+    show_colnames = TRUE, 
     main = NA,
     fontsize = 10, 
     fontsize_row = fontsize, 
     fontsize_col = fontsize,
     angle_col = c("270", "0", "45", "90", "315"), 
-    display_numbers = F,
+    display_numbers = FALSE,
     number_format = "%.2f", 
     number_color = "grey30", 
     fontsize_number = 0.8 * fontsize, 
@@ -163,7 +163,7 @@ pheatmap = function(mat,
                         # tell which interval x is in
                         ind = numeric(length(x))
                         for(i in seq_along(x)) {
-                            ind[i] = which(x >= df$start & x < df$end)
+                            ind[i] = which(df$start <= x[i] & df$end > x[i])
                         }
                         ind = ind - 1
                         ind[ind < 1] = 1
