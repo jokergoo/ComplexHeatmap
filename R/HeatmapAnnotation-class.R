@@ -281,6 +281,7 @@ HeatmapAnnotation = function(...,
 	    	if(any(is.na(names(col)))) {
 	    		stop_wrap("`col` should be a named list.")
 	    	}
+	    	col = col[intersect(simple_anno_name, names(col))]
 	    	if(any(sapply(col, function(x) if(is.function(x)) FALSE else is.null(names(x))))) {
 	    		stop_wrap("elements in `col` should be named vectors.")
 	    	}

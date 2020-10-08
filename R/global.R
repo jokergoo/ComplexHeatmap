@@ -170,8 +170,15 @@ ht_opt = setGlobalOptions(
 		.class = "unit"
 	),
 	TITLE_PADDING = list(
-		.value = unit(2.5, "mm"),
-		.class = "unit"
+		.value = unit(c(2.5, 2.5), "mm"),
+		.class = "unit",
+		.filter = function(x) {
+			if(length(x) == 1) {
+				rep(x, 2)
+			} else {
+				x[1:2]
+			}
+		}
 	),
 	COLUMN_ANNO_PADDING = list(
 		.value = unit(1, "mm"),

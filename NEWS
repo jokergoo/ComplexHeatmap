@@ -4,6 +4,8 @@ CHANGES in VERSION 2.5.5
 * add `show_fraction` argument in `anno_oncoprint_barplot()` function to show the fractions
   of mutations instead of the counts.
 * `pheatmap()`: improve the setting of `color` and `breaks`.
+* `ht_opt$TITLE_PADDING` can be set with a unit of length two.
+* `HeatmapAnnotation()`: remove colors that are not in the annotations. 
 
 ======================
 

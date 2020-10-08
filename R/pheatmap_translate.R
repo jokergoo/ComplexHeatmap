@@ -250,7 +250,7 @@ pheatmap = function(mat,
         heatmap_legend_param$labels = legend_labels
     }
     ht_param$heatmap_legend_param = heatmap_legend_param
-    
+
     if(identical(annotation_colors, NA)) {
         annotation_colors = list()
     }
