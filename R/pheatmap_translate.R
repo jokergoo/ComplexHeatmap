@@ -245,9 +245,14 @@ pheatmap = function(mat,
     heatmap_legend_param = list()
     if(identical(scale, "row") || identical(scale, "column")) {
         if(identical(legend_breaks, NA)) {
-            lim = max(abs(quantile(mat, c(0.025, 0.975))))
+            lim = quantile(abs(mat), 0.975)
 
             le = pretty(c(-lim, lim), n = 3)
+            if(length(le) == 7 && le[1] == -3) {
+                le = c(-3, -1.5, 0, 1.5, 3)
+            } else if(! 0 %in% le) {
+                le = c(le[1], le[1]/2, 0, le[length(le)]/2, le[length(le)])
+            }
             legend_breaks = le
         }
     }
