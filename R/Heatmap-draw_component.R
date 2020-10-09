@@ -67,7 +67,8 @@ setMethod(f = "draw_heatmap_body",
             tiff = c("grDevices", "tiff", "readTIFF"),
             CairoPNG = c("Cairo", "png", "readPNG"),
             CairoJPEG = c("Cairo", "jpeg", "readJPEG"),
-            CairoTIFF = c("Cairo", "tiff", "readTIFF")
+            CairoTIFF = c("Cairo", "tiff", "readTIFF"),
+            agg_png = c("ragg", "png", "readPNG")
         )
         if(!requireNamespace(device_info[1])) {
             stop_wrap(paste0("Need ", device_info[1], " package to write image."))

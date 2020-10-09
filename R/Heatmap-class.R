@@ -293,7 +293,7 @@ Heatmap = function(matrix, col, name,
     heatmap_legend_param = list(title = name),
 
     use_raster = NULL, 
-    raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF"),
+    raster_device = c("png", "jpeg", "tiff", "CairoPNG", "CairoJPEG", "CairoTIFF", "agg_png"),
     raster_quality = 2,
     raster_device_param = list(),
     raster_resize_mat = FALSE,
