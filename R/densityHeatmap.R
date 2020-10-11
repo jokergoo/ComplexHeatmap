@@ -146,8 +146,9 @@ densityHeatmap = function(data,
 		if(clustering_distance_columns == "ks") {
 			d = ks_dist(mat, mc.cores = mc.cores)
 
-			hc = hclust(d, clustering_method_columns)
-			cluster_columns = hc
+			dend = as.dendrogram(hclust(d, clustering_method_columns))
+			dend = reorder(dend, colMeans(mat))
+			cluster_columns = dend
 		}
 	}
 
