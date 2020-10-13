@@ -8,6 +8,7 @@ CHANGES in VERSION 2.5.5
 * `HeatmapAnnotation()`: remove colors that are not in the annotations. 
 * `pheatmap()`: fixed a bug when length(breaks) = length(color) + 1
 * `pheatmap()`: legend breaks are centered to zero if the matrix is scaled.
+* `pheatmap()`: color mapping is symmetric to zero when scale is set.
 * support ragg package to write temporary png files
 * `densityHeatmap()`: column dendrogram is reordered by column means for ks method.
 

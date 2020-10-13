@@ -141,6 +141,10 @@ pheatmap = function(mat,
 
     ht_param = list(matrix = mat)
 
+    if(!identical(scale, "none") && !identical(breaks, NA)) {
+        warning_wrap("It not suggested to both set `scale` and `breaks`. It makes the function confused.")
+    }
+
     # if color is a color mapping function
     if(is.function(color)) {
         ht_param$col = color
@@ -150,7 +154,12 @@ pheatmap = function(mat,
     } else {
         if(identical(breaks, NA)) {
             n_col = length(color)
-            ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length = n_col), color)
+            if(identical(scale, "row") || identical(scale, "column")) {
+                lim = max(abs(mat), na.rm = TRUE)
+                ht_param$col = colorRamp2(seq(-lim, lim, length = n_col), color)
+            } else {
+                ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length = n_col), color)
+            }
         } else  {
             if(length(breaks) == length(color) + 1) {
                 ht_param$col = local({
