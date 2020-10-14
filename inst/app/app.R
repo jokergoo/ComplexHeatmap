@@ -45,7 +45,7 @@ ui = fluidPage(
      	$("#mask2").width(ui.size.width);
      	$("#mask2").height(ui.size.height);
      }
-   })
+   });
 });
 ')),
 		tags$style(paste(readLines(system.file("app", "jquery-ui.css", package = "ComplexHeatmap")), collapse = "\n")),

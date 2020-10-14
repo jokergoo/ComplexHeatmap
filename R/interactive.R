@@ -532,6 +532,7 @@ seek_root_vp = function() {
 #
 # == param
 # -ht_list A `Heatmap-class` or a `HeatmapList-class` object. If it is not specified, a random heatmap is used.
+# -app Path of app.R.
 #
 # == seealso
 # https://jokergoo.shinyapps.io/interactive_complexHeatmap/
@@ -563,7 +564,7 @@ seek_root_vp = function() {
 #     ht_shiny(ht1 + ht2)
 #     ht_shiny(ht1 \%v\% ht2)
 # }
-ht_shiny = function(ht_list) {
+ht_shiny = function(ht_list, app = NULL) {
 	if(!requireNamespace("shiny")) {
 		stop_wrap("shiny package should be installed.")
 	}
@@ -581,11 +582,14 @@ ht_shiny = function(ht_list) {
 		ht_list = ht_list
 	}
 	
-	if(identical(topenv(), .GlobalEnv)) {
-		source("~/project/ComplexHeatmap/inst/app/app.R", local = TRUE)
-	} else {
-		source(system.file("app", "app.R", package = "ComplexHeatmap"), local = TRUE)
+	if(is.null(app)) {
+		if(identical(topenv(), .GlobalEnv)) {
+			path = "~/project/ComplexHeatmap/inst/app/app.R"
+		} else {
+			path = system.file("app", "app.R", package = "ComplexHeatmap")
+		}
 	}
+	source(app, local = TRUE)
 	shiny::shinyApp(get("ui"), get("server"))
 }
 
