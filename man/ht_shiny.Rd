@@ -7,11 +7,12 @@ Interactive heatmaps with a shiny app
 Interactive heatmaps with a shiny app
 }
 \usage{
-ht_shiny(ht_list)
+ht_shiny(ht_list, app = NULL)
 }
 \arguments{
 
   \item{ht_list}{A \code{\link{Heatmap-class}} or a \code{\link{HeatmapList-class}} object. If it is not specified, a random heatmap is used.}
+  \item{app}{Path of app.R.}
 
 }
 \seealso{
