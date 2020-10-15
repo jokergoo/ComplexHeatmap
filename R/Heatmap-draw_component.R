@@ -176,14 +176,16 @@ setMethod(f = "draw_heatmap_body",
             }
             image = magick::image_read(temp_image)
             image = magick::image_resize(image, paste0(heatmap_width_pt, "x", heatmap_height_pt, "!"), filter = raster_magick_filter)
-            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = FALSE)
         } else {
             if(object@heatmap_param$verbose) {
                 qqcat("image is read by @{device_info[2]}::@{device_info[3]}\n")
             }
             image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
-            grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = FALSE)
         }
+        # validate image, there might be white horizontal lines and vertical lines 
+        image = validate_raster_matrix(image, mat, object@matrix_color_mapping)
+
+        grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = FALSE)
 
         ### only for testing ###
         if(ht_opt("__export_image_size__")) {
@@ -255,6 +257,18 @@ setMethod(f = "draw_heatmap_body",
     upViewport()
 
 })
+
+# check white lines in the RGB matrix, and re-fill the color from mat with color_mapping
+# careful: row orders of rgb and mat are reversed
+# rgb: values change from 0 to 1
+validate_raster_matrix = function(rgb, mat, col_mapping) {
+    if(any(rgb[, 1, 1] == 1 & rgb[, 1, 2] == 1 & rgb[, 1, 3] == 1)) {
+        if(nrow(rgb) < nrow(mat)) {
+
+        }
+    }
+    rgb
+}
 
 is_windows = function() {
     tolower(.Platform$OS.type) == "windows"
