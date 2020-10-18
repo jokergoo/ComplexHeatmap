@@ -277,6 +277,18 @@ pheatmap = function(mat,
         annotation_colors = list()
     }
     if(!identical(annotation_col, NA)) {
+        acn = rownames(annotation_col)
+        mcn = colnames(mat)
+        if(!is.null(acn)) {
+            if(acn[1] %in% mcn) {
+                if(length(union(acn, mcn)) == length(mcn)) {
+                    if(!identical(acn, mcn)) {
+                        warning_wrap("Column annotation has different order from matrix columns. Adjust the column annotation based on column names of the matrix.")
+                    }
+                    annotation_col = annotation_col[mcn, , drop = FALSE]
+                }
+            }
+        }
         for(nm in colnames(annotation_col)) {
             if(nm %in% names(annotation_colors)) {
                 if(is.null(names(annotation_colors[[nm]])) && is.numeric(annotation_col[, nm])) {
@@ -293,6 +305,18 @@ pheatmap = function(mat,
             simple_anno_size = unit(10, "bigpts"), gap = unit(2, "bigpts"))
     }
     if(!identical(annotation_row, NA)) {
+        arn = rownames(annotation_row)
+        mrn = rownames(mat)
+        if(!is.null(arn)) {
+            if(arn[1] %in% mrn) {
+                if(length(union(arn, mrn)) == length(mrn)) {
+                    if(!identical(arn, mrn)) {
+                        warning_wrap("Row annotation has different order from matrix rows. Adjust the row annotation based on row names of the matrix.")
+                    }
+                    annotation_row = annotation_row[mrn, , drop = FALSE]
+                }
+            }
+        }
         for(nm in colnames(annotation_row)) {
             if(nm %in% names(annotation_colors)) {
                 if(is.null(names(annotation_colors[[nm]])) && is.numeric(annotation_row[, nm])) {
