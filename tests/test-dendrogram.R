@@ -72,24 +72,35 @@ dend = cluster_within_group(m, fa)
 grid.dendrogram(dend, test = TRUE)
 
 
-#  stack overflow problem
-# m = matrix(1, nrow = 1000, ncol = 10)
-# m[1, 2] = 2
-# dend = as.dendrogram(hclust(dist(m)))
-# grid.dendrogram(dend, test = T)
+# stack overflow problem
+m = matrix(1, nrow = 1000, ncol = 10)
+m[1, 2] = 2
+dend = as.dendrogram(hclust(dist(m)))
+grid.dendrogram(dend, test = T)
 
 # node attr
-# m = matrix(rnorm(100), 10)
-# dend = as.dendrogram(hclust(dist(m)))
-# require(dendextend)
-# dend1 = color_branches(dend, k = 2, col = 1:2)
-# grid.dendrogram(dend1, test = T)
-# dend1 = dend
-# dend1 = dendrapply(dend, function(d) {
-# 	attr(d, "nodePar") = list(pch = 13, size = unit(runif(1, min = 3, max = 20), "bigpts"))
-# 	d
-# })
-# grid.dendrogram(dend1, test = T)
+m = matrix(rnorm(100), 10)
+dend = as.dendrogram(hclust(dist(m)))
+require(dendextend)
+dend1 = color_branches(dend, k = 2, col = 1:2)
+grid.dendrogram(dend1, test = T)
+dend1 = dend
+dend1 = dendrapply(dend, function(d) {
+	attr(d, "nodePar") = list(pch = 13, size = unit(runif(1, min = 3, max = 20), "bigpts"))
+	d
+})
+grid.dendrogram(dend1, test = T)
 
-# Heatmap(m, cluster_rows = dend1, cluster_columns = dend1)
+Heatmap(m, cluster_rows = dend1, cluster_columns = dend1)
 
+d1 = dend_edit_node(dend, method = "top-bottom", function(d, index) {
+	attr(d, "depth") = length(index)
+	d
+})
+
+d2 = dend_edit_node(dend, method = "bottom-top", function(d, index) {
+	attr(d, "depth") = length(index)
+	d
+})
+
+identical(d1, d2)

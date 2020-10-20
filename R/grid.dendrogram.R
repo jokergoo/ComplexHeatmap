@@ -42,25 +42,17 @@ adjust_dend_by_x = function(dend, leaf_pos = 1:nobs(dend)-0.5) {
     leaves_pos = leaf_pos
     od2index = NULL
     od2index[dend_order] = 1:n
-
-    env = new.env()
-    env$dend = dend
-
-    adj_dend = function(ind = NULL) {
-        d = subset_dendrogram(env$dend, ind)
+    
+    dend = dend_edit_node(dend, method = "bottom-top", function(d, index) {
         n_node = length(d)
-
         if(is.leaf(d)) {
             i = od2index[ d[][[1]] ]
             x = leaves_pos[i]
-            
         } else {
             nc = length(d)
-            for(i in seq_len(nc)) {
-                adj_dend(c(ind, i))
-            }
-            d = subset_dendrogram(env$dend, ind)
 
+            # because the traversal is bottom-up, this ensures
+            # the `x` of child nodes have already be adjsuted
             xl = lapply(1:nc, function(i) attr(d[[i]], "x"))
             if(all(sapply(xl, inherits, "unit"))) {
                 xl = do.call("unit.c", xl)
@@ -70,17 +62,10 @@ adjust_dend_by_x = function(dend, leaf_pos = 1:nobs(dend)-0.5) {
             x = (max(xl) + min(xl))*0.5
         }
 
-        if(is.null(ind)) {
-            attr(env$dend, "x") = x
-        } else {
-            attr(env$dend[[ind]], "x") = x
-        }
-        return(x)
-    }
+        attr(d, "x") = x
+        d
+    })
 
-    adj_dend()
-
-    dend = env$dend
     return(dend)
 }
 
@@ -102,6 +87,15 @@ construct_dend_segments = function(dend, gp) {
     env$col = NULL
     env$lty = NULL
     env$lwd = NULL
+
+    env$node_x = NULL
+    env$node_y = NULL
+    env$node_col = NULL
+    env$node_cex = NULL
+    env$node_pch = NULL
+    env$node_size = NULL
+    env$node = NULL
+
     generate_children_dendrogram_segments = function(dend, env = NULL) {
 
         if(is.leaf(dend)) {
@@ -135,6 +129,7 @@ construct_dend_segments = function(dend, gp) {
 
         # graphic parameters for current branch
         edge_gp_list = lapply(seq_len(nc), function(i) as.list(attr(dend[[i]], "edgePar")))
+        node_gp_list = lapply(seq_len(nc), function(i) as.list(attr(dend[[i]], "nodePar")))
         for(i in c(setdiff(seq_len(nc), c(1, nc)), c(1, nc))) {
             for(gp_name in c("col", "lwd", "lty")) {
                 # gp for two segments
@@ -147,44 +142,97 @@ construct_dend_segments = function(dend, gp) {
                 env[[gp_name]] = c(env[[gp_name]], gpa)
             }
 
+            for(gp_name in c("col", "fill", "cex")) {
+                if(is.null(node_gp_list[[i]][[gp_name]])) {
+                    gpa = get.gpar(gp_name)[[gp_name]]
+                } else {
+                    gpa = node_gp_list[[i]][[gp_name]]
+                }
+
+                env[[paste0("node_", gp_name)]] = c(env[[paste0("node_", gp_name)]], gpa)
+            }
+            if(is.null(node_gp_list[[i]][["pch"]])) {
+                env[["node_pch"]] = c(env[["node_pch"]], 1)
+            } else {
+                env[["node_pch"]] = unit.c(env[["node_pch"]], node_gp_list[[i]][["pch"]])
+            }
+            if(is.null(node_gp_list[[i]][["size"]])) {
+                env[["node_size"]] = unit.c(env[["node_size"]], unit(1, "char"))
+            } else {
+                env[["node_size"]] = unit.c(env[["node_size"]], node_gp_list[[i]][["size"]])
+            }
+
+            if(any(names(node_gp_list[[i]]) %in% c("col", "fill", "pch", "cex", "size"))) {
+                env[["node"]] = c(env[["node"]], TRUE)
+            } else {
+                env[["node"]] = c(env[["node"]], FALSE)
+            }
+
             if(height_is_zero) {
                 if(x_is_unit) {
                     env$x0 = unit.c(env$x0, xl[i])
                     env$x1 = unit.c(env$x1, mid_x)
+                    env$node_x = unit.c(env$node_x, mid_x)
                 } else {
                     env$x0 = c(env$x0, xl[i])
                     env$x1 = c(env$x1, mid_x)
+                    env$node_x = c(env$node_x, mid_x)
                 }
                 if(height_is_unit) {
                     env$y0 = unit.c(env$y0, height)
                     env$y1 = unit.c(env$y1, height)
+                    env$node_y = unit.c(env$node_y, height)
                 } else {
                     env$y0 = c(env$y0, height)
                     env$y1 = c(env$y1, height)
+                    env$node_y = c(env$node_y, height)
                 }
             } else {
                 if(x_is_unit) {
                     env$x0 = unit.c(env$x0, xl[i], xl[i])
                     env$x1 = unit.c(env$x1, xl[i], mid_x)
+                    env$node_x = unit.c(env$node_x, mid_x)
                 } else {
                     env$x0 = c(env$x0, xl[i], xl[i])
                     env$x1 = c(env$x1, xl[i], mid_x)
+                    env$node_x = c(env$node_x, mid_x)
                 }
                 if(height_is_unit) {
                     env$y0 = unit.c(env$y0, yl[i], height)
                     env$y1 = unit.c(env$y1, height, height)
+                    env$node_y = unit.c(env$node_y, height)
                 } else {
                     env$y0 = c(env$y0, yl[i], height)
                     env$y1 = c(env$y1, height, height)
+                    env$node_y = c(env$node_y, height)
                 }
             }
-
-            generate_children_dendrogram_segments(dend[[i]], env)
         }
     }
 
-    generate_children_dendrogram_segments(dend, env)
+    # per depth
+    if(is.leaf(dend)) {
+        return(list())
+    }
 
+    dend_list = list(dend)
+    while(1) {
+
+        if(length(dend_list) == 0) break
+
+        for(i in seq_along(dend_list)) {
+            generate_children_dendrogram_segments(dend_list[[i]], env)
+        }
+
+        # on their children nodes for non-leaf nodes
+        dend_list = dend_list[ !sapply(dend_list, is.leaf) ]
+        dend_list2 = list()
+        for(i in seq_along(dend_list)) {
+            dend_list2 = append(dend_list2, dend_list[[i]])
+        }
+        dend_list = dend_list2
+    }
+    
     lt = as.list(env)
 
     if("col" %in% names(gp)) {
@@ -234,26 +282,45 @@ dendrogramGrob = function(dend, facing = c("bottom", "top", "left", "right"),
         if(order == "reverse") {
             lt$x0 = unit(1, "npc") - lt$x0
             lt$x1 = unit(1, "npc") - lt$x1
+            lt$node_x = unit(1, "npc") - lt$node_x
         }
     } else {
         xlim = range(lt[c("x0", "x1")])
         if(order == "reverse") {
             lt$x0 = unit(1, "npc") - unit(lt$x0, "native")
             lt$x1 = unit(1, "npc") - unit(lt$x1, "native")
+            lt$node_x = unit(1, "npc") - unit(lt$node_x, "native")
         }
     }
 
     if(facing %in% c("top", "right")) {
         lt$y0 = unit(1, "npc") - unit(lt$y0, "native")
         lt$y1 = unit(1, "npc") - unit(lt$y1, "native")
+        lt$node_y = unit(1, "npc") - unit(lt$node_y, "native")
     }
     if(facing %in% c("bottom", "top")) {
-        gb = segmentsGrob(lt$x0, lt$y0, lt$x1, lt$y1, gp = gpar(lwd = lt$lwd, lty = lt$lty, col = lt$col),
-            default.units = "native")
+        cl = list(segmentsGrob(lt$x0, lt$y0, lt$x1, lt$y1, 
+            gp = gpar(lwd = lt$lwd, lty = lt$lty, col = lt$col),
+            default.units = "native"))
+        if(any(lt$node)) {
+            l = lt$node
+            cl[[2]] = pointsGrob(lt$node_x[l], lt$node_y[l], pch = lt$node_pch[l], size = lt$node_size[l], 
+                gp = gpar(col = lt$node_col[l], fill = lt$node_fill[l], cex = lt$node_cex[l]),
+                default.units = "native")
+        }
     } else if(facing %in% c("left", "right")) {
-        gb = segmentsGrob(lt$y0, lt$x0, lt$y1, lt$x1, gp = gpar(lwd = lt$lwd, lty = lt$lty, col = lt$col),
-            default.units = "native")
+        cl = list(segmentsGrob(lt$y0, lt$x0, lt$y1, lt$x1, 
+            gp = gpar(lwd = lt$lwd, lty = lt$lty, col = lt$col),
+            default.units = "native"))
+        if(any(lt$node)) {
+            l = lt$node
+            cl[[2]] = pointsGrob(lt$node_y[l], lt$node_x[l], pch = lt$node_pch[l], size = lt$node_size[l], 
+                gp = gpar(col = lt$node_col[l], fill = lt$node_fill[l], cex = lt$node_cex[l]),
+                default.units = "native")
+        }
     }
+
+    gb = gTree(children = do.call(gList, cl))
     gb$facing = facing
     return(gb)
 }
@@ -614,3 +681,168 @@ cluster_within_group = function(mat, factor) {
     order.dendrogram(dend) = unlist(order_list[order.dendrogram(parent)])
     return(dend)
 }
+
+
+#######################
+dend_node_apply = function(dend, fun) {
+
+    next_k = local({
+        k = 0
+        function(reset = FALSE) {
+            if(reset) {
+                k <<- 0
+            } else {
+                k <<- k + 1
+            }
+            k
+        }
+    })
+
+    next_k(reset = TRUE)
+
+    assign_to = function(env, k, v) {
+        n = length(env$var)
+        if(n == 0) {
+            env$var = list()
+        }
+        env$var[[k]] = v
+    }
+
+
+    if(length(as.list(formals(fun))) == 1) {
+        fun2 = fun
+        fun = function(d, index) fun2(d)
+    }
+
+    env = new.env()
+
+    dend_list = list(dend)
+    index_list = list(NULL)
+    while(1) {
+
+        if(length(dend_list) == 0) break
+
+        for(i in seq_along(dend_list)) {
+            class(dend_list[[i]]) = "dendrogram"
+            if(is.null(index_list[[i]])) {
+                assign_to(env, next_k(), fun(dend_list[[i]], NULL))
+            } else {
+                assign_to(env, next_k(), fun(dend_list[[i]], index_list[[i]]))
+            }
+        }
+
+        # on their children nodes for non-leaf nodes
+        l = !sapply(dend_list, is.leaf)
+        dend_list = dend_list[l]
+        index_list = index_list[l]
+        dend_list2 = list()
+        index_list2 = list()
+        for(i in seq_along(dend_list)) {
+            dend_list2 = c(dend_list2, dend_list[[i]])
+            index_list2 = c(index_list2, lapply(seq_along(dend_list[[i]]), function(k) c(index_list[[i]], k)))
+        }
+        dend_list = dend_list2
+        index_list = index_list2
+    }
+    
+    var = env$var
+    if(all(vapply(var, is.atomic, TRUE))) {
+        if(all(vapply(var, length, 0) == 1)) {
+            var = unlist(var)
+        }
+    }
+
+    return(var)
+}
+
+
+dend_edit_node = function(dend, fun = function(d, index) d,
+    method = c("top-bottom", "bottom-top")) {
+
+    env = new.env()
+    env$dend = dend
+
+    method = match.arg(method)
+
+    fun2 = fun
+    if(length(as.list(formals(fun))) == 1) {
+        fun = function(d, index) {
+            d = fun2(d)
+            if(!inherits(d, "dendrogram")) {
+                stop_wrap("`fun` should return a dendrogram object.")
+            }
+            d
+        }
+    } else {
+        fun = function(d, index) {
+            d = fun2(d, index)
+            if(!inherits(d, "dendrogram")) {
+                stop_wrap("`fun` should return a dendrogram object.")
+            }
+            d
+        }
+    }
+
+    if(method == "top-bottom") {
+        dend_list = list(dend)
+        index_list = list(NULL)
+        while(1) {
+
+            if(length(dend_list) == 0) break
+
+            for(i in seq_along(dend_list)) {
+                class(dend_list[[i]]) = "dendrogram"
+                if(is.null(index_list[[i]])) {
+                    env$dend = fun(dend_list[[i]], NULL)
+                } else {
+                    env$dend[[ index_list[[i]] ]] = fun(dend_list[[i]], index_list[[i]])
+                }
+            }
+
+            # on their children nodes for non-leaf nodes
+            l = !sapply(dend_list, is.leaf)
+            dend_list = dend_list[l]
+            index_list = index_list[l]
+            dend_list2 = list()
+            index_list2 = list()
+            for(i in seq_along(dend_list)) {
+                dend_list2 = c(dend_list2, dend_list[[i]])
+                index_list2 = c(index_list2, lapply(seq_along(dend_list[[i]]), function(k) c(index_list[[i]], k)))
+            }
+            dend_list = dend_list2
+            index_list = index_list2
+        }
+    } else {
+        # first get all dend_index for all leaf nodes, and then go up
+        index_list = dend_node_apply(dend, function(d, index) {
+            if(is.leaf(d)) {
+                return(index)
+            } else {
+                return(NULL)
+            }
+        })
+        index_list = unique(index_list)
+        index_list = index_list[ sapply(index_list, length) > 0 ]
+
+        while(length(index_list)) {
+            # go from the longest index
+            len = sapply(index_list, length)
+            index_list2 = index_list[ len == max(len) ]
+
+            for(i in seq_along(index_list2)) {
+                env$dend[[ index_list2[[i]] ]] = fun(env$dend[[ index_list2[[i]] ]], index_list2[[i]])
+            }
+
+            # only reduce the longest index
+            index_list2 = lapply(index_list2, function(ind) ind[-length(ind)])
+            index_list = unique(c(index_list[ len < max(len) ], index_list2))
+            index_list = index_list[ sapply(index_list, length) > 0 ]
+        }
+
+        # the top node with no index
+        env$dend = fun(env$dend, NULL)
+    }
+
+    return(env$dend)
+}
+
