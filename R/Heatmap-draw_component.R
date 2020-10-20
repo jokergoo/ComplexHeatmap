@@ -262,11 +262,11 @@ setMethod(f = "draw_heatmap_body",
 # careful: row orders of rgb and mat are reversed
 # rgb: values change from 0 to 1
 validate_raster_matrix = function(rgb, mat, col_mapping) {
-    if(any(rgb[, 1, 1] == 1 & rgb[, 1, 2] == 1 & rgb[, 1, 3] == 1)) {
-        if(nrow(rgb) < nrow(mat)) {
+    # if(any(rgb[, 1, 1] == 1 & rgb[, 1, 2] == 1 & rgb[, 1, 3] == 1)) {
+    #     if(nrow(rgb) < nrow(mat)) {
 
-        }
-    }
+    #     }
+    # }
     rgb
 }
 
