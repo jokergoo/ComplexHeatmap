@@ -176,6 +176,7 @@ setMethod(f = "draw_heatmap_body",
             }
             image = magick::image_read(temp_image)
             image = magick::image_resize(image, paste0(heatmap_width_pt, "x", heatmap_height_pt, "!"), filter = raster_magick_filter)
+            image = as.raster(image)
         } else {
             if(object@heatmap_param$verbose) {
                 qqcat("image is read by @{device_info[2]}::@{device_info[3]}\n")
@@ -183,7 +184,7 @@ setMethod(f = "draw_heatmap_body",
             image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
         }
         # validate image, there might be white horizontal lines and vertical lines 
-        image = validate_raster_matrix(image, mat, object@matrix_color_mapping)
+        # image = validate_raster_matrix(image, mat, object@matrix_color_mapping)
 
         grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = FALSE)
 
@@ -262,11 +263,29 @@ setMethod(f = "draw_heatmap_body",
 # careful: row orders of rgb and mat are reversed
 # rgb: values change from 0 to 1
 validate_raster_matrix = function(rgb, mat, col_mapping) {
-    # if(any(rgb[, 1, 1] == 1 & rgb[, 1, 2] == 1 & rgb[, 1, 3] == 1)) {
-    #     if(nrow(rgb) < nrow(mat)) {
+    if(is.character(rgb)) {
+        dim = dim(rgb)
+        x = col2rgb(rgb)/255
+        rgb = array(dim = c(dim, 3))
+        rgb[, , 1] = matrix(x[1, ], nrow = dim[1], ncol = dim[2], byrow = TRUE)
+        rgb[, , 2] = matrix(x[2, ], nrow = dim[1], ncol = dim[2], byrow = TRUE)
+        rgb[, , 3] = matrix(x[3, ], nrow = dim[1], ncol = dim[2], byrow = TRUE)
+    }
+    # check rows
+    white_row = NULL
+    white_column = NULL
+    if(any( abs(rgb[, 1, 1] - 1) < 1e-10 & abs(rgb[, 1, 2] - 1) < 1e-10 & abs(rgb[, 1, 3] - 1)< 1e-10 )) {
+        white_row = which( abs(rowMeans(rgb[, , 1]) - 1) < 1e-10 & 
+                           abs(rowMeans(rgb[, , 2]) - 1) < 1e-10 & 
+                           abs(rowMeans(rgb[, , 3]) - 1) < 1e-10 )
+    }
+    if(any( abs(rgb[1, , 1] - 1) < 1e-10 & abs(rgb[1, , 2] - 1) < 1e-10 & abs(rgb[1, , 3] - 1)< 1e-10 )) {
+        white_column = which( abs(colMeans(rgb[, , 1]) - 1) < 0.1 & 
+                              abs(colMeans(rgb[, , 2]) - 1) < 0.1 & 
+                              abs(colMeans(rgb[, , 3]) - 1) < 0.1 )
+    }
 
-    #     }
-    # }
+    # estimate while rows and columns
     rgb
 }
 

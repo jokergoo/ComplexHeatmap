@@ -2,6 +2,7 @@ CHANGES in VERSION 2.5.6
 
 * `ht_shiny()`: add argument `app`.
 * `grid.dendrogram()`: change the recursive implementation with iterations.
+* change default raster device to `CairoPNG`.
 
 ======================
 
