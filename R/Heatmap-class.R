@@ -1352,6 +1352,7 @@ make_cluster = function(object, which = c("row", "column")) {
         names(order_list) = level
     }
 
+    slice_od = seq_along(order_list)
     # make dend in each slice
     if(cluster) {
         if(verbose) qqcat("apply clustering on each slice (@{length(order_list)} slices)\n")
