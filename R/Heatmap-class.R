@@ -98,7 +98,8 @@ Heatmap = setClass("Heatmap",
 # -jitter Random shifts added to the matrix. The value can be logical or a single numeric value. It it is ``TRUE``, random 
 #      values from uniform distribution between 0 and 1e-10 are generated. If it is a numeric value,
 #      the range for the uniform distribution is (0, ``jitter``). It is mainly to solve the problem of "Error: node stack overflow"
-#      when there are too many identical rows/columns for plotting the dendrograms.
+#      when there are too many identical rows/columns for plotting the dendrograms. ADD: From version 2.5.6, the error of node stack overflow
+#      has been fixed, now this argument is ignored.
 # -row_title Title on the row.
 # -row_title_side Will the title be put on the left or right of the heatmap?
 # -row_title_gp Graphic parameters for row title.

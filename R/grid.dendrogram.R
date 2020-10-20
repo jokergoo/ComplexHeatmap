@@ -42,7 +42,7 @@ adjust_dend_by_x = function(dend, leaf_pos = 1:nobs(dend)-0.5) {
     leaves_pos = leaf_pos
     od2index = NULL
     od2index[dend_order] = 1:n
-    
+
     dend = dend_edit_node(dend, method = "bottom-top", function(d, index) {
         n_node = length(d)
         if(is.leaf(d)) {
@@ -154,7 +154,7 @@ construct_dend_segments = function(dend, gp) {
             if(is.null(node_gp_list[[i]][["pch"]])) {
                 env[["node_pch"]] = c(env[["node_pch"]], 1)
             } else {
-                env[["node_pch"]] = unit.c(env[["node_pch"]], node_gp_list[[i]][["pch"]])
+                env[["node_pch"]] = c(env[["node_pch"]], node_gp_list[[i]][["pch"]])
             }
             if(is.null(node_gp_list[[i]][["size"]])) {
                 env[["node_size"]] = unit.c(env[["node_size"]], unit(1, "char"))
