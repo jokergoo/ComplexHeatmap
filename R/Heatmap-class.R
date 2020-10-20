@@ -565,12 +565,13 @@ Heatmap = function(matrix, col, name,
                     stop_wrap("`col` should have names to map to values in `mat`.")
                 }
             } else {
+                full_col = col
                 if(is.null(fa_level)) {
                     col = col[intersect(c(names(col), "_NA_"), as.character(matrix))]
                 } else {
                     col = col[intersect(c(fa_level, "_NA_"), names(col))]
                 }
-                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
+                .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col, full_col = full_col)
                 if(verbose) qqcat("input color is a named vector\n")
             }
         }

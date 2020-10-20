@@ -3,6 +3,9 @@ CHANGES in VERSION 2.5.6
 * `ht_shiny()`: add argument `app`.
 * `grid.dendrogram()`: change the recursive implementation with iterations.
 * change default raster device to `CairoPNG`.
+* `Heatmap()`: If the discrete `col` covers more than the levels in the matrix,
+  the full color set is still saved, which means, in `heatmap_legend_param` you 
+  can set `at` that are not all in the matrix but are in the `col`. 
 
 ======================
 

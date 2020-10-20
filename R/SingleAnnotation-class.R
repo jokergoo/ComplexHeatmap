@@ -469,6 +469,7 @@ SingleAnnotation = function(name, value, col, fun,
             if(is.function(col)) {
                 color_mapping = ColorMapping(name = cm_name, col_fun = col, na_col = na_col)
             } else {
+                full_col = col
                 if(is.factor(value2)) {
                     col = col[intersect(c(levels(value2), "_NA_"), names(col))]
                 } else {
@@ -478,7 +479,7 @@ SingleAnnotation = function(name, value, col, fun,
         			na_col = col["_NA_"]
         			col = col[names(col) != "_NA_"]
         		}
-                color_mapping = ColorMapping(name = cm_name, colors = col, na_col = na_col)
+                color_mapping = ColorMapping(name = cm_name, colors = col, na_col = na_col, full_col = full_col)
             }
         } else if(is.function(col)) {
             color_mapping = ColorMapping(name = cm_name, col_fun = col, na_col = na_col)

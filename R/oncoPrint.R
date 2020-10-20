@@ -722,8 +722,8 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 guess_alter_fun_is_vectorized = function(alter_fun) {
 	n = 50
 	if(is.list(alter_fun)) {
-		x = 1:n
-		y = 1:n
+		x = unit(1:n/n, "npc")
+		y = unit(1:n/n, "npc")
 		w = unit(1:n, "mm")
 		h = unit(1:n, "mm")
 		dev.null()
@@ -754,7 +754,8 @@ guess_alter_fun_is_vectorized = function(alter_fun) {
 #
 default_get_type = function(x) {
 	x = strsplit(x, "\\s*[;:,|]\\s*")[[1]]
-	x[!x %in% c("na", "NA")]
+	# x[!x %in% c("na", "NA")]
+	x
 }
 
 # == title

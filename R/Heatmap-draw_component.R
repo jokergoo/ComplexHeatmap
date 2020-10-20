@@ -152,12 +152,12 @@ setMethod(f = "draw_heatmap_body",
         if(is.function(layer_fun)) {
             if(length(as.list(formals(layer_fun))) == 7) {
                 layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
-                    x[expand_index[[2]]], y[expand_index[[1]]],
+                    unit(x[expand_index[[2]]], "npc"), unit(y[expand_index[[1]]], "npc"),
                     unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
                     as.vector(col_matrix))
             } else {
                 layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
-                    x[expand_index[[2]]], y[expand_index[[1]]],
+                    unit(x[expand_index[[2]]], "npc"), unit(y[expand_index[[1]]], "npc"),
                     unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
                     as.vector(col_matrix), kr, kc)
             }
@@ -231,14 +231,14 @@ setMethod(f = "draw_heatmap_body",
         if(is.function(layer_fun)) {
             if(length(as.list(formals(layer_fun))) == 7) {
                 layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
-                    x[expand_index[[2]]], y[expand_index[[1]]],
+                    unit(x[expand_index[[2]]], "npc"), unit(y[expand_index[[1]]], "npc"),
                     unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
                     as.vector(col_matrix))
             } else {
                 layer_fun(column_order[ expand_index[[2]] ], row_order[ expand_index[[1]] ], 
-                x[expand_index[[2]]], y[expand_index[[1]]],
-                unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
-                as.vector(col_matrix), kr, kc)
+                    unit(x[expand_index[[2]]], "npc"), unit(y[expand_index[[1]]], "npc"),
+                    unit(rep(1/nc, nrow(expand_index)), "npc"), unit(rep(1/nr, nrow(expand_index)), "npc"),
+                    as.vector(col_matrix), kr, kc)
             }
         }
     }
