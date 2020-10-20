@@ -111,7 +111,7 @@ setMethod(f = "draw_heatmap_body",
         }
 
         temp_dir = tempdir()
-        temp_image = tempfile(pattern = paste0(".heatmap_body_", object@name, "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
+        temp_image = tempfile(pattern = paste0(".heatmap_body_", digest::digest(object@name), "_", kr, "_", kc), tmpdir = temp_dir, fileext = paste0(".", device_info[2]))
         device_fun = getFromNamespace(raster_device, ns = device_info[1])
 
         if(raster_by_magick) {
