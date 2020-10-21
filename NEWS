@@ -5,7 +5,8 @@ CHANGES in VERSION 2.5.6
 * change default raster device to `CairoPNG`.
 * `Heatmap()`: If the discrete `col` covers more than the levels in the matrix,
   the full color set is still saved, which means, in `heatmap_legend_param` you 
-  can set `at` that are not all in the matrix but are in the `col`. 
+  can set `at` that are not all in the matrix but are in the `col`.
+* padding of the whole plot and spaces of column titles are adjusted to fit ggplot2 
 
 ======================
 

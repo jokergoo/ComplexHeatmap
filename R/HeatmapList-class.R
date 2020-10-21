@@ -306,10 +306,10 @@ setMethod(f = "draw",
 
     row_title = character(0), 
     row_title_side = c("left", "right"), 
-    row_title_gp = gpar(fontsize = 14),
+    row_title_gp = gpar(fontsize = 13),
     column_title = character(0), 
     column_title_side = c("top", "bottom"), 
-    column_title_gp = gpar(fontsize = 14), 
+    column_title_gp = gpar(fontsize = 13), 
 
     heatmap_legend_side = c("right", "left", "bottom", "top"), 
     merge_legends = FALSE,
