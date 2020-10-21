@@ -581,6 +581,7 @@ setMethod(f = "draw",
         heights = component_height(object))
 
     pushViewport(viewport(name = "global", width = w, height = h))
+    grid.rect(gp = gpar(fill = "white", col = "white"))
     pushViewport(viewport(layout = layout, name = "global_layout", x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
         height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
     ht_layout_index = object@layout$layout_index
