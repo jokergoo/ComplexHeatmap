@@ -64,6 +64,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -annotation_name_offset Offset to the annotation names, a `grid::unit` object. The value can be a vector.
 # -annotation_name_side Side of the annotation names.
 # -annotation_name_rot Rotation of the annotation names, it can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
+# -annotation_name_align Whether to align the annotation names.
 # -annotation_height Height of each annotation if annotations are column annotations.
 # -annotation_width Width of each annotation if annotations are row annotations.
 # -height Height of the whole column annotations.
@@ -108,6 +109,7 @@ HeatmapAnnotation = function(...,
 	annotation_name_offset = NULL,
 	annotation_name_side = ifelse(which == "column", "right", "bottom"),
 	annotation_name_rot = NULL,
+	annotation_name_align = FALSE,
 	
 	annotation_height = NULL, 
 	annotation_width = NULL, 
@@ -441,6 +443,51 @@ HeatmapAnnotation = function(...,
     anno_size = convertWidth(anno_size, "mm")
 
 	names(anno_list) = sapply(anno_list, function(x) x@name)
+
+	if(annotation_name_align) {
+	    # adjust x, y, offset slot in SingleAnnotation objects
+	    l_bottom = sapply(anno_list, function(x) x@name_param$side == "bottom" & x@name_param$show & x@fun@fun_name != "anno_simple")
+	    if(sum(l_bottom) > 1) {
+	    	max_offset = unit(max(sapply(anno_list[l_bottom], function(anno) {
+	    		unit_to_numeric(anno@name_param$offset)
+	    	})), "mm")
+	    	for(i in which(l_bottom)) {
+	    		anno_list[[i]]@name_param$offset = max_offset
+	    		anno_list[[i]]@name_param$y = unit(0, "npc") - max_offset
+	    	}
+	    }
+	    l_top = sapply(anno_list, function(x) x@name_param$side == "top" & x@name_param$show & x@fun@fun_name != "anno_simple")
+	    if(sum(l_top) > 1) {
+	    	max_offset = unit(max(sapply(anno_list[l_top], function(anno) {
+	    		unit_to_numeric(anno@name_param$offset)
+	    	})), "mm")
+	    	for(i in which(l_bottom)) {
+	    		anno_list[[i]]@name_param$offset = max_offset
+	    		anno_list[[i]]@name_param$y = unit(1, "npc") + max_offset
+	    	}
+	    }
+	    l_left = sapply(anno_list, function(x) x@name_param$side == "left" & x@name_param$show & x@fun@fun_name != "anno_simple")
+	    if(sum(l_left) > 1) {
+	    	max_offset = unit(max(sapply(anno_list[l_left], function(anno) {
+	    		unit_to_numeric(anno@name_param$offset)
+	    	})), "mm")
+	    	for(i in which(l_left)) {
+	    		anno_list[[i]]@name_param$offset = max_offset
+	    		anno_list[[i]]@name_param$x = unit(0, "npc") - max_offset
+	    	}
+	    }
+	    l_right = sapply(anno_list, function(x) x@name_param$side == "right" & x@name_param$show & x@fun@fun_name != "anno_simple")
+	    if(sum(l_right) > 1) {
+	    	max_offset = unit(max(sapply(anno_list[l_right], function(anno) {
+	    		unit_to_numeric(anno@name_param$offset)
+	    	})), "mm")
+	    	for(i in which(l_right)) {
+	    		anno_list[[i]]@name_param$offset = max_offset
+	    		anno_list[[i]]@name_param$x = unit(1, "npc") + max_offset
+	    	}
+	    }
+	}
+
     .Object@anno_list = anno_list
     .Object@anno_size = anno_size
     .Object@which = which
@@ -455,6 +502,7 @@ HeatmapAnnotation = function(...,
     	})), "mm")
     }
     .Object@extended = extended
+
     .Object@param = list(
     	simple_anno_size = simple_anno_size, 
     	simple_anno_size_adjust = simple_anno_size_adjust,

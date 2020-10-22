@@ -395,6 +395,13 @@ setMethod(f = "draw",
 
     verbose = ht_opt$verbose
 
+    if(missing(cluster_rows) && !missing(row_order)) {
+        cluster_rows = FALSE
+    }
+    if(missing(cluster_columns) && !missing(column_order)) {
+        cluster_columns = FALSE
+    }
+
     ovl = list()
     for(opt_nm in c("heatmap_row_names_gp",
                     "heatmap_column_names_gp",
@@ -580,7 +587,7 @@ setMethod(f = "draw",
         widths = component_width(object), 
         heights = component_height(object))
 
-    pushViewport(viewport(name = "global", width = w, height = h))
+    pushViewport(viewport(name = "global", width = w, height = h, gp = gpar(lineheight = 0.8)))
     grid.rect(gp = gpar(fill = "white", col = "white"))
     pushViewport(viewport(layout = layout, name = "global_layout", x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
         height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))

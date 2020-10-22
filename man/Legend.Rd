@@ -8,7 +8,9 @@ Make a Single Legend
 }
 \usage{
 Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
-    grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
+    grid_height = unit(4, "mm"),
+    grid_width = unit(4, "mm"),
+    gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
     labels_gp = gpar(fontsize = 10), labels_rot = 0,
     border = NULL, background = "#EEEEEE",
     type = "grid", legend_gp = gpar(),
@@ -30,6 +32,8 @@ Legend(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
   \item{grid_height}{The height of legend grid. It can also control the height of the continuous legend if it is horizontal.}
   \item{grid_width}{The width of legend grid. It can also control the width of the continuous legend if it is vertical.}
   \item{gap}{If legend grids are put into multiple rows or columns, this controls the gap between neighbouring rows or columns, measured as a \code{\link[grid]{unit}} object.}
+  \item{column_gap}{The same as \code{gap}.}
+  \item{row_gap}{Space between legend rows.}
   \item{labels_gp}{Graphic parameters for labels.}
   \item{labels_rot}{Text rotation for labels. It should only be used for horizontal continuous legend.}
   \item{border}{Color of legend grid borders. It also works for the ticks in the continuous legend.}

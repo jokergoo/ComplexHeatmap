@@ -20,6 +20,10 @@
 # ht[, 1:5]
 # ht[1:5, 1:5]
 "[.Heatmap" = function(x, i, j) {
+
+    if(x@layout$initialized) {
+        stop_wrap("Subsetting is only allowed on a heatmap where layout is not initialized.")
+    }
     
     if(nargs() == 2) {
         subset_heatmap_by_row(x, i)

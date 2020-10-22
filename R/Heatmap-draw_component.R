@@ -504,7 +504,7 @@ setMethod(f = "draw_title",
         if("border" %in% names(gp2)) gp2$col = gp2$border
         if(any(c("border", "fill") %in% names(gp2))) grid.rect(gp = gp2)
         if(side == "left") {
-            grid.text(title, x = unit(1, "npc") - ht_opt$TITLE_PADDING[2], rot = rot, just = just, gp = gp)
+            grid.text(title, x = unit(1, "npc") - ht_opt$TITLE_PADDING[1], rot = rot, just = just, gp = gp)
         } else {
             grid.text(title, x = ht_opt$TITLE_PADDING[1], rot = rot, just = just, gp = gp)
         }
@@ -517,7 +517,7 @@ setMethod(f = "draw_title",
         if(side == "top") {
             grid.text(title, y = ht_opt$TITLE_PADDING[1], rot = rot, just = just, gp = gp)
         } else {
-            grid.text(title, y = unit(1, "npc") - ht_opt$TITLE_PADDING[2], rot = rot, just = just, gp = gp)
+            grid.text(title, y = unit(1, "npc") - ht_opt$TITLE_PADDING[1], rot = rot, just = just, gp = gp)
         }
         upViewport()
     }

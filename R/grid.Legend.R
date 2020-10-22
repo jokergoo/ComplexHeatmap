@@ -58,6 +58,8 @@ Legends = function(...) {
 # -grid_height The height of legend grid. It can also control the height of the continuous legend if it is horizontal.
 # -grid_width The width of legend grid. It can also control the width of the continuous legend if it is vertical.
 # -gap If legend grids are put into multiple rows or columns, this controls the gap between neighbouring rows or columns, measured as a `grid::unit` object.
+# -column_gap The same as ``gap``.
+# -row_gap Space between legend rows.
 # -labels_gp Graphic parameters for labels.
 # -labels_rot Text rotation for labels. It should only be used for horizontal continuous legend.
 # -border Color of legend grid borders. It also works for the ticks in the continuous legend.
@@ -102,7 +104,9 @@ Legends = function(...) {
 # lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.1, 0.15, 0.5, 0.9, 0.95, 1))
 # draw(lgd, test = "unequal interval breaks")
 Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
-	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
+	grid_height = unit(4, "mm"), 
+	grid_width = unit(4, "mm"), 
+	gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
 	labels_gp = gpar(fontsize = 10), labels_rot = 0,
 	border = NULL, background = "#EEEEEE",
 	type = "grid", legend_gp = gpar(),
@@ -124,6 +128,9 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 		labels_gp$fontsize = 10
 	}
 
+	labels_gp = check_gp(labels_gp)
+	title_gp = check_gp(title_gp)
+
 	# odevlist = dev.list()
 	direction = match.arg(direction)[1]
 	title_position = match.arg(title_position)[1]
@@ -131,7 +138,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	if(missing(col_fun)) {
 		if(is.null(border)) border = "white"
 		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,
-			grid_height = grid_height, grid_width = grid_width, gap = gap, labels_gp = labels_gp,
+			grid_height = grid_height, grid_width = grid_width, gap = gap, row_gap = row_gap, column_gap = column_gap, labels_gp = labels_gp,
 			border = border, background = background, type = type, legend_gp = legend_gp,
 			pch = pch, size = size, by_row = by_row)
 	} else {
@@ -287,7 +294,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 			textGrob(title, x = unit(0, "npc"), y = title_y, just = title_just, gp = title_gp, rot = 90),
 			edit_vp_in_legend_grob(legend_body, x = unit(1, "npc"), y = unit(1, "npc"), 
 				valid.just = c(1, 1)),
-			vp = viewport(width = total_width, height = total_height),
+			vp = viewport(width = total_width, height = total_height, gp = gpar(fontsize = 10, lineheight = 0.8)),
 			cl = "legend"
 		)
 		attr(gf, "width") = total_width
@@ -325,7 +332,8 @@ heightDetails.Legend = function(x) {
 
 # grids are arranged by rows or columns
 discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row = TRUE,
-	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), gap = unit(2, "mm"),
+	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"), 
+	gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
 	labels_gp = gpar(fontsize = 10),
 	border = "white", background = "#EEEEEE",
 	type = "grid", legend_gp = gpar(),
@@ -342,6 +350,8 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		ncol = 1
 	}
 	ncol = ifelse(ncol > n_labels, n_labels, ncol)
+	if(length(grid_height) == 1) grid_height = rep(grid_height, nrow)
+	if(length(grid_width) == 1) grid_width = rep(grid_width, ncol)
 
 	labels_mat = matrix(c(labels, rep(NA, nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = by_row)
 	index_mat = matrix(1:(nrow*ncol), nrow = nrow, ncol = ncol, byrow = by_row)
@@ -364,33 +374,49 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 	for(i in 1:ncol) {
 		if(i == 1) {
 			labels_max_width = max(do.call("unit.c", lapply(labels_mat[, i], function(x) {
-					g = grobWidth(textGrob(x, gp = labels_gp))
-					if(i < ncol) {
-						g = g + gap
-					}
-					g
+					grobWidth(textGrob(x, gp = labels_gp))
 				})))
 		} else {
 			labels_max_width = unit.c(labels_max_width, max(do.call("unit.c", lapply(labels_mat[, i], function(x) {
-					g = grobWidth(textGrob(x, gp = labels_gp))
-					if(i < ncol) {
-						g = g + gap
-					}
-					g
+					grobWidth(textGrob(x, gp = labels_gp))
 				}))))
 		}
 	}
 	labels_max_width = convertWidth(labels_max_width, "mm")
 
+	row_height = NULL
+	for(i in 1:nrow) {
+		if(i == 1) {
+			row_height = max(do.call("unit.c", lapply(labels_mat[i, ], function(x) {
+					grobHeight(textGrob(x, gp = labels_gp))
+				})))
+		} else {
+			row_height = unit.c(row_height, max(do.call("unit.c", lapply(labels_mat[i, ], function(x) {
+					grobHeight(textGrob(x, gp = labels_gp))
+				}))))
+		}
+	}
+	row_height = convertWidth(row_height + unit(4, "points"), "mm") # 4pt is the margin of the text
+	row_height_no_gap = row_height
+	for(i in seq_along(row_height)) {
+		row_height_no_gap[i]= row_height[i] = max(row_height[i], grid_height[i])
+		if(i < length(row_height)) {
+			row_height[i] = row_height[i] + row_gap
+		}
+	}
+
+	row_height = convertHeight(row_height, "mm")
+
 	legend_gp = recycle_gp(legend_gp, n_labels)
 
-	legend_body_width = grid_width*ncol + labels_padding_left*ncol + sum(labels_max_width)
-	legend_body_height = nrow*(grid_height)
+	legend_body_width = sum(grid_width) + labels_padding_left*ncol + sum(labels_max_width) + column_gap*(ncol-1)
+	legend_body_height = sum(row_height)
 	legend_body_width = convertWidth(legend_body_width, "mm")
 	legend_body_height = convertHeight(legend_body_height, "mm")
 
 	# legend grid
 	gl = list()
+	previous_x = unit(0, "mm")
 	for(i in 1:ncol) {
 		if(inherits(labels_mat[1, 1], "expression")) {
 			index = index_mat[, i][sapply(labels_mat[, i], function(x) x) != ""]
@@ -398,11 +424,18 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 			index = index_mat[, i][!is.na(labels_mat[, i])]
 		}
 		ni = length(index)
-		y = (0:(ni-1))*(grid_height)
-		y = legend_body_height - y
+		y = do.call("unit.c", lapply(1:ni, function(ind) {
+			if(ind == 1) {
+				unit(0, "points")
+			} else {
+				sum(row_height[1:(ind-1)])
+			}
+		}))
+		y = legend_body_height - y # from top
 
-		labels_x = grid_width*i + sum(labels_max_width[1:i]) + labels_padding_left*i - labels_max_width[i]
-		labels_y = y - grid_height*0.5
+		labels_x = previous_x + grid_width[i] + labels_padding_left
+		labels_y = y - (row_height[1:ni] - row_gap)*0.5
+		if(ni == nrow) labels_y[nrow] = y[nrow] - row_height[nrow]*0.5
 		labels_x = convertWidth(labels_x, "mm")
 		labels_y = convertHeight(labels_y, "mm")
 		gl = c(gl, list(
@@ -419,14 +452,15 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		}
 		sgd2$col = border
 
-		grid_x = grid_width*i + sum(labels_max_width[1:i]) + labels_padding_left*i - labels_max_width[i] - labels_padding_left - grid_width*0.5
-		grid_y = y - grid_height*0.5
+		grid_x = previous_x
+		grid_y = y - (row_height[1:ni] - row_gap)*0.5
+		if(ni == nrow) grid_y[nrow] = y[nrow] - row_height[nrow]*0.5
 		grid_x = convertWidth(grid_x, "mm")
 		grid_x = rep(grid_x, length(grid_y))
 		grid_y = convertHeight(grid_y, "mm")
 
 		gl = c(gl, list(
-			rectGrob(x = grid_x, y = grid_y, width = grid_width, height = grid_height, gp = sgd2)
+			rectGrob(x = grid_x, y = grid_y, width = grid_width[i], height = row_height_no_gap, gp = sgd2, just = "left")
 		))
 
 		if(any(c("points", "p") %in% type)) {
@@ -439,29 +473,32 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 				))
 			} else {
 				gl = c(gl, 
-					.pointsGrob_as_a_list(x = grid_x, y = grid_y, pch = pch[index], gp = subset_gp(legend_gp, index), size = size, width = grid_width, height = grid_height)
+					.pointsGrob_as_a_list(x = grid_x, y = grid_y, pch = pch[index], 
+						gp = subset_gp(legend_gp, index), size = size, width = grid_width[i], height = row_height_no_gap)
 				)
 			}
 		}
 		if(any(c("lines", "l") %in% type)) {
 			gl = c(gl, list(
-				segmentsGrob(x0 = grid_x - grid_width*0.5, y0 = grid_y, 
-					         x1 = grid_x + grid_width*0.5, y1 = grid_y,
+				segmentsGrob(x0 = grid_x - grid_width[i]*0.5, y0 = grid_y, 
+					         x1 = grid_x + grid_width[i]*0.5, y1 = grid_y,
 					         gp = subset_gp(legend_gp, index))
 			))
 		}
 		if(any(c("boxplot", "box") %in% type)) {
 			gl = c(gl, list(
-				segmentsGrob(x0 = grid_x, y0 = grid_y - grid_height*0.45, 
-					         x1 = grid_x, y1 = grid_y + grid_height*0.45,
+				segmentsGrob(x0 = grid_x, y0 = grid_y - row_height_no_gap*0.45, 
+					         x1 = grid_x, y1 = grid_y + row_height_no_gap*0.45,
 					         gp = subset_gp(legend_gp, index)),
-				rectGrob(x = grid_x, y = grid_y, width = grid_width*0.9, height = grid_height*0.5,
+				rectGrob(x = grid_x, y = grid_y, width = grid_width[i]*0.9, height = row_height_no_gap*0.5,
 					     gp = subset_gp(legend_gp, index)),
-				segmentsGrob(x0 = grid_x - grid_width*0.45, y0 = grid_y, 
-					         x1 = grid_x + grid_width*0.45, y1 = grid_y,
+				segmentsGrob(x0 = grid_x - grid_width[i]*0.45, y0 = grid_y, 
+					         x1 = grid_x + grid_width[i]*0.45, y1 = grid_y,
 					         gp = subset_gp(legend_gp, index))
 			))
 		}
+
+		previous_x = previous_x + grid_width[i] + labels_max_width[i] + labels_padding_left + column_gap
 	}
 
 	class(gl) = "gList"
@@ -480,18 +517,27 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	od = order(at)
 	at = at[od]
 	labels = labels[od]
+	n = length(at)
 
 	n_labels = length(labels)
 	labels_max_width = max_text_width(labels, gp = labels_gp)
 
 	labels_padding_left = unit(1, "mm")
 
-	min_legend_height = length(at)*(grid_height)
-	if(is.null(legend_height)) legend_height = min_legend_height
-	if(convertHeight(legend_height, "mm", valueOnly = TRUE) < convertHeight(min_legend_height, "mm", valueOnly = TRUE)) {
-		warning_wrap("`legend_height` you specified is too small, use the default minimal height.")
-		legend_height = min_legend_height
+	labels_gp = recycle_gp(labels_gp, n)
+	min_legend_height = unit(sum(sapply(seq_len(n), function(i) {
+		convertHeight(grobHeight(textGrob(labels[i], gp = subset_gp(labels_gp, i))), "mm", valueOnly = TRUE)
+	})), "mm") + unit(6 * (n-1), "points")
+
+	if(!is.null(legend_height)) {
+		if(convertHeight(legend_height, "mm", valueOnly = TRUE) < convertHeight(min_legend_height, "mm", valueOnly = TRUE)) {
+			warning_wrap("`legend_height` you specified is too small, use the default minimal height.")
+			legend_height = min_legend_height
+		}
+	} else {
+		legend_height = max(min_legend_height, unit(21.1, "mm")) # five-label legend
 	}
+	legend_height = convertHeight(legend_height, "mm")
 
 	segment_col = border
 	if(is_diff_equal(at)) {
@@ -511,9 +557,9 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	gl = list()
 
 	# labels
-	labels_height = convertHeight(grobHeight(textGrob("foo", gp = labels_gp)), "mm")
+	labels_line_height = convertHeight(grobHeight(textGrob("foo", gp = labels_gp)), "mm")
 	x = unit(rep(0, n_labels), "npc")
-	offset = unit(0.5, "mm")
+	offset = unit(2, "points") # space from the first break to the bottom and the last break to the top
 	k = length(at)
 	ymin = offset
 	ymax = legend_height-offset
@@ -523,10 +569,10 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	labels_y = convertHeight(y, "mm")
 	
 	if(!at_diff_is_equal) {
-		labels_height = do.call("unit.c", lapply(labels, 
+		labels_line_height = do.call("unit.c", lapply(labels, 
 			function(x) grobHeight(textGrob(x, gp = labels_gp)) + unit(2, "mm")))
-		y_top = labels_y + labels_height*0.5
-		y_bottom = labels_y - labels_height*0.5
+		y_top = labels_y + labels_line_height*0.5
+		y_bottom = labels_y - labels_line_height*0.5
 		y_top = convertY(y_top, "mm", valueOnly = TRUE)
 		y_bottom = convertY(y_bottom, "mm", valueOnly = TRUE)
 		yrange = c(0, convertHeight(legend_body_height, "mm", valueOnly = TRUE))
@@ -1111,6 +1157,7 @@ setMethod(f = "draw",
     }
 	grid.draw(legend)
 	if(test2) {
+		# grid.rect(width = grobWidth(legend), height = grobHeight(legend))
 		grid.text(test, x = 0.5, y = unit(1, "npc") - unit(1, "cm"))
 	}
 })
