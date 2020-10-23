@@ -715,6 +715,8 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 		} else {
 			v = apply(arr, c(2, 3), sum)
 		}
+		v = v[, !is.na(col), drop = FALSE]
+		col = col[!is.na(col)]
 		fun = anno_barplot(v, gp = gpar(fill = col, col = NA), which = "column", ylim = ylim,
 			baseline = 0, height = anno_size$height, border = border, bar_width = bar_width,
 			axis = axis, axis_param = axis_param)@fun
@@ -740,6 +742,8 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 		} else {
 			v = apply(arr, c(1, 3), sum)
 		}
+		v = v[, !is.na(col), drop = FALSE]
+		col = col[!is.na(col)]
 		fun = anno_barplot(v, gp = gpar(fill = col, col = NA), which = "row", ylim = ylim,
 			baseline = 0, width = anno_size$width, border = border, bar_width = bar_width,
 			axis = axis, axis_param = axis_param)@fun
