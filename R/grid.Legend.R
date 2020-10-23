@@ -509,8 +509,8 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 						         gp = subset_gp(legend_gp, index)),
 					rectGrob(x = grid_x + grid_width[i]*0.5, y = grid_y, width = grid_width[i]*0.9, height = row_height_no_gap*0.5,
 						     gp = subset_gp(legend_gp, index)),
-					segmentsGrob(x0 = grid_x - grid_width[i]*0.1, y0 = grid_y, 
-						         x1 = grid_x + grid_width[i]*0.9, y1 = grid_y,
+					segmentsGrob(x0 = grid_x + grid_width[i]*0.05, y0 = grid_y, 
+						         x1 = grid_x + grid_width[i]*0.95, y1 = grid_y,
 						         gp = subset_gp(legend_gp, index))
 				))
 			}
