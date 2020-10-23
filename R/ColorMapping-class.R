@@ -264,6 +264,7 @@ setMethod(f = "map_to_colors",
 # -legend_height Height of the legend body. It only works when ``color_bar`` is ``continuous`` and ``direction`` is ``vertical``. Pass to `Legend`.
 # -legend_width Width of the legend body. It only works when ``color_bar`` is ``continuous`` and ``direction`` is ``horizontal``. Pass to `Legend`.
 # -legend_direction When ``color_bar`` is ``continuous``, whether the legend is vertical or horizontal? Pass to `Legend`.
+# -graphics Internally used.
 # -param All the legend-related parameters can be specified as a single list.
 #
 # == details
@@ -299,6 +300,7 @@ setMethod(f = "color_mapping_legend",
 	legend_width = NULL,
 	legend_direction = c("vertical", "horizontal"),
 
+	graphics = NULL,
 	param = NULL) {
 
 	e = environment()
@@ -351,11 +353,11 @@ setMethod(f = "color_mapping_legend",
 		if(length(at) == 0) {
 			gf = Legend(at = "NA", labels = "NA", title = title, title_gp = title_gp, grid_height = grid_height,
 				grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
-				legend_gp = gpar(fill = object@na_col), title_position = title_position, by_row = by_row)
+				legend_gp = gpar(fill = object@na_col), title_position = title_position, by_row = by_row, graphics = graphics)
 		} else {
 			gf = Legend(at = at, labels = labels, title = title, title_gp = title_gp, grid_height = grid_height,
 				grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
-				legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position, by_row = by_row)
+				legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position, by_row = by_row, graphics = graphics)
 		}
 
 	} else {

@@ -8,6 +8,7 @@ CHANGES in VERSION 2.5.6
   can set `at` that are not all in the matrix but are in the `col`.
 * padding of the whole plot and spaces of column titles are adjusted to fit ggplot2 
 * add `row_gap` and `column_gap` in `Legend()`.
+* `oncoPrint()`: now draw legends as `alter_fun`.
 
 ======================
 

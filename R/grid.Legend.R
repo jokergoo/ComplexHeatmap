@@ -65,6 +65,9 @@ Legends = function(...) {
 # -border Color of legend grid borders. It also works for the ticks in the continuous legend.
 # -background Background colors for the grids. It is used when points and lines are the legend graphics.
 # -type Type of legends. The value can be one of ``grid``, ``points``, ``lines`` and ``boxplot``.
+# -graphics Self-defined graphics for legends. The value should be a list of functions.
+#           Each function should accept four argumets: ``x`` and ``y``: positions of the legend grid (center point), ``w`` and ``h``: width and height
+#           of the legend grid.
 # -legend_gp Graphic parameters for the legend grids. You should control the filled color of the legend grids by ``gpar(fill = ...)``.
 # -pch Type of points if points are used as legend. Note you can use single-letter as pch, e.g. ``pch = 'A'``.
 #      There are three additional integers that are valid for ``pch``: 26 and 27 for single diagonal lines and 28 for double diagonal lines.
@@ -109,7 +112,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
 	labels_gp = gpar(fontsize = 10), labels_rot = 0,
 	border = NULL, background = "#EEEEEE",
-	type = "grid", legend_gp = gpar(),
+	type = "grid", graphics = NULL, legend_gp = gpar(),
 	pch = 16, size = unit(2, "mm"),
 	legend_height = NULL, legend_width = NULL,
 	direction = c("vertical", "horizontal"),
@@ -139,7 +142,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 		if(is.null(border)) border = "white"
 		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,
 			grid_height = grid_height, grid_width = grid_width, gap = gap, row_gap = row_gap, column_gap = column_gap, labels_gp = labels_gp,
-			border = border, background = background, type = type, legend_gp = legend_gp,
+			border = border, background = background, type = type, graphics = graphics, legend_gp = legend_gp,
 			pch = pch, size = size, by_row = by_row)
 	} else {
 		if(!missing(col_fun) && missing(at)) {
@@ -336,7 +339,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 	gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
 	labels_gp = gpar(fontsize = 10),
 	border = "white", background = "#EEEEEE",
-	type = "grid", legend_gp = gpar(),
+	type = "grid", graphics = NULL, legend_gp = gpar(),
 	pch = 16, size = unit(2, "mm")) {
 
 	n_labels = length(labels)
@@ -352,6 +355,16 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 	ncol = ifelse(ncol > n_labels, n_labels, ncol)
 	if(length(grid_height) == 1) grid_height = rep(grid_height, nrow)
 	if(length(grid_width) == 1) grid_width = rep(grid_width, ncol)
+
+	if(!is.null(graphics)) {
+		if(length(graphics) != n_labels) {
+			stop_wrap("Length of `graphics` should be the same as number of labels.")
+		}
+		if(!all(sapply(graphics, is.function))) {
+			stop_wrap("`graphics` should be a list of functions.")
+		}
+	}
+	if(length(graphics) == 0) graphics = NULL
 
 	labels_mat = matrix(c(labels, rep(NA, nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = by_row)
 	index_mat = matrix(1:(nrow*ncol), nrow = nrow, ncol = ncol, byrow = by_row)
@@ -442,6 +455,8 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 			textGrob(labels[index], x = labels_x, y = labels_y, just = "left", gp = labels_gp)
 		))
 
+
+		######### graphics ############
 		# grid
 		sgd = subset_gp(legend_gp, index)
 		sgd2 = gpar()
@@ -459,43 +474,53 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		grid_x = rep(grid_x, length(grid_y))
 		grid_y = convertHeight(grid_y, "mm")
 
-		gl = c(gl, list(
-			rectGrob(x = grid_x, y = grid_y, width = grid_width[i], height = row_height_no_gap, gp = sgd2, just = "left")
-		))
+		if(is.null(graphics)) {
 
-		if(any(c("points", "p") %in% type)) {
-			if(length(pch) == 1) pch = rep(pch, n_labels)
-			if(length(size) == 1) size = rep(size, n_labels)
+			gl = c(gl, list(
+				rectGrob(x = grid_x, y = grid_y, width = grid_width[i], height = row_height_no_gap, gp = sgd2, just = "left")
+			))
 
-			if(is.character(pch)) {
-				gl = c(gl, list(
-					textGrob(pch[index], x = grid_x, y = grid_y, gp = subset_gp(legend_gp, index))
-				))
-			} else {
-				gl = c(gl, 
-					.pointsGrob_as_a_list(x = grid_x, y = grid_y, pch = pch[index], 
-						gp = subset_gp(legend_gp, index), size = size, width = grid_width[i], height = row_height_no_gap)
-				)
+			if(any(c("points", "p") %in% type)) {
+				if(length(pch) == 1) pch = rep(pch, n_labels)
+				if(length(size) == 1) size = rep(size, n_labels)
+
+				if(is.character(pch)) {
+					gl = c(gl, list(
+						textGrob(pch[index], x = grid_x, y = grid_y, gp = subset_gp(legend_gp, index))
+					))
+				} else {
+					gl = c(gl, 
+						.pointsGrob_as_a_list(x = grid_x, y = grid_y, pch = pch[index], 
+							gp = subset_gp(legend_gp, index), size = size, width = grid_width[i], height = row_height_no_gap)
+					)
+				}
 			}
-		}
-		if(any(c("lines", "l") %in% type)) {
-			gl = c(gl, list(
-				segmentsGrob(x0 = grid_x - grid_width[i]*0.5, y0 = grid_y, 
-					         x1 = grid_x + grid_width[i]*0.5, y1 = grid_y,
-					         gp = subset_gp(legend_gp, index))
-			))
-		}
-		if(any(c("boxplot", "box") %in% type)) {
-			gl = c(gl, list(
-				segmentsGrob(x0 = grid_x, y0 = grid_y - row_height_no_gap*0.45, 
-					         x1 = grid_x, y1 = grid_y + row_height_no_gap*0.45,
-					         gp = subset_gp(legend_gp, index)),
-				rectGrob(x = grid_x, y = grid_y, width = grid_width[i]*0.9, height = row_height_no_gap*0.5,
-					     gp = subset_gp(legend_gp, index)),
-				segmentsGrob(x0 = grid_x - grid_width[i]*0.45, y0 = grid_y, 
-					         x1 = grid_x + grid_width[i]*0.45, y1 = grid_y,
-					         gp = subset_gp(legend_gp, index))
-			))
+			if(any(c("lines", "l") %in% type)) {
+				gl = c(gl, list(
+					segmentsGrob(x0 = grid_x - grid_width[i]*0.5, y0 = grid_y, 
+						         x1 = grid_x + grid_width[i]*0.5, y1 = grid_y,
+						         gp = subset_gp(legend_gp, index))
+				))
+			}
+			if(any(c("boxplot", "box") %in% type)) {
+				gl = c(gl, list(
+					segmentsGrob(x0 = grid_x, y0 = grid_y - row_height_no_gap*0.45, 
+						         x1 = grid_x, y1 = grid_y + row_height_no_gap*0.45,
+						         gp = subset_gp(legend_gp, index)),
+					rectGrob(x = grid_x, y = grid_y, width = grid_width[i]*0.9, height = row_height_no_gap*0.5,
+						     gp = subset_gp(legend_gp, index)),
+					segmentsGrob(x0 = grid_x - grid_width[i]*0.45, y0 = grid_y, 
+						         x1 = grid_x + grid_width[i]*0.45, y1 = grid_y,
+						         gp = subset_gp(legend_gp, index))
+				))
+			}
+		} else {
+			fl = graphics[index]
+			gb_lt = list()
+			for(k in seq_along(fl)) {
+				gb_lt[[k]] = grid.grabExpr(fl[[k]](x = grid_x[1] + grid_width[i]*0.5, y = grid_y[k], w = grid_width[i], h = row_height_no_gap[k]), width = grid_width[i], height = row_height_no_gap[k])
+			}
+			gl = c(gl, gb_lt)
 		}
 
 		previous_x = previous_x + grid_width[i] + labels_max_width[i] + labels_padding_left + column_gap

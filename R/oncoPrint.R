@@ -87,7 +87,7 @@ oncoPrint = function(mat,
 	remove_empty_columns = FALSE,
 	remove_empty_rows = FALSE,
 	show_column_names = FALSE,
-	heatmap_legend_param = list(title = "Alterations"),
+	heatmap_legend_param = NULL,
 	...) {
 
 	dev.null()
@@ -169,7 +169,7 @@ oncoPrint = function(mat,
 		stop_wrap("Incorrect type of 'mat'")
 	}
 
-	message_wrap(paste0("All mutation types: ", paste(all_type, collapse = ", ")))
+	message_wrap(paste0("All mutation types: ", paste(all_type, collapse = ", "), "."))
 
 	# type as the third dimension
 	arr = array(FALSE, dim = c(dim(mat_list[[1]]), length(all_type)), dimnames = c(dimnames(mat_list[[1]]), list(all_type)))
@@ -347,7 +347,7 @@ oncoPrint = function(mat,
 	# validate col
 	sdf = setdiff(all_type, names(col))
 	if(length(sdf) > 0) {
-		message_wrap(paste0("Colors are not defined for: ", paste(sdf, collapse = ", ")))
+		message_wrap(paste0("Colors are not defined for: ", paste(sdf, collapse = ", "), ". They won't be shown in the barplots."))
 	}
 
 	# for each gene, percent of samples that have alterations
@@ -465,6 +465,69 @@ oncoPrint = function(mat,
 			if(!inherits(cluster_columns, c("dendrogram", "hclust"))) {
 				stop_wrap("`cluster_columns` can only be a dendrogram/hclust object if it is set.")
 			}
+		}
+	}
+
+	if(is.list(alter_fun)) {
+		if(is.null(alter_fun$background)) {
+			background_fun = function(x, y, w, h) NULL
+		} else {
+			background_fun = alter_fun$background
+		}
+
+		alter_fun2 = alter_fun[names(alter_fun) != "background"]
+		alter_fun3 = alter_fun2
+		for(i in seq_along(alter_fun2)) {
+			alter_fun3[[i]] = local({
+				i = i
+				function(x, y, w, h) {
+					background_fun(x, y, w, h)
+					alter_fun2[[i]](x, y, w, h)
+				}
+			})
+		}
+	} else {
+		all_type_binary = structure(rep(FALSE, length(all_type)), names = all_type)
+		background_fun = function(x, y, w, h) {
+			alter_fun(x, y, w, h, all_type_binary)
+		}
+		alter_fun3 = list()
+		for(nm in all_type) {
+			alter_fun3[[nm]] = local({
+				all_type_binary2 = all_type_binary
+				all_type_binary2[nm] = TRUE
+				function(x, y, w, h) {
+					alter_fun(x, y, w, h, all_type_binary2)
+				}
+			})
+		}
+	}
+
+	if(is.null(heatmap_legend_param)) {
+		heatmap_legend_param = list(
+			title = "Alterations",
+			at = names(alter_fun3),
+			graphics = alter_fun3
+		)
+		col2 = structure(rep(NA, length(alter_fun3)), names = names(alter_fun3))
+		col2[names(col)] = col
+		col = col2
+	} else {
+		if(! "graphics" %in% names(heatmap_legend_param)) {
+			if(is.null(heatmap_legend_param$at)) heatmap_legend_param$at = names(alter_fun3)
+			if(is.null(heatmap_legend_param$labels)) heatmap_legend_param$labels = heatmap_legend_param$at
+
+			# adjust order of alter_fun3 with at
+			if(!is.null(heatmap_legend_param$at)) {
+				if(length(setdiff(heatmap_legend_param$at, names(alter_fun3))) == 0) {
+					alter_fun3 = alter_fun3[heatmap_legend_param$at]
+				}
+			}
+
+			heatmap_legend_param$graphics = alter_fun3
+			col2 = structure(rep(NA, length(alter_fun3)), names = names(alter_fun3))
+			col2[names(col)] = col
+			col = col2
 		}
 	}
 
@@ -722,6 +785,12 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 guess_alter_fun_is_vectorized = function(alter_fun) {
 	n = 50
 	if(is.list(alter_fun)) {
+
+		# check whether grid.polygon is called
+		if(any(sapply(alter_fun, function(f) any(grepl("grid\\.polygon\\(", as.character(body(f))))))) {
+			return(FALSE)
+		}
+
 		x = unit(1:n/n, "npc")
 		y = unit(1:n/n, "npc")
 		w = unit(1:n, "mm")
@@ -736,6 +805,7 @@ guess_alter_fun_is_vectorized = function(alter_fun) {
 		if(inherits(oe, "try-error")) {
 			return(FALSE)
 		} else {
+			message_wrap("`alter_fun` is assumed vectorizable. If it does not generate correct plot, please set `alter_fun_is_vectorized = FALSE` in `oncoPrint()`.")
 			return(TRUE)
 		}
 	} else {

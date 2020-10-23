@@ -2805,6 +2805,9 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	}
 	
 	n = length(at)
+	if(n < 1) {
+		stop_wrap("Length of `at` should be positive.")
+	}
 	link_gp = recycle_gp(link_gp, n)
 	labels_gp = recycle_gp(labels_gp, n)
 	labels2index = structure(seq_along(at), names = as.character(labels))
