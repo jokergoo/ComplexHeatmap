@@ -74,7 +74,7 @@ SingleAnnotation = setClass("SingleAnnotation",
 # -name_gp Graphic parameters for annotation name.
 # -name_offset Offset to the annotation, a `grid::unit` object.
 # -name_side 'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations
-# -name_rot Rotation of the annotation name, it can only take values in ``c(0, 90, 180, 270)``.
+# -name_rot Rotation of the annotation name.
 # -simple_anno_size size of the simple annotation.
 # -width The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation,
 #        the width must be an absolute unit.
@@ -195,12 +195,6 @@ SingleAnnotation = function(name, value, col, fun,
     }
     .Object@label = label
 
-    if(!is.null(name_rot)) {
-        if(!name_rot %in% c(0, 90, 180, 270)) {
-            stop_wrap(qq("@{name}: `name_rot` can only take values in c(0, 90, 180, 270)"))
-        }
-    }
-
     if(verbose) qqcat("create a SingleAnnotation with name '@{name}'\n")
 
     .Object@is_anno_matrix = FALSE
@@ -262,6 +256,8 @@ SingleAnnotation = function(name, value, col, fun,
     }
     if(is.null(name_rot)) name_rot = ifelse(which == "column", 0, 90)
 
+    name_rot = name_rot %% 360
+
     anno_name = label
     if(which == "column") {
         if(verbose) qqcat("@{name}: it is a column annotation\n")
@@ -294,8 +290,15 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "bottom"
             } else if(name_rot == 180) {
                 name_just = "left"
-            } else {
+            } else if(name_rot == 270) {
                 name_just = "top"
+            } else if(name_rot < 90 || name_rot > 270) {
+                name_just = "right"
+            } else if(name_rot > 90 && name_rot < 270) {
+                name_rot  = (180 - name_rot) %% 360
+                name_just = "right"
+            } else {
+                name_just = "right"
             }
     	} else {
             if(unit_to_numeric(anno_fun_extend[4]) > 0) {
@@ -322,8 +325,15 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "top"
             } else if(name_rot == 180) {
                 name_just = "right"
-            } else {
+            } else if(name_rot == 270) {
                 name_just = "bottom"
+            } else if(name_rot < 90 || name_rot > 270) {
+                name_just = "left"
+            } else if(name_rot > 90 && name_rot < 270) {
+                name_rot  = (180 - name_rot) %% 360
+                name_just = "left"
+            } else {
+                name_just = "left"
             }
     	}
     } else if(which == "row") {
@@ -357,8 +367,21 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "left"
             } else if(name_rot == 180) {
                 name_just = "top"
-            } else {
+            } else if(name_rot == 270) {
                 name_just = "right"
+            } else if(name_rot < 90) {
+                name_just = "left"
+            } else if(name_rot > 90 && name_rot < 180) {
+                name_rot  = (90 - name_rot) %% 360
+                name_just = "right"
+            } else if(name_rot > 180 && name_rot < 270) {
+                name_rot  = (- name_rot) %% 360
+                name_just = "left"
+            } else if(name_rot > 270) {
+                name_rot  = (- name_rot) %% 360
+                name_just = "left"
+            } else {
+                name_just = "bottom"
             }
     	} else {
             if(unit_to_numeric(anno_fun_extend[1]) > 0) {
@@ -384,6 +407,18 @@ SingleAnnotation = function(name, value, col, fun,
                 name_just = "right"
             } else if(name_rot == 180) {
                 name_just = "bottom"
+            } else if(name_rot == 270) {
+                name_just = "left"
+            } else if(name_rot < 90) {
+                name_just = "right"
+            } else if(name_rot > 270) {
+                name_just = "left"
+            } else if(name_rot > 90 && name_rot < 180) {
+                name_rot  = (- name_rot) %% 360
+                name_just = "left"
+            } else if(name_rot > 180 && name_rot < 270) {
+                name_rot  = (- name_rot) %% 360
+                name_just = "right"
             } else {
                 name_just = "left"
             }
@@ -405,10 +440,13 @@ SingleAnnotation = function(name, value, col, fun,
     extended = unit(c(0, 0, 0, 0), "mm")
     if(name_param$show) {
         if(which == "column") {
-            if(name_param$rot == 0) {
-                text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm")
+            if(name_param$rot %in% c(0, 180)) {
+                text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
+            } else if(name_param$rot %in% c(90, 270)) {
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             } else {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm")
+                browser()
+                text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             }
             if(name_param$side == "left") {
                 extended[2] = text_width
@@ -416,7 +454,9 @@ SingleAnnotation = function(name, value, col, fun,
                 extended[4] = text_width
             }
         } else if(which == "row") {
-            if(name_param$rot == 0) {
+            if(name_param$rot %in% c(0, 180)) {
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
+            } else if(name_param$rot %in% c(90, 270)) {
                 text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             } else {
                 text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")

@@ -28,15 +28,17 @@ setMethod(f = "draw_heatmap_legend",
     signature = "HeatmapList",
     definition = function(object, legend_list = list(), ...) {
 
-    # actually we call the "heatmap legends" the main legends
-    # for horizontal heamtap list, legends of heamtap/row annotation/left/right annotation
-    # for vertical heatmap list, legends of heamtap/column annotation/top/bottom annotation
-    # if merge_legends is true, the it contains all the legends
+    # if legend_grouping == "adjusted"
+    #   actually we call the "heatmap legends" the main legends
+    #   for horizontal heamtap list, legends of heamtap/row annotation/left/right annotation
+    #   for vertical heatmap list, legends of heamtap/column annotation/top/bottom annotation
+    #   if merge_legends is true, the it contains all the legends
 
     side = object@heatmap_legend_param$side
     size = object@heatmap_legend_param$size
     padding = object@heatmap_legend_param$padding
     direction = object@direction
+    legend_grouping = object@ht_list_param$legend_grouping
 
     ColorMappingList = list()
     ColorMappingParamList = list()
@@ -45,54 +47,74 @@ setMethod(f = "draw_heatmap_legend",
         if(direction == "horizontal") {
             if(inherits(object@ht_list[[i]], "Heatmap")) {
                 if(!is.null(ht@left_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
-                }
-                if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
-                }
-                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
-                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
-                    ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
-                }
-                if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
-                }
-                if(!is.null(ht@right_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
-                }
-            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
-            }
-        } else {
-            if(inherits(object@ht_list[[i]], "Heatmap")) {
-                if(object@ht_list_param$merge_legends && !is.null(ht@left_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                    if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                    }
                 }
                 if(!is.null(ht@top_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                    if(object@ht_list_param$merge_legends) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                    }
                 }
                 if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
                     ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
                     ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
                 }
                 if(!is.null(ht@bottom_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                    if(object@ht_list_param$merge_legends) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                    }
                 }
-                if(object@ht_list_param$merge_legends && !is.null(ht@right_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                if(!is.null(ht@right_annotation)) {
+                    if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                    }
                 }
             } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
+                if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
+                }
+            }
+        } else {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    if(object@ht_list_param$merge_legends) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                    }
+                }
+                if(!is.null(ht@top_annotation)) {
+                    if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                    }
+                }
+                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
+                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
+                    ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                    }
+                }
+                if(!is.null(ht@right_annotation)) {
+                    if(object@ht_list_param$merge_legends) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                    }
+                }
+            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
+                }
             }
         }
     }
@@ -107,7 +129,7 @@ setMethod(f = "draw_heatmap_legend",
             test_on = "heatmap_legend")
     }
 
-    if(align_legend == "global_center") {
+    if(align_legend %in% c("global_center", "global-center")) {
         if(side != annotation_legend_side) {
             y = unit(0.5, "npc")
             pushViewport(viewport(name = "heatmap_legend", x = unit(0.5, "npc"), y = y, width = size[1], height = size[2], just = c("center", "center")))
@@ -126,7 +148,7 @@ setMethod(f = "draw_heatmap_legend",
         }
     } else {
    
-        if(align_legend == "heatmap_top") {
+        if(align_legend %in% c("heatmap_top", "heatmap-top")) {
             if(!side %in% c("left", "right")) {
                 stop_wrap("Heatmap legends should be put on the left or right side of the heatmaps if `align_legend` is 'heatmap_top'.")
             }
@@ -138,7 +160,7 @@ setMethod(f = "draw_heatmap_legend",
             y = unit(1, "npc") - top_h
             legend_just = "top"
             x = unit(0.5, "npc")
-        } else if(align_legend == "heatmap_left") {
+        } else if(align_legend %in% c("heatmap_left", "heatmap-left")) {
             if(!side %in% c("top", "bottom")) {
                 stop_wrap("Heatmap legends should be put on the top or bottom side of the heatmaps if `align_legend` is 'heatmap_left'.")
             }
@@ -150,11 +172,30 @@ setMethod(f = "draw_heatmap_legend",
             x = left_w
             legend_just = "left"
             y = unit(0.5, "npc")
-        } else if(align_legend == "heatmap_center") {
+        } else if(align_legend %in% c("heatmap_center", "heatmap-center")) {
             if(side %in% c("left", "right")) {
                 if(object@direction == "horizontal") {
                     bottom_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 6:9))
                     top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
+                    anno_bottom_extend = do.call("unit.c", lapply(object@ht_list, function(ht) {
+                        if(inherits(ht, "HeatmapAnnotation")) {
+                            ht@extended[1]
+                        } else {
+                            if(!is.null(ht@left_annotation)) {
+                                u1 = ht@left_annotation@extended[1]
+                            } else {
+                                u1 = unit(0, "mm")
+                            }
+                            if(!is.null(ht@right_annotation)) {
+                                u2 = ht@right_annotation@extended[1]
+                            } else {
+                                u2 = unit(0, "mm")
+                            }
+                            unit.c(u1, u2)
+                        }
+                    }))
+                    bottom_h = max(unit.c(bottom_h, anno_bottom_extend))
+                    bottom_h = convertHeight(bottom_h, "mm")
                 } else {
                     bottom_h = calc_after_h(object)
                     top_h = calc_before_h(object)
@@ -178,19 +219,21 @@ setMethod(f = "draw_heatmap_legend",
                 y = unit(0.5, "npc")
                 # grid.rect(x = x, width = ht_w)
             }
+        } else {
+            stop_wrap("Wrong value for `align_heatmap_legend`.")
         }
 
         if(side != annotation_legend_side) {
             pushViewport(viewport(name = "heatmap_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))           
         } else {
             if(side %in% c("left", "right")) {
-                if(align_legend == "heatmap_center") {
+                if(align_legend %in% c("heatmap_center", "heatmap-center")) {
                     y = bottom_h + ht_h*0.5 + max(size[2]*0.5, annotation_legend_size[2]*0.5)
                     legend_just = "top"
                 }
                 pushViewport(viewport(name = "heatmap_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))  
             } else {
-                if(align_legend == "heatmap_center") {
+                if(align_legend %in% c("heatmap_center", "heatmap-center")) {
                     x = left_w + ht_w*0.5 - max(size[1]*0.5, annotation_legend_size[1]*0.5)
                     legend_just = "left"
                 }
@@ -240,6 +283,7 @@ setMethod(f = "draw_annotation_legend",
     padding = object@annotation_legend_param$padding
     offset = object@annotation_legend_param$offset
     direction = object@direction
+    legend_grouping = object@ht_list_param$legend_grouping
 
     ColorMappingList = list()
     ColorMappingParamList = list()
@@ -247,6 +291,12 @@ setMethod(f = "draw_annotation_legend",
         ht = object@ht_list[[i]]
         if(direction == "horizontal") {
             if(inherits(ht, "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    if(legend_grouping == "original") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                    }
+                }
                 if(!is.null(ht@top_annotation)) {
                     ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
                     ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
@@ -255,6 +305,17 @@ setMethod(f = "draw_annotation_legend",
                     ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
                     ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
                 }
+                if(!is.null(ht@right_annotation)) {
+                    if(legend_grouping == "original") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                    }
+                }
+            } else if(inherits(ht, "HeatmapAnnotation")) {
+                if(legend_grouping == "original") {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_list(ht))
+                }
             }
         } else {
             if(inherits(ht, "Heatmap")) {
@@ -262,9 +323,26 @@ setMethod(f = "draw_annotation_legend",
                     ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
                     ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
                 }
+                if(!is.null(ht@top_annotation)) {
+                    if(legend_grouping == "original") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                    }
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    if(legend_grouping == "original") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                    }
+                }
                 if(!is.null(ht@right_annotation)) {
                     ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
                     ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                }
+            } else if(inherits(ht, "HeatmapAnnotation")) {
+                if(legend_grouping == "original") {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_color_mapping_list(ht))
                 }
             }
         }
@@ -280,7 +358,7 @@ setMethod(f = "draw_annotation_legend",
             test_on = "annotation_legend")
     }
 
-    if(align_legend == "global_center") {
+    if(align_legend %in% c("global_center", "global-center")) {
         if(side != heatmap_legend_side) {
             pushViewport(viewport(name = "annotation_legend", x = unit(0.5, "npc"), y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("center", "center")))
         } else {
@@ -297,7 +375,7 @@ setMethod(f = "draw_annotation_legend",
             }
         }
     } else {
-        if(align_legend == "heatmap_top") {
+        if(align_legend %in% c("heatmap_top", "heatmap-top")) {
             if(!side %in% c("left", "right")) {
                 stop_wrap("Annotation legends should be put on the left or right side of the heatmaps if `align_legend` is 'heatmap_top'.")
             }
@@ -309,7 +387,7 @@ setMethod(f = "draw_annotation_legend",
             y = unit(1, "npc") - top_h
             legend_just = "top"
             x = unit(0.5, "npc")
-        } else if(align_legend == "heatmap_left") {
+        } else if(align_legend %in% c("heatmap_left", "heatmap-left")) {
             if(!side %in% c("top", "bottom")) {
                 stop_wrap("Annotation legends should be put on the top or bottom side of the heatmaps if `align_legend` is 'heatmap_left'.")
             }
@@ -321,11 +399,30 @@ setMethod(f = "draw_annotation_legend",
             x = left_w
             legend_just = "left"
             y = unit(0.5, "npc")
-        } else if(align_legend == "heatmap_center") {
+        } else if(align_legend %in% c("heatmap_center", "heatmap-center")) {
             if(side %in% c("left", "right")) {
                 if(object@direction == "horizontal") {
                     bottom_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 6:9))
                     top_h = sum(component_height(object@ht_list[[ which_main_ht(object) ]], 1:4))
+                    anno_bottom_extend = do.call("unit.c", lapply(object@ht_list, function(ht) {
+                        if(inherits(ht, "HeatmapAnnotation")) {
+                            ht@extended[1]
+                        } else {
+                            if(!is.null(ht@left_annotation)) {
+                                u1 = ht@left_annotation@extended[1]
+                            } else {
+                                u1 = unit(0, "mm")
+                            }
+                            if(!is.null(ht@right_annotation)) {
+                                u2 = ht@right_annotation@extended[1]
+                            } else {
+                                u2 = unit(0, "mm")
+                            }
+                            unit.c(u1, u2)
+                        }
+                    }))
+                    bottom_h = max(unit.c(bottom_h, anno_bottom_extend))
+                    bottom_h = convertHeight(bottom_h, "mm")
                 } else {
                     bottom_h = calc_after_h(object)
                     top_h = calc_before_h(object)
@@ -349,19 +446,21 @@ setMethod(f = "draw_annotation_legend",
                 y = unit(0.5, "npc")
                 # grid.rect(x = x, width = ht_w)
             }
+        } else {
+            stop_wrap("Wrong value for `align_annotation_legend`.")
         }
 
         if(side != heatmap_legend_side) {
             pushViewport(viewport(name = "annotation_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))           
         } else {
             if(side %in% c("left", "right")) {
-                if(align_legend == "heatmap_center") {
+                if(align_legend %in% c("heatmap_center", "heatmap-center")) {
                     y = bottom_h + ht_h*0.5 + max(size[2]*0.5, heatmap_legend_size[2]*0.5)
                     legend_just = "top"
                 }
                 pushViewport(viewport(name = "annotation_legend", x = x, y = y, width = size[1], height = size[2], just = legend_just))  
             } else {
-                if(align_legend == "heatmap_center") {
+                if(align_legend %in% c("heatmap_center", "heatmap-center")) {
                     x = left_w + ht_w*0.5 - max(size[1]*0.5, heatmap_legend_size[1]*0.5)
                     legend_just = "left"
                 }
@@ -561,6 +660,7 @@ setMethod(f = "heatmap_legend_size",
     side = object@heatmap_legend_param$side
     padding = object@heatmap_legend_param$padding
     direction = object@direction
+    legend_grouping = object@ht_list_param$legend_grouping
 
     ColorMappingList = list()
     ColorMappingParamList = list()
@@ -569,54 +669,74 @@ setMethod(f = "heatmap_legend_size",
         if(direction == "horizontal") {
             if(inherits(object@ht_list[[i]], "Heatmap")) {
                 if(!is.null(ht@left_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
-                }
-                if(object@ht_list_param$merge_legends && !is.null(ht@top_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
-                }
-                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
-                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
-                    ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
-                }
-                if(object@ht_list_param$merge_legends && !is.null(ht@bottom_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
-                }
-                if(!is.null(ht@right_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
-                }
-            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
-            }
-        } else {
-            if(inherits(object@ht_list[[i]], "Heatmap")) {
-                if(object@ht_list_param$merge_legends && !is.null(ht@left_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                    if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                    }
                 }
                 if(!is.null(ht@top_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                    if(object@ht_list_param$merge_legends) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                    }
                 }
                 if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
                     ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
                     ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
                 }
                 if(!is.null(ht@bottom_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                    if(object@ht_list_param$merge_legends) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                    }
                 }
-                if(object@ht_list_param$merge_legends && !is.null(ht@right_annotation)) {
-                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
-                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                if(!is.null(ht@right_annotation)) {
+                    if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                    }
                 }
             } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
-                ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
-                ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
+                if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
+                }
+            }
+        } else {
+            if(inherits(object@ht_list[[i]], "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    if(object@ht_list_param$merge_legends) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                    }
+                }
+                if(!is.null(ht@top_annotation)) {
+                    if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                    }
+                }
+                if(object@ht_list[[i]]@heatmap_param$show_heatmap_legend) {
+                    ColorMappingList = c.list(ColorMappingList, object@ht_list[[i]]@matrix_color_mapping)
+                    ColorMappingParamList = c.list(ColorMappingParamList, object@ht_list[[i]]@matrix_legend_param)
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                    }
+                }
+                if(!is.null(ht@right_annotation)) {
+                    if(object@ht_list_param$merge_legends) {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                    }
+                }
+            } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(object@ht_list[[i]]))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(object@ht_list[[i]]))
+                }
             }
         }
     }
@@ -653,6 +773,7 @@ setMethod(f = "annotation_legend_size",
     side = object@annotation_legend_param$side
     padding = object@annotation_legend_param$padding
     direction = object@direction
+    legend_grouping = object@ht_list_param$legend_grouping
 
     ColorMappingList = list()
     ColorMappingParamList = list()
@@ -660,6 +781,12 @@ setMethod(f = "annotation_legend_size",
         ht = object@ht_list[[i]]
         if(direction == "horizontal") {
             if(inherits(ht, "Heatmap")) {
+                if(!is.null(ht@left_annotation)) {
+                    if(legend_grouping == "original") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
+                    }
+                }
                 if(!is.null(ht@top_annotation)) {
                     ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
                     ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
@@ -668,6 +795,17 @@ setMethod(f = "annotation_legend_size",
                     ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
                     ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
                 }
+                if(!is.null(ht@right_annotation)) {
+                    if(legend_grouping == "original") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                    }
+                }
+            } else if(inherits(ht, "HeatmapAnnotation")) {
+                if(legend_grouping == "original") {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht))
+                }
             }
         } else {
             if(inherits(ht, "Heatmap")) {
@@ -675,9 +813,26 @@ setMethod(f = "annotation_legend_size",
                     ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@left_annotation))
                     ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@left_annotation))
                 }
+                if(!is.null(ht@top_annotation)) {
+                    if(legend_grouping == "original") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@top_annotation))
+                    }
+                }
+                if(!is.null(ht@bottom_annotation)) {
+                    if(legend_grouping == "original") {
+                        ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
+                        ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@bottom_annotation))
+                    }
+                }
                 if(!is.null(ht@right_annotation)) {
                     ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
                     ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht@right_annotation))
+                }
+            } else if(inherits(ht, "HeatmapAnnotation")) {
+                if(legend_grouping == "original") {
+                    ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht))
+                    ColorMappingParamList = c.list(ColorMappingParamList, list = get_legend_param_list(ht))
                 }
             }
         }
@@ -717,7 +872,9 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
 
     n = length(ColorMappingList2)
     if(n == 0 && length(legend_list) == 0) {
-        return(unit(c(0, 0), "mm"))
+        u = unit(c(0, 0), "mm")
+        attr(u, "multiple") = 1
+        return(u)
     } else {
         cm_grob = c(lapply(seq_along(ColorMappingList2), function(i) color_mapping_legend(ColorMappingList2[[i]], param = ColorMappingParamList2[[i]], plot = FALSE, ...)), legend_list)
         if(side %in% c("left", "right")) {

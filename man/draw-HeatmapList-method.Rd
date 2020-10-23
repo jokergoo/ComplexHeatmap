@@ -26,6 +26,7 @@ Draw a list of heatmaps
     annotation_legend_list = list(),
     align_heatmap_legend = NULL,
     align_annotation_legend = NULL,
+    legend_grouping = c("adjusted", "original"),
     
     gap = unit(2, "mm"),
     ht_gap = gap,
@@ -117,6 +118,7 @@ Draw a list of heatmaps
   \item{annotation_legend_list}{user-defined legends which are put after the annotation legends}
   \item{align_heatmap_legend}{How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center". If the value is \code{NULL}, it automatically picks the proper value from the three options.}
   \item{align_annotation_legend}{How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center".}
+  \item{legend_grouping}{How the legends are grouped. Values should be "adjusted" or "original". If it is set as "original", all annotation legends are grouped together.}
   \item{gap}{gap between heatmaps/annotations}
   \item{ht_gap}{same as \code{gap}.}
   \item{main_heatmap}{index of main heatmap. The value can be a numeric index or the heatmap name}

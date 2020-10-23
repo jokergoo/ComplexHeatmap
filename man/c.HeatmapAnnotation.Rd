@@ -7,7 +7,7 @@ Concatenate Heatmap Annotations
 Concatenate Heatmap Annotations
 }
 \usage{
-\method{c}{HeatmapAnnotation}(..., gap = unit(0, "mm"))
+\method{c}{HeatmapAnnotation}(..., gap = unit(1, "points"))
 }
 \arguments{
 

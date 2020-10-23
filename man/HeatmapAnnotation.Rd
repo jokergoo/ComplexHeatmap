@@ -49,7 +49,7 @@ HeatmapAnnotation(...,
   \item{annotation_name_gp}{Graphic parameters for anntation names. Graphic paramters can be vectors.}
   \item{annotation_name_offset}{Offset to the annotation names, a \code{\link[grid]{unit}} object. The value can be a vector.}
   \item{annotation_name_side}{Side of the annotation names.}
-  \item{annotation_name_rot}{Rotation of the annotation names, it can only take values in \code{c(00, 90, 180, 270)}. The value can be a vector.}
+  \item{annotation_name_rot}{Rotation of the annotation names. The value can be a vector.}
   \item{annotation_name_align}{Whether to align the annotation names.}
   \item{annotation_height}{Height of each annotation if annotations are column annotations.}
   \item{annotation_width}{Width of each annotation if annotations are row annotations.}

@@ -63,7 +63,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -annotation_name_gp Graphic parameters for anntation names. Graphic paramters can be vectors.
 # -annotation_name_offset Offset to the annotation names, a `grid::unit` object. The value can be a vector.
 # -annotation_name_side Side of the annotation names.
-# -annotation_name_rot Rotation of the annotation names, it can only take values in ``c(00, 90, 180, 270)``. The value can be a vector.
+# -annotation_name_rot Rotation of the annotation names. The value can be a vector.
 # -annotation_name_align Whether to align the annotation names.
 # -annotation_height Height of each annotation if annotations are column annotations.
 # -annotation_width Width of each annotation if annotations are row annotations.
@@ -900,7 +900,7 @@ setMethod(f = "add_heatmap",
 # ha3 = HeatmapAnnotation(sth = cbind(1:10, 10:1))
 # ha = c(ha1, ha2, ha3, gap = unit(c(1, 4), "mm"))
 # ha
-c.HeatmapAnnotation = function(..., gap = unit(0, "mm")) {
+c.HeatmapAnnotation = function(..., gap = unit(1, "points")) {
 	anno_list = list(...)
 	if(length(anno_list) == 1) {
 		return(anno_list[[1]])
@@ -1410,3 +1410,90 @@ has_zoomed_anno_empty = function(ha) {
 	}
 	return(FALSE)
 }
+
+# == title
+# Attach heatmap annotations to the heatmap
+#
+# == param
+# -object A `Heatmap-class` object.
+# -ha A `HeatmapAnnotation-class` object.
+# -side Which side of the heatmap. Value should be in "top", "bottom", "left", "right".
+# -gap Space between the two heatmap annotations.
+#
+# == example
+# m = matrix(rnorm(100), 10)
+# ht = Heatmap(m)
+# ha = HeatmapAnnotation(foo = 1:10)
+# ht = attach_annotation(ht, ha)
+# ht
+# ha2 = HeatmapAnnotation(bar = letters[1:10])
+# ht = attach_annotation(ht, ha2)
+# ht
+setMethod(f = "attach_annotation",
+    signature = "Heatmap",
+    definition = function(object, ha, side = c("top", "bottom", "left", "right"), 
+    gap = unit(1, "points")) {
+
+    if(missing(side)) {
+    	side = ifelse(ha@which == "column", "top", "left")
+    } else {
+    	side = match.arg(side)[1]
+    }
+    ha_which = ha@which
+    if(ha_which == "column" && side %in% c("left", "right")) {
+    	stop_wrap("Column annotations can only be attached to the top/bottom side of the heatmap.")
+    } else if(ha_which == "row" && side %in% c("top", "bottom")) {
+    	stop_wrap("Row annotations can only be attached to the left/right side of the heatmap.")
+    }
+
+    if(side == "top") {
+    	if(is.null(object@top_annotation)) {
+    		object@top_annotation = ha
+    		h = height(ha) + ht_opt$COLUMN_ANNO_PADDING
+    		h = convertHeight(h, "mm")
+    		object@top_annotation_param = list(height = h)
+    	} else {
+    		object@top_annotation = c(object@top_annotation, ha, gap = gap)
+    		h = height(object@top_annotation) + height(ha) + gap
+    		h = convertHeight(h, "mm")
+    		object@top_annotation_param = list(height = h)
+    	}
+    } else if(side == "bottom") {
+    	if(is.null(object@bottom_annotation)) {
+    		object@bottom_annotation = ha
+    		h = height(ha) + ht_opt$COLUMN_ANNO_PADDING
+    		h = convertHeight(h, "mm")
+    		object@bottom_annotation_param = list(height = h)
+    	} else {
+    		object@bottom_annotation = c(object@bottom_annotation, ha, gap = gap)
+    		h = height(object@bottom_annotation) + height(ha) + gap
+    		h = convertHeight(h, "mm")
+    		object@bottom_annotation_param = list(height = h)
+    	}
+    } else if(side == "left") {
+    	if(is.null(object@left_annotation)) {
+    		object@left_annotation = ha
+    		w = width(ha) + ht_opt$ROW_ANNO_PADDING
+    		w = convertWidth(w, "mm")
+    		object@left_annotation_param = list(width = w)
+    	} else {
+    		object@left_annotation = c(object@left_annotation, ha, gap = gap)
+    		w = width(object@left_annotation) + width(ha) + gap
+    		w = convertWidth(w, "mm")
+    		object@left_annotation_param = list(width = w)
+    	}
+    } else if(side == "right") {
+    	if(is.null(object@right_annotation)) {
+    		object@right_annotation = ha
+    		w = width(ha) + ht_opt$ROW_ANNO_PADDING
+    		w = convertWidth(w, "mm")
+    		object@right_annotation_param = list(width = w)
+    	} else {
+    		object@right_annotation = c(object@right_annotation, ha, gap = gap)
+    		w = width(object@right_annotation) + width(ha) + gap
+    		w = convertWidth(w, "mm")
+    		object@right_annotation_param = list(height = w)
+    	}
+    }
+    object
+})

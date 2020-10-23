@@ -40,7 +40,7 @@ SingleAnnotation(name, value, col, fun,
   \item{name_gp}{Graphic parameters for annotation name.}
   \item{name_offset}{Offset to the annotation, a \code{\link[grid]{unit}} object.}
   \item{name_side}{'right' and 'left' for column annotations and 'top' and 'bottom' for row annotations}
-  \item{name_rot}{Rotation of the annotation name, it can only take values in \code{c(0, 90, 180, 270)}.}
+  \item{name_rot}{Rotation of the annotation name.}
   \item{simple_anno_size}{size of the simple annotation.}
   \item{width}{The width of the plotting region (the viewport) that the annotation is drawn. If it is a row annotation, the width must be an absolute unit.}
   \item{height}{The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation, the width must be an absolute unit.}

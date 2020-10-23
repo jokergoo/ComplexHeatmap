@@ -30,6 +30,7 @@ Draw Legend Based on Color Mapping
     legend_width = NULL,
     legend_direction = c("vertical", "horizontal"),
     
+    graphics = NULL,
     param = NULL)
 }
 \arguments{
@@ -54,6 +55,7 @@ Draw Legend Based on Color Mapping
   \item{legend_height}{Height of the legend body. It only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{vertical}. Pass to \code{\link{Legend}}.}
   \item{legend_width}{Width of the legend body. It only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{horizontal}. Pass to \code{\link{Legend}}.}
   \item{legend_direction}{When \code{color_bar} is \code{continuous}, whether the legend is vertical or horizontal? Pass to \code{\link{Legend}}.}
+  \item{graphics}{Internally used.}
   \item{param}{All the legend-related parameters can be specified as a single list.}
 
 }

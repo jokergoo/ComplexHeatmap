@@ -218,6 +218,8 @@ setMethod(f = "add_heatmap",
 # -align_heatmap_legend How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center". If the value is ``NULL``,
 #           it automatically picks the proper value from the three options.
 # -align_annotation_legend  How to align the legends to heatmap. Possible values are "heatmap_center", "heatmap_top" and "global_center".
+# -legend_grouping How the legends are grouped. Values should be "adjusted" or "original". If it is set as
+#             "original", all annotation legends are grouped together.
 # -gap gap between heatmaps/annotations
 # -ht_gap same as ``gap``.
 # -main_heatmap index of main heatmap. The value can be a numeric index or the heatmap name
@@ -320,6 +322,7 @@ setMethod(f = "draw",
     annotation_legend_list = list(),
     align_heatmap_legend = NULL,
     align_annotation_legend = NULL,
+    legend_grouping = c("adjusted", "original"),
 
     gap = unit(2, "mm"), 
     ht_gap = gap, 
@@ -513,6 +516,7 @@ setMethod(f = "draw",
         annotation_legend_list = annotation_legend_list,
         align_heatmap_legend = align_heatmap_legend,
         align_annotation_legend = align_annotation_legend,
+        legend_grouping = legend_grouping,
 
         ht_gap = ht_gap, 
 

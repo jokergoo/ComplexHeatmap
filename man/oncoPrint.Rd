@@ -41,7 +41,7 @@ oncoPrint(mat,
     remove_empty_columns = FALSE,
     remove_empty_rows = FALSE,
     show_column_names = FALSE,
-    heatmap_legend_param = list(title = "Alterations"),
+    heatmap_legend_param = NULL,
     ...)
 }
 \arguments{
