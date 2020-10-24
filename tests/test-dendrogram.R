@@ -86,7 +86,7 @@ dend1 = color_branches(dend, k = 2, col = 1:2)
 grid.dendrogram(dend1, test = T)
 dend1 = dend
 dend1 = dendrapply(dend, function(d) {
-	attr(d, "nodePar") = list(pch = 13, size = unit(runif(1, min = 3, max = 20), "bigpts"))
+	attr(d, "nodePar") = list(pch = 1, size = unit(runif(1, min = 3, max = 20), "bigpts"))
 	d
 })
 grid.dendrogram(dend1, test = T)

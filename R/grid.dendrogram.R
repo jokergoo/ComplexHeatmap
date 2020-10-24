@@ -99,6 +99,46 @@ construct_dend_segments = function(dend, gp) {
     generate_children_dendrogram_segments = function(dend, env = NULL) {
 
         if(is.leaf(dend)) {
+            node_gp = attr(dend, "nodePar")
+            if(is.null(node_gp)) node_gp = list()
+            for(gp_name in c("col", "fill", "cex")) {
+                if(is.null(node_gp[[gp_name]])) {
+                    gpa = get.gpar(gp_name)[[gp_name]]
+                } else {
+                    gpa = node_gp[[gp_name]]
+                }
+
+                env[[paste0("node_", gp_name)]] = c(env[[paste0("node_", gp_name)]], gpa)
+            }
+
+            if(is.null(node_gp[["pch"]])) {
+                env[["node_pch"]] = c(env[["node_pch"]], 1)
+            } else {
+                env[["node_pch"]] = c(env[["node_pch"]], node_gp[["pch"]])
+            }
+            if(is.null(node_gp[["size"]])) {
+                env[["node_size"]] = unit.c(env[["node_size"]], unit(1, "char"))
+            } else {
+                env[["node_size"]] = unit.c(env[["node_size"]], node_gp[["size"]])
+            }
+
+            if(any(names(node_gp) %in% c("col", "fill", "pch", "cex", "size"))) {
+                env[["node"]] = c(env[["node"]], TRUE)
+            } else {
+                env[["node"]] = c(env[["node"]], FALSE)
+            } 
+
+            if(x_is_unit) {
+                env$node_x = unit.c(env$node_x, attr(dend, "x"))
+            } else {
+                env$node_x = c(env$node_x, attr(dend, "x"))
+            }
+            if(height_is_unit) {
+                env$node_y = unit.c(env$node_y, attr(dend, "height"))
+            } else {
+                env$node_y = c(env$node_y, attr(dend, "height"))
+            }
+
             return(NULL)
         }
 
@@ -130,6 +170,7 @@ construct_dend_segments = function(dend, gp) {
         # graphic parameters for current branch
         edge_gp_list = lapply(seq_len(nc), function(i) as.list(attr(dend[[i]], "edgePar")))
         node_gp_list = lapply(seq_len(nc), function(i) as.list(attr(dend[[i]], "nodePar")))
+        node_is_assigned = FALSE
         for(i in c(setdiff(seq_len(nc), c(1, nc)), c(1, nc))) {
             for(gp_name in c("col", "lwd", "lty")) {
                 # gp for two segments
@@ -142,71 +183,76 @@ construct_dend_segments = function(dend, gp) {
                 env[[gp_name]] = c(env[[gp_name]], gpa)
             }
 
-            for(gp_name in c("col", "fill", "cex")) {
-                if(is.null(node_gp_list[[i]][[gp_name]])) {
-                    gpa = get.gpar(gp_name)[[gp_name]]
-                } else {
-                    gpa = node_gp_list[[i]][[gp_name]]
+            if(!node_is_assigned) {
+                for(gp_name in c("col", "fill", "cex")) {
+                    if(is.null(node_gp_list[[i]][[gp_name]])) {
+                        gpa = get.gpar(gp_name)[[gp_name]]
+                    } else {
+                        gpa = node_gp_list[[i]][[gp_name]]
+                    }
+
+                    env[[paste0("node_", gp_name)]] = c(env[[paste0("node_", gp_name)]], gpa)
                 }
 
-                env[[paste0("node_", gp_name)]] = c(env[[paste0("node_", gp_name)]], gpa)
-            }
-            if(is.null(node_gp_list[[i]][["pch"]])) {
-                env[["node_pch"]] = c(env[["node_pch"]], 1)
-            } else {
-                env[["node_pch"]] = c(env[["node_pch"]], node_gp_list[[i]][["pch"]])
-            }
-            if(is.null(node_gp_list[[i]][["size"]])) {
-                env[["node_size"]] = unit.c(env[["node_size"]], unit(1, "char"))
-            } else {
-                env[["node_size"]] = unit.c(env[["node_size"]], node_gp_list[[i]][["size"]])
-            }
+                if(is.null(node_gp_list[[i]][["pch"]])) {
+                    env[["node_pch"]] = c(env[["node_pch"]], 1)
+                } else {
+                    env[["node_pch"]] = c(env[["node_pch"]], node_gp_list[[i]][["pch"]])
+                }
+                if(is.null(node_gp_list[[i]][["size"]])) {
+                    env[["node_size"]] = unit.c(env[["node_size"]], unit(1, "char"))
+                } else {
+                    env[["node_size"]] = unit.c(env[["node_size"]], node_gp_list[[i]][["size"]])
+                }
 
-            if(any(names(node_gp_list[[i]]) %in% c("col", "fill", "pch", "cex", "size"))) {
-                env[["node"]] = c(env[["node"]], TRUE)
-            } else {
-                env[["node"]] = c(env[["node"]], FALSE)
+                if(any(names(node_gp_list[[i]]) %in% c("col", "fill", "pch", "cex", "size"))) {
+                    env[["node"]] = c(env[["node"]], TRUE)
+                } else {
+                    env[["node"]] = c(env[["node"]], FALSE)
+                }  
             }
 
             if(height_is_zero) {
                 if(x_is_unit) {
                     env$x0 = unit.c(env$x0, xl[i])
                     env$x1 = unit.c(env$x1, mid_x)
-                    env$node_x = unit.c(env$node_x, mid_x)
+                    if(!node_is_assigned) env$node_x = unit.c(env$node_x, mid_x)
                 } else {
                     env$x0 = c(env$x0, xl[i])
                     env$x1 = c(env$x1, mid_x)
-                    env$node_x = c(env$node_x, mid_x)
+                    if(!node_is_assigned) env$node_x = c(env$node_x, mid_x)
                 }
                 if(height_is_unit) {
                     env$y0 = unit.c(env$y0, height)
                     env$y1 = unit.c(env$y1, height)
-                    env$node_y = unit.c(env$node_y, height)
+                    if(!node_is_assigned) env$node_y = unit.c(env$node_y, height)
                 } else {
                     env$y0 = c(env$y0, height)
                     env$y1 = c(env$y1, height)
-                    env$node_y = c(env$node_y, height)
+                    if(!node_is_assigned) env$node_y = c(env$node_y, height)
                 }
             } else {
                 if(x_is_unit) {
                     env$x0 = unit.c(env$x0, xl[i], xl[i])
                     env$x1 = unit.c(env$x1, xl[i], mid_x)
-                    env$node_x = unit.c(env$node_x, mid_x)
+                    if(!node_is_assigned) env$node_x = unit.c(env$node_x, mid_x)
                 } else {
                     env$x0 = c(env$x0, xl[i], xl[i])
                     env$x1 = c(env$x1, xl[i], mid_x)
-                    env$node_x = c(env$node_x, mid_x)
+                    if(!node_is_assigned) env$node_x = c(env$node_x, mid_x)
                 }
                 if(height_is_unit) {
                     env$y0 = unit.c(env$y0, yl[i], height)
                     env$y1 = unit.c(env$y1, height, height)
-                    env$node_y = unit.c(env$node_y, height)
+                    if(!node_is_assigned) env$node_y = unit.c(env$node_y, height)
                 } else {
                     env$y0 = c(env$y0, yl[i], height)
                     env$y1 = c(env$y1, height, height)
-                    env$node_y = c(env$node_y, height)
+                    if(!node_is_assigned) env$node_y = c(env$node_y, height)
                 }
             }
+
+            node_is_assigned = TRUE
         }
     }
 
