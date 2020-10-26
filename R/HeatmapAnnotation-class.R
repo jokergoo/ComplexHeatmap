@@ -663,8 +663,8 @@ setMethod(f = "draw",
 
     if(test2) {
     	grid.newpage()
-    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(3, "cm"), height = object@height))
-    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(3, "cm"), width = object@width))
+    	if(which == "column") pushViewport(viewport(width = unit(1, "npc") - unit(3, "cm") - sum(object@extended[c(2,4)]), height = object@height))
+    	if(which == "row") pushViewport(viewport(height = unit(1, "npc") - unit(3, "cm") - sum(object@extended[c(1,3)]), width = object@width))
     } else {
 		pushViewport(do.call(viewport, vp_param))
 	}
