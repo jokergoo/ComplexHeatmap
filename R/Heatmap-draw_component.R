@@ -77,6 +77,14 @@ setMethod(f = "draw_heatmap_body",
             stop_wrap(paste0("Need ", device_info[2], " package to read image."))
         }
 
+        if(raster_device %in% c("png", "jpeg", "tiff")) {
+            if(! "type" %in% names(raster_device_param)) {
+                if(capabilities("cairo")) {
+                    raster_device_param$type = "cairo"
+                }
+            }
+        }
+
         # can we get the size of the heatmap body?
         heatmap_width_pt = max(1, ceiling(convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE)))
         heatmap_height_pt = max(1, ceiling(convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)))
@@ -188,7 +196,7 @@ setMethod(f = "draw_heatmap_body",
 
         grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = FALSE)
 
-        ### only for testing ###
+        ### only for testing the temp image size ###
         if(ht_opt("__export_image_size__")) {
             if(inherits(image, "magick-image")) {
                 image = as.raster(image)

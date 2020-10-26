@@ -28,7 +28,7 @@ setMethod(f = "row_order",
 	definition = function(object, name = NULL) {
 
 	if(!object@layout$initialized) {
-		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function. It is more suggested to do as `ht_list = draw(ht_list); row_order(ht_list)`.")
+		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht_list = draw(ht_list); row_order(ht_list)`.")
 	}
 
 	object = make_layout(object)
@@ -87,7 +87,7 @@ setMethod(f = "row_order",
 	definition = function(object) {
 
 	if(!object@layout$initialized) {
-		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function. It is more suggested to do as `ht = draw(ht); row_order(ht)`.")
+		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht = draw(ht); row_order(ht)`.")
 	}
 
 
@@ -133,7 +133,7 @@ setMethod(f = "column_order",
 	definition = function(object, name = NULL) {
 
 	if(!object@layout$initialized) {
-		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function. It is more suggested to do as `ht_list = draw(ht_list); column_order(ht_list)`.")
+		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht_list = draw(ht_list); column_order(ht_list)`.")
 	}
 
 	object = make_layout(object)
@@ -191,7 +191,7 @@ setMethod(f = "column_order",
 	definition = function(object) {
 
 	if(!object@layout$initialized) {
-		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function. It is more suggested to do as `ht = draw(ht); column_order(ht)`.")
+		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht = draw(ht); column_order(ht)`.")
 	}
 
 	object = prepare(object)
@@ -234,7 +234,7 @@ setMethod(f = "row_dend",
 	definition = function(object, name = NULL) {
 
 	if(!object@layout$initialized) {
-		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function. It is more suggested to do as `ht_list = draw(ht_list); row_dend(ht_list)`.")
+		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht_list = draw(ht_list); row_dend(ht_list)`.")
 	}
 
 	object = make_layout(object)
@@ -294,7 +294,7 @@ setMethod(f = "row_dend",
 	definition = function(object) {
 
 	if(!object@layout$initialized) {
-		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function. It is more suggested to do as `ht = draw(ht); row_dend(ht)`.")
+		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht = draw(ht); row_dend(ht)`.")
 	}
 
 	object = prepare(object)
@@ -339,7 +339,7 @@ setMethod(f = "column_dend",
 	definition = function(object, name = NULL) {
 
 	if(!object@layout$initialized) {
-		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function. It is more suggested to do as `ht_list = draw(ht_list); column_dend(ht_list)`.")
+		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht_list = draw(ht_list); column_dend(ht_list)`.")
 	}
 
 	object = make_layout(object)
@@ -399,7 +399,7 @@ setMethod(f = "column_dend",
 	definition = function(object) {
 
 	if(!object@layout$initialized) {
-		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function. It is more suggested to do as `ht = draw(ht); column_dend(ht)`.")
+		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht = draw(ht); column_dend(ht)`.")
 	}
 
 	object = prepare(object)
