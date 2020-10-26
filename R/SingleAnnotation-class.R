@@ -445,7 +445,6 @@ SingleAnnotation = function(name, value, col, fun,
             } else if(name_param$rot %in% c(90, 270)) {
                 text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             } else {
-                browser()
                 text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             }
             if(name_param$side == "left") {
