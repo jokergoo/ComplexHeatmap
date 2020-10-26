@@ -546,23 +546,27 @@ guess_align_legend = function(ht_list,
     test_on) {
 
     if(test_on == "heatmap_legend") {
+        if(heatmap_legend_side == annotation_legend_side) {
+            if(!is.null(attr(annotation_legend_size, "multiple"))) {
+                if(attr(heatmap_legend_size, "multiple") != 1 || attr(annotation_legend_size, "multiple") != 1) {
+                    return("global_center")
+                }
+            }
+        }
         if(attr(heatmap_legend_size, "multiple") != 1) {
             return("global_center")
         }
-        if(heatmap_legend_side == annotation_legend_side) {
-            if(attr(heatmap_legend_size, "multiple") != 1 || attr(annotation_legend_size, "multiple") != 1) {
-                return("global_center")
-            }
-        }
     }
     if(test_on == "annotation_legend") {
+        if(heatmap_legend_side == annotation_legend_side) {
+            if(!is.null(attr(heatmap_legend_size, "multiple"))) {
+                if(attr(heatmap_legend_size, "multiple") != 1 || attr(annotation_legend_size, "multiple") != 1) {
+                    return("global_center")
+                }
+            }
+        }
         if(attr(annotation_legend_size, "multiple") != 1) {
             return("global_center")
-        }
-        if(heatmap_legend_side == annotation_legend_side) {
-            if(attr(heatmap_legend_size, "multiple") != 1 || attr(annotation_legend_size, "multiple") != 1) {
-                return("global_center")
-            }
         }
     }
 
