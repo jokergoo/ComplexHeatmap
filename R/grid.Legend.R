@@ -491,7 +491,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 				} else {
 					gl = c(gl, 
 						.pointsGrob_as_a_list(x = grid_x + grid_width[i]*0.5, y = grid_y, pch = pch[index], 
-							gp = subset_gp(legend_gp, index), size = size, width = grid_width[i], height = row_height_no_gap)
+							gp = subset_gp(legend_gp, index), size = size[index], width = grid_width[i], height = row_height_no_gap)
 					)
 				}
 			}
