@@ -683,7 +683,7 @@ recycle_list = function(x, all_names, default = NULL) {
         return(lt)
     }
 
-    stop_wrap("wrong input data type.")
+    stop_wrap("Not compatible with the annotations.")
 
 }
 

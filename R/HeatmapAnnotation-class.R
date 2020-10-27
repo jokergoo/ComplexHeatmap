@@ -273,7 +273,9 @@ HeatmapAnnotation = function(...,
     }
     border = recycle_param(border, an, FALSE)
     annotation_name_gp = recycle_gp(annotation_name_gp, n_total_anno)
-    annotation_label = recycle_list(annotation_label, an, NULL)
+    if(length(annotation_label) != length(an)) {
+    	stop_wrap("Length of `annotation_label` should be the same as number of annotations.")
+    }
 
     if(!missing(col)) {
     	if(length(col) >= 1) {
@@ -321,7 +323,7 @@ HeatmapAnnotation = function(...,
 
 		i_anno = i_anno + 1
 		arg_list = list(name = ag, which = which,
-				label = annotation_label[[i_anno]],
+				label = annotation_label[i_anno],
 				show_name = show_annotation_name[i_anno], 
 				name_gp = subset_gp(annotation_name_gp, i_anno), 
 	        	name_offset = annotation_name_offset[[i_anno]], 
