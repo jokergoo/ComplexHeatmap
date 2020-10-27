@@ -443,7 +443,7 @@ SingleAnnotation = function(name, value, col, fun,
             if(name_param$rot %in% c(0, 180)) {
                 text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             } else if(name_param$rot %in% c(90, 270)) {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm")
             } else {
                 text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             }
@@ -456,7 +456,7 @@ SingleAnnotation = function(name, value, col, fun,
             if(name_param$rot %in% c(0, 180)) {
                 text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             } else if(name_param$rot %in% c(90, 270)) {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
+                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm")
             } else {
                 text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
             }
