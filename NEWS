@@ -1,3 +1,11 @@
+CHANGES in VERSION 2.7.1
+
+* `normalize_comb_mat()`: add `full_comb_sets` and `complement_set` arguments to control
+  full sets of combination sets.
+* adjust the space of column title according to ggplot2.
+
+========================
+
 CHANGES in VERSION 2.5.6
 
 * `ht_shiny()`: add argument `app`.

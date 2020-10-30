@@ -239,7 +239,7 @@ recycle_gp = function(gp, n = 1) {
 
 check_gp = function(gp) {
     if(!"lineheight" %in% names(gp)) {
-        gp$lineheight = 0.8
+        gp$lineheight = 0.9
     }
     if(!inherits(gp, "gpar")) {
         stop_wrap("Graphic parameters should be specified by `gpar()`.")

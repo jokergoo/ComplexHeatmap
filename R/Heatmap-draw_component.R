@@ -505,6 +505,14 @@ setMethod(f = "draw_title",
         "row" = object@row_title_param$just,
         "column" = object@column_title_param$just)
 
+    if(!is.null(ht_opt$TITLE_PADDING)) {
+        title_padding = ht_opt$TITLE_PADDING
+    } else {
+        title_padding = unit(c(0, 0), "points")
+        title_padding[1] = title_padding[1] + unit(5.5, "points") + 
+            convertHeight(grobDescent(textGrob(label = "jA", gp = gp)), "inches")
+    }
+
     if(which == "row") {
         
         pushViewport(viewport(name = paste(object@name, "row_title", k, sep = "_"), clip = FALSE, ...))
@@ -512,9 +520,9 @@ setMethod(f = "draw_title",
         if("border" %in% names(gp2)) gp2$col = gp2$border
         if(any(c("border", "fill") %in% names(gp2))) grid.rect(gp = gp2)
         if(side == "left") {
-            grid.text(title, x = unit(1, "npc") - ht_opt$TITLE_PADDING[1], rot = rot, just = just, gp = gp)
+            grid.text(title, x = unit(1, "npc") - title_padding[1], rot = rot, just = just, gp = gp)
         } else {
-            grid.text(title, x = ht_opt$TITLE_PADDING[1], rot = rot, just = just, gp = gp)
+            grid.text(title, x = title_padding[1], rot = rot, just = just, gp = gp)
         }
         upViewport()
     } else {
@@ -523,9 +531,9 @@ setMethod(f = "draw_title",
         if("border" %in% names(gp2)) gp2$col = gp2$border
         if(any(c("border", "fill") %in% names(gp2))) grid.rect(gp = gp2)
         if(side == "top") {
-            grid.text(title, y = ht_opt$TITLE_PADDING[1], rot = rot, just = just, gp = gp)
+            grid.text(title, y = title_padding[1], rot = rot, just = just, gp = gp)
         } else {
-            grid.text(title, y = unit(1, "npc") - ht_opt$TITLE_PADDING[1], rot = rot, just = just, gp = gp)
+            grid.text(title, y = unit(1, "npc") - title_padding[1], rot = rot, just = just, gp = gp)
         }
         upViewport()
     }

@@ -816,6 +816,14 @@ setMethod(f = "make_layout",
     
     ############################################
     ## title on top or bottom
+    if(!is.null(ht_opt$TITLE_PADDING)) {
+        title_padding = ht_opt$TITLE_PADDING
+    } else {
+        title_padding = unit(c(0, 0), "points")
+        title_padding[1] = title_padding[1] + unit(5.5, "points") + 
+            convertHeight(grobDescent(textGrob(label = "jA", gp = column_title_gp)), "inches")
+    }
+
     column_title_side = match.arg(column_title_side)[1]
     if(length(column_title) == 0) {
         column_title = character(0)
@@ -831,10 +839,10 @@ setMethod(f = "make_layout",
     object@column_title_param$side = column_title_side
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
-            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(ht_opt$TITLE_PADDING)
+            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_top = heatmap_list_layout_index("column_title_top"))
         } else {
-            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(ht_opt$TITLE_PADDING)
+            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_bottom = heatmap_list_layout_index("column_title_bottom"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "column"))
@@ -842,6 +850,14 @@ setMethod(f = "make_layout",
 
     ############################################
     ## title on left or right
+    if(!is.null(ht_opt$TITLE_PADDING)) {
+        title_padding = ht_opt$TITLE_PADDING
+    } else {
+        title_padding = unit(c(0, 0), "points")
+        title_padding[1] = title_padding[1] + unit(5.5, "points") + 
+            convertHeight(grobDescent(textGrob(label = "jA", gp = row_title_gp)), "inches")
+    }
+
     row_title_side = match.arg(row_title_side)[1]
     if(length(row_title) == 0) {
         row_title = character(0)
@@ -857,10 +873,10 @@ setMethod(f = "make_layout",
     object@row_title_param$side = row_title_side
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
-            object@layout$layout_row_title_left_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + sum(ht_opt$TITLE_PADDING)
+            object@layout$layout_row_title_left_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, row_title_left = heatmap_list_layout_index("row_title_left"))
         } else {
-            object@layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + sum(ht_opt$TITLE_PADDING)
+            object@layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, row_title_right = heatmap_list_layout_index("row_title_right"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "row"))

@@ -223,11 +223,11 @@ Heatmap = function(matrix, col, name,
 
     row_title = character(0), 
     row_title_side = c("left", "right"), 
-    row_title_gp = gpar(fontsize = 13), 
+    row_title_gp = gpar(fontsize = 13.2), 
     row_title_rot = switch(row_title_side[1], "left" = 90, "right" = 270),
     column_title = character(0), 
     column_title_side = c("top", "bottom"), 
-    column_title_gp = gpar(fontsize = 13), 
+    column_title_gp = gpar(fontsize = 13.2), 
     column_title_rot = 0,
 
     cluster_rows = TRUE, 

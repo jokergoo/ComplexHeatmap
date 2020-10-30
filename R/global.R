@@ -170,7 +170,7 @@ ht_opt = setGlobalOptions(
 		.class = "unit"
 	),
 	TITLE_PADDING = list(
-		.value = unit(c(8.5, 0), "points"),
+		.value = NULL,
 		.class = "unit",
 		.filter = function(x) {
 			if(length(x) == 1) {
