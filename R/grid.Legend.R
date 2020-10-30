@@ -259,7 +259,15 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 			total_width = title_width + title_padding + legend_width
 			total_height = legend_height
 			if(title_position == "lefttop") {
-				title_y = unit(1, "npc")
+				if(missing(col_fun)) {
+					title_y = unit(1, "npc") - convertY(grobY(legend_body$children[[1]], 270), "mm")
+				} else {
+					if(direction == "horizontal") {
+						title_y = unit(1, "npc") - convertHeight(grobHeight(legend_body$children[[2]])*0.5 - grobHeight(textGrob(title, gp = title_gp))*0.5, "mm")
+					} else {
+						title_y = unit(1, "npc")
+					}
+				}
 				title_just = c("left", "top")
 			} else {
 				title_y = unit(0.5, "npc")

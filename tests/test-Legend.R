@@ -117,6 +117,10 @@ draw(lgd, test = "lefttop rot title")
 lgd = Legend(col_fun = col_fun, title = "foooooooo", title_position = "leftcenter-rot")
 draw(lgd, test = "leftcenter top title")
 
+
+lgd = Legend(col_fun = col_fun, title = "foo", title_position = "lefttop", direction = "horizontal")
+draw(lgd, test = "lefttop title")
+
 ###### horizontal continous legend #######
 col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
 lgd = Legend(col_fun = col_fun, title = "foo", direction = "horizontal")

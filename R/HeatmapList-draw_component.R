@@ -804,9 +804,9 @@ setMethod(f = "draw_title",
             grid.rect(gp = gpar(fill = gp$fill))
         }
         if(side == "top") {
-            grid.text(title, y = title_padding[1], rot = rot, just = "bottom", gp = gp)
+            grid.text(title, y = title_padding[1], just = "bottom", gp = gp)
         } else {
-            grid.text(title, y = unit(1, "npc") - title_padding[1], rot = rot, just = "top", gp = gp)
+            grid.text(title, y = unit(1, "npc") - title_padding[1], just = "top", gp = gp)
         }
         upViewport()
     }
