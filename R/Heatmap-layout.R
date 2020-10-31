@@ -25,6 +25,7 @@ setMethod(f = "make_layout",
     definition = function(object) {
 
     if(object@layout$initialized) {
+        qqcat("layout is initialized.\n")
         return(object)
     }
 
