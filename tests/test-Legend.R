@@ -99,6 +99,10 @@ draw(lgd, test = "only col_fun")
 lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.25, 0.5, 0.75, 1))
 draw(lgd, test = "with at")
 
+lgd = Legend(col_fun = col_fun, title = "foo", at = rev(c(0, 0.25, 0.5, 0.75, 1)))
+draw(lgd, test = "with at")
+
+
 lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.5, 1), labels = c("low", "median", "high"))
 draw(lgd, test = "with labels")
 
@@ -127,6 +131,9 @@ lgd = Legend(col_fun = col_fun, title = "foo", direction = "horizontal")
 draw(lgd, test = "only col_fun")
 
 lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.25, 0.5, 0.75, 1), direction = "horizontal")
+draw(lgd, test = "with at")
+
+lgd = Legend(col_fun = col_fun, title = "foo", at = rev(c(0, 0.25, 0.5, 0.75, 1)), direction = "horizontal")
 draw(lgd, test = "with at")
 
 lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.5, 1), labels = c("low", "median", "high"),

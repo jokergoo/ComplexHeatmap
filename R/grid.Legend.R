@@ -547,11 +547,15 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	labels_gp = gpar(fontsize = 10),
 	border = NULL) {
 
-	od = order(at)
-	at = at[od]
-	labels = labels[od]
 	n = length(at)
+	if(identical(order(at), seq(n, 1))) {
 
+	} else {
+		od = order(at)
+		at = at[od]
+		labels = labels[od]
+	}
+	
 	n_labels = length(labels)
 	labels_max_width = max_text_width(labels, gp = labels_gp)
 
@@ -690,10 +694,14 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	labels_gp = gpar(fontsize = 10), labels_rot = 0,
 	border = NULL, legend_extension = unit(0, "mm")) {
 		
-	od = order(at)
-	at = at[od]
-	labels = labels[od]
 	k = length(at)
+	if(identical(order(at), seq(k, 1))) {
+
+	} else {
+		od = order(at)
+		at = at[od]
+		labels = labels[od]
+	}
 
 	labels_rot = labels_rot %% 360
 
