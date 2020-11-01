@@ -1,4 +1,3 @@
-
 ###############################
 # class for single heatmap
 #
@@ -1275,14 +1274,14 @@ make_cluster = function(object, which = c("row", "column")) {
             # cl = km.fit$cluster
             cl = consensus_kmeans(mat, km, km_repeats)
             meanmat = lapply(sort(unique(cl)), function(i) {
-                colMeans(mat[cl == i, , drop = FALSE])
+                colMeans(mat[cl == i, , drop = FALSE], na.rm = TRUE)
             })
         } else {
             # km.fit = kmeans(t(mat), centers = km)
             # cl = km.fit$cluster
             cl = consensus_kmeans(t(mat), km, km_repeats)
             meanmat = lapply(sort(unique(cl)), function(i) {
-                rowMeans(mat[, cl == i, drop = FALSE])
+                rowMeans(mat[, cl == i, drop = FALSE], na.rm = TRUE)
             })
         }
 
@@ -1451,9 +1450,9 @@ make_cluster = function(object, which = c("row", "column")) {
 
         if(length(order_list) > 1 && cluster_slices) {
             if(which == "row") {
-                slice_mean = sapply(order_list, function(ind) colMeans(mat[ind, , drop = FALSE]))
+                slice_mean = sapply(order_list, function(ind) colMeans(mat[ind, , drop = FALSE], na.rm = TRUE))
             } else {
-                slice_mean = sapply(order_list, function(ind) rowMeans(mat[, ind, drop = FALSE]))
+                slice_mean = sapply(order_list, function(ind) rowMeans(mat[, ind, drop = FALSE], na.rm = TRUE))
             }
             if(!is.matrix(slice_mean)) {
                 slice_mean = matrix(slice_mean, nrow = 1)
@@ -1680,4 +1679,3 @@ setMethod(f = "prepare",
     return(object)
 
 })
-
