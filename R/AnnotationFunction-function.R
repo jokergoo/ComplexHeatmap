@@ -3398,7 +3398,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 
 		if(is_RStudio_current_dev()) {
 			if(ht_opt$message) {
-				message_wrap("It seems you are using RStudio IDE. `anno_zoom()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
+				message_wrap("It seems you are using RStudio IDE. `anno_zoom()`/`anno_link()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
 			}
 		}
 
@@ -3585,7 +3585,7 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 
 		if(is_RStudio_current_dev()) {
 			if(ht_opt$message) {
-				message_wrap("It seems you are using RStudio IDE. `anno_zoom()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
+				message_wrap("It seems you are using RStudio IDE. `anno_zoom()`/`anno_link()` needs to work with the physical size of the graphics device. It only generates correct plot in the figure panel, while in the zoomed plot (by clicking the icon 'Zoom') or in the exported plot (by clicking the icon 'Export'), the connection to heatmap rows/columns might be wrong. You can directly use e.g. pdf() to save the plot into a file.\n\nUse `ht_opt$message = FALSE` to turn off this message.")
 			}
 		}
 

@@ -4,6 +4,7 @@ CHANGES in VERSION 2.7.1
   full sets of combination sets.
 * adjust the space of column title according to ggplot2.
 * `Legend()`: for title_position == "lefttop", the title position is adjusted.
+* Legends are automatically adjusted according to the device size when resizing the device.
 
 ========================
 
