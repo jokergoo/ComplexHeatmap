@@ -616,7 +616,6 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 		y = cumsum(y)/sum(y)
 
 		attr(col_fun, "breaks") = y
-		labels = at
 		if(at[1] <= at[n]) {
 			at = y
 		} else {
@@ -662,7 +661,7 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	gl = list()
 
 	# labels
-	labels_line_height = convertHeight(grobHeight(textGrob("foo", gp = labels_gp)), "mm")
+	labels_line_height = convertHeight(grobHeight(textGrob("fooy", gp = labels_gp)), "mm")
 	x = unit(rep(0, n_labels), "npc")
 	offset = unit(2, "points") # space from the first break to the bottom and the last break to the top
 	k = length(at)
@@ -675,14 +674,13 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	
 	if(!at_diff_is_equal) {
 		labels_line_height = do.call("unit.c", lapply(labels, 
-			function(x) grobHeight(textGrob(x, gp = labels_gp)) + unit(2, "mm")))
+			function(x) grobHeight(textGrob(x, gp = labels_gp)) + unit(4, "pt")))
 		y_top = labels_y + labels_line_height*0.5
 		y_bottom = labels_y - labels_line_height*0.5
 		y_top = convertY(y_top, "mm", valueOnly = TRUE)
 		y_bottom = convertY(y_bottom, "mm", valueOnly = TRUE)
-		yrange = c(0, convertHeight(legend_body_height, "mm", valueOnly = TRUE))
-		yrange[1] = yrange[1] - convertHeight(grobHeight(textGrob("foo", gp = labels_gp)) + offset, "mm", valueOnly = TRUE)
-		yrange[2] = yrange[2] + convertHeight(grobHeight(textGrob("foo", gp = labels_gp)) + offset, "mm", valueOnly = TRUE)
+		yrange = convertY(unit.c(offset - labels_line_height[1]*0.5, 
+			                     legend_body_height - offset + labels_line_height[length(labels_line_height)]*0.5), "mm", valueOnly = TRUE)
 		new_pos = smartAlign(y_bottom, y_top, yrange)
 		y2 = (new_pos[, 1] + new_pos[, 2])/2
 		y2 = unit(y2, "mm")
@@ -712,10 +710,16 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	at2 = c(at2, at[length(at)])
 	colors = col_fun(at2)
 	x2 = unit(rep(0, length(colors)), "npc")
-	y2 = seq(0, 1, length = length(colors)+1)
-	y2 = y2[-length(y2)] * legend_body_height
+	y2 = seq(0, 1, length = length(colors)+1); y2 = y2[-length(y2)]
+	y2 = y2 * (legend_body_height - 2*offset) + offset
+	y2 = y2 + (y2[2] - y2[1])*0.5
+	hh = (legend_body_height - 2*offset)*(1/length(colors))
+	x2 = unit.c(unit(0, "npc"), x2, unit(0, "npc"))
+	y2 = unit.c(offset*0.5, y2, legend_body_height - offset*0.5)
+	hh = unit.c(offset, hh, offset)
+	colors = c(colors[1], colors, colors[length(colors)])
 	gl = c(gl, list(
-		rectGrob(x2, rev(y2), width = grid_width, height = (unit(1, "npc"))*(1/length(colors)), just = c("left", "center"),
+		rectGrob(x2, rev(y2), width = grid_width, height = hh, just = c("left", "center"),
 			gp = gpar(col = rev(colors), fill = rev(colors))),
 		segmentsGrob(unit(0, "npc"), y, unit(0.8, "mm"), y, gp = gpar(col = ifelse(is.null(border), "white", border))),
 		segmentsGrob(grid_width, y, grid_width - unit(0.8, "mm"), y, gp = gpar(col = ifelse(is.null(border), "white", border)))
@@ -822,7 +826,6 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 		y = cumsum(y)/sum(y)
 
 		attr(col_fun, "breaks") = y
-		labels = at
 		if(at[1] <= at[n]) {
 			at = y
 		} else {
