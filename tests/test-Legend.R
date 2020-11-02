@@ -254,6 +254,11 @@ lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.1, 0.5, 0.75, 1),
 draw(lgd, test = "unequal interval breaks with labels")
 
 
+col_fun = colorRamp2(c(0, 0.05, 0.1, 0.5, 1), c("green", "white", "red", "black", "blue"))
+lgd = Legend(col_fun = col_fun, title = "foo", interval_dist = 1:4)
+draw(lgd, test = "unequal interval breaks")
+
+
 #### position of legends to heatmaps ##
 if(0) {
 m = matrix(rnorm(100), 10)

@@ -351,17 +351,17 @@ setMethod(f = "color_mapping_legend",
 			labels = rev(labels)
 		}
 		if(length(at) == 0) {
-			gf = Legend(at = "NA", labels = "NA", title = title, title_gp = title_gp, grid_height = grid_height,
+			gf = Legend(at = "NA", labels = "NA", name = object@name, title = title, title_gp = title_gp, grid_height = grid_height,
 				grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
 				legend_gp = gpar(fill = object@na_col), title_position = title_position, by_row = by_row, graphics = graphics)
 		} else {
-			gf = Legend(at = at, labels = labels, title = title, title_gp = title_gp, grid_height = grid_height,
+			gf = Legend(at = at, labels = labels, name = object@name, title = title, title_gp = title_gp, grid_height = grid_height,
 				grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
 				legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position, by_row = by_row, graphics = graphics)
 		}
 
 	} else {
-		gf = Legend(at = at, labels = labels, col_fun = object@col_fun, title = title, title_gp = title_gp, grid_height = grid_height,
+		gf = Legend(at = at, labels = labels, name = object@name, col_fun = object@col_fun, title = title, title_gp = title_gp, grid_height = grid_height,
 				grid_width = grid_width, border = border, labels_gp = labels_gp, labels_rot = labels_rot, direction = legend_direction,
 				legend_width = legend_width, legend_height = legend_height, title_position = title_position, by_row = by_row)
 

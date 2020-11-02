@@ -13,6 +13,7 @@
 # lgd@grob
 Legends = setClass("Legends",
     slots = list(
+    	name = "ANY",
         grob = "ANY",
         type = "character",
         n = "numeric",
@@ -50,6 +51,9 @@ Legends = function(...) {
 # -col_fun A color mapping function which is used to make a continuous legend. Use `circlize::colorRamp2` to
 #     generate the color mapping function. If ``at`` is missing, the breaks recorded in the color mapping function
 #      are used for ``at``.
+# -name Name of the legend, internally used.
+# -interval_dist A zooming factor to control relative distance of two neighbouring break values.The length
+#     of it should be ``length(at) - 1`` or a scalar. 
 # -nrow For legend which is represented as grids, ``nrow`` controls number of rows of the grids if the grids
 #      are arranged into multiple rows.
 # -ncol Similar as ``nrow``, ``ncol`` controls number of columns of the grids if the grids
@@ -106,7 +110,8 @@ Legends = function(...) {
 # col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
 # lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.1, 0.15, 0.5, 0.9, 0.95, 1))
 # draw(lgd, test = "unequal interval breaks")
-Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALSE,
+Legend = function(at, labels = at, col_fun, name = NULL,
+	interval_dist = NULL, nrow = NULL, ncol = 1, by_row = FALSE,
 	grid_height = unit(4, "mm"), 
 	grid_width = unit(4, "mm"), 
 	gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
@@ -150,17 +155,22 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 			if(is.null(breaks)) {
 				stop_wrap("You should provide `at` for color mapping function\n")
 			}
-		
-			le1 = grid.pretty(range(breaks))
-			le2 = pretty(breaks, n = 3)
-			if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
-				at = le1
+			
+			if(is.null(interval_dist)) {
+				le1 = grid.pretty(range(breaks))
+				le2 = pretty(breaks, n = 3)
+				if(abs(length(le1) - 5) < abs(length(le2) - 5)) {
+					at = le1
+				} else {
+					at = le2
+				}
 			} else {
-				at = le2
+				at = breaks
 			}
 		}
+
 		if(direction == "vertical") {
-			legend_body = vertical_continuous_legend_body(at = at, labels = labels, col_fun = col_fun,
+			legend_body = vertical_continuous_legend_body(at = at, labels = labels, col_fun = col_fun, interval_dist = interval_dist,
 				grid_height = grid_height, grid_width = grid_width, legend_height = legend_height,
 				labels_gp = labels_gp, border = border)
 		} else {
@@ -172,7 +182,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 					legend_extension = title_width + title_padding
 				}
 			}
-			legend_body = horizontal_continuous_legend_body(at = at, labels = labels, col_fun = col_fun,
+			legend_body = horizontal_continuous_legend_body(at = at, labels = labels, col_fun = col_fun, interval_dist = interval_dist,
 				grid_height = grid_height, grid_width = grid_width, legend_width = legend_width,
 				labels_gp = labels_gp, labels_rot = labels_rot, border = border, legend_extension = legend_extension)
 		}
@@ -315,6 +325,7 @@ Legend = function(at, labels = at, col_fun, nrow = NULL, ncol = 1, by_row = FALS
 	object = new("Legends")
 	object@grob = gf
 	object@type = "single_legend"
+	object@name = name
 	object@n = 1
 	object@multiple = 1
 	object@direction = "vertical"
@@ -542,18 +553,75 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 }
 
 vertical_continuous_legend_body = function(at, labels = at, col_fun,
-	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
+	interval_dist = NULL, grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
 	legend_height = NULL,
 	labels_gp = gpar(fontsize = 10),
 	border = NULL) {
 
 	n = length(at)
+	breaks = attr(col_fun, "breaks")
 	if(identical(order(at), seq(n, 1))) {
-
+		breaks = rev(breaks)
+		interval_dist = rev(interval_dist)
 	} else {
 		od = order(at)
+		if(!is.null(interval_dist)) {
+			if(!identical(od, 1:n)) {
+				stop_wrap("`at` should be sorted if `interval_dist` is set.")
+			}
+		}
 		at = at[od]
 		labels = labels[od]
+	}
+
+	if(!is.null(interval_dist)) {
+		if(is.null(breaks)) {
+			stop_wrap("`col_fun` must have a 'breaks' attribute if `interval_dist` is set.")
+		}
+		if(length(interval_dist) == 1) {
+			interval_dist = rep(interval_dist, n - 1)
+		}
+		if(length(interval_dist) != n - 1) {
+			stop_wrap("Length of `interval_dist` should be `length(at) - 1`.")
+		}
+		# this function is not vectorized
+		generate_map_fun = function(breaks) {
+			nb = length(breaks)
+			y = c(0, interval_dist)
+			y = cumsum(y)/sum(y)
+			function(x) {
+				if(x <= y[1]) {
+					return(breaks[1])
+				} else if(x >= y[nb]) {
+					return(breaks[nb])
+				} else {
+					for(i in 2:nb) {
+						if(x == y[i]) {
+							return(breaks[i])
+						}
+						if(x < y[i]) {
+							return( (x - y[i-1])/(y[i] - y[i-1])*(breaks[i] - breaks[i-1]) + breaks[i-1] )
+						}
+					}
+				}
+			}
+		}
+		col_fun2 = col_fun
+		map_fun = generate_map_fun(sort(at))
+		col_fun = function(x) {
+			x2 = sapply(x, map_fun)
+			col_fun2(x2)
+		}
+		y = c(0, interval_dist)
+		y = cumsum(y)/sum(y)
+
+		attr(col_fun, "breaks") = y
+		labels = at
+		if(at[1] <= at[n]) {
+			at = y
+		} else {
+			at = rev(y)
+		}
 	}
 	
 	n_labels = length(labels)
@@ -613,6 +681,8 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 		y_top = convertY(y_top, "mm", valueOnly = TRUE)
 		y_bottom = convertY(y_bottom, "mm", valueOnly = TRUE)
 		yrange = c(0, convertHeight(legend_body_height, "mm", valueOnly = TRUE))
+		yrange[1] = yrange[1] - convertHeight(grobHeight(textGrob("foo", gp = labels_gp)) + offset, "mm", valueOnly = TRUE)
+		yrange[2] = yrange[2] + convertHeight(grobHeight(textGrob("foo", gp = labels_gp)) + offset, "mm", valueOnly = TRUE)
 		new_pos = smartAlign(y_bottom, y_top, yrange)
 		y2 = (new_pos[, 1] + new_pos[, 2])/2
 		y2 = unit(y2, "mm")
@@ -689,18 +759,75 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 }
 
 horizontal_continuous_legend_body = function(at, labels = at, col_fun,
-	grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
+	interval_dist = NULL, grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
 	legend_width = NULL,
 	labels_gp = gpar(fontsize = 10), labels_rot = 0,
 	border = NULL, legend_extension = unit(0, "mm")) {
 		
-	k = length(at)
+	n = k = length(at)
+	breaks = attr(col_fun, "breaks")
 	if(identical(order(at), seq(k, 1))) {
-
+		breaks = rev(breaks)
+		interval_dist = rev(interval_dist)
 	} else {
 		od = order(at)
+		if(!is.null(interval_dist)) {
+			if(!identical(od, 1:n)) {
+				stop_wrap("`at` should be sorted if `interval_dist` is set.")
+			}
+		}
 		at = at[od]
 		labels = labels[od]
+	}
+
+	if(!is.null(interval_dist)) {
+		if(is.null(breaks)) {
+			stop_wrap("`col_fun` must have a 'breaks' attribute if `interval_dist` is set.")
+		}
+		if(length(interval_dist) == 1) {
+			interval_dist = rep(interval_dist, n - 1)
+		}
+		if(length(interval_dist) != n - 1) {
+			stop_wrap(qq("Length of `interval_dist` should be `length(at) - 1` which is @{length(at) - 1}."))
+		}
+		# this function is not vectorized
+		generate_map_fun = function(breaks) {
+			nb = length(breaks)
+			y = c(0, interval_dist)
+			y = cumsum(y)/sum(y)
+			function(x) {
+				if(x <= y[1]) {
+					return(breaks[1])
+				} else if(x >= y[nb]) {
+					return(breaks[nb])
+				} else {
+					for(i in 2:nb) {
+						if(x == y[i]) {
+							return(breaks[i])
+						}
+						if(x < y[i]) {
+							return( (x - y[i-1])/(y[i] - y[i-1])*(breaks[i] - breaks[i-1]) + breaks[i-1] )
+						}
+					}
+				}
+			}
+		}
+		col_fun2 = col_fun
+		map_fun = generate_map_fun(sort(at))
+		col_fun = function(x) {
+			x2 = sapply(x, map_fun)
+			col_fun2(x2)
+		}
+		y = c(0, interval_dist)
+		y = cumsum(y)/sum(y)
+
+		attr(col_fun, "breaks") = y
+		labels = at
+		if(at[1] <= at[n]) {
+			at = y
+		} else {
+			at = rev(y)
+		}
 	}
 
 	labels_rot = labels_rot %% 360

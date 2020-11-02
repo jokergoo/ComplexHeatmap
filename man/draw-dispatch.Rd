@@ -11,10 +11,10 @@ Method dispatch page for \code{draw}.
 
 \itemize{
 \item \code{\link{draw,AnnotationFunction-method}}, \code{\link{AnnotationFunction-class}} class method
-\item \code{\link{draw,Legends-method}}, \code{\link{Legends-class}} class method
-\item \code{\link{draw,HeatmapAnnotation-method}}, \code{\link{HeatmapAnnotation-class}} class method
-\item \code{\link{draw,SingleAnnotation-method}}, \code{\link{SingleAnnotation-class}} class method
 \item \code{\link{draw,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
+\item \code{\link{draw,Legends-method}}, \code{\link{Legends-class}} class method
+\item \code{\link{draw,SingleAnnotation-method}}, \code{\link{SingleAnnotation-class}} class method
+\item \code{\link{draw,HeatmapAnnotation-method}}, \code{\link{HeatmapAnnotation-class}} class method
 \item \code{\link{draw,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 }
