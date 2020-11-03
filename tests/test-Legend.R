@@ -255,7 +255,7 @@ draw(lgd, test = "unequal interval breaks with labels")
 
 
 col_fun = colorRamp2(c(0, 0.05, 0.1, 0.5, 1), c("green", "white", "red", "black", "blue"))
-lgd = Legend(col_fun = col_fun, title = "foo", interval_dist = 1:4)
+lgd = Legend(col_fun = col_fun, title = "foo", break_dist = 1:4)
 draw(lgd, test = "unequal interval breaks")
 
 

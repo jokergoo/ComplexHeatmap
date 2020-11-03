@@ -8,7 +8,7 @@ Make a Single Legend
 }
 \usage{
 Legend(at, labels = at, col_fun, name = NULL,
-    interval_dist = NULL, nrow = NULL, ncol = 1, by_row = FALSE,
+    break_dist = NULL, nrow = NULL, ncol = 1, by_row = FALSE,
     grid_height = unit(4, "mm"),
     grid_width = unit(4, "mm"),
     gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
@@ -28,7 +28,7 @@ Legend(at, labels = at, col_fun, name = NULL,
   \item{labels}{Labels corresponding to \code{at}. If it is not specified, the values of \code{at} are taken as labels.}
   \item{col_fun}{A color mapping function which is used to make a continuous legend. Use \code{\link[circlize]{colorRamp2}} to generate the color mapping function. If \code{at} is missing, the breaks recorded in the color mapping function are used for \code{at}.}
   \item{name}{Name of the legend, internally used.}
-  \item{interval_dist}{A zooming factor to control relative distance of two neighbouring break values.The length of it should be \code{length(at) - 1} or a scalar. }
+  \item{break_dist}{A zooming factor to control relative distance of two neighbouring break values.The length of it should be \code{length(at) - 1} or a scalar. }
   \item{nrow}{For legend which is represented as grids, \code{nrow} controls number of rows of the grids if the grids are arranged into multiple rows.}
   \item{ncol}{Similar as \code{nrow}, \code{ncol} controls number of columns of the grids if the grids are arranged into multiple columns. Note at a same time only one of \code{nrow} and \code{ncol} can be specified.}
   \item{by_row}{Are the legend grids arranged by rows or by columns?}

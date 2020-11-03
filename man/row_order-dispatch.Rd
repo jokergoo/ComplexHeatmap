@@ -10,8 +10,8 @@ Method dispatch page for \code{row_order}.
 \code{row_order} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{row_order,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 \item \code{\link{row_order,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
+\item \code{\link{row_order,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 }
 \examples{
