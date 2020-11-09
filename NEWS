@@ -6,6 +6,7 @@ CHANGES in VERSION 2.7.1
 * `Legend()`: for title_position == "lefttop", the title position is adjusted.
 * Legends are automatically adjusted according to the device size when resizing the device.
 * `Legend()`: add `interval_dist` to control the distance of two neighbouring breaks.
+* Fixed a bug that it crashes Rstudio
 
 ========================
 
