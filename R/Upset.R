@@ -1616,31 +1616,35 @@ upset_right_annotation = function(m,
 # Normalize a list of combination matrice
 #
 # == param
-# -... If it is a single argument, the value should be a list of combination matrices.
+# -... Combination matrices.
+# -full_comb_sets Whether the combination matrices contain the full sets of combination sets?
+# -complement_set Whether the combination matrices also contain the complement set?
 #
 # == details
 # It normalizes a list of combination matrice to make them have same number and order of sets and combination sets.
 #
 # The sets (by `set_name`) from all combination matrice should be the same.
 #
-normalize_comb_mat = function(...) {
+normalize_comb_mat = function(..., full_comb_sets = FALSE, complement_set = FALSE) {
+
 	lt = list(...)
+	input_is_comb_mat = FALSE
 	if(length(lt) == 1) {
-		if(!is.list(lt)) {
-			stop_wrap("If you only specify one argument, it must be a list of comb_mat objects.")
+		if(inherits(lt[[1]], "comb_mat")) {
+			input_is_comb_mat = TRUE
 		}
-		lt = lt[[1]]
+		if(is.list(lt[[1]])) {
+			lt = lt[[1]]
+		}
 	}
 
 	n = length(lt)
-	if(n == 1) {
-		stop_wrap("There should be at least two combination matrices.")
-	}
 
 	all_set_names = sort(unique(unlist(lapply(lt, set_name))))
 	if(any(sapply(lt, function(x) attr(x, "param")$set_on_rows) != attr(lt[[1]], "param")$set_on_rows)) {
 		stop_wrap("Combination sets should be all on rows or on columns.")
 	}
+	n_set = length(all_set_names)
 
 	lt = lapply(lt, function(m) {
 		if(attr(m, "param")$set_on_rows) {
@@ -1650,7 +1654,14 @@ normalize_comb_mat = function(...) {
 		}
 	})
 
-	all_comb_names = sort(unique(unlist(lapply(lt, comb_name))))
+	if(full_comb_sets) {
+		all_comb_names = full_comb_code(n_set)
+	} else {
+		all_comb_names = sort(unique(unlist(lapply(lt, comb_name))))
+	}
+	if(complement_set) {
+		all_comb_names = union(all_comb_names, strrep("0", n_set))
+	} 
 	lt = lapply(lt, function(m) {
 		if(attr(m, "param")$set_on_rows) {
 			m = m[, all_comb_names]
@@ -1659,7 +1670,11 @@ normalize_comb_mat = function(...) {
 		}
 		m[order.comb_mat(m)]
 	})
-	return(lt)
+	if(input_is_comb_mat) {
+		return(lt[[1]])
+	} else {
+		return(lt)
+	}
 }
 
 # == title

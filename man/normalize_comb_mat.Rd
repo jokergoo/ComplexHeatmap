@@ -7,11 +7,13 @@ Normalize a list of combination matrice
 Normalize a list of combination matrice
 }
 \usage{
-normalize_comb_mat(...)
+normalize_comb_mat(..., full_comb_sets = FALSE, complement_set = FALSE)
 }
 \arguments{
 
-  \item{...}{If it is a single argument, the value should be a list of combination matrices.}
+  \item{...}{Combination matrices.}
+  \item{full_comb_sets}{Whether the combination matrices contain the full sets of combination sets?}
+  \item{complement_set}{Whether the combination matrices also contain the complement set?}
 
 }
 \details{

@@ -159,10 +159,10 @@ setMethod(f = "make_layout",
     # if current viewport is top viewport
     current_vp = current.viewport()$name
     if(current_vp == "ROOT") {
-        object@layout$page_size = unit(dev.size("cm"), "cm")
+        page_size = unit(dev.size("cm"), "cm")
     } else {
         grid::upViewport()
-        object@layout$page_size = unit.c(convertWidth(unit(1, "npc"), "mm"),
+        page_size = unit.c(convertWidth(unit(1, "npc"), "mm"),
                                          convertHeight(unit(1, "npc"), "mm"))
         grid::downViewport(current_vp)
 
@@ -816,6 +816,14 @@ setMethod(f = "make_layout",
     
     ############################################
     ## title on top or bottom
+    if(!is.null(ht_opt$TITLE_PADDING)) {
+        title_padding = ht_opt$TITLE_PADDING
+    } else {
+        title_padding = unit(c(0, 0), "points")
+        title_padding[1] = title_padding[1] + unit(5.5, "points") + 
+            convertHeight(grobDescent(textGrob(label = "jA", gp = column_title_gp)), "inches")
+    }
+
     column_title_side = match.arg(column_title_side)[1]
     if(length(column_title) == 0) {
         column_title = character(0)
@@ -831,10 +839,10 @@ setMethod(f = "make_layout",
     object@column_title_param$side = column_title_side
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
-            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(ht_opt$TITLE_PADDING)
+            object@layout$layout_column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_top = heatmap_list_layout_index("column_title_top"))
         } else {
-            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(ht_opt$TITLE_PADDING)
+            object@layout$layout_column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_bottom = heatmap_list_layout_index("column_title_bottom"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "column"))
@@ -842,6 +850,14 @@ setMethod(f = "make_layout",
 
     ############################################
     ## title on left or right
+    if(!is.null(ht_opt$TITLE_PADDING)) {
+        title_padding = ht_opt$TITLE_PADDING
+    } else {
+        title_padding = unit(c(0, 0), "points")
+        title_padding[1] = title_padding[1] + unit(5.5, "points") + 
+            convertHeight(grobDescent(textGrob(label = "jA", gp = row_title_gp)), "inches")
+    }
+
     row_title_side = match.arg(row_title_side)[1]
     if(length(row_title) == 0) {
         row_title = character(0)
@@ -857,10 +873,10 @@ setMethod(f = "make_layout",
     object@row_title_param$side = row_title_side
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
-            object@layout$layout_row_title_left_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + sum(ht_opt$TITLE_PADDING)
+            object@layout$layout_row_title_left_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, row_title_left = heatmap_list_layout_index("row_title_left"))
         } else {
-            object@layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + sum(ht_opt$TITLE_PADDING)
+            object@layout$layout_row_title_right_width = grobHeight(textGrob(row_title, gp = row_title_gp)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, row_title_right = heatmap_list_layout_index("row_title_right"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_title(object, which = "row"))
@@ -969,33 +985,33 @@ setMethod(f = "make_layout",
     if(show_heatmap_legend) {
         if(heatmap_legend_side == "top") {
             object@heatmap_legend_param$padding = unit.c(ht_opt$HEATMAP_LEGEND_PADDING, unit(c(0, 0, 0), "mm")) #unit(c(2, 0, 0, 0), "mm")
-            size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object))
+            size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object, page_size))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, heatmap_legend_top = heatmap_list_layout_index("heatmap_legend_top"))
         } else if(heatmap_legend_side == "bottom") {
             object@heatmap_legend_param$padding = unit.c(unit(c(0, 0), "mm"), ht_opt$HEATMAP_LEGEND_PADDING, unit(0, "mm")) # unit(c(0, 0, 2, 0), "mm")
-            size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object))
+            size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object, page_size))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, heatmap_legend_bottom = heatmap_list_layout_index("heatmap_legend_bottom"))
         } else if(heatmap_legend_side == "left") {
             object@heatmap_legend_param$padding = unit.c(unit(c(0, 0, 0), "mm"), ht_opt$HEATMAP_LEGEND_PADDING) # unit(c(0, 0, 0, 2), "mm")
-            size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object))
+            size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object, page_size))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, heatmap_legend_left = heatmap_list_layout_index("heatmap_legend_left"))
         } else if(heatmap_legend_side == "right") {
             object@heatmap_legend_param$padding = unit.c(unit(0, "mm"), ht_opt$HEATMAP_LEGEND_PADDING, unit(c(0, 0), "mm")) # unit(c(0, 2, 0, 0), "mm")
-            size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object))
+            size = heatmap_legend_size(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object, page_size))
             object@heatmap_legend_param$size = size
             object@layout$layout_heatmap_legend_right_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, heatmap_legend_right = heatmap_list_layout_index("heatmap_legend_right"))
         }
         if(heatmap_legend_side %in% c("top", "bottom")) {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object)))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object, legend_list = heatmap_legend_list, max_width = calc_legends_max_width(object, page_size)))
         } else {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object)))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_heatmap_legend(object, legend_list = heatmap_legend_list, max_height = calc_legends_max_height(object, page_size)))
         }
     } else {
         object@heatmap_legend_param$size = unit(c(0, 0), "mm")
@@ -1068,33 +1084,33 @@ setMethod(f = "make_layout",
     if(show_annotation_legend) {
         if(annotation_legend_side == "top") {
             object@annotation_legend_param$padding = unit.c(ht_opt$ANNOTATION_LEGEND_PADDING, unit(c(0, 0, 0), "mm")) # unit(c(2, 0, 0, 0), "mm")
-            size = annotation_legend_size(object, legend_list = annotation_legend_list, max_width = calc_legends_max_width(object))
+            size = annotation_legend_size(object, legend_list = annotation_legend_list, max_width = calc_legends_max_width(object, page_size))
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_top_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, annotation_legend_top = heatmap_list_layout_index("annotation_legend_top"))
         } else if(annotation_legend_side == "bottom") {
             object@annotation_legend_param$padding = unit.c(unit(c(0, 0), "mm"), ht_opt$ANNOTATION_LEGEND_PADDING, unit(0, "mm")) # unit(c(0, 0, 2, 0), "mm")
-            size = annotation_legend_size(object, legend_list = annotation_legend_list, max_width = calc_legends_max_width(object))
+            size = annotation_legend_size(object, legend_list = annotation_legend_list, max_width = calc_legends_max_width(object, page_size))
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_bottom_height = size[2]
             object@layout$layout_index = rbind(object@layout$layout_index, annotation_legend_bottom = heatmap_list_layout_index("annotation_legend_bottom"))
         } else if(annotation_legend_side == "left") {
             object@annotation_legend_param$padding = unit.c(unit(c(0, 0, 0), "mm"), ht_opt$ANNOTATION_LEGEND_PADDING) # unit(c(0, 0, 0, 2), "mm")
-            size = annotation_legend_size(object, legend_list = annotation_legend_list, max_height = calc_legends_max_height(object))
+            size = annotation_legend_size(object, legend_list = annotation_legend_list, max_height = calc_legends_max_height(object, page_size))
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_left_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, annotation_legend_left = heatmap_list_layout_index("annotation_legend_left"))
         } else if(annotation_legend_side == "right") {
             object@annotation_legend_param$padding = unit.c(unit(0, "mm"), ht_opt$ANNOTATION_LEGEND_PADDING, unit(c(0, 0), "mm")) # unit(c(0, 2, 0, 0), "mm")
-            size = annotation_legend_size(object, legend_list = annotation_legend_list, max_height = calc_legends_max_height(object))
+            size = annotation_legend_size(object, legend_list = annotation_legend_list, max_height = calc_legends_max_height(object, page_size))
             object@annotation_legend_param$size = size
             object@layout$layout_annotation_legend_right_width = size[1]
             object@layout$layout_index = rbind(object@layout$layout_index, annotation_legend_right = heatmap_list_layout_index("annotation_legend_right"))
         }
         if(annotation_legend_side %in% c("top", "bottom")) {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object, legend_list = annotation_legend_list, max_width = calc_legends_max_width(object)))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object, legend_list = annotation_legend_list, max_width = calc_legends_max_width(object, page_size)))
         } else {
-            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object, legend_list = annotation_legend_list, max_height = calc_legends_max_height(object)))
+            object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) draw_annotation_legend(object, legend_list = annotation_legend_list, max_height = calc_legends_max_height(object, page_size)))
         }
     } else {
         object@annotation_legend_param$size = unit(c(0, 0), "null")
@@ -1150,15 +1166,15 @@ setMethod(f = "make_layout",
     return(object)
 })
 
-calc_legends_max_height = function(object) {
-    gh = object@layout$page_size[2]
+calc_legends_max_height = function(object, page_size) {
+    gh = page_size[2]
     h = gh - object@layout$layout_column_title_top_height - object@layout$layout_column_title_bottom_height -
              object@ht_list_param$padding[1] - object@ht_list_param$padding[3]
     convertHeight(h, "mm")
 }
 
-calc_legends_max_width = function(object) {
-    gh = object@layout$page_size[1]
+calc_legends_max_width = function(object, page_size) {
+    gh = page_size[1]
     h = gh - object@layout$layout_row_title_right_width - object@layout$layout_row_title_left_width -
              object@ht_list_param$padding[2] - object@ht_list_param$padding[4]
     convertWidth(h, "mm")

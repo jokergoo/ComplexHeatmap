@@ -1,3 +1,15 @@
+CHANGES in VERSION 2.6.1
+
+* `normalize_comb_mat()`: add `full_comb_sets` and `complement_set` arguments to control
+  full sets of combination sets.
+* adjust the space of column title according to ggplot2.
+* `Legend()`: for title_position == "lefttop", the title position is adjusted.
+* Legends are automatically adjusted according to the device size when resizing the device.
+* `Legend()`: add `interval_dist` to control the distance of two neighbouring breaks.
+* Fixed a bug that it crashes Rstudio
+
+========================
+
 CHANGES in VERSION 2.5.6
 
 * `ht_shiny()`: add argument `app`.
