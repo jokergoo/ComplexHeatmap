@@ -567,7 +567,7 @@ setMethod(f = "draw",
         raster_resize = raster_resize
     )
 
-    grDevices::recordGraphics({
+    code = expression({
 
         current_vp = current.viewport()$name
         if(current_vp == "ROOT") {
@@ -857,7 +857,13 @@ setMethod(f = "draw",
                 }
             }
         }
-    }, list(),  as.environment(-1))
+    })
+
+    if(is_RStudio_current_dev()) {
+        eval(code)
+    } else {
+        grDevices::recordGraphics(eval(code), list(),  as.environment(-1))
+    }
 
     return(invisible(object))
 })
