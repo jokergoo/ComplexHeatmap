@@ -14,7 +14,6 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 				FALSE
 			}
 		})
-		x = as.matrix(x)
 	} else if(is.matrix(x)) {
 		lc = apply(x, 2, function(x) {
 			if(is.numeric(x)) {
@@ -37,7 +36,7 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 		stop_wrap("The matrix or the data frame must have column names.")
 	}
 
-	x = x + 0
+	x = as.matrix(x) + 0
 	if(any(is.na(x))) {
 		warning_wrap("The matrix contains NA values. Convert to 0/FALSE.")
 		x[is.na(x)] = 0
