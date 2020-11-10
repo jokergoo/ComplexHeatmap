@@ -159,7 +159,7 @@ setMethod(f = "make_layout",
     # if current viewport is top viewport
     current_vp = current.viewport()$name
     if(current_vp == "ROOT") {
-        page_size = unit(dev.size("cm"), "cm")
+        page_size = unit(par("din"), "in")
     } else {
         grid::upViewport()
         page_size = unit.c(convertWidth(unit(1, "npc"), "mm"),

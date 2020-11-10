@@ -1097,14 +1097,14 @@ is_RStudio_current_dev = function() {
 }
 
 
-dev.size = function(units = "in") {
-    ds = par("din")
+# dev.size = function(units = "in") {
+#     ds = par("din")
 
-    if(units == "cm") {
-        ds = ds*2.54
-    } else if(units == "px") {
-        stop("px is not supported.")
-    }
+#     if(units == "cm") {
+#         ds = ds*2.54
+#     } else if(units == "px") {
+#         stop("px is not supported.")
+#     }
 
-    ds
-}
+#     ds
+# }
