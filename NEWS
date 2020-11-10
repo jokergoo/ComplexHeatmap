@@ -7,6 +7,7 @@ CHANGES in VERSION 2.7.1
 * Legends are automatically adjusted according to the device size when resizing the device.
 * `Legend()`: add `interval_dist` to control the distance of two neighbouring breaks.
 * Fixed a bug that it crashes Rstudio
+* `make_comb_mat()`: print warning messages when there are NA values in the matrix.
 
 ========================
 
