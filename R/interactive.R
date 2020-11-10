@@ -584,9 +584,9 @@ ht_shiny = function(ht_list, app = NULL) {
 	
 	if(is.null(app)) {
 		if(identical(topenv(), .GlobalEnv)) {
-			path = "~/project/ComplexHeatmap/inst/app/app.R"
+			app = "~/project/ComplexHeatmap/inst/app/app.R"
 		} else {
-			path = system.file("app", "app.R", package = "ComplexHeatmap")
+			app = system.file("app", "app.R", package = "ComplexHeatmap")
 		}
 	}
 	source(app, local = TRUE)

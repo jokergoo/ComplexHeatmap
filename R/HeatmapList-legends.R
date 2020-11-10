@@ -860,7 +860,7 @@ setMethod(f = "annotation_legend_size",
 # create a viewport which contains legend
 draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right", "left", "top", "bottom"), 
     plot = TRUE, gap = unit(4, "mm"), legend_list = list(), padding = unit(c(0, 0, 0, 0), "mm"), 
-    max_height = unit(dev.size("cm")[2], "cm"), max_width = unit(dev.size("cm")[1], "cm"), ...) {
+    max_height = unit(par("din")[2], "in"), max_width = unit(par("din")[1], "in"), ...) {
 
     side = match.arg(side)[1]
     # remove legends which are duplicated by testing the names

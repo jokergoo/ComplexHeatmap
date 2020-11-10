@@ -24,6 +24,8 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 				FALSE
 			}
 		})
+	} else {
+		stop_wrap("The input should be a matrix or in a format that can be converted to a matrix.")
 	}
 	if(sum(lc) < 1) {
 		stop_wrap("Can not find columns which are logical or only contain 0 or 1.")
@@ -35,6 +37,10 @@ make_comb_mat_from_matrix = function(x, mode, top_n_sets = Inf, min_set_size = -
 	}
 
 	x = as.matrix(x) + 0
+	if(any(is.na(x))) {
+		warning_wrap("The matrix contains NA values. Convert to 0/FALSE.")
+		x[is.na(x)] = 0
+	}
 
 	if(is.null(rownames(x))) {
 		x_has_rownames = FALSE
