@@ -8,6 +8,7 @@ CHANGES in VERSION 2.7.1
 * `Legend()`: add `interval_dist` to control the distance of two neighbouring breaks.
 * Fixed a bug that it crashes Rstudio
 * `make_comb_mat()`: print warning messages when there are NA values in the matrix.
+* temporary solution for woking under retina display with Rstudio
 
 ========================
 

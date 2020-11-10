@@ -613,7 +613,11 @@ setMethod(f = "draw_annotation",
                 anno_mark_param$.pos = .pos
                 anno_mark_param$index = unlist(ro_lt)
                 
-                anno_mark_param$vp_height = convertHeight(unit(1, "npc"), "cm")
+                if(abs(par("din")[2] - grDevices::dev.size("in")[2]) < 1e-6) {
+                    anno_mark_param$vp_height = convertHeight(unit(1, "npc"), "cm")  
+                } else {
+                    anno_mark_param$vp_height = convertHeight(unit(1, "npc"), "cm")*(par("din")[2]/grDevices::dev.size("in")[2])*0.9742
+                }
                 anno_mark_param$vp_width = unit(1, "npc")
                 anno_mark_param$vp_just = "top"
                 anno_mark_param$vp_x = unit(0.5, "npc")
@@ -644,7 +648,11 @@ setMethod(f = "draw_annotation",
                 anno_mark_param$index = unlist(co_lt)
                 
                 anno_mark_param$vp_height = unit(1, "npc")
-                anno_mark_param$vp_width = convertWidth(unit(1, "npc"), "cm")
+                if(abs(par("din")[1] - grDevices::dev.size("in")[1]) < 1e-6) {
+                    anno_mark_param$vp_width = convertWidth(unit(1, "npc"), "cm")
+                } else {
+                    anno_mark_param$vp_width = convertWidth(unit(1, "npc"), "cm")*(par("din")[1]/grDevices::dev.size("in")[1])*0.945
+                }
                 anno_mark_param$vp_just = "left"
                 anno_mark_param$vp_x = unit(0, "npc")
                 anno_mark_param$vp_y = unit(0.5, "npc")
