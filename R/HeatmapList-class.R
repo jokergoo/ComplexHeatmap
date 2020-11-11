@@ -862,7 +862,7 @@ setMethod(f = "draw",
     if(is_RStudio_current_dev() || dev.interactive()) {
         eval(code)
     } else {
-        grDevices::recordGraphics(eval(code), list(),  as.environment(-1))
+        grDevices::recordGraphics(eval(code), list(), as.environment(-1))
     }
 
     return(invisible(object))
