@@ -859,7 +859,7 @@ setMethod(f = "draw",
         }
     })
     
-    if(is_RStudio_current_dev() || dev.interactive()) {
+    if(is_RStudio_current_dev() || (!dev.interactive())) {
         eval(code)
     } else {
         grDevices::recordGraphics(eval(code), list(), as.environment(-1))
