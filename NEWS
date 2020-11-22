@@ -9,6 +9,7 @@ CHANGES in VERSION 2.7.1
 * Fixed a bug that it crashes Rstudio
 * `make_comb_mat()`: print warning messages when there are NA values in the matrix.
 * temporary solution for woking under retina display with Rstudio
+* add `bin_genome()` and `normalize_genomic_signals_to_bins()`
 
 ========================
 

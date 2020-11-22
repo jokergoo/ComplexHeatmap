@@ -833,6 +833,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 		}
 	}
 
+	labels = as.character(labels)
 	labels_rot = labels_rot %% 360
 
 	n_labels = length(labels)
@@ -876,12 +877,12 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	}
 	# adjust the text position
 	labels_width = do.call("unit.c", lapply(labels, 
-		function(x) grobWidth(textGrob(x, gp = labels_gp, rot = labels_rot)) + unit(2, "mm")))
+		function(x) grobWidth(textGrob(x, gp = labels_gp, rot = labels_rot)) + unit(1, "mm")))
 	x_right = labels_x + labels_width*0.5
 	x_left = labels_x - labels_width*0.5
 	x_right = convertX(x_right, "mm", valueOnly = TRUE)
 	x_left = convertX(x_left, "mm", valueOnly = TRUE)
-	
+
 	# adjust to the left extension, caused by e.g. title
 	ext = max(legend_extension, labels_width[1]*0.5 - offset)
 	xrange = convertX(unit.c(-ext,

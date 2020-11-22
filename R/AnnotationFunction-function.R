@@ -2804,6 +2804,8 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		stop_wrap(paste0("`at` should be numeric ", which, " index corresponding to the matrix."))
 	}
 	
+	if(is.logical(at)) at = which(at)
+
 	n = length(at)
 	if(n < 1) {
 		stop_wrap("Length of `at` should be positive.")
