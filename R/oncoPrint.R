@@ -392,6 +392,28 @@ oncoPrint = function(mat,
 	} else {
 		rn_ha = NULL
 	}
+
+	
+	if(!is.null(top_annotation)) {
+		if(inherits(top_annotation, "AnnotationFunction")) {
+	        stop_wrap("The annotation function `anno_*()` should be put inside `HeatmapAnnotation()`.")
+	    }
+	}
+	if(!is.null(bottom_annotation)) {
+	    if(inherits(bottom_annotation, "AnnotationFunction")) {
+	        stop_wrap("The annotation function `anno_*()` should be put inside `HeatmapAnnotation()`.")
+	    }
+	}
+	if(!is.null(left_annotation)) {
+		if(inherits(left_annotation, "AnnotationFunction")) {
+	        stop_wrap("The annotation function `anno_*()` should be put inside `rowAnnotation()`.")
+	    }
+	}
+	if(!is.null(right_annotation)) {
+	    if(inherits(right_annotation, "AnnotationFunction")) {
+	        stop_wrap("The annotation function `anno_*()` should be put inside `rowAnnotation()`.")
+	    }
+	}
 	
 	if(is.null(left_annotation)) {
 		if(pct_side == "left") {

@@ -766,6 +766,9 @@ Heatmap = function(matrix, col, name,
     if(is.null(top_annotation)) {
         .Object@top_annotation_param$height = unit(0, "mm")    
     } else {
+        if(inherits(top_annotation, "AnnotationFunction")) {
+            stop_wrap("The annotation function `anno_*()` should be put inside `HeatmapAnnotation()`.")
+        }
         .Object@top_annotation_param$height = height(top_annotation) + ht_opt$COLUMN_ANNO_PADDING  # append the gap
     }
     if(!is.null(top_annotation)) {
@@ -786,6 +789,9 @@ Heatmap = function(matrix, col, name,
     if(is.null(bottom_annotation)) {
         .Object@bottom_annotation_param$height = unit(0, "mm")
     } else {
+        if(inherits(bottom_annotation, "AnnotationFunction")) {
+            stop_wrap("The annotation function `anno_*()` should be put inside `HeatmapAnnotation()`.")
+        }
         .Object@bottom_annotation_param$height = height(bottom_annotation) + ht_opt$COLUMN_ANNO_PADDING  # append the gap
     }
     if(!is.null(bottom_annotation)) {
@@ -806,6 +812,9 @@ Heatmap = function(matrix, col, name,
     if(is.null(left_annotation)) {
         .Object@left_annotation_param$width = unit(0, "mm")
     } else {
+        if(inherits(left_annotation, "AnnotationFunction")) {
+            stop_wrap("The annotation function `anno_*()` should be put inside `rowAnnotation()`.")
+        }
         .Object@left_annotation_param$width = width(left_annotation) + ht_opt$ROW_ANNO_PADDING  # append the gap
     }
     if(!is.null(left_annotation)) {
@@ -826,6 +835,9 @@ Heatmap = function(matrix, col, name,
     if(is.null(right_annotation)) {
         .Object@right_annotation_param$width = unit(0, "mm")
     } else {
+        if(inherits(right_annotation, "AnnotationFunction")) {
+            stop_wrap("The annotation function `anno_*()` should be put inside `rowAnnotation()`.")
+        }
         .Object@right_annotation_param$width = width(right_annotation) + ht_opt$ROW_ANNO_PADDING  # append the gap
     }
     if(!is.null(right_annotation)) {
