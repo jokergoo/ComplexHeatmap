@@ -227,7 +227,7 @@ selectArea = function(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = 
 		} else {
 			if(verbose) cat("overlap\n")
 
-			df = rbind(df, DataFrame(heatmap = ht_name, 
+			df = rbind(df, S4Vectors::DataFrame(heatmap = ht_name, 
 					           slice = slice_name, 
 					           row_slice = i_slice,
 				               column_slice = j_slice,
@@ -399,7 +399,7 @@ selectPosition = function(ht_list, pos = NULL, mark = TRUE, verbose = TRUE,
 		} else {
 			if(verbose) cat("overlap\n")
 
-			df = DataFrame(heatmap = ht_name, 
+			df = S4Vectors::DataFrame(heatmap = ht_name, 
 				           slice = slice_name, 
 				           row_slice = i_slice,
 				           column_slice = j_slice,
@@ -476,7 +476,7 @@ ht_pos_on_device = function(ht_list, unit = "inch", valueOnly = FALSE) {
 					vp_max_x = convertX(loc[[1]], unit)
 					vp_max_y = convertY(loc[[2]], unit)
 					
-					df = rbind(df, DataFrame(heatmap = ht_name,
+					df = rbind(df, S4Vectors::DataFrame(heatmap = ht_name,
 						                     slice = vp_name,
 						                     row_slice = i,
 						                     column_slice = j,
