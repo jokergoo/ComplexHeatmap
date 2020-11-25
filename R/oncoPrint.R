@@ -172,7 +172,12 @@ oncoPrint = function(mat,
 	message_wrap(paste0("All mutation types: ", paste(all_type, collapse = ", "), "."))
 
 	# type as the third dimension
-	arr = array(FALSE, dim = c(dim(mat_list[[1]]), length(all_type)), dimnames = c(dimnames(mat_list[[1]]), list(all_type)))
+	if(is.null(dimnames(mat_list[[1]]))) {
+		dimnames = c(list(NULL), list(NULL), list(all_type))
+	} else {
+		dimnames = c(dimnames(mat_list[[1]]), list(all_type))
+	}
+	arr = array(FALSE, dim = c(dim(mat_list[[1]]), length(all_type)), dimnames = dimnames)
 	for(i in seq_along(all_type)) {
 		arr[, , i] = mat_list[[i]]
 	}
