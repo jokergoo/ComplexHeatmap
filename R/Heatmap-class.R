@@ -539,6 +539,13 @@ Heatmap = function(matrix, col, name,
             }
             if(verbose) qqcat("color is not specified, use randomly generated colors\n")
         }
+        if(is.null(col)) {
+            col = default_col(matrix, main_matrix = TRUE)
+            if(!is.null(fa_level)) {
+                col = col[fa_level]
+            }
+            if(verbose) qqcat("color is not specified, use randomly generated colors\n")
+        }
         if(is.function(col)) {
             .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
             if(verbose) qqcat("input color is a color mapping function\n")
