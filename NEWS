@@ -11,6 +11,7 @@ CHANGES in VERSION 2.7.1
 * temporary solution for woking under retina display with Rstudio
 * add `bin_genome()` and `normalize_genomic_signals_to_bins()`
 * print messages if directly sending `anno_*()` functions to `top_annotation` or similar arguments.
+* `pheatmap()`: set heatmap name to " " so that there is no legend title by default.
 
 ========================
 

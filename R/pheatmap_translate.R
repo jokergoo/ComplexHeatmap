@@ -114,7 +114,10 @@ pheatmap = function(mat,
     height = NA,
     silent = FALSE, 
     na_col = "#DDDDDD", 
-    name = "Matrix",
+    name = " ",
+
+    # argument specific for Heatmap()
+    heatmap_legend_param = list(),
     ...
 ) {
 
@@ -193,7 +196,7 @@ pheatmap = function(mat,
     }
 
     if(!identical(kmeans_k, NA)) {
-        warning_wrap("argument `kmeans_k` is not supported in pheatmap -> Heatmap translation, skip it.")
+        warning_wrap("argument `kmeans_k` is not supported in pheatmap -> Heatmap translation, skip it. You might check `row_km` and `column_km` arguments in Heatmap().")
     }
     
     if(!identical(filename, NA)) {
@@ -251,7 +254,7 @@ pheatmap = function(mat,
     ht_param$column_dend_height = unit(treeheight_col, "pt")
 
     ht_param$show_heatmap_legend = legend
-    heatmap_legend_param = list()
+
     if(identical(scale, "row") || identical(scale, "column")) {
         if(identical(legend_breaks, NA)) {
             lim = quantile(abs(mat), 0.975)
@@ -441,7 +444,9 @@ pheatmap = function(mat,
         ht_param$column_title_gp = gpar(fontface = "bold", fontsize = 1.3*fontsize)
     }
     ht_param = c(ht_param, list(...))
-    do.call(Heatmap, ht_param)
+    ht = do.call(Heatmap, ht_param)
+    attr(ht, "pheatmap") = TRUE
+    ht
 }
 
 # == title

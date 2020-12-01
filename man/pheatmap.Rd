@@ -56,7 +56,10 @@ pheatmap(mat,
     height = NA,
     silent = FALSE,
     na_col = "#DDDDDD",
-    name = "Matrix",
+    name = " ",
+    
+    # argument specific for Heatmap()
+    heatmap_legend_param = list(),
     ...)
 }
 \arguments{

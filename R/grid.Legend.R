@@ -198,6 +198,7 @@ Legend = function(at, labels = at, col_fun, name = NULL,
 		return(object)
 	}
 	if(!inherits(title, c("expression", "call"))) {
+		if(grepl("^\\s+$", title)) title = ""
 		if(title == "") {
 			object = new("Legends")
 			object@grob = legend_body
