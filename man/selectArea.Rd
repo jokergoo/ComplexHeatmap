@@ -8,7 +8,7 @@ Select an area in the heatmap
 }
 \usage{
 selectArea(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = TRUE,
-    ht_pos = NULL)
+    ht_pos = NULL, include_annotation = FALSE, calibrate = TRUE)
 }
 \arguments{
 
@@ -18,6 +18,8 @@ selectArea(ht_list, pos1 = NULL, pos2 = NULL, mark = TRUE, verbose = TRUE,
   \item{pos2}{Another point as \code{pos1}, together with \code{pos1} defines the selected region.}
   \item{verbose}{Whether to print messages.}
   \item{ht_pos}{A value returned by \code{\link{ht_pos_on_device}}.}
+  \item{include_annotation}{Internally used.}
+  \item{calibrate}{Internally used.}
 
 }
 \details{

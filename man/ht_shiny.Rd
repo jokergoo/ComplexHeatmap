@@ -7,12 +7,15 @@ Interactive heatmaps with a shiny app
 Interactive heatmaps with a shiny app
 }
 \usage{
-ht_shiny(ht_list, app = NULL)
+ht_shiny(ht_list, app = NULL, brush_fill = "#9cf", brush_stroke = "#036", brush_opacity = 0.25)
 }
 \arguments{
 
   \item{ht_list}{A \code{\link{Heatmap-class}} or a \code{\link{HeatmapList-class}} object. If it is not specified, a random heatmap is used.}
   \item{app}{Path of app.R.}
+  \item{brush_fill}{Filled color for the brush.}
+  \item{brush_stroke}{Border color for the brush.}
+  \item{brush_opacity}{Tranparency for the brush.}
 
 }
 \seealso{

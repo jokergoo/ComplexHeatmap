@@ -114,6 +114,7 @@ pheatmap(mat,
   \item{silent}{Not supported.}
   \item{na_col}{The same as in \code{\link[pheatmap]{pheatmap}}.}
   \item{name}{Name of the heatmap. This argument is passed to \code{\link{Heatmap}}.}
+  \item{heatmap_legend_param}{Pass to \code{\link{Heatmap}}.}
   \item{...}{Other arguments passed to \code{\link{Heatmap}}.}
 
 }

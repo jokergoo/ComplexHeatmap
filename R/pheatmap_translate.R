@@ -55,6 +55,7 @@
 # -silent Not supported.
 # -na_col The same as in `pheatmap::pheatmap`.
 # -name Name of the heatmap. This argument is passed to `Heatmap`.
+# -heatmap_legend_param  Pass to `Heatmap`.
 # -... Other arguments passed to `Heatmap`.
 #
 # == details
@@ -216,6 +217,12 @@ pheatmap = function(mat,
     }
 
     ht_param$rect_gp = gpar(col = border_color)
+
+    if(nrow(mat) > 1000 || ncol(mat) > 1000) {
+        if(!is.na(border_color)) {
+            warning_wrap("border color is set for the matrix with large numbers of rows or columns. You might only be able to see the border colors in the plot. Set `border_color = NA` to get rid of it.")
+        }
+    }
 
     if(!identical(cellwidth, NA)) {
         ht_param$width = ncol(mat)*unit(cellwidth, "pt")

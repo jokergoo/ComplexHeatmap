@@ -8,7 +8,7 @@ Select a position in the heatmap
 }
 \usage{
 selectPosition(ht_list, pos = NULL, mark = TRUE, verbose = TRUE,
-    ht_pos = NULL)
+    ht_pos = NULL, calibrate = TRUE)
 }
 \arguments{
 
@@ -17,6 +17,7 @@ selectPosition(ht_list, pos = NULL, mark = TRUE, verbose = TRUE,
   \item{pos}{If the value is \code{NULL}, it can be selected by click on the heatmap (of cource, the heatmap should be on the interactive graphic device). If it is set, it must be a \code{\link[grid]{unit}} object with length two which corresponds to the x and y position of the point.}
   \item{verbose}{Whether to print messages.}
   \item{ht_pos}{A value returned by \code{\link{ht_pos_on_device}}.}
+  \item{calibrate}{Internally used.}
 
 }
 \value{

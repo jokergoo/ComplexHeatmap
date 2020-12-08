@@ -51,11 +51,11 @@ ui = fluidPage(
 		tags$style(paste(readLines(system.file("app", "jquery-ui.css", package = "ComplexHeatmap")), collapse = "\n")),
 		tags$style(
 "
-#heatmap_wrap, #sub_heatmap_wrap {
+#heatmap_wrap_div, #sub_heatmap_wrap_div {
 	float:left;
 	margin-bottom: 10px;
 }
-#heatmap_wrap {
+#heatmap_wrap_div {
 	margin-right: 10px;
 }
 #heatmap, #sub_heatmap {
@@ -63,26 +63,53 @@ ui = fluidPage(
     margin: auto;
     margin: auto;
 }
+.checkbox {
+	padding:2px 0px;
+	margin:0px
+}
+.form-group {
+	padding: 0px;
+	margin: 0px;
+}
 ")
 	),
 
 	titlePanel("ComplexHeatmap Shiny App"),
 
-	p("You can click or select an area from the heatmap. The original heatmap and the selected sub-heatmap can be resized by dragging from the bottom right. If the heatmap is too huge or you resize the heatmap too frequently, the heatmap might not be correctly updated. You can just need to slightly resize the heatmap again and wait for several seconds."),
+	p("You can click a position or select an area from the heatmap(s). The original heatmap and the selected sub-heatmap can be resized by dragging from the bottom right. If the heatmap is too huge or you resize the heatmap too frequently, the heatmap might not be correctly updated. You can just need to slightly resize the heatmap again and wait for several seconds."),
 	hr(),
 
 	div(
-		plotOutput("heatmap", height = 346, width = 396,
-			        brush = "heatmap_brush",
-			        click = "heatmap_click"
+		h5("Original heatmap"),
+		div(
+			plotOutput("heatmap", height = 346, width = 396,
+				        brush = brushOpts(id = "heatmap_brush", fill = brush_fill, stroke = brush_stroke, opacity = brush_opacity),
+				        click = "heatmap_click"
+			),
+			style = "width:400px;height:350px;position:relative;border:1px solid grey;",
+			id = "heatmap_wrap"
 		),
-		style = "width:400px;height:350px;position:relative;border:1px solid grey;",
-		id = "heatmap_wrap"
+		id = "heatmap_wrap_div"
 	),
 	div(
-		plotOutput("sub_heatmap", height = 296, width = 296),
-		style = "width:300px;height:300px;position:relative;;border:1px solid grey;",
-		id = "sub_heatmap_wrap"
+		h5("Selected sub-heatmap"),
+		div(
+			plotOutput("sub_heatmap", height = 346, width = 366),
+			style = "width:370px;height:350px;position:relative;;border:1px solid grey;",
+			id = "sub_heatmap_wrap"
+		),
+		div(
+			div(
+				div(checkboxInput("show_row_names_checkbox", label = "Show row names", value = TRUE), style="float:left;width:170px"),
+				div(checkboxInput("show_column_names_checkbox", label = "Show column names", value = TRUE), style="float:left;width:170px"),
+				div(style = "clear: both;")
+			),
+			div(
+				checkboxInput("show_annotation_checkbox", label = "Show heatmap annotations", value = TRUE),
+				checkboxInput("show_cell_fun_checkbox", label = "Show cell decorations", value = FALSE)
+			)
+		),
+		id = "sub_heatmap_wrap_div"
 	),
 	div(style = "clear: both;"),
 	htmlOutput("click_info")
@@ -99,7 +126,7 @@ server = function(input, output, session) {
     	showNotification("Making the original heatmap.", duration = 1, type = "message")
 
 		shiny_env$ht_list = draw(ht_list)
-		shiny_env$ht_pos = ht_pos_on_device(shiny_env$ht_list)
+		shiny_env$ht_pos = ht_pos_on_device(shiny_env$ht_list, include_annotation = TRUE, calibrate = FALSE)
 		
 		message(qq("[@{Sys.time()}] make the original heatmap and calculate positions (device size: @{width}x@{height} px)."))
 	})
@@ -119,6 +146,11 @@ server = function(input, output, session) {
 			width = session$clientData$output_sub_heatmap_width
     		height = session$clientData$output_sub_heatmap_height
 
+    		show_row_names = input$show_row_names_checkbox
+    		show_column_names = input$show_column_names_checkbox
+    		show_annotation = input$show_annotation_checkbox
+    		show_cell_fun = input$show_cell_fun_checkbox
+
     		if(is.null(input$heatmap_brush)) {
     			grid.newpage()
 				grid.text("No area on the heatmap is selected.", 0.5, 0.5)
@@ -131,7 +163,7 @@ server = function(input, output, session) {
 			  	pos2 = lt[[2]]
 			    
 			    ht_list = shiny_env$ht_list
-			    selected = selectArea(ht_list, mark = FALSE, pos1 = pos1, pos2 = pos2, verbose = FALSE, ht_pos = shiny_env$ht_pos)
+			    selected = selectArea(ht_list, mark = FALSE, pos1 = pos1, pos2 = pos2, verbose = FALSE, ht_pos = shiny_env$ht_pos, include_annotation = TRUE, calibrate = FALSE)
 			    shiny_env$selected = selected
 
 			    if(is.null(selected)) {
@@ -143,31 +175,153 @@ server = function(input, output, session) {
 
 			    	ht_select = NULL
 		    		for(ht_name in all_ht_name) {
-		    			selected_current = selected[selected$heatmap == ht_name, ]
-		    			l1 = !duplicated(selected_current$row_slice)
-		    			rlt = selected_current$row_index[l1]
-		    			l2 = !duplicated(selected_current$column_slice)
-		    			clt = selected_current$column_index[l2]
+		    			ht_current_full = ht_list@ht_list[[ht_name]]
 
-		    			ri = unlist(rlt)
-		    			ci = unlist(clt)
-		    			rs = rep(seq_along(rlt), times = sapply(rlt, length))
-						cs = rep(seq_along(clt), times = sapply(clt, length))
-						if(length(rlt) == 1) rs = NULL
-						if(length(clt) == 1) cs = NULL
+		    			if(inherits(ht_current_full, "Heatmap")) {
+			    			selected_current = selected[selected$heatmap == ht_name, ]
+			    			l1 = !duplicated(selected_current$row_slice)
+			    			rlt = selected_current$row_index[l1]
+			    			l2 = !duplicated(selected_current$column_slice)
+			    			clt = selected_current$column_index[l2]
 
-						ht_current_full = ht_list@ht_list[[ht_name]]
-						m = ht_current_full@matrix
-						subm = m[ri, ci, drop = FALSE]
+			    			ri = unlist(rlt)
+			    			ci = unlist(clt)
+			    			rs = rep(seq_along(rlt), times = sapply(rlt, length))
+							cs = rep(seq_along(clt), times = sapply(clt, length))
+							if(length(rlt) == 1) rs = NULL
+							if(length(clt) == 1) cs = NULL
 
-						ht_current = Heatmap(subm,
-							row_split = rs, column_split = cs,
-					    	col = ht_current_full@matrix_color_mapping,
-					    	show_heatmap_legend = FALSE,
-					    	cluster_rows = FALSE, cluster_columns = FALSE,
-							row_title = NULL, column_title = NULL,
-							border = ht_current_full@matrix_param$border
-						)
+							m = ht_current_full@matrix
+							subm = m[ri, ci, drop = FALSE]
+
+							if(show_annotation) {
+								top_annotation = ht_current_full@top_annotation
+								if(!is.null(top_annotation)) {
+									ind_subsettable = sapply(top_annotation@anno_list, function(x) x@subsetable)
+									if(length(ind_subsettable)) {
+										top_annotation = top_annotation[ci, ind_subsettable]
+										top_annotation@anno_list = lapply(top_annotation@anno_list, function(x) {
+											x@show_legend = FALSE
+											x
+										})
+									} else {
+										top_annotation = NULL
+									}
+								}
+								bottom_annotation = ht_current_full@bottom_annotation
+								if(!is.null(bottom_annotation)) {
+									ind_subsettable = sapply(bottom_annotation@anno_list, function(x) x@subsetable)
+									if(length(ind_subsettable)) {
+										bottom_annotation = bottom_annotation[ci, ind_subsettable]
+										bottom_annotation@anno_list = lapply(bottom_annotation@anno_list, function(x) {
+											x@show_legend = FALSE
+											x
+										})
+									} else {
+										bottom_annotation = NULL
+									}
+								}
+								left_annotation = ht_current_full@left_annotation
+								if(!is.null(left_annotation)) {
+									ind_subsettable = sapply(left_annotation@anno_list, function(x) x@subsetable)
+									if(length(ind_subsettable)) {
+										left_annotation = left_annotation[ri, ind_subsettable]
+										left_annotation@anno_list = lapply(left_annotation@anno_list, function(x) {
+											x@show_legend = FALSE
+											x
+										})
+									} else {
+										left_annotation = NULL
+									}
+								}
+								right_annotation = ht_current_full@right_annotation
+								if(!is.null(right_annotation)) {
+									ind_subsettable = sapply(right_annotation@anno_list, function(x) x@subsetable)
+									if(length(ind_subsettable)) {
+										right_annotation = right_annotation[ri, ind_subsettable]
+										right_annotation@anno_list = lapply(right_annotation@anno_list, function(x) {
+											x@show_legend = FALSE
+											x
+										})
+									} else {
+										right_annotation = NULL
+									}
+								}
+							} else {
+								top_annotation = NULL
+								bottom_annotation = NULL
+								left_annotation = NULL
+								right_annotation = NULL
+							}
+
+							if(show_cell_fun) {
+								cell_fun = ht_current_full@matrix_param$cell_fun
+								if(!is.null(cell_fun)) {
+									cell_fun2 = cell_fun
+									ri_reverse_map = structure(ri, names = 1:length(ri))
+									ci_reverse_map = structure(ci, names = 1:length(ci))
+									cell_fun = function(j, i, x, y, w, h, fill) {
+										cell_fun2(ci_reverse_map[as.character(j)], 
+											ri_reverse_map[as.character(i)], 
+											x, y, w, h, fill)
+									}
+								}
+								layer_fun = ht_current_full@matrix_param$layer_fun
+								if(!is.null(layer_fun)) {
+									layer_fun2 = layer_fun
+									ri_reverse_map = structure(ri, names = 1:length(ri))
+									ci_reverse_map = structure(ci, names = 1:length(ci))
+									layer_fun = function(j, i, x, y, w, h, fill) {
+										layer_fun2(ci_reverse_map[as.character(j)], 
+											ri_reverse_map[as.character(i)], 
+											x, y, w, h, fill)
+									}
+								}
+							} else {
+								cell_fun = NULL
+								layer_fun = NULL
+							}
+							ht_current = Heatmap(subm,
+								row_split = rs, column_split = cs,
+						    	col = ht_current_full@matrix_color_mapping,
+						    	show_heatmap_legend = FALSE,
+						    	cluster_rows = FALSE, cluster_columns = FALSE,
+								row_title = NULL, column_title = NULL,
+								border = ht_current_full@matrix_param$border,
+								show_row_names = show_row_names, show_column_names = show_column_names,
+								top_annotation = top_annotation,
+								bottom_annotation = bottom_annotation,
+								left_annotation = left_annotation,
+								right_annotation = right_annotation,
+								cell_fun = cell_fun, layer_fun = layer_fun
+							)
+						} else {
+							if(show_annotation) {
+								ha = ht_current_full
+								if(ht_list@direction == "horizontal") {
+									ind_subsettable = sapply(ha@anno_list, function(x) x@subsetable)
+									if(length(ind_subsettable)) {
+										ha = ha[ri, ind_subsettable]
+										ha@anno_list = lapply(ha@anno_list, function(x) {
+											x@show_legend = FALSE
+											x
+										})
+									}
+								} else {
+									ind_subsettable = sapply(ha@anno_list, function(x) x@subsetable)
+									if(length(ind_subsettable)) {
+										ha = ha[ci, ind_subsettable]
+										ha@anno_list = lapply(ha@anno_list, function(x) {
+											x@show_legend = FALSE
+											x
+										})
+									}
+								}
+								ht_current = ha
+							} else {
+								ht_current = NULL
+							}
+						}
 
 						if(ht_list@direction == "horizontal") {
 							ht_select = ht_select + ht_current
@@ -240,7 +394,7 @@ server = function(input, output, session) {
 			pos1 = ComplexHeatmap:::get_pos_from_click(input$heatmap_click)
 		    
 		    ht_list = shiny_env$ht_list
-		    pos = selectPosition(ht_list, mark = FALSE, pos = pos1, verbose = FALSE, ht_pos = shiny_env$ht_pos)
+		    pos = selectPosition(ht_list, mark = FALSE, pos = pos1, verbose = FALSE, ht_pos = shiny_env$ht_pos, calibrate = FALSE)
 			
 			if(is.null(pos)) {
 				HTML(paste("<pre>",

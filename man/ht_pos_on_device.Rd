@@ -7,13 +7,15 @@ Get the heatmap positions on the graphic device
 Get the heatmap positions on the graphic device
 }
 \usage{
-ht_pos_on_device(ht_list, unit = "inch", valueOnly = FALSE)
+ht_pos_on_device(ht_list, unit = "inch", valueOnly = FALSE, include_annotation = FALSE, calibrate = TRUE)
 }
 \arguments{
 
   \item{ht_list}{A \code{\link{HeatmapList-class}} object returned by \code{\link{draw,Heatmap-method}} or \code{\link{draw,HeatmapList-method}}.}
   \item{unit}{The unit.}
   \item{valueOnly}{Whether only return the numeric values.}
+  \item{include_annotation}{Internally used.}
+  \item{calibrate}{Internally used.}
 
 }
 \value{
