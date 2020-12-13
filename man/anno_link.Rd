@@ -20,5 +20,4 @@ This function is the same as \code{\link{anno_zoom}}. It links subsets of rows o
 \examples{
 # There is no example
 NULL
-
 }

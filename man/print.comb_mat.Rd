@@ -18,5 +18,4 @@ Print the comb_mat Object
 \examples{
 # There is no example
 NULL
-
 }

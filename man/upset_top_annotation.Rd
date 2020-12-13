@@ -41,5 +41,4 @@ and if under the union mode, it is \code{union_size}.
 \examples{
 # There is no example
 NULL
-
 }

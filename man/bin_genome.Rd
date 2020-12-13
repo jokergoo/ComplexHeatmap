@@ -23,5 +23,4 @@ A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object of the genomic bins.
 \examples{
 # There is no example
 NULL
-
 }

@@ -20,5 +20,4 @@ The physical height of the grob can be get by \code{convertWidth(grobHeight(axis
 \examples{
 # There is no example
 NULL
-
 }

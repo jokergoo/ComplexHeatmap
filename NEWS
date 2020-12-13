@@ -12,6 +12,7 @@ CHANGES in VERSION 2.7.1
 * add `bin_genome()` and `normalize_genomic_signals_to_bins()`
 * print messages if directly sending `anno_*()` functions to `top_annotation` or similar arguments.
 * `pheatmap()`: set heatmap name to " " so that there is no legend title by default.
+* also translate `stats::heatmap()` and `gplots::heatmap.2()`.
 
 ========================
 

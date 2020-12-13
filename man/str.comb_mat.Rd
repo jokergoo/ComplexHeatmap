@@ -18,5 +18,4 @@ str method
 \examples{
 # There is no example
 NULL
-
 }

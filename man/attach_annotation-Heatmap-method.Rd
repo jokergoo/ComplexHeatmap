@@ -1,6 +1,5 @@
 \name{attach_annotation-Heatmap-method}
 \alias{attach_annotation,Heatmap-method}
-\alias{attach_annotation}
 \title{
 Attach heatmap annotations to the heatmap
 }
@@ -29,3 +28,4 @@ ha2 = HeatmapAnnotation(bar = letters[1:10])
 ht = attach_annotation(ht, ha2)
 ht
 }
+\alias{attach_annotation}

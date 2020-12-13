@@ -11,11 +11,11 @@ compare_pheatmap(...)
 }
 \arguments{
 
-  \item{...}{The same set of rguments passed to \code{\link[pheatmap]{pheatmap}} and \code{\link{pheatmap}}.}
+  \item{...}{The same set of arguments passed to \code{pheatmap::pheatmap} and \code{ComplexHeatmap::pheatmap}.}
 
 }
 \details{
-The function plots two heatmaps, one by \code{\link[pheatmap]{pheatmap}} and one by \code{\link{pheatmap}}.
+The function plots two heatmaps, one by \code{pheatmap::pheatmap} and one by \code{ComplexHeatmap::pheatmap}.
 Users can see the difference between the two implementations.
 }
 \examples{

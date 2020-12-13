@@ -243,12 +243,17 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 			stop_wrap("This object is not subsetable.")
 		}
 		x = copy_all(x)
+		if(x@fun_name == "anno_mark") {
+			ind_at = which(x@var_env[["at"]] %in% i)
+		}
 		for(var in names(x@subset_rule)) {
+			
 			oe = try(x@var_env[[var]] <- x@subset_rule[[var]](x@var_env[[var]], i), silent = TRUE)
 			if(inherits(oe, "try-error")) {
 				message(paste0("An error when subsetting ", var))
 				stop_wrap(oe)
 			}
+			
 		}
 		if(is.logical(i)) {
 			x@n = sum(i)

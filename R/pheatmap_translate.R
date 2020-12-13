@@ -65,7 +65,7 @@
 # A `Heatmap-class` object.
 #
 # == seealso
-# `compare_pheatmap` that ompares heatmaps between ``pheatmap::pheatmap()`` and ``ComplexHeatmap::pheatmap()``.
+# `compare_pheatmap` that compares heatmaps between ``pheatmap::pheatmap()`` and ``ComplexHeatmap::pheatmap()``.
 pheatmap = function(mat, 
     color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100), 
     kmeans_k = NA, 
@@ -452,7 +452,7 @@ pheatmap = function(mat,
     }
     ht_param = c(ht_param, list(...))
     ht = do.call(Heatmap, ht_param)
-    attr(ht, "pheatmap") = TRUE
+    attr(ht, "translate_from") = "pheatmap"
     ht
 }
 
@@ -460,10 +460,10 @@ pheatmap = function(mat,
 # Compare heatmaps between pheatmap::pheatmap() and ComplexHeatmap::pheatmap()
 #
 # == param
-# -... The same set of rguments passed to `pheatmap::pheatmap` and `pheatmap`.
+# -... The same set of arguments passed to ``pheatmap::pheatmap`` and ``ComplexHeatmap::pheatmap``.
 #
 # == details
-# The function plots two heatmaps, one by `pheatmap::pheatmap` and one by `pheatmap`.
+# The function plots two heatmaps, one by ``pheatmap::pheatmap`` and one by ``ComplexHeatmap::pheatmap``.
 # Users can see the difference between the two implementations.
 #
 # == example

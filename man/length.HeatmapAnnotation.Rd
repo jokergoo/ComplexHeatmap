@@ -17,5 +17,4 @@ Number of Annotations
 \examples{
 # There is no example
 NULL
-
 }

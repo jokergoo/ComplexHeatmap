@@ -15,5 +15,4 @@ method and the \code{\%v\%v} method so that above three classes can be appended 
 \examples{
 # There is no example
 NULL
-
 }

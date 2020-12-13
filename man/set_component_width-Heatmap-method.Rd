@@ -1,6 +1,5 @@
 \name{set_component_width-Heatmap-method}
 \alias{set_component_width,Heatmap-method}
-\alias{set_component_width}
 \title{
 Set Width of Heatmap Component
 }
@@ -29,8 +28,8 @@ The \code{\link{Heatmap-class}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
+\alias{set_component_width}
 \examples{
 # There is no example
 NULL
-
 }

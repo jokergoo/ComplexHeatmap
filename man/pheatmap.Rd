@@ -125,10 +125,9 @@ See \url{https://jokergoo.github.io/2020/05/06/translate-from-pheatmap-to-comple
 A \code{\link{Heatmap-class}} object.
 }
 \seealso{
-\code{\link{compare_pheatmap}} that ompares heatmaps between \code{pheatmap::pheatmap()} and \code{ComplexHeatmap::pheatmap()}.
+\code{\link{compare_pheatmap}} that compares heatmaps between \code{pheatmap::pheatmap()} and \code{ComplexHeatmap::pheatmap()}.
 }
 \examples{
 # There is no example
 NULL
-
 }
