@@ -164,6 +164,9 @@ heatmap.2(x,
   \item{...}{Other arguments passed to \code{\link{Heatmap}}.}
 
 }
+\details{
+This function aims to execute \code{gplots::heatmap.2} code purely with ComplexHeatmap.
+}
 \value{
 A \code{\link{Heatmap-class}} object.
 }

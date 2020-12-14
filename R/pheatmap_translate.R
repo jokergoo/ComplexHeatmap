@@ -59,13 +59,16 @@
 # -... Other arguments passed to `Heatmap`.
 #
 # == details
+# This function aims to execute ``pheatmap::pheatmap`` code purely with ComplexHeatmap.
+#
+# == seealso
 # See https://jokergoo.github.io/2020/05/06/translate-from-pheatmap-to-complexheatmap/
+#
+# `compare_pheatmap` that compares heatmaps between ``pheatmap::pheatmap()`` and ``ComplexHeatmap::pheatmap()``.
 #
 # == value
 # A `Heatmap-class` object.
 #
-# == seealso
-# `compare_pheatmap` that compares heatmaps between ``pheatmap::pheatmap()`` and ``ComplexHeatmap::pheatmap()``.
 pheatmap = function(mat, 
     color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100), 
     kmeans_k = NA, 

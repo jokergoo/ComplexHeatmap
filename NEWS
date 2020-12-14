@@ -13,6 +13,7 @@ CHANGES in VERSION 2.7.1
 * print messages if directly sending `anno_*()` functions to `top_annotation` or similar arguments.
 * `pheatmap()`: set heatmap name to " " so that there is no legend title by default.
 * also translate `stats::heatmap()` and `gplots::heatmap.2()`.
+* move all code for interactive heatmap to InteractiveComplexHeatmap package.
 
 ========================
 

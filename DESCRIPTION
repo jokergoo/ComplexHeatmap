@@ -1,8 +1,8 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Make Complex Heatmaps
-Version: 2.7.1.1011
-Date: 2020-12-13
+Version: 2.7.1.1012
+Date: 2020-12-14
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.2), methods, grid, graphics, stats, grDevices
@@ -13,7 +13,7 @@ Suggests: testthat (>= 1.0.0), knitr, markdown, dendsort,
     jpeg, tiff, fastcluster, EnrichedHeatmap,
     dendextend (>= 1.0.1), grImport, grImport2, glue,
     GenomicRanges, gridtext, pheatmap (>= 1.0.12),
-    shiny, S4Vectors (>= 0.26.1), gridGraphics, gplots
+    gridGraphics, gplots
 VignetteBuilder: knitr
 Description: Complex heatmaps are efficient to visualize associations 
     between different sources of data sets and reveal potential patterns. 

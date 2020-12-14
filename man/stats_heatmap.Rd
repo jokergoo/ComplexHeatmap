@@ -63,6 +63,9 @@ heatmap(x,
   \item{...}{Other arguments passed to \code{\link{Heatmap}}.}
 
 }
+\details{
+This function aims to execute \code{stats::heatmap} code purely with ComplexHeatmap.
+}
 \value{
 A \code{\link{Heatmap-class}} object.
 }

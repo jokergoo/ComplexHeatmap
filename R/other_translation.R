@@ -31,6 +31,9 @@
 # -verbose Ignored.
 # -... Other arguments passed to `Heatmap`.
 #
+# == details
+# This function aims to execute ``stats::heatmap`` code purely with ComplexHeatmap.
+#
 # == value
 # A `Heatmap-class` object.
 #
@@ -343,6 +346,9 @@ compare_heatmap = function(...) {
 # -lwid Ignored.
 # -extrafun Ignored.
 # -... Other arguments passed to `Heatmap`.
+#
+# == details
+# This function aims to execute ``gplots::heatmap.2`` code purely with ComplexHeatmap.
 #
 # == value
 # A `Heatmap-class` object.
@@ -691,7 +697,7 @@ heatmap.2 = function(x,
                 offset = (mat[i[ind], j[ind[1]]] - min)/(max - min)*w[ind]
                 pos_x = rep(x[ind] - w[ind]*0.5 + offset, each = 2)
                 pos_y = rep(y[ind] + h[ind]*0.5, each = 2)
-                pos_y[seq_along(ind) %% 2 == 0] = y[ind] - h[ind]*0.5
+                pos_y[seq_along(pos_y) %% 2 == 0] = y[ind] - h[ind]*0.5
                 grid.lines(pos_x, pos_y, gp = gpar(col = tracecol))
             }
         }
@@ -705,7 +711,7 @@ heatmap.2 = function(x,
                 ind = ind_mat[ki, ]
                 offset = (mat[i[ind[1]], j[ind]] - min)/(max - min)*h[ind]
                 pos_x = rep(x[ind] - w[ind]*0.5, each = 2)
-                pos_x[seq_along(ind) %% 2 == 0] = x[ind] + w[ind]*0.5
+                pos_x[seq_along(pos_x) %% 2 == 0] = x[ind] + w[ind]*0.5
                 pos_y = rep(y[ind] - h[ind]*0.5 + offset, each = 2)
                 grid.lines(pos_x, pos_y, gp = gpar(col = tracecol))
             }
