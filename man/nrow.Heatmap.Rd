@@ -17,4 +17,5 @@ Number of Rows in the Heatmap
 \examples{
 # There is no example
 NULL
+
 }

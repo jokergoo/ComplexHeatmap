@@ -132,4 +132,5 @@ A \code{\link{Heatmap-class}} object.
 \examples{
 # There is no example
 NULL
+
 }

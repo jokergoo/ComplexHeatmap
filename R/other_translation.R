@@ -54,8 +54,8 @@ heatmap = function(x,
     margins = c(5, 5), 
     ColSideColors, 
     RowSideColors,
-    cexRow = 0.2 + 1/log10(nr), 
-    cexCol = 0.2 + 1/log10(nc),
+    cexRow = 0.6, 
+    cexCol = 0.6,
     labRow = NULL, 
     labCol = NULL, 
     main = NULL,
@@ -368,7 +368,7 @@ heatmap.2 = function(x,
 
     # data scaling
     scale = c("none","row", "column"),
-    na.rm=TRUE,
+    na.rm = TRUE,
 
     # image plot
     revC = identical(Colv, "Rowv"),
@@ -376,36 +376,36 @@ heatmap.2 = function(x,
 
     # mapping data to colors
     breaks,
-    symbreaks=any(x < 0, na.rm=TRUE) || scale!="none",
+    symbreaks = any(x < 0, na.rm = TRUE) || scale != "none",
 
     # colors
-    col="heat.colors",
+    col = "heat.colors",
 
     # block sepration
     colsep,
     rowsep,
-    sepcolor="white",
-    sepwidth=c(0.05,0.05),
+    sepcolor = "white",
+    sepwidth = c(0.05, 0.05),
 
     # cell labeling
     cellnote,
-    notecex=1.0,
-    notecol="cyan",
-    na.color=par("bg"),
+    notecex = 0.6,
+    notecol = "cyan",
+    na.color = par("bg"),
 
     # level trace
-    trace=c("column","row","both","none"),
-    tracecol="cyan",
-    hline=median(breaks),
-    vline=median(breaks),
-    linecol=tracecol,
+    trace = c("column", "row", "both", "none"),
+    tracecol = "cyan",
+    hline = median(breaks),
+    vline = median(breaks),
+    linecol = tracecol,
 
     # Row/Column Labeling
     margins = c(5, 5),
     ColSideColors,
     RowSideColors,
-    cexRow = 0.2 + 1/log10(nr),
-    cexCol = 0.2 + 1/log10(nc),
+    cexRow = 0.6,
+    cexCol = 0.6,
     labRow = NULL,
     labCol = NULL,
     srtRow = NULL,
@@ -420,16 +420,16 @@ heatmap.2 = function(x,
     # color key + density info
     key = TRUE,
     keysize = 1.5,
-    density.info=c("histogram","density","none"),
-    denscol=tracecol,
-    symkey = any(x < 0, na.rm=TRUE) || symbreaks,
+    density.info = c("histogram", "density", "none"),
+    denscol = tracecol,
+    symkey = any(x < 0, na.rm = TRUE) || symbreaks,
     densadj = 0.25,
     key.title = NULL,
     key.xlab = NULL,
     key.ylab = NULL,
     key.xtickfun = NULL,
     key.ytickfun = NULL,
-    key.par=list(),
+    key.par = list(),
 
     # plot labels
     main = NULL,
@@ -442,7 +442,7 @@ heatmap.2 = function(x,
     lwid = NULL,
 
     # extras
-    extrafun=NULL,
+    extrafun = NULL,
     ...
     ) {
 
@@ -457,6 +457,10 @@ heatmap.2 = function(x,
     nc = ncol(mat)
 
     ht_param = list()
+
+    if(identical(Rowv, FALSE) && identical(symm, TRUE)) {
+        Colv = FALSE
+    }
 
     # Rowv can be 1. NA, 2. a dendrogram object, 3. a vector, 4. a logical value, 5. NULL
     if(identical(Rowv, NA) || identical(Rowv, NULL) || identical(Rowv, FALSE)) {
@@ -571,7 +575,7 @@ heatmap.2 = function(x,
     
     n_col = ncol
 
-    if(identical(scale, "row") || identical(scale, "column")) {
+    if(exists("extreme")) {
         lim = max(abs(mat), na.rm = TRUE)
         ht_param$col = colorRamp2(seq(-lim, lim, length = n_col), col)
     } else {
@@ -604,7 +608,7 @@ heatmap.2 = function(x,
             show_legend = FALSE, show_annotation_name = FALSE)
     }
 
-    if(identical(ht_param$cluster_rows, FALSE)) {
+    if(identical(ht_param$cluster_rows, FALSE) || dendrogram %in% c("none", "column")) {
         if(is.null(ht_param$left_annotation)) {
             ht_param$left_annotation = rowAnnotation(foo1 = anno_empty(width = unit(4, "cm"), border = FALSE))
         } else {
@@ -612,7 +616,7 @@ heatmap.2 = function(x,
         }
     }
 
-    if(identical(ht_param$cluster_columns, FALSE)) {
+    if(identical(ht_param$cluster_columns, FALSE) || dendrogram %in% c("none", "row")) {
         if(is.null(ht_param$top_annotation)) {
             ht_param$top_annotation = HeatmapAnnotation(foo2 = anno_empty(height = unit(3, "cm"), border = FALSE))
         } else {
@@ -643,9 +647,13 @@ heatmap.2 = function(x,
 
     if(!is.null(srtRow)) {
         ht_param$row_names_rot = srtRow
+    } else {
+        ht_param$row_names_rot = 0
     }
     if(!is.null(srtCol)) {
         ht_param$column_names_rot = srtCol
+    } else {
+        ht_param$column_names_rot = 90
     }
 
     if(!is.null(main)) {
@@ -656,7 +664,7 @@ heatmap.2 = function(x,
             ht_param$bottom_annotation = HeatmapAnnotation(xlab = anno_block(labels = xlab, gp = gpar(col = NA)))
         } else {
             ht_param$bottom_annotation = HeatmapAnnotation(
-                colnames = anno_text(ht_param$column_labels, gp = ht_param$column_names_gp),
+                colnames = anno_text(ht_param$column_labels, gp = ht_param$column_names_gp, rot = ht_param$column_names_rot),
                 xlab = anno_block(labels = xlab, gp = gpar(col = NA))
             )
             ht_param$show_column_names = FALSE
@@ -667,7 +675,7 @@ heatmap.2 = function(x,
             ht_param$right_annotation = rowAnnotation(ylab = anno_block(labels = ylab, gp = gpar(col = NA)))
         } else {
             ht_param$right_annotation = rowAnnotation(
-                rownames = anno_text(ht_param$row_labels, gp = ht_param$row_names_gp),
+                rownames = anno_text(ht_param$row_labels, gp = ht_param$row_names_gp, rot = ht_param$row_names_rot),
                 ylab = anno_block(labels = ylab, gp = gpar(col = NA))
             )
             ht_param$show_row_names = FALSE
@@ -717,7 +725,7 @@ heatmap.2 = function(x,
             }
         }
     }
-    if(!is.null(ht_param$layer_fun)) {
+    if(!is.null(ht_param$layer_fun) && trace %in% c("row", "column")) {
         fun1 = ht_param$layer_fun
         fun2 = layer_fun
         fun3 = function(j, i, x, y, w, h, fill) {
@@ -725,9 +733,10 @@ heatmap.2 = function(x,
             fun2(j, i, x, y, w, h, fill)
         }
         layer_fun = fun3
+        ht_param$layer_fun = layer_fun
+    } else if(is.null(ht_param$layer_fun) && trace %in% c("row", "column")) {
+        ht_param$layer_fun = layer_fun
     }
-    ht_param$layer_fun = layer_fun
-
 
     random_str = paste(sample(c(letters, LETTERS, 0:9), 8), collapse = "")
     ht_param$name = paste0("heatmap.2_", random_str)

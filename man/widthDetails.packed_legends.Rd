@@ -17,4 +17,5 @@ Grob width for packed_legends
 \examples{
 # There is no example
 NULL
+
 }

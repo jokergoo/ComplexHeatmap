@@ -8,6 +8,7 @@
 #      value representing whether the alteration is present or absent. 
 #      When the value is a list, the names of the list represent alteration types.
 #      You can use `unify_mat_list` to make all matrix having same row names and column names.
+# -name Name of the oncoPrint. Not necessary to specify.
 # -get_type If different alterations are encoded in the matrix as complex strings, this self-defined function
 #           determines how to extract them. It only works when ``mat`` is a matrix. The default value is `default_get_type`.
 # -alter_fun A single function or a list of functions which defines how to add graphics for different alterations.
@@ -53,7 +54,7 @@
 # == author
 # Zuguang Gu <z.gu@dkfz.de>
 #
-oncoPrint = function(mat, 
+oncoPrint = function(mat, name,
 	get_type = default_get_type,
 	alter_fun, 
 	alter_fun_is_vectorized = NULL,
@@ -181,6 +182,14 @@ oncoPrint = function(mat,
 	for(i in seq_along(all_type)) {
 		arr[, , i] = mat_list[[i]]
 	}
+
+	if(missing(name)) {
+        name = paste0("matrix_", get_oncoprint_index() + 1)
+        increase_oncoprint_index()
+    } else if(is.null(name)) {
+        name = paste0("matrix_", get_oncoprint_index() + 1)
+        increase_oncoprint_index()
+    }
 
 	oncoprint_row_order = function() {
 		order(rowSums(count_matrix), n_mut, decreasing = TRUE)
@@ -468,13 +477,17 @@ oncoPrint = function(mat,
 	
 	#####################################################################
 	# the main matrix
-	if(length(col)) {
-		pheudo = c(names(col), rep(NA, nrow(arr)*ncol(arr) - length(col)))
-	} else {
-		pheudo = c("mutation", rep(NA, nrow(arr)*ncol(arr) - 1))
+	if(length(col) == 0) {
 		col = c("mutation" = "black")
 	}
 
+	pheudo = apply(arr, 1:2, function(x) {
+		if(all(!x)) {
+			return("")
+		} else {
+			paste(all_type[x], collapse = ";")
+		}
+	})
 	dim(pheudo) = dim(arr)[1:2]
 	dimnames(pheudo) = dimnames(arr)[1:2]
 	
@@ -558,7 +571,7 @@ oncoPrint = function(mat,
 		}
 	}
 
-	ht = Heatmap(pheudo, col = col, 
+	ht = Heatmap(pheudo, name = name, col = col, 
 		rect_gp = gpar(type = "none"), 
 		cluster_rows = cluster_rows, cluster_columns = cluster_columns, 
 		row_order = row_order, column_order = column_order,

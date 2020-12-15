@@ -20,7 +20,7 @@ heatmap.2(x,
     
     # data scaling
     scale = c("none","row", "column"),
-    na.rm=TRUE,
+    na.rm = TRUE,
     
     # image plot
     revC = identical(Colv, "Rowv"),
@@ -28,36 +28,36 @@ heatmap.2(x,
     
     # mapping data to colors
     breaks,
-    symbreaks=any(x < 0, na.rm=TRUE) || scale!="none",
+    symbreaks = any(x < 0, na.rm = TRUE) || scale != "none",
     
     # colors
-    col="heat.colors",
+    col = "heat.colors",
     
     # block sepration
     colsep,
     rowsep,
-    sepcolor="white",
-    sepwidth=c(0.05,0.05),
+    sepcolor = "white",
+    sepwidth = c(0.05, 0.05),
     
     # cell labeling
     cellnote,
-    notecex=1.0,
-    notecol="cyan",
-    na.color=par("bg"),
+    notecex = 0.6,
+    notecol = "cyan",
+    na.color = par("bg"),
     
     # level trace
-    trace=c("column","row","both","none"),
-    tracecol="cyan",
-    hline=median(breaks),
-    vline=median(breaks),
-    linecol=tracecol,
+    trace = c("column", "row", "both", "none"),
+    tracecol = "cyan",
+    hline = median(breaks),
+    vline = median(breaks),
+    linecol = tracecol,
     
     # Row/Column Labeling
     margins = c(5, 5),
     ColSideColors,
     RowSideColors,
-    cexRow = 0.2 + 1/log10(nr),
-    cexCol = 0.2 + 1/log10(nc),
+    cexRow = 0.6,
+    cexCol = 0.6,
     labRow = NULL,
     labCol = NULL,
     srtRow = NULL,
@@ -72,16 +72,16 @@ heatmap.2(x,
     # color key + density info
     key = TRUE,
     keysize = 1.5,
-    density.info=c("histogram","density","none"),
-    denscol=tracecol,
-    symkey = any(x < 0, na.rm=TRUE) || symbreaks,
+    density.info = c("histogram", "density", "none"),
+    denscol = tracecol,
+    symkey = any(x < 0, na.rm = TRUE) || symbreaks,
     densadj = 0.25,
     key.title = NULL,
     key.xlab = NULL,
     key.ylab = NULL,
     key.xtickfun = NULL,
     key.ytickfun = NULL,
-    key.par=list(),
+    key.par = list(),
     
     # plot labels
     main = NULL,
@@ -94,7 +94,7 @@ heatmap.2(x,
     lwid = NULL,
     
     # extras
-    extrafun=NULL,
+    extrafun = NULL,
     ...)
 }
 \arguments{
@@ -176,4 +176,5 @@ A \code{\link{Heatmap-class}} object.
 \examples{
 # There is no example
 NULL
+
 }

@@ -23,8 +23,8 @@ heatmap(x,
     margins = c(5, 5),
     ColSideColors,
     RowSideColors,
-    cexRow = 0.2 + 1/log10(nr),
-    cexCol = 0.2 + 1/log10(nc),
+    cexRow = 0.6,
+    cexCol = 0.6,
     labRow = NULL,
     labCol = NULL,
     main = NULL,
@@ -75,4 +75,5 @@ A \code{\link{Heatmap-class}} object.
 \examples{
 # There is no example
 NULL
+
 }

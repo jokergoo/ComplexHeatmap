@@ -20,4 +20,5 @@ A list of two elements: width and height.
 \examples{
 # There is no example
 NULL
+
 }

@@ -24,6 +24,14 @@ increase_heatmap_index = function() {
 	INDEX_ENV$I_HEATMAP = INDEX_ENV$I_HEATMAP + 1
 }
 
+get_oncoprint_index = function() {
+    INDEX_ENV$I_ONCOPRINT
+}
+
+increase_oncoprint_index = function() {
+    INDEX_ENV$I_ONCOPRINT = INDEX_ENV$I_ONCOPRINT + 1
+}
+
 get_annotation_index = function() {
 	INDEX_ENV$I_ANNOTATION
 }

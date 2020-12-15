@@ -1,5 +1,6 @@
 \name{re_size-HeatmapAnnotation-method}
 \alias{re_size,HeatmapAnnotation-method}
+\alias{re_size}
 \title{
 Resize the Width or Height of Heatmap Annotations
 }
@@ -41,8 +42,8 @@ The basic rules are (take \code{height} and \code{annotation_height} for example
      and \code{simple_anno_size} is disabled.
 6. If \code{simple_anno_size_adjust} is \code{FALSE}, the size of the simple annotations will not change.
 }
-\alias{re_size}
 \examples{
 # There is no example
 NULL
+
 }

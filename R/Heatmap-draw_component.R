@@ -44,7 +44,10 @@ setMethod(f = "draw_heatmap_body",
     pushViewport(viewport(name = paste(object@name, "heatmap_body", kr, kc, sep = "_"), ...))
 
     mat = object@matrix[row_order, column_order, drop = FALSE]
-    col_matrix = map_to_colors(object@matrix_color_mapping, mat)
+    oe = try(col_matrix <- map_to_colors(object@matrix_color_mapping, mat), silent = TRUE)
+    if(inherits(oe, "try-error")) {
+        col_matrix = matrix(NA, nrow = nrow(mat), ncol = ncol(mat))
+    }
 
     nc = ncol(mat)
     nr = nrow(mat)
