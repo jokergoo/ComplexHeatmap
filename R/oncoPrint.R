@@ -184,10 +184,10 @@ oncoPrint = function(mat, name,
 	}
 
 	if(missing(name)) {
-        name = paste0("matrix_", get_oncoprint_index() + 1)
+        name = paste0("oncoPrint_", get_oncoprint_index() + 1)
         increase_oncoprint_index()
     } else if(is.null(name)) {
-        name = paste0("matrix_", get_oncoprint_index() + 1)
+        name = paste0("oncnPrint_", get_oncoprint_index() + 1)
         increase_oncoprint_index()
     }
 
