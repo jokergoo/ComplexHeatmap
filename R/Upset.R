@@ -1407,7 +1407,7 @@ UpSet = function(m,
 			layer_fun = layer_fun, show_heatmap_legend = FALSE,
 			top_annotation = ra,
 			right_annotation = right_annotation,
-			row_names_side = row_names_side,
+			row_names_side = row_names_side, col = c("0" = bg_pt_col, "1" = comb_col[1]),
 			row_order = set_order, column_order = comb_order, ...)
 	} else {
 		n_comb = nrow(m)
@@ -1447,9 +1447,10 @@ UpSet = function(m,
 		ht = Heatmap(m2, cluster_rows = FALSE, cluster_columns = FALSE, rect_gp = gpar(type = "none"),
 			layer_fun = layer_fun, show_heatmap_legend = FALSE,
 			top_annotation = top_annotation,
-			right_annotation = ra,
+			right_annotation = ra, col = c("0" = bg_pt_col, "1" = comb_col[1]),
 			row_order = comb_order, column_order = set_order, ...)
 	}
+	attr(ht, "UpSet") = TRUE
 	ht
 }
 
