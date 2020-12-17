@@ -205,8 +205,8 @@ heatmap = function(x,
     	ht_param$column_labels = colnames(mat)
     }
 
-    ht_param$row_names_gp = gpar(cex = cexRow)
-    ht_param$column_names_gp = gpar(cex = cexCol)
+    ht_param$row_names_gp = gpar(fontsize = cexRow*12)
+    ht_param$column_names_gp = gpar(fontsize = cexCol*12)
 
     if(!is.null(main)) {
     	ht_param$column_title = main
@@ -641,9 +641,9 @@ heatmap.2 = function(x,
     }
 
     if(is.null(colRow)) colRow = "black"
-    ht_param$row_names_gp = gpar(cex = cexRow, col = colRow)
+    ht_param$row_names_gp = gpar(fontsize = 12*cexRow, col = colRow)
     if(is.null(colCol)) colCol = "black"
-    ht_param$column_names_gp = gpar(cex = cexCol, col = colCol)
+    ht_param$column_names_gp = gpar(fontsize = 12*cexCol, col = colCol)
 
     if(!is.null(srtRow)) {
         ht_param$row_names_rot = srtRow
