@@ -154,6 +154,9 @@ normalize_genomic_signals_to_bins = function(gr, value, value_column = NULL, met
         stop_wrap("`bin_genome()` should be executed first.")
     }
 
+    nm = paste0(as.vector(GenomicRanges::seqnames(window)), ":", GenomicRanges::start(window), "-", GenomicRanges::end(window))
+
+
     if(!inherits(gr, "GRanges")) {
         if(is.data.frame(gr)) {
             oe = try({
@@ -173,6 +176,7 @@ normalize_genomic_signals_to_bins = function(gr, value, value_column = NULL, met
     if(missing(value) && is.null(value_column)) {
         mtch = as.matrix(GenomicRanges::findOverlaps(window, gr))
         u = matrix(FALSE, nrow = length(window), ncol = 1)
+        rownames(u) = nm
         u[mtch[, 1], 1] = TRUE
         return(u)
     }
@@ -180,6 +184,7 @@ normalize_genomic_signals_to_bins = function(gr, value, value_column = NULL, met
     if(is.null(value) && is.null(value_column)) {
         mtch = as.matrix(GenomicRanges::findOverlaps(window, gr))
         u = matrix(FALSE, nrow = length(window), ncol = 1)
+        rownames(u) = nm
         u[mtch[, 1], 1] = TRUE
         return(u)
     }
@@ -201,6 +206,7 @@ normalize_genomic_signals_to_bins = function(gr, value, value_column = NULL, met
     }
 
     u = matrix(rep(empty_value, each = length(window)), nrow = length(window), ncol = ncol(value))
+    rownames(u) = nm
 
     mtch = as.matrix(GenomicRanges::findOverlaps(window, gr))
     intersect = GenomicRanges::pintersect(window[mtch[,1]], gr[mtch[,2]])
