@@ -1,6 +1,6 @@
 \name{[.gridtext}
-\alias{[.gridtext}
 \alias{Extract.gridtext}
+\alias{[.gridtext}
 \title{
 Subset method of gridtext class
 }

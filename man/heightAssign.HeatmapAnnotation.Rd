@@ -1,6 +1,6 @@
-\name{height<-.HeatmapAnnotation}
-\alias{height<-.HeatmapAnnotation}
+\name{heightAssign.HeatmapAnnotation}
 \alias{heightAssign.HeatmapAnnotation}
+\alias{height<-.HeatmapAnnotation}
 \title{
 Assign the Height to the HeatmapAnnotation Object
 }

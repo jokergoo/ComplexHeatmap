@@ -1,6 +1,6 @@
 \name{[.SingleAnnotation}
-\alias{[.SingleAnnotation}
 \alias{Extract.SingleAnnotation}
+\alias{[.SingleAnnotation}
 \title{
 Subset an SingleAnnotation Object
 }

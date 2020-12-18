@@ -1,6 +1,6 @@
 \name{[.HeatmapList}
-\alias{[.HeatmapList}
 \alias{Extract.HeatmapList}
+\alias{[.HeatmapList}
 \title{
 Subset a HeatmapList object
 }

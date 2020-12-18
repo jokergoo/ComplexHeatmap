@@ -1,6 +1,6 @@
 \name{+.AdditiveUnit}
-\alias{+.AdditiveUnit}
 \alias{add.AdditiveUnit}
+\alias{+.AdditiveUnit}
 \title{
 Horizontally Add Heatmaps or Annotations to a Heatmap List
 }

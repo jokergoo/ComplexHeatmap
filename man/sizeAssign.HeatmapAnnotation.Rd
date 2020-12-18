@@ -1,6 +1,6 @@
-\name{size<-.HeatmapAnnotation}
-\alias{size<-.HeatmapAnnotation}
+\name{sizeAssign.HeatmapAnnotation}
 \alias{sizeAssign.HeatmapAnnotation}
+\alias{size<-.HeatmapAnnotation}
 \title{
 Assign the Size to the HeatmapAnnotation Object
 }

@@ -1,6 +1,6 @@
-\name{width<-.AnnotationFunction}
-\alias{width<-.AnnotationFunction}
+\name{widthAssign.AnnotationFunction}
 \alias{widthAssign.AnnotationFunction}
+\alias{width<-.AnnotationFunction}
 \title{
 Assign the Width to the AnnotationFunction Object
 }

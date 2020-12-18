@@ -1,6 +1,6 @@
 \name{\%v\%}
-\alias{\%v\%}
 \alias{pct_v_pct}
+\alias{\%v\%}
 \title{
 Vertically Add Heatmaps or Annotations to a Heatmap List
 }

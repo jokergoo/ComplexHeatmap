@@ -1,6 +1,6 @@
-\name{size<-.SingleAnnotation}
-\alias{size<-.SingleAnnotation}
+\name{sizeAssign.SingleAnnotation}
 \alias{sizeAssign.SingleAnnotation}
+\alias{size<-.SingleAnnotation}
 \title{
 Assign the Size to the SingleAnnotation Object
 }

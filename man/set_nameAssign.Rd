@@ -1,6 +1,6 @@
-\name{set_name<-}
-\alias{set_name<-}
+\name{set_nameAssign}
 \alias{set_nameAssign}
+\alias{set_name<-}
 \title{
 Modify Set Names
 }

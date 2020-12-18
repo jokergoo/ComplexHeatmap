@@ -101,14 +101,7 @@ There are following blog posts focusing on specific topics:
 
 ### UpSet plot
 
-![](https://pbs.twimg.com/media/Dvpp31uX4AAqGDP.jpg)
-
-### Interactive heatmaps
-
-Heatmaps can be exported into a Shiny app by `ht_shiny(ht)`. See examples at https://jokergoo.shinyapps.io/interactive_complexheatmap/.
-
-<img src="https://user-images.githubusercontent.com/449218/82199376-e5eec600-98fd-11ea-9fca-ad95d405dc20.gif" />
-
+<img src="https://user-images.githubusercontent.com/449218/102615477-48c76a80-4136-11eb-98d9-3c528844fbe8.png" width=700 />
 
 ## License
 

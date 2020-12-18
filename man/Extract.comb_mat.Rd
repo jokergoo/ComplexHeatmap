@@ -1,6 +1,6 @@
 \name{[.comb_mat}
-\alias{[.comb_mat}
 \alias{Extract.comb_mat}
+\alias{[.comb_mat}
 \title{
 Subset the Combination Matrix
 }
