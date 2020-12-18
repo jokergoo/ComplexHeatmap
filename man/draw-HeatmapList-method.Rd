@@ -81,6 +81,8 @@ Draw a list of heatmaps
     raster_device_param = NULL,
     raster_resize = NULL,
     
+    post_fun = NULL,
+    
     ### global setting
     heatmap_row_names_gp = NULL,
     heatmap_column_names_gp = NULL,
@@ -166,6 +168,7 @@ Draw a list of heatmaps
   \item{raster_quality}{this modifies \code{raster_quality} of every heatmap.}
   \item{raster_device_param}{this modifies \code{raster_device_param} of every heatmap.}
   \item{raster_resize}{this modifies \code{raster_resize} of every heatmap.}
+  \item{post_fun}{A self-defined function will be executed after all the heatmaps are drawn.}
   \item{heatmap_row_names_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{heatmap_column_names_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
   \item{heatmap_row_title_gp}{this set the value in \code{\link{ht_opt}} and reset back after the plot is done}
