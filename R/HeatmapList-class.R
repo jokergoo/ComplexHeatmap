@@ -267,6 +267,7 @@ setMethod(f = "add_heatmap",
 # -raster_quality this modifies ``raster_quality`` of every heatmap.
 # -raster_device_param this modifies ``raster_device_param`` of every heatmap.
 # -raster_resize this modifies ``raster_resize`` of every heatmap.
+# -post_fun A self-defined function will be executed after all the heatmaps are drawn.
 # -heatmap_row_names_gp  this set the value in `ht_opt` and reset back after the plot is done
 # -heatmap_column_names_gp this set the value in `ht_opt` and reset back after the plot is done
 # -heatmap_row_title_gp this set the value in `ht_opt` and reset back after the plot is done
@@ -376,6 +377,8 @@ setMethod(f = "draw",
     raster_quality = NULL,
     raster_device_param = NULL,
     raster_resize = NULL,
+
+    post_fun = NULL,
 
     ### global setting
     heatmap_row_names_gp = NULL,
@@ -496,6 +499,7 @@ setMethod(f = "draw",
         }
     }
     object@ht_list_param$adjust_annotation_extension = adjust_annotation_extension
+    object@ht_list_param$post_fun = post_fun
 
     object = make_layout(
         object, 
@@ -856,6 +860,10 @@ setMethod(f = "draw",
                     ht@heatmap_param$post_fun(ht)
                 }
             }
+        }
+
+        if(!is.null(object@ht_list_param$post_fun)) {
+            object@ht_list_param$post_fun(object)
         }
 
         if(run_recordGraphics) {
