@@ -824,6 +824,9 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 	anno@subset_rule$gp = subset_vector
 	if(input_is_matrix) {
 		anno@subset_rule$value = subset_matrix_by_row
+		if(ncol(value) > 1) {
+			anno@subset_rule$gp = NULL
+		}
 	} else {
 		anno@subset_rule$value = subset_vector
 		anno@subset_rule$gp = subset_gp
@@ -1076,6 +1079,9 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 	anno@subset_rule$gp = subset_vector
 	if(input_is_matrix) {
 		anno@subset_rule$value = subset_matrix_by_row
+		if(ncol(value) > 1) {
+			anno@subset_rule$gp = NULL
+		}
 	} else {
 		anno@subset_rule$value = subset_vector
 		anno@subset_rule$gp = subset_gp
