@@ -101,7 +101,7 @@ There are following blog posts focusing on specific topics:
 
 ### UpSet plot
 
-<img src="https://user-images.githubusercontent.com/449218/102615477-48c76a80-4136-11eb-98d9-3c528844fbe8.png" width=700 />
+<img src="https://user-images.githubusercontent.com/449218/102615477-48c76a80-4136-11eb-98d9-3c528844fbe8.png" width=500 />
 
 ## License
 

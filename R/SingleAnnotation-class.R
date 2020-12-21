@@ -827,6 +827,11 @@ has_AnnotationFunction = function(single_anno) {
         if(inherits(x@fun, "AnnotationFunction")) {
             if(x@fun@subsetable) {
                 x2@fun = x@fun[i]
+                if(x@which == "row") {
+                    x2@width = x2@fun@width
+                } else {
+                    x2@height = x2@fun@height
+                }
                 return(x2)
             }
         }

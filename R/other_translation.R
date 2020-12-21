@@ -1,4 +1,4 @@
-# == title
+
 # Translate stats::heatmap to ComplexHeatmap::Heatmap
 #
 # == alias

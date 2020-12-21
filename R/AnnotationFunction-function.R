@@ -2813,11 +2813,20 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	if(is.logical(at)) at = which(at)
 
 	n = length(at)
+
 	if(n < 1) {
-		stop_wrap("Length of `at` should be positive.")
+		return(anno_empty(which = which, border = FALSE))
 	}
+
 	link_gp = recycle_gp(link_gp, n)
 	labels_gp = recycle_gp(labels_gp, n)
+	
+	od = order(at)
+	at = at[od]
+	labels = labels[od]
+	link_gp = subset_gp(link_gp, od)
+	labels_gp = subset_gp(labels_gp, od)
+
 	labels2index = structure(seq_along(at), names = as.character(labels))
 	at2labels = structure(labels, names = at)
 
@@ -3020,6 +3029,20 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	anno@subset_rule$at = subset_by_intersect
 
 	anno@subsetable = TRUE
+
+	attr(anno, "called_args") = list(
+		at = at, 
+		labels = labels, 
+		which = which, 
+		side = side,
+		labels_gp = labels_gp, 
+		labels_rot = labels_rot, 
+		padding = padding, 
+		link_width = link_width, 
+		link_height = link_height,
+		link_gp = link_gp, 
+		extend = extend
+	)
 	return(anno)
 }
 

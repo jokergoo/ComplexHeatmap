@@ -1058,12 +1058,16 @@ anno_type = function(ha) {
         for(nm in names(x2@anno_list)) {
         	x2@anno_list[[nm]] = x2@anno_list[[nm]][i]
         }
+        x2@anno_size = do.call(unit.c, lapply(x2@anno_list, size))
+        size(x2) = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
 
     } else if(nargs() == 2) { # ha[1:4]
     	x2 = x
         for(nm in names(x2@anno_list)) {
         	x2@anno_list[[nm]] = x2@anno_list[[nm]][i]
         }
+        x2@anno_size = do.call(unit.c, lapply(x2@anno_list, size))
+        size(x2) = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
 
     } else if (!missing(i) && !missing(j)) { # ha[1:4, "foo"]
     	x2 = x
@@ -1075,6 +1079,7 @@ anno_type = function(ha) {
         x2@gap = x@gap[j]
         x2@gap[length(x2@gap)] = unit(0, "mm")
 
+        x2@anno_size = do.call(unit.c, lapply(x2@anno_list, size))
         size(x2) = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
     }
     
