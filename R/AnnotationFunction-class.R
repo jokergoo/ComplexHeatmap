@@ -245,9 +245,10 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 		x = copy_all(x)
 		if(x@fun_name == "anno_mark") {
 			called_args = attr(x, "called_args")
+			od = order(i)
 			i = sort(i)
 			l = called_args$at %in% i
-			called_args$at = which(i %in% called_args$at)
+			called_args$at = od[which(i %in% called_args$at)]
 			called_args$labels = called_args$labels[l]
 			called_args$link_gp = subset_gp(called_args$link_gp, l)
 			called_args$labels_gp = subset_gp(called_args$labels_gp, l)

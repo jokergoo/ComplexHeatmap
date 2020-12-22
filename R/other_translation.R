@@ -279,7 +279,6 @@ compare_heatmap = function(...) {
 }
 
 
-# == title
 # Translate gplots::heatmap.2 to ComplexHeatmap::Heatmap
 #
 # == param
