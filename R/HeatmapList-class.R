@@ -268,6 +268,7 @@ setMethod(f = "add_heatmap",
 # -raster_device_param this modifies ``raster_device_param`` of every heatmap.
 # -raster_resize this modifies ``raster_resize`` of every heatmap.
 # -post_fun A self-defined function will be executed after all the heatmaps are drawn.
+# -save_last Whether to save the last plot?
 # -heatmap_row_names_gp  this set the value in `ht_opt` and reset back after the plot is done
 # -heatmap_column_names_gp this set the value in `ht_opt` and reset back after the plot is done
 # -heatmap_row_title_gp this set the value in `ht_opt` and reset back after the plot is done
