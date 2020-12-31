@@ -194,3 +194,6 @@ questions!
 Yes, you can refer to https://jokergoo.github.io/2020/05/06/translate-from-pheatmap-to-complexheatmap/.
 
 
+### Can I make an interactive heatmap?
+
+Yes, please refer to [the **InteractiveComplexHeatmap** package](https://github.com/jokergoo/InteractiveComplexHeatmap).

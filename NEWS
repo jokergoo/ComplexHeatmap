@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.7.4
+
+* add `save_last` option in `ht_opt()`.
+
+==========================
+
 CHANGES in VERSION 2.7.1
 
 * `normalize_comb_mat()`: add `full_comb_sets` and `complement_set` arguments to control

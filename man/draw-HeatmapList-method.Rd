@@ -82,6 +82,7 @@ Draw a list of heatmaps
     raster_resize = NULL,
     
     post_fun = NULL,
+    save_last = ht_opt$save_last,
     
     ### global setting
     heatmap_row_names_gp = NULL,

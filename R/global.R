@@ -201,6 +201,10 @@ ht_opt = setGlobalOptions(
 	"__export_image_size__" = list(
 		.visible = FALSE,
 		.value = FALSE
+	),
+	save_last = list(
+		.visible = FALSE,
+		.value = FALSE
 	)
 )
 
@@ -227,7 +231,7 @@ ht_global_opt = ht_opt
 .ENV$current_annotation_which = NULL
 .ENV$row_order = NULL
 .ENV$row_pos = NULL
-
+.ENV$last = NULL
 
 # DENDROGRAM_PADDING = unit(0.5, "mm")
 # DIMNAME_PADDING = unit(1, "mm")

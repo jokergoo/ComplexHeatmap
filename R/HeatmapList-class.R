@@ -379,6 +379,7 @@ setMethod(f = "draw",
     raster_resize = NULL,
 
     post_fun = NULL,
+    save_last = ht_opt$save_last,
 
     ### global setting
     heatmap_row_names_gp = NULL,
@@ -973,6 +974,10 @@ setMethod(f = "draw",
         simple_anno_size = simple_anno_size,
         show_parent_dend_line = show_parent_dend_line
     )
+
+    if(save_last) {
+        .ENV$last = object
+    }
 
     return(invisible(object))
 })
