@@ -976,9 +976,16 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 				} else {
 					grid.lines(y, x, gp = subset_gp(gp, i), default.units = "native")
 				}
-				if(add_points) {
-					grid.points(y, x, gp = subset_gp(pt_gp, i), 
-						default.units = "native", pch = pch[i], size = size[i])
+				if(length(add_points) == ncol(value)) {
+					if(add_points[i]) {
+						grid.points(y, x, gp = subset_gp(pt_gp, i), 
+							default.units = "native", pch = pch[i], size = size[i])
+					}
+				} else {
+					if(add_points) {
+						grid.points(y, x, gp = subset_gp(pt_gp, i), 
+							default.units = "native", pch = pch[i], size = size[i])
+					}
 				}
 			}
 		} else {
@@ -1027,9 +1034,16 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 				} else {
 					grid.lines(x, y, gp = subset_gp(gp, i), default.units = "native")
 				}
-				if(add_points) {
-					grid.points(x, y, gp = subset_gp(pt_gp, i), 
-						default.units = "native", pch = pch[i], size = size[i])
+				if(length(add_points) == ncol(value)) {
+					if(add_points[i]) {
+						grid.points(x, y, gp = subset_gp(pt_gp, i), 
+							default.units = "native", pch = pch[i], size = size[i])
+					}
+				} else {
+					if(add_points) {
+						grid.points(x, y, gp = subset_gp(pt_gp, i), 
+							default.units = "native", pch = pch[i], size = size[i])
+					}
 				}
 			}
 		} else {
@@ -1808,11 +1822,13 @@ anno_density = function(x, which = c("column", "row"),
 			density_y[[i]] = c(0, density_y[[i]], 0)
 		}
 	}
-	xscale = xscale + c(-0.025, 0.025)*(xscale[2] - xscale[1])
+	
 	if(type == "lines") {
+		xscale = xscale + c(-0.025, 0.025)*(xscale[2] - xscale[1])
 		yscale = c(0, max(unlist(density_y)))
 		yscale[2] = yscale[2]*1.05
 	} else if(type == "violin") {
+		xscale = xscale + c(-0.025, 0.025)*(xscale[2] - xscale[1])
 		yscale = max(unlist(density_y))
 		yscale = c(-yscale*1.05, yscale*1.05)
 	} else if(type == "heatmap") {
@@ -3249,6 +3265,8 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 # -labels Labels put on blocks.
 # -labels_gp Graphic parameters for labels.
 # -labels_rot Rotation for labels.
+# -labels_offset Positions of the labels. It controls offset on y-directions for column annotation and on x-directoin for row annotation.
+# -labels_just Jusification of the labels.
 # -which Is it a row annotation or a column annotation?
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
@@ -3271,7 +3289,9 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 #     left_annotation = rowAnnotation(foo = anno_block(gp = gpar(fill = 2:4),
 #         labels = c("group1", "group2", "group3"), labels_gp = gpar(col = "white"))),
 #     row_km = 3)
-anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot = ifelse(which == "row", 90, 0),
+anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), 
+	labels_rot = ifelse(which == "row", 90, 0),
+	labels_offset = unit(0.5, "npc"), labels_just = "center",
 	which = c("column", "row"), width = NULL, height = NULL, show_name = FALSE) {
 
 	if(is.null(.ENV$current_annotation_which)) {
@@ -3313,7 +3333,10 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 			}
 			label = labels[k]
 			labels_gp = subset_gp(recycle_gp(labels_gp, n), k)
-			grid.text(label, gp = labels_gp, rot = labels_rot)
+			x = y = unit(0.5, "npc")
+			if(which == "column") y = labels_offset
+			if(which == "row") x = labels_offset
+			grid.text(label, x = x, y = y, gp = labels_gp, rot = labels_rot, just = labels_just)
 		}
 	}
 
@@ -3322,7 +3345,7 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot
 		n = NA,
 		fun_name = "anno_block",
 		which = which,
-		var_import = list(gp, labels, labels_gp, labels_rot),
+		var_import = list(gp, labels, labels_gp, labels_rot, labels_offset, labels_just, which),
 		subset_rule = list(),
 		subsetable = TRUE,
 		height = anno_size$height,

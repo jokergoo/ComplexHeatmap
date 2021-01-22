@@ -1,3 +1,10 @@
+CHANGES in VERSION 2.7.5
+
+* `anno_block`: add `labels_offset` and `labels_just`.
+* `anno_lines`: `show_points` can be a vector.
+
+==========================
+
 CHANGES in VERSION 2.7.4
 
 * add `save_last` option in `ht_opt()`.

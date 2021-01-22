@@ -59,7 +59,7 @@ for(i in 1:10) {
     bed = bed[sample(nrow(bed), 20), , drop = FALSE]
     gr_cnv = GRanges(seqnames = bed[, 1], ranges = IRanges(bed[, 2], bed[, 3]))
 
-char_mat = cbind(char_mat, normalize_genomic_signals_to_bins(gr_cnv, bed[, 4]))
+    char_mat = cbind(char_mat, normalize_genomic_signals_to_bins(gr_cnv, bed[, 4]))
 }
 
 #### two numeric columns ##########

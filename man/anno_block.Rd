@@ -7,7 +7,9 @@ Block annotation
 Block annotation
 }
 \usage{
-anno_block(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot = ifelse(which == "row", 90, 0),
+anno_block(gp = gpar(), labels = NULL, labels_gp = gpar(),
+    labels_rot = ifelse(which == "row", 90, 0),
+    labels_offset = unit(0.5, "npc"), labels_just = "center",
     which = c("column", "row"), width = NULL, height = NULL, show_name = FALSE)
 }
 \arguments{
@@ -16,6 +18,8 @@ anno_block(gp = gpar(), labels = NULL, labels_gp = gpar(), labels_rot = ifelse(w
   \item{labels}{Labels put on blocks.}
   \item{labels_gp}{Graphic parameters for labels.}
   \item{labels_rot}{Rotation for labels.}
+  \item{labels_offset}{Positions of the labels. It controls offset on y-directions for column annotation and on x-directoin for row annotation.}
+  \item{labels_just}{Jusification of the labels.}
   \item{which}{Is it a row annotation or a column annotation?}
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
   \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}

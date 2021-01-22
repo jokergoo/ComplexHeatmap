@@ -203,7 +203,6 @@ ht_opt = setGlobalOptions(
 		.value = FALSE
 	),
 	save_last = list(
-		.visible = FALSE,
 		.value = FALSE
 	)
 )
