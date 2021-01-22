@@ -66,7 +66,7 @@ pheatmap(mat,
 
   \item{mat}{The input matrix.}
   \item{color}{The same as in \code{\link[pheatmap]{pheatmap}}. Here you don't necessarily need to generate a long color vector. The discrete colors sent to \code{\link[grDevices:colorRamp]{colorRampPalette}} are also OK here. E.g. \code{colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100)} can be simply  replaced as \code{rev(brewer.pal(n = 7, name = "RdYlBu"))}.}
-  \item{kmeans_k}{Not supported.}
+  \item{kmeans_k}{The same as in \code{\link[pheatmap]{pheatmap}}.}
   \item{breaks}{The same as in \code{\link[pheatmap]{pheatmap}}.}
   \item{border_color}{The same as in \code{\link[pheatmap]{pheatmap}}.}
   \item{cellwidth}{The same as in \code{\link[pheatmap]{pheatmap}}.}

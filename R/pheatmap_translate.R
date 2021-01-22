@@ -7,7 +7,7 @@
 #        The discrete colors sent to `grDevices::colorRampPalette` are also OK here. E.g.
 #        ``colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(100)`` can be simply 
 #        replaced as ``rev(brewer.pal(n = 7, name = "RdYlBu"))``.
-# -kmeans_k Not supported.
+# -kmeans_k The same as in `pheatmap::pheatmap`.
 # -breaks The same as in `pheatmap::pheatmap`.
 # -border_color The same as in `pheatmap::pheatmap`.
 # -cellwidth The same as in `pheatmap::pheatmap`.
@@ -131,6 +131,13 @@ pheatmap = function(mat,
         mat = as.matrix(mat)
     }
 
+    if(!identical(kmeans_k, NA)) {
+        warning_wrap("argument `kmeans_k` is not suggested to use in pheatmap -> Heatmap translation because it changes the input matrix. You might check `row_km` and `column_km` arguments in Heatmap().")
+        km = kmeans(mat, centers = kmeans_k)
+        mat = km$centers
+        rownames(mat) = paste0("Cluster: ", seq_along(km$size), ", Size: ", km$size)
+    }
+
     if("row" %in% scale) {
 
         if(any(is.na(mat))) {
@@ -197,10 +204,6 @@ pheatmap = function(mat,
                 warning_wrap("`breaks` does not have the same length as `color`. The colors are interpolated from the minimal to the maximal of `breaks`.")
             }
         }
-    }
-
-    if(!identical(kmeans_k, NA)) {
-        warning_wrap("argument `kmeans_k` is not supported in pheatmap -> Heatmap translation, skip it. You might check `row_km` and `column_km` arguments in Heatmap().")
     }
     
     if(!identical(filename, NA)) {
