@@ -13,6 +13,8 @@ sources of data sets and reveal potential patterns. Here the
 **ComplexHeatmap** package provides a highly flexible way to arrange multiple
 heatmaps and supports various annotation graphics.
 
+The [**InteractiveComplexHeatmap**](https://github.com/jokergoo/InteractiveComplexHeatmap) package can directly export static complex heatmaps into an interactive Shiny app. Have a try!
+
 ## Citation
 
 Zuguang Gu, Roland Eils and Matthias Schlesner, [Complex heatmaps reveal patterns and correlations in multidimensional genomic data](http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract), Bioinformatics, 2016
