@@ -11,6 +11,9 @@ If you use it in published research, please cite:
 Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
   genomic data. Bioinformatics 2016.
 
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
 This message can be suppressed by:
   suppressPackageStartupMessages(library(ComplexHeatmap))
 ========================================

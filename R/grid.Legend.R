@@ -145,7 +145,7 @@ Legend = function(at, labels = at, col_fun, name = NULL, grob = NULL,
 	title_position = match.arg(title_position)[1]
 	title_padding = title_gap
 	if(!is.null(grob)) {
-		legend_body = legend_body_from_grob(gb)
+		legend_body = legend_body_from_grob(grob)
 	} else if(missing(col_fun)) {
 		if(is.null(border)) border = "white"
 		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,
