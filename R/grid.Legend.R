@@ -52,6 +52,7 @@ Legends = function(...) {
 #     generate the color mapping function. If ``at`` is missing, the breaks recorded in the color mapping function
 #      are used for ``at``.
 # -name Name of the legend, internally used.
+# -grob The legend body can be specified by a pre-constructed `grid::grob` object.
 # -break_dist A zooming factor to control relative distance of two neighbouring break values.The length
 #     of it should be ``length(at) - 1`` or a scalar. 
 # -nrow For legend which is represented as grids, ``nrow`` controls number of rows of the grids if the grids
@@ -110,7 +111,7 @@ Legends = function(...) {
 # col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
 # lgd = Legend(col_fun = col_fun, title = "foo", at = c(0, 0.1, 0.15, 0.5, 0.9, 0.95, 1))
 # draw(lgd, test = "unequal interval breaks")
-Legend = function(at, labels = at, col_fun, name = NULL,
+Legend = function(at, labels = at, col_fun, name = NULL, grob = NULL,
 	break_dist = NULL, nrow = NULL, ncol = 1, by_row = FALSE,
 	grid_height = unit(4, "mm"), 
 	grid_width = unit(4, "mm"), 
@@ -143,7 +144,9 @@ Legend = function(at, labels = at, col_fun, name = NULL,
 	direction = match.arg(direction)[1]
 	title_position = match.arg(title_position)[1]
 	title_padding = title_gap
-	if(missing(col_fun)) {
+	if(!is.null(grob)) {
+		legend_body = legend_body_from_grob(gb)
+	} else if(missing(col_fun)) {
 		if(is.null(border)) border = "white"
 		legend_body = discrete_legend_body(at = at, labels = labels, nrow = nrow, ncol = ncol,
 			grid_height = grid_height, grid_width = grid_width, gap = gap, row_gap = row_gap, column_gap = column_gap, labels_gp = labels_gp,
@@ -963,6 +966,20 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 		))
 	}
 
+	class(gl) = "gList"
+	gt = gTree(children = gl, cl = "legend_body", vp = viewport(width = legend_body_width, height = legend_body_height))
+	attr(gt, "height") = legend_body_height
+	attr(gt, "width") = legend_body_width
+	return(gt)
+}
+
+legend_body_from_grob = function(grob) {
+	legend_body_width = grobWidth(grob)
+	legend_body_height = grobHeight(grob)
+	grob$x = unit(0, "npc")
+	grob$y = unit(0, "npc")
+	grob$just =
+	gl = list(grob)
 	class(gl) = "gList"
 	gt = gTree(children = gl, cl = "legend_body", vp = viewport(width = legend_body_width, height = legend_body_height))
 	attr(gt, "height") = legend_body_height

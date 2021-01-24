@@ -1,5 +1,11 @@
 CHANGES in VERSION 2.7.5
 
+* `Legend()`: add a new argument `grob`.
+
+==========================
+
+CHANGES in VERSION 2.7.5
+
 * `anno_block()`: add `labels_offset` and `labels_just`.
 * `anno_lines()`: `show_points` can be a vector.
 * `pheatmap()`: support `kmeans_k`.
