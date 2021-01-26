@@ -556,7 +556,12 @@ Heatmap = function(matrix, col, name,
             if(is.null(names(col))) {
                 if(length(col) == length(unique(as.vector(matrix)))) {
                     if(is.null(fa_level)) {
-                        names(col) = sort(unique(as.vector(matrix)))
+                        if(is.numeric(matrix)) {
+                            names(col) = sort(unique(as.vector(matrix)))
+                            col = rev(col)
+                        } else {
+                            names(col) = sort(unique(as.vector(matrix)))
+                        }
                     } else {
                         names(col) = fa_level
                     }

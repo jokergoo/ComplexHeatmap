@@ -1,5 +1,11 @@
 CHANGES in VERSION 2.7.5
 
+* discrete numeric legend labels are in correct order now.
+
+==========================
+
+CHANGES in VERSION 2.7.5
+
 * `Legend()`: add a new argument `grob`.
 
 ==========================

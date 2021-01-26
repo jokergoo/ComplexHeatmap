@@ -1,8 +1,8 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Make Complex Heatmaps
-Version: 2.7.6.1002
-Date: 2021-1-24
+Version: 2.7.6.1003
+Date: 2021-1-26
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.2), methods, grid, graphics, stats, grDevices

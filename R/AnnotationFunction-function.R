@@ -5,9 +5,6 @@
 # == param
 # -which Whether it is a column annotation or a row annotation?
 # -border Whether draw borders of the annotation region?
-# -zoom If it is true and when the heatmap is split, the empty annotation slices will have
-#       equal height or width, and you can see the correspondance between the annotation slices
-#       and the original heatmap slices.
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 #
@@ -45,7 +42,7 @@
 # draw(anno, test = "anno_empty")
 # anno = anno_empty(border = FALSE)
 # draw(anno, test = "anno_empty without border")
-anno_empty = function(which = c("column", "row"), border = TRUE, zoom = FALSE,
+anno_empty = function(which = c("column", "row"), border = TRUE,
 	width = NULL, height = NULL) {
 	
 	if(is.null(.ENV$current_annotation_which)) {
@@ -66,7 +63,7 @@ anno_empty = function(which = c("column", "row"), border = TRUE, zoom = FALSE,
 		n = NA,
 		fun_name = "anno_empty",
 		which = which,
-		var_import = list(border, zoom),
+		var_import = list(border),
 		subset_rule = list(),
 		subsetable = TRUE,
 		height = anno_size$height,
