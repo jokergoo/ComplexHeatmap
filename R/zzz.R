@@ -38,3 +38,23 @@ if(getRversion() >= "4.0.0" && as.numeric(rv$`svn rev`) >= 77889) {
 	unitType = function(x, recurse = TRUE) attr(x, "unit")
 }
 
+
+
+# from grid 4.0
+# the problem is with grid < 4.0, after executing `grid.grabExpr()`,
+# the current device changes. 
+if(getRversion() < "4.0.0") {
+  grid.grabExpr = function (expr, warn = 2, wrap = FALSE,  
+      width = 7, height = 7, device = grid:::offscreen, ...) {
+      cd <- dev.cur()
+      device(width, height)
+      grabd <- dev.cur()
+      on.exit({
+          dev.set(grabd)
+          dev.off()
+          dev.set(cd)
+      })
+      eval(expr)
+      grid:::grabDL(warn, wrap, ...)
+  }
+}

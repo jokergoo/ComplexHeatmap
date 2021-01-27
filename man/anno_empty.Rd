@@ -7,13 +7,14 @@ Empty Annotation
 Empty Annotation
 }
 \usage{
-anno_empty(which = c("column", "row"), border = TRUE,
+anno_empty(which = c("column", "row"), border = TRUE, zoom = FALSE,
     width = NULL, height = NULL)
 }
 \arguments{
 
   \item{which}{Whether it is a column annotation or a row annotation?}
   \item{border}{Whether draw borders of the annotation region?}
+  \item{zoom}{If it is true and when the heatmap is split, the empty annotation slices will have	 equal height or width, and you can see the correspondance between the annotation slices	 and the original heatmap slices.}
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
   \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
 
