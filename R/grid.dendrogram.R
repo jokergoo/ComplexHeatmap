@@ -594,8 +594,12 @@ print.dendrogram = function(x) {
 # can only cut dendrogram for which branches at every node are two
 cut_dendrogram = function(dend, k) {
     h = sort(dend_branches_heights(dend), decreasing = TRUE)
-    height = (h[k-1] + h[k])/2
-    trees = cut(dend, h = height)
+    if(k > length(h)) {
+        trees = cut(dend, h = 0)
+    } else {
+        height = (h[k-1] + h[k])/2
+        trees = cut(dend, h = height)
+    }
     trees
 }
 

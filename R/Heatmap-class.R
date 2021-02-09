@@ -1145,7 +1145,7 @@ make_cluster = function(object, which = c("row", "column")) {
                 dend_slice = ct$upper
                 sth = tapply(order.dendrogram(dend_param$obj), 
                     rep(seq_along(dend_list), times = sapply(dend_list, nobs)), 
-                    function(x) x)
+                    function(x) x, simplify = FALSE)
                 attributes(sth) = NULL
                 order_list = sth
                 if(verbose) qqcat("cut @{which} dendrogram into @{split} slices.\n")
@@ -1579,9 +1579,9 @@ make_cluster = function(object, which = c("row", "column")) {
     }
     slot(object, paste0(which, "_title")) = title
     # check whether height of the dendrogram is zero
-    if(all(sapply(dend_list, dend_heights) == 0)) {
-        slot(object, paste0(which, "_dend_param"))$show = FALSE
-    }
+    # if(all(sapply(dend_list, dend_heights) == 0)) {
+    #     slot(object, paste0(which, "_dend_param"))$show = FALSE
+    # }
     return(object)
 
 }
