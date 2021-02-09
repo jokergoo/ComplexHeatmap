@@ -186,7 +186,7 @@ Heatmap(matrix(nc = 0, nr = 10), cluster_rows = hc,
 The vignette (https://jokergoo.github.io/ComplexHeatmap-reference/book/)
 contains huge number of examples and plots showing different usage of the
 package. It is sometimes not easy to find the solution you are looking for. In
-this case, don't hesitate to write me an email. I am glad to answer all of your
+this case, don't hesitate to drop an issue on GitHub. I am glad to answer all of your
 questions!
 
 ### Can I also add heatmaps produced by pheatmap()?

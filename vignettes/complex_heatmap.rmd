@@ -4,3 +4,6 @@
 -->
 
 Please go to http://jokergoo.github.io/ComplexHeatmap-reference/book/ for the full vignette.
+
+
+<p><a href="http://jokergoo.github.io/ComplexHeatmap-reference/book/"><img https://jokergoo.github.io/ComplexHeatmap-reference/book/complexheatmap-cover.jpg width='800' /></a></p>

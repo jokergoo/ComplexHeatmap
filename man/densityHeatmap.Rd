@@ -34,7 +34,7 @@ densityHeatmap(data,
     cluster_columns = FALSE,
     clustering_distance_columns = "ks",
     clustering_method_columns = "complete",
-    mc.cores = 1,
+    mc.cores = 1, cores = mc.cores,
     
     ...)
 }
@@ -63,7 +63,8 @@ densityHeatmap(data,
   \item{cluster_columns}{Whether cluster columns?}
   \item{clustering_distance_columns}{There is a specific distance method \code{ks} which is the Kolmogorov-Smirnov statistic between two distributions. For other methods, the distance is calculated on the density matrix.}
   \item{clustering_method_columns}{Pass to \code{\link{Heatmap}}.}
-  \item{mc.cores}{Multiple cores for calculating ks distance.}
+  \item{mc.cores}{Multiple cores for calculating ks distance. This argument will be removed in future versions.}
+  \item{cores}{Multiple cores for calculating ks distance.}
   \item{...}{Pass to \code{\link{Heatmap}}.}
 
 }

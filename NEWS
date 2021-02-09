@@ -4,6 +4,7 @@ CHANGES in VERSION 2.7.7
 * parallel is implemented with foreach + doParallel
 * expression is properly processed for discrete legends
 * `adjust_dend_by_x()`: simplified the representation of units.
+* number of split can be the same as number of matrix rows/columns.
 
 ==========================
 
