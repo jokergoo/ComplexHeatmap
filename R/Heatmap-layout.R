@@ -268,7 +268,6 @@ setMethod(f = "make_layout",
                 draw_dend(object, k = i, which = "column", x = slice_x[i], width = slice_width[i], just = "left",
                     max_height = column_dend_max_height)
             }
-
             if(nc_slice > 1 && cluster_column_slices) {
                 if(column_dend_side == "top") {
                     pushViewport(viewport(yscale = c(0, column_dend_max_height)))
@@ -285,6 +284,7 @@ setMethod(f = "make_layout",
                 for(i in seq_len(nc_slice)) {
                     slice_leaf_pos[i] = slice_leaf_pos[i] + slice_width[i]*p[i]
                 }
+
                 if(!object@column_dend_param$split_by_cutree) {
                     column_dend_slice = merge_dendrogram(column_dend_slice, object@column_dend_list, only_parent = TRUE)
                 }

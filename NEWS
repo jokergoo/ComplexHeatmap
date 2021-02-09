@@ -3,6 +3,7 @@ CHANGES in VERSION 2.7.7
 * discrete numeric legend labels are in correct order now.
 * parallel is implemented with foreach + doParallel
 * expression is properly processed for discrete legends
+* `adjust_dend_by_x()`: simplified the representation of units.
 
 ==========================
 

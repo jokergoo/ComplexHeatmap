@@ -59,9 +59,8 @@ adjust_dend_by_x = function(dend, leaf_pos = 1:nobs(dend)-0.5) {
             } else {
                 xl = unlist(xl)
             }
-            x = (max(xl) + min(xl))*0.5
+            x = (xl[1] + xl[length(xl)])*0.5
         }
-
         attr(d, "x") = x
         d
     })
@@ -79,7 +78,7 @@ construct_dend_segments = function(dend, gp) {
     x_is_unit = inherits(attr(dend, "x"), "unit")
     height_is_unit = inherits(attr(dend, "height"), "unit")
 
-    env = new.env()
+    env = new.env(parent = emptyenv())
     env$x0 = NULL
     env$y0 = NULL
     env$x1 = NULL
@@ -483,7 +482,7 @@ merge_dendrogram = function(x, y, only_parent = FALSE, ...) {
     od2index = NULL
     od2index[order.dendrogram(parent)] = 1:n
 
-    env = new.env()
+    env = new.env(parent = emptyenv())
     env$dend = parent
     update_dend_height_in_parent = function(ind = NULL) {
         
@@ -576,7 +575,7 @@ get_branches_heights = function(dend) {
 }
 
 "order.dendrogram<-" = function(x, value) {
-    env = new.env()
+    env = new.env(parent = emptyenv())
     env$i = 0
     dendrapply(x, function(node) {
         if(is.leaf(node)) {
@@ -653,7 +652,7 @@ dend_xy = function(dend) {
     if(is.null(attr(dend, "x"))) {
         dend = adjust_dend_by_x(dend)
     }
-    env = new.env()
+    env = new.env(parent = emptyenv())
     env$lt = list()
     dendrapply(dend, function(d) {
         if(is.leaf(d))
@@ -759,7 +758,7 @@ dend_node_apply = function(dend, fun) {
         fun = function(d, index) fun2(d)
     }
 
-    env = new.env()
+    env = new.env(parent = emptyenv())
 
     dend_list = list(dend)
     index_list = list(NULL)
@@ -804,7 +803,7 @@ dend_node_apply = function(dend, fun) {
 dend_edit_node = function(dend, fun = function(d, index) d,
     method = c("top-bottom", "bottom-top")) {
 
-    env = new.env()
+    env = new.env(parent = emptyenv())
     env$dend = dend
 
     method = match.arg(method)

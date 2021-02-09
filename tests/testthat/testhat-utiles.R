@@ -21,15 +21,15 @@ test_that("test default colors", {
 
 test_that("test ks_dist", {
 	m = matrix(rnorm(200), nc = 10)
-	d1 = ComplexHeatmap:::ks_dist(m, mc.cores = 1)
-	d2 = ComplexHeatmap:::ks_dist(m, mc.cores = 2)
+	d1 = ComplexHeatmap:::ks_dist(m, cores = 1)
+	d2 = ComplexHeatmap:::ks_dist(m, cores = 2)
 	d3 = ComplexHeatmap:::ks_dist_1(m)
 	expect_that(d1, is_identical_to(d2))
 	expect_that(d2, is_identical_to(d3))
 
 	lt = lapply(1:10, function(i) rnorm(runif(1, min = 10, max = 20)))
-	d1 = ComplexHeatmap:::ks_dist(lt, mc.cores = 1)
-	d2 = ComplexHeatmap:::ks_dist(lt, mc.cores = 2)
+	d1 = ComplexHeatmap:::ks_dist(lt, cores = 1)
+	d2 = ComplexHeatmap:::ks_dist(lt, cores = 2)
 	d3 = ComplexHeatmap:::ks_dist_1(lt)
 	expect_that(d1, is_identical_to(d2))
 	expect_that(d2, is_identical_to(d3))
