@@ -27,7 +27,8 @@
 # -clustering_distance_columns There is a specific distance method ``ks`` which is the Kolmogorov-Smirnov statistic between two distributions.
 #          For other methods, the distance is calculated on the density matrix.
 # -clustering_method_columns Pass to `Heatmap`.
-# -mc.cores Multiple cores for calculating ks distance.
+# -mc.cores Multiple cores for calculating ks distance. This argument will be removed in future versions.
+# -cores Multiple cores for calculating ks distance.
 # -... Pass to `Heatmap`.
 #
 # == details
@@ -86,7 +87,7 @@ densityHeatmap = function(data,
 	cluster_columns = FALSE,
 	clustering_distance_columns = "ks",
 	clustering_method_columns = "complete",
-	mc.cores = 1,
+	mc.cores = 1, cores = mc.cores,
 
 	...) {
 
@@ -144,7 +145,7 @@ densityHeatmap = function(data,
 
 	if(cluster_columns) {
 		if(clustering_distance_columns == "ks") {
-			d = ks_dist(mat, mc.cores = mc.cores)
+			d = ks_dist(mat, cores = cores)
 
 			dend = as.dendrogram(hclust(d, clustering_method_columns))
 			dend = reorder(dend, colMeans(mat))
@@ -280,7 +281,7 @@ ks_dist_pair = function(x, y) {
 }
 
 # data: a list or a matrix
-ks_dist = function(data, mc.cores = 1) {
+ks_dist = function(data, cores = 1) {
 	has_names = TRUE
 	if(is.matrix(data)) {
 		has_names = !is.null(colnames(data))
@@ -289,21 +290,19 @@ ks_dist = function(data, mc.cores = 1) {
 
     nc = length(data)
 
-    if(.Platform$OS.type == "windows") {
-    	if(mc.cores > 1) {
-    		message("parallel::mclapply() does not support multiple cores on Windows. mc.cores is reset to 1.")
-    		mc.cores = 1
-    	}
-    }
-
 	ind_mat = expand.grid(seq_len(nc), seq_len(nc))
 	ind_mat = ind_mat[  ind_mat[, 1] > ind_mat[, 2], , drop = FALSE]
-	v = mclapply(seq_len(nrow(ind_mat)), function(ind) {
+	
+	registerDoParallel(cores)
+	v <- foreach (ind = seq_len(nrow(ind_mat))) %dopar% {
+
 		i = ind_mat[ind, 1]
 		j = ind_mat[ind, 2]
 		suppressWarnings(d <- ks_dist_pair(data[[i]], data[[j]]))
 		return(d)
-	}, mc.cores = mc.cores)
+	}
+	stopImplicitCluster()
+
 	v = unlist(v)
 
 	i = ind_mat[, 1]

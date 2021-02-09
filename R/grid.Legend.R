@@ -389,31 +389,59 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 	}
 	if(length(graphics) == 0) graphics = NULL
 
-	labels_mat = matrix(c(labels, rep(NA, nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = by_row)
+	if(inherits(labels, "expression")) {
+		labels_mat = matrix(c(labels, rep("__NA__", nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = by_row)
+		labels_are_expression = TRUE
+	} else {
+		labels_mat = matrix(c(labels, rep(NA, nrow*ncol - n_labels)), nrow = nrow, ncol = ncol, byrow = by_row)
+		labels_are_expression = FALSE
+	}
 	index_mat = matrix(1:(nrow*ncol), nrow = nrow, ncol = ncol, byrow = by_row)
-
-	l_na = apply(labels_mat, 2, function(x) all(is.na(x)))
+	if(labels_are_expression) {
+		l_na = sapply(1:ncol(labels_mat), function(i) {
+			x = labels_mat[, i]
+			all(is.na.expression(x))
+		})
+	} else {
+		l_na = apply(labels_mat, 2, function(x) all(is.na(x)))
+	}
 	if(any(l_na)) {
 		message_wrap(qq("No legend element is put in the last @{sum(l_na)} column@{ifelse(sum(l_na) > 1, 's', '')} under `ncol = @{ncol}`, maybe you should set `by_row = TRUE`? Reset `ncol` to @{sum(!l_na)}."))
 		ncol = sum(!l_na)
 	}
-	l_na = apply(labels_mat, 1, function(x) all(is.na(x)))
+	if(labels_are_expression) {
+		l_na = sapply(1:nrow(labels_mat), function(i) {
+			x = labels_mat[i, ]
+			all(is.na.expression(x))
+		})
+	} else {
+		l_na = apply(labels_mat, 1, function(x) all(is.na(x)))
+	}
 	if(any(l_na)) {
 		message_wrap(qq("No legend element is put in the last @{sum(l_na)} row@{ifelse(sum(l_na) > 1, 's', '')} under `nrow = @{nrow}`, maybe you should set `by_row = FALSE`? Reset `nrow` to @{sum(!l_na)}."))
 		nrow = sum(!l_na)
 	}
 
 	labels_padding_left = unit(1, "mm")
-
 	## max width for each column in the legend
 	labels_max_width = NULL
 	for(i in 1:ncol) {
 		if(i == 1) {
 			labels_max_width = max(do.call("unit.c", lapply(labels_mat[, i], function(x) {
+					if(labels_are_expression) {
+						if(identical(as.character(x), "__NA__")) {
+							x = ""
+						}
+					}
 					grobWidth(textGrob(x, gp = labels_gp))
 				})))
 		} else {
 			labels_max_width = unit.c(labels_max_width, max(do.call("unit.c", lapply(labels_mat[, i], function(x) {
+					if(labels_are_expression) {
+						if(identical(as.character(x), "__NA__")) {
+							x = ""
+						}
+					}
 					grobWidth(textGrob(x, gp = labels_gp))
 				}))))
 		}
@@ -424,10 +452,20 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 	for(i in 1:nrow) {
 		if(i == 1) {
 			row_height = max(do.call("unit.c", lapply(labels_mat[i, ], function(x) {
+					if(labels_are_expression) {
+						if(identical(as.character(x), "__NA__")) {
+							x = ""
+						}
+					}
 					grobHeight(textGrob(x, gp = labels_gp))
 				})))
 		} else {
 			row_height = unit.c(row_height, max(do.call("unit.c", lapply(labels_mat[i, ], function(x) {
+					if(labels_are_expression) {
+						if(identical(as.character(x), "__NA__")) {
+							x = ""
+						}
+					}
 					grobHeight(textGrob(x, gp = labels_gp))
 				}))))
 		}
@@ -454,8 +492,8 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 	gl = list()
 	previous_x = unit(0, "mm")
 	for(i in 1:ncol) {
-		if(inherits(labels_mat[1, 1], "expression")) {
-			index = index_mat[, i][sapply(labels_mat[, i], function(x) x) != ""]
+		if(labels_are_expression) {
+			index = index_mat[, i][!is.na.expression(labels_mat[, i])]
 		} else {
 			index = index_mat[, i][!is.na(labels_mat[, i])]
 		}

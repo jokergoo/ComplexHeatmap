@@ -1105,6 +1105,12 @@ is_RStudio_current_dev = function() {
     }
 }
 
+is.na.expression = function(x) {
+    n = length(x)
+    sapply(seq_len(n), function(i) {
+        identical(as.character(x[i]), "__NA__")
+    })
+}
 
 # dev.size = function(units = "in") {
 #     ds = par("din")
