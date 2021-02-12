@@ -981,7 +981,8 @@ setMethod(f = "make_layout",
 
     object@heatmap_legend_param$show = show_heatmap_legend
     heatmap_legend_side = match.arg(heatmap_legend_side)[1]
-    object@heatmap_legend_param$side = heatmap_legend_side   
+    object@heatmap_legend_param$side = heatmap_legend_side
+    object@heatmap_legend_param$list = heatmap_legend_list
     if(show_heatmap_legend) {
         if(heatmap_legend_side == "top") {
             object@heatmap_legend_param$padding = unit.c(ht_opt$HEATMAP_LEGEND_PADDING, unit(c(0, 0, 0), "mm")) #unit(c(2, 0, 0, 0), "mm")
@@ -1081,6 +1082,7 @@ setMethod(f = "make_layout",
     object@annotation_legend_param$show = show_annotation_legend
     annotation_legend_side = match.arg(annotation_legend_side)[1]
     object@annotation_legend_param$side = annotation_legend_side
+    object@annotation_legend_param$list = annotation_legend_list
     if(show_annotation_legend) {
         if(annotation_legend_side == "top") {
             object@annotation_legend_param$padding = unit.c(ht_opt$ANNOTATION_LEGEND_PADDING, unit(c(0, 0, 0), "mm")) # unit(c(2, 0, 0, 0), "mm")

@@ -595,7 +595,7 @@ setMethod(f = "draw",
         ColorMappingList = list()
         for(i in seq_along(object@ht_list)) {
             ht = object@ht_list[[i]]
-            if(direction == "horizontal") {
+            if(object@direction == "horizontal") {
                 if(inherits(object@ht_list[[i]], "Heatmap")) {
                     if(!is.null(ht@left_annotation)) {
                         if(object@ht_list_param$merge_legends || legend_grouping == "adjusted") {
@@ -657,6 +657,8 @@ setMethod(f = "draw",
                 }
             }
         }
+        heatmap_legend_list = object@heatmap_legend_param$list
+        annotation_legend_list = object@annotation_legend_param$list
         if(length(heatmap_legend_list) != 0) {
             if(inherits(heatmap_legend_list, c("Legends", "grob"))) {
                 heatmap_legend_list = list(heatmap_legend_list)
@@ -667,7 +669,7 @@ setMethod(f = "draw",
                 annotation_legend_list = list(annotation_legend_list)
             }
         }
-        if(merge_legends) {
+        if(object@ht_list_param$merge_legends) {
             heatmap_legend_list = c(heatmap_legend_list, annotation_legend_list)
         }
         if(length(ColorMappingList) == 0 && length(heatmap_legend_list) == 0) {
@@ -717,10 +719,10 @@ setMethod(f = "draw",
         ## annotation legend to top, bottom, left and right
         # default values
         ColorMappingList = list()
-        if(!merge_legends) {
+        if(!object@ht_list_param$merge_legends) {
             for(i in seq_along(object@ht_list)) {
                 ht = object@ht_list[[i]]
-                if(direction == "horizontal") {
+                if(object@direction == "horizontal") {
                     if(inherits(ht, "Heatmap")) {
                         if(!is.null(ht@left_annotation)) {
                             if(legend_grouping == "original") {
