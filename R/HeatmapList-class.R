@@ -487,6 +487,28 @@ setMethod(f = "draw",
         column_dend_side = "original"
     }
 
+    if(object@layout$initialized) {
+ 
+        if(missing(padding)) padding = object@ht_list_param$padding
+        if(missing(ht_gap) && missing(gap)) ht_gap = object@ht_list_param$ht_gap
+        if(missing(main_heatmap)) main_heatmap = object@ht_list_param$main_heatmap
+        if(missing(merge_legends)) merge_legends = object@ht_list_param$merge_legends
+        if(missing(auto_adjust)) auto_adjust = object@ht_list_param$auto_adjust
+        if(missing(legend_grouping)) legend_grouping = object@ht_list_param$legend_grouping
+
+        if(missing(heatmap_legend_side)) heatmap_legend_side = object@heatmap_legend_param$side
+        if(missing(show_heatmap_legend)) show_heatmap_legend = object@heatmap_legend_param$show
+        if(missing(annotation_legend_side)) annotation_legend_side = object@annotation_legend_param$side
+        if(missing(show_annotation_legend)) show_annotation_legend = object@annotation_legend_param$show
+
+        if(missing(row_title)) row_title = object@row_title
+        if(missing(row_title_side)) row_title_side = object@row_title_param$side
+        if(missing(row_title_gp)) row_title_gp = object@row_title_param$gp
+        if(missing(column_title)) column_title = object@column_title
+        if(missing(column_title_side)) column_title_side = object@column_title_param$side
+        if(missing(column_title_gp)) column_title_gp = object@column_title_param$gp
+    }
+
     if(newpage) {
         grid.newpage()
     }

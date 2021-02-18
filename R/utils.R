@@ -1112,6 +1112,10 @@ is.na.expression = function(x) {
     })
 }
 
+get_last_ht = function() {
+    .ENV$last
+}
+
 
 # dev.size = function(units = "in") {
 #     ds = par("din")
