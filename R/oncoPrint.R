@@ -299,6 +299,8 @@ oncoPrint = function(mat, name,
 		if(alter_fun_is_vectorized) {
 			layer_fun = function(j, i, x, y, w, h, fill) {
 				v = pindex(arr, i, j)
+				v = as.vector(v)
+				names(v) = dimnames[[3]]
 				af(x, y, w, h, v, j, i)
 			}
 			cell_fun = NULL
@@ -306,6 +308,7 @@ oncoPrint = function(mat, name,
 			layer_fun = NULL
 			cell_fun = function(j, i, x, y, w, h, fill) {
 				v = arr[i, j, ]
+				names(v) = dimnames[[3]]
 				af(x, y, w, h, v, j, i)
 			}
 		}
