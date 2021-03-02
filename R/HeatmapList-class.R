@@ -202,6 +202,7 @@ setMethod(f = "add_heatmap",
 # == param
 # -object a `HeatmapList-class` object.
 # -newpage whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use `grid::grid.grabExpr`.
+# -background Background color of the whole plot.
 # -row_title title on the row.
 # -row_title_side will the title be put on the left or right of the heatmap.
 # -row_title_gp graphic parameters for drawing text.
@@ -307,6 +308,7 @@ setMethod(f = "draw",
     signature = "HeatmapList",
     definition = function(object, 
     newpage = TRUE,
+    background = "white",
 
     row_title = character(0), 
     row_title_side = c("left", "right"), 
@@ -861,7 +863,7 @@ setMethod(f = "draw",
             heights = component_height(object))
 
         pushViewport(viewport(name = "global", width = w, height = h, gp = gpar(lineheight = 0.9)))
-        grid.rect(gp = gpar(fill = "white", col = "white"))
+        grid.rect(gp = gpar(fill = background, col = background))
         pushViewport(viewport(layout = layout, name = "global_layout", x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
             height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
         ht_layout_index = object@layout$layout_index

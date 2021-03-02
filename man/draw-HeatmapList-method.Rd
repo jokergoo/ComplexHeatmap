@@ -9,6 +9,7 @@ Draw a list of heatmaps
 \usage{
 \S4method{draw}{HeatmapList}(object,
     newpage = TRUE,
+    background = "white",
     
     row_title = character(0),
     row_title_side = c("left", "right"),
@@ -106,6 +107,7 @@ Draw a list of heatmaps
 
   \item{object}{a \code{\link{HeatmapList-class}} object.}
   \item{newpage}{whether create a new page for the graphics. If you want to arrange multiple plots in one page, I suggest to use \code{\link[grid:grid.grab]{grid.grabExpr}}.}
+  \item{background}{Background color of the whole plot.}
   \item{row_title}{title on the row.}
   \item{row_title_side}{will the title be put on the left or right of the heatmap.}
   \item{row_title_gp}{graphic parameters for drawing text.}
