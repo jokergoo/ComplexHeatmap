@@ -718,6 +718,8 @@ cluster_within_group = function(mat, factor) {
             order_list[[le]] = which(factor == le)[order.dendrogram(dend_list[[le]])]
             order.dendrogram(dend_list[[le]]) = order_list[[le]]
         }
+
+        attr(dend_list[[le]], ".class_label") = le
     }
 
     parent = as.dendrogram(hclust(dist(t(sapply(order_list, function(x) rowMeans(mat[, x, drop = FALSE]))))))
@@ -770,6 +772,7 @@ cluster_between_groups = function(mat, factor) {
             order_list[[le]] = which(factor == le)[order.dendrogram(dend_list[[le]])]
             order.dendrogram(dend_list[[le]]) = order_list[[le]]
         }
+        attr(dend_list[[le]], ".class_label") = le
     }
 
     parent = as.dendrogram(hclust(dist(t(sapply(order_list, function(x) rowMeans(mat[, x, drop = FALSE]))))))

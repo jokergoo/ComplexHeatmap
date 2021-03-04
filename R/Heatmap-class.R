@@ -1204,7 +1204,11 @@ make_cluster = function(object, which = c("row", "column")) {
             slot(object, paste0(which, "_dend_slice")) = dend_slice
 
             if(!is.null(split)) {
-                split = data.frame(rep(seq_along(order_list), times = sapply(order_list, length)))
+                if(is.null(attr(dend_list[[1]], ".class_label"))) {
+                    split = data.frame(rep(seq_along(order_list), times = sapply(order_list, length)))
+                } else {
+                    split = data.frame(rep(sapply(dend_list, function(x) attr(x, ".class_label")), times = sapply(order_list, length)))
+                }
                 object@matrix_param[[ paste0(which, "_split") ]] = split
 
                 # adjust row_names_param$gp if the length of some elements is the same as row slices
@@ -1231,7 +1235,7 @@ make_cluster = function(object, which = c("row", "column")) {
                     stop_wrap(qq("Length of `gap` should be 1 or number of @{which} slices."))
                 }
                 object@matrix_param[[ paste0(which, "_gap") ]] = gap # adjust title
-                
+
                 title = slot(object, paste0(which, "_title"))
                 if(!is.null(split)) {
                     if(length(title) == 0 && !is.null(title)) { ## default title
