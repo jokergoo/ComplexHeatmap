@@ -509,6 +509,12 @@ setMethod(f = "draw",
         if(missing(column_title)) column_title = object@column_title
         if(missing(column_title_side)) column_title_side = object@column_title_param$side
         if(missing(column_title_gp)) column_title_gp = object@column_title_param$gp
+
+        if(missing(background)) {
+            if(!is.null(object@ht_list_param$background)) {
+                background = object@ht_list_param$background
+            }
+        }
     }
 
     if(newpage) {
@@ -526,6 +532,7 @@ setMethod(f = "draw",
     }
     object@ht_list_param$adjust_annotation_extension = adjust_annotation_extension
     object@ht_list_param$post_fun = post_fun
+    object@ht_list_param$background = background
 
     object = make_layout(
         object, 
@@ -863,7 +870,7 @@ setMethod(f = "draw",
             heights = component_height(object))
 
         pushViewport(viewport(name = "global", width = w, height = h, gp = gpar(lineheight = 0.9)))
-        grid.rect(gp = gpar(fill = background, col = background))
+        grid.rect(gp = gpar(fill = object@ht_list_param$background, col = object@ht_list_param$background))
         pushViewport(viewport(layout = layout, name = "global_layout", x = padding[2], y = padding[1], width = unit(1, "npc") - padding[2] - padding[4],
             height = unit(1, "npc") - padding[1] - padding[3], just = c("left", "bottom")))
         ht_layout_index = object@layout$layout_index
