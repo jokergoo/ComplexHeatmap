@@ -731,6 +731,59 @@ cluster_within_group = function(mat, factor) {
 }
 
 
+# == title
+# Cluster only between Groups
+#
+# == param
+# -mat A matrix where clustering is applied on columns.
+# -factor A categorical vector.
+#
+# == details
+# The clustering is only applied between groups and inside a group, the order is unchanged.
+#
+# == value
+# A `dendrogram` object.
+#
+# == example
+# m = matrix(rnorm(120), nc = 12)
+# colnames(m) = letters[1:12]
+# fa = rep(c("a", "b", "c"), times = c(2, 4, 6))
+# dend = cluster_between_groups(m, fa)
+# grid.dendrogram(dend, test = TRUE)
+cluster_between_groups = function(mat, factor) {
+
+    if (!is.factor(factor)) {
+        factor = factor(factor, levels = unique(factor))
+    }
+
+    dend_list = list()
+    order_list = list()
+    for(le in unique(levels(factor))) {
+        m = mat[, factor == le, drop = FALSE]
+        if (ncol(m) == 1) {
+            order_list[[le]] = which(factor == le)
+            dend_list[[le]] = structure(which(factor == le), class = "dendrogram", leaf = TRUE,
+                height = 0, label = 1, members = 1)
+        } else if(ncol(m) > 1) {
+            hc1 = hclust(dist(1:ncol(m)))
+            dend_list[[le]] = reorder(as.dendrogram(hc1), wts = 1:ncol(m), agglo.FUN = mean)
+            order_list[[le]] = which(factor == le)[order.dendrogram(dend_list[[le]])]
+            order.dendrogram(dend_list[[le]]) = order_list[[le]]
+        }
+    }
+
+    parent = as.dendrogram(hclust(dist(t(sapply(order_list, function(x) rowMeans(mat[, x, drop = FALSE]))))))
+    dend_list = lapply(dend_list, function(dend) dendrapply(dend, function(node) {
+        attr(node, "height") = 0
+        node
+    }))
+    dend = merge_dendrogram(parent, dend_list)
+    order.dendrogram(dend) = unlist(order_list[order.dendrogram(parent)])
+    return(dend)
+}
+
+
+
 #######################
 dend_node_apply = function(dend, fun) {
 
