@@ -3271,6 +3271,9 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 # -show_name Whether show annotatio name.
+# -graphics A self-defined function that draws graphics in each slice. It must have two arguments: 1. row/column indices for the 
+#      current slice and a vector of levels from the split variable that correspond to current slice. When ``graphics`` is set,
+#      all other graphics parameters in `anno_block` are ignored.
 #
 # == details
 # The block annotation is used for representing slices. The length of all arguments should be 1 or the number of slices.
@@ -3289,10 +3292,44 @@ anno_summary = function(which = c("column", "row"), border = TRUE, bar_width = 0
 #     left_annotation = rowAnnotation(foo = anno_block(gp = gpar(fill = 2:4),
 #         labels = c("group1", "group2", "group3"), labels_gp = gpar(col = "white"))),
 #     row_km = 3)
+#
+#
+# # =============  set the graphics argument ==============
+# col = c("1" = "red", "2" = "blue", "A" = "green", "B" = "orange")
+# Heatmap(matrix(rnorm(100), 10), row_km = 2, row_split = sample(c("A", "B"), 10, replace = TRUE)) + 
+# rowAnnotation(foo = anno_block(
+# 	graphics = function(index, levels) {
+# 		grid.rect(gp = gpar(fill = col[levels[2]], col = "black"))
+# 		grid.text(paste(levels, collapse = ","), 0.5, 0.5, rot = 90,
+# 			gp = gpar(col = col[levels[1]]))
+# 	}
+# ))
+#
+# labels = c("1" = "one", "2" = "two", "A" = "Group_A", "B" = "Group_B")
+# Heatmap(matrix(rnorm(100), 10), row_km = 2, row_split = sample(c("A", "B"), 10, replace = TRUE)) + 
+# rowAnnotation(foo = anno_block(graphics = function(index, levels) {
+# 	grid.rect(gp = gpar(fill = col[levels[2]], col = "black"))
+# 	grid.text(paste(labels[levels], collapse = ","), 0.5, 0.5, rot = 90,
+# 		gp = gpar(col = col[levels[1]]))
+# }))
+#
+# Heatmap(matrix(rnorm(100), 10), row_km = 2, row_split = sample(c("A", "B"), 10, replace = TRUE)) + 
+# rowAnnotation(foo = anno_block(
+# 	graphics = function(index, levels) {
+# 		grid.rect(gp = gpar(fill = col[levels[2]], col = "black"))
+# 		txt = paste(levels, collapse = ",")
+# 		txt = paste0(txt, "\n", length(index), " rows")
+# 		grid.text(txt, 0.5, 0.5, rot = 0,
+# 			gp = gpar(col = col[levels[1]]))
+# 	},
+# 	width = unit(3, "cm")
+# ))
+#
 anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(), 
 	labels_rot = ifelse(which == "row", 90, 0),
 	labels_offset = unit(0.5, "npc"), labels_just = "center",
-	which = c("column", "row"), width = NULL, height = NULL, show_name = FALSE) {
+	which = c("column", "row"), width = NULL, height = NULL, show_name = FALSE,
+	graphics = NULL) {
 
 	if(is.null(.ENV$current_annotation_which)) {
 		which = match.arg(which)[1]
@@ -3324,19 +3361,41 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(),
 	anno_size = anno_width_and_height(which, width, height, unit(5, "mm"))
 	
 	fun = function(index, k, n) {
-		gp = subset_gp(recycle_gp(gp, n), k)
-		
-		grid.rect(gp = gp)
-		if(length(labels)) {
-			if(length(labels) != n) {
-				stop_wrap("Length of `labels` should be as same as number of slices.")
+		if(is.null(graphics)) {
+			gp = subset_gp(recycle_gp(gp, n), k)
+			grid.rect(gp = gp)
+			if(length(labels)) {
+				if(length(labels) != n) {
+					stop_wrap("Length of `labels` should be as same as number of slices.")
+				}
+				label = labels[k]
+				labels_gp = subset_gp(recycle_gp(labels_gp, n), k)
+				x = y = unit(0.5, "npc")
+				if(which == "column") y = labels_offset
+				if(which == "row") x = labels_offset
+				grid.text(label, x = x, y = y, gp = labels_gp, rot = labels_rot, just = labels_just)
 			}
-			label = labels[k]
-			labels_gp = subset_gp(recycle_gp(labels_gp, n), k)
-			x = y = unit(0.5, "npc")
-			if(which == "column") y = labels_offset
-			if(which == "row") x = labels_offset
-			grid.text(label, x = x, y = y, gp = labels_gp, rot = labels_rot, just = labels_just)
+		} else {
+
+			for(ifa in 1:30) {
+				if(exists("ht_main", envir = parent.frame(ifa))) {
+					ht = get("ht_main", envir = parent.frame(ifa))
+					break
+				}
+			}
+			
+			if(which == "row") {
+				split = ht@matrix_param$row_split
+				order_list = ht@row_order_list
+			} else {
+				split = ht@matrix_param$column_split
+				order_list = ht@column_order_list
+			}
+			if(is.null(split)) {
+				graphics(index, NULL)
+			} else {
+				graphics(index, unlist(split[order_list[[k]][1], ]))
+			}
 		}
 	}
 
@@ -3345,7 +3404,7 @@ anno_block = function(gp = gpar(), labels = NULL, labels_gp = gpar(),
 		n = NA,
 		fun_name = "anno_block",
 		which = which,
-		var_import = list(gp, labels, labels_gp, labels_rot, labels_offset, labels_just, which),
+		var_import = list(gp, labels, labels_gp, labels_rot, labels_offset, labels_just, graphics, which),
 		subset_rule = list(),
 		subsetable = TRUE,
 		height = anno_size$height,

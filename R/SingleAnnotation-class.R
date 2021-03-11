@@ -555,7 +555,11 @@ SingleAnnotation = function(name, value, col, fun,
     	if(!is.null(f_which)) {
     		fun_name = fun@fun_name
     		if(f_which != which) {
-    			stop_wrap(qq("You are putting @{fun_name} as @{which} annotations, you need to set 'which' argument to '@{which}' as well, or use the helper function @{which}_@{fun_name}()."))
+                if(fun_name %in% c("anno_barplot", "anno_boxplot", "anno_density", "anno_histogram", "anno_points", "anno_text")) {
+                    stop_wrap(qq("You are putting @{fun_name} as @{which} annotations, you need to set 'which' argument to '@{which}' as well, or use the helper function @{which}_@{fun_name}()."))
+                } else {
+                    stop_wrap(qq("You are putting @{fun_name} as @{which} annotations, you need to set 'which' argument to '@{which}' as well."))
+                }
     		}
         }
         

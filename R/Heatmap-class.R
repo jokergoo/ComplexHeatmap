@@ -179,7 +179,7 @@ Heatmap = setClass("Heatmap",
 # -use_raster Whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. If number of rows or columns is more than 2000, it is by default turned on. Note if ``cell_fun``
 #       is set, ``use_raster`` is enforced to be ``FALSE``.
 # -raster_device Graphic device which is used to generate the raster image.
-# -raster_quality Ignored now.
+# -raster_quality A value larger than 1.
 # -raster_device_param A list of further parameters for the selected graphic device. For raster image support, please check https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#heatmap-as-raster-image .
 # -raster_resize_mat Whether resize the matrix to let the dimension of the matrix the same as the dimension of the raster image?
 #          The value can be logical. If it is ``TRUE``, `base::mean` is used to summarize the sub matrix which corresponds to a single pixel.
@@ -294,7 +294,7 @@ Heatmap = function(matrix, col, name,
 
     use_raster = NULL, 
     raster_device = c("CairoPNG", "CairoJPEG", "CairoTIFF", "png", "jpeg", "tiff", "agg_png"),
-    raster_quality = 2,
+    raster_quality = 1,
     raster_device_param = list(),
     raster_resize_mat = FALSE,
     raster_by_magick = requireNamespace("magick", quietly = TRUE),
