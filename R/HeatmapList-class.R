@@ -497,6 +497,7 @@ setMethod(f = "draw",
         if(missing(merge_legends)) merge_legends = object@ht_list_param$merge_legends
         if(missing(auto_adjust)) auto_adjust = object@ht_list_param$auto_adjust
         if(missing(legend_grouping)) legend_grouping = object@ht_list_param$legend_grouping
+        if(missing(post_fun)) post_fun = object@ht_list_param$post_fun
 
         if(missing(heatmap_legend_side)) heatmap_legend_side = object@heatmap_legend_param$side
         if(missing(show_heatmap_legend)) show_heatmap_legend = object@heatmap_legend_param$show
