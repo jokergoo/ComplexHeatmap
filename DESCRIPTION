@@ -1,7 +1,7 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Make Complex Heatmaps
-Version: 2.7.8
+Version: 2.7.9.1000
 Date: 2021-3-18
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
