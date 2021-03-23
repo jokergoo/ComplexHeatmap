@@ -155,17 +155,23 @@ HeatmapAnnotation = function(...,
 	# HeatmapAnnotation is either called by `HeatmapAnnotation()` or by `rowAnnotation()`/`columnAnnotation()`
 	sc = sys.calls()
 	nsc = length(sc)
-	if(nsc == 1) {
+	if(nsc == 1) {  # HeatmapAnnotation(...)
 		scl = as.list(sc[[1]])
 		arg_list = scl[-1]
 	} else {
+		# do.call(rowAnnotation, list(...))
+		# do.call(columnAnnotation, list(...))
 		scl = as.list(sc[[nsc-1]])
 		if(is.function(scl[[1]])) {
-			scl = as.list(sc[[nsc]])
 			arg_list = scl[-1]
-		} else if(any(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation"))) {
+		} else if(any(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation"))) { 
+			# columnAnnotation(...), rowAnnotation(...)
+			# do.call("columnAnnotation", list(...))
+			# do.call("rowAnnotation", list(...))
 			arg_list = scl[-1]
 		} else {
+			# do.call("HeatmapAnnotation", list(...))
+			# do.call(HeatmapAnnotation, list(...))
 			scl = as.list(sc[[nsc]])
 			arg_list = scl[-1]
 		}
