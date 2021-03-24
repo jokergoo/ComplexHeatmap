@@ -349,7 +349,8 @@ ks_dist_1 = function(data) {
 #
 # == param
 # -data A matrix or a list. If it is a matrix, density is calculated by columns.
-# -breaks Pass to `graphics::hist`.
+# -breaks Pass to `graphics::hist`. Please only set equal bin size.
+# -stat Statistic to use.
 # -col A vector of colors that density values are mapped to.
 # -color_space The color space in which colors are interpolated. Pass to `circlize::colorRamp2`.
 # -ylab Label on y-axis.
@@ -470,7 +471,7 @@ frequencyHeatmap = function(data,
 
 		
 	if(use_3d) {
-		ht = Heatmap3D(mat, col = col, name = "frequency", 
+		ht = Heatmap3D(mat, col = col, name = stat, 
 			column_title = title,
 			column_title_gp = title_gp,
 			cluster_rows = FALSE, 
@@ -487,7 +488,7 @@ frequencyHeatmap = function(data,
 			...
 		)
 	} else {
-		ht = Heatmap(mat, col = col, name = "frequency", 
+		ht = Heatmap(mat, col = col, name = stat, 
 			column_title = title,
 			column_title_gp = title_gp,
 			cluster_rows = FALSE, 
@@ -520,8 +521,9 @@ frequencyHeatmap = function(data,
 			grid.text(ylab, x = grobHeight(textGrob(ylab, gp = ylab_gp)), rot = 90)
 		}, slice = 1)
 
-		decorate_heatmap_body(paste0("frequency_", random_str), {
+		decorate_heatmap_body(paste0(stat, "_", random_str), {
 			pushViewport(viewport(yscale = c(min_x, max_x), clip = FALSE))
+			grid.segments(0, 0, 0, 1)
 			grid.yaxis(gp = tick_label_gp)
 			upViewport()
 		}, column_slice = 1)

@@ -9,6 +9,7 @@ Visualize Frequency Distribution by Heatmap
 \usage{
 frequencyHeatmap(data,
     breaks = "Sturges",
+    stat = c("count", "density", "proportion"),
     
     col = brewer.pal(9, "Blues"),
     color_space = "LAB",
@@ -36,7 +37,8 @@ frequencyHeatmap(data,
 \arguments{
 
   \item{data}{A matrix or a list. If it is a matrix, density is calculated by columns.}
-  \item{breaks}{Pass to \code{\link[graphics]{hist}}.}
+  \item{breaks}{Pass to \code{\link[graphics]{hist}}. Please only set equal bin size.}
+  \item{stat}{Statistic to use.}
   \item{col}{A vector of colors that density values are mapped to.}
   \item{color_space}{The color space in which colors are interpolated. Pass to \code{\link[circlize]{colorRamp2}}.}
   \item{ylab}{Label on y-axis.}

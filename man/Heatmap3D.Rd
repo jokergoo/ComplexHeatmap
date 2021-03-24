@@ -15,6 +15,7 @@ Heatmap3D(matrix,
     bar_max_length = unit(1, "cm"),
     bar_angle = 60,
     
+    row_names_side = "left",
     show_row_dend = FALSE,
     show_column_dend = FALSE)
 }
@@ -26,6 +27,7 @@ Heatmap3D(matrix,
   \item{bar_rel_height}{A factor between 0 and 1.}
   \item{bar_max_length}{Maximal length of bars. Value should be in absolute unit.}
   \item{bar_angle}{Angle for the projection.}
+  \item{row_names_side}{Row names are by default put on the left side of the heatmap.}
   \item{show_row_dend}{By default the dendrogram is not drawn.}
   \item{show_column_dend}{By default the dendrogram is not drawn.}
 
