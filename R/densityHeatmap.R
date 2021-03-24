@@ -382,6 +382,7 @@ ks_dist_1 = function(data) {
 # frequencyHeatmap(matrix, use_3d = TRUE)
 frequencyHeatmap = function(data, 
 	breaks = "Sturges",
+	stat = c("count", "density", "proportion"),
 	
 	col = brewer.pal(9, "Blues"),
 	color_space = "LAB", 
@@ -442,9 +443,20 @@ frequencyHeatmap = function(data,
 	n = length(freq_list)
 	nm = names(freq_list)
 
-	mat = lapply(freq_list, function(x) {
+	stat = match.arg(stat)[1]
+	if(stat == "count") {
+		mat = lapply(freq_list, function(x) {
 			rev(x$count)
 		})
+	} else if(stat == "proportion") {
+		mat = lapply(freq_list, function(x) {
+			rev(x$count)/sum(x$count)
+		})
+	} else if(stat == "density") {
+		mat = lapply(freq_list, function(x) {
+			rev(x$density)
+		})	
+	}
 	mat = as.matrix(as.data.frame(mat))
 	colnames(mat) = nm
 
