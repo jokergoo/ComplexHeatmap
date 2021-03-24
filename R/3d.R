@@ -127,6 +127,7 @@ add_luminance = function(col) {
 # -bar_rel_height A factor between 0 and 1.
 # -bar_max_length Maximal length of bars. Value should be in absolute unit.
 # -bar_angle Angle for the projection.
+# -row_names_side Row names are by default put on the left side of the heatmap.
 # -show_row_dend By default the dendrogram is not drawn.
 # -show_column_dend By default the dendrogram is not drawn.
 #
@@ -143,7 +144,8 @@ Heatmap3D = function(matrix,
 	bar_rel_height = 0.6,
 	bar_max_length = unit(1, "cm"),
 	bar_angle = 60,
-
+	
+	row_names_side = "left",
 	show_row_dend = FALSE,
 	show_column_dend = FALSE) {
 
@@ -166,6 +168,7 @@ Heatmap3D = function(matrix,
 			rect3D(x[od], y[od], w[od]*bar_rel_width, h[od]*bar_rel_height, v[od]/max(matrix)*bar_max_length, theta = bar_angle, fill = f[od])	
 		},
 		show_row_dend = show_row_dend,
-		show_column_dend = show_column_dend
+		show_column_dend = show_column_dend,
+		row_names_side = row_names_side,
 	)
 }
