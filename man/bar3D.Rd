@@ -1,5 +1,5 @@
-\name{rect3D}
-\alias{rect3D}
+\name{bar3D}
+\alias{bar3D}
 \title{
 Draw 3D bars
 }
@@ -7,7 +7,7 @@ Draw 3D bars
 Draw 3D bars
 }
 \usage{
-rect3D(x, y, w, h, l, theta = 60, default.units = "npc", fill = "white", col = "black")
+bar3D(x, y, w, h, l, theta = 60, default.units = "npc", fill = "white", col = "black")
 }
 \arguments{
 
@@ -24,5 +24,5 @@ rect3D(x, y, w, h, l, theta = 60, default.units = "npc", fill = "white", col = "
 }
 \examples{
 grid.newpage()
-rect3D(c(0.3, 0.7), 0.5, 0.2, 0.2, 0.2, fill = 2:3)
+bar3D(c(0.3, 0.7), 0.5, 0.2, 0.2, 0.2, fill = 2:3)
 }

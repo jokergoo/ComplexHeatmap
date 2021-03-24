@@ -15,9 +15,9 @@
 #
 # == example
 # grid.newpage()
-# rect3D(c(0.3, 0.7), 0.5, 0.2, 0.2, 0.2, fill = 2:3)
+# bar3D(c(0.3, 0.7), 0.5, 0.2, 0.2, 0.2, fill = 2:3)
 #
-rect3D = function(x, y, w, h, l, theta = 60, default.units = "npc", fill = "white", col = "black") {
+bar3D = function(x, y, w, h, l, theta = 60, default.units = "npc", fill = "white", col = "black") {
 
 	if(!is.unit(x)) x = unit(x, default.units)
 	if(!is.unit(y)) y = unit(y, default.units)
@@ -165,7 +165,7 @@ Heatmap3D = function(matrix,
 			v = pindex(matrix, i, j)
 			od = rank(order(-as.numeric(y), -as.numeric(x)))
 			grid.rect(x[od], y[od], w[od], h[od], gp = gpar(col = "white", fill = "#EEEEEE"))
-			rect3D(x[od], y[od], w[od]*bar_rel_width, h[od]*bar_rel_height, v[od]/max(matrix)*bar_max_length, theta = bar_angle, fill = f[od])	
+			bar3D(x[od], y[od], w[od]*bar_rel_width, h[od]*bar_rel_height, v[od]/max(matrix)*bar_max_length, theta = bar_angle, fill = f[od])	
 		},
 		show_row_dend = show_row_dend,
 		show_column_dend = show_column_dend,
