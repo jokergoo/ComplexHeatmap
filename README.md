@@ -105,6 +105,12 @@ There are following blog posts focusing on specific topics:
 
 <img src="https://user-images.githubusercontent.com/449218/102615477-48c76a80-4136-11eb-98d9-3c528844fbe8.png" width=500 />
 
+### 3D heatmap
+
+![image](https://user-images.githubusercontent.com/449218/112284448-8c77c600-8c89-11eb-8d38-c5538900df20.png)
+
+
+
 ## License
 
 MIT @ Zuguang Gu
