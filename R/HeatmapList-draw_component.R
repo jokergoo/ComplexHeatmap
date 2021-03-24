@@ -149,7 +149,6 @@ setMethod(f = "adjust_heatmap_list",
 
         # and calcualte proper paddings
         if(TRUE) {
-            object@ht_list_param$padding = GLOBAL_PADDING
             row_anno_max_top_extended = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
                 if(inherits(ht, "HeatmapAnnotation")) {
                     ht@extended[3]
@@ -352,7 +351,6 @@ setMethod(f = "adjust_heatmap_list",
         
         # and calcualte proper paddings
         if(TRUE) {
-            object@ht_list_param$padding = GLOBAL_PADDING
             column_anno_max_left_extended = max(do.call("unit.c", lapply(object@ht_list, function(ht) {
                 if(inherits(ht, "HeatmapAnnotation")) {
                     ht@extended[2]

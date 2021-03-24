@@ -605,6 +605,8 @@ setMethod(f = "draw",
         raster_resize = raster_resize
     )
 
+    padding = object@ht_list_param$padding
+
     code = expression({
 
         current_vp = current.viewport()$name

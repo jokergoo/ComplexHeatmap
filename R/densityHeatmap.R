@@ -343,3 +343,181 @@ ks_dist_1 = function(data) {
 
     as.dist(d)
 }
+
+# == title
+# Visualize Frequency Distribution by Heatmap
+#
+# == param
+# -data A matrix or a list. If it is a matrix, density is calculated by columns.
+# -breaks Pass to `graphics::hist`.
+# -col A vector of colors that density values are mapped to.
+# -color_space The color space in which colors are interpolated. Pass to `circlize::colorRamp2`.
+# -ylab Label on y-axis.
+# -column_title Title of the heatmap.
+# -title Same as ``column_title``.
+# -ylim Ranges on the y-axis.
+# -range Same as ``ylim``.
+# -title_gp Graphic parameters for title.
+# -ylab_gp Graphic parameters for y-labels.
+# -tick_label_gp Graphic parameters for y-ticks.
+# -column_order Order of columns.
+# -column_names_side Pass to `Heatmap`.
+# -show_column_names Pass to `Heatmap`.
+# -column_names_max_height Pass to `Heatmap`.
+# -column_names_gp Pass to `Heatmap`.
+# -column_names_rot Pass to `Heatmap`.
+# -cluster_columns Whether cluster columns?
+# -use_3d Whether to visualize the frequencies as a 3D heatmap with `Heatmap3D`?
+# -... Pass to `Heatmap` or `Heatmap3D` (if ``use_3d = TRUE``).
+#
+# == value
+# A `Heatmap-class` object. It can oly add other heatmaps/annotations vertically.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+# == example
+# matrix = matrix(rnorm(100), 10); colnames(matrix) = letters[1:10]
+# frequencyHeatmap(matrix)
+# frequencyHeatmap(matrix, use_3d = TRUE)
+frequencyHeatmap = function(data, 
+	breaks = "Sturges",
+	
+	col = brewer.pal(9, "Blues"),
+	color_space = "LAB", 
+	ylab = deparse(substitute(data)),
+	column_title = paste0("Frequency heatmap of ", deparse(substitute(data))),
+	title = column_title,
+	ylim = NULL,
+	range = ylim,
+
+	title_gp = gpar(fontsize = 14),
+	ylab_gp = gpar(fontsize = 12),
+	tick_label_gp = gpar(fontsize = 10),
+
+	column_order = NULL,
+	column_names_side = "bottom",
+	show_column_names = TRUE,
+	column_names_max_height = unit(6, "cm"),
+	column_names_gp = gpar(fontsize = 12),
+	column_names_rot = 90,
+	cluster_columns = FALSE,
+
+	use_3d = FALSE,
+	...) {
+
+	arg_list = list(...)
+	if(length(arg_list)) {
+		if(any(c("row_km", "row_split", "split", "km") %in% names(arg_list))) {
+			stop_wrap("frequency heatmaps do not allow row splitting.")
+		}
+		if(any(grepl("row", names(arg_list)))) {
+			stop_wrap("frequency heatmaps do not allow to set rows.")
+		}
+		if("anno" %in% names(arg_list)) {
+			stop_wrap("`anno` is removed from the argument. Please directly construct a `HeatmapAnnotation` object and set to `top_annotation` or `bottom_annotation`.")
+		}
+	}
+
+	ylab = ylab
+	column_title = column_title
+
+	if(!is.matrix(data) && !is.data.frame(data) && !is.list(data)) {
+		stop_wrap("only matrix and list are allowed.")
+	}
+	if(is.matrix(data)) {
+		data2 = as.list(as.data.frame(data))
+		names(data2) = colnames(data)
+		data = data2
+	}
+
+	h = hist(unlist(data), breaks = breaks, plot = FALSE)
+	breaks = h$breaks
+
+	min_x = min(breaks)
+	max_x = max(breaks)
+
+	freq_list = lapply(data, function(x) hist(x, plot = FALSE, breaks = breaks))
+
+	n = length(freq_list)
+	nm = names(freq_list)
+
+	mat = lapply(freq_list, function(x) {
+			rev(x$count)
+		})
+	mat = as.matrix(as.data.frame(mat))
+	colnames(mat) = nm
+
+	if(inherits(col, "function")) {
+		col = col(mat)
+	} else {
+		col = colorRamp2(seq(0, quantile(mat, 0.99, na.rm = TRUE), length = length(col)), col, space = color_space)
+	}
+
+	bb = grid.pretty(c(min_x, max_x))
+
+		
+	if(use_3d) {
+		ht = Heatmap3D(mat, col = col, name = "frequency", 
+			column_title = title,
+			column_title_gp = title_gp,
+			cluster_rows = FALSE, 
+			cluster_columns = cluster_columns,
+			column_names_side = column_names_side,
+			show_column_names = show_column_names,
+			column_names_max_height = column_names_max_height,
+			column_names_gp = column_names_gp,
+			column_names_rot = column_names_rot,
+			column_order = column_order,
+			left_annotation = rowAnnotation(axis = anno_empty(border = FALSE, 
+					width = grobHeight(textGrob(ylab, gp = ylab_gp))*2 + max_text_width(bb, gp = tick_label_gp) + unit(4, "mm")),
+				show_annotation_name = FALSE),
+			...
+		)
+	} else {
+		ht = Heatmap(mat, col = col, name = "frequency", 
+			column_title = title,
+			column_title_gp = title_gp,
+			cluster_rows = FALSE, 
+			cluster_columns = cluster_columns,
+			column_names_side = column_names_side,
+			show_column_names = show_column_names,
+			column_names_max_height = column_names_max_height,
+			column_names_gp = column_names_gp,
+			column_names_rot = column_names_rot,
+			column_order = column_order,
+			left_annotation = rowAnnotation(axis = anno_empty(border = FALSE, 
+					width = grobHeight(textGrob(ylab, gp = ylab_gp))*2 + max_text_width(bb, gp = tick_label_gp) + unit(4, "mm")),
+				show_annotation_name = FALSE),
+			...
+		)
+	}
+
+	random_str = paste(sample(c(letters, LETTERS, 0:9), 8), collapse = "")
+	ht@name = paste0(ht@name, "_", random_str)
+	names(ht@left_annotation) = paste0(names(ht@left_annotation), "_", random_str)
+
+	post_fun = function(ht) {
+		column_order = column_order(ht)
+		if(!is.list(column_order)) {
+			column_order = list(column_order)
+		}
+		n_slice = length(column_order)
+
+		decorate_annotation(paste0("axis_", random_str), {
+			grid.text(ylab, x = grobHeight(textGrob(ylab, gp = ylab_gp)), rot = 90)
+		}, slice = 1)
+
+		decorate_heatmap_body(paste0("frequency_", random_str), {
+			pushViewport(viewport(yscale = c(min_x, max_x), clip = FALSE))
+			grid.yaxis(gp = tick_label_gp)
+			upViewport()
+		}, column_slice = 1)
+
+	}
+
+	ht@heatmap_param$post_fun = post_fun
+
+	ht_list = ht
+	return(ht_list)
+}

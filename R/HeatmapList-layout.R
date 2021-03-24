@@ -167,8 +167,7 @@ setMethod(f = "make_layout",
         grid::downViewport(current_vp)
 
     }
-    object@ht_list_param$padding = padding
-
+    
     n_ht = length(object@ht_list)
     i_main = main_heatmap[1]
     direction = object@direction
@@ -1117,11 +1116,11 @@ setMethod(f = "make_layout",
     } else {
         object@annotation_legend_param$size = unit(c(0, 0), "null")
     }
-
     object@heatmap_legend_param$align_legend = align_heatmap_legend
     object@annotation_legend_param$align_legend = align_annotation_legend
 
     object = adjust_heatmap_list(object)
+
     object@layout$layout_index = rbind(heatmaplist = heatmap_list_layout_index("heatmap_list"), object@layout$layout_index)
     object@layout$graphic_fun_list = c(function(object) draw_heatmap_list(object), object@layout$graphic_fun_list)
 
