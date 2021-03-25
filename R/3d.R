@@ -160,7 +160,7 @@ Heatmap3D = function(matrix,
 		stop_wrap("`bar_rel_height` can only be set to a value between 0 and 1.")
 	}
 
-	Heatmap(matrix, ..., rect_gp = gpar(type = "none"),
+	ht = Heatmap(matrix, ..., rect_gp = gpar(type = "none"),
 		layer_fun = function(j, i, x, y, w, h, f) {
 			v = pindex(matrix, i, j)
 			od = rank(order(-as.numeric(y), -as.numeric(x)))
@@ -171,4 +171,6 @@ Heatmap3D = function(matrix,
 		show_column_dend = show_column_dend,
 		row_names_side = row_names_side,
 	)
+	ht@heatmap_param$type = "Heatmap3D"
+	ht
 }

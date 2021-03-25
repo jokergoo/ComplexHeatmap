@@ -57,7 +57,7 @@ Following parameters control the space between heatmap components:
 \describe{
   \item{DENDROGRAM_PADDING}{space bewteen dendrograms and heatmap body.}
   \item{DIMNAME_PADDING}{space between row/column names and heatmap body.}
-  \item{TITLE_PADDING}{space between row/column titles and heatmap body.}
+  \item{TITLE_PADDING}{space between row/column titles and heatmap body. The value can have length of two which corresponds to the botton and top padding.}
   \item{COLUMN_ANNO_PADDING}{space between column annotations and heatmap body.}
   \item{ROW_ANNO_PADDING}{space between row annotations and heatmap body.}
   \item{HEATMAP_LEGEND_PADDING}{space between heatmap legends and heatmaps}

@@ -44,7 +44,7 @@
 #
 # -DENDROGRAM_PADDING space bewteen dendrograms and heatmap body.
 # -DIMNAME_PADDING space between row/column names and heatmap body.
-# -TITLE_PADDING space between row/column titles and heatmap body.
+# -TITLE_PADDING space between row/column titles and heatmap body. The value can have length of two which corresponds to the botton and top padding.
 # -COLUMN_ANNO_PADDING space between column annotations and heatmap body.
 # -ROW_ANNO_PADDING space between row annotations and heatmap body.
 # -HEATMAP_LEGEND_PADDING space between heatmap legends and heatmaps

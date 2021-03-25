@@ -1450,6 +1450,7 @@ UpSet = function(m,
 			right_annotation = ra, col = c("0" = bg_pt_col, "1" = comb_col[1]),
 			row_order = comb_order, column_order = set_order, ...)
 	}
+	ht@heatmap_param$type = "UpSet"
 	attr(ht, "UpSet") = TRUE
 	ht
 }
