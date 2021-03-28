@@ -92,6 +92,10 @@ setMethod(f = "draw_heatmap_body",
         heatmap_width_pt = max(1, ceiling(convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE)))
         heatmap_height_pt = max(1, ceiling(convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)))
 
+        if(raster_quality < 1) raster_quality = 1
+        heatmap_width_pt = ceiling(heatmap_width_pt * raster_quality)
+        heatmap_height_pt = ceiling(heatmap_height_pt * raster_quality)
+
         matrix_is_resized = FALSE
         # resize on the matrix
         raster_resize_mat = object@heatmap_param$raster_resize_mat
@@ -132,14 +136,8 @@ setMethod(f = "draw_heatmap_body",
             temp_image_width = ceiling(max(heatmap_width_pt, 1))
             temp_image_height = ceiling(max(heatmap_height_pt, 1))
         } else {
-            if(is.character(raster_quality)) {
-                temp_image_width = ceiling(max(heatmap_width_pt, nc, 1))
-                temp_image_height = ceiling(max(heatmap_height_pt, nr, 1))
-            } else {
-                if(raster_quality < 1) raster_quality = 1
-                temp_image_width = ceiling(max(heatmap_width_pt*raster_quality, 1))
-                temp_image_height = ceiling(max(heatmap_height_pt*raster_quality, 1))
-            }
+            temp_image_width = ceiling(max(heatmap_width_pt, 1))
+            temp_image_height = ceiling(max(heatmap_height_pt, 1))
         }
         do.call(device_fun, c(list(filename = temp_image, 
             width = temp_image_width, height = temp_image_height), raster_device_param))

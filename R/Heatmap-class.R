@@ -467,6 +467,7 @@ Heatmap = function(matrix, col, name,
         column_km = 1
         if(verbose) qqcat("matrix is character. Do not cluster unless distance method is provided.\n")
     }
+    class(matrix) = "matrix"
     .Object@matrix = matrix
 
     .Object@matrix_param$row_km = row_km
