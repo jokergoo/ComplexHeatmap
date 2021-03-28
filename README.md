@@ -73,6 +73,7 @@ The full documentations are available at https://jokergoo.github.io/ComplexHeatm
 
 There are following blog posts focusing on specific topics:
 
+- [Make 3D heatmap](https://jokergoo.github.io/2021/03/24/3d-heatmap/)
 - [Translate from pheatmap to ComplexHeatmap](https://jokergoo.github.io/2020/05/06/translate-from-pheatmap-to-complexheatmap/)
 - [Set cell width/height in the heatmap](https://jokergoo.github.io/2020/05/11/set-cell-width/height-in-the-heatmap/)
 - [Interactive ComplexHeatmap](https://jokergoo.github.io/2020/05/15/interactive-complexheatmap/)
