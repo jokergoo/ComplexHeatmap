@@ -30,6 +30,7 @@
 # -keep.dendro Ignored.
 # -verbose Ignored.
 # -... Other arguments passed to `Heatmap`.
+# -run_draw Whether to run ``draw()`` function to the heatmap object.
 #
 # == details
 # This function aims to execute ``stats::heatmap`` code purely with ComplexHeatmap.
@@ -63,7 +64,8 @@ heatmap = function(x,
     ylab = NULL,
     keep.dendro = FALSE, 
     verbose = getOption("verbose"), 
-    ...) {
+    ...,
+    run_draw = TRUE) {
 
 	if(is.data.frame(x)) {
         warning_wrap("The input is a data frame, convert it to the matrix.")
@@ -244,7 +246,12 @@ heatmap = function(x,
     ht_param = c(ht_param, list(...))
     ht = do.call(Heatmap, ht_param)
     attr(ht, "translate_from") = "heatmap"
-    ht
+
+    if(run_draw) {
+        draw(ht)
+    } else {
+        ht
+    }
 }
 
 # == title
@@ -262,7 +269,7 @@ heatmap = function(x,
 # compare_heatmap(mat)
 compare_heatmap = function(...) {
     p1 = gridGraphics::echoGrob(function() stats::heatmap(...))
-    p2 = grid.grabExpr(draw(heatmap(...)))
+    p2 = grid.grabExpr(heatmap(...))
     grid.newpage()
     pushViewport(viewport(x = 0, width = 0.5, y = 0, height = unit(1, "npc") - unit(1, "cm"), just = c("left", "bottom")))
     grid.draw(p1)
@@ -345,6 +352,7 @@ compare_heatmap = function(...) {
 # -lwid Ignored.
 # -extrafun Ignored.
 # -... Other arguments passed to `Heatmap`.
+# -run_draw Whether to run ``draw()`` function to the heatmap object.
 #
 # == details
 # This function aims to execute ``gplots::heatmap.2`` code purely with ComplexHeatmap.
@@ -442,7 +450,8 @@ heatmap.2 = function(x,
 
     # extras
     extrafun = NULL,
-    ...
+    ...,
+    run_draw = TRUE
     ) {
 
     if(is.data.frame(x)) {
@@ -834,7 +843,12 @@ heatmap.2 = function(x,
     ht_param = c(ht_param, list(...))
     ht = do.call(Heatmap, ht_param)
     attr(ht, "translate_from") = "heatmap"
-    ht
+
+    if(run_draw) {
+        draw(ht)
+    } else {
+        ht
+    }
 }
 
 # == title
@@ -852,7 +866,7 @@ heatmap.2 = function(x,
 # compare_heatmap.2(mat)
 compare_heatmap.2 = function(...) {
     p1 = gridGraphics::echoGrob(function() gplots::heatmap.2(...))
-    p2 = grid.grabExpr(draw(heatmap.2(...)))
+    p2 = grid.grabExpr(heatmap.2(...))
     grid.newpage()
     pushViewport(viewport(x = 0, width = 0.5, y = 0, height = unit(1, "npc") - unit(1, "cm"), just = c("left", "bottom")))
     grid.draw(p1)

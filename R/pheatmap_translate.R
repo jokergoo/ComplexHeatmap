@@ -57,6 +57,7 @@
 # -name Name of the heatmap. This argument is passed to `Heatmap`.
 # -heatmap_legend_param  Pass to `Heatmap`.
 # -... Other arguments passed to `Heatmap`.
+# -run_draw Whether to run ``draw()`` function to the heatmap object.
 #
 # == details
 # This function aims to execute ``pheatmap::pheatmap`` code purely with ComplexHeatmap.
@@ -122,7 +123,8 @@ pheatmap = function(mat,
 
     # argument specific for Heatmap()
     heatmap_legend_param = list(),
-    ...
+    ...,
+    run_draw = TRUE
 ) {
 
   
@@ -459,7 +461,12 @@ pheatmap = function(mat,
     ht_param = c(ht_param, list(...))
     ht = do.call(Heatmap, ht_param)
     attr(ht, "translate_from") = "pheatmap"
-    ht
+
+    if(run_draw) {
+        draw(ht)
+    } else {
+        ht
+    }
 }
 
 # == title
@@ -480,7 +487,7 @@ compare_pheatmap = function(...) {
         stop_wrap("pheatmap package should be installed.")
     }
     p1 = pheatmap::pheatmap(..., silent = TRUE)$gtable
-    p2 = grid.grabExpr(draw(pheatmap(...)))
+    p2 = grid.grabExpr(pheatmap(...))
     grid.newpage()
     pushViewport(viewport(x = 0, width = 0.5, y = 0, height = unit(1, "npc") - unit(1, "cm"), just = c("left", "bottom")))
     grid.draw(p1)
