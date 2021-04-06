@@ -60,7 +60,8 @@ pheatmap(mat,
     
     # argument specific for Heatmap()
     heatmap_legend_param = list(),
-    ...)
+    ...,
+    run_draw = TRUE)
 }
 \arguments{
 
@@ -116,6 +117,7 @@ pheatmap(mat,
   \item{name}{Name of the heatmap. This argument is passed to \code{\link{Heatmap}}.}
   \item{heatmap_legend_param}{Pass to \code{\link{Heatmap}}.}
   \item{...}{Other arguments passed to \code{\link{Heatmap}}.}
+  \item{run_draw}{Whether to run \code{draw()} function to the heatmap object.}
 
 }
 \details{

@@ -10,8 +10,8 @@ Method dispatch page for \code{row_dend}.
 \code{row_dend} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{row_dend,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 \item \code{\link{row_dend,HeatmapList-method}}, \code{\link{HeatmapList-class}} class method
+\item \code{\link{row_dend,Heatmap-method}}, \code{\link{Heatmap-class}} class method
 }
 }
 \examples{
