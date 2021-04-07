@@ -10,7 +10,7 @@ Text Annotation
 anno_text(x, which = c("column", "row"), gp = gpar(),
     rot = guess_rot(), just = guess_just(),
     offset = guess_location(), location = guess_location(),
-    width = NULL, height = NULL)
+    width = NULL, height = NULL, show_name = FALSE)
 }
 \arguments{
 
@@ -23,6 +23,7 @@ anno_text(x, which = c("column", "row"), gp = gpar(),
   \item{location}{Position of the text. By default \code{rot}, \code{just} and \code{location} are automatically inferred according to whether it is a row annotation or column annotation. The value of \code{location} should be a \code{\link[grid]{unit}} object, normally in \code{npc} unit. E.g. \code{unit(0, 'npc')} means the most left of the annotation region and \code{unit(1, 'npc')} means the most right of the annotation region. }
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
   \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
+  \item{show_name}{Whether to show the annotation name.}
 
 }
 \value{
