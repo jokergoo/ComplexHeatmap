@@ -1,6 +1,7 @@
 CHANGES in VERSION 2.7.10
 
 * `anno_simple()`: text symbols can have nchar > 1.
+* `anno_text()`: add `show_name` argument.
 
 =========================
 

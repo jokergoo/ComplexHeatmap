@@ -2052,6 +2052,7 @@ anno_density = function(x, which = c("column", "row"),
 #           the annotation region. 
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+# -show_name Whether to show the annotation name.
 #
 # == value
 # An annotation function which can be used in `HeatmapAnnotation`.
@@ -2077,7 +2078,7 @@ anno_density = function(x, which = c("column", "row"),
 anno_text = function(x, which = c("column", "row"), gp = gpar(), 
 	rot = guess_rot(), just = guess_just(), 
 	offset = guess_location(), location = guess_location(),
-	width = NULL, height = NULL) {
+	width = NULL, height = NULL, show_name = FALSE) {
 
 	ef = function() NULL
 	if(is.null(.ENV$current_annotation_which)) {
@@ -2205,7 +2206,7 @@ anno_text = function(x, which = c("column", "row"), gp = gpar(),
 		height = height,
 		n = n,
 		var_import = list(value, gp, just, rot, location),
-		show_name = FALSE
+		show_name = show_name
 	)
 
 	anno@subset_rule$value = subset_vector
