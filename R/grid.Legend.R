@@ -933,7 +933,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 
 	# adjust to the left extension, caused by e.g. title
 	ext = max(legend_extension, labels_width[1]*0.5 - offset)
-	xrange = convertX(unit.c(-ext,
+	xrange = convertX(unit.c(-1*ext,
 			legend_body_width - offset + labels_width[length(labels_width)]*0.5
 	), "mm", valueOnly = TRUE)
 

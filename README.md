@@ -17,7 +17,7 @@ The [**InteractiveComplexHeatmap**](https://github.com/jokergoo/InteractiveCompl
 
 ## Citation
 
-Zuguang Gu, Roland Eils and Matthias Schlesner, [Complex heatmaps reveal patterns and correlations in multidimensional genomic data](http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract), Bioinformatics, 2016
+Zuguang Gu, et al., [Complex heatmaps reveal patterns and correlations in multidimensional genomic data](http://bioinformatics.oxfordjournals.org/content/early/2016/05/20/bioinformatics.btw313.abstract), Bioinformatics, 2016
 
 
 ## Install
