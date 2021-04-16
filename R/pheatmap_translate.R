@@ -126,7 +126,6 @@ pheatmap = function(mat,
     ...,
     run_draw = TRUE
 ) {
-
   
     if(is.data.frame(mat)) {
         warning_wrap("The input is a data frame, convert it to the matrix.")
