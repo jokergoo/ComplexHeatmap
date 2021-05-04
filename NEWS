@@ -17,6 +17,8 @@ CHANGES in VERSION 2.7.8
 * add `cluster_between_groups()`.
 * add `graphics` argument in `anno_block()`.
 
+=========================
+
 CHANGES in VERSION 2.7.7
 
 * discrete numeric legend labels are in correct order now.
