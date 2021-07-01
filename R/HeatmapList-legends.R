@@ -905,13 +905,13 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
 
     if(plot) {
         if(side == "right") {
-            draw(pk, x = unit(1, "npc"), just = "right")
+            draw(pk, x = padding[2] + width*0.5)
         } else if(side == "left") {
-            draw(pk, x = unit(0, "npc"), just = "left")
+            draw(pk, x = width*0.5)
         } else if(side == "top") {
-            draw(pk, y = unit(1, "npc"), just = "top")
+            draw(pk, y = padding[1] + height*0.5)
         } else if(side == "bottom") {
-            draw(pk, y = unit(0, "npc"), just = "bottom")
+            draw(pk, y = height*0.5)
         }
 
         if(pk@multiple > 1) {

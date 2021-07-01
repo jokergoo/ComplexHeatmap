@@ -530,6 +530,12 @@ Heatmap = function(matrix, col, name,
     .Object@matrix_param$border_gp = border_gp
     .Object@matrix_param$cell_fun = cell_fun
     .Object@matrix_param$layer_fun = layer_fun
+
+    if(nrow(matrix) > 100 || ncol(matrix) > 100) {
+        if(!is.null(cell_fun)) {
+            warning_wrap("You defined `cell_fun` for a heatmap with more than 100 rows or columns, which might be very slow to draw. Consider to use the vectorized version `layer_fun`.")
+        }
+    }
     
     ### color for main matrix #########
     if(ncol(matrix) > 0 && nrow(matrix) > 0) {

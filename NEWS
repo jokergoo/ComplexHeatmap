@@ -1,3 +1,10 @@
+CHANGES in VERSION 2.9.1
+
+* fixed a bug of editing gTree object where the list element "just" has been 
+  changed to "justification" in recent R versions.
+
+=========================
+
 CHANGES in VERSION 2.7.10
 
 * `anno_simple()`: text symbols can have nchar > 1.

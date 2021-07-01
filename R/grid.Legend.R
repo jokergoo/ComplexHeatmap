@@ -1277,12 +1277,26 @@ edit_vp_in_legend_grob = function(gtree, ...) {
 		gtree$vp = do.call(viewport, vp_param)
 		if(!is.null(valid.just)) {
 			gtree$vp$valid.just = valid.just
+			gtree$vp$justification = valid.just
 		}
 	} else {
 		vp_param = list(...)
 		nm = names(vp_param)
 		if("just" %in% nm) {
-			vp_param$valid.just = valid_just(vp_param$just)
+			if(is.numeric(vp_param$just)) {
+				vp_param$valid.just = vp_param$just
+			} else {
+				vp_param$valid.just = valid_just(vp_param$just)
+			}
+		}
+		if("justification" %in% nm) {
+			if(is.numeric(vp_param$justification)) {
+				vp_param$valid.just = vp_param$justification
+			} else {
+				vp_param$valid.just = valid_just(vp_param$justification)
+			}
+		} else {
+			vp_param$justification = vp_param$valid.just
 		}
 		
 		for(nm in names(vp_param)) {
@@ -1296,6 +1310,7 @@ edit_vp_in_legend_grob = function(gtree, ...) {
 }
 
 valid_just = function(just) {
+	if(is.numeric(just)) return(just)
 	if(length(just) == 1) {
 		just = switch(just,
 			"centre" = c("center", "center"),
@@ -1351,7 +1366,7 @@ valid_just = function(just) {
 setMethod(f = "draw",
 	signature = "Legends",
 	definition = function(object, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre", test = FALSE) {
-	
+
 	legend = object@grob
 	legend = edit_vp_in_legend_grob(legend, x = x, y = y, valid.just = valid_just(just))
 

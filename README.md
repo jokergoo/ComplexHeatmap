@@ -1,6 +1,6 @@
 # Make Complex Heatmaps <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/"><img src="https://jokergoo.github.io/ComplexHeatmap-reference/book/complexheatmap-cover.jpg" width=240 align="right" style="border:2px solid black;" ></a>
 
-[![Build Status](https://travis-ci.org/jokergoo/ComplexHeatmap.svg)](https://travis-ci.org/jokergoo/ComplexHeatmap) 
+[![R-CMD-check](https://github.com/jokergoo/ComplexHeatmap/workflows/R-CMD-check/badge.svg)](https://github.com/jokergoo/ComplexHeatmap/actions)
 [![codecov](https://img.shields.io/codecov/c/github/jokergoo/ComplexHeatmap.svg)](https://codecov.io/github/jokergoo/ComplexHeatmap) 
 [![bioc](http://www.bioconductor.org/shields/downloads/devel/ComplexHeatmap.svg)](https://bioconductor.org/packages/stats/bioc/ComplexHeatmap/) 
 [![bioc](http://www.bioconductor.org/shields/years-in-bioc/ComplexHeatmap.svg)](http://bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html)
