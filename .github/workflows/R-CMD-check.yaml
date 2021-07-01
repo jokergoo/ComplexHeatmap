@@ -22,6 +22,7 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
       - name: Install dependencies
         run: |
+          setRepositories(ind = 1:5)
           install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
@@ -30,3 +31,7 @@ jobs:
           options(crayon.enabled = TRUE)
           rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
+      - name: Install X11 dependencies on MacOS
+        if: runner.os == 'macOS'
+        run: |
+          brew install xquartz
