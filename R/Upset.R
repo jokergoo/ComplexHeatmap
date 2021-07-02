@@ -1419,7 +1419,11 @@ UpSet = function(m,
 			subm = matrix(pindex(m2, i, j), nrow = nr, byrow = FALSE)
 			for(k in seq_len(nc)) {
 				if(k %% 2) {
-					grid.rect(x = k/nc, width = 1/nc, just = "right", gp = gpar(fill = "#F0F0F0", col = NA))
+					grid.rect(x = k/nc, width = 1/nc, just = "right", gp = gpar(fill = bg_col[1], col = NA))
+				} else {
+					if(length(bg_col) > 1) {
+						grid.rect(x = k/nc, width = 1/nc, just = "right", gp = gpar(fill = bg_col[2], col = NA))
+					}
 				}
 			}
 			grid.points(x, y, size = pt_size, pch = 16, gp = gpar(col = ifelse(pindex(m2, i, j), comb_col[i], "#CCCCCC")))
