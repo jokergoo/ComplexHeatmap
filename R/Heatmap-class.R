@@ -803,6 +803,9 @@ Heatmap = function(matrix, col, name,
             }
         }
     }
+    if(!is.null(top_annotation)) {
+        validate_anno_names_with_matrix(matrix, top_annotation, "column")
+    }
     
     .Object@bottom_annotation = bottom_annotation # a `HeatmapAnnotation` object
     if(is.null(bottom_annotation)) {
@@ -825,6 +828,9 @@ Heatmap = function(matrix, col, name,
                 stop_wrap("number of observations in bottom annotation should be as same as ncol of the matrix.")
             }
         }
+    }
+    if(!is.null(bottom_annotation)) {
+        validate_anno_names_with_matrix(matrix, bottom_annotation, "column")
     }
 
     .Object@left_annotation = left_annotation # a `rowAnnotation` object
@@ -849,6 +855,9 @@ Heatmap = function(matrix, col, name,
             }
         }
     }
+    if(!is.null(left_annotation)) {
+        validate_anno_names_with_matrix(matrix, left_annotation, "row")
+    }
 
     .Object@right_annotation = right_annotation # a `rowAnnotation` object
     if(is.null(right_annotation)) {
@@ -871,6 +880,9 @@ Heatmap = function(matrix, col, name,
                 stop_wrap("number of observations in right annotation should be same as nrow of the matrix.")
             }
         }
+    }
+    if(!is.null(right_annotation)) {
+        validate_anno_names_with_matrix(matrix, right_annotation, "row")
     }
 
     .Object@layout = list(

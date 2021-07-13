@@ -204,7 +204,8 @@ ht_opt = setGlobalOptions(
 	),
 	save_last = list(
 		.value = FALSE
-	)
+	),
+	"validate_names" = TRUE
 )
 
 

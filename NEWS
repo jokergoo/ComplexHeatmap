@@ -1,6 +1,7 @@
 CHANGES in VERSION 2.9.2
 
 * fixed a bug of `bg_col` for transposed matrix in `UpSet()`.
+* print warnings if names of annotations have different orders from the matrix row/column names.
 
 CHANGES in VERSION 2.9.1
 

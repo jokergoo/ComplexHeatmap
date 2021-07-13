@@ -220,8 +220,13 @@ HeatmapAnnotation = function(...,
 		if(nm %in% names(anno_arg_list)) {
 			anno_value_list[[nm]] = anno_arg_list[[nm]]
 		} else if(nm == "df") {
-			for(nm2 in colnames(df))
-			anno_value_list[[nm2]] = df[, nm2]
+			for(nm2 in colnames(df)) {
+				if(is.null(rownames(df))) {
+					anno_value_list[[nm2]] = df[, nm2]
+				} else {
+					anno_value_list[[nm2]] = structure(df[, nm2], names = rownames(df))
+				}
+			}
 		}
 	}
 

@@ -886,3 +886,11 @@ nobs.SingleAnnotation = function(object, ...) {
     }
 }
 
+names.SingleAnnotation = function(x) {
+    value = x@fun@var_env$value
+    if(!is.null(dim(value))) {
+        rownames(value)
+    } else {
+        names(value)
+    }
+}

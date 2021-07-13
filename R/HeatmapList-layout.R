@@ -1135,10 +1135,12 @@ setMethod(f = "make_layout",
                         # if same set but different order
                         if(setequal(main_matrix_rn, matrix_rn)) {
                             if(!identical(main_matrix_rn, matrix_rn)) {
-                                warning_wrap("Row names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
+                                warning_wrap("Row names of heatmap ", i, " is not consistent with the main heatmap (", i_main, "). It may lead to wrong conclusion of your data. Please double check.", sep = "")
                             }
                         }
                     }
+                } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                    validate_anno_names_with_matrix(object@ht_list[[i_main]]@matrix, object@ht_list[[i]], "row")
                 }
             }
         }
@@ -1153,10 +1155,12 @@ setMethod(f = "make_layout",
                         # if same set but different order
                         if(setequal(main_matrix_cn, matrix_cn)) {
                             if(!identical(main_matrix_cn, matrix_cn)) {
-                                warning_wrap("Column names of heatmap ", i, " is not consistent as the main heatmap (", i_main, ")", sep = "")
+                                warning_wrap("Column names of heatmap ", i, " is not consistent with the main heatmap (", i_main, "). It may lead to wrong conclusion of your data. Please double check.", sep = "")
                             }
                         }
                     }
+                } else if(inherits(object@ht_list[[i]], "HeatmapAnnotation")) {
+                    validate_anno_names_with_matrix(object@ht_list[[i_main]]@matrix, object@ht_list[[i]], "column")
                 }
             }
         }

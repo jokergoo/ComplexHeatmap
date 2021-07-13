@@ -230,3 +230,36 @@ summary.Heatmap = function(object, ...) {
         qqcat("has no right annotation\n")
     }
 }
+
+
+validate_anno_names_with_matrix = function(m, ha, which) {
+    if(!ht_opt$validate_names) {
+        return(NULL)
+    }
+    if(which == "column") {
+        if(is.null(colnames(m))) {
+            return(NULL)
+        }
+        cn = colnames(m)
+        for(i in seq_along(ha@anno_list)) {
+            if(setequal(cn, names(ha@anno_list[[i]]))) {
+                if(!identical(cn, names(ha@anno_list[[i]]))) {
+                    warning_wrap(qq("Values in column annotation '@{ha@anno_list[[i]]@name}' have a different order of names from the matrix column names. It may lead to wrong conclusion of your data. Please double check."))
+                }
+            }
+        }
+    }
+    if(which == "row") {
+        if(is.null(rownames(m))) {
+            return(NULL)
+        }
+        rn = rownames(m)
+        for(i in seq_along(ha@anno_list)) {
+            if(setequal(rn, names(ha@anno_list[[i]]))) {
+                if(!identical(rn, names(ha@anno_list[[i]]))) {
+                    warning_wrap(qq("Values in row annotation '@{ha@anno_list[[i]]@name}' have a different order of names from the matrix row names. It may lead to wrong conclusion of your data. Please double check."))
+                }
+            }
+        }
+    }
+}
