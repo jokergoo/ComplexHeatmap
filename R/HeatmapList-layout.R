@@ -1135,7 +1135,7 @@ setMethod(f = "make_layout",
                         # if same set but different order
                         if(setequal(main_matrix_rn, matrix_rn)) {
                             if(!identical(main_matrix_rn, matrix_rn)) {
-                                warning_wrap("Row names of heatmap ", i, " is not consistent with the main heatmap (", i_main, "). It may lead to wrong conclusion of your data. Please double check.", sep = "")
+                                warning_wrap("Row names of heatmap ", i, " are not consistent with the main heatmap (", i_main, "). It may lead to wrong conclusion of your data. Please double check.", sep = "")
                             }
                         }
                     }
@@ -1155,7 +1155,7 @@ setMethod(f = "make_layout",
                         # if same set but different order
                         if(setequal(main_matrix_cn, matrix_cn)) {
                             if(!identical(main_matrix_cn, matrix_cn)) {
-                                warning_wrap("Column names of heatmap ", i, " is not consistent with the main heatmap (", i_main, "). It may lead to wrong conclusion of your data. Please double check.", sep = "")
+                                warning_wrap("Column names of heatmap ", i, " are not consistent with the main heatmap (", i_main, "). It may lead to wrong conclusion of your data. Please double check.", sep = "")
                             }
                         }
                     }
