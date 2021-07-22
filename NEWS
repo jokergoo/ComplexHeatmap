@@ -1,7 +1,16 @@
+CHANGES in VERSION 2.9.3
+
+* `pheatmap()`/`heatmap()`/`heatmap.2()`: set default of run_draw to FALSE.
+* throw error when the heatmaps (list) are already initialized by draw() when adding them.
+
+=========================
+
 CHANGES in VERSION 2.9.2
 
 * fixed a bug of `bg_col` for transposed matrix in `UpSet()`.
 * print warnings if names of annotations have different orders from the matrix row/column names.
+
+=========================
 
 CHANGES in VERSION 2.9.1
 

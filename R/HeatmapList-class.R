@@ -106,6 +106,10 @@ setMethod(f = "add_heatmap",
         stop_wrap("The heatmap list should only be all horizontal or vertical. Maybe you can move some of the row annotations to the 'left_annotation'/'right_annotation' of the heatmap if you want to make the heatmap list vertical. Or similarly, to move independent column annotations to 'top_annotation'/'bottom_annotation' if you want the heatmap list horizontal.")
     }
 
+    if(object@layout$initialized) {
+        stop_wrap("The heatmap object should not be processed by draw().")
+    }
+
     # check settings of this new heatmap
     if(inherits(x, "Heatmap")) {
         ht_name = x@name
@@ -124,6 +128,9 @@ setMethod(f = "add_heatmap",
         object@ht_list = c(object@ht_list, x)
         
     } else if(inherits(x, "HeatmapList")) {
+        if(x@layout$initialized) {
+            stop_wrap("The heatmap object should not be processed by draw().")
+        }
         ht_name = names(x@ht_list)
         object@ht_list = c(object@ht_list, x@ht_list)
     }
@@ -1281,4 +1288,24 @@ which_last_ht = function(ht_list) {
 
 which_main_ht = function(ht_list) {
     ht_list@ht_list_param$main_heatmap
+}
+
+
+# remove the effect from make_layout
+# return obj@ht_list
+resetHeatmapList = function(ht_list) {
+    ht_list@ht_list = lapply(ht_list@ht_list, function(x) {
+        if(inherits(x, "Heatmap")) {
+            resetHeatmap(x)
+        } else {
+            x
+        }
+    })
+    ht_list
+}
+
+
+resetHeatmap = function(ht) {
+    ht@layout = list(layout_size = list(column_title_top_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_dend_top_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_anno_top_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_names_top_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_title_bottom_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_dend_bottom_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_anno_bottom_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_names_bottom_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_title_left_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_dend_left_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_names_left_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_dend_right_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_names_right_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_title_right_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_anno_left_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_anno_right_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2"))), layout_index = structure(logical(0), .Dim = c(0L,  2L)), graphic_fun_list = list(), initialized = FALSE)
+    ht
 }

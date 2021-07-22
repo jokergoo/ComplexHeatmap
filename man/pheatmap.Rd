@@ -56,12 +56,12 @@ pheatmap(mat,
     height = NA,
     silent = FALSE,
     na_col = "#DDDDDD",
-    name = " ",
+    name = NULL,
     
     # argument specific for Heatmap()
     heatmap_legend_param = list(),
     ...,
-    run_draw = TRUE)
+    run_draw = FALSE)
 }
 \arguments{
 

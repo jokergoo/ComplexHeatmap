@@ -65,7 +65,7 @@ heatmap = function(x,
     keep.dendro = FALSE, 
     verbose = getOption("verbose"), 
     ...,
-    run_draw = TRUE) {
+    run_draw = FALSE) {
 
 	if(is.data.frame(x)) {
         warning_wrap("The input is a data frame, convert it to the matrix.")
@@ -451,7 +451,7 @@ heatmap.2 = function(x,
     # extras
     extrafun = NULL,
     ...,
-    run_draw = TRUE
+    run_draw = FALSE
     ) {
 
     if(is.data.frame(x)) {
