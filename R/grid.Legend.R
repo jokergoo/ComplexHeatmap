@@ -583,7 +583,8 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 						fl[[k]](x = grid_x[1] + grid_width[i]*0.5, y = grid_y[k], w = grid_width[i], h = row_height_no_gap[k])
 					}, 
 					width = convertWidth(grid_width[i], "inch", valueOnly = TRUE), 
-					height = convertHeight(row_height_no_gap[k], "inch", valueOnly = TRUE)
+					height = convertHeight(row_height_no_gap[k], "inch", valueOnly = TRUE),
+					wrap = TRUE
 				)
 					
 			}

@@ -269,7 +269,7 @@ heatmap = function(x,
 # compare_heatmap(mat)
 compare_heatmap = function(...) {
     p1 = gridGraphics::echoGrob(function() stats::heatmap(...))
-    p2 = grid.grabExpr(heatmap(...))
+    p2 = grid.grabExpr(draw(heatmap(...)))
     grid.newpage()
     pushViewport(viewport(x = 0, width = 0.5, y = 0, height = unit(1, "npc") - unit(1, "cm"), just = c("left", "bottom")))
     grid.draw(p1)
@@ -866,7 +866,7 @@ heatmap.2 = function(x,
 # compare_heatmap.2(mat)
 compare_heatmap.2 = function(...) {
     p1 = gridGraphics::echoGrob(function() gplots::heatmap.2(...))
-    p2 = grid.grabExpr(heatmap.2(...))
+    p2 = grid.grabExpr(draw(heatmap.2(...)))
     grid.newpage()
     pushViewport(viewport(x = 0, width = 0.5, y = 0, height = unit(1, "npc") - unit(1, "cm"), just = c("left", "bottom")))
     grid.draw(p1)

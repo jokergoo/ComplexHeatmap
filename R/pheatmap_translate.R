@@ -486,7 +486,7 @@ compare_pheatmap = function(...) {
         stop_wrap("pheatmap package should be installed.")
     }
     p1 = pheatmap::pheatmap(..., silent = TRUE)$gtable
-    p2 = grid.grabExpr(pheatmap(...))
+    p2 = grid.grabExpr(draw(pheatmap(...)))
     grid.newpage()
     pushViewport(viewport(x = 0, width = 0.5, y = 0, height = unit(1, "npc") - unit(1, "cm"), just = c("left", "bottom")))
     grid.draw(p1)
