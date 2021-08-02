@@ -87,3 +87,18 @@ if(requireNamespace("pheatmap")) {
 	callback = function(hc, ...){dendsort(hc)}
 	compare_pheatmap(test, clustering_callback = callback)
 }
+
+
+set.seed(42)
+nsamples <- 10
+
+mat <- matrix(rpois(20*nsamples, 20), ncol=nsamples)
+colnames(mat) <- paste0("sample", seq_len(ncol(mat)))
+rownames(mat) <- paste0("gene", seq_len(nrow(mat)))
+
+annot <- data.frame(
+  labs = sample(c("A","B","C","D"), size = ncol(mat), replace = TRUE),
+  row.names = colnames(mat)
+)
+do.call(ComplexHeatmap::pheatmap, ins[1])
+do.call(ComplexHeatmap::pheatmap, ins)
