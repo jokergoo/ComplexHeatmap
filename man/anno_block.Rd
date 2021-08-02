@@ -25,7 +25,7 @@ anno_block(gp = gpar(), labels = NULL, labels_gp = gpar(),
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
   \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
   \item{show_name}{Whether show annotatio name.}
-  \item{graphics}{A self-defined function that draws graphics in each slice. It must have two arguments: 1. row/column indices for the  current slice and a vector of levels from the split variable that correspond to current slice. When \code{graphics} is set, all other graphics parameters in \code{\link{anno_block}} are ignored.}
+  \item{graphics}{A self-defined function that draws graphics in each slice. It must have two arguments: 1. row/column indices for the  current slice and 2. a vector of levels from the split variable that correspond to current slice. When \code{graphics} is set, all other graphics parameters in \code{\link{anno_block}} are ignored.}
 
 }
 \details{
