@@ -764,7 +764,7 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	hh = (legend_body_height - 2*offset)*(1/length(colors))
 	x2 = unit.c(unit(0, "npc"), x2, unit(0, "npc"))
 	y2 = unit.c(offset*0.5, y2, legend_body_height - offset*0.5)
-	hh = unit.c(offset, hh, offset)
+	hh = unit.c(offset, rep(hh, length(y2)-2), offset)
 	colors = c(colors[1], colors, colors[length(colors)])
 	gl = c(gl, list(
 		rectGrob(x2, rev(y2), width = grid_width, height = hh, just = c("left", "center"),
@@ -970,7 +970,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	ww = (legend_body_width - 2*offset)*(1/length(colors))
 	y2 = unit.c(unit(1, "npc"), y2, unit(1, "npc"))
 	x2 = unit.c(unit(0, "npc"), x2, legend_body_width - offset)
-	ww = unit.c(offset, ww, offset)
+	ww = unit.c(offset, rep(ww, length(x2) - 2), offset)
 	colors = c(colors[1], colors, colors[length(colors)])
 	
 	gl = c(gl, list(

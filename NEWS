@@ -4,6 +4,7 @@ CHANGES in VERSION 2.9.3
 * throw error when the heatmaps (list) are already initialized by draw() when adding them.
 * set `wrap = TRUE` in `grid.grabExpr()` when capturing the legend objects.
 * `make_comb_mat()`: support `GRangesList` object as input.
+* legends: fixed a bug of the grid heights were not correctedly calculated.
 
 =========================
 
