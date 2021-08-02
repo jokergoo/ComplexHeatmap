@@ -100,5 +100,6 @@ annot <- data.frame(
   labs = sample(c("A","B","C","D"), size = ncol(mat), replace = TRUE),
   row.names = colnames(mat)
 )
+ins <- list(mat = mat, annotation_col = annot)
 do.call(ComplexHeatmap::pheatmap, ins[1])
 do.call(ComplexHeatmap::pheatmap, ins)
