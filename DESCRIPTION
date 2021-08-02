@@ -8,12 +8,12 @@ Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.5.0), methods, grid, graphics, stats, grDevices
 Imports: circlize (>= 0.4.5), GetoptLong, colorspace, clue,
     RColorBrewer, GlobalOptions (>= 0.1.0), png,
-    Cairo, digest, IRanges, matrixStats, foreach, doParallel
+    digest, IRanges, matrixStats, foreach, doParallel
 Suggests: testthat (>= 1.0.0), knitr, markdown, dendsort, 
     jpeg, tiff, fastcluster, EnrichedHeatmap,
     dendextend (>= 1.0.1), grImport, grImport2, glue,
     GenomicRanges, gridtext, pheatmap (>= 1.0.12),
-    gridGraphics, gplots, rmarkdown
+    gridGraphics, gplots, rmarkdown, Cairo
 VignetteBuilder: knitr
 Description: Complex heatmaps are efficient to visualize associations 
     between different sources of data sets and reveal potential patterns. 

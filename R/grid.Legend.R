@@ -583,8 +583,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 						fl[[k]](x = grid_x[1] + grid_width[i]*0.5, y = grid_y[k], w = grid_width[i], h = row_height_no_gap[k])
 					}, 
 					width = convertWidth(grid_width[i], "inch", valueOnly = TRUE), 
-					height = convertHeight(row_height_no_gap[k], "inch", valueOnly = TRUE),
-					wrap = TRUE
+					height = convertHeight(row_height_no_gap[k], "inch", valueOnly = TRUE)
 				)
 					
 			}
@@ -753,13 +752,13 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	
 	## colors
 	at2 = unlist(lapply(seq_len(n_labels - 1), function(i) {
-		x = seq(at[i], at[i+1], length = round((at[i+1]-at[i])/(at[k]-at[1])*100))
+		x = seq(at[i], at[i+1], length.out = round((at[i+1]-at[i])/(at[k]-at[1])*100))
 		x = x[-length(x)]
 	}))
 	at2 = c(at2, at[length(at)])
 	colors = col_fun(at2)
 	x2 = unit(rep(0, length(colors)), "npc")
-	y2 = seq(0, 1, length = length(colors)+1); y2 = y2[-length(y2)]
+	y2 = seq(0, 1, length.out = length(colors)+1); y2 = y2[-length(y2)]
 	y2 = y2 * (legend_body_height - 2*offset) + offset
 	y2 = y2 + (y2[2] - y2[1])*0.5
 	hh = (legend_body_height - 2*offset)*(1/length(colors))
@@ -959,13 +958,13 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	))
 
 	at2 = unlist(lapply(seq_len(n_labels - 1), function(i) {
-		x = seq(at[i], at[i+1], length = round((at[i+1]-at[i])/(at[k]-at[1])*100))
+		x = seq(at[i], at[i+1], length.out = round((at[i+1]-at[i])/(at[k]-at[1])*100))
 		x = x[-length(x)]
 	}))
 	at2 = c(at2, at[length(at)])
 	colors = col_fun(at2)
 	y2 = unit(rep(1, length(colors)), "npc")
-	x2 = seq(0, 1, length = length(colors)+1); x2 = x2[-length(x2)]
+	x2 = seq(0, 1, length.out = length(colors)+1); x2 = x2[-length(x2)]
 	x2 = x2 * (legend_body_width - 2*offset) + offset
 	x2 = x2 + (x2[2] - x2[1])*0.5
 	ww = (legend_body_width - 2*offset)*(1/length(colors))

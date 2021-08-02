@@ -186,6 +186,9 @@ make_comb_mat_from_list = function(lt, mode, value_fun = length, top_n_sets = In
     	stop_wrap("The list must have names.")
     }
 
+    if(inherits(lt, "GRangesList")) {
+    	lt = as.list(lt)
+    }
     if(inherits(lt[[1]], "GRanges")) {
     	union = getFromNamespace("union", ns = "BiocGenerics")
     	intersect = getFromNamespace("intersect", ns = "BiocGenerics")
