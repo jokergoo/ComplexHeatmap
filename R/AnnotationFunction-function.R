@@ -665,7 +665,7 @@ validate_axis_param = function(axis_param, which) {
 	return(dft)
 }
 
-construct_axis_grob = function(axis_param, which, data_scale) {
+construct_axis_grob = function(axis_param, which, data_scale, format = NULL) {
 	axis_param_default = default_axis_param(which)
 
 	for(nm in setdiff(names(axis_param_default), names(axis_param))) {
@@ -675,13 +675,20 @@ construct_axis_grob = function(axis_param, which, data_scale) {
 	if(is.null(axis_param$at)) {
 		at = pretty_breaks(data_scale)
 		axis_param$at = at
-		axis_param$labels = at
+		if(is.null(format)) {
+			axis_param$labels = at
+		} else {
+			axis_param$labels = format(at)
+		}
 	}
 
 	if(is.null(axis_param$labels)) {
-		axis_param$labels = axis_param$at
+		if(is.null(format)) {
+			axis_param$labels = axis_param$at
+		} else {
+			axis_param$labels = format(axis_param$at)
+		}
 	}
-
 	axis_param$scale = data_scale
 	axis_grob = do.call(annotation_axis_grob, axis_param)
 	return(axis_grob)
@@ -1239,6 +1246,8 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			stop_wrap("Since `x` is a matrix, the sign of each row should be either all positive or all negative.")
 		}
 	}
+
+	labels_format = attr(x, "labels_format")
 	# convert everything to matrix
 	if(is.null(dim(x))) x = matrix(x, ncol = 1)
 	nc = ncol(x)
@@ -1288,6 +1297,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	}
 
 	value = x
+	attr(value, "labels_format") = labels_format
 
 	if(ncol(value) == 1) {
 		if(add_numbers) {
@@ -1302,7 +1312,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	}
 
 	axis_param = validate_axis_param(axis_param, which)
-	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
+	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale, format = labels_format) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
 		n = length(index)
@@ -1320,9 +1330,17 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, index))
 			if(add_numbers) {
 				if(axis_param$direction == "normal") {
-					grid.text(value[index], x = unit(baseline + width, "native") + numbers_offset, y = n - seq_along(index) + 1, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("left"), rot = numbers_rot)
+					txt = value[index]
+					if(!is.null(attr(value, "labels_format"))) {
+						txt = attr(value, "labels_format")(value[index])
+					}
+					grid.text(txt, x = unit(baseline + width, "native") + numbers_offset, y = n - seq_along(index) + 1, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("left"), rot = numbers_rot)
 				} else {
-					grid.text(value_origin[index], x = unit(baseline + width, "native") - numbers_offset, y = n - seq_along(index) + 1, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("right"), rot = numbers_rot)
+					txt = value_origin[index]
+					if(!is.null(attr(value, "labels_format"))) {
+						txt = attr(value, "labels_format")(value[index])
+					}
+					grid.text(txt, x = unit(baseline + width, "native") - numbers_offset, y = n - seq_along(index) + 1, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("right"), rot = numbers_rot)
 				}
 			}
 		} else {
@@ -1363,7 +1381,11 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			y_coor = height/2+baseline
 			grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, index))
 			if(add_numbers) {
-				grid.text(value[index], x = seq_along(index), y = unit(baseline + height, "native") + numbers_offset, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("left"), rot = numbers_rot)
+				txt = value[index]
+				if(!is.null(attr(value, "labels_format"))) {
+					txt = attr(value, "labels_format")(value[index])
+				}
+				grid.text(txt, x = seq_along(index), y = unit(baseline + height, "native") + numbers_offset, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("left"), rot = numbers_rot)
 			}
 		} else {
 			for(i in seq_len(ncol(value))) {

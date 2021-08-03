@@ -1484,6 +1484,24 @@ UpSet = function(m,
 	ht
 }
 
+format_genomic_coor = function(x) {
+	x2 = character(length(x))
+	l1 = x >= 1e6
+	x2[l1] = paste(x[l1]/1000000, "MB", sep = " ")
+	l2 = x >= 1e3 & !l1
+	x2[l2] = paste(x[l2]/1000, "KB", sep = " ")
+	
+	l3 = !(l1 | l2)
+	last_unit = "bp"
+	if(all(l1 | x == 0)) {
+		last_unit = "MB"
+	} else if(all(l1 | l2 | x == 0)) {
+		last_unit = "KB"
+	}
+	x2[l3] = paste(x[l3], last_unit, sep = " ")
+	gsub("\\.(\\d\\d)\\d*", "\\.\\1", x2)
+}
+
 # == title
 # Order of the Combination Sets
 #
@@ -1552,9 +1570,12 @@ upset_top_annotation = function(m,
 	...) {
 
 	set_on_rows = attr(m, "param")$set_on_rows
-	
 	if(set_on_rows) {
-		ha = HeatmapAnnotation("intersection_size" = anno_barplot(comb_size(m), 
+		x = comb_size(m)
+		if(inherits(attr(m, "data")[[1]], "GRanges")) {
+			attr(x, "labels_format") = format_genomic_coor
+		}
+		ha = HeatmapAnnotation("intersection_size" = anno_barplot(x, 
 					border = FALSE, gp = gp, height = height, ...), 
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
@@ -1563,7 +1584,11 @@ upset_top_annotation = function(m,
 				annotation_name_rot = annotation_name_rot,
 				annotation_label = "Intersection\nsize")
 	} else {
-		ha = HeatmapAnnotation("set_size" = anno_barplot(set_size(m), border = FALSE, 
+		x = set_size(m)
+		if(inherits(attr(m, "data")[[1]], "GRanges")) {
+			attr(x, "labels_format") = format_genomic_coor
+		}
+		ha = HeatmapAnnotation("set_size" = anno_barplot(x, border = FALSE, 
 					gp = gp, height = height, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
@@ -1620,7 +1645,11 @@ upset_right_annotation = function(m,
 	set_on_rows = attr(m, "param")$set_on_rows
 
 	if(set_on_rows) {
-		ha = rowAnnotation("set_size" = anno_barplot(set_size(m), border = FALSE, 
+		x = set_size(m)
+		if(inherits(attr(m, "data")[[1]], "GRanges")) {
+			attr(x, "labels_format") = format_genomic_coor
+		}
+		ha = rowAnnotation("set_size" = anno_barplot(x, border = FALSE, 
 					gp = gp, width = width, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
@@ -1629,7 +1658,11 @@ upset_right_annotation = function(m,
 				annotation_name_rot = annotation_name_rot,
 				annotation_label = "Set size")
 	} else {
-		ha = rowAnnotation("intersection_size" = anno_barplot(comb_size(m), 
+		x = comb_size(m)
+		if(inherits(attr(m, "data")[[1]], "GRanges")) {
+			attr(x, "labels_format") = format_genomic_coor
+		}
+		ha = rowAnnotation("intersection_size" = anno_barplot(x, 
 					border = FALSE, gp = gp, width = width, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
@@ -1684,7 +1717,11 @@ upset_left_annotation = function(m,
 	}
 
 	if(set_on_rows) {
-		ha = rowAnnotation("set_size" = anno_barplot(set_size(m), border = FALSE, 
+		x = set_size(m)
+		if(inherits(attr(m, "data")[[1]], "GRanges")) {
+			attr(x, "labels_format") = format_genomic_coor
+		}
+		ha = rowAnnotation("set_size" = anno_barplot(x, border = FALSE, 
 					gp = gp, width = width, axis_param = axis_param, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
@@ -1693,7 +1730,11 @@ upset_left_annotation = function(m,
 				annotation_name_rot = annotation_name_rot,
 				annotation_label = "Set size")
 	} else {
-		ha = rowAnnotation("intersection_size" = anno_barplot(comb_size(m), 
+		x = comb_size(m)
+		if(inherits(attr(m, "data")[[1]], "GRanges")) {
+			attr(x, "labels_format") = format_genomic_coor
+		}
+		ha = rowAnnotation("intersection_size" = anno_barplot(x, 
 					border = FALSE, gp = gp, width = width, axis_param = axis_param, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
