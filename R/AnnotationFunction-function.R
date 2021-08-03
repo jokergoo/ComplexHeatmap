@@ -1338,7 +1338,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 				} else {
 					txt = value_origin[index]
 					if(!is.null(attr(value, "labels_format"))) {
-						txt = attr(value, "labels_format")(value[index])
+						txt = attr(value, "labels_format")(value_origin[index])
 					}
 					grid.text(txt, x = unit(baseline + width, "native") - numbers_offset, y = n - seq_along(index) + 1, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("right"), rot = numbers_rot)
 				}
