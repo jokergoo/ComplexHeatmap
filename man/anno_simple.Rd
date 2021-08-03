@@ -8,7 +8,7 @@ Simple Annotation
 }
 \usage{
 anno_simple(x, col, na_col = "grey",
-    which = c("column", "row"), border = FALSE, gp = gpar(col = NA),
+    which = c("column", "row"), border = FALSE, gp = gpar(),
     pch = NULL, pt_size = unit(1, "snpc")*0.8, pt_gp = gpar(),
     simple_anno_size = ht_opt$simple_anno_size,
     width = NULL, height = NULL)

@@ -5,6 +5,8 @@ CHANGES in VERSION 2.9.3
 * set `wrap = TRUE` in `grid.grabExpr()` when capturing the legend objects.
 * `make_comb_mat()`: support `GRangesList` object as input.
 * legends: fixed a bug of the grid heights were not correctedly calculated.
+* discrete annotations: neighbour grids are merged into one single grid if they have the 
+  same values.
 
 =========================
 

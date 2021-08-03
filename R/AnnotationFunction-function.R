@@ -160,7 +160,7 @@ subset_vector = function(x, i) x[i]
 # anno = anno_simple(cbind(1:10, 10:1), pch = pch)
 # draw(anno, test = "matrix, pch is a matrix with NA values")
 anno_simple = function(x, col, na_col = "grey", 
-	which = c("column", "row"), border = FALSE, gp = gpar(col = NA),
+	which = c("column", "row"), border = FALSE, gp = gpar(),
 	pch = NULL, pt_size = unit(1, "snpc")*0.8, pt_gp = gpar(), 
 	simple_anno_size = ht_opt$simple_anno_size,
 	width = NULL, height = NULL) {
@@ -230,8 +230,16 @@ anno_simple = function(x, col, na_col = "grey",
 			pch = pch[index, , drop = FALSE]
 
 			for(i in seq_len(nc)) {
-			    fill = map_to_colors(color_mapping, value[index, i])
-			    grid.rect(x = (i-0.5)/nc, y, height = 1/n, width = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
+				if(color_mapping@type == "continuous") {
+				    fill = map_to_colors(color_mapping, value[index, i])
+				    if(is.null(gp$col)) gp$col = fill
+				    grid.rect(x = (i-0.5)/nc, y, height = 1/n, width = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
+				} else {
+					r = rle(value[index, i])
+					fill = map_to_colors(color_mapping, r$values)
+					if(is.null(gp$col)) gp$col = fill
+					grid.rect(x = (i-0.5)/nc, y = 1 - cumsum(r$lengths)/n, height = r$length/n, width = 1/nc, just = "bottom", gp = do.call("gpar", c(list(fill = fill), gp)))
+				}
 			    if(!is.null(pch)) {
 					l = !is.na(pch[, i])
 					if(any(l)) {
@@ -249,8 +257,16 @@ anno_simple = function(x, col, na_col = "grey",
 			    }
 			}
 	    } else {
-			fill = map_to_colors(color_mapping, value[index])
-			grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+	    	if(color_mapping@type == "continuous") {
+				fill = map_to_colors(color_mapping, value[index])
+				if(is.null(gp$col)) gp$col = fill
+				grid.rect(x = 0.5, y, height = 1/n, width = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+			} else {
+				r = rle(value[index])
+				fill = map_to_colors(color_mapping, r$values)
+				if(is.null(gp$col)) gp$col = fill
+				grid.rect(x = 0.5, y = 1 - cumsum(r$lengths)/n, height = r$length/n, width = 1, just = "bottom", gp = do.call("gpar", c(list(fill = fill), gp)))
+			}
 			if(!is.null(pch)) {
 			    pch = pch[index]
 			    pt_size = pt_size[index]
@@ -282,8 +298,16 @@ anno_simple = function(x, col, na_col = "grey",
 		    pch = pch[index, , drop = FALSE]
 				  
 	        for(i in seq_len(nc)) {
-                fill = map_to_colors(color_mapping, value[index, i])
-                grid.rect(x, y = (nc-i +0.5)/nc, width = 1/n, height = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
+	        	if(color_mapping@type == "continuous") {
+	                fill = map_to_colors(color_mapping, value[index, i])
+	                if(is.null(gp$col)) gp$col = fill
+	                grid.rect(x, y = (nc-i +0.5)/nc, width = 1/n, height = 1/nc, gp = do.call("gpar", c(list(fill = fill), gp)))
+	            } else {
+	            	r = rle(value[index, i])
+					fill = map_to_colors(color_mapping, r$values)
+					if(is.null(gp$col)) gp$col = fill
+					grid.rect(cumsum(r$lengths)/n, y = (nc-i +0.5)/nc, width = r$length/n, height = 1/nc, just = "right", gp = do.call("gpar", c(list(fill = fill), gp)))
+	            }
 				if(!is.null(pch)){
 				    l = !is.na(pch[, i])
 				    if(any(l)) {
@@ -301,8 +325,16 @@ anno_simple = function(x, col, na_col = "grey",
 				}
 		    }
         } else {
-			fill = map_to_colors(color_mapping, value[index])
-			grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+        	if(color_mapping@type == "continuous") {
+				fill = map_to_colors(color_mapping, value[index])
+				if(is.null(gp$col)) gp$col = fill
+				grid.rect(x, y = 0.5, width = 1/n, height = 1, gp = do.call("gpar", c(list(fill = fill), gp)))
+			} else {
+				r = rle(value[index])
+				fill = map_to_colors(color_mapping, r$values)
+				if(is.null(gp$col)) gp$col = fill
+				grid.rect(cumsum(r$lengths)/n, y = 0.5, width = r$length/n, height = 1, just = "right", gp = do.call("gpar", c(list(fill = fill), gp)))
+			}
 			if(!is.null(pch)) {
 				pch = pch[index]
 				pt_size = pt_size[index]
@@ -360,6 +392,7 @@ anno_simple = function(x, col, na_col = "grey",
 
 	return(anno)      
 }
+
 
 # == title
 # Image Annotation
