@@ -19,6 +19,7 @@ UpSet(m,
     },
     top_annotation = upset_top_annotation(m),
     right_annotation = upset_right_annotation(m),
+    left_annotation = NULL,
     row_names_side = "left",
     ...)
 }
@@ -33,6 +34,7 @@ UpSet(m,
   \item{set_order}{The order of sets.}
   \item{comb_order}{The order of combination sets.}
   \item{top_annotation}{A \code{\link{HeatmapAnnotation}} object on top of the combination matrix.}
+  \item{left_annotation}{A \code{\link{HeatmapAnnotation}} object on top of the combination matrix.}
   \item{right_annotation}{A \code{\link{HeatmapAnnotation}} object on the right of the combination matrix.}
   \item{row_names_side}{The side of row names.}
   \item{...}{Other arguments passed to \code{\link{Heatmap}}.}

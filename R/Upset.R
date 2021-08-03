@@ -1250,6 +1250,7 @@ print.comb_mat = function(x, ...) {
 # -set_order The order of sets.
 # -comb_order The order of combination sets.
 # -top_annotation A `HeatmapAnnotation` object on top of the combination matrix.
+# -left_annotation A `HeatmapAnnotation` object on top of the combination matrix.
 # -right_annotation A `HeatmapAnnotation` object on the right of the combination matrix.
 # -row_names_side The side of row names.
 # -... Other arguments passed to `Heatmap`.
@@ -1350,6 +1351,7 @@ UpSet = function(m,
 		},
 	top_annotation = upset_top_annotation(m),
 	right_annotation = upset_right_annotation(m),
+	left_annotation = NULL,
 	row_names_side = "left",
 	...) {
 
@@ -1363,6 +1365,15 @@ UpSet = function(m,
 
 	pt_size = pt_size
 	lwd = lwd
+
+	if(!is.null(left_annotation)) {
+		if(missing(right_annotation)) {
+			right_annotation = NULL
+		}
+		if(missing(row_names_side)) {
+			row_names_side = "right"
+		}
+	}
 
 	if(set_on_rows) {
 		n_comb = ncol(m)
@@ -1409,7 +1420,7 @@ UpSet = function(m,
 		ht = Heatmap(m2, cluster_rows = FALSE, cluster_columns = FALSE, rect_gp = gpar(type = "none"),
 			layer_fun = layer_fun, show_heatmap_legend = FALSE,
 			top_annotation = ra,
-			right_annotation = right_annotation,
+			right_annotation = right_annotation, left_annotation = left_annotation,
 			row_names_side = row_names_side, col = c("0" = bg_pt_col, "1" = comb_col[1]),
 			row_order = set_order, column_order = comb_order, ...)
 	} else {
@@ -1451,10 +1462,21 @@ UpSet = function(m,
 				}
 			}
 		}
+		la = left_annotation
+		if(length(la) == 1) {
+			ta_call = substitute(top_annotation)
+			ta_call = as.list(ta_call)
+			if(as.character(ta_call[[1]]) == "upset_left_annotation") {
+				if(!"gp" %in% names(as.list(ta_call))) {
+					la@anno_list[[1]]@fun@var_env$gp$fill = comb_col
+					la@anno_list[[1]]@fun@var_env$gp$col = comb_col
+				}
+			}
+		}
 		ht = Heatmap(m2, cluster_rows = FALSE, cluster_columns = FALSE, rect_gp = gpar(type = "none"),
 			layer_fun = layer_fun, show_heatmap_legend = FALSE,
 			top_annotation = top_annotation,
-			right_annotation = ra, col = c("0" = bg_pt_col, "1" = comb_col[1]),
+			right_annotation = ra, left_annotation = la, col = c("0" = bg_pt_col, "1" = comb_col[1]),
 			row_order = comb_order, column_order = set_order, ...)
 	}
 	ht@heatmap_param$type = "UpSet"
@@ -1494,6 +1516,8 @@ order.comb_mat = function(m, decreasing = TRUE, on = "comb_set") {
 		}
 	}
 }
+
+
 
 # == title
 # Default UpSet Top Annotation
@@ -1573,7 +1597,7 @@ upset_top_annotation = function(m,
 # -annotation_name_offset Offset to the annotation name, a `grid::unit` object.
 # -annotation_name_side Side of the annotation name.
 # -annotation_name_rot Rotation of the annotation name, it can only take values in ``c(00, 90, 180, 270)``.
-# -... Passed to `anno_barplot`.
+# -... Passed to `anno_barplot`, e.g. to set ``add_numbers``.
 #
 # == details
 # The default right annotation is actually barplot implemented by `anno_barplot`. For
@@ -1607,6 +1631,70 @@ upset_right_annotation = function(m,
 	} else {
 		ha = rowAnnotation("intersection_size" = anno_barplot(comb_size(m), 
 					border = FALSE, gp = gp, width = width, ...),
+				show_annotation_name = show_annotation_name,
+				annotation_name_gp = annotation_name_gp,
+				annotation_name_offset = annotation_name_offset,
+				annotation_name_side = annotation_name_side,
+				annotation_name_rot = annotation_name_rot,
+				annotation_label = "Intersection\nsize")
+	}
+
+	mode = attr(m, "param")$mode
+	if(!set_on_rows) {
+		if(mode %in% c("distinct", "intersect")) {
+			# names(ha) = "intersection_size"
+		} else {
+			names(ha) = "union_size"
+			ha@anno_list[[1]]@label = "Union size"
+		}
+	}
+	return(ha)
+}
+
+# == title
+# UpSet Left Annotation
+#
+# == param
+# -m A combination matrix which is as same as the one for `UpSet`.
+# -gp Graphic parameters for bars.
+# -axis_param Parameters for axis.
+# -width Width of the left annotation.
+# -show_annotation_name Whether show annotation names?
+# -annotation_name_gp Graphic parameters for anntation names.
+# -annotation_name_offset Offset to the annotation name, a `grid::unit` object.
+# -annotation_name_side Side of the annotation name.
+# -annotation_name_rot Rotation of the annotation name, it can only take values in ``c(00, 90, 180, 270)``.
+# -... Passed to `anno_barplot`, e.g. to set ``add_numbers``.
+#
+upset_left_annotation = function(m,
+	gp = gpar(fill = "black"),  
+	axis_param = list(direction = "reverse"),
+	width = unit(ifelse(set_on_rows, 2, 3), "cm"),
+	show_annotation_name = TRUE,
+	annotation_name_gp = gpar(),
+	annotation_name_offset = NULL,
+	annotation_name_side = "bottom",
+	annotation_name_rot = NULL,
+	...) {
+
+	set_on_rows = attr(m, "param")$set_on_rows
+
+	if(!"direction" %in% names(axis_param)) {
+		axis_param$direction = "reverse"
+	}
+
+	if(set_on_rows) {
+		ha = rowAnnotation("set_size" = anno_barplot(set_size(m), border = FALSE, 
+					gp = gp, width = width, axis_param = axis_param, ...),
+				show_annotation_name = show_annotation_name,
+				annotation_name_gp = annotation_name_gp,
+				annotation_name_offset = annotation_name_offset,
+				annotation_name_side = annotation_name_side,
+				annotation_name_rot = annotation_name_rot,
+				annotation_label = "Set size")
+	} else {
+		ha = rowAnnotation("intersection_size" = anno_barplot(comb_size(m), 
+					border = FALSE, gp = gp, width = width, axis_param = axis_param, ...),
 				show_annotation_name = show_annotation_name,
 				annotation_name_gp = annotation_name_gp,
 				annotation_name_offset = annotation_name_offset,

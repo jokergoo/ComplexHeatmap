@@ -445,6 +445,7 @@ setMethod(f = "adjust_heatmap_list",
     padding = unit(c(0, 0, 0, 0), "mm")
     if(is.null(adjust_annotation_extension)) {
         if(direction == "horizontal") {
+            # right side
             if(inherits(object@ht_list[[n]], "Heatmap")) {
                 # if the last heatmap has nothing on the right while something on the right of heatmap list
                 if(!(has_component(object@ht_list[[n]], "row_anno_right") ||
@@ -459,6 +460,7 @@ setMethod(f = "adjust_heatmap_list",
                     }
                 }
             }
+            # left side
             if(inherits(object@ht_list[[1]], "Heatmap")) {
                 if(!(has_component(object@ht_list[[1]], "row_anno_left") ||
                      has_component(object@ht_list[[1]], "row_names_left") ||
@@ -472,6 +474,21 @@ setMethod(f = "adjust_heatmap_list",
                     }
                 }
             }
+            # bottom side
+            if(has_heatmap_list_component(object, "column_title_bottom") || 
+               has_heatmap_list_component(object, "heatmap_legend_bottom") || 
+               has_heatmap_list_component(object, "annotation_legend_bottom")) {
+                object@layout$row_anno_max_bottom_extended = unit(0, "mm")
+                adjust_annotation_extension = TRUE
+            }
+
+            if(has_heatmap_list_component(object, "column_title_top") || 
+               has_heatmap_list_component(object, "heatmap_legend_top") || 
+               has_heatmap_list_component(object, "annotation_legend_top")) {
+                object@layout$row_anno_max_top_extended = unit(0, "mm")
+                adjust_annotation_extension = TRUE
+            }
+
         } else {
             if(inherits(object@ht_list[[n]], "Heatmap")) {
                 # if the last heatmap has nothing on the right while something on the right of heatmap list
@@ -499,6 +516,20 @@ setMethod(f = "adjust_heatmap_list",
                         adjust_annotation_extension = TRUE
                     }
                 }
+            }
+
+            if(has_heatmap_list_component(object, "column_title_bottom") || 
+               has_heatmap_list_component(object, "heatmap_legend_bottom") || 
+               has_heatmap_list_component(object, "annotation_legend_bottom")) {
+                object@layout$row_anno_max_bottom_extended = unit(0, "mm")
+                adjust_annotation_extension = TRUE
+            }
+
+            if(has_heatmap_list_component(object, "column_title_top") || 
+               has_heatmap_list_component(object, "heatmap_legend_top") || 
+               has_heatmap_list_component(object, "annotation_legend_top")) {
+                object@layout$row_anno_max_top_extended = unit(0, "mm")
+                adjust_annotation_extension = TRUE
             }
         }
     }

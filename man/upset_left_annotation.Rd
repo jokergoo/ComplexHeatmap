@@ -1,14 +1,15 @@
-\name{upset_right_annotation}
-\alias{upset_right_annotation}
+\name{upset_left_annotation}
+\alias{upset_left_annotation}
 \title{
-Default UpSet Right Annotation
+UpSet Left Annotation
 }
 \description{
-Default UpSet Right Annotation
+UpSet Left Annotation
 }
 \usage{
-upset_right_annotation(m,
+upset_left_annotation(m,
     gp = gpar(fill = "black"),
+    axis_param = list(direction = "reverse"),
     width = unit(ifelse(set_on_rows, 2, 3), "cm"),
     show_annotation_name = TRUE,
     annotation_name_gp = gpar(),
@@ -21,7 +22,8 @@ upset_right_annotation(m,
 
   \item{m}{A combination matrix which is as same as the one for \code{\link{UpSet}}.}
   \item{gp}{Graphic parameters for bars.}
-  \item{width}{Width of the right annotation.}
+  \item{axis_param}{Parameters for axis.}
+  \item{width}{Width of the left annotation.}
   \item{show_annotation_name}{Whether show annotation names?}
   \item{annotation_name_gp}{Graphic parameters for anntation names.}
   \item{annotation_name_offset}{Offset to the annotation name, a \code{\link[grid]{unit}} object.}
@@ -30,16 +32,7 @@ upset_right_annotation(m,
   \item{...}{Passed to \code{\link{anno_barplot}}, e.g. to set \code{add_numbers}.}
 
 }
-\details{
-The default right annotation is actually barplot implemented by \code{\link{anno_barplot}}. For
-how to set the right annotation or left annotation in \code{\link{UpSet}}, please refer to \code{\link{UpSet}}.
-
-If you want to use \code{\link{decorate_annotation}} function, the annotation name for the "sets"
-is \code{set_size} and the annotation name for the "intersection sets" are \code{intersection_size}
-and if under the union mode, it is \code{union_size}.
-}
 \examples{
 # There is no example
 NULL
-
 }

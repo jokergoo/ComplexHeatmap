@@ -140,7 +140,7 @@ setMethod(f = "draw_heatmap_legend",
                 y = max(y1, y2)
                 pushViewport(viewport(name = "heatmap_legend", x = unit(0.5, "npc"), y = y, width = size[1], height = size[2], just = c("center", "top")))           
             } else {
-                x1 = unit(0.5, "npc") - size[1]*0.5  # top of heatmap legend
+                x1 = unit(0.5, "npc") - size[1]*0.5  # left of heatmap legend
                 x2 = unit(0.5, "npc") - annotation_legend_size[1]*0.5
                 x = min(x1, x2)
                 pushViewport(viewport(name = "heatmap_legend", x = x, y = unit(0.5, "npc"), width = size[1], height = size[2], just = c("left", "center")))           

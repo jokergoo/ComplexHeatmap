@@ -345,7 +345,6 @@ setMethod(f = "make_layout",
             object@ht_list[[i_main]]@row_order = row_order
             if(verbose) qqcat("set row_order to main heatmap\n")
         }
-
         
         if(!is.null(height) && !is.null(heatmap_height)) {
             stop_wrap("You can only specify one of `height` and `heatmap_height` in draw().")

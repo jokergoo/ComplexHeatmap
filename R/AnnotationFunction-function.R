@@ -1189,6 +1189,10 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 # -extend The extension to both side of ``ylim``. The value is a percent value corresponding to ``ylim[2] - ylim[1]``.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
+# -add_numbers Whether to add numbers to the bars. It only works when ``x`` is a simple vector.
+# -numbers_gp Graphics parameters for the numbers.
+# -numbers_rot Rotation of numbers.
+# -numbers_offset Offset to the default positions (1mm away the top of the bars).
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
 # -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
 # -... Other arguments.
@@ -1209,7 +1213,9 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 # draw(anno, test = "proportion matrix")
 anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6,
 	gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, axis = TRUE, 
-	axis_param = default_axis_param(which),
+	axis_param = default_axis_param(which), 
+	add_numbers = FALSE, numbers_gp = gpar(fontsize = 8), 
+	numbers_rot = ifelse(which == "column", 45, 0), numbers_offset = unit(2, "mm"),
 	width = NULL, height = NULL, ...) {
 
 	other_args = list(...)
@@ -1282,6 +1288,19 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	}
 
 	value = x
+
+	if(ncol(value) == 1) {
+		if(add_numbers) {
+			if(which == "column") {
+				extend = convertHeight(sin(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm"), "mm", valueOnly = TRUE)/convertHeight(anno_size$height, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+				data_scale[2] = data_scale[2] + extend
+			} else if(which == "row") {
+				extend = convertWidth(cos(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm"), "mm", valueOnly = TRUE)/convertWidth(anno_size$width, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+				data_scale[2] = data_scale[2] + extend
+			}
+		}
+	}
+
 	axis_param = validate_axis_param(axis_param, which)
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale) else NULL
 
@@ -1299,6 +1318,13 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			width = value[index] - baseline
 			x_coor = width/2+baseline
 			grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, index))
+			if(add_numbers) {
+				if(axis_param$direction == "normal") {
+					grid.text(value[index], x = unit(baseline + width, "native") + numbers_offset, y = n - seq_along(index) + 1, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("left"), rot = numbers_rot)
+				} else {
+					grid.text(value_origin[index], x = unit(baseline + width, "native") - numbers_offset, y = n - seq_along(index) + 1, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("right"), rot = numbers_rot)
+				}
+			}
 		} else {
 			for(i in seq_len(ncol(value))) {
 				if(axis_param$direction == "normal") {
@@ -1336,6 +1362,9 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			height = value[index] - baseline
 			y_coor = height/2+baseline
 			grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, index))
+			if(add_numbers) {
+				grid.text(value[index], x = seq_along(index), y = unit(baseline + height, "native") + numbers_offset, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("left"), rot = numbers_rot)
+			}
 		} else {
 			for(i in seq_len(ncol(value))) {
 				if(axis_param$direction == "normal") {
@@ -1375,7 +1404,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		height = anno_size$height,
 		n = n,
 		data_scale = data_scale,
-		var_import = list(value, gp, border, bar_width, baseline, axis, axis_param, axis_grob, data_scale)
+		var_import = list(value, gp, border, bar_width, baseline, axis, axis_param, axis_grob, data_scale, add_numbers, numbers_gp, numbers_offset, numbers_rot)
 	)
 
 	anno@subset_rule$value = subset_matrix_by_row
