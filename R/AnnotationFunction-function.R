@@ -1302,7 +1302,11 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	if(ncol(value) == 1) {
 		if(add_numbers) {
 			if(which == "column") {
-				extend = convertHeight(sin(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm"), "mm", valueOnly = TRUE)/convertHeight(anno_size$height, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+				if(numbers_rot == 0) {
+					extend = convertHeight(max_text_height(value, gp = numbers_gp) + numbers_offset + unit(2, "mm"), "mm", valueOnly = TRUE)/convertHeight(anno_size$height, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+				} else {
+					extend = convertHeight(sin(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm"), "mm", valueOnly = TRUE)/convertHeight(anno_size$height, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+				}
 				data_scale[2] = data_scale[2] + extend
 			} else if(which == "row") {
 				extend = convertWidth(cos(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm"), "mm", valueOnly = TRUE)/convertWidth(anno_size$width, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
@@ -1385,7 +1389,11 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 				if(!is.null(attr(value, "labels_format"))) {
 					txt = attr(value, "labels_format")(value[index])
 				}
-				grid.text(txt, x = seq_along(index), y = unit(baseline + height, "native") + numbers_offset, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("left"), rot = numbers_rot)
+				if(numbers_rot == 0) {
+					grid.text(txt, x = seq_along(index), y = unit(baseline + height, "native") + numbers_offset, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("bottom"))
+				} else {
+					grid.text(txt, x = seq_along(index), y = unit(baseline + height, "native") + numbers_offset, default.units = "native", gp = subset_gp(numbers_gp, index), just = c("left"), rot = numbers_rot)
+				}
 			}
 		} else {
 			for(i in seq_len(ncol(value))) {
