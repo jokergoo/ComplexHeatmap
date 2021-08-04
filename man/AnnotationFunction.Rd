@@ -7,7 +7,7 @@ Constructor of AnnotationFunction Class
 Constructor of AnnotationFunction Class
 }
 \usage{
-AnnotationFunction(fun, fun_name = "", which = c("column", "row"),
+AnnotationFunction(fun, fun_name = "", which = c("column", "row"), cell_fun = NULL,
     var_import = list(), n = NA, data_scale = c(0, 1), subset_rule = list(),
     subsetable = length(subset_rule) > 0, show_name = TRUE, width = NULL, height = NULL)
 }
@@ -16,6 +16,7 @@ AnnotationFunction(fun, fun_name = "", which = c("column", "row"),
   \item{fun}{A function which defines how to draw the annotation. See **Details** section.}
   \item{fun_name}{The name of the function. It is only used for printing the object.}
   \item{which}{Whether it is drawn as a column annotation or a row annotation?}
+  \item{cell_fun}{A simplified version of \code{fun}. \code{cell_fun} only accepts one single index and it draws repeatedly in each annotation cell.}
   \item{var_import}{The names of the variables or the variable themselves that the annotation function depends on. See **Details** section.}
   \item{n}{Number of observations in the annotation. It is not mandatory, but it is better to provide this information so that the higher order \code{\link{HeatmapAnnotation}} knows it and it can perform check on the consistency of annotations and heatmaps.}
   \item{data_scale}{The data scale on the data axis (y-axis for column annotation and x-axis for row annotation). It is only used when \code{\link{decorate_annotation}} is used with "native" unit coordinates.}

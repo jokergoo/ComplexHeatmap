@@ -37,6 +37,25 @@ anno = AnnotationFunction(fun = fun, var_import = "x")
 anno = AnnotationFunction(fun = fun, var_import = list(x))
 
 
+x = runif(10)
+cell_fun = function(i) {
+	pushViewport(viewport(yscale = c(0, 1)))
+	grid.points(unit(0.5, "npc"), x[i])
+	popViewport()
+}
+anno = AnnotationFunction(cell_fun = cell_fun, var_import = "x")
+ha = HeatmapAnnotation(foo = anno)
+draw(ha, 1:10, test = T)
+
+cell_fun = function(i) {
+	pushViewport(viewport(xscale = c(0, 1)))
+	grid.points(x[i], unit(0.5, "npc"))
+	popViewport()
+}
+anno = AnnotationFunction(cell_fun = cell_fun, var_import = "x", which = "row")
+ha = rowAnnotation(foo = anno)
+draw(ha, 1:10, test = T)
+
 # devAskNewPage(ask = dev.interactive())
 
 ########### testing anno_simple ############

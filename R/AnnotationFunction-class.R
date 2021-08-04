@@ -85,6 +85,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # -fun A function which defines how to draw the annotation. See **Details** section.
 # -fun_name The name of the function. It is only used for printing the object.
 # -which Whether it is drawn as a column annotation or a row annotation?
+# -cell_fun A simplified version of ``fun``. ``cell_fun`` only accepts one single index and it draws repeatedly in each annotation cell.
 # -var_import The names of the variables or the variable themselves that the annotation function depends on. See **Details** section.
 # -n Number of observations in the annotation. It is not mandatory, but it is better to provide this information
 #   so that the higher order `HeatmapAnnotation` knows it and it can perform check on the consistency of annotations and heatmaps.
@@ -138,7 +139,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # m = rbind(1:10, 11:20)
 # Heatmap(m, top_annotation = HeatmapAnnotation(foo = anno1))
 # Heatmap(m, top_annotation = HeatmapAnnotation(foo = anno1), column_km = 2)
-AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), 
+AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), cell_fun = NULL,
 	var_import = list(), n = NA, data_scale = c(0, 1), subset_rule = list(), 
 	subsetable = length(subset_rule) > 0, show_name = TRUE, width = NULL, height = NULL) {
 
@@ -161,6 +162,29 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"),
 
 	anno@n = n
 	anno@data_scale = data_scale
+
+	if(!is.null(cell_fun)) {
+		if(which == "column") {
+			fun = function(index, k, n) {
+				n = length(index)
+				for(i in seq_along(index)) {
+					pushViewport(viewport(x = i/n, width = 1/n, just = "right", default.units = "npc"))
+					cell_fun(index[i])
+					popViewport()
+				}
+			}
+		} else {
+			fun = function(index, k, n) {
+				n = length(index)
+				for(i in seq_along(index)) {
+					pushViewport(viewport(y = 1 - i/n, height = 1/n, just = "bottom", default.units = "npc"))
+					cell_fun(index[i])
+					popViewport()
+				}
+			}
+		}
+		subsetable = TRUE
+	}
 
 	if(length(var_import)) {
 		anno@var_env = new.env()

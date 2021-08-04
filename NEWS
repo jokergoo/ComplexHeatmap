@@ -9,6 +9,7 @@ CHANGES in VERSION 2.9.3
   same values.
 * `anno_barplot()`: allows to add numbers on top of bars.
 * `UpSet()`: axis labels are automatically formated for genomic coordinates.
+* `AnnotationFunction()`: add a new argument `cell_fun`.
 
 =========================
 
