@@ -363,6 +363,7 @@ setMethod(f = "draw_dend",
     if(is.null(max_height)) {
         max_height = dend_heights(dend)
     }
+    if(max_height == 0) max_height = 1
 
     if(side %in% c("left", "right")) {
         xscale = c(0, max_height)
