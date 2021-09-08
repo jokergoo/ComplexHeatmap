@@ -1,3 +1,7 @@
+CHANGES in VERSION 2.9.4
+
+========================
+
 CHANGES in VERSION 2.9.3
 
 * `pheatmap()`/`heatmap()`/`heatmap.2()`: set default of run_draw to FALSE.
