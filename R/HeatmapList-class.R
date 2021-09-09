@@ -801,8 +801,8 @@ setMethod(f = "draw",
                                 ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@bottom_annotation))
                             }
                         }
-                        if(!is.null(ht@top_annotation)) {
-                            ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@top_annotation))
+                        if(!is.null(ht@right_annotation)) {
+                            ColorMappingList = c.list(ColorMappingList, list = get_color_mapping_list(ht@right_annotation))
                         }
                     } else if(inherits(ht, "HeatmapAnnotation")) {
                         if(legend_grouping == "original") {

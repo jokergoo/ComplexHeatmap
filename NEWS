@@ -1,5 +1,7 @@
 CHANGES in VERSION 2.9.4
 
+* fixed a bug of missing right annotation legends for vertically concatenated heatmaps.
+
 ========================
 
 CHANGES in VERSION 2.9.3
