@@ -881,7 +881,6 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 		}
 	}
 
-	labels = as.character(labels)
 	labels_rot = labels_rot %% 360
 
 	n_labels = length(labels)
