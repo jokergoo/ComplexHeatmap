@@ -205,7 +205,9 @@ ht_opt = setGlobalOptions(
 	save_last = list(
 		.value = FALSE
 	),
-	"validate_names" = TRUE
+	"validate_names" = TRUE,
+	raster_temp_image_max_width = 30000,
+	raster_temp_image_max_height = 30000
 )
 
 

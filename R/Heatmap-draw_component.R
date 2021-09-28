@@ -139,8 +139,22 @@ setMethod(f = "draw_heatmap_body",
             temp_image_width = ceiling(max(heatmap_width_pt, 1))
             temp_image_height = ceiling(max(heatmap_height_pt, 1))
         }
-        do.call(device_fun, c(list(filename = temp_image, 
-            width = temp_image_width, height = temp_image_height), raster_device_param))
+        temp_image_width = as.integer(temp_image_width)
+        temp_image_height = as.integer(temp_image_height)
+
+        if(!is.na(ht_opt$raster_temp_image_max_width)) {
+            temp_image_width = min(temp_image_width, ht_opt$raster_temp_image_max_width)
+        }
+        if(!is.na(ht_opt$raster_temp_image_max_height)) {
+            temp_image_height = min(temp_image_height, ht_opt$raster_temp_image_max_height)
+        }
+
+        oe = try(do.call(device_fun, c(list(filename = temp_image, 
+            width = temp_image_width, height = temp_image_height), raster_device_param)))
+        if(inherits(oe, "try-error")) {
+            stop_wrap(qq("The size of the temporary image for rasterization is too huge (@{temp_image_width} x @{temp_image_height} px) that it is cannot be handled by the device function `@{device_info[1]}:@{raster_device}()`. Please reduce the maximal size of temporary image by setting proper values for `ht_opt$raster_temp_image_max_width` and `ht_opt$raster_temp_image_max_height`."))
+        }
+
         if(object@heatmap_param$verbose) {
             qqcat("saving into a temp image (.@{device_info[2]}) with size @{temp_image_width}x@{temp_image_height}px.\n")
         }

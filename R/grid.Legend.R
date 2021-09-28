@@ -516,7 +516,6 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 			textGrob(labels[index], x = labels_x, y = labels_y, just = "left", gp = labels_gp)
 		))
 
-
 		######### graphics ############
 		# grid
 		sgd = subset_gp(legend_gp, index)
@@ -526,8 +525,12 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		} else {
 			sgd2$fill = background
 		}
-		sgd2$col = border
-
+		if(identical(border, "asis")) {
+			sgd2$col = sgd2$fill	
+		} else {
+			sgd2$col = border
+		}
+		
 		grid_x = previous_x
 		grid_y = y - (row_height[1:ni] - row_gap)*0.5
 		if(ni == nrow) grid_y[nrow] = y[nrow] - row_height[nrow]*0.5

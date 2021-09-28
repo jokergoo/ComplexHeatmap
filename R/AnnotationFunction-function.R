@@ -1190,7 +1190,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 # -which Whether it is a column annotation or a row annotation?
 # -border Wether draw borders of the annotation region?
 # -bar_width Relative width of the bars. The value should be smaller than one.
-# -gp Graphic parameters for points. The length of each graphic parameter can be 1, length of ``x`` if ``x``
+# -gp Graphic parameters for bars. The length of each graphic parameter can be 1, length of ``x`` if ``x``
 #     is a vector, or number of columns of ``x`` is ``x`` is a matrix.
 # -ylim Data ranges. By default it is ``range(x)`` if ``x`` is a vector, or ``range(rowSums(x))`` if ``x`` is a matrix.
 # -extend The extension to both side of ``ylim``. The value is a percent value corresponding to ``ylim[2] - ylim[1]``.

@@ -21,7 +21,7 @@ anno_barplot(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_wid
   \item{which}{Whether it is a column annotation or a row annotation?}
   \item{border}{Wether draw borders of the annotation region?}
   \item{bar_width}{Relative width of the bars. The value should be smaller than one.}
-  \item{gp}{Graphic parameters for points. The length of each graphic parameter can be 1, length of \code{x} if \code{x} is a vector, or number of columns of \code{x} is \code{x} is a matrix.}
+  \item{gp}{Graphic parameters for bars. The length of each graphic parameter can be 1, length of \code{x} if \code{x} is a vector, or number of columns of \code{x} is \code{x} is a matrix.}
   \item{ylim}{Data ranges. By default it is \code{range(x)} if \code{x} is a vector, or \code{range(rowSums(x))} if \code{x} is a matrix.}
   \item{extend}{The extension to both side of \code{ylim}. The value is a percent value corresponding to \code{ylim[2] - ylim[1]}.}
   \item{axis}{Whether to add axis?}
