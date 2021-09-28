@@ -262,6 +262,16 @@ anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)), which = "row", axis_param = l
 draw(anno, test = "a vector")
 
 
+anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)), beside = TRUE)
+draw(anno, test = "a matrix")
+draw(anno[1:5], test = "a matrix, subset")
+anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)), beside = TRUE, which = "row")
+draw(anno, test = "a matrix, on rows")
+anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)), beside = TRUE, gp = gpar(fill = 2:3, col = 2:3))
+draw(anno, test = "a matrix with fill")
+
+
+
 ##### test anno_boxplot #####
 set.seed(123)
 m = matrix(rnorm(100), 10)

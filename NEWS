@@ -3,6 +3,7 @@ CHANGES in VERSION 2.9.4
 * fixed a bug of missing right annotation legends for vertically concatenated heatmaps.
 * `Legend()`: support `border` to be set to `asis`.
 * Rasterization: the default maximal size for temporary image is set to 30000 px (both for width and height).
+* add a new argument `beside` in `anno_barplot()` to position bars beside each other.
 
 ========================
 

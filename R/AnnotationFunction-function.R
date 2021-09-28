@@ -1190,6 +1190,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 # -which Whether it is a column annotation or a row annotation?
 # -border Wether draw borders of the annotation region?
 # -bar_width Relative width of the bars. The value should be smaller than one.
+# -beside When ``x`` is a matrix, will bars be positioned beside each other or as stacked bars?
 # -gp Graphic parameters for bars. The length of each graphic parameter can be 1, length of ``x`` if ``x``
 #     is a vector, or number of columns of ``x`` is ``x`` is a matrix.
 # -ylim Data ranges. By default it is ``range(x)`` if ``x`` is a vector, or ``range(rowSums(x))`` if ``x`` is a matrix.
@@ -1218,7 +1219,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 # m = t(apply(m, 1, function(x) x/sum(x)))
 # anno = anno_barplot(m, gp = gpar(fill = 2:5), bar_width = 1, height = unit(6, "cm"))
 # draw(anno, test = "proportion matrix")
-anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6,
+anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6, beside = FALSE,
 	gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, axis = TRUE, 
 	axis_param = default_axis_param(which), 
 	add_numbers = FALSE, numbers_gp = gpar(fontsize = 8), 
@@ -1255,7 +1256,11 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		gp = gpar(fill = grey(seq(0, 1, length = nc+2))[-c(1, nc+2)])
 	}
 
-	data_scale = range(rowSums(x, na.rm = TRUE), na.rm = TRUE)
+	if(beside) {
+		data_scale = range(x, na.rm = TRUE)
+	} else {
+		data_scale = range(rowSums(x, na.rm = TRUE), na.rm = TRUE)
+	}
 	if(!is.null(ylim)) data_scale = ylim
 	if(baseline == "min") {
 		data_scale = data_scale + c(0, extend)*(data_scale[2] - data_scale[1])
@@ -1265,7 +1270,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		baseline = max(x)
 	} else {
 		if(is.numeric(baseline)) {
-			if(baseline == 0 && all(abs(rowSums(x) - 1) < 1e-6)) {
+			if(baseline == 0 && all(abs(rowSums(x) - 1) < 1e-6) && !beside) {
 				data_scale = c(0, 1)
 			} else if(baseline <= data_scale[1]) {
 				data_scale = c(baseline, extend*(data_scale[2] - baseline) + data_scale[2])
@@ -1348,16 +1353,32 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 				}
 			}
 		} else {
-			for(i in seq_len(ncol(value))) {
-				if(axis_param$direction == "normal") {
-					width = abs(value[index, i])
-					x_coor = rowSums(value[index, seq_len(i-1), drop = FALSE]) + width/2
-					grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
-				} else {
-					width = value_origin[index, i] # the original width
-					x_coor = rowSums(value_origin[index, seq_len(i-1), drop = FALSE]) + width/2 #distance to the right
-					x_coor = data_scale[2] - x_coor + data_scale[1]
-					grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+			if(beside) {
+				nbar = ncol(value)
+				nr = nrow(value)
+				for(i in seq_along(index)) {
+			        for(j in 1:nbar) {
+			        	if(axis_param$direction == "normal") {
+				        	grid.rect(x = baseline, y = nr-i+0.5 + (j-0.5)/nbar, width = value[index[i], j], height = 1/nbar*bar_width, just = c("left"),
+				        		default.units = "native", gp = subset_gp(gp, j))
+				        } else {
+				        	grid.rect(x = baseline, y = nr-i+0.5 + (j-0.5)/nbar, width = value[index[i], j], height = 1/nbar*bar_width, just = c("right"),
+				        		default.units = "native", gp = subset_gp(gp, j))
+				        }
+			        }
+			    }
+			} else {
+				for(i in seq_len(ncol(value))) {
+					if(axis_param$direction == "normal") {
+						width = abs(value[index, i])
+						x_coor = rowSums(value[index, seq_len(i-1), drop = FALSE]) + width/2
+						grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+					} else {
+						width = value_origin[index, i] # the original width
+						x_coor = rowSums(value_origin[index, seq_len(i-1), drop = FALSE]) + width/2 #distance to the right
+						x_coor = data_scale[2] - x_coor + data_scale[1]
+						grid.rect(x = x_coor, y = n - seq_along(index) + 1, width = abs(width), height = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+					}
 				}
 			}
 		}
@@ -1397,16 +1418,32 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 				}
 			}
 		} else {
-			for(i in seq_len(ncol(value))) {
-				if(axis_param$direction == "normal") {
-					height = value[index, i]
-					y_coor = rowSums(value[index, seq_len(i-1), drop = FALSE]) + height/2
-					grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
-				} else {
-					height = value_origin[index, i]
-					y_coor = rowSums(value_origin[index, seq_len(i-1), drop = FALSE]) + height/2
-					y_coor = data_scale[2] - y_coor + data_scale[1]
-					grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+			if(beside) {
+				nbar = ncol(value)
+				nr = nrow(value)
+				for(i in seq_along(index)) {
+			        for(j in 1:nbar) {
+			        	if(axis_param$direction == "normal") {
+				        	grid.rect(y = baseline, x = nr-i+0.5 + (j-0.5)/nbar, height = value[index[i], j], width = 1/nbar*bar_width, just = c("bottom"),
+				        		default.units = "native", gp = subset_gp(gp, j))
+				        } else {
+				        	grid.rect(y = baseline, x = nr-i+0.5 + (j-0.5)/nbar, height = value[index[i], j], width = 1/nbar*bar_width, just = c("top"),
+				        		default.units = "native", gp = subset_gp(gp, j))
+				        }
+			        }
+			    }
+			} else {
+				for(i in seq_len(ncol(value))) {
+					if(axis_param$direction == "normal") {
+						height = value[index, i]
+						y_coor = rowSums(value[index, seq_len(i-1), drop = FALSE]) + height/2
+						grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+					} else {
+						height = value_origin[index, i]
+						y_coor = rowSums(value_origin[index, seq_len(i-1), drop = FALSE]) + height/2
+						y_coor = data_scale[2] - y_coor + data_scale[1]
+						grid.rect(y = y_coor, x = seq_along(index), height = abs(height), width = 1*bar_width, default.units = "native", gp = subset_gp(gp, i))
+					}
 				}
 			}
 		}
@@ -1435,7 +1472,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		height = anno_size$height,
 		n = n,
 		data_scale = data_scale,
-		var_import = list(value, gp, border, bar_width, baseline, axis, axis_param, axis_grob, data_scale, add_numbers, numbers_gp, numbers_offset, numbers_rot)
+		var_import = list(value, gp, border, bar_width, baseline, beside, axis, axis_param, axis_grob, data_scale, add_numbers, numbers_gp, numbers_offset, numbers_rot)
 	)
 
 	anno@subset_rule$value = subset_matrix_by_row
