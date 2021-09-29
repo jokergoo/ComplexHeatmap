@@ -1309,3 +1309,42 @@ resetHeatmap = function(ht) {
     ht@layout = list(layout_size = list(column_title_top_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_dend_top_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_anno_top_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_names_top_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_title_bottom_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_dend_bottom_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_anno_bottom_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), column_names_bottom_height = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_title_left_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_dend_left_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_names_left_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_dend_right_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_names_right_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_title_right_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_anno_left_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2")), row_anno_right_width = structure(0, unit = 7L, class = c("simpleUnit",  "unit", "unit_v2"))), layout_index = structure(logical(0), .Dim = c(0L,  2L)), graphic_fun_list = list(), initialized = FALSE)
     ht
 }
+
+
+
+# == title
+# Draw heatmap
+#
+# == param
+# -x A `HeatmapList-class` object.
+# -... All pass to `draw,HeatmapList-method`.
+#
+plot.HeatmapList = function(x, ...) {
+    draw(x, ...)
+}
+
+# == title
+# Draw heatmap
+#
+# == param
+# -x A `Heatmap-class` object.
+# -... All pass to `draw,Heatmap-method`.
+#
+plot.Heatmap = function(x, ...) {
+    draw(x, ...)
+}
+
+# == title
+# Draw heatmap annotations
+#
+# == param
+# -x A `HeatmapAnnotation-class` object.
+# -... All pass to `draw,HeatmapList-method`.
+#
+plot.HeatmapAnnotation = function(x, ...) {
+    if(x@which == "column") {
+        draw(x %v% NULL, ...)
+    } else {
+        draw(x + NULL, ...)
+    }
+}
