@@ -659,3 +659,19 @@ dev.new(width = 3.938326, height = 4.502203)
 draw(Heatmap(mat, right_annotation = rowAnnotation(foo = anno), 
 	row_split = row_split))
 
+
+
+#### anno_custome ###
+x = sort(sample(letters[1:3], 10, replace = TRUE))
+graphics = list(
+	"a" = function(x, y, w, h) grid.points(x, y, pch = 16),
+	"b" = function(x, y, w, h) grid.rect(x, y, w*0.8, h*0.8, gp = gpar(fill = "red")),
+	"c" = function(x, y, w, h) grid.segments(x - 0.5*w, y - 0.5*h, x + 0.5*w, y + 0.5*h, gp = gpar(lty = 2))
+)
+
+anno = anno_customize(x, graphics = graphics)
+draw(anno, index = 1:10, test = "")
+
+anno = anno_customize(c(x, "d"), graphics = graphics)
+
+

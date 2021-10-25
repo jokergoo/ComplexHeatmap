@@ -5,6 +5,7 @@ CHANGES in VERSION 2.9.4
 * Rasterization: the default maximal size for temporary image is set to 30000 px (both for width and height).
 * add a new argument `beside` in `anno_barplot()` to position bars beside each other.
 * add `plot()` method for `Heatmap` and `HeatmapList` classes.
+* add `anno_customize()`.
 
 ========================
 

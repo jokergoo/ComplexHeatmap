@@ -102,6 +102,18 @@ subset_matrix_by_row = function(x, i) x[i, , drop = FALSE]
 subset_vector = function(x, i) x[i]
 
 # == title
+# Do not do subseting
+#
+# == param
+# -x A vector.
+# -i The indices.
+#
+# == details
+# Mainly used for constructing the `AnnotationFunction-class` object.
+#
+subset_no = function(x, i) x
+
+# == title
 # Simple Annotation
 #
 # == param
@@ -4073,4 +4085,119 @@ anno_zoom = function(align_to, panel_fun = function(index, nm = NULL) { grid.rec
 	return(anno)
 }
 
+# == title
+# Customized annotation
+#
+# == param
+# -x A categorical variable.
+# -graphics A list of functions that define graphics for each level in ``x``.
+# -which Is it a row annotation or a column annotation?
+# -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
+# -height Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.
+# -border Whether to draw border.
+# -verbose Whether to print messages.
+#
+# == details
+# Functions in ``graphics`` define simple graphics drawn in each annotation cell. The function takes four arguments:
+#
+# -x,y Center of the annotation cell.
+# -w,h Width and height of the annotation cell.
+#
+# == value
+# An annotation function which can be used in `HeatmapAnnotation`.
+#
+# == example
+# x = sort(sample(letters[1:3], 10, replace = TRUE))
+# graphics = list(
+#     "a" = function(x, y, w, h) grid.points(x, y, pch = 16),
+#     "b" = function(x, y, w, h) grid.rect(x, y, w*0.8, h*0.8, gp = gpar(fill = "red")),
+#     "c" = function(x, y, w, h) grid.segments(x - 0.5*w, y - 0.5*h, x + 0.5*w, y + 0.5*h, gp = gpar(lty = 2))
+# )
+#
+# anno = anno_customize(x, graphics = graphics)
+#
+# m = matrix(rnorm(100), 10)
+# Heatmap(m, top_annotation = HeatmapAnnotation(bar = x, foo = anno))
+#
+# # Add legends for `foo`
+# ht = Heatmap(m, top_annotation = HeatmapAnnotation(bar = x, foo = anno))
+# lgd = Legend(title = "foo", at = names(graphics), graphics = graphics)
+# draw(ht, annotation_legend_list = list(lgd))
+anno_customize = function(x, graphics = list(), which = c("column", "row"),  
+	border = TRUE, width = NULL, height = NULL, verbose = TRUE) {
+
+	if(is.null(.ENV$current_annotation_which)) {
+		which = match.arg(which)[1]
+	} else {
+		which = .ENV$current_annotation_which
+	}
+
+	anno_size = anno_width_and_height(which, width, height, unit(5, "mm"))
+
+	value = as.character(x)
+	n = length(value)
+
+	if(verbose) {
+		nm = setdiff(value, names(graphics))
+		if(length(nm)) {
+			message(qq("Note: following levels in `x` have no graphics defined:\n    @{paste(nm, collapse = ', ')}.\nSet `verbose = FALSE` in `anno_customize()` to turn off this message."))
+		}
+	}
+
+	row_fun = function(index, k = 1, N = 1) {
+		
+		n = length(index)
+
+		pushViewport(viewport(yscale = c(0.5, n+0.5)))
+		for(i in seq_len(n)) {
+			if(!is.null(graphics[[ value[index[i]] ]])) {
+				fun = graphics[[ value[index[i]] ]]
+				pushViewport(viewport(y = n-i+1, height = 1, default.units = "native"))
+				fun(unit(0.5, "npc"), unit(0.5, "npc"), unit(1, "npc"), unit(1, "npc"))
+				popViewport()
+			}
+		}
+		if(border) grid.rect(gp = gpar(fill = "transparent"))
+		popViewport()
+	}
+
+	column_fun = function(index, k = 1, N = 1) {
+		
+		n = length(index)
+
+		pushViewport(viewport(xscale = c(0.5, n+0.5)))
+		for(i in seq_len(n)) {
+			if(!is.null(graphics[[ value[index[i]] ]])) {
+				fun = graphics[[ value[index[i]] ]]
+				pushViewport(viewport(x = i, width = 1, default.units = "native"))
+				fun(unit(0.5, "npc"), unit(0.5, "npc"), unit(1, "npc"), unit(1, "npc"))
+				popViewport()
+			}
+		}
+		if(border) grid.rect(gp = gpar(fill = "transparent"))
+		popViewport()
+	}
+
+	if(which == "row") {
+		fun = row_fun
+	} else if(which == "column") {
+		fun = column_fun
+	}
+
+	anno = AnnotationFunction(
+		fun = fun,
+		fun_name = "anno_customize",
+		which = which,
+		width = anno_size$width,
+		height = anno_size$height,
+		n = n,
+		var_import = list(value, border, graphics)
+	)
+
+	anno@subset_rule$value = subset_vector
+
+	anno@subsetable = TRUE
+		
+	return(anno) 
+}
 
