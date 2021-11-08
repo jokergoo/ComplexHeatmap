@@ -258,7 +258,7 @@ SingleAnnotation = function(name, value, col, fun,
 
     name_rot = name_rot %% 360
 
-    anno_name = label
+    anno_name = as.character(label)
     if(which == "column") {
         if(verbose) qqcat("@{name}: it is a column annotation\n")
     	if(!name_side %in% c("left", "right")) {
@@ -489,7 +489,7 @@ SingleAnnotation = function(name, value, col, fun,
 
         cm_name = name
         if(!inherits(.Object@label, "gridtext")) {
-            cm_name = .Object@label
+            cm_name = as.character(.Object@label)
         }
 
     	if(is.atomic(col)) {
