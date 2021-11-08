@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.11.1
+
+* add a global option `ht_opt$COLOR` to control colors for continuous color mapping.
+
+=========================
+
 CHANGES in VERSION 2.9.4
 
 * fixed a bug of missing right annotation legends for vertically concatenated heatmaps.

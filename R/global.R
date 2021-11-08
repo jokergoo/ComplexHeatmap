@@ -54,6 +54,7 @@
 #
 # -fast_hclust whether use `fastcluster::hclust` to speed up clustering?
 # -show_parent_dend_line when heatmap is split, whether to add a dashed line to mark parent dendrogram and children dendrograms?
+# -COLOR default colors for continuous color mapping.
 #
 # You can get or set option values by the traditional way (like `base::options`) or by ``$`` operator:
 #
@@ -207,7 +208,8 @@ ht_opt = setGlobalOptions(
 	),
 	"validate_names" = TRUE,
 	raster_temp_image_max_width = 30000,
-	raster_temp_image_max_height = 30000
+	raster_temp_image_max_height = 30000,
+	COLOR = c("blue", "#EEEEEE", "red")
 )
 
 
