@@ -2,6 +2,7 @@ CHANGES in VERSION 2.11.1
 
 * add a global option `ht_opt$COLOR` to control colors for continuous color mapping.
 * `annotation_label` can be an `expression` object.
+* `recycle_gp()`: now consider when n = 0.
 
 =========================
 

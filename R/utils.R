@@ -241,7 +241,11 @@ get_dend_order = function(x) {
 recycle_gp = function(gp, n = 1) {
     for(i in seq_along(gp)) {
         x = gp[[i]]
-        gp[[i]] = c(rep(x, floor(n/length(x))), x[seq_len(n %% length(x))])
+        if(n > 0) {
+            gp[[i]] = c(rep(x, floor(n/length(x))), x[seq_len(n %% length(x))])
+        } else {
+            gp[[i]] = x[1]
+        }
     }
     return(gp)
 }

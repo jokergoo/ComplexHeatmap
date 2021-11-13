@@ -360,7 +360,7 @@ Heatmap = function(matrix, col, name,
 
     if(is.data.frame(matrix)) {
         if(verbose) qqcat("convert data frame to matrix\n")
-        warning_wrap("The input is a data frame, convert it to a matrix.")
+        warning_wrap("The input is a data frame-like object, convert it to a matrix.")
         if(!all(sapply(matrix, is.numeric))) {
             warning_wrap("Note: not all columns in the data frame are numeric. The data frame will be converted into a character matrix.")
         }
