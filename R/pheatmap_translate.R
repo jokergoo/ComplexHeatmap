@@ -171,9 +171,9 @@ pheatmap = function(mat,
             n_col = length(color)
             if(identical(scale, "row") || identical(scale, "column")) {
                 lim = max(abs(mat), na.rm = TRUE)
-                ht_param$col = colorRamp2(seq(-lim, lim, length = n_col), color)
+                ht_param$col = colorRamp2(seq(-lim, lim, length.out = n_col), color)
             } else {
-                ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length = n_col), color)
+                ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length.out = n_col), color)
             }
         } else  {
             if(length(breaks) == length(color) + 1) {
@@ -201,7 +201,7 @@ pheatmap = function(mat,
                 ht_param$col = colorRamp2(breaks, color)
             } else {
                 n_col = length(color)
-                ht_param$col  = colorRamp2(seq(min(breaks), max(breaks), length = n_col), color)
+                ht_param$col  = colorRamp2(seq(min(breaks), max(breaks), length.out = n_col), color)
                 warning_wrap("`breaks` does not have the same length as `color`. The colors are interpolated from the minimal to the maximal of `breaks`.")
             }
         }
@@ -311,7 +311,7 @@ pheatmap = function(mat,
                 if(is.null(names(annotation_colors[[nm]])) && is.numeric(annotation_col[, nm])) {
                     foo_x = annotation_col[, nm]
                     foo_n_col = length(annotation_colors[[nm]])
-                    annotation_colors[[nm]] = colorRamp2(seq(min(foo_x), max(foo_x), length = foo_n_col), annotation_colors[[nm]])
+                    annotation_colors[[nm]] = colorRamp2(seq(min(foo_x), max(foo_x), length.out = foo_n_col), annotation_colors[[nm]])
                 }
             }
         }
@@ -339,7 +339,7 @@ pheatmap = function(mat,
                 if(is.null(names(annotation_colors[[nm]])) && is.numeric(annotation_row[, nm])) {
                     foo_x = annotation_row[, nm]
                     foo_n_col = length(annotation_colors[[nm]])
-                    annotation_colors[[nm]] = colorRamp2(seq(min(foo_x), max(foo_x), length = foo_n_col), annotation_colors[[nm]])
+                    annotation_colors[[nm]] = colorRamp2(seq(min(foo_x), max(foo_x), length.out = foo_n_col), annotation_colors[[nm]])
                 }
             }
         }

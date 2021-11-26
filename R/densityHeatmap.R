@@ -132,7 +132,7 @@ densityHeatmap = function(data,
 		min_x = range[1]
 	}
 	
-	x = seq(min_x, max_x, length = 500)
+	x = seq(min_x, max_x, length.out = 500)
 
 	mat = lapply(density_list, function(r) {
 			f = approxfun(r$x, r$y)
@@ -156,7 +156,7 @@ densityHeatmap = function(data,
 	if(inherits(col, "function")) {
 		col = col(mat)
 	} else {
-		col = colorRamp2(seq(0, quantile(mat, 0.99, na.rm = TRUE), length = length(col)), col, space = color_space)
+		col = colorRamp2(seq(0, quantile(mat, 0.99, na.rm = TRUE), length.out = length(col)), col, space = color_space)
 	}
 
 	bb = grid.pretty(c(min_x, max_x))
@@ -464,7 +464,7 @@ frequencyHeatmap = function(data,
 	if(inherits(col, "function")) {
 		col = col(mat)
 	} else {
-		col = colorRamp2(seq(0, quantile(mat, 0.99, na.rm = TRUE), length = length(col)), col, space = color_space)
+		col = colorRamp2(seq(0, quantile(mat, 0.99, na.rm = TRUE), length.out = length(col)), col, space = color_space)
 	}
 
 	bb = grid.pretty(c(min_x, max_x))

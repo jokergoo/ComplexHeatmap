@@ -578,7 +578,7 @@ Heatmap = function(matrix, col, name,
                     .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col)
                     if(verbose) qqcat("input color is a vector with no names, treat it as discrete color mapping\n")
                 } else if(is.numeric(matrix)) {
-                    col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length = length(col)),
+                    col = colorRamp2(seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length.out = length(col)),
                                      col, space = color_space)
                     .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
                     if(verbose) qqcat("input color is a vector with no names, treat it as continuous color mapping\n")

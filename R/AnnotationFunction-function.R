@@ -1049,7 +1049,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 				y = value[index, i]
 				if(smooth) {
 					fit = loess(y ~ x)
-					x2 = seq(x[1], x[length(x)], length = 100)
+					x2 = seq(x[1], x[length(x)], length.out = 100)
 					y2 = predict(fit, x2)
 					grid.lines(y2, x2, gp = subset_gp(gp, i), default.units = "native")
 				} else {
@@ -1072,7 +1072,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 			y = value[index]
 			if(smooth) {
 				fit = loess(y ~ x)
-				x2 = seq(x[1], x[length(x)], length = 100)
+				x2 = seq(x[1], x[length(x)], length.out = 100)
 				y2 = predict(fit, x2)
 				grid.lines(y2, x2, gp = gp, default.units = "native")
 			} else {
@@ -1107,7 +1107,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 				y = value[index, i]
 				if(smooth) {
 					fit = loess(y ~ x)
-					x2 = seq(x[1], x[length(x)], length = 100)
+					x2 = seq(x[1], x[length(x)], length.out = 100)
 					y2 = predict(fit, x2)
 					grid.lines(x2, y2, gp = subset_gp(gp, i), default.units = "native")
 				} else {
@@ -1130,7 +1130,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 			y = value[index]
 			if(smooth) {
 				fit = loess(y ~ x)
-				x2 = seq(x[1], x[length(x)], length = 100)
+				x2 = seq(x[1], x[length(x)], length.out = 100)
 				y2 = predict(fit, x2)
 				grid.lines(x2, y2, gp = gp, default.units = "native")
 			} else {
@@ -1265,7 +1265,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	if(is.null(dim(x))) x = matrix(x, ncol = 1)
 	nc = ncol(x)
 	if(missing(gp)) {
-		gp = gpar(fill = grey(seq(0, 1, length = nc+2))[-c(1, nc+2)])
+		gp = gpar(fill = grey(seq(0, 1, length.out = nc+2))[-c(1, nc+2)])
 	}
 
 	if(beside) {
@@ -1795,7 +1795,7 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 
 	n = length(value)
 	x_range =range(unlist(value), na.rm = TRUE)
-	histogram_stats = lapply(value, hist, plot = FALSE, breaks = seq(x_range[1], x_range[2], length = n_breaks))
+	histogram_stats = lapply(value, hist, plot = FALSE, breaks = seq(x_range[1], x_range[2], length.out = n_breaks))
 	histogram_breaks = lapply(histogram_stats, function(x) x$breaks)
 	histogram_counts = lapply(histogram_stats, function(x) x$counts)
 
@@ -2005,7 +2005,7 @@ anno_density = function(x, which = c("column", "row"),
 		min_y = min(unlist(density_y))
 		max_y = max(unlist(density_y))
 		col_fun = colorRamp2(seq(min_y, max_y, 
-			length = length(heatmap_colors)), heatmap_colors)
+			length.out = length(heatmap_colors)), heatmap_colors)
 	}
 
 	axis_param$direction = "normal"
@@ -2092,7 +2092,7 @@ anno_density = function(x, which = c("column", "row"),
 			min_y = min(unlist(density_y))
 			max_y = max(unlist(density_y))
 			col_fun = colorRamp2(seq(min_y, max_y, 
-				length = length(heatmap_colors)), heatmap_colors)
+				length.out = length(heatmap_colors)), heatmap_colors)
 		}
 
 		n = length(index)

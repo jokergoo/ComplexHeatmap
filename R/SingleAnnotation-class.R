@@ -501,7 +501,7 @@ SingleAnnotation = function(name, value, col, fun,
                     names(col) = sort(unique(value))
                     if(verbose) qqcat("@{names}: add names for discrete color mapping\n")
                 } else if(is.numeric(value)) {
-                    col = colorRamp2(seq(min(value, na.rm = TRUE), max(value, na.rm = TRUE), length = length(col)), col)
+                    col = colorRamp2(seq(min(value, na.rm = TRUE), max(value, na.rm = TRUE), length.out = length(col)), col)
                     if(verbose) qqcat("@{name}: assume as a continuous color mapping\n")
                 }
             }

@@ -174,9 +174,9 @@ heatmap = function(x,
         n_col = length(col)
         if(identical(scale, "row") || identical(scale, "column")) {
             lim = max(abs(mat), na.rm = TRUE)
-            ht_param$col = colorRamp2(seq(-lim, lim, length = n_col), col)
+            ht_param$col = colorRamp2(seq(-lim, lim, length.out = n_col), col)
         } else {
-            ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length = n_col), col)
+            ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length.out = n_col), col)
         } 
     }
     
@@ -567,11 +567,11 @@ heatmap.2 = function(x,
     if(length(breaks)==1)
     {
       if(!symbreaks)
-        breaks <- seq( min(mat, na.rm=na.rm), max(mat,na.rm=na.rm), length=breaks)
+        breaks <- seq( min(mat, na.rm=na.rm), max(mat,na.rm=na.rm), length.out = breaks)
       else
         {
           extreme <- max(abs(mat), na.rm=TRUE)
-          breaks <- seq( -extreme, extreme, length=breaks )
+          breaks <- seq( -extreme, extreme, length.out = breaks )
         }
     }
 
@@ -585,9 +585,9 @@ heatmap.2 = function(x,
 
     if(exists("extreme")) {
         lim = max(abs(mat), na.rm = TRUE)
-        ht_param$col = colorRamp2(seq(-lim, lim, length = n_col), col)
+        ht_param$col = colorRamp2(seq(-lim, lim, length.out = n_col), col)
     } else {
-        ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length = n_col), col)
+        ht_param$col = colorRamp2(seq(min(mat, na.rm = TRUE), max(mat, na.rm = TRUE), length.out = n_col), col)
     } 
     
 
@@ -792,7 +792,7 @@ heatmap.2 = function(x,
                     width = unit(1, "npc") - left_width - unit(2, "mm"), height = unit(1, "npc") - bottom_height- top_height,
                     just = c("left", "bottom"), xscale = x_range, yscale = y_range))
 
-                x = seq(min(breaks), max(breaks), length = 101)
+                x = seq(min(breaks), max(breaks), length.out = 101)
                 grid.rect(x = x[1:100], width = (x_range[2] - x_range[1])/100, default.units = "native", just = "left",
                     gp = gpar(fill = ht_param$col(x + (x_range[2] - x_range[1])/100*0.5), col = NA))
 
