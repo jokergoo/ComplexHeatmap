@@ -802,6 +802,7 @@ anno_points = function(x, which = c("column", "row"), border = TRUE, gp = gpar()
 	} else {
 		data_scale = ylim
 	}
+	if(data_scale[1] == data_scale[2]) data_scale[2] = data_scale[1] + 1
 	data_scale = data_scale + c(-extend, extend)*(data_scale[2] - data_scale[1])
 
 	value = x
@@ -1028,6 +1029,7 @@ anno_lines = function(x, which = c("column", "row"), border = TRUE, gp = gpar(),
 	} else {
 		data_scale = ylim
 	}
+	if(data_scale[1] == data_scale[2]) data_scale[2] = data_scale[1] + 1
 	data_scale = data_scale + c(-extend, extend)*(data_scale[2] - data_scale[1])
 
 	value = x
@@ -1273,6 +1275,9 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	} else {
 		data_scale = range(rowSums(x, na.rm = TRUE), na.rm = TRUE)
 	}
+
+	if(data_scale[1] == data_scale[2]) data_scale[2] = data_scale[1] + 1
+
 	if(!is.null(ylim)) data_scale = ylim
 	if(baseline == "min") {
 		data_scale = data_scale + c(0, extend)*(data_scale[2] - data_scale[1])
@@ -1585,6 +1590,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 	} else {
 		data_scale = ylim
 	}
+	if(data_scale[1] == data_scale[2]) data_scale[2] = data_scale[1] + 1
 	data_scale = data_scale + c(-extend, extend)*(data_scale[2] - data_scale[1])
 
 	n = length(value)
