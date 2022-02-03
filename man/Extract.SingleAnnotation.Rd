@@ -17,9 +17,9 @@ Subset an SingleAnnotation Object
 
 }
 \details{
-The SingleAnnotation class object is subsetable only if the containing \code{\link{AnnotationFunction-class}}
-object is subsetable. All the \code{anno_*} functions are subsetable, so if the SingleAnnotation object
-is constructed by one of these functions, it is also subsetable.
+The SingleAnnotation class object is subsettable only if the containing \code{\link{AnnotationFunction-class}}
+object is subsettable. All the \code{anno_*} functions are subsettable, so if the SingleAnnotation object
+is constructed by one of these functions, it is also subsettable.
 }
 \examples{
 ha = SingleAnnotation(value = 1:10)

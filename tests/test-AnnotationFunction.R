@@ -661,7 +661,7 @@ draw(Heatmap(mat, right_annotation = rowAnnotation(foo = anno),
 
 
 
-#### anno_custome ###
+#### anno_customize ###
 x = sort(sample(letters[1:3], 10, replace = TRUE))
 graphics = list(
 	"a" = function(x, y, w, h) grid.points(x, y, pch = 16),
@@ -673,5 +673,33 @@ anno = anno_customize(x, graphics = graphics)
 draw(anno, index = 1:10, test = "")
 
 anno = anno_customize(c(x, "d"), graphics = graphics)
+
+### anno_numeric ##
+x = runif(10)
+anno = anno_numeric(x)
+draw(anno, 1:10, test = TRUE)
+anno = anno_numeric(x, align_to = "right")
+draw(anno, 1:10, test = TRUE)
+
+
+x = 10^(-runif(10, 1, 6))
+anno = anno_numeric(x, x_convert = function(x) -log10(x), labels_format = function(x) sprintf("%.2e", x))
+draw(anno, 1:10, test = TRUE)
+
+x = runif(10, -1, 1)
+anno = anno_numeric(x)
+draw(anno, 1:10, test = TRUE)
+anno = anno_numeric(x, labels_gp = gpar(col = c("green", "red")))
+draw(anno, 1:10, test = TRUE)
+
+anno = anno_numeric(x, bg_gp = gpar(col = c("green", "red")))
+draw(anno, 1:10, test = TRUE)
+
+
+x = runif(10, 0.5, 1.5)
+anno = anno_numeric(x, align_to = 0)
+draw(anno, 1:10, test = TRUE)
+
+
 
 

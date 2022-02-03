@@ -36,7 +36,7 @@ SingleAnnotation = setClass("SingleAnnotation",
         width = "ANY",
         height = "ANY",
         extended = "ANY",
-        subsetable = "logical"
+        subsettable = "logical"
 	),
 	prototype = list(
 		color_mapping = NULL,
@@ -45,7 +45,7 @@ SingleAnnotation = setClass("SingleAnnotation",
         color_is_random = FALSE,
 		name_to_data_vp = FALSE,
         extended = unit(c(0, 0, 0, 0), "mm"),
-        subsetable = FALSE
+        subsettable = FALSE
 	)
 )
 
@@ -548,7 +548,7 @@ SingleAnnotation = function(name, value, col, fun,
         }
 		
 		.Object@show_legend = show_legend
-        .Object@subsetable = TRUE
+        .Object@subsettable = TRUE
     } else {
         
         f_which = fun@which
@@ -579,7 +579,7 @@ SingleAnnotation = function(name, value, col, fun,
             .Object@height = height
             .Object@fun@height = height
         }
-        .Object@subsetable = .Object@fun@subsetable
+        .Object@subsettable = .Object@fun@subsettable
     }
 
     return(.Object)
@@ -774,7 +774,7 @@ setMethod(f = "show",
 
     cat("  width:", as.character(object@width), "\n")
     cat("  height:", as.character(object@height), "\n")
-    cat("  this object is", ifelse(object@subsetable, "\b", "not"), "subsetable\n")
+    cat("  this object is", ifelse(object@subsettable, "\b", "not"), "subsettable\n")
     dirt = c("bottom", "left", "top", "right")
     for(i in 1:4) {
         if(!identical(unit(0, "mm"), object@extended[i])) {
@@ -816,9 +816,9 @@ has_AnnotationFunction = function(single_anno) {
 # -i A vector of indices.
 #
 # == details
-# The SingleAnnotation class object is subsetable only if the containing `AnnotationFunction-class`
-# object is subsetable. All the ``anno_*`` functions are subsetable, so if the SingleAnnotation object
-# is constructed by one of these functions, it is also subsetable.
+# The SingleAnnotation class object is subsettable only if the containing `AnnotationFunction-class`
+# object is subsettable. All the ``anno_*`` functions are subsettable, so if the SingleAnnotation object
+# is constructed by one of these functions, it is also subsettable.
 #
 # == example
 # ha = SingleAnnotation(value = 1:10)
@@ -829,7 +829,7 @@ has_AnnotationFunction = function(single_anno) {
     if(nargs() == 2) {
         x2 = x
         if(inherits(x@fun, "AnnotationFunction")) {
-            if(x@fun@subsetable) {
+            if(x@fun@subsettable) {
                 x2@fun = x@fun[i]
                 if(x@which == "row") {
                     x2@width = x2@fun@width

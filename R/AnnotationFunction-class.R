@@ -24,7 +24,7 @@ AnnotationFunction = setClass("AnnotationFunction",
 		var_env = "environment",
 		fun = "function",
 		subset_rule = "list",
-		subsetable = "logical",
+		subsettable = "logical",
 		data_scale = "numeric",
 		extended = "ANY",
 		show_name = "logical"
@@ -34,7 +34,7 @@ AnnotationFunction = setClass("AnnotationFunction",
 		width = unit(1, "npc"),
 		height = unit(1, "npc"),
 		subset_rule = list(),
-		subsetable = FALSE,
+		subsettable = FALSE,
 		data_scale = c(0, 1),
 		n = NA_integer_,
 		extended = unit(c(0, 0, 0, 0), "mm"),
@@ -92,8 +92,8 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # -data_scale The data scale on the data axis (y-axis for column annotation and x-axis for row annotation). It is only used
 #             when `decorate_annotation` is used with "native" unit coordinates.
 # -subset_rule The rule of subsetting variables in ``var_import``. It should be set when users want the final object to
-#              be subsetable. See **Details** section.
-# -subsetable Whether the object is subsetable?
+#              be subsettable. See **Details** section.
+# -subsettable Whether the object is subsettable?
 # -show_name It is used to turn off the drawing of annotation names in `HeatmapAnnotation`. Annotations always have names
 #        associated and normally they will be drawn beside the annotation graphics to tell what the annotation is about.
 #        e.g. the annotation names put beside the points annotation graphics. However, for some of the annotations, the names
@@ -133,7 +133,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 #     },
 #     var_import = list(x = x),
 #     n = 10,
-#     subsetable = TRUE,
+#     subsettable = TRUE,
 #     height = unit(2, "cm")
 # )
 # m = rbind(1:10, 11:20)
@@ -141,7 +141,7 @@ anno_width_and_height = function(which, width = NULL, height = NULL,
 # Heatmap(m, top_annotation = HeatmapAnnotation(foo = anno1), column_km = 2)
 AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), cell_fun = NULL,
 	var_import = list(), n = NA, data_scale = c(0, 1), subset_rule = list(), 
-	subsetable = length(subset_rule) > 0, show_name = TRUE, width = NULL, height = NULL) {
+	subsettable = length(subset_rule) > 0, show_name = TRUE, width = NULL, height = NULL) {
 
 	which = match.arg(which)[1]
 
@@ -183,7 +183,7 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), ce
 				}
 			}
 		}
-		subsetable = TRUE
+		subsettable = TRUE
 	}
 
 	if(length(var_import)) {
@@ -232,13 +232,13 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), ce
 		}
 	}
 
-	if(missing(subsetable)) {
+	if(missing(subsettable)) {
 		# is user defined subset rule
 		if(length(anno@subset_rule)) {
-			anno@subsetable = TRUE
+			anno@subsettable = TRUE
 		}
 	} else {
-		anno@subsetable = subsetable
+		anno@subsettable = subsettable
 	}
 
 	return(anno)
@@ -263,8 +263,8 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), ce
 	if(nargs() == 1) {
 		return(x)
 	} else {
-		if(!x@subsetable) {
-			stop_wrap("This object is not subsetable.")
+		if(!x@subsettable) {
+			stop_wrap("This object is not subsettable.")
 		}
 		x = copy_all(x)
 		if(x@fun_name == "anno_mark") {
@@ -425,12 +425,12 @@ setMethod(f = "show",
 	var_imported = names(object@var_env)
 	if(length(var_imported)) {
 		cat("  imported variable:", paste(var_imported, collapse = ", "), "\n")
-		var_subsetable = names(object@subset_rule)
-		if(length(var_subsetable)) {
-			cat("  subsetable variable:", paste(var_subsetable, collapse = ", "), "\n")
+		var_subsettable = names(object@subset_rule)
+		if(length(var_subsettable)) {
+			cat("  subsettable variable:", paste(var_subsettable, collapse = ", "), "\n")
 		}
 	}
-	cat("  this object is ", ifelse(object@subsetable, "", "not "), "subsetable\n", sep = "")
+	cat("  this object is ", ifelse(object@subsettable, "", "not "), "subsettable\n", sep = "")
 	dirt = c("bottom", "left", "top", "right")
 	for(i in 1:4) {
 		if(!identical(unit(0, "mm"), object@extended[i])) {

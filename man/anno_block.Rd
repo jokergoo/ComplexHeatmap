@@ -7,14 +7,15 @@ Block annotation
 Block annotation
 }
 \usage{
-anno_block(gp = gpar(), labels = NULL, labels_gp = gpar(),
+anno_block(align_to = NULL, gp = gpar(), labels = NULL, labels_gp = gpar(),
     labels_rot = ifelse(which == "row", 90, 0),
     labels_offset = unit(0.5, "npc"), labels_just = "center",
     which = c("column", "row"), width = NULL, height = NULL, show_name = FALSE,
-    graphics = NULL)
+    panel_fun = NULL)
 }
 \arguments{
 
+  \item{align_to}{If you don't want to create block annotation for all slices, you can specify a list of indices that cover continuously adjacent rows or columns.}
   \item{gp}{Graphic parameters.}
   \item{labels}{Labels put on blocks.}
   \item{labels_gp}{Graphic parameters for labels.}
@@ -25,7 +26,7 @@ anno_block(gp = gpar(), labels = NULL, labels_gp = gpar(),
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}
   \item{height}{Height of the annotation. The value should be an absolute unit. Height is not allowed to be set for row annotation.}
   \item{show_name}{Whether show annotatio name.}
-  \item{graphics}{A self-defined function that draws graphics in each slice. It must have two arguments: 1. row/column indices for the  current slice and 2. a vector of levels from the split variable that correspond to current slice. When \code{graphics} is set, all other graphics parameters in \code{\link{anno_block}} are ignored.}
+  \item{panel_fun}{A self-defined function that draws graphics in each slice. It must have two arguments: 1. row/column indices for the  current slice and 2. a vector of levels from the split variable that correspond to current slice. When \code{graphics} is set, all other graphics parameters in \code{\link{anno_block}} are ignored.}
 
 }
 \details{
@@ -46,11 +47,11 @@ Heatmap(matrix(rnorm(100), 10),
         labels = c("group1", "group2", "group3"), labels_gp = gpar(col = "white"))),
     row_km = 3)
 
-# =============  set the graphics argument ==============
+# =============  set the panel_fun argument ==============
 col = c("1" = "red", "2" = "blue", "A" = "green", "B" = "orange")
 Heatmap(matrix(rnorm(100), 10), row_km = 2, row_split = sample(c("A", "B"), 10, replace = TRUE)) + 
 rowAnnotation(foo = anno_block(
-	graphics = function(index, levels) {
+	panel_fun = function(index, levels) {
 		grid.rect(gp = gpar(fill = col[levels[2]], col = "black"))
 		grid.text(paste(levels, collapse = ","), 0.5, 0.5, rot = 90,
 			gp = gpar(col = col[levels[1]]))
@@ -59,7 +60,7 @@ rowAnnotation(foo = anno_block(
 
 labels = c("1" = "one", "2" = "two", "A" = "Group_A", "B" = "Group_B")
 Heatmap(matrix(rnorm(100), 10), row_km = 2, row_split = sample(c("A", "B"), 10, replace = TRUE)) + 
-rowAnnotation(foo = anno_block(graphics = function(index, levels) {
+rowAnnotation(foo = anno_block(panel_fun = function(index, levels) {
 	grid.rect(gp = gpar(fill = col[levels[2]], col = "black"))
 	grid.text(paste(labels[levels], collapse = ","), 0.5, 0.5, rot = 90,
 		gp = gpar(col = col[levels[1]]))
@@ -67,7 +68,7 @@ rowAnnotation(foo = anno_block(graphics = function(index, levels) {
 
 Heatmap(matrix(rnorm(100), 10), row_km = 2, row_split = sample(c("A", "B"), 10, replace = TRUE)) + 
 rowAnnotation(foo = anno_block(
-	graphics = function(index, levels) {
+	panel_fun = function(index, levels) {
 		grid.rect(gp = gpar(fill = col[levels[2]], col = "black"))
 		txt = paste(levels, collapse = ",")
 		txt = paste0(txt, "\n", length(index), " rows")
@@ -76,4 +77,16 @@ rowAnnotation(foo = anno_block(
 	},
 	width = unit(3, "cm")
 ))
+
+# =========== set align_to ################
+col = c("foo" = "red", "bar" = "blue")
+Heatmap(matrix(rnorm(100), 10), cluster_rows = FALSE) +
+rowAnnotation(foo = anno_block(
+	align_to = list(foo = 1:4, bar = 6:10),
+	panel_fun = function(index, nm) {
+		grid.rect(gp = gpar(fill = col[nm]))
+		grid.text(nm, 0.5, 0.5)
+	},
+	width = unit(2, "cm"))
+)
 }

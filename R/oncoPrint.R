@@ -809,7 +809,7 @@ anno_oncoprint_barplot = function(type = NULL, which = c("column", "row"),
 		var_import = list(border, type, bar_width, beside, axis, axis_param, anno_size, ylim, show_fraction)
 	)
 		
-	anno@subsetable = TRUE
+	anno@subsettable = TRUE
 	anno@show_name = FALSE
 
 	if(exists("arr", envir = parent.frame(1))) {

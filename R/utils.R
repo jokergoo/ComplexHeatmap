@@ -117,7 +117,8 @@ default_col = function(x, main_matrix = FALSE) {
             }
         } else {
             #col_fun = colorRamp2(range(min(x), max(x)), c("white", hsv(runif(1), 1, 1)))
-            col_fun = colorRamp2(range(min(x), max(x)), c("white", rand_color(1, luminosity = sample(c("bright", "dark"), 1))))
+            rc = rand_color(1, luminosity = sample(c("bright", "dark"), 1))
+            col_fun = colorRamp2(range(min(x), max(x)), c("white", rc))
         }
         return(col_fun)
     }

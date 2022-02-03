@@ -25,7 +25,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 		width = "ANY",  
 		height = "ANY",  
 		gap = "ANY",
-		subsetable = "logical",
+		subsettable = "logical",
 		extended = "ANY",
 		param = "list"
 	),
@@ -33,7 +33,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 		anno_list = list(),
 		which = "column",
 		gap = unit(0, "mm"),
-		subsetable = FALSE,
+		subsettable = FALSE,
 		extended = unit(c(0, 0, 0, 0), "mm"),
 		param = list()
 	),
@@ -526,7 +526,7 @@ HeatmapAnnotation = function(...,
     .Object@width = width
     .Object@height = height
 
-    .Object@subsetable = all(sapply(anno_list, function(x) x@subsetable))
+    .Object@subsettable = all(sapply(anno_list, function(x) x@subsettable))
     extended = unit(c(0, 0, 0, 0), "mm")
     for(i in 1:4) {
     	extended[i] = unit(max(sapply(anno_list, function(anno) {
@@ -795,7 +795,7 @@ setMethod(f = "show",
 	cat("  items:", ifelse(length(len), len[1], "unknown"), "\n")
 	cat("  width:", as.character(object@width), "\n")
 	cat("  height:", as.character(object@height), "\n")
-    cat("  this object is ", ifelse(object@subsetable, "", "not "), "subsetable\n", sep = "")
+    cat("  this object is ", ifelse(object@subsettable, "", "not "), "subsettable\n", sep = "")
     dirt = c("bottom", "left", "top", "right")
     for(i in 1:4) {
         if(!identical(unit(0, "mm"), object@extended[i])) {

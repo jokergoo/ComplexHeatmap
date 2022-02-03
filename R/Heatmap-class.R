@@ -974,7 +974,17 @@ Heatmap = function(matrix, col, name,
     .Object@heatmap_param$height = heatmap_height
     .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
     .Object@heatmap_param$use_raster = use_raster
-    .Object@heatmap_param$raster_device = match.arg(raster_device)[1]
+
+    if(missing(raster_device)) {
+        if(requireNamespace("Cairo", quietly = TRUE)) {
+            raster_device = "CairoPNG"
+        } else {
+            raster_device = "png"
+        }
+    } else {
+        raster_device = match.arg(raster_device)[1]
+    }
+    .Object@heatmap_param$raster_device = raster_device
     .Object@heatmap_param$raster_quality = raster_quality
     .Object@heatmap_param$raster_device_param = raster_device_param
     .Object@heatmap_param$raster_resize_mat = raster_resize_mat

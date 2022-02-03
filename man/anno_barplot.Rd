@@ -7,7 +7,8 @@ Barplot Annotation
 Barplot Annotation
 }
 \usage{
-anno_barplot(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6, beside = FALSE,
+anno_barplot(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_width = 0.6,
+    beside = FALSE, attach = FALSE,
     gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, axis = TRUE,
     axis_param = default_axis_param(which),
     add_numbers = FALSE, numbers_gp = gpar(fontsize = 8),
@@ -22,6 +23,7 @@ anno_barplot(x, baseline = 0, which = c("column", "row"), border = TRUE, bar_wid
   \item{border}{Wether draw borders of the annotation region?}
   \item{bar_width}{Relative width of the bars. The value should be smaller than one.}
   \item{beside}{When \code{x} is a matrix, will bars be positioned beside each other or as stacked bars?}
+  \item{attach}{When \code{beside} is \code{TRUE}, it controls whether bars should be attached.}
   \item{gp}{Graphic parameters for bars. The length of each graphic parameter can be 1, length of \code{x} if \code{x} is a vector, or number of columns of \code{x} is \code{x} is a matrix.}
   \item{ylim}{Data ranges. By default it is \code{range(x)} if \code{x} is a vector, or \code{range(rowSums(x))} if \code{x} is a matrix.}
   \item{extend}{The extension to both side of \code{ylim}. The value is a percent value corresponding to \code{ylim[2] - ylim[1]}.}
