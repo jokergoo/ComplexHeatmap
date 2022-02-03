@@ -8,7 +8,7 @@ citEntry(
                        as.person("Matthias Schlesner")),
    journal = "Bioinformatics",
    year = 2016,
-   textVersion = "Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics."
+   textVersion = "Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics. https://doi.org/10.1093/bioinformatics/btw313."
 )
 
 citFooter("This free open-source software implements academic
