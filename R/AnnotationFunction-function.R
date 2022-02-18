@@ -1300,18 +1300,18 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		data_scale = range(rowSums(x, na.rm = TRUE), na.rm = TRUE)
 	}
 
-	if(data_scale[1] == data_scale[2]) data_scale[2] = data_scale[1] + 1
+	if(data_scale[1] == data_scale[2]) data_scale[2] = data_scale[1] + .Machine$double.eps*1.1
 
 	if(!is.null(ylim)) data_scale = ylim
 	if(baseline == "min") {
 		data_scale = data_scale + c(0, extend)*(data_scale[2] - data_scale[1])
-		baseline = min(x)
+		baseline = min(x, na.rm = TRUE)
 	} else if(baseline == "max") {
 		data_scale = data_scale + c(-extend, 0)*(data_scale[2] - data_scale[1])
-		baseline = max(x)
+		baseline = max(x, na.rm = TRUE)
 	} else {
 		if(is.numeric(baseline)) {
-			if(baseline == 0 && all(abs(rowSums(x) - 1) < 1e-6) && !beside) {
+			if(baseline == 0 && all(abs(rowSums(x, na.rm = TRUE) - 1) < 1e-6) && !beside) {
 				data_scale = c(0, 1)
 			} else if(baseline <= data_scale[1]) {
 				data_scale = c(baseline, extend*(data_scale[2] - baseline) + data_scale[2])
@@ -4314,8 +4314,8 @@ anno_customize = function(x, graphics = list(), which = c("column", "row"),
 # == param
 # -x A vector of numeric values.
 # -rg Range. A numeric vector of length two.
-# -labels_gp. Graphics parameters for labels.
-# -x_convert. A function applied on ``x``. E.g. when ``x`` contains p-values, to map ``x`` to the heights of bars, a transformation of ``-log10(x)`` 
+# -labels_gp Graphics parameters for labels.
+# -x_convert A function applied on ``x``. E.g. when ``x`` contains p-values, to map ``x`` to the heights of bars, a transformation of ``-log10(x)`` 
 #      is normally applied.
 # -labels_format A function applied on ``x``. E.g., when ``x`` is a numeric, ``labels_format`` can be set to ``function(x) sprintf("\%.2f", x)``.
 # -labels_offset Offset of labels to the left or right of bars.
@@ -4330,7 +4330,7 @@ anno_customize = function(x, graphics = list(), which = c("column", "row"),
 #
 # == example
 # m = matrix(rnorm(100), 10)
-# x = numeric(10)
+# x = rnorm(10)
 # Heatmap(m, right_annotation = rowAnnotation(numeric = anno_numeric(x)))
 anno_numeric = function(x, rg = range(x), labels_gp = gpar(), x_convert = NULL, 
 	labels_format = NULL, labels_offset = unit(4, "pt"),
@@ -4357,6 +4357,10 @@ anno_numeric = function(x, rg = range(x), labels_gp = gpar(), x_convert = NULL,
 	if(!is.null(x_convert)) {
 		x = x_convert(x)
 		rg = range(x_convert(rg))
+	}
+
+	if(rg[1] == rg[2]) {
+		rg[2] = rg[2] + .Machine$double.eps*1.1
 	}
 
     x[x < rg[1]] = rg[1]

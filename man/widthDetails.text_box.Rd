@@ -11,7 +11,7 @@ Width for text_box grob
 }
 \arguments{
 
-  \item{x}{The \code{text_box} grob returned by \code{\link{text_boxd_grob}}.}
+  \item{x}{The \code{text_box} grob returned by \code{\link{text_box_grob}}.}
 
 }
 \value{

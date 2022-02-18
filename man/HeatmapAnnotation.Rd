@@ -8,7 +8,7 @@ Constructor Method for HeatmapAnnotation class
 }
 \usage{
 HeatmapAnnotation(...,
-    df, name, col, na_col = "grey",
+    df = NULL, name, col, na_col = "grey",
     annotation_legend_param = list(),
     show_legend = TRUE,
     which = c("column", "row"),

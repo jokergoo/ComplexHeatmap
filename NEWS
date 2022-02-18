@@ -6,6 +6,8 @@ CHANGES in VERSION 2.11.1
 * `anno_block()`: add `align_to` argument.
 * add `anno_text_box()` and `grid.text_box()`.
 * add `show_name` argument in `anno_empty()`.
+* the validation of annotations in `HeatmapAnnotation()` is simplified.
+* add `anno_numeric()`.
 
 =========================
 

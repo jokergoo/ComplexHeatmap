@@ -12,7 +12,7 @@
 # -round_corners Whether to draw round corners for the box.
 # -r Radius of the round corners.
 # -line_space Space between lines. The value can be a `grid::unit` object or a numeric scalar which is measured in mm.
-# -word_space Space between texts The value can be a `grid::unit` object or a numeric scalar which is measured in mm.
+# -text_space Space between texts The value can be a `grid::unit` object or a numeric scalar which is measured in mm.
 # -max_width The maximal width of the viewport to put the word cloud. The value can be a `grid::unit` object or a numeric scalar which is measured in mm.
 #        Note this might be larger than the final width of the returned grob object.
 # -padding Padding of the box, i.e. space between text and the four box borders. The value should be a `grid::unit` object with length 1, 2 or 4. If 
@@ -213,7 +213,7 @@ text_box_grob = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just 
 # Width for text_box grob
 #
 # == param
-# -x The ``text_box`` grob returned by `text_boxd_grob`.
+# -x The ``text_box`` grob returned by `text_box_grob`.
 #
 # == value
 # A `grid::unit` object.

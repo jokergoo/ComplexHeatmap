@@ -270,3 +270,36 @@ ha = HeatmapAnnotation(foo = 1:10, bar = letters[1:10],
 		foo = gt_render("foo", gp = gpar(box_fill = "red")),
 		bar = gt_render("bar", gp = gpar(box_fill = "blue"))))
 draw(ha, test = TRUE)
+
+
+### test whether arguments can be captured
+HeatmapAnnotation(a = 1:10)
+rowAnnotation(a = 1:10)
+columnAnnotation(a = 1:10)
+do.call(HeatmapAnnotation, list(a = 1:10))
+do.call(rowAnnotation, list(a = 1:10))
+do.call(columnAnnotation, list(a = 1:10))
+do.call("HeatmapAnnotation", list(a = 1:10))
+do.call("rowAnnotation", list(a = 1:10))
+do.call("columnAnnotation", list(a = 1:10))
+
+f = function() HeatmapAnnotation(a = 1:10)
+f()
+f = function() rowAnnotation(a = 1:10)
+f()
+f = function() columnAnnotation(a = 1:10)
+f()
+
+sapply(1, function(x) HeatmapAnnotation(a = 1:10))
+sapply(1, function(x) rowAnnotation(a = 1:10))
+sapply(1, function(x) columnAnnotation(a = 1:10))
+
+mapply(function(x, y) HeatmapAnnotation(a = 1:10), list(1), list(1))
+mapply(function(x, y) rowAnnotation(a = 1:10), list(1), list(1))
+mapply(function(x, y) columnAnnotation(a = 1:10), list(1), list(1))
+
+
+try({
+	HeatmapAnnotation(1:10)
+	HeatmapAnnotation(df = data.frame(a = 1:10), a = 1:10)
+})

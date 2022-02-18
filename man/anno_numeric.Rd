@@ -18,8 +18,8 @@ anno_numeric(x, rg = range(x), labels_gp = gpar(), x_convert = NULL,
 
   \item{x}{A vector of numeric values.}
   \item{rg}{Range. A numeric vector of length two.}
-  \item{labels_gp.}{Graphics parameters for labels.}
-  \item{x_convert.}{A function applied on \code{x}. E.g. when \code{x} contains p-values, to map \code{x} to the heights of bars, a transformation of \code{-log10(x)}  is normally applied.}
+  \item{labels_gp}{Graphics parameters for labels.}
+  \item{x_convert}{A function applied on \code{x}. E.g. when \code{x} contains p-values, to map \code{x} to the heights of bars, a transformation of \code{-log10(x)}  is normally applied.}
   \item{labels_format}{A function applied on \code{x}. E.g., when \code{x} is a numeric, \code{labels_format} can be set to \code{function(x) sprintf("\%.2f", x)}.}
   \item{labels_offset}{Offset of labels to the left or right of bars.}
   \item{bg_gp}{Graphics parameters for the background bars.}

@@ -95,7 +95,7 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # Zuguang Gu <z.gu@dkfz.de>
 #
 HeatmapAnnotation = function(..., 
-	df, name, col, na_col = "grey",
+	df = NULL, name, col, na_col = "grey",
 	annotation_legend_param = list(), 
 	show_legend = TRUE, 
 	which = c("column", "row"), 
@@ -150,53 +150,8 @@ HeatmapAnnotation = function(...,
 	.Object@name = name
 	n_anno = 0
 
-	#### check system calls ####
-	# HeatmapAnnotation is either called by `HeatmapAnnotation()` or by `rowAnnotation()`/`columnAnnotation()`
-	sc = sys.calls()
-	nsc = length(sc)
-	if(nsc == 1) {  # HeatmapAnnotation(...)
-		scl = as.list(sc[[1]])
-		arg_list = scl[-1]
-	} else {
-		
-		scl = as.list(sc[[nsc-1]])
-		if(is.function(scl[[1]])) {
-			if(identical(scl[[1]], pheatmap)) {
-				scl = as.list(sc[[nsc]])
-				arg_list = scl[-1]
-			} else if(identical(scl[[1]], heatmap)) {
-				scl = as.list(sc[[nsc]])
-				arg_list = scl[-1]
-			} else if(identical(scl[[1]], heatmap.2)) {
-				scl = as.list(sc[[nsc]])
-				arg_list = scl[-1]
-			} else {
-				# do.call(rowAnnotation, list(...))
-				# do.call(columnAnnotation, list(...))
-				arg_list = scl[-1]
-			}
-		} else if(any(as.character(scl[[1]]) %in% c("HeatmapAnnotation", "rowAnnotation", "columnAnnotation"))) { 
-			# columnAnnotation(...), rowAnnotation(...)
-			# do.call("columnAnnotation", list(...))
-			# do.call("rowAnnotation", list(...))
-			arg_list = scl[-1]
-		} else {
-			# do.call("HeatmapAnnotation", list(...))
-			# do.call(HeatmapAnnotation, list(...))
-			scl = as.list(sc[[nsc]])
-			arg_list = scl[-1]
-		}
-	}
-
-    called_args = names(arg_list)
-    anno_args = setdiff(called_args, fun_args)
-    if(any(anno_args == "")) stop_wrap("annotations should have names.")
-    if(is.null(called_args)) {
-    	stop_wrap("It seems you are putting only one argument to the function. If it is a simple vector annotation or a function annotation (e.g. anno_*()), specify it as HeatmapAnnotation(name = value). If it is a data frame annotation, specify it as HeatmapAnnotation(df = value)")
-    }
-
     ##### pull all annotation to `anno_value_list`####
-    if("df" %in% called_args) {
+    if(!is.null(df)) {
     	if(is.matrix(df)) {
     		warning_wrap("`df` should be a data frame while not a matrix. Convert it to data frame.")
     		df = as.data.frame(df)
@@ -209,23 +164,35 @@ HeatmapAnnotation = function(...,
     }
 
     anno_arg_list = list(...)
-	if("df" %in% called_args && length(anno_arg_list)) {
-		if(any(duplicated(c(names(df), names(anno_arg_list))))) {
-			stop_wrap("Annotation names are duplicated. Check the column names of `df`.")
+    anno_arg_names = names(anno_arg_list)
+	if(any(anno_arg_names == "")) {
+		stop_wrap("Annotations should have names.")
+	}
+	if(is.null(anno_arg_names)) {
+		if(length(anno_arg_list) == 1) {
+			stop_wrap("The annotation should be specified as name-value pairs or via argument `df` with a data frame.")
+		}
+		if(length(anno_arg_list) > 1) {
+			stop_wrap("Annotations should have names.")
+		}
+	}
+
+	if(!is.null(df) && length(anno_arg_list)) {
+		if(any(duplicated(c(names(df), anno_arg_names)))) {
+			stop_wrap("Annotation names are duplicated to those in `df`. Check the column names of `df`.")
 		}
 	}
 
 	anno_value_list = list()
-	for(nm in called_args) {
-		if(nm %in% names(anno_arg_list)) {
-			anno_value_list[[nm]] = anno_arg_list[[nm]]
-		} else if(nm == "df") {
-			for(nm2 in colnames(df)) {
-				if(is.null(rownames(df))) {
-					anno_value_list[[nm2]] = df[, nm2]
-				} else {
-					anno_value_list[[nm2]] = structure(df[, nm2], names = rownames(df))
-				}
+	for(nm in anno_arg_names) {
+		anno_value_list[[nm]] = anno_arg_list[[nm]]
+	}
+	if(!is.null(df)) {
+		for(nm2 in colnames(df)) {
+			if(is.null(rownames(df))) {
+				anno_value_list[[nm2]] = df[, nm2]
+			} else {
+				anno_value_list[[nm2]] = structure(df[, nm2], names = rownames(df))
 			}
 		}
 	}

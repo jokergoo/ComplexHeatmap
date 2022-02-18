@@ -23,7 +23,7 @@ text_box_grob(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre",
   \item{round_corners}{Whether to draw round corners for the box.}
   \item{r}{Radius of the round corners.}
   \item{line_space}{Space between lines. The value can be a \code{\link[grid]{unit}} object or a numeric scalar which is measured in mm.}
-  \item{word_space}{Space between texts The value can be a \code{\link[grid]{unit}} object or a numeric scalar which is measured in mm.}
+  \item{text_space}{Space between texts The value can be a \code{\link[grid]{unit}} object or a numeric scalar which is measured in mm.}
   \item{max_width}{The maximal width of the viewport to put the word cloud. The value can be a \code{\link[grid]{unit}} object or a numeric scalar which is measured in mm. Note this might be larger than the final width of the returned grob object.}
   \item{padding}{Padding of the box, i.e. space between text and the four box borders. The value should be a \code{\link[grid]{unit}} object with length 1, 2 or 4. If  length of the input unit is 2, the first value is the padding both to the top and to the bottom, and the second value is the padding to the left and right. If length of the input unit is 4, the four values correspond to paddings to the bottom, left, top and right of the box.}
   \item{first_text_from}{Should the texts be added from the top of the box or from the bottom? Value should be either "top" or "bottom".}
