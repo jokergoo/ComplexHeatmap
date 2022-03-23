@@ -1051,6 +1051,9 @@ anno_type = function(ha) {
         size(x2) = sum(x2@anno_size) + sum(x2@gap) - x2@gap[length(x2@gap)]
 
     } else if(nargs() == 2) { # ha[1:4]
+    	if(is.character(i) && all(i %in% names(x2@anno_list))) {
+    		warning_wrap("It seems you want to obtain a subset of annotations. You should set in a form of `anno[, names]`.")
+    	}
     	x2 = x
         for(nm in names(x2@anno_list)) {
         	x2@anno_list[[nm]] = x2@anno_list[[nm]][i]

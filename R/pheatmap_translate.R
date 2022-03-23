@@ -271,7 +271,7 @@ pheatmap = function(mat,
 
     if(identical(scale, "row") || identical(scale, "column")) {
         if(identical(legend_breaks, NA)) {
-            lim = quantile(abs(mat), 0.975)
+            lim = quantile(abs(mat), 0.975, na.rm = TRUE)
 
             le = pretty(c(-lim, lim), n = 3)
             if(length(le) == 7 && le[1] == -3) {

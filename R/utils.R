@@ -87,7 +87,7 @@ default_col = function(x, main_matrix = FALSE) {
                     cat("This matrix has both negative and positive values, use a color mapping symmetric to zero\n")
                 }
                 if(length(unique(x)) >= 100) {
-                    q1 = quantile(abs(x), 0.99)
+                    q1 = quantile(abs(x), 0.99, na.rm = TRUE)
                     col_fun = colorRamp2(seq(-q1, q1, length.out = length(ht_opt$COLOR)), ht_opt$COLOR)
 
                     if(any(x > q1*3 | x < -q1*3)) {
@@ -99,8 +99,8 @@ default_col = function(x, main_matrix = FALSE) {
                 }
             } else {
                 if(length(unique(x)) >= 100) {
-                    q1 = quantile(x, 0.01)
-                    q2 = quantile(x, 0.99)
+                    q1 = quantile(x, 0.01, na.rm = TRUE)
+                    q2 = quantile(x, 0.99, na.rm = TRUE`)
                     if(q1 == q2) {
                         col_fun = colorRamp2(seq(min(x), max(x), length.out = length(ht_opt$COLOR)), ht_opt$COLOR)
                     } else if(length(unique(x[x > q1 & x < q2])) == 1) {

@@ -593,6 +593,7 @@ oncoPrint = function(mat, name,
 		...
 	)
 	ht@heatmap_param$oncoprint_env = environment()
+	ht@heatmap_param$type = "oncoPrint"
 
 	return(ht)
 }

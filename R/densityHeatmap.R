@@ -262,6 +262,7 @@ densityHeatmap = function(data,
 	}
 
 	ht@heatmap_param$post_fun = post_fun
+	ht@heatmap_param$type = "densityHeatmap"
 
 	ht_list = ht
 	return(ht_list)
@@ -531,6 +532,7 @@ frequencyHeatmap = function(data,
 	}
 
 	ht@heatmap_param$post_fun = post_fun
+	ht@heatmap_param$type = "frequencyHeatmap"
 
 	ht_list = ht
 	return(ht_list)

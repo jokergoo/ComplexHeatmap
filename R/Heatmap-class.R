@@ -557,12 +557,24 @@ Heatmap = function(matrix, col, name,
             if(verbose) qqcat("color is not specified, use randomly generated colors\n")
         }
         if(is.function(col)) {
-            .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
+            if(is.null(attr(col, "breaks"))) {
+                breaks = seq(min(matrix, na.rm = TRUE), max(matrix, na.rm = TRUE), length.out = 5)
+                rg = range(breaks)
+                diff = rg[2] - rg[1]
+                rg[1] = rg[1] + diff*0.05
+                rg[2] = rg[2] - diff*0.05
+
+                le = pretty(rg, n = 3)
+                .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, breaks = le, na_col = na_col)
+            } else {
+                .Object@matrix_color_mapping = ColorMapping(col_fun = col, name = name, na_col = na_col)
+            }
             if(verbose) qqcat("input color is a color mapping function\n")
         } else if(inherits(col, "ColorMapping")){
             .Object@matrix_color_mapping = col
             if(verbose) qqcat("input color is a ColorMapping object\n")
         } else {
+
             if(is.null(names(col))) {
                 if(length(col) == length(unique(as.vector(matrix)))) {
                     if(is.null(fa_level)) {
