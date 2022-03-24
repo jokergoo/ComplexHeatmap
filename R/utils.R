@@ -100,7 +100,7 @@ default_col = function(x, main_matrix = FALSE) {
             } else {
                 if(length(unique(x)) >= 100) {
                     q1 = quantile(x, 0.01, na.rm = TRUE)
-                    q2 = quantile(x, 0.99, na.rm = TRUE`)
+                    q2 = quantile(x, 0.99, na.rm = TRUE)
                     if(q1 == q2) {
                         col_fun = colorRamp2(seq(min(x), max(x), length.out = length(ht_opt$COLOR)), ht_opt$COLOR)
                     } else if(length(unique(x[x > q1 & x < q2])) == 1) {
