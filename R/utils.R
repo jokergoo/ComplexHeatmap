@@ -1133,3 +1133,13 @@ get_last_ht = function() {
 
 #     ds
 # }
+
+
+setAs("list", "HeatmapList", function(from) {
+    ht_list = NULL
+    for(i in seq_along(from)) {
+        ht_list = ht_list + from[[i]]
+    }
+    ht_list
+})
+
