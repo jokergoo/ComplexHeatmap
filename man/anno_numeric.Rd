@@ -33,6 +33,6 @@ anno_numeric(x, rg = range(x), labels_gp = gpar(), x_convert = NULL,
 }
 \examples{
 m = matrix(rnorm(100), 10)
-x = numeric(10)
+x = rnorm(10)
 Heatmap(m, right_annotation = rowAnnotation(numeric = anno_numeric(x)))
 }

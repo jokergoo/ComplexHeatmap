@@ -186,6 +186,14 @@ AnnotationFunction = function(fun, fun_name = "", which = c("column", "row"), ce
 		subsettable = TRUE
 	}
 
+	if(length(var_import) == 0) {
+		global_vars = codetools::findGlobals(fun, merge = FALSE)$variables
+
+        for(v in global_vars) {
+           var_import[[v]] = get(v, envir = environment(fun))
+        }
+	}
+
 	if(length(var_import)) {
 		anno@var_env = new.env()
 		if(is.character(var_import)) {
