@@ -60,6 +60,9 @@ setMethod(f = "draw_heatmap_body",
     if(!is.null(cell_fun)) {
         use_raster = FALSE
     }
+    if(identical(object@matrix_param$gp$type, "none")) {
+        use_raster = FALSE
+    }
    
     if(use_raster) {
 

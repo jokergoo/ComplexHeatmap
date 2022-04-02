@@ -1142,4 +1142,3 @@ setAs("list", "HeatmapList", function(from) {
     }
     ht_list
 })
-

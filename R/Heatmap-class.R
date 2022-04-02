@@ -531,6 +531,26 @@ Heatmap = function(matrix, col, name,
     if(!missing(border_gp) && missing(border)) border = TRUE
     .Object@matrix_param$border = border
     .Object@matrix_param$border_gp = border_gp
+
+    if(!is.null(cell_fun)) {
+        global_vars = codetools::findGlobals(cell_fun, merge = FALSE)$variables
+
+        ee = new.env(parent = environment(cell_fun))
+        for(v in global_vars) {
+            assign(v, value = get(v, envir = environment(cell_fun)), envir = ee)
+        }
+        environment(cell_fun) = ee
+    }
+    if(!is.null(layer_fun)) {
+        global_vars = codetools::findGlobals(layer_fun, merge = FALSE)$variables
+
+        ee = new.env(parent = environment(layer_fun))
+        for(v in global_vars) {
+            assign(v, value = get(v, envir = environment(layer_fun)), envir = ee)
+        }
+        environment(layer_fun) = ee
+    }
+
     .Object@matrix_param$cell_fun = cell_fun
     .Object@matrix_param$layer_fun = layer_fun
 
