@@ -48,7 +48,7 @@ Draw Legend Based on Color Mapping
   \item{border}{Color for legend grid borders. Pass to \code{\link{Legend}}.}
   \item{at}{Break values of the legend. By default it is the levels in the \code{\link{ColorMapping-class}} object.}
   \item{labels}{Labels corresponding to break values.}
-  \item{labels_gp}{Graphcial parameters for legend labels.}
+  \item{labels_gp}{Graphical parameters for legend labels.}
   \item{labels_rot}{Rotation of labels.}
   \item{nrow}{Pass to \code{\link{Legend}}. It controls the layout of legend grids if they are arranged in multiple rows or columns.}
   \item{ncol}{Pass to \code{\link{Legend}}. It controls the layout of legend grids if they are arranged in multiple rows or columns.}
