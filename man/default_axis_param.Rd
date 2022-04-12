@@ -21,7 +21,7 @@ There are following parameters for the annotation axis:
   \item{at}{The breaks of axis. By default it is automatically inferred.}
   \item{labels}{The corresponding axis labels.}
   \item{labels_rot}{The rotation of the axis labels.}
-  \item{gp}{Graphc parameters of axis labels. The value should be a \code{\link[grid]{unit}} object.}
+  \item{gp}{Graphic parameters of axis labels. The value should be a \code{\link[grid]{unit}} object.}
   \item{side}{If it is for column annotation, the value should only be one of \code{left} and \code{right}. If it is for row annotation, the value should only be one of \code{top} and \code{bottom}.}
   \item{facing}{Whether the axis faces to the outside of the annotation region or inside. Sometimes when appending more than one heatmaps, the axes of column annotations of one heatmap might overlap to the neighbouring heatmap, setting \code{facing} to \code{inside} may invoild it.}
   \item{direction}{The direction of the axis. Value should be "normal" or "reverse".}
