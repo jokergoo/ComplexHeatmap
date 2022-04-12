@@ -619,10 +619,24 @@ Heatmap = function(matrix, col, name,
                 }
             } else {
                 full_col = col
+                # note here col can be reduced
                 if(is.null(fa_level)) {
                     col = col[intersect(c(names(col), "_NA_"), as.character(matrix))]
                 } else {
                     col = col[intersect(c(fa_level, "_NA_"), names(col))]
+                }
+                if(!is.null(heatmap_legend_param)) {
+                    if(!is.null(heatmap_legend_param$at) && !is.null(heatmap_legend_param$labels)) {
+                        l = heatmap_legend_param$at %in% names(col)
+                        heatmap_legend_param$at = heatmap_legend_param$at[l]
+                        heatmap_legend_param$labels = heatmap_legend_param$labels[l]
+                    } else if(is.null(heatmap_legend_param$at) && !is.null(heatmap_legend_param$labels)) {
+                        l = heatmap_legend_param$labels %in% names(col)
+                        heatmap_legend_param$labels = heatmap_legend_param$labels[l]
+                    } else if(!is.null(heatmap_legend_param$at) && is.null(heatmap_legend_param$labels)) {
+                        l = heatmap_legend_param$at %in% names(col)
+                        heatmap_legend_param$at = heatmap_legend_param$at[l]
+                    }
                 }
                 .Object@matrix_color_mapping = ColorMapping(colors = col, name = name, na_col = na_col, full_col = full_col)
                 if(verbose) qqcat("input color is a named vector\n")

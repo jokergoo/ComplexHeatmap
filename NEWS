@@ -1,3 +1,10 @@
+CHANGES in VERSION 2.11.2
+
+* discrete color mapping: when heatmap_param_list$at is set, it is reduced accordingly 
+  to `col`.
+
+=======================
+
 CHANGES in VERSION 2.11.1
 
 * add a global option `ht_opt$COLOR` to control colors for continuous color mapping.
