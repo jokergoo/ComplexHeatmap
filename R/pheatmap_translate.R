@@ -55,6 +55,12 @@
 # -silent Not supported.
 # -na_col The same as in `pheatmap::pheatmap`.
 # -name Name of the heatmap. This argument is passed to `Heatmap`.
+# -fontfamily Font family for row and column names.
+# -fontfamily_row Font family for row names.
+# -fontfamily_col Font family for column names.
+# -fontface Font face for row and column names.
+# -fontface_row Font face for row names.
+# -fontface_col Font face for column names.
 # -heatmap_legend_param  Pass to `Heatmap`.
 # -... Other arguments passed to `Heatmap`.
 # -run_draw Whether to run ``draw()`` function to the heatmap object.
@@ -120,6 +126,14 @@ pheatmap = function(mat,
     silent = FALSE, 
     na_col = "#DDDDDD", 
     name = NULL,
+
+    # other graphic parameters for fonts
+    fontfamily = "",
+    fontfamily_row = fontfamily,
+    fontfamily_col = fontfamily,
+    fontface = 1,
+    fontface_row = fontface,
+    fontface_col = fontface,
 
     # argument specific for Heatmap()
     heatmap_legend_param = list(),
@@ -361,8 +375,8 @@ pheatmap = function(mat,
     ht_param$show_row_names = show_rownames
     ht_param$show_column_names = show_colnames
     
-    ht_param$row_names_gp = gpar(fontsize = fontsize_row)
-    ht_param$column_names_gp = gpar(fontsize = fontsize_col)
+    ht_param$row_names_gp = gpar(fontsize = fontsize_row, fontfamily = fontfamily_row, fontface = fontface_row)
+    ht_param$column_names_gp = gpar(fontsize = fontsize_col, fontfamily = fontfamily_col, fontface = fontface_col)
 
     angle_col = match.arg(angle_col)[1]
     angle_col = switch(angle_col, 

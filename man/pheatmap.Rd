@@ -58,6 +58,14 @@ pheatmap(mat,
     na_col = "#DDDDDD",
     name = NULL,
     
+    # other graphic parameters for fonts
+    fontfamily = "",
+    fontfamily_row = fontfamily,
+    fontfamily_col = fontfamily,
+    fontface = 1,
+    fontface_row = fontface,
+    fontface_col = fontface,
+    
     # argument specific for Heatmap()
     heatmap_legend_param = list(),
     ...,
@@ -115,6 +123,12 @@ pheatmap(mat,
   \item{silent}{Not supported.}
   \item{na_col}{The same as in \code{\link[pheatmap]{pheatmap}}.}
   \item{name}{Name of the heatmap. This argument is passed to \code{\link{Heatmap}}.}
+  \item{fontfamily}{Font family for row and column names.}
+  \item{fontfamily_row}{Font family for row names.}
+  \item{fontfamily_col}{Font family for column names.}
+  \item{fontface}{Font face for row and column names.}
+  \item{fontface_row}{Font face for row names.}
+  \item{fontface_col}{Font face for column names.}
   \item{heatmap_legend_param}{Pass to \code{\link{Heatmap}}.}
   \item{...}{Other arguments passed to \code{\link{Heatmap}}.}
   \item{run_draw}{Whether to run \code{draw()} function to the heatmap object.}
