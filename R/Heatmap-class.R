@@ -559,7 +559,7 @@ Heatmap = function(matrix, col, name,
             warning_wrap("You defined `cell_fun` for a heatmap with more than 100 rows or columns, which might be very slow to draw. Consider to use the vectorized version `layer_fun`.")
         }
     }
-    
+
     ### color for main matrix #########
     if(ncol(matrix) > 0 && nrow(matrix) > 0) {
         if(missing(col)) {
@@ -625,7 +625,7 @@ Heatmap = function(matrix, col, name,
                 } else {
                     col = col[intersect(c(fa_level, "_NA_"), names(col))]
                 }
-                if(!is.null(heatmap_legend_param)) {
+                if(!is.null(heatmap_legend_param) && !identical(.Object@matrix_param$gp$type, "none")) {
                     if(!is.null(heatmap_legend_param$at) && !is.null(heatmap_legend_param$labels)) {
                         l = heatmap_legend_param$at %in% names(col)
                         heatmap_legend_param$at = heatmap_legend_param$at[l]
