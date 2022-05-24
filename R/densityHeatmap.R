@@ -294,9 +294,10 @@ ks_dist = function(data, cores = 1) {
 	ind_mat = expand.grid(seq_len(nc), seq_len(nc))
 	ind_mat = ind_mat[  ind_mat[, 1] > ind_mat[, 2], , drop = FALSE]
 	
+	lp <- .libPaths()
 	registerDoParallel(cores)
 	v <- foreach (ind = seq_len(nrow(ind_mat))) %dopar% {
-
+  	.libPaths(lp) # Ensure lib paths in individual cluster
 		i = ind_mat[ind, 1]
 		j = ind_mat[ind, 2]
 		suppressWarnings(d <- ks_dist_pair(data[[i]], data[[j]]))
