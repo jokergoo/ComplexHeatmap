@@ -294,9 +294,16 @@ ks_dist = function(data, cores = 1) {
 	ind_mat = expand.grid(seq_len(nc), seq_len(nc))
 	ind_mat = ind_mat[  ind_mat[, 1] > ind_mat[, 2], , drop = FALSE]
 	
-	registerDoParallel(cores)
-	v <- foreach (ind = seq_len(nrow(ind_mat))) %dopar% {
+	# Ensures that .libPaths() in each cluster is the same as the main node
+	# Refer to: https://www.r-bloggers.com/2020/12/how-to-set-library-path-on-a-parallel-r-cluster/
+	e <- new.env()
+	e$libs <- .libPaths()
+	cl <- makeCluster(cores)
+	clusterExport(cl, "libs", env=e)
+	clusterEvalQ(cl, .libPaths(libs))
 
+	registerDoParallel(cl)
+	v <- foreach (ind = seq_len(nrow(ind_mat))) %dopar% {
 		i = ind_mat[ind, 1]
 		j = ind_mat[ind, 2]
 		suppressWarnings(d <- ks_dist_pair(data[[i]], data[[j]]))
