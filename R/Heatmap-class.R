@@ -102,11 +102,11 @@ Heatmap = setClass("Heatmap",
 # -row_title Title on the row.
 # -row_title_side Will the title be put on the left or right of the heatmap?
 # -row_title_gp Graphic parameters for row title.
-# -row_title_rot Rotation of row title. Only 0, 90, 270 are allowed to set.
+# -row_title_rot Rotation of row title.
 # -column_title Title on the column.
 # -column_title_side Will the title be put on the top or bottom of the heatmap?
 # -column_title_gp Graphic parameters for column title.
-# -column_title_rot Rotation of column titles. Only 0, 90, 270 are allowed to set.
+# -column_title_rot Rotation of column titles.
 # -cluster_rows If the value is a logical, it controls whether to make cluster on rows. The value can also
 #               be a `stats::hclust` or a `stats::dendrogram` which already contains clustering.
 #               Check https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#clustering .

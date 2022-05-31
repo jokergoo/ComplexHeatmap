@@ -99,18 +99,10 @@ setMethod(f = "make_layout",
     }
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
-            if(column_title_rot %in% c(0, 180)) {
-                object@layout$layout_size$column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(title_padding)
-            } else {
-                object@layout$layout_size$column_title_top_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + sum(title_padding)
-            }
+            object@layout$layout_size$column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp, rot = column_title_rot)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_top = heatmap_layout_index("column_title_top"))
         } else {
-            if(column_title_rot %in% c(0, 180)) {
-                object@layout$layout_size$column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp)) + sum(title_padding)
-            } else {
-                object@layout$layout_size$column_title_bottom_height = grobWidth(textGrob(column_title, gp = column_title_gp)) + sum(title_padding)
-            }
+            object@layout$layout_size$column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp, rot = column_title_rot)) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_bottom = heatmap_layout_index("column_title_bottom"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
@@ -139,18 +131,10 @@ setMethod(f = "make_layout",
     }
     if(length(row_title) > 0) {
         if(row_title_side == "left") {
-            if(row_title_rot %in% c(0, 180)) {
-                object@layout$layout_size$row_title_left_width = max_text_width(row_title, gp = row_title_gp) + sum(title_padding)
-            } else {
-                object@layout$layout_size$row_title_left_width = max_text_height(row_title, gp = row_title_gp) + sum(title_padding)
-            }
+            object@layout$layout_size$row_title_left_width = max_text_width(row_title, gp = row_title_gp, rot = row_title_rot) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, row_title_left = heatmap_layout_index("row_title_left"))
         } else {
-            if(row_title_rot %in% c(0, 180)) {
-                object@layout$layout_size$row_title_right_width = max_text_width(row_title, gp = row_title_gp) + sum(title_padding)
-            } else {
-                object@layout$layout_size$row_title_right_width = max_text_height(row_title, gp = row_title_gp) + sum(title_padding)
-            }
+            object@layout$layout_size$row_title_right_width = max_text_width(row_title, gp = row_title_gp, rot = row_title_rot) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, row_title_right = heatmap_layout_index("row_title_right"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
