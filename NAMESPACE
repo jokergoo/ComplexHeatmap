@@ -324,4 +324,5 @@ importFrom("utils", "combn")
 importFrom("utils", "getFromNamespace")
 importFrom("utils", "packageDescription")
 importFrom("utils", "str")
+importFrom("utils", "sessionInfo")
 

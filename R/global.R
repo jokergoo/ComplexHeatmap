@@ -251,5 +251,7 @@ is_under_jupyter = function() {
     "IRkernel" %in% c(names(s$otherPkgs), names(s$loadedOnly))
 }
 
+.ENV$IS_UNDER_JUPYTER = FALSE
+.ENV$IS_UNDER_JUPYTER_IGNORE = FALSE
 
 

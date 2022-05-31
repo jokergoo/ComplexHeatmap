@@ -296,11 +296,11 @@ ks_dist = function(data, cores = 1) {
 	
 	# Ensures that .libPaths() in each cluster is the same as the main node
 	# Refer to: https://www.r-bloggers.com/2020/12/how-to-set-library-path-on-a-parallel-r-cluster/
-	e <- new.env()
-	e$libs <- .libPaths()
 	cl <- makeCluster(cores)
-	clusterExport(cl, "libs", env=e)
-	clusterEvalQ(cl, .libPaths(libs))
+
+	lp = .libPaths()
+	clusterExport(cl, "lp", envir = environment())
+	clusterEvalQ(cl, .libPaths(lp))
 
 	registerDoParallel(cl)
 	v <- foreach (ind = seq_len(nrow(ind_mat))) %dopar% {
