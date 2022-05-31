@@ -290,6 +290,7 @@ exportMethods("set_component_height")
 exportMethods("set_component_width")
 
 import(digest)
+import(parallel)
 import(doParallel)
 import(foreach)
 import(grDevices)
