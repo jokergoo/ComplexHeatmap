@@ -1142,3 +1142,15 @@ setAs("list", "HeatmapList", function(from) {
     }
     ht_list
 })
+
+
+draw_heatmap_in_jupyter = function(ht, ...) {
+    width = getOption("repr.plot.width")
+    height = getOption("repr.plot.height")
+
+    p = grid.grabExpr({ht <- draw(ht, ...)}, width = width, height = height)
+    grid.draw(p)
+
+    invisible(ht)
+}
+

@@ -245,3 +245,11 @@ ht_global_opt = ht_opt
 
 GLOBAL_PADDING = unit(rep(5.5, 4), "points")
 
+
+is_under_jupyter = function() {
+    s = sessionInfo()
+    "IRkernel" %in% c(names(s$otherPkgs), names(s$loadedOnly))
+}
+
+
+

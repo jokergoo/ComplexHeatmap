@@ -410,6 +410,113 @@ setMethod(f = "draw",
     show_parent_dend_line = NULL
     ) {
 
+
+    if(.ENV$IS_UNDER_JUPYTER && !.ENV$IS_UNDER_JUPYTER_IGNORE) {
+        .ENV$IS_UNDER_JUPYTER_IGNORE = TRUE
+        on.exit(.ENV$IS_UNDER_JUPYTER_IGNORE <- FALSE)
+        p = grid.grabExpr({
+            object = draw(object,
+                newpage = newpage,
+                background = background,
+
+                row_title = row_title, 
+                row_title_side = row_title_side, 
+                row_title_gp = row_title_gp,
+                column_title = column_title, 
+                column_title_side = column_title_side, 
+                column_title_gp = column_title_gp, 
+
+                heatmap_legend_side = heatmap_legend_side, 
+                merge_legends = merge_legends,
+                show_heatmap_legend = show_heatmap_legend, 
+                heatmap_legend_list = heatmap_legend_list,
+                annotation_legend_side = annotation_legend_side, 
+                show_annotation_legend = show_annotation_legend, 
+                annotation_legend_list = annotation_legend_list,
+                align_heatmap_legend = align_heatmap_legend,
+                align_annotation_legend = align_annotation_legend,
+                legend_grouping = legend_grouping,
+
+                gap = gap, 
+                ht_gap = ht_gap, 
+
+                main_heatmap = main_heatmap,
+                padding = padding,
+                adjust_annotation_extension = adjust_annotation_extension,
+                
+                auto_adjust = auto_adjust,
+                row_dend_side = row_dend_side,
+                row_sub_title_side = row_sub_title_side,
+                column_dend_side = column_dend_side,
+                column_sub_title_side = column_sub_title_side,
+                
+                row_gap = row_gap,
+                cluster_rows = cluster_rows,
+                cluster_row_slices = cluster_row_slices,
+                clustering_distance_rows = clustering_distance_rows,
+                clustering_method_rows = clustering_method_rows,
+                row_dend_width = row_dend_width, 
+                show_row_dend = show_row_dend, 
+                row_dend_reorder = row_dend_reorder,
+                row_dend_gp = row_dend_gp,
+                row_order = row_order,
+                km = km,
+                split = split,
+                row_km = row_km,
+                row_km_repeats = row_km_repeats,
+                row_split = row_split,
+                height = height,
+                heatmap_height = heatmap_height,
+
+                column_gap = column_gap,
+                cluster_columns = cluster_columns,
+                cluster_column_slices = cluster_column_slices,
+                clustering_distance_columns = clustering_distance_columns,
+                clustering_method_columns = clustering_method_columns,
+                column_dend_width = column_dend_width, 
+                show_column_dend = show_column_dend, 
+                column_dend_reorder = column_dend_reorder,
+                column_dend_gp = column_dend_gp,
+                column_order = column_order,
+                column_km = column_km,
+                column_km_repeats = column_km_repeats,
+                column_split = column_split,
+                width = width,
+                heatmap_width = heatmap_width,
+
+                use_raster = use_raster, 
+                raster_device = raster_device,
+                raster_quality = raster_quality,
+                raster_device_param = raster_device_param,
+                raster_resize = raster_resize,
+
+                post_fun = post_fun,
+                save_last = save_last,
+
+                ### global setting
+                heatmap_row_names_gp = heatmap_row_names_gp,
+                heatmap_column_names_gp = heatmap_column_names_gp,
+                heatmap_row_title_gp = heatmap_row_title_gp,
+                heatmap_column_title_gp = heatmap_column_title_gp,
+                legend_title_gp = legend_title_gp,
+                legend_title_position = legend_title_position,
+                legend_labels_gp = legend_labels_gp,
+                legend_grid_height = legend_grid_height,
+                legend_grid_width = legend_grid_width,
+                legend_border = legend_border,
+                legend_gap = legend_gap,
+                heatmap_border = heatmap_border,
+                annotation_border = annotation_border,
+                fastcluster = fastcluster,
+                simple_anno_size = simple_anno_size,
+                show_parent_dend_line = show_parent_dend_line
+            )
+        }, width = getOption("repr.plot.width"), height = getOption("repr.plot.height"))
+        grid.draw(p)
+
+        return(invisible(object))
+    }
+
     verbose = ht_opt$verbose
 
     if(missing(cluster_rows) && !missing(row_order)) {
