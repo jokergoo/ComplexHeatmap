@@ -1,5 +1,5 @@
-\name{text_box_grob}
-\alias{text_box_grob}
+\name{textbox_grob}
+\alias{textbox_grob}
 \title{
 A simple grob for the word cloud
 }
@@ -7,7 +7,7 @@ A simple grob for the word cloud
 A simple grob for the word cloud
 }
 \usage{
-text_box_grob(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre",
+textbox_grob(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre",
     gp = gpar(), background_gp = gpar(col = "black", fill = "transparent"), round_corners = FALSE, r = unit(0.1, "snpc"),
     line_space = unit(4, "pt"), text_space = unit(4, "pt"), max_width = unit(100, "mm"),
     padding = unit(4, "pt"), first_text_from = "top", add_new_line = FALSE, word_wrap = FALSE)
@@ -37,11 +37,11 @@ A \code{\link[grid:grid.grob]{grob}} object. The width and height of the grob ca
 \examples{
 words = sapply(1:30, function(x) strrep(sample(letters, 1), sample(3:10, 1)))
 grid.newpage()
-grid.text_box(words, gp = gpar(fontsize = runif(30, min = 5, max = 30)))
+grid.textbox(words, gp = gpar(fontsize = runif(30, min = 5, max = 30)))
 
 sentenses = c("This is sentense 1", "This is a long long long long long long long sentense.")
 grid.newpage()
-grid.text_box(sentenses)
-grid.text_box(sentenses, word_wrap = TRUE)
-grid.text_box(sentenses, word_wrap = TRUE, add_new_line = TRUE)
+grid.textbox(sentenses)
+grid.textbox(sentenses, word_wrap = TRUE)
+grid.textbox(sentenses, word_wrap = TRUE, add_new_line = TRUE)
 }

@@ -1,5 +1,5 @@
-\name{anno_text_box}
-\alias{anno_text_box}
+\name{anno_textbox}
+\alias{anno_textbox}
 \title{
 Text box annotations
 }
@@ -7,7 +7,7 @@ Text box annotations
 Text box annotations
 }
 \usage{
-anno_text_box(align_to, text, background_gp = gpar(fill = "#DDDDDD", col = "#AAAAAA"),
+anno_textbox(align_to, text, background_gp = gpar(fill = "#DDDDDD", col = "#AAAAAA"),
     which = c("row", "column"), by = "anno_link", side = c("right", "left"), ...)
 }
 \arguments{
@@ -18,7 +18,7 @@ anno_text_box(align_to, text, background_gp = gpar(fill = "#DDDDDD", col = "#AAA
   \item{which}{Only "row" is allowed.}
   \item{by}{Are text boxed arranged by \code{\link{anno_link}} or by \code{\link{anno_block}}?}
   \item{side}{Side of the annotation to the heatmap.}
-  \item{...}{Pass to \code{\link{text_box_grob}}.}
+  \item{...}{Pass to \code{\link{textbox_grob}}.}
 
 }
 \examples{
@@ -32,6 +32,6 @@ text = lapply(unique(split), function(x) {
 names(text) = unique(split)
 
 Heatmap(mat, cluster_rows = FALSE, row_split = split,
-    right_annotation = rowAnnotation(wc = anno_text_box(split, text))
+    right_annotation = rowAnnotation(wc = anno_textbox(split, text))
 )
 }

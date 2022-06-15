@@ -1,5 +1,5 @@
-\name{grid.text_box}
-\alias{grid.text_box}
+\name{grid.textbox}
+\alias{grid.textbox}
 \title{
 Draw multiple texts in a box
 }
@@ -7,7 +7,7 @@ Draw multiple texts in a box
 Draw multiple texts in a box
 }
 \usage{
-grid.text_box(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), gp = gpar(), ...)
+grid.textbox(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), gp = gpar(), ...)
 }
 \arguments{
 
@@ -15,14 +15,13 @@ grid.text_box(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), gp = gpar(), ...
   \item{x}{X position.}
   \item{y}{Y position.}
   \item{gp}{Graphics parameters of texts.}
-  \item{...}{Pass to \code{\link{text_box_grob}}.}
+  \item{...}{Pass to \code{\link{textbox_grob}}.}
 
 }
 \details{
-All details can be found in the help page of \code{\link{text_box_grob}}.
+All details can be found in the help page of \code{\link{textbox_grob}}.
 }
 \examples{
 # There is no example
 NULL
-
 }

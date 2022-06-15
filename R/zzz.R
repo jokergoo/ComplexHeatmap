@@ -29,9 +29,6 @@ This message can be suppressed by:
 
     packageStartupMessage(msg)
 
-
-    .ENV$IS_UNDER_JUPYTER = is_under_jupyter()
-    .ENV$IS_UNDER_JUPYTER_IGNORE = FALSE
 }
 
 rv = R.Version()

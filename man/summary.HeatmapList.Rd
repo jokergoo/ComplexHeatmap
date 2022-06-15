@@ -18,5 +18,4 @@ Summary of a Heatmap List
 \examples{
 # There is no example
 NULL
-
 }

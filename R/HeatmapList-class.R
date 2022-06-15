@@ -410,6 +410,7 @@ setMethod(f = "draw",
     show_parent_dend_line = NULL
     ) {
 
+    .ENV$IS_UNDER_JUPYTER = is_under_jupyter()
 
     if(.ENV$IS_UNDER_JUPYTER && !.ENV$IS_UNDER_JUPYTER_IGNORE) {
         .ENV$IS_UNDER_JUPYTER_IGNORE = TRUE

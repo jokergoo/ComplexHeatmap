@@ -18,5 +18,4 @@ Draw heatmap
 \examples{
 # There is no example
 NULL
-
 }

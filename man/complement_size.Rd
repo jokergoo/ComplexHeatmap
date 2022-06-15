@@ -20,5 +20,4 @@ If there is no complement set, it returns zero.
 \examples{
 # There is no example
 NULL
-
 }

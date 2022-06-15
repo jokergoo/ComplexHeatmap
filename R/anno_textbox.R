@@ -28,15 +28,15 @@
 # == example
 # words = sapply(1:30, function(x) strrep(sample(letters, 1), sample(3:10, 1)))
 # grid.newpage()
-# grid.text_box(words, gp = gpar(fontsize = runif(30, min = 5, max = 30)))
+# grid.textbox(words, gp = gpar(fontsize = runif(30, min = 5, max = 30)))
 #
 # sentenses = c("This is sentense 1", "This is a long long long long long long long sentense.")
 # grid.newpage()
-# grid.text_box(sentenses)
-# grid.text_box(sentenses, word_wrap = TRUE)
-# grid.text_box(sentenses, word_wrap = TRUE, add_new_line = TRUE)
+# grid.textbox(sentenses)
+# grid.textbox(sentenses, word_wrap = TRUE)
+# grid.textbox(sentenses, word_wrap = TRUE, add_new_line = TRUE)
 #
-text_box_grob = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre", 
+textbox_grob = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre", 
 	gp = gpar(), background_gp = gpar(col = "black", fill = "transparent"), round_corners = FALSE, r = unit(0.1, "snpc"),
 	line_space = unit(4, "pt"), text_space = unit(4, "pt"), max_width = unit(100, "mm"), 
 	padding = unit(4, "pt"), first_text_from = "top", add_new_line = FALSE, word_wrap = FALSE) { # width in mm
@@ -203,33 +203,33 @@ text_box_grob = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), just 
 		# rectGrob(x = x, y = y, width = text_width, height = text_height, default.units = "mm", just = c(0, 0))
 	)
 
-	gb = gTree(children = gl, cl = "text_box", 
+	gb = gTree(children = gl, cl = "textbox", 
 		vp = viewport(x = vp_x, y = vp_y, just = vp_just, width = unit(w, "mm"), 
 			          height = unit(h, "mm")))
 	return(gb)
 }
 
 # == title
-# Width for text_box grob
+# Width for textbox grob
 #
 # == param
-# -x The ``text_box`` grob returned by `text_box_grob`.
+# -x The ``textbox`` grob returned by `textbox_grob`.
 #
 # == value
 # A `grid::unit` object.
-widthDetails.text_box = function(x) {
+widthDetails.textbox = function(x) {
 	x$vp$width
 }
 
 # == title
-# Height for text_box grob
+# Height for textbox grob
 #
 # == param
-# -x The ``text_box`` grob returned by `text_box_grob`.
+# -x The ``textbox`` grob returned by `textbox_grob`.
 #
 # == value
 # A `grid::unit` object.
-heightDetails.text_box = function(x) {
+heightDetails.textbox = function(x) {
 	x$vp$height
 }
 
@@ -241,13 +241,13 @@ heightDetails.text_box = function(x) {
 # -x X position.
 # -y Y position.
 # -gp Graphics parameters of texts.
-# -... Pass to `text_box_grob`.
+# -... Pass to `textbox_grob`.
 #
 # == details
-# All details can be found in the help page of `text_box_grob`.
+# All details can be found in the help page of `textbox_grob`.
 #
-grid.text_box = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), gp = gpar(), ...) {
-	gb = text_box_grob(text, x = x, y = y, gp = gp, ...)
+grid.textbox = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), gp = gpar(), ...) {
+	gb = textbox_grob(text, x = x, y = y, gp = gp, ...)
 	grid.draw(gb)
 }
 
@@ -257,7 +257,7 @@ grid.text_box = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), gp = 
 #
 # == param
 # -align_to It controls how the text boxes are aligned to the heatmap rows. The value can be a categorical vector which have the same
-#      length as heatmap rows, or a list of row indices.
+#      length as heatmap rows, or a list of row indices. It does not necessarily include all row indices.
 # -text The corresponding texts. The value should be a list of texts. To control graphics parameters of texts in the boxes, The value
 #    of ``text`` can also be set as a list of data frames where the first column contains the text, from the second column contains
 #    graphics parameters for each text. The column names should be "col", "fontsize", "fontfamily" and "fontface".
@@ -265,7 +265,7 @@ grid.text_box = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), gp = 
 # -which Only "row" is allowed.
 # -by Are text boxed arranged by `anno_link` or by `anno_block`?
 # -side Side of the annotation to the heatmap.
-# -... Pass to `text_box_grob`.
+# -... Pass to `textbox_grob`.
 #
 # == example
 # require(circlize)
@@ -278,9 +278,9 @@ grid.text_box = function(text, x = unit(0.5, "npc"), y = unit(0.5, "npc"), gp = 
 # names(text) = unique(split)
 #
 # Heatmap(mat, cluster_rows = FALSE, row_split = split,
-#     right_annotation = rowAnnotation(wc = anno_text_box(split, text))
+#     right_annotation = rowAnnotation(wc = anno_textbox(split, text))
 # )
-anno_text_box = function(align_to, text, background_gp = gpar(fill = "#DDDDDD", col = "#AAAAAA"),
+anno_textbox = function(align_to, text, background_gp = gpar(fill = "#DDDDDD", col = "#AAAAAA"),
 	which = c("row", "column"), by = "anno_link", side = c("right", "left"), ...) {
 
 	if(is.null(background_gp$fill)) background_gp$fill = "#DDDDDD"
@@ -290,7 +290,7 @@ anno_text_box = function(align_to, text, background_gp = gpar(fill = "#DDDDDD", 
 
 	which = match.arg(which)[1]
 	if(which == "column") {
-		stop_wrap("`anno_text_box()` can only be used as row annotation.")
+		stop_wrap("`anno_textbox()` can only be used as row annotation.")
 	}
 
 	# 1. align_to numeric index, text: a data frame
@@ -328,12 +328,12 @@ anno_text_box = function(align_to, text, background_gp = gpar(fill = "#DDDDDD", 
 		stop_wrap("Format of `align_to` or `text` is wrong.")
 	}
 
-	# a list of text_box grobs
+	# a list of textbox grobs
 	dev.null()
 	
 	gbl = lapply(text, function(x) {
 		if(is.atomic(x)) {
-			text_box_grob(text = x, background_gp = gpar(col = NA, fill = "transparent"), ...)
+			textbox_grob(text = x, background_gp = gpar(col = NA, fill = "transparent"), ...)
 		} else if(is.data.frame(x)) {
 			if("col" %in% colnames(x)) {
 				col = x$col
@@ -358,7 +358,7 @@ anno_text_box = function(align_to, text, background_gp = gpar(fill = "#DDDDDD", 
 			} else {
 				fontface = get.gpar("fontface")[[1]]
 			}
-			text_box_grob(text = x[[1]], gp = gpar(col = col, fontsize = fontsize, fontfamily = fontfamily, fontface = fontface), 
+			textbox_grob(text = x[[1]], gp = gpar(col = col, fontsize = fontsize, fontfamily = fontfamily, fontface = fontface), 
 				background_gp = gpar(col = NA, fill = "transparent"), ...)
 		}
 	})

@@ -35,5 +35,4 @@ upset_left_annotation(m,
 \examples{
 # There is no example
 NULL
-
 }

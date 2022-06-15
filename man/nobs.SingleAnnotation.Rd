@@ -21,5 +21,4 @@ It returns the \code{n} slot of the annotaton function. If it does not exist, it
 \examples{
 # There is no example
 NULL
-
 }
