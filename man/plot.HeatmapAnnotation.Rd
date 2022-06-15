@@ -18,4 +18,5 @@ Draw heatmap annotations
 \examples{
 # There is no example
 NULL
+
 }

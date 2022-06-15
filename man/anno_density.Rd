@@ -8,7 +8,7 @@ Density Annotation
 }
 \usage{
 anno_density(x, which = c("column", "row"),
-    type = c("lines", "violin", "heatmap"), xlim = NULL,
+    type = c("lines", "violin", "heatmap"), xlim = NULL, max_density = NULL,
     heatmap_colors = rev(brewer.pal(name = "RdYlBu", n = 11)),
     joyplot_scale = 1, border = TRUE, gp = gpar(fill = "#CCCCCC"),
     axis = TRUE, axis_param = default_axis_param(which),
@@ -20,6 +20,7 @@ anno_density(x, which = c("column", "row"),
   \item{which}{Whether it is a column annotation or a row annotation?}
   \item{type}{Type of graphics to represent density distribution. "lines" for normal density plot; "violine" for violin plot and "heatmap" for heatmap visualization of density distribution.}
   \item{xlim}{Range on x-axis.}
+  \item{max_density}{Maximal density values in the plot. Normally you don't need to manually set it, but when you have multiple density annotations and you want to compare between them, you should manually set this argument to make density distributions are in a same scale.}
   \item{heatmap_colors}{A vector of colors for interpolating density values.}
   \item{joyplot_scale}{Relative height of density distribution. A value higher than 1 increases the height of the density distribution and the plot will represented as so-called "joyplot".}
   \item{border}{Wether draw borders of the annotation region?}

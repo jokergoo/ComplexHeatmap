@@ -1,5 +1,6 @@
 \name{make_row_cluster-Heatmap-method}
 \alias{make_row_cluster,Heatmap-method}
+\alias{make_row_cluster}
 \title{
 Make Cluster on Rows
 }
@@ -27,8 +28,8 @@ A \code{\link{Heatmap-class}} object.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\alias{make_row_cluster}
 \examples{
 # There is no example
 NULL
+
 }

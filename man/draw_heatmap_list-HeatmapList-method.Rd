@@ -1,5 +1,6 @@
 \name{draw_heatmap_list-HeatmapList-method}
 \alias{draw_heatmap_list,HeatmapList-method}
+\alias{draw_heatmap_list}
 \title{
 Draw the List of Heatmaps
 }
@@ -25,8 +26,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\alias{draw_heatmap_list}
 \examples{
 # There is no example
 NULL
+
 }

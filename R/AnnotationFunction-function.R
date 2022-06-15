@@ -1958,6 +1958,8 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 # -type Type of graphics to represent density distribution. "lines" for normal density plot; "violine" for violin plot
 #       and "heatmap" for heatmap visualization of density distribution.
 # -xlim Range on x-axis.
+# -max_density Maximal density values in the plot. Normally you don't need to manually set it, but when you have multiple density annotations
+#   and you want to compare between them, you should manually set this argument to make density distributions are in a same scale.
 # -heatmap_colors A vector of colors for interpolating density values.
 # -joyplot_scale Relative height of density distribution. A value higher than 1 increases the height of the density
 #               distribution and the plot will represented as so-called "joyplot".
@@ -1986,7 +1988,7 @@ anno_histogram = function(x, which = c("column", "row"), n_breaks = 11,
 #     heatmap_colors = c("white", "orange"))
 # draw(anno, test = "heatmap, colors")
 anno_density = function(x, which = c("column", "row"),
-	type = c("lines", "violin", "heatmap"), xlim = NULL,
+	type = c("lines", "violin", "heatmap"), xlim = NULL, max_density = NULL,
 	heatmap_colors = rev(brewer.pal(name = "RdYlBu", n = 11)), 
 	joyplot_scale = 1, border = TRUE, gp = gpar(fill = "#CCCCCC"),
 	axis = TRUE, axis_param = default_axis_param(which),
@@ -2044,16 +2046,29 @@ anno_density = function(x, which = c("column", "row"),
 	
 	if(type == "lines") {
 		xscale = xscale + c(-0.025, 0.025)*(xscale[2] - xscale[1])
-		yscale = c(0, max(unlist(density_y)))
+		if(is.null(max_density)) {
+			yscale = c(0, max(unlist(density_y)))
+		} else {
+			yscale = c(0, max_density)
+		}
 		yscale[2] = yscale[2]*1.05
 	} else if(type == "violin") {
 		xscale = xscale + c(-0.025, 0.025)*(xscale[2] - xscale[1])
-		yscale = max(unlist(density_y))
+		if(is.null(max_density)) {
+			yscale = max(unlist(density_y))
+		} else {
+			yscale = max_density
+		}
 		yscale = c(-yscale*1.05, yscale*1.05)
 	} else if(type == "heatmap") {
 		yscale = c(0, 1)
-		min_y = min(unlist(density_y))
-		max_y = max(unlist(density_y))
+		if(is.null(max_density)) {
+			min_y = min(unlist(density_y))
+			max_y = max(unlist(density_y))
+		} else {
+			min_y = 0
+			max_y = max_density
+		}
 		col_fun = colorRamp2(seq(min_y, max_y, 
 			length.out = length(heatmap_colors)), heatmap_colors)
 	}

@@ -18,4 +18,5 @@ Height of the Heatmap List
 \examples{
 # There is no example
 NULL
+
 }

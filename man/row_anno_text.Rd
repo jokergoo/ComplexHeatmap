@@ -25,4 +25,5 @@ See help page of \code{\link{anno_text}}.
 \examples{
 # There is no example
 NULL
+
 }

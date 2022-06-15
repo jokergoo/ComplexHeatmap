@@ -12,7 +12,7 @@ anno_textbox(align_to, text, background_gp = gpar(fill = "#DDDDDD", col = "#AAAA
 }
 \arguments{
 
-  \item{align_to}{It controls how the text boxes are aligned to the heatmap rows. The value can be a categorical vector which have the same length as heatmap rows, or a list of row indices.}
+  \item{align_to}{It controls how the text boxes are aligned to the heatmap rows. The value can be a categorical vector which have the same length as heatmap rows, or a list of row indices. It does not necessarily include all row indices.}
   \item{text}{The corresponding texts. The value should be a list of texts. To control graphics parameters of texts in the boxes, The value of \code{text} can also be set as a list of data frames where the first column contains the text, from the second column contains graphics parameters for each text. The column names should be "col", "fontsize", "fontfamily" and "fontface".}
   \item{background_gp}{Graphics for the background.}
   \item{which}{Only "row" is allowed.}

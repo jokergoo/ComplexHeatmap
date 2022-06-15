@@ -24,4 +24,5 @@ All details can be found in the help page of \code{\link{textbox_grob}}.
 \examples{
 # There is no example
 NULL
+
 }

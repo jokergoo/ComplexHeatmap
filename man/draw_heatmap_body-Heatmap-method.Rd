@@ -1,5 +1,6 @@
 \name{draw_heatmap_body-Heatmap-method}
 \alias{draw_heatmap_body,Heatmap-method}
+\alias{draw_heatmap_body}
 \title{
 Draw Heatmap Body
 }
@@ -28,8 +29,8 @@ This function returns no value.
 \author{
 Zuguang Gu <z.gu@dkfz.de>
 }
-\alias{draw_heatmap_body}
 \examples{
 # There is no example
 NULL
+
 }
