@@ -626,14 +626,14 @@ Heatmap = function(matrix, col, name,
                     col = col[intersect(c(fa_level, "_NA_"), names(col))]
                 }
                 if(!is.null(heatmap_legend_param) && !identical(.Object@matrix_param$gp$type, "none")) {
-                    if(!is.null(heatmap_legend_param$at) && !is.null(heatmap_legend_param$labels)) {
+                    if(!is.null(heatmap_legend_param$at) && !is.null(heatmap_legend_param[["labels"]])) {
                         l = heatmap_legend_param$at %in% names(col)
                         heatmap_legend_param$at = heatmap_legend_param$at[l]
-                        heatmap_legend_param$labels = heatmap_legend_param$labels[l]
+                        heatmap_legend_param[["labels"]] = heatmap_legend_param[["labels"]][l]
                     } else if(is.null(heatmap_legend_param$at) && !is.null(heatmap_legend_param$labels)) {
-                        l = heatmap_legend_param$labels %in% names(col)
-                        heatmap_legend_param$labels = heatmap_legend_param$labels[l]
-                    } else if(!is.null(heatmap_legend_param$at) && is.null(heatmap_legend_param$labels)) {
+                        l = heatmap_legend_param[["labels"]] %in% names(col)
+                        heatmap_legend_param[["labels"]] = heatmap_legend_param[["labels"]][l]
+                    } else if(!is.null(heatmap_legend_param$at) && is.null(heatmap_legend_param[["labels"]])) {
                         l = heatmap_legend_param$at %in% names(col)
                         heatmap_legend_param$at = heatmap_legend_param$at[l]
                     }
@@ -644,7 +644,7 @@ Heatmap = function(matrix, col, name,
         }
         .Object@matrix_legend_param = heatmap_legend_param
     }
-    
+
     ##### titles, should also consider titles after row splitting #####
     if(identical(row_title, NA) || identical(row_title, "")) {
         row_title = character(0)

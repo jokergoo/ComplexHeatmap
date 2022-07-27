@@ -2,6 +2,7 @@ CHANGES in VERSION 2.13.1
 
 * `column_title_rot` can be set with any degree value.
 * automatically recognize Jupyter environment.
+* `UpSet()`: `comb_col` now is correctly assigned when the combination matrix is transposed.
 
 ========================
 

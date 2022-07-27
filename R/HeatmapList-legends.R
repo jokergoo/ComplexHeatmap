@@ -883,7 +883,6 @@ draw_legend = function(ColorMappingList, ColorMappingParamList, side = c("right"
     # ColorMappingList = ColorMappingList[l]
     # ColorMappingParamList = ColorMappingParamList[l]
 
-
     n = length(ColorMappingList2)
     if(n == 0 && length(legend_list) == 0) {
         u = unit(c(0, 0), "mm")
