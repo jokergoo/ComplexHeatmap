@@ -228,7 +228,7 @@ setMethod(f = "draw_heatmap_body",
             }
             attr(image, "width") = heatmap_width_pt
             attr(image, "height") = heatmap_height_pt
-            assign(".image", image, envir = .GlobalEnv)
+            # assign(".image", image, envir = .GlobalEnv)
         }
         ########################
 

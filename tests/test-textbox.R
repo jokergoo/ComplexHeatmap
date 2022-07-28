@@ -1,3 +1,6 @@
+
+library(ComplexHeatmap)
+
 words = sapply(1:30, function(x) strrep(sample(letters, 1), sample(3:10, 1)))
 grid.newpage()
 grid.textbox(words, gp = gpar(fontsize = runif(30, min = 5, max = 30)))

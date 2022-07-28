@@ -578,7 +578,7 @@ heatmap.2 = function(x,
     nbr <- length(breaks)
     ncol <- length(breaks)-1
 
-    if(class(col)=="function") col <- col(ncol)
+    if(inherits(col, "function")) col =col(ncol)
     #### until here ###
     
     n_col = ncol
