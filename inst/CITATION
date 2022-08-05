@@ -11,6 +11,17 @@ citEntry(
    textVersion = "Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics. https://doi.org/10.1093/bioinformatics/btw313."
 )
 
+
+citEntry(
+   entry="article",
+   title = "Complex Heatmap Visualization",
+   author = personList(as.person("Zuguang Gu")),
+   journal = "iMeta",
+   year = 2022,
+   textVersion = "Gu, Z. (2022) Complex Heatmap Visualization. iMeta. https://doi.org/10.1002/imt2.43."
+)
+
+
 citFooter("This free open-source software implements academic
 research by the authors and co-workers. If you use it,
 please support the project by citing the appropriate
