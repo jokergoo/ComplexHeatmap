@@ -211,6 +211,9 @@ HeatmapAnnotation = function(...,
     if(length(show_legend) == 1) {
 		show_legend = recycle_param(show_legend, simple_anno_name, TRUE)
 	}
+	if(length(show_legend) < length(anno_value_list) && length(show_legend) > 1) {
+		show_legend = recycle_param(show_legend, simple_anno_name, TRUE)
+	}
 	# check length of show_legend
 	if(length(show_legend) == length(anno_value_list) && !all(l_simple_anno)) {
 		show_legend = show_legend[l_simple_anno]

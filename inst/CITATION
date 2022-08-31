@@ -7,8 +7,9 @@ citEntry(
                        as.person("Roland Eils"),
                        as.person("Matthias Schlesner")),
    journal = "Bioinformatics",
+   doi = "10.1093/bioinformatics/btw313",
    year = 2016,
-   textVersion = "Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics. https://doi.org/10.1093/bioinformatics/btw313."
+   textVersion = "Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics."
 )
 
 
@@ -16,9 +17,10 @@ citEntry(
    entry="article",
    title = "Complex Heatmap Visualization",
    author = personList(as.person("Zuguang Gu")),
+   doi = "10.1002/imt2.43",
    journal = "iMeta",
    year = 2022,
-   textVersion = "Gu, Z. (2022) Complex Heatmap Visualization. iMeta. https://doi.org/10.1002/imt2.43."
+   textVersion = "Gu, Z. (2022) Complex Heatmap Visualization. iMeta."
 )
 
 
