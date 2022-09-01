@@ -1375,6 +1375,12 @@ UpSet = function(m,
 		}
 	}
 
+	if(length(bg_col) == 1) bg_col = c(bg_col, "white")
+
+	n_set = length(set_size(m))
+	bg_col = rep(bg_col, times = n_set)
+	bg_col = bg_col[seq_len(n_set)]
+
 	if(set_on_rows) {
 		n_comb = ncol(m)
 		if(length(comb_col == 1)) comb_col = rep(comb_col, n_comb)
@@ -1384,13 +1390,7 @@ UpSet = function(m,
 			nc = round(1/as.numeric(w[1]))
 			subm = matrix(pindex(m2, i, j), nrow = nr, byrow = FALSE)
 			for(k in seq_len(nr)) {
-				if(k %% 2) {
-					grid.rect(y = k/nr, height = 1/nr, just = "top", gp = gpar(fill = bg_col[1], col = NA))
-				} else {
-					if(length(bg_col) > 1) {
-						grid.rect(y = k/nr, height = 1/nr, just = "top", gp = gpar(fill = bg_col[2], col = NA))
-					}
-				}
+				grid.rect(y = k/nr, height = 1/nr, just = "top", gp = gpar(fill = bg_col[k], col = NA))
 			}
 			grid.points(x, y, size = pt_size, pch = 16, gp = gpar(col = ifelse(pindex(m2, i, j), comb_col[j], bg_pt_col)))
 			jj = unique(j)
@@ -1432,13 +1432,7 @@ UpSet = function(m,
 			nc = round(1/as.numeric(w[1]))
 			subm = matrix(pindex(m2, i, j), nrow = nr, byrow = FALSE)
 			for(k in seq_len(nc)) {
-				if(k %% 2) {
-					grid.rect(x = k/nc, width = 1/nc, just = "right", gp = gpar(fill = bg_col[1], col = NA))
-				} else {
-					if(length(bg_col) > 1) {
-						grid.rect(x = k/nc, width = 1/nc, just = "right", gp = gpar(fill = bg_col[2], col = NA))
-					}
-				}
+				grid.rect(x = k/nc, width = 1/nc, just = "right", gp = gpar(fill = bg_col[k], col = NA))
 			}
 			grid.points(x, y, size = pt_size, pch = 16, gp = gpar(col = ifelse(pindex(m2, i, j), comb_col[i], "#CCCCCC")))
 			ii = unique(i)

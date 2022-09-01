@@ -1,6 +1,7 @@
 CHANGES in VERSION 2.13.2
 
 * `HeatmapAnnotation()`: fixed a bug where annotation legends are not all generated when `df` is set.
+* `UpSet()`: now `bg_col` can be a vector of length more than two.
 
 ========================
 
