@@ -23,6 +23,7 @@
 # -pct_gp Graphic paramters for percent values
 # -pct_digits Digits for the percent values.
 # -pct_side Side of the percent values to the oncoPrint. This argument is currently disabled.
+# -pct_include Alteration types that are included for the calculation of percent values.
 # -row_labels Labels as the row names of the oncoPrint.
 # -show_row_names Whether show row names?
 # -row_names_side Side of the row names to the oncoPrint. This argument is currently disabled.
@@ -69,6 +70,7 @@ oncoPrint = function(mat, name,
 	pct_gp = gpar(fontsize = 10), 
 	pct_digits = 0,
 	pct_side = "left",
+	pct_include = NULL,
 
 	row_labels = NULL,
 	show_row_names = TRUE,
@@ -368,7 +370,10 @@ oncoPrint = function(mat, name,
 	}
 
 	# for each gene, percent of samples that have alterations
-	pct_num = rowSums(apply(arr, 1:2, any)) / ncol(mat_list[[1]])
+	if(is.null(pct_include)) {
+		pct_include = dimnames(arr)[[3]]
+	}
+	pct_num = rowSums(apply(arr[, , dimnames(arr)[[3]] %in% pct_include, drop = FALSE], 1:2, any)) / ncol(mat_list[[1]])
 	pct = paste0(round(pct_num * 100, digits = pct_digits), "%")
 
 	### now the annotations

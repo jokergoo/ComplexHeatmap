@@ -22,6 +22,7 @@ oncoPrint(mat, name,
     pct_gp = gpar(fontsize = 10),
     pct_digits = 0,
     pct_side = "left",
+    pct_include = NULL,
     
     row_labels = NULL,
     show_row_names = TRUE,
@@ -60,6 +61,7 @@ oncoPrint(mat, name,
   \item{pct_gp}{Graphic paramters for percent values}
   \item{pct_digits}{Digits for the percent values.}
   \item{pct_side}{Side of the percent values to the oncoPrint. This argument is currently disabled.}
+  \item{pct_include}{Alteration types that are included for the calculation of percent values.}
   \item{row_labels}{Labels as the row names of the oncoPrint.}
   \item{show_row_names}{Whether show row names?}
   \item{row_names_side}{Side of the row names to the oncoPrint. This argument is currently disabled.}
