@@ -343,6 +343,12 @@ draw(anno, test = "heatmap")
 anno = anno_density(t(m), which = "row", type = "heatmap", heatmap_colors = c("white", "orange"))
 draw(anno, test = "heatmap, colors")
 
+anno = anno_density(t(m), which = "row", xlim = c(-2, 2))
+draw(anno, test = "normal density")
+anno = anno_density(t(m), which = "row", type = "violin", xlim = c(-2, 2))
+draw(anno, test = "violin")
+anno = anno_density(t(m), which = "row", type = "heatmap", xlim = c(-2, 2))
+draw(anno, test = "heatmap")
 
 ###### anno_mark ###
 if(0) {

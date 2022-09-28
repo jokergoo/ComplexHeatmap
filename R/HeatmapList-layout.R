@@ -393,7 +393,7 @@ setMethod(f = "make_layout",
                     stop_wrap("`column_split` should have same ncol as the main matrix.")
                 }
             } else if(is.atomic(column_split)) {
-                if(length(column_split) > 1 && length(column_split) != ht_nr) {
+                if(length(column_split) > 1 && length(column_split) != ht_nc) {
                     stop_wrap("`column_split` should have same length as ncol of the main matrix.")
                 }
                 if(length(column_split) == 1 && !object@ht_list[[i_main]]@column_dend_param$cluster) {

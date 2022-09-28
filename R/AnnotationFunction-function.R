@@ -2042,6 +2042,8 @@ anno_density = function(x, which = c("column", "row"),
 			density_x[[i]] = c(density_x[[i]][ 1 ], density_x[[i]], density_x[[i]][ length(density_x[[i]]) ])
 			density_y[[i]] = c(0, density_y[[i]], 0)
 		}
+		min_density_x = xlim[1]
+		max_density_x = xlim[2]
 	}
 	
 	if(type == "lines") {
@@ -2111,13 +2113,17 @@ anno_density = function(x, which = c("column", "row"),
 					just = c("right", "bottom"), default.units = "native", 
 					gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), 
 						col = NA))
-				grid.rect(x = density_x[[i]][1], y = 0, width = density_x[[i]][1] - min_density_x, 
-					height = 1, just = c("right", "bottom"), default.units = "native", 
-					gp = gpar(fill = col_fun(0), col = NA))
-				grid.rect(x = density_x[[i]][n_breaks], y = 0, 
-					width = max_density_x - density_x[[i]][n_breaks], height = 1, 
-					just = c("left", "bottom"), default.units = "native", 
-					gp = gpar(fill = col_fun(0), col = NA))
+				if(density_x[[i]][1] - min_density_x > 0) {
+					grid.rect(x = density_x[[i]][1], y = 0, width = density_x[[i]][1] - min_density_x, 
+						height = 1, just = c("right", "bottom"), default.units = "native", 
+						gp = gpar(fill = col_fun(0), col = NA))
+				}
+				if(max_density_x - density_x[[i]][n_breaks] > 0) {
+					grid.rect(x = density_x[[i]][n_breaks], y = 0, 
+						width = max_density_x - density_x[[i]][n_breaks], height = 1, 
+						just = c("left", "bottom"), default.units = "native", 
+						gp = gpar(fill = col_fun(0), col = NA))
+				}
 			}
 			popViewport()
 		}
@@ -2187,13 +2193,17 @@ anno_density = function(x, which = c("column", "row"),
 					just = c("left", "top"), default.units = "native", 
 					gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), 
 						col = NA))
-				grid.rect(y = density_x[[i]][1], x = 0, height = density_x[[i]][1] - min_density_x, 
-					width = 1, just = c("left", "top"), default.units = "native", 
-					gp = gpar(fill = col_fun(0), col = NA))
-				grid.rect(y = density_x[[i]][n_breaks], x = 0, 
-					height = max_density_x - density_x[[i]][n_breaks], width = 1, 
-					just = c("left", "bottom"), default.units = "native", 
-					gp = gpar(fill = col_fun(0), col = NA))
+				if(density_x[[i]][1] - min_density_x > 0) {
+					grid.rect(y = density_x[[i]][1], x = 0, height = density_x[[i]][1] - min_density_x, 
+						width = 1, just = c("left", "top"), default.units = "native", 
+						gp = gpar(fill = col_fun(0), col = NA))
+				}
+				if(max_density_x - density_x[[i]][n_breaks] > 0) {
+					grid.rect(y = density_x[[i]][n_breaks], x = 0, 
+						height = max_density_x - density_x[[i]][n_breaks], width = 1, 
+						just = c("left", "bottom"), default.units = "native", 
+						gp = gpar(fill = col_fun(0), col = NA))
+				}
 			}
 			popViewport()
 		}
