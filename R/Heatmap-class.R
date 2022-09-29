@@ -597,6 +597,9 @@ Heatmap = function(matrix, col, name,
 
             if(is.null(names(col))) {
                 if(length(col) == length(unique(as.vector(matrix)))) {
+                    if(length(col) >= 50) {
+                        message_wrap(qq("There are @{length(col)} unique colors in the vector `col` and @{length(col)} unique values in `matrix`. `Heatmap()` will treat it as an exact discrete one-to-one mapping. If this is not what you want, slightly change the number of colors, e.g. by adding one more color or removing a color."))
+                    }
                     if(is.null(fa_level)) {
                         if(is.numeric(matrix)) {
                             names(col) = sort(unique(as.vector(matrix)))

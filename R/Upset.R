@@ -1409,7 +1409,7 @@ UpSet = function(m,
 		if(length(ra) == 1) {
 			ta_call = substitute(top_annotation)
 			ta_call = as.list(ta_call)
-			if(as.character(ta_call[[1]]) == "upset_top_annotation") {
+			if("upset_top_annotation" %in% as.character(ta_call[[1]])) {
 				if(!"gp" %in% names(as.list(ta_call))) {
 					ra@anno_list[[1]]@fun@var_env$gp$fill = comb_col
 					ra@anno_list[[1]]@fun@var_env$gp$col = comb_col
