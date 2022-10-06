@@ -2112,17 +2112,17 @@ anno_density = function(x, which = c("column", "row"),
 					width = density_x[[i]][-1] - density_x[[i]][-n_breaks], height = 1, 
 					just = c("right", "bottom"), default.units = "native", 
 					gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), 
-						col = NA))
+						col = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2)))
 				if(density_x[[i]][1] - min_density_x > 0) {
 					grid.rect(x = density_x[[i]][1], y = 0, width = density_x[[i]][1] - min_density_x, 
 						height = 1, just = c("right", "bottom"), default.units = "native", 
-						gp = gpar(fill = col_fun(0), col = NA))
+						gp = gpar(fill = col_fun(0), col = col_fun(0)))
 				}
 				if(max_density_x - density_x[[i]][n_breaks] > 0) {
 					grid.rect(x = density_x[[i]][n_breaks], y = 0, 
 						width = max_density_x - density_x[[i]][n_breaks], height = 1, 
 						just = c("left", "bottom"), default.units = "native", 
-						gp = gpar(fill = col_fun(0), col = NA))
+						gp = gpar(fill = col_fun(0), col = col_fun(0)))
 				}
 			}
 			popViewport()
@@ -2149,8 +2149,6 @@ anno_density = function(x, which = c("column", "row"),
 		density_x = density_x[index]
 		density_y = density_y[index]
 		
-		yscale = range(unlist(density_x), na.rm = TRUE)
-		yscale = yscale + c(0, 0.05)*(yscale[2] - yscale[1])
 		if(type == "lines") {
 			xscale = c(0, max(unlist(density_y)))
 			xscale[2] = xscale[2]*1.05
@@ -2158,7 +2156,6 @@ anno_density = function(x, which = c("column", "row"),
 			xscale = max(unlist(density_y))
 			xscale = c(-xscale*1.05, xscale*1.05)
 		} else if(type == "heatmap") {
-			yscale = range(unlist(density_x), na.rm = TRUE)
 			xscale = c(0, 1)
 			min_y = min(unlist(density_y))
 			max_y = max(unlist(density_y))
@@ -2192,17 +2189,17 @@ anno_density = function(x, which = c("column", "row"),
 					height = density_x[[i]][-1] - density_x[[i]][-n_breaks], width = 1, 
 					just = c("left", "top"), default.units = "native", 
 					gp = gpar(fill = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2), 
-						col = NA))
+						col = col_fun((density_y[[i]][-1] + density_y[[i]][-n_breaks])/2)))
 				if(density_x[[i]][1] - min_density_x > 0) {
 					grid.rect(y = density_x[[i]][1], x = 0, height = density_x[[i]][1] - min_density_x, 
 						width = 1, just = c("left", "top"), default.units = "native", 
-						gp = gpar(fill = col_fun(0), col = NA))
+						gp = gpar(fill = col_fun(0), col = col_fun(0)))
 				}
 				if(max_density_x - density_x[[i]][n_breaks] > 0) {
 					grid.rect(y = density_x[[i]][n_breaks], x = 0, 
 						height = max_density_x - density_x[[i]][n_breaks], width = 1, 
 						just = c("left", "bottom"), default.units = "native", 
-						gp = gpar(fill = col_fun(0), col = NA))
+						gp = gpar(fill = col_fun(0), col = col_fun(0)))
 				}
 			}
 			popViewport()

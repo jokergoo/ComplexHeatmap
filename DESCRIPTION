@@ -3,8 +3,8 @@ Type: Package
 Title: Make Complex Heatmaps
 Version: 2.13.2
 Date: 2022-08-31
-Author: Zuguang Gu
-Maintainer: Zuguang Gu <z.gu@dkfz.de>
+Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
+                  comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 3.5.0), methods, grid, graphics, stats, grDevices
 Imports: circlize (>= 0.4.14), GetoptLong, colorspace, clue,
     RColorBrewer, GlobalOptions (>= 0.1.0), png,
