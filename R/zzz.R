@@ -8,9 +8,9 @@ Github page: https://github.com/jokergoo/ComplexHeatmap
 Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
 
 If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
 - Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
     genomic data. Bioinformatics 2016.
-- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
 
 
 The new InteractiveComplexHeatmap package can directly export static 
