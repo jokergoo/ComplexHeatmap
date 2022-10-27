@@ -97,12 +97,13 @@ setMethod(f = "make_layout",
         title_padding[1] = title_padding[1] + unit(5.5, "points") + 
             convertHeight(grobDescent(textGrob(label = "jA", gp = column_title_gp)), "inches")
     }
+
     if(length(column_title) > 0) {
         if(column_title_side == "top") {
-            object@layout$layout_size$column_title_top_height = grobHeight(textGrob(column_title, gp = column_title_gp, rot = column_title_rot)) + sum(title_padding)
+            object@layout$layout_size$column_title_top_height = max_text_height(column_title, gp = column_title_gp, rot = column_title_rot) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_top = heatmap_layout_index("column_title_top"))
         } else {
-            object@layout$layout_size$column_title_bottom_height = grobHeight(textGrob(column_title, gp = column_title_gp, rot = column_title_rot)) + sum(title_padding)
+            object@layout$layout_size$column_title_bottom_height = max_text_height(column_title, gp = column_title_gp, rot = column_title_rot) + sum(title_padding)
             object@layout$layout_index = rbind(object@layout$layout_index, column_title_bottom = heatmap_layout_index("column_title_bottom"))
         }
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {

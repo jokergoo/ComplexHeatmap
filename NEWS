@@ -2,6 +2,7 @@ CHANGES in VERSION 2.13.4
 
 * `anno_barplot()`: fixed a bug when split is set, the bars are wrongly plotted under besides = TRUE.
 * `anno_boxplot()`: add two new argumetn: `add_points` and `pt_gp`.
+* fixed a bug of size of column title wrongly calculated.
 
 ========================
 
