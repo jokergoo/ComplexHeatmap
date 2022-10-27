@@ -9,8 +9,8 @@ Boxplot Annotation
 \usage{
 anno_boxplot(x, which = c("column", "row"), border = TRUE,
     gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, outline = TRUE, box_width = 0.6,
-    pch = 1, size = unit(2, "mm"), axis = TRUE, axis_param = default_axis_param(which),
-    width = NULL, height = NULL, ...)
+    add_points = FALSE, pch = 16, size = unit(4, "pt"), pt_gp = gpar(), axis = TRUE,
+    axis_param = default_axis_param(which), width = NULL, height = NULL, ...)
 }
 \arguments{
 
@@ -22,8 +22,10 @@ anno_boxplot(x, which = c("column", "row"), border = TRUE,
   \item{extend}{The extension to both side of \code{ylim}. The value is a percent value corresponding to \code{ylim[2] - ylim[1]}.}
   \item{outline}{Whether draw outline of boxplots?}
   \item{box_width}{Relative width of boxes. The value should be smaller than one.}
+  \item{add_points}{Whether add points on top of the boxes?}
   \item{pch}{Point style.}
   \item{size}{Point size.}
+  \item{pt_gp}{Graphics parameters for points.}
   \item{axis}{Whether to add axis?}
   \item{axis_param}{parameters for controlling axis. See \code{\link{default_axis_param}} for all possible settings and default parameters.}
   \item{width}{Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.}

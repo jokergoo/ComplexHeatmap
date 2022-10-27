@@ -1561,8 +1561,10 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 # -extend The extension to both side of ``ylim``. The value is a percent value corresponding to ``ylim[2] - ylim[1]``.
 # -outline Whether draw outline of boxplots?
 # -box_width Relative width of boxes. The value should be smaller than one.
+# -add_points Whether add points on top of the boxes?
 # -pch Point style.
 # -size Point size.
+# -pt_gp Graphics parameters for points.
 # -axis Whether to add axis?
 # -axis_param parameters for controlling axis. See `default_axis_param` for all possible settings and default parameters.
 # -width Width of the annotation. The value should be an absolute unit. Width is not allowed to be set for column annotation.
@@ -1584,8 +1586,8 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 # draw(anno, test = "anno_boxplot with gp")
 anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 	gp = gpar(fill = "#CCCCCC"), ylim = NULL, extend = 0.05, outline = TRUE, box_width = 0.6,
-	pch = 1, size = unit(2, "mm"), axis = TRUE, axis_param = default_axis_param(which),
-	width = NULL, height = NULL, ...) {
+	add_points = FALSE, pch = 16, size = unit(4, "pt"), pt_gp = gpar(), axis = TRUE, 
+	axis_param = default_axis_param(which), width = NULL, height = NULL, ...) {
 
 	other_args = list(...)
 	if(length(other_args)) {
@@ -1639,6 +1641,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 	n = length(value)
 	gp = recycle_gp(gp, n)
+	pt_gp = recycle_gp(pt_gp, n)
 	if(length(pch) == 1) pch = rep(pch, n)
 	if(length(size) == 1) size = rep(size, n)
 
@@ -1657,6 +1660,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		
 		n = length(index)
 		gp = subset_gp(gp, index)
+		pt_gp = subset_gp(pt_gp, index)
 		pch = pch[index]
 		size = size[index]
 		pushViewport(viewport(xscale = data_scale, yscale = c(0.5, n+0.5)))
@@ -1680,18 +1684,25 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		grid.segments(boxplot_stats[3, ], n - seq_along(index) + 1 - 0.5*box_width, 
 			          boxplot_stats[3, ], n - seq_along(index) + 1 + 0.5*box_width, 
 			          default.units = "native", gp = gp)
-		if(outline) {
+		if(!add_points && outline) {
 			for(i in seq_along(value)) {
 				l1 = value[[i]] > boxplot_stats[5,i]
 				l1[is.na(l1)] = FALSE
 				if(sum(l1)) grid.points(y = rep(n - i + 1, sum(l1)), x = value[[i]][l1], 
-					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+					default.units = "native", gp = subset_gp(pt_gp, i), pch = pch[i], size = size[i])
 				l2 = value[[i]] < boxplot_stats[1,i]
 				l2[is.na(l2)] = FALSE
 				if(sum(l2)) grid.points(y = rep(n - i + 1, sum(l2)), x = value[[i]][l2], 
-					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+					default.units = "native", gp = subset_gp(pt_gp, i), pch = pch[i], size = size[i])
 			}
 		}
+		if(add_points && outline) {
+			for(i in seq_along(value)) {
+				grid.points(y = n - runif(length(value[[i]]), min = i - 0.5*0.5*box_width, max = i + 0.5*0.5*box_width) + 1,
+					        x = value[[i]], default.units = "native", gp = subset_gp(pt_gp, i), pch = pch[i], size = size[i])
+			}
+		}
+
 		if(axis_param$side == "top") {
 			if(k > 1) axis = FALSE
 		} else if(axis_param$side == "bottom") {
@@ -1712,6 +1723,7 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 
 		n = length(index)
 		gp = subset_gp(gp, index)
+		pt_gp = subset_gp(pt_gp, index)
 		pch = pch[index]
 		size = size[index]
 		pushViewport(viewport(xscale = c(0.5, n+0.5), yscale = data_scale))
@@ -1734,16 +1746,24 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		grid.segments(seq_along(index) - 0.5*box_width, boxplot_stats[3, ],
 			          seq_along(index) + 0.5*box_width, boxplot_stats[3, ], 
 			          default.units = "native", gp = gp)
-		if(outline) {	
+		
+		if(!add_points && outline) {	
 			for(i in seq_along(value)) {
 				l1 = value[[i]] > boxplot_stats[5,i]
 				l1[is.na(l1)] = FALSE
 				if(sum(l1)) grid.points(x = rep(i, sum(l1)), y = value[[i]][l1], 
-					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+					default.units = "native", gp = subset_gp(pt_gp, i), pch = pch[i], size = size[i])
 				l2 = value[[i]] < boxplot_stats[1,i]
 				l2[is.na(l2)] = FALSE
 				if(sum(l2)) grid.points(x = rep(i, sum(l2)), y = value[[i]][l2], 
-					default.units = "native", gp = subset_gp(gp, i), pch = pch[i], size = size[i])
+					default.units = "native", gp = subset_gp(pt_gp, i), pch = pch[i], size = size[i])
+			}
+		}
+
+		if(add_points && outline) {
+			for(i in seq_along(value)) {
+				grid.points(x = runif(length(value[[i]]), min = i - 0.5*0.5*box_width, max = i + 0.5*0.5*box_width),
+					        y = value[[i]], default.units = "native", gp = subset_gp(pt_gp, i), pch = pch[i], size = size[i])
 			}
 		}
 		if(axis_param$side == "left") {
@@ -1770,11 +1790,12 @@ anno_boxplot = function(x, which = c("column", "row"), border = TRUE,
 		width = anno_size$width,
 		height = anno_size$height,
 		data_scale = data_scale,
-		var_import = list(value, gp, border, box_width, axis, axis_param, axis_grob, data_scale, pch, size, outline)
+		var_import = list(value, gp, border, box_width, axis, axis_param, axis_grob, data_scale, add_points, pch, pt_gp, size, outline)
 	)
 
 	anno@subset_rule$value = subset_vector
 	anno@subset_rule$gp = subset_gp
+	anno@subset_rule$pt_gp = subset_gp
 	anno@subset_rule$pch = subset_vector
 	anno@subset_rule$size = subset_vector
 	

@@ -271,7 +271,6 @@ anno = anno_barplot(matrix(nc = 2, c(1:10, 10:1)), beside = TRUE, gp = gpar(fill
 draw(anno, test = "a matrix with fill")
 
 
-
 ##### test anno_boxplot #####
 set.seed(123)
 m = matrix(rnorm(100), 10)
