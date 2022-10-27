@@ -1396,7 +1396,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		} else {
 			if(beside) {
 				nbar = ncol(value)
-				nr = nrow(value)
+				nr = length(index)
 				for(i in seq_along(index)) {
 			        for(j in 1:nbar) {
 			        	if(attach) {
@@ -1471,7 +1471,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		} else {
 			if(beside) {
 				nbar = ncol(value)
-				nr = nrow(value)
+				nr = length(index)
 				for(i in seq_along(index)) {
 			        for(j in 1:nbar) {
 			        	if(attach) {

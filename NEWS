@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.13.4
+
+* `anno_barplot()`: fixed a bug when split is set, the bars are wrongly plotted under besides = TRUE.
+
+========================
+
 CHANGES in VERSION 2.13.2
 
 * `HeatmapAnnotation()`: fixed a bug where annotation legends are not all generated when `df` is set.
