@@ -567,9 +567,11 @@ oncoPrint = function(mat, name,
 
 			# adjust order of alter_fun3 with at
 			if(!is.null(heatmap_legend_param$at)) {
-				if(length(setdiff(heatmap_legend_param$at, names(alter_fun3))) == 0) {
-					alter_fun3 = alter_fun3[heatmap_legend_param$at]
-				}
+				ind = which(heatmap_legend_param$at %in% names(alter_fun3))
+				heatmap_legend_param$at = heatmap_legend_param$at[ind]
+				heatmap_legend_param$labels = heatmap_legend_param$labels[ind]
+
+				alter_fun3 = alter_fun3[heatmap_legend_param$at]
 			}
 
 			heatmap_legend_param$graphics = alter_fun3
