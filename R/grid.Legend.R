@@ -1482,20 +1482,21 @@ is_diff_equal = function(x) {
 # pch are numeric
 .pointsGrob_as_a_list = function(x, y, pch, gp, size, width, height) {
 	n = length(x)
-	if(any(pch %in% 26:31)) {
+	pch2 = pch; pch2[is.na(pch2)] = -1
+	if(any(pch2 %in% 26:31)) {
 		gl = list()
 		for(i in 1:n) {
-			if(pch[i] == 26) {
+			if(pch2[i] == 26) {
 				gb = segmentsGrob(x[i] - width*0.4, y[i] - height*0.4, x[i] + width*0.4, y[i] + height*0.4, gp = subset_gp(gp[i]))
-			} else if(pch[i] == 27) {
+			} else if(pch2[i] == 27) {
 				gb = segmentsGrob(x[i] + width*0.4, y[i] - height*0.4, x[i] - width*0.4, y[i] + height*0.4, gp = subset_gp(gp[i]))
-			} else if(pch[i] == 28) {
+			} else if(pch2[i] == 28) {
 				gb = segmentsGrob(unit.c(x[i] - width*0.4, x[i] + width*0.4), 
 					              unit.c(y[i] - height*0.4, y[i] - height*0.4),
 					              unit.c(x[i] + width*0.4, x[i] - width*0.4),
 					              unit.c(y[i] + height*0.4, y[i] + height*0.4), 
 					              gp = subset_gp(gp[i]))
-			} else if(pch[i] %in% 29:31) {
+			} else if(pch2[i] %in% 29:31) {
 				stop_wrap("pch in 29:31 is not implemented in Legend().")
 			} else {
 				gb = pointsGrob(x = x[i], y = y[i], pch = pch[i], gp = subset_gp(gp, i), size = size[i])
