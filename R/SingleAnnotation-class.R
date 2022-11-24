@@ -441,11 +441,11 @@ SingleAnnotation = function(name, value, col, fun,
     if(name_param$show) {
         if(which == "column") {
             if(name_param$rot %in% c(0, 180)) {
-                text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
+                text_width = convertWidth(max_text_width(name_param$label, gp = name_gp, rot = name_param$rot) + name_param$offset, "mm")
             } else if(name_param$rot %in% c(90, 270)) {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm")
+                text_width = convertHeight(max_text_height(name_param$label, gp = name_gp) + name_param$offset, "mm")
             } else {
-                text_width = convertWidth(grobWidth(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
+                text_width = convertWidth(max_text_width(name_param$label, gp = name_gp, rot = name_param$rot) + name_param$offset, "mm")
             }
             if(name_param$side == "left") {
                 extended[2] = text_width
@@ -454,11 +454,11 @@ SingleAnnotation = function(name, value, col, fun,
             }
         } else if(which == "row") {
             if(name_param$rot %in% c(0, 180)) {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
+                text_width = convertHeight(max_text_height(name_param$label, gp = name_gp, rot = name_param$rot) + name_param$offset, "mm")
             } else if(name_param$rot %in% c(90, 270)) {
-                text_width = convertHeight(grobWidth(textGrob(name_param$label, gp = name_gp)) + name_param$offset, "mm")
+                text_width = convertHeight(max_text_width(name_param$label, gp = name_gp) + name_param$offset, "mm")
             } else {
-                text_width = convertHeight(grobHeight(textGrob(name_param$label, gp = name_gp, rot = name_param$rot)) + name_param$offset, "mm")
+                text_width = convertHeight(max_text_height(name_param$label, gp = name_gp, rot = name_param$rot) + name_param$offset, "mm")
             }
             if(name_param$side == "bottom") {
                 extended[1] = text_width

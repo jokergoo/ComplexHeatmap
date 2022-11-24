@@ -1,3 +1,10 @@
+CHANGES in VERSION 2.15.1
+
+* `Legend()`: allows `NA` in `pch`.
+* `SingleAnnotation()`: correctly calculate the max width/height of a vector of texts.
+
+=======================
+
 CHANGES in VERSION 2.13.4
 
 * `anno_barplot()`: fixed a bug when split is set, the bars are wrongly plotted under besides = TRUE.
