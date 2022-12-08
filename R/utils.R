@@ -1020,7 +1020,7 @@ to_unit_str = function(unit) {
 
 to_unit = function(str) {
     d = gsub("[^\\d]+$", "", str, perl = TRUE)
-    u = gsub("[\\d.]", "", str, perl = TRUE)
+    u = gsub("^.*[\\d.]", "", str, perl = TRUE)
     unit(as.numeric(d), u)
 }
 
