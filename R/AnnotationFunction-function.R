@@ -4414,7 +4414,6 @@ anno_numeric = function(x, rg = range(x), labels_gp = gpar(), x_convert = NULL,
     }
 
     cell_fun_pct = function(i) {
-
     	min_x = rg[1]
     	max_x = rg[2]
         pushViewport(viewport(xscale = rg))
@@ -4445,24 +4444,24 @@ anno_numeric = function(x, rg = range(x), labels_gp = gpar(), x_convert = NULL,
         		if(round_corners) {
 		        	grid.roundrect(x = unit(0, "native"), 
 		                width = unit(-x[i], "native"), height = bar_width,  r = r,
-		                just = "right", gp = subset_gp(bg_gp, 1))
+		                just = "right", gp = subset_gp(bg_gp, i))
 		        } else {
 		        	grid.rect(x = unit(0, "native"), 
 		                width = unit(-x[i], "native"), height = bar_width, 
-		                just = "right", gp = subset_gp(bg_gp, 1))
+		                just = "right", gp = subset_gp(bg_gp, i))
 		        }
-	            grid.text(labels[i], x = unit(0, "native") - labels_offset, just = "right", gp = subset_gp(labels_gp, 1))
+	            grid.text(labels[i], x = unit(0, "native") - labels_offset, just = "right", gp = subset_gp(labels_gp, i))
 	        } else {
 	        	if(round_corners) {
 		        	grid.roundrect(x = unit(0, "native"), 
 		                width = unit(x[i], "native"), height = bar_width,  r = r,
-		                just = "left", gp = subset_gp(bg_gp, 2))
+		                just = "left", gp = subset_gp(bg_gp, i))
 		        } else {
 		        	grid.rect(x = unit(0, "native"), 
 		                width = unit(x[i], "native"), height = bar_width,
-		                just = "left", gp = subset_gp(bg_gp, 2))
+		                just = "left", gp = subset_gp(bg_gp, i))
 		        }
-	            grid.text(labels[i], x = unit(0, "native") + labels_offset, just = "left", gp = subset_gp(labels_gp, 2))
+	            grid.text(labels[i], x = unit(0, "native") + labels_offset, just = "left", gp = subset_gp(labels_gp, i))
 	        }
         }
         popViewport()
