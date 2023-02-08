@@ -907,6 +907,11 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	if(is.null(legend_width)) legend_width = min_legend_width
 
 	segment_col = border
+	if(is_diff_equal(at)) {
+		at_diff_is_equal = TRUE
+	} else {
+		at_diff_is_equal = FALSE
+	}
 
 	legend_body_width = legend_width
 	legend_body_height = grid_height + labels_padding_top + labels_max_height
