@@ -253,6 +253,7 @@ setMethod(f = "map_to_colors",
 # -title_position Position of the title. See `Legend` for all possible values.
 # -grid_height Height of each legend grid. Pass to `Legend`.
 # -grid_width Width of each legend grid. Pass to `Legend`.
+# -tick_length Length of the ticks on the continuous legends. Value should be a `grid::unit` object.
 # -border Color for legend grid borders. Pass to `Legend`.
 # -at Break values of the legend. By default it is the levels in the `ColorMapping-class` object.
 # -labels Labels corresponding to break values.
@@ -290,6 +291,7 @@ setMethod(f = "color_mapping_legend",
 	title_position = "topleft",
 	grid_height = unit(4, "mm"),
 	grid_width = unit(4, "mm"),
+	tick_length = unit(0.8, "mm"),
 	border = NULL,
 	at = object@levels,
 	labels = at,
@@ -355,17 +357,17 @@ setMethod(f = "color_mapping_legend",
 		}
 		if(length(at) == 0) {
 			gf = Legend(at = "NA", labels = "NA", name = object@name, title = title, title_gp = title_gp, grid_height = grid_height,
-				grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
+				grid_width = grid_width, tick_length = tick_length, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
 				legend_gp = gpar(fill = object@na_col), title_position = title_position, by_row = by_row, graphics = graphics, break_dist = break_dist)
 		} else {
 			gf = Legend(at = at, labels = labels, name = object@name, title = title, title_gp = title_gp, grid_height = grid_height,
-				grid_width = grid_width, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
+				grid_width = grid_width, tick_length = tick_length, border = border, labels_gp = labels_gp, direction = legend_direction, nrow = nrow, ncol = ncol,
 				legend_gp = gpar(fill = map_to_colors(object, at)), title_position = title_position, by_row = by_row, graphics = graphics, break_dist = break_dist)
 		}
 
 	} else {
 		gf = Legend(at = at, labels = labels, name = object@name, col_fun = object@col_fun, title = title, title_gp = title_gp, grid_height = grid_height,
-				grid_width = grid_width, border = border, labels_gp = labels_gp, labels_rot = labels_rot, direction = legend_direction,
+				grid_width = grid_width, tick_length = tick_length, border = border, labels_gp = labels_gp, labels_rot = labels_rot, direction = legend_direction,
 				legend_width = legend_width, legend_height = legend_height, title_position = title_position, by_row = by_row, break_dist = break_dist)
 
 	}

@@ -18,6 +18,7 @@ Draw Legend Based on Color Mapping
     title_position = "topleft",
     grid_height = unit(4, "mm"),
     grid_width = unit(4, "mm"),
+    tick_length = unit(0.8, "mm"),
     border = NULL,
     at = object@levels,
     labels = at,
@@ -45,6 +46,7 @@ Draw Legend Based on Color Mapping
   \item{title_position}{Position of the title. See \code{\link{Legend}} for all possible values.}
   \item{grid_height}{Height of each legend grid. Pass to \code{\link{Legend}}.}
   \item{grid_width}{Width of each legend grid. Pass to \code{\link{Legend}}.}
+  \item{tick_length}{Length of the ticks on the continuous legends. Value should be a \code{\link[grid]{unit}} object.}
   \item{border}{Color for legend grid borders. Pass to \code{\link{Legend}}.}
   \item{at}{Break values of the legend. By default it is the levels in the \code{\link{ColorMapping-class}} object.}
   \item{labels}{Labels corresponding to break values.}

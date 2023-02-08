@@ -62,6 +62,7 @@ Legends = function(...) {
 # -by_row Are the legend grids arranged by rows or by columns?
 # -grid_height The height of legend grid. It can also control the height of the continuous legend if it is horizontal.
 # -grid_width The width of legend grid. It can also control the width of the continuous legend if it is vertical.
+# -tick_length Length of the ticks on the continuous legends. Value should be a `grid::unit` object.
 # -gap If legend grids are put into multiple rows or columns, this controls the gap between neighbouring rows or columns, measured as a `grid::unit` object.
 # -column_gap The same as ``gap``.
 # -row_gap Space between legend rows.
@@ -114,7 +115,7 @@ Legends = function(...) {
 Legend = function(at, labels = at, col_fun, name = NULL, grob = NULL,
 	break_dist = NULL, nrow = NULL, ncol = 1, by_row = FALSE,
 	grid_height = unit(4, "mm"), 
-	grid_width = unit(4, "mm"), 
+	grid_width = unit(4, "mm"), tick_length = unit(0.8, "mm"),
 	gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
 	labels_gp = gpar(fontsize = 10), labels_rot = 0,
 	border = NULL, background = "#EEEEEE",
@@ -174,7 +175,7 @@ Legend = function(at, labels = at, col_fun, name = NULL, grob = NULL,
 
 		if(direction == "vertical") {
 			legend_body = vertical_continuous_legend_body(at = at, labels = labels, col_fun = col_fun, break_dist = break_dist,
-				grid_height = grid_height, grid_width = grid_width, legend_height = legend_height,
+				grid_height = grid_height, grid_width = grid_width, tick_length = tick_length, legend_height = legend_height,
 				labels_gp = labels_gp, border = border)
 		} else {
 			legend_extension = unit(0, "mm")
@@ -186,7 +187,7 @@ Legend = function(at, labels = at, col_fun, name = NULL, grob = NULL,
 				}
 			}
 			legend_body = horizontal_continuous_legend_body(at = at, labels = labels, col_fun = col_fun, break_dist = break_dist,
-				grid_height = grid_height, grid_width = grid_width, legend_width = legend_width,
+				grid_height = grid_height, grid_width = grid_width, tick_length = tick_length, legend_width = legend_width,
 				labels_gp = labels_gp, labels_rot = labels_rot, border = border, legend_extension = legend_extension)
 		}
 	}
@@ -605,7 +606,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 
 vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	break_dist = NULL, grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
-	legend_height = NULL,
+	legend_height = NULL, tick_length = unit(0.8, "mm"),
 	labels_gp = gpar(fontsize = 10),
 	border = NULL) {
 
@@ -769,11 +770,12 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	y2 = unit.c(offset*0.5, y2, legend_body_height - offset*0.5)
 	hh = unit.c(offset, rep(hh, length(y2)-2), offset)
 	colors = c(colors[1], colors, colors[length(colors)])
+
 	gl = c(gl, list(
 		rectGrob(x2, rev(y2), width = grid_width, height = hh, just = c("left", "center"),
 			gp = gpar(col = rev(colors), fill = rev(colors))),
-		segmentsGrob(unit(0, "npc"), y, unit(0.8, "mm"), y, gp = gpar(col = ifelse(is.null(border), "white", border))),
-		segmentsGrob(grid_width, y, grid_width - unit(0.8, "mm"), y, gp = gpar(col = ifelse(is.null(border), "white", border)))
+		segmentsGrob(unit(0, "npc"), y, tick_length, y, gp = gpar(col = ifelse(is.null(border), "white", border))),
+		segmentsGrob(grid_width, y, grid_width - tick_length, y, gp = gpar(col = ifelse(is.null(border), "white", border)))
 	))
 
 	if(adjust_text_pos) {
@@ -815,7 +817,7 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 
 horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	break_dist = NULL, grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
-	legend_width = NULL,
+	legend_width = NULL, tick_length = unit(0.8, "mm"),
 	labels_gp = gpar(fontsize = 10), labels_rot = 0,
 	border = NULL, legend_extension = unit(0, "mm")) {
 		
@@ -978,8 +980,8 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	gl = c(gl, list(
 		rectGrob(x2, y2, height = grid_height, width = ww, just = c("left", "top"),
 			gp = gpar(col = colors, fill = colors)),
-		segmentsGrob(x, legend_body_height - grid_height, x, legend_body_height - grid_height + unit(0.8, "mm"), gp = gpar(col = ifelse(is.null(border), "white", border))),
-		segmentsGrob(x, legend_body_height - unit(0.8, "mm"), x, legend_body_height, gp = gpar(col = ifelse(is.null(border), "white", border)))
+		segmentsGrob(x, legend_body_height - grid_height, x, legend_body_height - grid_height + tick_length, gp = gpar(col = ifelse(is.null(border), "white", border))),
+		segmentsGrob(x, legend_body_height - tick_length, x, legend_body_height, gp = gpar(col = ifelse(is.null(border), "white", border)))
 	))
 
 	if(adjust_text_pos) {

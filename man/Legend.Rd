@@ -10,7 +10,7 @@ Make a Single Legend
 Legend(at, labels = at, col_fun, name = NULL, grob = NULL,
     break_dist = NULL, nrow = NULL, ncol = 1, by_row = FALSE,
     grid_height = unit(4, "mm"),
-    grid_width = unit(4, "mm"),
+    grid_width = unit(4, "mm"), tick_length = unit(0.8, "mm"),
     gap = unit(2, "mm"), column_gap = gap, row_gap = unit(0, "mm"),
     labels_gp = gpar(fontsize = 10), labels_rot = 0,
     border = NULL, background = "#EEEEEE",
@@ -35,6 +35,7 @@ Legend(at, labels = at, col_fun, name = NULL, grob = NULL,
   \item{by_row}{Are the legend grids arranged by rows or by columns?}
   \item{grid_height}{The height of legend grid. It can also control the height of the continuous legend if it is horizontal.}
   \item{grid_width}{The width of legend grid. It can also control the width of the continuous legend if it is vertical.}
+  \item{tick_length}{Length of the ticks on the continuous legends. Value should be a \code{\link[grid]{unit}} object.}
   \item{gap}{If legend grids are put into multiple rows or columns, this controls the gap between neighbouring rows or columns, measured as a \code{\link[grid]{unit}} object.}
   \item{column_gap}{The same as \code{gap}.}
   \item{row_gap}{Space between legend rows.}
