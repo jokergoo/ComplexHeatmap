@@ -755,11 +755,15 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	))
 	
 	## colors
+	if(!at_diff_is_equal) {
+		at = seq(at[1], at[length(at)], length.out = n_labels)
+	}
 	at2 = unlist(lapply(seq_len(n_labels - 1), function(i) {
-		x = seq(at[i], at[i+1], length.out = round((at[i+1]-at[i])/(at[k]-at[1])*100))
+		x = seq(at[i], at[i+1], length.out = max(10, round((at[i+1]-at[i])/(at[k]-at[1])*100)))
 		x = x[-length(x)]
 	}))
 	at2 = c(at2, at[length(at)])
+
 	colors = col_fun(at2)
 	x2 = unit(rep(0, length(colors)), "npc")
 	y2 = seq(0, 1, length.out = length(colors)+1); y2 = y2[-length(y2)]
@@ -961,6 +965,9 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 		textGrob(labels, x = labels_x, y = labels_y, just = labels_just, gp = labels_gp, rot = labels_rot)
 	))
 
+	if(!at_diff_is_equal) {
+		at = seq(at[1], at[length(at)], length.out = n_labels)
+	}
 	at2 = unlist(lapply(seq_len(n_labels - 1), function(i) {
 		x = seq(at[i], at[i+1], length.out = round((at[i+1]-at[i])/(at[k]-at[1])*100))
 		x = x[-length(x)]

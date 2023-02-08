@@ -4,6 +4,7 @@ CHANGES in VERSION 2.15.1
 * `SingleAnnotation()`: correctly calculate the max width/height of a vector of texts.
 * `to_unit()`: fixed a bug when the unit is negative.
 * `Legend()`: add `tick_length` argument.
+* `Legend()`: colors are correctly calculated when differences between `at` are not equal.
 
 =======================
 
