@@ -1371,7 +1371,7 @@ make_cluster = function(object, which = c("row", "column")) {
     # make k-means clustering to add a split column
     consensus_kmeans = function(mat, centers, km_repeats) {
         partition_list = lapply(seq_len(km_repeats), function(i) {
-            as.cl_hard_partition(kmeans(mat, centers))
+            as.cl_hard_partition(kmeans(mat, centers, iter.max = 50))
         })
         partition_list = cl_ensemble(list = partition_list)
         partition_consensus = cl_consensus(partition_list)
