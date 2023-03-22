@@ -43,6 +43,7 @@ Following parameters control the legends:
   \item{legend_grid_height}{set \code{grid_height} in all heatmap legends and annotation legends.}
   \item{legend_border}{set \code{border} in all heatmap legends and annotation legends.}
   \item{legend_gap}{Gap between legends. The value should be a vector of two units. One for gaps between vertical legends and one for the horizontal legends. If only one single unit is specified, the same gap set for the vertical and horizontal legends.}
+  \item{merge_legend}{wether merge heatmap and annotation legends.}
 }
 
 Following parameters control heatmap annotations:

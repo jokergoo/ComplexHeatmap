@@ -325,7 +325,7 @@ setMethod(f = "draw",
     column_title_gp = gpar(fontsize = 13), 
 
     heatmap_legend_side = c("right", "left", "bottom", "top"), 
-    merge_legends = FALSE,
+    merge_legends = ht_opt$merge_legends,
     show_heatmap_legend = TRUE, 
     heatmap_legend_list = list(),
     annotation_legend_side = c("right", "left", "bottom", "top"), 

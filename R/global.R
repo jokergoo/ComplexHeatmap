@@ -34,6 +34,7 @@
 # -legend_gap Gap between legends. The value should be a vector of two units. One for gaps between
 #         vertical legends and one for the horizontal legends. If only one single unit is specified,
 #         the same gap set for the vertical and horizontal legends.
+# -merge_legend wether merge heatmap and annotation legends.
 #
 # Following parameters control heatmap annotations:
 #
@@ -117,6 +118,7 @@ ht_opt = setGlobalOptions(
 			}
 		}
 	),
+	merge_legends = FALSE,
 
 	heatmap_border = list(
 		.value = NULL),
