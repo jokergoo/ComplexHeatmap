@@ -309,7 +309,7 @@ ks_dist = function(data, cores = 1) {
 		suppressWarnings(d <- ks_dist_pair(data[[i]], data[[j]]))
 		return(d)
 	}
-	stopImplicitCluster()
+	stopCluster(cl)
 
 	v = unlist(v)
 
