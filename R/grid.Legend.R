@@ -176,7 +176,7 @@ Legend = function(at, labels = at, col_fun, name = NULL, grob = NULL,
 		if(direction == "vertical") {
 			legend_body = vertical_continuous_legend_body(at = at, labels = labels, col_fun = col_fun, break_dist = break_dist,
 				grid_height = grid_height, grid_width = grid_width, tick_length = tick_length, legend_height = legend_height,
-				labels_gp = labels_gp, border = border)
+				labels_gp = labels_gp, border = border, legend_gp = legend_gp)
 		} else {
 			legend_extension = unit(0, "mm")
 			if(title_position == "lefttop") {
@@ -188,7 +188,7 @@ Legend = function(at, labels = at, col_fun, name = NULL, grob = NULL,
 			}
 			legend_body = horizontal_continuous_legend_body(at = at, labels = labels, col_fun = col_fun, break_dist = break_dist,
 				grid_height = grid_height, grid_width = grid_width, tick_length = tick_length, legend_width = legend_width,
-				labels_gp = labels_gp, labels_rot = labels_rot, border = border, legend_extension = legend_extension)
+				labels_gp = labels_gp, labels_rot = labels_rot, border = border, legend_gp = legend_gp, legend_extension = legend_extension)
 		}
 	}
 
@@ -520,7 +520,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		######### graphics ############
 		# grid
 		sgd = subset_gp(legend_gp, index)
-		sgd2 = gpar()
+		sgd2 = sgd
 		if("grid" %in% type) {
 			sgd2$fill = sgd$fill
 		} else {
@@ -529,9 +529,11 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		if(identical(border, "asis")) {
 			sgd2$col = sgd2$fill	
 		} else {
-			sgd2$col = border
+			if(is.null(sgd2$col)) {
+				sgd2$col = border
+			}
 		}
-		
+
 		grid_x = previous_x
 		grid_y = y - (row_height[1:ni] - row_gap)*0.5
 		if(ni == nrow) grid_y[nrow] = y[nrow] - row_height[nrow]*0.5
@@ -608,7 +610,7 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	break_dist = NULL, grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
 	legend_height = NULL, tick_length = unit(0.8, "mm"),
 	labels_gp = gpar(fontsize = 10),
-	border = NULL) {
+	border = NULL, legend_gp = gpar()) {
 
 	n = length(at)
 	breaks = attr(col_fun, "breaks")
@@ -775,11 +777,24 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	hh = unit.c(offset, rep(hh, length(y2)-2), offset)
 	colors = c(colors[1], colors, colors[length(colors)])
 
+	if(is.null(border)) {
+		if(!is.null(legend_gp$col)) {
+			border = legend_gp$col
+		}
+	}
+
+	if(is.null(border)) {
+		legend_gp$col = "white"
+	} else {
+		if(is.null(legend_gp$col)) {
+			legend_gp$col = border
+		}
+	}
 	gl = c(gl, list(
 		rectGrob(x2, rev(y2), width = grid_width, height = hh, just = c("left", "center"),
 			gp = gpar(col = rev(colors), fill = rev(colors))),
-		segmentsGrob(unit(0, "npc"), y, tick_length, y, gp = gpar(col = ifelse(is.null(border), "white", border))),
-		segmentsGrob(grid_width, y, grid_width - tick_length, y, gp = gpar(col = ifelse(is.null(border), "white", border)))
+		segmentsGrob(unit(0, "npc"), y, tick_length, y, gp = legend_gp),
+		segmentsGrob(grid_width, y, grid_width - tick_length, y, gp = legend_gp)
 	))
 
 	if(adjust_text_pos) {
@@ -807,8 +822,9 @@ vertical_continuous_legend_body = function(at, labels = at, col_fun,
 	}
 
 	if(!is.null(border)) {
+		legend_gp$fill = "transparent"
 		gl = c(gl, list(
-			rectGrob(width = grid_width, height = legend_height, x = unit(0, "npc"), just = "left", gp = gpar(col = border, fill = "transparent"))
+			rectGrob(width = grid_width, height = legend_height, x = unit(0, "npc"), just = "left", gp = legend_gp)
 		))
 	}
 
@@ -823,7 +839,7 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	break_dist = NULL, grid_height = unit(4, "mm"), grid_width = unit(4, "mm"),
 	legend_width = NULL, tick_length = unit(0.8, "mm"),
 	labels_gp = gpar(fontsize = 10), labels_rot = 0,
-	border = NULL, legend_extension = unit(0, "mm")) {
+	border = NULL, legend_gp = gpar(), legend_extension = unit(0, "mm")) {
 		
 	n = k = length(at)
 	breaks = attr(col_fun, "breaks")
@@ -989,11 +1005,18 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	ww = unit.c(offset + (x2[2] - x2[1])*0.5, rep(ww, length(x2) - 2))
 	colors = c(colors[1], colors)
 
+	if(is.null(border)) {
+		legend_gp$col = "white"
+	} else {
+		if(is.null(legend_gp$col)) {
+			legend_gp$col = border
+		}
+	}
 	gl = c(gl, list(
 		rectGrob(x2, y2, height = grid_height, width = ww, just = c("left", "top"),
 			gp = gpar(col = colors, fill = colors)),
-		segmentsGrob(x, legend_body_height - grid_height, x, legend_body_height - grid_height + tick_length, gp = gpar(col = ifelse(is.null(border), "white", border))),
-		segmentsGrob(x, legend_body_height - tick_length, x, legend_body_height, gp = gpar(col = ifelse(is.null(border), "white", border)))
+		segmentsGrob(x, legend_body_height - grid_height, x, legend_body_height - grid_height + tick_length, gp = legend_gp),
+		segmentsGrob(x, legend_body_height - tick_length, x, legend_body_height, gp = legend_gp)
 	))
 
 	if(adjust_text_pos) {
@@ -1021,8 +1044,9 @@ horizontal_continuous_legend_body = function(at, labels = at, col_fun,
 	}
 
 	if(!is.null(border)) {
+		legend_gp$fill = "transparent"
 		gl = c(gl, list(
-			rectGrob(width = legend_width, height = grid_height, y = unit(1, "npc"), just = "top", gp = gpar(col = border, fill = "transparent"))
+			rectGrob(width = legend_width, height = grid_height, y = unit(1, "npc"), just = "top", gp = legend_gp)
 		))
 	}
 
