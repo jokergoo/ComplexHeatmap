@@ -7,11 +7,12 @@ Get Row Dendrograms from a Heatmap
 Get Row Dendrograms from a Heatmap
 }
 \usage{
-\S4method{row_dend}{Heatmap}(object)
+\S4method{row_dend}{Heatmap}(object, on_slice = FALSE)
 }
 \arguments{
 
   \item{object}{A \code{\link{Heatmap-class}} object.}
+  \item{on_slice}{If the value is TRUE, it returns the dendrogram on the slice level.}
 
 }
 \value{

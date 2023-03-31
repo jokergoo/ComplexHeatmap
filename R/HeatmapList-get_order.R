@@ -211,6 +211,7 @@ setMethod(f = "column_order",
 # == param
 # -object A `HeatmapList-class` object.
 # -name Name of a specific heatmap.
+# -on_slice If the value is TRUE, it returns the dendrogram on the slice level.
 # 
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -226,12 +227,13 @@ setMethod(f = "column_order",
 # ht_list = Heatmap(mat, row_km = 2) + Heatmap(mat)
 # ht_list = draw(ht_list)
 # row_dend(ht_list)
+# row_dend(ht_list, on_slice = TRUE)
 # ht_list = Heatmap(mat, row_km = 2) \%v\% Heatmap(mat)
 # ht_list = draw(ht_list)
 # row_dend(ht_list)
 setMethod(f = "row_dend",
 	signature = "HeatmapList",
-	definition = function(object, name = NULL) {
+	definition = function(object, name = NULL, on_slice = FALSE) {
 
 	if(!object@layout$initialized) {
 		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht_list = draw(ht_list); row_dend(ht_list)`.")
@@ -240,7 +242,7 @@ setMethod(f = "row_dend",
 	object = make_layout(object)
 
 	if(!is.null(name)) {
-		return(row_dend(object@ht_list[[ name[1] ]]))
+		return(row_dend(object@ht_list[[ name[1] ]], on_slice = on_slice))
 	}
 
 	n = length(object@ht_list)
@@ -250,6 +252,9 @@ setMethod(f = "row_dend",
 	}
 
 	if(object@direction == "horizontal") {
+		if(on_slice) {
+			return(object@ht_list[[ ht_index[1] ]]@row_dend_slice)
+		}
 		lt = object@ht_list[[ ht_index[1] ]]@row_dend_list
 		if(length(lt) == 1) {
 			return(lt[[1]])
@@ -259,8 +264,13 @@ setMethod(f = "row_dend",
 	} else {
 		lt_rd = list()
 		for(i in ht_index) {
-	        lt = object@ht_list[[i]]@row_dend_list
-	        lt_rd = c(lt_rd, list(lt))
+			if(on_slice) {
+				lt = object@ht_list[[i]]@row_dend_slice
+		        lt_rd = c(lt_rd, list(lt))
+			} else {
+		        lt = object@ht_list[[i]]@row_dend_list
+		        lt_rd = c(lt_rd, list(lt))
+		    }
 	    }
 	    names(lt_rd) = names(object@ht_list)[ht_index]
 	    proper_format_lt(lt_rd)
@@ -273,6 +283,7 @@ setMethod(f = "row_dend",
 #
 # == param
 # -object A `Heatmap-class` object.
+# -on_slice If the value is TRUE, it returns the dendrogram on the slice level.
 # 
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -291,13 +302,17 @@ setMethod(f = "row_dend",
 #
 setMethod(f = "row_dend",
 	signature = "Heatmap",
-	definition = function(object) {
+	definition = function(object, on_slice = FALSE) {
 
 	if(!object@layout$initialized) {
 		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht = draw(ht); row_dend(ht)`.")
 	}
 
-	object = prepare(object)
+	object = prepare(object)	
+
+	if(on_slice) {
+		return(object@row_dend_slice)
+	}
 
 	lt = object@row_dend_list
 	if(length(lt) == 1) {
@@ -313,6 +328,7 @@ setMethod(f = "row_dend",
 # == param
 # -object A `HeatmapList-class` object.
 # -name Name of a specific heatmap.
+# -on_slice If the value is TRUE, it returns the dendrogram on the slice level.
 # 
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -328,6 +344,7 @@ setMethod(f = "row_dend",
 # ht_list = Heatmap(mat, column_km = 2) + Heatmap(mat, column_km = 2)
 # ht_list = draw(ht_list)
 # column_dend(ht_list)
+# column_dend(ht_list, on_slice = TRUE)
 # ht_list = Heatmap(mat) \%v\% Heatmap(mat)
 # ht_list = draw(ht_list)
 # column_dend(ht_list)
@@ -336,7 +353,7 @@ setMethod(f = "row_dend",
 # column_dend(ht_list)
 setMethod(f = "column_dend",
 	signature = "HeatmapList",
-	definition = function(object, name = NULL) {
+	definition = function(object, name = NULL, on_slice = FALSE) {
 
 	if(!object@layout$initialized) {
 		warning_wrap("The heatmap list has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht_list = draw(ht_list); column_dend(ht_list)`.")
@@ -345,7 +362,7 @@ setMethod(f = "column_dend",
 	object = make_layout(object)
 
 	if(!is.null(name)) {
-		return(column_dend(object@ht_list[[ name[1] ]]))
+		return(column_dend(object@ht_list[[ name[1] ]], on_slice = on_slice))
 	}
 
 	n = length(object@ht_list)
@@ -355,6 +372,10 @@ setMethod(f = "column_dend",
 	}
 
 	if(object@direction == "vertical") {
+		if(on_slice) {
+			return(object@ht_list[[ ht_index[1] ]]@column_dend_slice)
+		}
+
 		lt = object@ht_list[[ ht_index[1] ]]@column_dend_list
 		if(length(lt) == 1) {
 			return(lt[[1]])
@@ -364,8 +385,13 @@ setMethod(f = "column_dend",
 	} else {
 		lt_rd = list()
 		for(i in ht_index) {
-	        lt = object@ht_list[[i]]@column_dend_list
-	        lt_rd = c(lt_rd, list(lt))
+			if(on_slice) {
+				lt = object@ht_list[[i]]@column_dend_slice
+		        lt_rd = c(lt_rd, list(lt))
+			} else {
+		        lt = object@ht_list[[i]]@column_dend_list
+		        lt_rd = c(lt_rd, list(lt))
+		    }
 	    }
 	    names(lt_rd) = names(object@ht_list)[ht_index]
 	    proper_format_lt(lt_rd)
@@ -378,6 +404,7 @@ setMethod(f = "column_dend",
 #
 # == param
 # -object A `Heatmap-class` object.
+# -on_slice If the value is TRUE, it returns the dendrogram on the slice level.
 # 
 # == value
 # The format of the returned object depends on whether rows/columns of the heatmaps are split.
@@ -396,14 +423,18 @@ setMethod(f = "column_dend",
 #
 setMethod(f = "column_dend",
 	signature = "Heatmap",
-	definition = function(object) {
+	definition = function(object, on_slice = FALSE) {
 
 	if(!object@layout$initialized) {
 		warning_wrap("The heatmap has not been initialized. You might have different results if you repeatedly execute this function, e.g. when row_km/column_km was set. It is more suggested to do as `ht = draw(ht); column_dend(ht)`.")
 	}
 
 	object = prepare(object)
-	
+
+	if(on_slice) {
+		return(object@column_dend_slice)
+	}
+
 	lt = object@column_dend_list
 	if(length(lt) == 1) {
 		return(lt[[1]])
