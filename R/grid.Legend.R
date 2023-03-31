@@ -526,6 +526,9 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		} else {
 			sgd2$fill = background
 		}
+		if(identical(legend_gp$col, "asis")) {
+			border = "asis"
+		}
 		if(identical(border, "asis")) {
 			sgd2$col = sgd2$fill	
 		} else {

@@ -27,6 +27,7 @@ Draw Legend Based on Color Mapping
     nrow = NULL,
     ncol = 1,
     by_row = FALSE,
+    legend_gp = gpar(),
     legend_height = NULL,
     legend_width = NULL,
     legend_direction = c("vertical", "horizontal"),
@@ -55,6 +56,7 @@ Draw Legend Based on Color Mapping
   \item{nrow}{Pass to \code{\link{Legend}}. It controls the layout of legend grids if they are arranged in multiple rows or columns.}
   \item{ncol}{Pass to \code{\link{Legend}}. It controls the layout of legend grids if they are arranged in multiple rows or columns.}
   \item{by_row}{Pass to \code{\link{Legend}}. It controls the order of legend grids if they are arranged in multiple rows or columns.}
+  \item{legend_gp}{Graphic parameters for legend.}
   \item{legend_height}{Height of the legend body. It only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{vertical}. Pass to \code{\link{Legend}}.}
   \item{legend_width}{Width of the legend body. It only works when \code{color_bar} is \code{continuous} and \code{direction} is \code{horizontal}. Pass to \code{\link{Legend}}.}
   \item{legend_direction}{When \code{color_bar} is \code{continuous}, whether the legend is vertical or horizontal? Pass to \code{\link{Legend}}.}
