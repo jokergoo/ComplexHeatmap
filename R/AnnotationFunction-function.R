@@ -3106,7 +3106,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 	link_gp = subset_gp(link_gp, od)
 	labels_gp = subset_gp(labels_gp, od)
 
-	labels2index = structure(seq_along(at), names = as.character(labels))
+	at2index = structure(seq_along(at), names = as.character(at))
 	at2labels = structure(labels, names = at)
 
 	if(length(extend) == 1) extend = rep(extend, 2)
@@ -3148,8 +3148,8 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		}
 		labels = rev(at2labels[as.character(at)])
 
-		labels_gp = subset_gp(labels_gp, labels2index[as.character(labels)])
-		link_gp = subset_gp(link_gp, labels2index[as.character(labels)])
+		labels_gp = subset_gp(labels_gp, rev(at2index[as.character(at)]))
+		link_gp = subset_gp(link_gp, rev(at2index[as.character(at)]))
 
 		if(is.null(.scale)) {
 			.scale = c(0.5, n+0.5)
@@ -3225,8 +3225,8 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		}
 		labels = at2labels[as.character(at)]
 		
-		labels_gp = subset_gp(labels_gp, labels2index[as.character(labels)])
-		link_gp = subset_gp(link_gp, labels2index[as.character(labels)])
+		labels_gp = subset_gp(labels_gp, rev(at2index[as.character(at)]))
+		link_gp = subset_gp(link_gp, rev(at2index[as.character(at)]))
 
 		if(is.null(.scale)) {
 			.scale = c(0.5, n+0.5)
@@ -3300,7 +3300,7 @@ anno_mark = function(at, labels, which = c("column", "row"),
 		width = width,
 		height = height,
 		n = -1,
-		var_import = list(at, labels2index, at2labels, link_gp, labels_gp, labels_rot, padding, .pos, .scale,
+		var_import = list(at, at2index, at2labels, link_gp, labels_gp, labels_rot, padding, .pos, .scale,
 			side, link_width, link_height, extend),
 		show_name = FALSE
 	)
