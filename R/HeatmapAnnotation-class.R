@@ -160,6 +160,8 @@ HeatmapAnnotation = function(...,
     		if(inherits(oe, "try-errir")) {
     			stop_wrap("`df` should be a data frame.")
     		}
+    	} else {
+    	   df = as.data.frame(df)
     	}
     }
 
