@@ -520,7 +520,7 @@ discrete_legend_body = function(at, labels = at, nrow = NULL, ncol = 1, by_row =
 		######### graphics ############
 		# grid
 		sgd = subset_gp(legend_gp, index)
-		sgd2 = sgd
+		sgd2 = gpar()
 		if("grid" %in% type) {
 			sgd2$fill = sgd$fill
 		} else {

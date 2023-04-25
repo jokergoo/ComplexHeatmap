@@ -1,8 +1,8 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Make Complex Heatmaps
-Version: 2.15.3
-Date: 2023-03-31
+Version: 2.15.4
+Date: 2023-04-25
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 3.5.0), methods, grid, graphics, stats, grDevices
