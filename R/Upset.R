@@ -1458,7 +1458,7 @@ UpSet = function(m,
 		}
 		la = left_annotation
 		if(length(la) == 1) {
-			ta_call = substitute(right_annotation)
+			ta_call = substitute(left_annotation)
 			ta_call = as.list(ta_call)
 			if(as.character(ta_call[[1]]) == "upset_left_annotation") {
 				if(!"gp" %in% names(as.list(ta_call))) {
