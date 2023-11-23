@@ -63,7 +63,8 @@ Heatmap = setClass("Heatmap",
         right_annotation_param = "list",
 
         heatmap_param = "list",
-
+        heatmap_legend_list = "list",
+        annotation_legend_list = "list",
         layout = "list"
     ),
     contains = "AdditiveUnit"
@@ -288,7 +289,8 @@ Heatmap = function(matrix, col, name,
     width = NULL,
     heatmap_height = unit(1, "npc"), 
     height = NULL,
-
+    heatmap_legend_list = list(),
+    annotation_legend_list = list(),
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
 
@@ -1023,6 +1025,8 @@ Heatmap = function(matrix, col, name,
     .Object@heatmap_param$height = heatmap_height
     .Object@heatmap_param$show_heatmap_legend = show_heatmap_legend
     .Object@heatmap_param$use_raster = use_raster
+    .Object@heatmap_legend_list <- heatmap_legend_list
+    .Object@annotation_legend_list <- annotation_legend_list
 
     if(missing(raster_device)) {
         if(requireNamespace("Cairo", quietly = TRUE)) {
@@ -1050,7 +1054,6 @@ Heatmap = function(matrix, col, name,
     if(ncol(matrix) == 0) {
         .Object@matrix_param$width = unit(0, "mm")
     }
-
     return(.Object)
 
 }
