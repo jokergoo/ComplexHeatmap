@@ -233,7 +233,7 @@ ht_opt = setGlobalOptions(
 ht_global_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE) {}
 ht_global_opt = ht_opt
 
-.ENV = new.env()
+.ENV = new.env(parent = emptyenv())
 .ENV$current_annotation_which = NULL
 .ENV$row_order = NULL
 .ENV$row_pos = NULL

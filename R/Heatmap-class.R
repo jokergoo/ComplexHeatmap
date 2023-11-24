@@ -833,6 +833,12 @@ Heatmap = function(matrix, col, name,
     .Object@column_dend_param$cluster_slices = cluster_column_slices
 
     ######### annotations #############
+    # the `top_annotation` will only be evaluated here due to the lazy
+    # evaluation, we set `.ENV$current_annotation_which` in order to
+    # HeatmapAnnotation can automatically set its `which` argument.
+    # the same will be applied for bottom, left, right annotation
+	old = set_annotation_which("column") # return the initial value
+    on.exit(set_annotation_which(old), add = TRUE)
     .Object@top_annotation = top_annotation # a `HeatmapAnnotation` object
     if(is.null(top_annotation)) {
         .Object@top_annotation_param$height = unit(0, "mm")    
@@ -858,7 +864,7 @@ Heatmap = function(matrix, col, name,
     if(!is.null(top_annotation)) {
         validate_anno_names_with_matrix(matrix, top_annotation, "column")
     }
-    
+    set_annotation_which("column") 
     .Object@bottom_annotation = bottom_annotation # a `HeatmapAnnotation` object
     if(is.null(bottom_annotation)) {
         .Object@bottom_annotation_param$height = unit(0, "mm")
@@ -884,7 +890,7 @@ Heatmap = function(matrix, col, name,
     if(!is.null(bottom_annotation)) {
         validate_anno_names_with_matrix(matrix, bottom_annotation, "column")
     }
-
+    set_annotation_which("row") 
     .Object@left_annotation = left_annotation # a `rowAnnotation` object
     if(is.null(left_annotation)) {
         .Object@left_annotation_param$width = unit(0, "mm")
@@ -910,7 +916,7 @@ Heatmap = function(matrix, col, name,
     if(!is.null(left_annotation)) {
         validate_anno_names_with_matrix(matrix, left_annotation, "row")
     }
-
+    set_annotation_which("row") 
     .Object@right_annotation = right_annotation # a `rowAnnotation` object
     if(is.null(right_annotation)) {
         .Object@right_annotation_param$width = unit(0, "mm")

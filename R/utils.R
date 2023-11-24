@@ -57,6 +57,20 @@ increase_color_mapping_index = function() {
     INDEX_ENV$I_COLOR_MAPPING = INDEX_ENV$I_COLOR_MAPPING + 1
 }
 
+get_annotation_which = function(which) {
+    out = .ENV$current_annotation_which
+	if(is.null(out)) {
+		out = match.arg(which, c("column", "row"))
+	}
+    out
+}
+
+set_annotation_which = function(which) {
+    old = .ENV$current_annotation_which
+    .ENV$current_annotation_which = which
+    invisible(old)
+}
+
 # default colors for matrix or annotations
 # this function should be improved later
 default_col = function(x, main_matrix = FALSE) {
