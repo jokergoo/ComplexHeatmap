@@ -86,6 +86,8 @@ Heatmap(matrix, col, name,
     heatmap_height = unit(1, "npc"),
     height = NULL,
     
+    heatmap_legend_list = list(),
+    annotation_legend_list = list(),
     show_heatmap_legend = TRUE,
     heatmap_legend_param = list(title = name),
     
@@ -174,6 +176,8 @@ Heatmap(matrix, col, name,
   \item{height}{Height of the heatmap body.}
   \item{heatmap_width}{Width of the whole heatmap (including heatmap components)}
   \item{heatmap_height}{Height of the whole heatmap (including heatmap components). Check \url{https://jokergoo.github.io/ComplexHeatmap-reference/book/a-single-heatmap.html#size-of-the-heatmap} .}
+  \item{heatmap_legend_list}{use-defined legends which are put after the heatmap legends}
+  \item{annotation_legend_list}{user-defined legends which are put after the annotation legends}
   \item{show_heatmap_legend}{Whether show heatmap legend?}
   \item{heatmap_legend_param}{A list contains parameters for the heatmap legends. See \code{\link{color_mapping_legend,ColorMapping-method}} for all available parameters.}
   \item{use_raster}{Whether render the heatmap body as a raster image. It helps to reduce file size when the matrix is huge. If number of rows or columns is more than 2000, it is by default turned on. Note if \code{cell_fun} is set, \code{use_raster} is enforced to be \code{FALSE}.}
