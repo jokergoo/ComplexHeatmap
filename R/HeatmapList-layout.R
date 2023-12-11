@@ -811,7 +811,7 @@ setMethod(f = "make_layout",
             }
         }
     }
-    
+
     ############################################
     ## title on top or bottom
     if(!is.null(ht_opt$TITLE_PADDING)) {
@@ -960,6 +960,18 @@ setMethod(f = "make_layout",
             annotation_legend_list = list(annotation_legend_list)
         }
     }
+    heatmap_legend_list = c(
+        unlist(lapply(object@ht_list, function(x) {
+            x@heatmap_legend_list
+        }), recursive = FALSE, use.names = FALSE),
+        heatmap_legend_list
+    )
+    annotation_legend_list = c(
+        unlist(lapply(object@ht_list, function(x) {
+            x@annotation_legend_list
+        }), recursive = FALSE, use.names = FALSE),
+        annotation_legend_list
+    )
     if(merge_legends) {
         heatmap_legend_list = c(heatmap_legend_list, annotation_legend_list)
     }
