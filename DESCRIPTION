@@ -22,3 +22,4 @@ Description: Complex heatmaps are efficient to visualize associations
 biocViews: Software, Visualization, Sequencing
 URL: https://github.com/jokergoo/ComplexHeatmap, https://jokergoo.github.io/ComplexHeatmap-reference/book/
 License: MIT + file LICENSE
+RoxygenNote: 7.2.3

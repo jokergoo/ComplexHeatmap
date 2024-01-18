@@ -214,19 +214,12 @@ get_dist = function(matrix, method) {
         # }
     } else if(method %in% c("pearson", "spearman", "kendall")) {
         if(any(is.na(matrix))) {
-            dst = get_dist(matrix, function(x, y) {
-                    l = is.na(x) | is.na(y)
-                    x = x[!l]
-                    y = y[!l]
-                    1 - cor(x, y, method = method)
-                })
             warning_wrap("NA exists in the matrix, calculating distance by removing NA values.")
-        } else {
-            dst = switch(method,
-                         pearson = as.dist(1 - cor(t(matrix), method = "pearson")),
-                         spearman = as.dist(1 - cor(t(matrix), method = "spearman")),
-                         kendall = as.dist(1 - cor(t(matrix), method = "kendall")))
         }
+       dst = (1-cor(t(matrix),
+                    method = method,
+                    use = "pairwise.complete.obs"))/2
+       dst = as.dist(dst)
     } else {
         stop_wrap(qq("method @{method} not supported"))
     }
