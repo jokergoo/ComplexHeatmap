@@ -7,4 +7,4 @@ assignees: ''
 
 ---
 
-> Please provide example datasets and the code you use. It will help me to understand your problem and help you!
+> Due to very limited capacity, it may take me a long time to read your request.
