@@ -1,3 +1,10 @@
+CHANGES in VERSION 2.25.1
+
+* `adjust_heatmap_list()`: fixed a bug where slice gaps were repeatedly used to calculate the heatmap width/height. #1240
+* `names<-,HeatmapAnnotation()`: `label` slot is correctedly assigned with the new name.
+
+=======================
+
 CHANGES in VERSION 2.21.2
 
 * `anno_barplot()`: fixed a bug when `add_numbers = TRUE` and `axis_param=c(direction="reverse")` are both set.

@@ -997,7 +997,11 @@ names.HeatmapAnnotation = function(x) {
 	}
 	names(x@anno_list) = value
 	for(i in seq_along(value)) {
+		if(x@anno_list[[i]]@label == x@anno_list[[i]]@name) {
+			x@anno_list[[i]]@label =  value[i]
+		}
 		x@anno_list[[i]]@name =  value[i]
+		x@anno_list[[i]]@name_param$label =  value[i]
 		if(!is.null(x@anno_list[[i]]@color_mapping)) {
 			x@anno_list[[i]]@color_mapping@name = value[i]
 		}

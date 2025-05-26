@@ -443,9 +443,7 @@ setMethod(f = "make_layout",
             layout_size$row_anno_left_width,
             layout_size$row_anno_right_width
         ) + object@matrix_param$width, "mm")
-        if(nc_slice > 1) {
-            object@heatmap_param$width = object@heatmap_param$width + sum(column_gap[seq_len(nc_slice-1)])
-        }
+
     } else {
         object@heatmap_param$width = unit(1, "npc")
     }
@@ -474,9 +472,7 @@ setMethod(f = "make_layout",
             layout_size$column_anno_bottom_height,
             layout_size$column_names_bottom_height
         ) + object@matrix_param$height, "mm")
-        if(nr_slice > 1) {
-            object@heatmap_param$height = object@heatmap_param$height + sum(row_gap[seq_len(nr_slice-1)])
-        }
+
     } else {
         object@heatmap_param$height = unit(1, "npc")
     }
