@@ -1,3 +1,10 @@
+CHANGES in VERSION 2.25.2
+
+* `make_layout,HeatmapList-class`: `row_order`/`column_order` is reset if `cluster_rows`/`cluster_columns`
+  is set to TRUE in `draw()`.
+
+======================
+
 CHANGES in VERSION 2.25.1
 
 * `adjust_heatmap_list()`: fixed a bug where slice gaps were repeatedly used to calculate the heatmap width/height. #1240

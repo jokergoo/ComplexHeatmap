@@ -279,10 +279,12 @@ setMethod(f = "make_layout",
             if(inherits(cluster_rows, c("dendrogram", "hclust"))) {
                 object@ht_list[[i_main]]@row_dend_param$obj = cluster_rows
                 object@ht_list[[i_main]]@row_dend_param$cluster = TRUE
+                object@ht_list[[i_main]]@row_order = seq_len(nrow(object@ht_list[[i_main]]@matrix))
                 if(verbose) qqcat("set cluster_rows to main heatmap\n")
             } else if(inherits(cluster_rows, "function")) {
                 object@ht_list[[i_main]]@row_dend_param$fun = cluster_rows
                 object@ht_list[[i_main]]@row_dend_param$cluster = TRUE
+                object@ht_list[[i_main]]@row_order = seq_len(nrow(object@ht_list[[i_main]]@matrix))
                 if(verbose) qqcat("set cluster_rows to main heatmap\n")
             } else {
                 object@ht_list[[i_main]]@row_dend_param$cluster = cluster_rows
@@ -292,6 +294,7 @@ setMethod(f = "make_layout",
                     show_row_dend = FALSE
                 } else {
                     row_dend_width = unit(10, "mm")
+                    object@ht_list[[i_main]]@row_order = seq_len(nrow(object@ht_list[[i_main]]@matrix))
                 }
             }
         }
@@ -424,10 +427,12 @@ setMethod(f = "make_layout",
             if(inherits(cluster_columns, c("dendrogram", "hclust"))) {
                 object@ht_list[[i_main]]@column_dend_param$obj = cluster_columns
                 object@ht_list[[i_main]]@column_dend_param$cluster = TRUE
+                object@ht_list[[i_main]]@column_order = seq_len(ncol(object@ht_list[[i_main]]@matrix))
                 if(verbose) qqcat("set cluster_columns to main heatmap\n")
             } else if(inherits(cluster_columns, "function")) {
                 object@ht_list[[i_main]]@column_dend_param$fun = cluster_columns
                 object@ht_list[[i_main]]@column_dend_param$cluster = TRUE
+                object@ht_list[[i_main]]@column_order = seq_len(ncol(object@ht_list[[i_main]]@matrix))
                 if(verbose) qqcat("set cluster_columns to main heatmap\n")
             } else {
                 object@ht_list[[i_main]]@column_dend_param$cluster = cluster_columns
@@ -437,6 +442,7 @@ setMethod(f = "make_layout",
                     show_column_dend = FALSE
                 } else {
                     column_dend_width = unit(10, "mm")
+                    object@ht_list[[i_main]]@column_order = seq_len(ncol(object@ht_list[[i_main]]@matrix))
                 }
             }
         }
