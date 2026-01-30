@@ -1,9 +1,9 @@
 Package: ComplexHeatmap
 Type: Package
 Title: Make Complex Heatmaps
-Version: 2.25.2
-Date: 2025-06-23
-Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
+Version: 2.25.3
+Date: 2026-01-30
+Authors@R: person("Zuguang", "Gu", email = "guzuguang@suat-sz.edu.cn", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 4.0.0), methods, grid, graphics, stats, grDevices
 Imports: circlize (>= 0.4.14), GetoptLong, colorspace, clue,
