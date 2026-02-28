@@ -110,7 +110,7 @@ CHANGES in VERSION 2.9.3
 * discrete annotations: neighbour grids are merged into one single grid if they have the 
   same values.
 * `anno_barplot()`: allows to add numbers on top of bars.
-* `UpSet()`: axis labels are automatically formated for genomic coordinates.
+* `UpSet()`: axis labels are automatically formatted for genomic coordinates.
 * `AnnotationFunction()`: add a new argument `cell_fun`.
 * When the dendrogram height is zero, the corresponding viewport has scale (0, 1).
 
@@ -191,7 +191,7 @@ CHANGES in VERSION 2.7.1
 * `Legend()`: add `interval_dist` to control the distance of two neighbouring breaks.
 * Fixed a bug that it crashes Rstudio
 * `make_comb_mat()`: print warning messages when there are NA values in the matrix.
-* temporary solution for woking under retina display with Rstudio
+* temporary solution for working under retina display with Rstudio
 * add `bin_genome()` and `normalize_genomic_signals_to_bins()`
 * print messages if directly sending `anno_*()` functions to `top_annotation` or similar arguments.
 * `pheatmap()`: set heatmap name to " " so that there is no legend title by default.
@@ -300,7 +300,7 @@ CHANGES in VERSION 2.3.3
 * print important messages, e.g. when number of rows are more than 2000, interanlly use_raster 
   is turned on and the message should be printed to users.
 * UpSet plots: optimize the processing of many sets (current solution consumes huge memory)
-* UpSet plots: the "intersect" and "union" modes are currectly calculated.
+* UpSet plots: the "intersect" and "union" modes are correctly calculated.
 * `anno_block()`: add `show_name` argument.
 
 ========================
@@ -508,7 +508,7 @@ CHANGES in VERSION 1.11.7
 
 CHANGES in VERSION 1.11.6
 
-* simply bump the verison number
+* simply bump the version number
 * `gap` in `Heatmap()` now can be a vector
 
 ===========================
@@ -516,10 +516,10 @@ CHANGES in VERSION 1.11.6
 CHANGES in VERSION 1.11.5
 
 * `gap` in `HeatmapAnnotation` has been adjusted
-* annotations support drawing names of either sides
+* annotations support drawing names of either side
 * `densityHeatmap()`: quantile lines are also reordered
 * export `anno_oncoprint_barplot`
-* `Heatmap()`: if `col` is a unnamed vector and the number of colors is same as
+* `Heatmap()`: if `col` is an unnamed vector and the number of colors is same as
   unique itemes in `mat`, the name of `col` vector is set to `sort(unique(mat))
 * adjusted the order of annotation legends
 * discreat legend: if a level is not in the data while defined by `col`, it will
@@ -558,7 +558,7 @@ CHANGES in VERSION 1.9.5
 * add a section in the vignette to show how to adjust positions
   of column names when there are bottom annotations.
 * fixed a bug that character NA values can not to assigned with na_col
-* extra character 'at' and 'labels' in legends will be removed automatically
+* extra characters 'at' and 'labels' in legends will be removed automatically
 * all arguments which are passed to `make_layout()` are all explicitly put
   in `draw()` instead of using ...
 
@@ -668,7 +668,7 @@ CHANGES in VERSION 1.4.1
 
 CHANGES in VERSION 1.4.0
 
-* returned value for `draw` method has been changes
+* returned value for `draw` method has been changed
 * add `row_order`, `column_order`, `row_dend` and `column_dend`
   to extract orders and dendrograms after heatmap clustering
 * add `select` function to interactively select sub region in the heatmap
