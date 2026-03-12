@@ -116,7 +116,14 @@ HeatmapAnnotation = function(...,
 	height = NULL,
 	width = NULL,
 	simple_anno_size = ht_opt$simple_anno_size,
-	simple_anno_size_adjust = FALSE
+	simple_anno_size_adjust = FALSE,
+
+	use_raster = FALSE,
+	raster_device = NULL,
+	raster_quality = 1,
+	raster_device_param = list(),
+	raster_by_magick = requireNamespace("magick", quietly = TRUE),
+	raster_magick_filter = NULL
 	) {
 
 	dev.null()
@@ -135,6 +142,10 @@ HeatmapAnnotation = function(...,
 	})
 
 	fun_args = names(as.list(environment()))
+
+	if(missing(use_raster) && !is.null(ht_opt$annotation_use_raster)) {
+		use_raster = ht_opt$annotation_use_raster
+	}
 
 	verbose = ht_opt$verbose
 	
@@ -326,12 +337,18 @@ HeatmapAnnotation = function(...,
 		i_anno = i_anno + 1
 		arg_list = list(name = ag, which = which,
 				label = annotation_label[[i_anno]],
-				show_name = show_annotation_name[[i_anno]], 
-				name_gp = subset_gp(annotation_name_gp, i_anno), 
-	        	name_offset = annotation_name_offset[[i_anno]], 
-	        	name_side = annotation_name_side[i_anno], 
+				show_name = show_annotation_name[[i_anno]],
+				name_gp = subset_gp(annotation_name_gp, i_anno),
+	        	name_offset = annotation_name_offset[[i_anno]],
+	        	name_side = annotation_name_side[i_anno],
 	        	name_rot = annotation_name_rot[[i_anno]],
-	        	border = border[i_anno])
+	        	border = border[i_anno],
+	        	use_raster = use_raster,
+	        	raster_device = raster_device,
+	        	raster_quality = raster_quality,
+	        	raster_device_param = raster_device_param,
+	        	raster_by_magick = raster_by_magick,
+	        	raster_magick_filter = raster_magick_filter)
 
 		if(inherits(anno_value_list[[ag]], c("function", "AnnotationFunction"))) {
 			arg_list$fun = anno_value_list[[ag]]

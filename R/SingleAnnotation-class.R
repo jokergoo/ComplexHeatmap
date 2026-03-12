@@ -36,7 +36,8 @@ SingleAnnotation = setClass("SingleAnnotation",
         width = "ANY",
         height = "ANY",
         extended = "ANY",
-        subsettable = "logical"
+        subsettable = "logical",
+        raster_param = "list"
 	),
 	prototype = list(
 		color_mapping = NULL,
@@ -45,7 +46,8 @@ SingleAnnotation = setClass("SingleAnnotation",
         color_is_random = FALSE,
 		name_to_data_vp = FALSE,
         extended = unit(c(0, 0, 0, 0), "mm"),
-        subsettable = FALSE
+        subsettable = FALSE,
+        raster_param = list(use_raster = FALSE)
 	)
 )
 
@@ -156,7 +158,13 @@ SingleAnnotation = function(name, value, col, fun,
 	name_side = ifelse(which == "column", "right", "bottom"),
     name_rot = NULL,
     simple_anno_size = ht_opt$simple_anno_size,
-    width = NULL, height = NULL) {
+    width = NULL, height = NULL,
+    use_raster = FALSE,
+    raster_device = NULL,
+    raster_quality = 1,
+    raster_device_param = list(),
+    raster_by_magick = requireNamespace("magick", quietly = TRUE),
+    raster_magick_filter = NULL) {
 
     .ENV$current_annotation_which = NULL
 	which = match.arg(which)[1]
@@ -582,6 +590,22 @@ SingleAnnotation = function(name, value, col, fun,
         .Object@subsettable = .Object@fun@subsettable
     }
 
+    if(is.null(raster_device)) {
+        if(requireNamespace("Cairo", quietly = TRUE)) {
+            raster_device = "CairoPNG"
+        } else {
+            raster_device = "png"
+        }
+    }
+    .Object@raster_param = list(
+        use_raster = use_raster,
+        raster_device = raster_device,
+        raster_quality = raster_quality,
+        raster_device_param = raster_device_param,
+        raster_by_magick = raster_by_magick,
+        raster_magick_filter = raster_magick_filter
+    )
+
     return(.Object)
 }
 
@@ -666,8 +690,21 @@ setMethod(f = "draw",
         xscale = data_scale$x, yscale = data_scale$y))
     
     if(verbose) qqcat("execute annotation function\n")
-    draw(object@fun, index = index, k = k, n = n)
-    
+    use_raster = isTRUE(object@raster_param$use_raster)
+    if(use_raster) {
+        rp = object@raster_param
+        rasterize_in_viewport(
+            draw_fun = function() draw(object@fun, index = index, k = k, n = n),
+            raster_device = rp$raster_device,
+            raster_quality = rp$raster_quality,
+            raster_device_param = rp$raster_device_param,
+            raster_by_magick = rp$raster_by_magick,
+            raster_magick_filter = rp$raster_magick_filter
+        )
+    } else {
+        draw(object@fun, index = index, k = k, n = n)
+    }
+
 	# add annotation name
     draw_name = object@name_param$show
 	if(object@name_param$show && n > 1) {
