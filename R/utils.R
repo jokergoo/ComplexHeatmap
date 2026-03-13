@@ -1198,6 +1198,14 @@ rasterize_in_viewport = function(draw_fun,
         fileext = paste0(".", device_info[2]))
     device_fun = getFromNamespace(raster_device, ns = device_info[1])
 
+    # Scale res with raster_quality so the device's physical size (in inches)
+    # matches the original viewport. Without this, annotation draw functions
+    # that push viewports with absolute units (e.g. unit(5, "mm")) would only
+    # fill a fraction of the enlarged temp device.
+    if(!"res" %in% names(raster_device_param)) {
+        raster_device_param$res = as.integer(72 * raster_quality)
+    }
+
     oe = try(do.call(device_fun, c(list(filename = temp_image,
         width = temp_image_width, height = temp_image_height), raster_device_param)))
     if(inherits(oe, "try-error")) {
