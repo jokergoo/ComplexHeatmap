@@ -1371,6 +1371,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	value = x
 	attr(value, "labels_format") = labels_format
 	number_extension = unit(0, "mm")
+	axis_param = validate_axis_param(axis_param, which)
 
 	if(ncol(value) == 1) {
 		if(add_numbers) {
@@ -1383,7 +1384,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			} else if(which == "row") {
 				number_extension = cos(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm")
 			}
-			if(is.null(ylim)) {
+			if(is.null(ylim) && axis_param$direction == "normal") {
 				if(which == "column") {
 					extend = convertHeight(number_extension, "mm", valueOnly = TRUE)/convertHeight(anno_size$height, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
 				} else if(which == "row") {
@@ -1394,7 +1395,6 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 		}
 	}
 
-	axis_param = validate_axis_param(axis_param, which)
 	axis_grob = if(axis) construct_axis_grob(axis_param, which, data_scale, format = labels_format) else NULL
 
 	row_fun = function(index, k = 1, N = 1) {
@@ -1506,7 +1506,11 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 			if(add_numbers) {
 				txt = value_origin[index]
 				if(!is.null(attr(value, "labels_format"))) {
-					txt = attr(value, "labels_format")(value[index])
+					if(axis_param$direction == "normal") {
+						txt = attr(value, "labels_format")(value[index])
+					} else {
+						txt = attr(value, "labels_format")(value_origin[index])
+					}
 				}
 				numbers_rot = numbers_rot %% 360
 				if(axis_param$direction == "normal") {
@@ -1599,7 +1603,7 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	anno@subsettable = TRUE
 
 	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
-	if(!is.null(ylim) && add_numbers && ncol(value) == 1) {
+	if(add_numbers && ncol(value) == 1 && (!is.null(ylim) || axis_param$direction == "reverse")) {
 		if(which == "column") {
 			number_extension = convertHeight(number_extension, "mm")
 			if(axis_param$direction == "normal") {
