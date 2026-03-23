@@ -1370,18 +1370,25 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 
 	value = x
 	attr(value, "labels_format") = labels_format
+	number_extension = unit(0, "mm")
 
 	if(ncol(value) == 1) {
 		if(add_numbers) {
 			if(which == "column") {
 				if(numbers_rot == 0) {
-					extend = convertHeight(max_text_height(value, gp = numbers_gp) + numbers_offset + unit(2, "mm"), "mm", valueOnly = TRUE)/convertHeight(anno_size$height, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+					number_extension = max_text_height(value, gp = numbers_gp) + numbers_offset + unit(2, "mm")
 				} else {
-					extend = convertHeight(sin(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm"), "mm", valueOnly = TRUE)/convertHeight(anno_size$height, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+					number_extension = sin(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm")
 				}
-				data_scale[2] = data_scale[2] + extend
 			} else if(which == "row") {
-				extend = convertWidth(cos(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm"), "mm", valueOnly = TRUE)/convertWidth(anno_size$width, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+				number_extension = cos(numbers_rot/180*pi)*max_text_width(value, gp = numbers_gp) + numbers_offset + unit(4, "mm")
+			}
+			if(is.null(ylim)) {
+				if(which == "column") {
+					extend = convertHeight(number_extension, "mm", valueOnly = TRUE)/convertHeight(anno_size$height, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+				} else if(which == "row") {
+					extend = convertWidth(number_extension, "mm", valueOnly = TRUE)/convertWidth(anno_size$width, "mm", valueOnly = TRUE)*(data_scale[2] - data_scale[1])
+				}
 				data_scale[2] = data_scale[2] + extend
 			}
 		}
@@ -1588,10 +1595,27 @@ anno_barplot = function(x, baseline = 0, which = c("column", "row"), border = TR
 	if(ncol(value) == 1) {
 		anno@subset_rule$gp = subset_gp
 	}
-		
+
 	anno@subsettable = TRUE
 
 	anno@extended = update_anno_extend(anno, axis_grob, axis_param)
+	if(!is.null(ylim) && add_numbers && ncol(value) == 1) {
+		if(which == "column") {
+			number_extension = convertHeight(number_extension, "mm")
+			if(axis_param$direction == "normal") {
+				anno@extended[3] = anno@extended[3] + number_extension
+			} else {
+				anno@extended[1] = anno@extended[1] + number_extension
+			}
+		} else {
+			number_extension = convertWidth(number_extension, "mm")
+			if(axis_param$direction == "normal") {
+				anno@extended[4] = anno@extended[4] + number_extension
+			} else {
+				anno@extended[2] = anno@extended[2] + number_extension
+			}
+		}
+	}
 
 	return(anno) 
 }
@@ -4548,4 +4572,3 @@ anno_numeric = function(x, rg = range(x), labels_gp = gpar(), x_convert = NULL,
         width = width
     )
 }
-
