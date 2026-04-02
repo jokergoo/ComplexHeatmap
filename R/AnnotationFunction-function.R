@@ -256,7 +256,7 @@ anno_simple = function(x, col, na_col = "grey",
 					r = rle(value[index, i])
 					fill = map_to_colors(color_mapping, r$values)
 					if(is.null(gp$col)) gp$col = fill
-					grid.rect(x = (i-0.5)/nc, y = 1 - cumsum(r$lengths)/n, height = r$length/n, width = 1/nc, just = "bottom", gp = do.call("gpar", c(list(fill = fill), gp)))
+					grid.rect(x = (i-0.5)/nc, y = 1 - cumsum(r$lengths)/n, height = r$lengths/n, width = 1/nc, just = "bottom", gp = do.call("gpar", c(list(fill = fill), gp)))
 				}
 			    if(!is.null(pch)) {
 					l = !is.na(pch[, i])
@@ -283,7 +283,7 @@ anno_simple = function(x, col, na_col = "grey",
 				r = rle(value[index])
 				fill = map_to_colors(color_mapping, r$values)
 				if(is.null(gp$col)) gp$col = fill
-				grid.rect(x = 0.5, y = 1 - cumsum(r$lengths)/n, height = r$length/n, width = 1, just = "bottom", gp = do.call("gpar", c(list(fill = fill), gp)))
+				grid.rect(x = 0.5, y = 1 - cumsum(r$lengths)/n, height = r$lengths/n, width = 1, just = "bottom", gp = do.call("gpar", c(list(fill = fill), gp)))
 			}
 			if(!is.null(pch)) {
 			    pch = pch[index]
@@ -328,7 +328,7 @@ anno_simple = function(x, col, na_col = "grey",
 	            	r = rle(value[index, i])
 					fill = map_to_colors(color_mapping, r$values)
 					if(is.null(gp$col)) gp$col = fill
-					grid.rect(cumsum(r$lengths)/n, y = (nc-i +0.5)/nc, width = r$length/n, height = 1/nc, just = "right", gp = do.call("gpar", c(list(fill = fill), gp)))
+					grid.rect(cumsum(r$lengths)/n, y = (nc-i +0.5)/nc, width = r$lengths/n, height = 1/nc, just = "right", gp = do.call("gpar", c(list(fill = fill), gp)))
 	            }
 				if(!is.null(pch)){
 				    l = !is.na(pch[, i])
@@ -355,7 +355,7 @@ anno_simple = function(x, col, na_col = "grey",
 				r = rle(value[index])
 				fill = map_to_colors(color_mapping, r$values)
 				if(is.null(gp$col)) gp$col = fill
-				grid.rect(cumsum(r$lengths)/n, y = 0.5, width = r$length/n, height = 1, just = "right", gp = do.call("gpar", c(list(fill = fill), gp)))
+				grid.rect(cumsum(r$lengths)/n, y = 0.5, width = r$lengths/n, height = 1, just = "right", gp = do.call("gpar", c(list(fill = fill), gp)))
 			}
 			if(!is.null(pch)) {
 				pch = pch[index]
