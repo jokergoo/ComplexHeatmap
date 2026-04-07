@@ -125,12 +125,10 @@ HeatmapAnnotation = function(...,
 	is_width_set = !missing(width)
 	is_annotation_height_set = !missing(annotation_height)
 	is_annotation_width_set = !missing(annotation_width)
-
-	.ENV$current_annotation_which = NULL
-	which = match.arg(which)[1]
-	.ENV$current_annotation_which = which
+	which = get_annotation_which(which)
+	old = set_annotation_which(which) # return the initial value
 	on.exit({
-		.ENV$current_annotation_which <- NULL
+		.ENV$current_annotation_which <- old
 		dev.off2()
 	})
 
