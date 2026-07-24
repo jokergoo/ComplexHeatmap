@@ -36,7 +36,8 @@ SingleAnnotation = setClass("SingleAnnotation",
         width = "ANY",
         height = "ANY",
         extended = "ANY",
-        subsettable = "logical"
+        subsettable = "logical",
+        raster_param = "list"
 	),
 	prototype = list(
 		color_mapping = NULL,
@@ -45,7 +46,8 @@ SingleAnnotation = setClass("SingleAnnotation",
         color_is_random = FALSE,
 		name_to_data_vp = FALSE,
         extended = unit(c(0, 0, 0, 0), "mm"),
-        subsettable = FALSE
+        subsettable = FALSE,
+        raster_param = list(use_raster = FALSE)
 	)
 )
 
@@ -80,6 +82,14 @@ SingleAnnotation = setClass("SingleAnnotation",
 #        the width must be an absolute unit.
 # -height The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation,
 #        the width must be an absolute unit.
+# -use_raster Whether render the annotation as a raster image. It helps to reduce file size when there are a
+#      huge number of columns (or rows for a row annotation).
+# -raster_device Graphic device which is used to generate the raster image.
+# -raster_quality A value larger than 1.
+# -raster_device_param A list of further parameters for the selected graphic device.
+# -raster_by_magick Whether to use `magick::image_resize` to scale the image.
+# -raster_magick_filter Pass to ``filter`` argument of `magick::image_resize`. A character scalar and all possible values
+#      are in `magick::filter_types`. The default is ``"Lanczos"``.
 #
 # == details
 # A single annotation is a basic unit of complex heatmap annotations where the heamtap annotations
@@ -156,7 +166,13 @@ SingleAnnotation = function(name, value, col, fun,
 	name_side = ifelse(which == "column", "right", "bottom"),
     name_rot = NULL,
     simple_anno_size = ht_opt$simple_anno_size,
-    width = NULL, height = NULL) {
+    width = NULL, height = NULL,
+    use_raster = FALSE,
+    raster_device = NULL,
+    raster_quality = 1,
+    raster_device_param = list(),
+    raster_by_magick = requireNamespace("magick", quietly = TRUE),
+    raster_magick_filter = NULL) {
 
     .ENV$current_annotation_which = NULL
 	which = match.arg(which)[1]
@@ -582,6 +598,18 @@ SingleAnnotation = function(name, value, col, fun,
         .Object@subsettable = .Object@fun@subsettable
     }
 
+    if(is.null(raster_device)) {
+        raster_device = if(requireNamespace("Cairo", quietly = TRUE)) "CairoPNG" else "png"
+    }
+    .Object@raster_param = list(
+        use_raster = use_raster,
+        raster_device = raster_device,
+        raster_quality = raster_quality,
+        raster_device_param = raster_device_param,
+        raster_by_magick = raster_by_magick,
+        raster_magick_filter = raster_magick_filter
+    )
+
     return(.Object)
 }
 
@@ -666,8 +694,20 @@ setMethod(f = "draw",
         xscale = data_scale$x, yscale = data_scale$y))
     
     if(verbose) qqcat("execute annotation function\n")
-    draw(object@fun, index = index, k = k, n = n)
-    
+    rp = object@raster_param
+    if(isTRUE(rp$use_raster)) {
+        rasterize_in_viewport(
+            draw_fun = function() draw(object@fun, index = index, k = k, n = n),
+            raster_device = rp$raster_device,
+            raster_quality = rp$raster_quality,
+            raster_device_param = rp$raster_device_param,
+            raster_by_magick = rp$raster_by_magick,
+            raster_magick_filter = rp$raster_magick_filter
+        )
+    } else {
+        draw(object@fun, index = index, k = k, n = n)
+    }
+
 	# add annotation name
     draw_name = object@name_param$show
 	if(object@name_param$show && n > 1) {

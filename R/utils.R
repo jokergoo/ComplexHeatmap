@@ -1137,6 +1137,95 @@ setAs("list", "HeatmapList", function(from) {
 })
 
 
+rasterize_in_viewport = function(draw_fun,
+    raster_device = "png",
+    raster_quality = 1,
+    raster_device_param = list(),
+    raster_by_magick = FALSE,
+    raster_magick_filter = NULL) {
+
+    # calculate current viewport size in pixels
+    vp_width_pt = max(1, ceiling(convertWidth(unit(1, "npc"), "bigpts", valueOnly = TRUE)))
+    vp_height_pt = max(1, ceiling(convertHeight(unit(1, "npc"), "bigpts", valueOnly = TRUE)))
+
+    if(raster_quality < 1) raster_quality = 1
+    vp_width_pt = ceiling(vp_width_pt * raster_quality)
+    vp_height_pt = ceiling(vp_height_pt * raster_quality)
+
+    device_info = switch(raster_device,
+        png = c("grDevices", "png", "readPNG"),
+        jpeg = c("grDevices", "jpeg", "readJPEG"),
+        tiff = c("grDevices", "tiff", "readTIFF"),
+        CairoPNG = c("Cairo", "png", "readPNG"),
+        CairoJPEG = c("Cairo", "jpeg", "readJPEG"),
+        CairoTIFF = c("Cairo", "tiff", "readTIFF"),
+        agg_png = c("ragg", "png", "readPNG")
+    )
+
+    if(!requireNamespace(device_info[1], quietly = TRUE)) {
+        stop_wrap(paste0("Need ", device_info[1], " package to write image."))
+    }
+    if(!requireNamespace(device_info[2], quietly = TRUE)) {
+        stop_wrap(paste0("Need ", device_info[2], " package to read image."))
+    }
+
+    if(raster_device %in% c("png", "jpeg", "tiff")) {
+        if(!"type" %in% names(raster_device_param)) {
+            if(capabilities("cairo")) {
+                raster_device_param$type = "cairo"
+            }
+        }
+    }
+
+    temp_image_width = as.integer(vp_width_pt)
+    temp_image_height = as.integer(vp_height_pt)
+
+    if(!is.na(ht_opt$raster_temp_image_max_width)) {
+        temp_image_width = min(temp_image_width, ht_opt$raster_temp_image_max_width)
+    }
+    if(!is.na(ht_opt$raster_temp_image_max_height)) {
+        temp_image_height = min(temp_image_height, ht_opt$raster_temp_image_max_height)
+    }
+
+    temp_image = tempfile(pattern = ".annotation_raster_", tmpdir = tempdir(),
+        fileext = paste0(".", device_info[2]))
+    device_fun = getFromNamespace(raster_device, ns = device_info[1])
+
+    # Scale res with raster_quality so the device's physical size (in inches)
+    # matches the original viewport. Without this, annotation draw functions
+    # that push viewports with absolute units (e.g. unit(5, "mm")) would only
+    # fill a fraction of the enlarged temp device.
+    if(!"res" %in% names(raster_device_param)) {
+        raster_device_param$res = as.integer(72 * raster_quality)
+    }
+
+    oe = try(do.call(device_fun, c(list(filename = temp_image,
+        width = temp_image_width, height = temp_image_height), raster_device_param)))
+    if(inherits(oe, "try-error")) {
+        stop_wrap(qq("The temporary image size for annotation rasterization is too large (@{temp_image_width} x @{temp_image_height} px)."))
+    }
+
+    draw_fun()
+    dev.off2()
+
+    if(raster_by_magick) {
+        image = magick::image_read(temp_image)
+        image = magick::image_resize(image,
+            paste0(vp_width_pt, "x", vp_height_pt, "!"),
+            filter = raster_magick_filter)
+        image = as.raster(image)
+    } else {
+        image = getFromNamespace(device_info[3], ns = device_info[2])(temp_image)
+    }
+
+    grid.raster(image, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = FALSE)
+
+    file.remove(temp_image)
+
+    invisible(NULL)
+}
+
+
 draw_heatmap_in_jupyter = function(ht, ...) {
     width = getOption("repr.plot.width")
     height = getOption("repr.plot.height")

@@ -71,6 +71,14 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -width Width of the whole heatmap annotations.
 # -simple_anno_size Size of the simple annotation.
 # -simple_anno_size_adjust Whether also adjust the size of simple annotations when adjusting the whole heatmap annotation.
+# -use_raster Whether render the annotations as raster images. It helps to reduce file size when there are a huge number
+#      of columns (or rows for row annotations). The value is passed to all single annotations.
+# -raster_device Graphic device which is used to generate the raster image.
+# -raster_quality A value larger than 1.
+# -raster_device_param A list of further parameters for the selected graphic device.
+# -raster_by_magick Whether to use `magick::image_resize` to scale the image.
+# -raster_magick_filter Pass to ``filter`` argument of `magick::image_resize`. A character scalar and all possible values
+#      are in `magick::filter_types`. The default is ``"Lanczos"``.
 #
 # == details
 # For arguments ``show_legend``, ``border``, ``annotation_name_offset``, ``annotation_name_side``, ``annotation_name_rot``,
@@ -116,7 +124,14 @@ HeatmapAnnotation = function(...,
 	height = NULL,
 	width = NULL,
 	simple_anno_size = ht_opt$simple_anno_size,
-	simple_anno_size_adjust = FALSE
+	simple_anno_size_adjust = FALSE,
+
+	use_raster = FALSE,
+	raster_device = NULL,
+	raster_quality = 1,
+	raster_device_param = list(),
+	raster_by_magick = requireNamespace("magick", quietly = TRUE),
+	raster_magick_filter = NULL
 	) {
 
 	dev.null()
@@ -135,6 +150,13 @@ HeatmapAnnotation = function(...,
 	})
 
 	fun_args = names(as.list(environment()))
+
+	# annotations built inside wrapper functions (oncoPrint(), UpSet(), pheatmap())
+	# never get `use_raster` passed to them, so the global option is the only way
+	# to rasterize those
+	if(missing(use_raster) && !is.null(ht_opt$annotation_use_raster)) {
+		use_raster = ht_opt$annotation_use_raster
+	}
 
 	verbose = ht_opt$verbose
 	
@@ -331,7 +353,13 @@ HeatmapAnnotation = function(...,
 	        	name_offset = annotation_name_offset[[i_anno]], 
 	        	name_side = annotation_name_side[i_anno], 
 	        	name_rot = annotation_name_rot[[i_anno]],
-	        	border = border[i_anno])
+	        	border = border[i_anno],
+	        	use_raster = use_raster,
+	        	raster_device = raster_device,
+	        	raster_quality = raster_quality,
+	        	raster_device_param = raster_device_param,
+	        	raster_by_magick = raster_by_magick,
+	        	raster_magick_filter = raster_magick_filter)
 
 		if(inherits(anno_value_list[[ag]], c("function", "AnnotationFunction"))) {
 			arg_list$fun = anno_value_list[[ag]]

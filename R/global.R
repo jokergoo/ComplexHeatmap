@@ -209,6 +209,8 @@ ht_opt = setGlobalOptions(
 		.value = FALSE
 	),
 	"validate_names" = TRUE,
+	annotation_use_raster = list(
+		.value = NULL),
 	raster_temp_image_max_width = 30000,
 	raster_temp_image_max_height = 30000,
 	COLOR = c("blue", "#EEEEEE", "red")
