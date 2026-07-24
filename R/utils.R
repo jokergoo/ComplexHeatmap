@@ -1152,12 +1152,6 @@ rasterize_in_viewport = function(draw_fun,
     vp_width_pt = ceiling(vp_width_pt * raster_quality)
     vp_height_pt = ceiling(vp_height_pt * raster_quality)
 
-    # if viewport is too small, fall back to vector
-    if(vp_width_pt < 1 || vp_height_pt < 1) {
-        draw_fun()
-        return(invisible(NULL))
-    }
-
     device_info = switch(raster_device,
         png = c("grDevices", "png", "readPNG"),
         jpeg = c("grDevices", "jpeg", "readJPEG"),
@@ -1183,8 +1177,8 @@ rasterize_in_viewport = function(draw_fun,
         }
     }
 
-    temp_image_width = as.integer(ceiling(max(vp_width_pt, 1)))
-    temp_image_height = as.integer(ceiling(max(vp_height_pt, 1)))
+    temp_image_width = as.integer(vp_width_pt)
+    temp_image_height = as.integer(vp_height_pt)
 
     if(!is.na(ht_opt$raster_temp_image_max_width)) {
         temp_image_width = min(temp_image_width, ht_opt$raster_temp_image_max_width)
@@ -1193,8 +1187,7 @@ rasterize_in_viewport = function(draw_fun,
         temp_image_height = min(temp_image_height, ht_opt$raster_temp_image_max_height)
     }
 
-    temp_dir = tempdir()
-    temp_image = tempfile(pattern = ".annotation_raster_", tmpdir = temp_dir,
+    temp_image = tempfile(pattern = ".annotation_raster_", tmpdir = tempdir(),
         fileext = paste0(".", device_info[2]))
     device_fun = getFromNamespace(raster_device, ns = device_info[1])
 
@@ -1216,9 +1209,6 @@ rasterize_in_viewport = function(draw_fun,
     dev.off2()
 
     if(raster_by_magick) {
-        if(!requireNamespace("magick", quietly = TRUE)) {
-            stop_wrap("'magick' package should be installed.")
-        }
         image = magick::image_read(temp_image)
         image = magick::image_resize(image,
             paste0(vp_width_pt, "x", vp_height_pt, "!"),

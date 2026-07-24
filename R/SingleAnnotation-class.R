@@ -82,6 +82,14 @@ SingleAnnotation = setClass("SingleAnnotation",
 #        the width must be an absolute unit.
 # -height The height of the plotting region (the viewport) that the annotation is drawn. If it is a column annotation,
 #        the width must be an absolute unit.
+# -use_raster Whether render the annotation as a raster image. It helps to reduce file size when there are a
+#      huge number of columns (or rows for a row annotation).
+# -raster_device Graphic device which is used to generate the raster image.
+# -raster_quality A value larger than 1.
+# -raster_device_param A list of further parameters for the selected graphic device.
+# -raster_by_magick Whether to use `magick::image_resize` to scale the image.
+# -raster_magick_filter Pass to ``filter`` argument of `magick::image_resize`. A character scalar and all possible values
+#      are in `magick::filter_types`. The default is ``"Lanczos"``.
 #
 # == details
 # A single annotation is a basic unit of complex heatmap annotations where the heamtap annotations
@@ -591,11 +599,7 @@ SingleAnnotation = function(name, value, col, fun,
     }
 
     if(is.null(raster_device)) {
-        if(requireNamespace("Cairo", quietly = TRUE)) {
-            raster_device = "CairoPNG"
-        } else {
-            raster_device = "png"
-        }
+        raster_device = if(requireNamespace("Cairo", quietly = TRUE)) "CairoPNG" else "png"
     }
     .Object@raster_param = list(
         use_raster = use_raster,
@@ -690,9 +694,8 @@ setMethod(f = "draw",
         xscale = data_scale$x, yscale = data_scale$y))
     
     if(verbose) qqcat("execute annotation function\n")
-    use_raster = isTRUE(object@raster_param$use_raster)
-    if(use_raster) {
-        rp = object@raster_param
+    rp = object@raster_param
+    if(isTRUE(rp$use_raster)) {
         rasterize_in_viewport(
             draw_fun = function() draw(object@fun, index = index, k = k, n = n),
             raster_device = rp$raster_device,

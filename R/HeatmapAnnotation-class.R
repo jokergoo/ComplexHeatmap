@@ -71,6 +71,14 @@ HeatmapAnnotation = setClass("HeatmapAnnotation",
 # -width Width of the whole heatmap annotations.
 # -simple_anno_size Size of the simple annotation.
 # -simple_anno_size_adjust Whether also adjust the size of simple annotations when adjusting the whole heatmap annotation.
+# -use_raster Whether render the annotations as raster images. It helps to reduce file size when there are a huge number
+#      of columns (or rows for row annotations). The value is passed to all single annotations.
+# -raster_device Graphic device which is used to generate the raster image.
+# -raster_quality A value larger than 1.
+# -raster_device_param A list of further parameters for the selected graphic device.
+# -raster_by_magick Whether to use `magick::image_resize` to scale the image.
+# -raster_magick_filter Pass to ``filter`` argument of `magick::image_resize`. A character scalar and all possible values
+#      are in `magick::filter_types`. The default is ``"Lanczos"``.
 #
 # == details
 # For arguments ``show_legend``, ``border``, ``annotation_name_offset``, ``annotation_name_side``, ``annotation_name_rot``,
@@ -142,10 +150,6 @@ HeatmapAnnotation = function(...,
 	})
 
 	fun_args = names(as.list(environment()))
-
-	if(missing(use_raster) && !is.null(ht_opt$annotation_use_raster)) {
-		use_raster = ht_opt$annotation_use_raster
-	}
 
 	verbose = ht_opt$verbose
 	
@@ -337,10 +341,10 @@ HeatmapAnnotation = function(...,
 		i_anno = i_anno + 1
 		arg_list = list(name = ag, which = which,
 				label = annotation_label[[i_anno]],
-				show_name = show_annotation_name[[i_anno]],
-				name_gp = subset_gp(annotation_name_gp, i_anno),
-	        	name_offset = annotation_name_offset[[i_anno]],
-	        	name_side = annotation_name_side[i_anno],
+				show_name = show_annotation_name[[i_anno]], 
+				name_gp = subset_gp(annotation_name_gp, i_anno), 
+	        	name_offset = annotation_name_offset[[i_anno]], 
+	        	name_side = annotation_name_side[i_anno], 
 	        	name_rot = annotation_name_rot[[i_anno]],
 	        	border = border[i_anno],
 	        	use_raster = use_raster,
