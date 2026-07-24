@@ -11,6 +11,22 @@ test_that("raster parameters are passed down to single annotations", {
 	expect_false(ha@anno_list[["foo"]]@raster_param$use_raster)
 })
 
+# annotations built inside UpSet(), oncoPrint() and pheatmap() are never given a
+# `use_raster` argument, so `ht_opt$annotation_use_raster` is the only way to
+# rasterize them
+test_that("ht_opt$annotation_use_raster reaches internally built annotations", {
+	on.exit(ht_opt$annotation_use_raster <- NULL)
+
+	m = make_comb_mat(list(a = 1:5, b = 3:8, c = 4:10))
+	expect_false(UpSet(m)@top_annotation@anno_list[[1]]@raster_param$use_raster)
+
+	ht_opt$annotation_use_raster = TRUE
+	expect_true(UpSet(m)@top_annotation@anno_list[[1]]@raster_param$use_raster)
+
+	# an explicit argument still wins over the global
+	expect_false(HeatmapAnnotation(foo = 1:10, use_raster = FALSE)@anno_list[["foo"]]@raster_param$use_raster)
+})
+
 # the graphics drawn by `draw_fun` are in absolute units, so the rasterized
 # result must occupy the same area no matter how large the temporary image is
 test_that("rasterized annotation does not shrink when raster_quality increases", {

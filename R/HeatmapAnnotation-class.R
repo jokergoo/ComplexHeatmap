@@ -151,6 +151,13 @@ HeatmapAnnotation = function(...,
 
 	fun_args = names(as.list(environment()))
 
+	# annotations built inside wrapper functions (oncoPrint(), UpSet(), pheatmap())
+	# never get `use_raster` passed to them, so the global option is the only way
+	# to rasterize those
+	if(missing(use_raster) && !is.null(ht_opt$annotation_use_raster)) {
+		use_raster = ht_opt$annotation_use_raster
+	}
+
 	verbose = ht_opt$verbose
 	
 	.Object = new("HeatmapAnnotation")
