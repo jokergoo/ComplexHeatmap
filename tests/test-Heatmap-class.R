@@ -358,6 +358,13 @@ ht = Heatmap(mat, top_annotation = anno,
 draw(ht, test = TRUE)
 
 
+### split into identical slices: the parent dendrogram has height 0
+m = matrix(c(1, -1, 2), nrow = 3, ncol = 2)
+ht = Heatmap(m, column_split = 1:2)
+draw(ht, test = TRUE)
+ht = Heatmap(t(m), row_split = 1:2)
+draw(ht, test = TRUE)
+
 #### character matrix
 mat3 = matrix(sample(letters[1:6], 100, replace = TRUE), 10, 10)
 rownames(mat3) = {x = letters[1:10]; x[1] = "aaaaaaaaaaaaaaaaaaaaaaa";x}
