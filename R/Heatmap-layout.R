@@ -169,6 +169,8 @@ setMethod(f = "make_layout",
         } else {
             row_dend_max_height = dend_heights(row_dend_slice) + max(dend_heights(object@row_dend_list))
         }
+        # all slices identical: zero height, as in draw_dend(); grid rejects a zero-range scale
+        if(row_dend_max_height == 0) row_dend_max_height = 1
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             
             if(row_dend_side == "left") {
@@ -243,6 +245,8 @@ setMethod(f = "make_layout",
         } else {
             column_dend_max_height = dend_heights(column_dend_slice) + max(dend_heights(object@column_dend_list))
         }
+        # all slices identical: zero height, as in draw_dend(); grid rejects a zero-range scale
+        if(column_dend_max_height == 0) column_dend_max_height = 1
         object@layout$graphic_fun_list = c(object@layout$graphic_fun_list, function(object) {
             if(column_dend_side == "top") {
                 pushViewport(viewport(y = ht_opt$DENDROGRAM_PADDING, height = unit(1, "npc") - ht_opt$DENDROGRAM_PADDING, just = "bottom"))
